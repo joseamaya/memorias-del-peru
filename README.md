@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 1 — Fundación técnica (en curso).** Precondiciones cumplidas; implementación por iniciar. Aún no existe código ni `project.godot`. |
+| Estado | **Fase 2 — Interacción (en curso).** Fase 1 cerrada; existen proyecto Godot, jugador FPS y sandbox. |
 
 ## Requisitos
 
@@ -48,7 +48,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | [docs/adr/](docs/adr/) | Registro de decisiones arquitectónicas |
 | [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Documentación de la campaña Pachacútec |
 
-## Validación rápida (cuando exista código)
+## Validación rápida
 
 ```bash
 godot --headless --path . --import

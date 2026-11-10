@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 1 — Fundación técnica.
-**Siguiente:** Fase 2 — Interacción.
+**Fase activa:** Fase 2 — Interacción.
+**Siguiente:** Fase 3 — Entorno.
 
 Reglas:
 
@@ -14,8 +14,8 @@ Reglas:
 | Fase | Estado | Fecha de cierre |
 |---|---|---|
 | 0 — Documentación | Cerrada | 2026-11-10 |
-| 1 — Fundación técnica | En curso | — |
-| 2 — Interacción | No iniciada | — |
+| 1 — Fundación técnica | Cerrada | 2026-11-10 |
+| 2 — Interacción | En curso | — |
 | 3 — Entorno | No iniciada | — |
 | 4 — Vertical Slice Pachacútec | No iniciada | — |
 
@@ -118,18 +118,20 @@ El cambio de la Fase 3 es un criterio de aceptación de esa fase. Ninguna export
 
 ### Criterios de aceptación
 
-- [ ] El proyecto abre en la versión fijada sin errores.
-- [ ] El motor reconoce todos los scripts (`class_name` registrados, sin errores de análisis).
-- [ ] El jugador camina y corre; la velocidad de carrera solo se aplica con Shift y entrada de movimiento.
-- [ ] Aceleración y desaceleración perceptibles (sin arranques ni frenazos instantáneos).
-- [ ] El movimiento es relativo a la orientación horizontal; mirar hacia arriba o abajo no altera la velocidad.
-- [ ] Sube la rampa de 30°, no sube la de 50°, no atraviesa paredes y cae desde la plataforma.
-- [ ] El ratón controla la cámara; pitch limitado a ±80°.
-- [ ] Escape libera el ratón y pausa; pulsar Escape de nuevo reanuda y recaptura el ratón (prueba automatizada de la lógica + verificación manual).
-- [ ] Head bobbing diferenciado caminar/correr, se detiene suavemente, sin saltos ni deriva.
-- [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`.
-- [ ] Cero errores en consola durante la ejecución.
-- [ ] Pruebas automatizadas en verde.
+- [x] El proyecto abre en la versión fijada sin errores.
+- [x] El motor reconoce todos los scripts (`class_name` registrados, sin errores de análisis).
+- [x] El jugador camina y corre; la velocidad de carrera solo se aplica con Shift y entrada de movimiento.
+- [x] Aceleración y desaceleración perceptibles (sin arranques ni frenazos instantáneos).
+- [x] El movimiento es relativo a la orientación horizontal; mirar hacia arriba o abajo no altera la velocidad.
+- [x] Sube la rampa de 30°, no sube la de 50°, no atraviesa paredes y cae desde la plataforma.
+- [x] El ratón controla la cámara; pitch limitado a ±80°.
+- [x] Escape libera el ratón y pausa; pulsar Escape de nuevo reanuda y recaptura el ratón (prueba automatizada de la lógica + verificación manual).
+- [x] Head bobbing diferenciado caminar/correr, se detiene suavemente, sin saltos ni deriva.
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`.
+- [x] Cero errores en consola durante la ejecución.
+- [x] Pruebas automatizadas en verde.
+
+**Verificación manual:** realizada por el usuario el 2026-11-10 a 60 Hz; los 12 puntos del checklist de [06_estrategia_de_pruebas.md](06_estrategia_de_pruebas.md) §4 pasaron. La interpolación de física sigue desactivada; el escalonamiento a frecuencias superiores a 60 Hz queda sin evaluar y no bloquea la fase.
 
 ---
 
@@ -137,9 +139,9 @@ El cambio de la Fase 3 es un criterio de aceptación de esa fase. Ninguna export
 
 ### Precondiciones
 
-- [ ] Fase 1 cerrada.
-- [ ] ADR-0003 aceptado (o reemplazado).
-- [ ] Ficha PCH-004 (quero) y PCH-005 (chicha) con fuentes identificadas, aunque no estén verificadas aún.
+- [x] Fase 1 cerrada.
+- [x] ADR-0003 aceptado (o reemplazado).
+- [x] Ficha PCH-004 (quero) y PCH-005 (chicha) con fuentes identificadas, aunque no estén verificadas aún.
 
 ### Entregables
 
