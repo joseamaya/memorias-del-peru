@@ -134,7 +134,9 @@ El cambio de la Fase 3 es un criterio de aceptación de esa fase. Ninguna export
 
 **Verificación manual:** realizada por el usuario el 2026-11-10 a 60 Hz; los 10 puntos del checklist de [06_estrategia_de_pruebas.md](06_estrategia_de_pruebas.md) §4 pasaron. La interpolación de física sigue desactivada; el escalonamiento a frecuencias superiores a 60 Hz queda sin evaluar y no bloquea la fase.
 
-**Corrección posterior (2026-11-10):** se corrigieron la altura de ojos (la cápsula estaba centrada en el origen y elevaba la cámara a 2,475 m) y el salto lateral del balanceo al envolver la fase en `TAU`. Ambas correcciones tienen prueba automatizada (`test_player_eye_height`, `test_head_bob_max_step`) y requieren una nueva verificación manual del balanceo.
+**Corrección posterior (2026-11-10):** se corrigieron la altura de ojos (la cápsula estaba centrada en el origen y elevaba la cámara a 2,475 m) y el salto lateral del balanceo al envolver la fase en `TAU`. Ambas correcciones tienen prueba automatizada (`test_player_eye_height`, `test_head_bob_max_step`).
+
+**Verificación manual del balanceo:** realizada por el usuario el 2026-11-10; el balanceo es suave, sin salto lateral, caminando y corriendo.
 
 ---
 
