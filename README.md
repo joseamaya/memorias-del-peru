@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 3 — Entorno (en curso).** Fase 2 cerrada; jugador, interacción, estamina y HUD funcionando. |
+| Estado | **Fase 3 cerrada.** Fase 4 pendiente de aprobar el documento de alcance del vertical slice. |
 
 ## Requisitos
 

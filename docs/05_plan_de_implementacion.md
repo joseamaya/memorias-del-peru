@@ -1,6 +1,6 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 3 — Entorno.
+**Fase activa:** ninguna. Fase 3 cerrada; la Fase 4 comienza al aprobarse su documento de alcance.
 **Siguiente:** Fase 4 — Vertical Slice Pachacútec.
 
 Reglas:
@@ -16,7 +16,7 @@ Reglas:
 | 0 — Documentación | Cerrada | 2026-11-10 |
 | 1 — Fundación técnica | Cerrada | 2026-11-10 |
 | 2 — Interacción | Cerrada | 2026-11-10 |
-| 3 — Entorno | En curso | — |
+| 3 — Entorno | Cerrada | 2026-11-10 |
 | 4 — Vertical Slice Pachacútec | No iniciada | — |
 
 ---
@@ -184,13 +184,15 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ### Criterios de aceptación
 
 - [x] La escena carga sin errores y es la escena principal del proyecto.
-- [ ] Iluminación coherente entre cielo, sol y ambiente.
-- [ ] La niebla aporta profundidad sin ocultar caminos ni objetos interactuables a menos de 30 m.
+- [x] Iluminación coherente entre cielo, sol y ambiente.
+- [x] La niebla aporta profundidad sin ocultar caminos ni objetos interactuables a menos de 30 m.
 - [x] El perfil gráfico se cambia en ejecución y la niebla volumétrica puede desactivarse o sustituirse.
 - [x] Métricas de referencia registradas en docs/08 §4.
 - [x] Objetivo **vinculante** cumplido: ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada. El objetivo recomendado (≥ 60 FPS, perfil Medio) se mide si existe el equipo de referencia con GPU dedicada; si no, se declara “no verificado” en el informe sin bloquear el cierre.
 
-**Medición inicial (2026-11-10):** 55,92 FPS de media y 47,62 FPS de percentil 1 % en perfil Bajo, 1080p, GPU integrada, con `Engine.max_fps = 60`. El jugador queda apoyado en el terreno (`is_on_floor = true`). Iluminación y niebla quedan pendientes de verificación visual; el perfil se cambia con F2 en compilaciones de desarrollo.
+**Verificación manual:** realizada por el usuario el 2026-11-10; cielo, sol y niebla coherentes, terreno visible y transitable, y F2 cambia el perfil con la diferencia esperada.
+
+**Medición inicial (2026-11-10):** 55,92 FPS de media y 47,62 FPS de percentil 1 % en perfil Bajo, 1080p, GPU integrada, con `Engine.max_fps = 60`. El jugador queda apoyado en el terreno (`is_on_floor = true`).
 
 ---
 
@@ -198,7 +200,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 ### Precondiciones
 
-- [ ] Fase 3 cerrada.
+- [x] Fase 3 cerrada.
 - [ ] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de prueba: cuestionario de comprensión, criterio de corrección y reclutamiento de jugadores ajenos al desarrollo). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
 
 ### Objetivo medible (provisional)
