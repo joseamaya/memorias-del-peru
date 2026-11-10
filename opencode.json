@@ -10,9 +10,8 @@
         "type": "local",
         "command": ["npx", "-y", "@fernforestgames/mcp-server-godot-docs"],
         "environment": {
-          "GODOT_PATH": "/usr/bin/godot"
-        },
-        "disabled": true
+          "GODOT_PATH": "/home/jamaya/.local/bin/godot"
+        }
       }
     }
   }
