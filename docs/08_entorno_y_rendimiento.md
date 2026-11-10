@@ -81,24 +81,26 @@ Se establecen al cerrar la Fase 3, antes de ampliar escenarios.
 
 | Métrica | Herramienta | Objetivo inicial |
 |---|---|---|
-| FPS medio | Monitor de rendimiento del editor / `Performance` | **Vinculante:** ≥ 30 FPS, perfil Bajo, 1080p, en el equipo de gama baja. **Recomendado:** ≥ 60 FPS, perfil Medio, 1080p, en el equipo de gama media (se verifica cuando exista) |
+| FPS medio | Monitor de rendimiento del editor / `Performance` | **Vinculante:** ≥ 30 FPS, perfil Bajo, 1080p, en la referencia con GPU integrada. **Recomendado:** ≥ 60 FPS, perfil Medio, 1080p, en la referencia con GPU dedicada (se verifica cuando exista) |
 | FPS del percentil 1 % | Medición en script durante un recorrido fijo | Registrar base; no inferior a 2/3 del FPS medio |
 | Tiempo de frame (CPU/GPU) | Profiler y monitores del editor | Vinculante: < 33,3 ms. Recomendado: < 16,6 ms |
 | Draw calls | `Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME` | Registrar base |
 | Memoria de vídeo | `Performance.RENDER_VIDEO_MEM_USED` | Registrar base |
 | Tiempo de carga de escena | Medición en script | Registrar base |
 
-### Equipos de referencia (propuesta — requiere aprobación antes de la Fase 3)
+### Equipos de referencia (aprobados para la Fase 3)
 
 Son los equipos **donde se mide**, no los requisitos de sistema que se publicarán. Los requisitos mínimos y recomendados de sistema se definirán más adelante, a partir de estas mediciones.
 
 | Equipo | CPU | GPU | RAM | SO | Origen |
 |---|---|---|---|---|---|
-| **Referencia de gama baja** (el más débil disponible) | Intel Core i7-13700 | Intel UHD Graphics 770 (integrada) | 32 GB | Ubuntu 24.04 LTS | Máquina de desarrollo actual (consultada el 2026-11-10) |
-| **Referencia de gama media** | Por definir | GPU dedicada de gama media (modelo por definir) | 16 GB | Por definir | Pendiente de decisión del equipo |
+| **Referencia con GPU integrada** (el más débil disponible) | Intel Core i7-13700 | Intel UHD Graphics 770 (integrada) | 32 GB | Ubuntu 24.04 LTS | Máquina de desarrollo actual (consultada el 2026-11-10) |
+| **Referencia con GPU dedicada** | Por definir | GPU dedicada (modelo por definir) | 16 GB | Por definir | Pendiente de decisión del equipo |
 
-Consecuencias de que el equipo de gama baja tenga GPU integrada:
+> La referencia con GPU integrada no describe la gama del equipo completo: el i7-13700 y los 32 GB son de gama alta; la UHD 770 es el componente limitante para 3D.
+
+Consecuencias de que la referencia tenga GPU integrada:
 
 - El perfil Bajo debe funcionar bien sin niebla volumétrica, SSAO ni SDFGI, y con escala de renderizado 3D reducida.
 - La niebla volumétrica es exclusiva de Alto/Ultra y no puede considerarse parte imprescindible de la identidad visual: la niebla de altura debe lograr por sí sola la lectura de valle andino.
-- Sin un equipo de gama media disponible, el objetivo recomendado de 60 FPS no puede verificarse; esa falta se declarará en el informe de la Fase 3 y no bloquea su cierre (solo el objetivo vinculante lo hace).
+- Sin una referencia con GPU dedicada, el objetivo recomendado de 60 FPS no puede verificarse; esa falta se declarará en el informe de la Fase 3 y no bloquea su cierre (solo el objetivo vinculante lo hace).

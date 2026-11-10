@@ -81,6 +81,18 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_localization_tables` | Las claves usadas por Core y campaña existen en sus CSV y hay una columna `es` |
 | `test_quero_scene_loads` | `quero_chicha.tscn` instancia y su raíz es `Interactable` |
 | `test_sandbox_interaction_hud` | El sandbox, con el jugador mirando al quero, muestra “Beber chicha” en el HUD |
+
+### Pruebas de Fase 3
+
+| Prueba | Comprueba |
+|---|---|
+| `test_main_scene_is_world` | `application/run/main_scene` apunta a `mundo_base.tscn` |
+| `test_world_scene_loads` | `mundo_base` contiene `WorldEnvironment`, `Inti`, `Terrain` con malla y colisión, `PlayerSpawn`, `EnvironmentAudio`, `PlayerFPS` y HUD |
+| `test_sky_material` | El `Environment` usa `PhysicalSkyMaterial` |
+| `test_graphics_profiles_load` | Los cuatro perfiles cargan; Bajo/Medio no usan niebla volumétrica y Alto/Ultra sí |
+| `test_graphics_settings_apply` | `set_profile` emite `profile_changed` y actualiza el perfil activo |
+| `test_environment_quality_controller` | El controlador aplica niebla, SSAO y SDFGI al cambiar de perfil |
+| `test_player_spawn` | El jugador aparece en la transformación de `PlayerSpawn` |
 | `test_audio_manager_buses` | `AudioManager` existe y el bus de efectos está disponible |
 
 ## 4. Verificación manual — Fase 1

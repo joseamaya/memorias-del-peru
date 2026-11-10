@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** ninguna. Fase 2 cerrada; la Fase 3 comienza al aprobarse el equipo de referencia.
-**Siguiente:** Fase 3 — Entorno.
+**Fase activa:** Fase 3 — Entorno.
+**Siguiente:** Fase 4 — Vertical Slice Pachacútec.
 
 Reglas:
 
@@ -16,7 +16,7 @@ Reglas:
 | 0 — Documentación | Cerrada | 2026-11-10 |
 | 1 — Fundación técnica | Cerrada | 2026-11-10 |
 | 2 — Interacción | Cerrada | 2026-11-10 |
-| 3 — Entorno | No iniciada | — |
+| 3 — Entorno | En curso | — |
 | 4 — Vertical Slice Pachacútec | No iniciada | — |
 
 ---
@@ -173,7 +173,7 @@ Comportamiento del quero: enfoque → indicación → E → respuesta visual (an
 ### Precondiciones
 
 - [x] Fase 2 cerrada.
-- [ ] Equipo de referencia de gama baja aprobado ([08_entorno_y_rendimiento.md](08_entorno_y_rendimiento.md) §4). El de gama media puede seguir sin definir.
+- [x] Equipo de referencia con GPU integrada aprobado ([08_entorno_y_rendimiento.md](08_entorno_y_rendimiento.md) §4). El de GPU dedicada puede seguir sin definir.
 
 ### Entregables
 
@@ -188,7 +188,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [ ] La niebla aporta profundidad sin ocultar caminos ni objetos interactuables a menos de 30 m.
 - [ ] El perfil gráfico se cambia en ejecución y la niebla volumétrica puede desactivarse o sustituirse.
 - [ ] Métricas de referencia registradas en docs/08 §4.
-- [ ] Objetivo **vinculante** cumplido: ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia de gama baja. El objetivo recomendado (≥ 60 FPS, perfil Medio) se mide si existe el equipo de gama media; si no, se declara “no verificado” en el informe sin bloquear el cierre.
+- [ ] Objetivo **vinculante** cumplido: ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada. El objetivo recomendado (≥ 60 FPS, perfil Medio) se mide si existe el equipo de referencia con GPU dedicada; si no, se declara “no verificado” en el informe sin bloquear el cierre.
 
 ---
 

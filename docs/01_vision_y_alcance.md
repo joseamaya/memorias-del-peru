@@ -52,7 +52,7 @@ Primera campaña: **Pachacútec — La defensa del Cusco.** El jugador vive los 
 | # | Métrica | Umbral | Cómo se mide |
 |---|---|---|---|
 | 1 | Duración del vertical slice | 10–15 min de mediana para un jugador que explora sin prisa | Sesiones de prueba cronometradas (las mismas personas de la métrica 5) |
-| 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia de gama baja (docs/08 §4). ≥ 60 FPS en perfil Medio es objetivo recomendado y se verifica cuando exista el equipo de gama media | Recorrido fijo medido con `Performance` |
+| 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada (docs/08 §4). ≥ 60 FPS en perfil Medio es objetivo recomendado y se verifica cuando exista el equipo de referencia con GPU dedicada | Recorrido fijo medido con `Performance` |
 | 3 | Rigor histórico | 100 % del contenido histórico con ficha “verificado” | Registro histórico de la campaña |
 | 4 | Estabilidad técnica | 0 errores en consola, 0 bloqueos de progreso | Pruebas automatizadas + sesiones de prueba |
 | 5 | Comprensión del contexto | Muestra mínima de **6** jugadores de prueba ajenos al desarrollo; al menos **2/3** (4 de 6) explican después, con sus palabras, quién amenaza el Cusco y qué hace la élite | Cuestionario breve tras la sesión |
