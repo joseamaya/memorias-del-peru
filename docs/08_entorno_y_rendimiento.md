@@ -62,6 +62,8 @@ Así Core no conoce las escenas de campaña: cada mundo de campaña incluye su c
 | Escala de renderizado 3D | 0.75 | 1.0 | 1.0 | 1.0 |
 | Antialiasing | FXAA | TAA o MSAA 2× | MSAA 4× / TAA | MSAA 4× + TAA |
 
+Implementación actual de sombras: atlas de 1024 / 2048 / 4096 / 4096 y filtro `SOFT_VERY_LOW` / `SOFT_LOW` / `SOFT_MEDIUM` / `SOFT_HIGH`. La distancia de sombras la aplica el controlador del mundo según el perfil.
+
 Los valores concretos se fijan tras medir (ver §4). La tabla es una intención, no un compromiso.
 
 ## 3. Escalabilidad prevista
@@ -105,24 +107,19 @@ Consecuencias de que la referencia tenga GPU integrada:
 - La niebla volumétrica es exclusiva de Alto/Ultra y no puede considerarse parte imprescindible de la identidad visual: la niebla de altura debe lograr por sí sola la lectura de valle andino.
 - Sin una referencia con GPU dedicada, el objetivo recomendado de 60 FPS no puede verificarse; esa falta se declarará en el informe de la Fase 3 y no bloquea su cierre (solo el objetivo vinculante lo hace).
 
-### Medición inicial (2026-11-10)
+### Medición con recorrido fijo (2026-11-10)
 
 Comando: `godot --path . --script res://tests/measure_performance.gd`
 
-Condiciones: 1920 × 1080, perfil Bajo, referencia con GPU integrada, ventana en primer plano, vsync activo y `Engine.max_fps = 60` para que la comparación sea estable, Godot 4.7.2.
+Condiciones: 1920 × 1080, referencia con GPU integrada, recorrido circular de ~32,5 m corriendo, estamina restaurada para no detenerse, 3 s de calentamiento y 8 s de medida por perfil, **sin vsync** y con `Engine.max_fps = 0`, Godot 4.7.2.
 
-| Métrica | Valor |
-|---|---|
-| FPS medio | 55,92 |
-| FPS del percentil 1 % | 47,62 |
-| Tiempo de frame medio | 17,88 ms |
-| Tiempo de frame p99 | 21,0 ms |
-| Draw calls | 5 |
-| Memoria de vídeo | 120,3 MB |
-| Tiempo de carga de escena | 36 ms |
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 311,5 | 250,0 | 3,21 ms | 4,0 ms | 5 | 84,7 MB |
+| Medio | 97,5 | 83,3 | 10,25 ms | 12,0 ms | 5 | 163,5 MB |
 
-El objetivo vinculante (≥ 30 FPS) se cumple con margen y el percentil 1 % supera 2/3 del FPS medio. La medición confirma además que el jugador queda apoyado en el terreno (`y ≈ 0,0001`, `is_on_floor = true`) tras el calentamiento.
+En ambos perfiles el jugador terminó apoyado en el terreno (`is_on_floor = true`). La medición sin límite muestra el margen real; en el juego, vsync lo limita a ~60 FPS.
 
-> La medición anterior (59,84 FPS) quedó invalidada: el terreno tenía los triángulos invertidos, no se renderizaba desde arriba y el jugador caía a través de él. La corrección está cubierta por `test_terrain_normals_up` y `test_terrain_collision_shape`.
+El objetivo vinculante (≥ 30 FPS) se cumple con amplio margen. La referencia con GPU dedicada sigue sin definir, por lo que los 60 FPS recomendados en esa referencia quedan sin verificar.
 
-La referencia con GPU dedicada sigue sin definir, por lo que los 60 FPS en perfil Medio quedan sin verificar.
+> La medición anterior (55,92 FPS, jugador quieto y con `Engine.max_fps = 60`) queda invalidada por no usar un recorrido fijo y por ocultar el margen. También quedó invalidada la primera medición con el terreno invertido.

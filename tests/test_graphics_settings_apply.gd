@@ -18,7 +18,12 @@ func test_graphics_settings_apply() -> bool:
 		return false
 	settings.profile_changed.connect(_on_profile_changed)
 	settings.set_profile(high)
-	var ok: bool = settings.get_active_profile() == high and _signals >= 1
+	var active: GraphicsProfile = settings.get_active_profile()
+	var ok: bool = (
+		active == high
+		and active.shadow_atlas_size == high.shadow_atlas_size
+		and _signals >= 1
+	)
 	settings.set_profile(low)
 	settings.profile_changed.disconnect(_on_profile_changed)
 	return ok

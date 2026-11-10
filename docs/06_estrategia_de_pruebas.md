@@ -89,9 +89,9 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_main_scene_is_world` | `application/run/main_scene` apunta a `mundo_base.tscn` |
 | `test_world_scene_loads` | `mundo_base` contiene `WorldEnvironment`, `Inti`, `Terrain` con malla y colisión, `PlayerSpawn`, `EnvironmentAudio`, `PlayerFPS` y HUD |
 | `test_sky_material` | El `Environment` usa `PhysicalSkyMaterial` |
-| `test_graphics_profiles_load` | Los cuatro perfiles cargan; Bajo/Medio no usan niebla volumétrica y Alto/Ultra sí |
-| `test_graphics_settings_apply` | `set_profile` emite `profile_changed` y actualiza el perfil activo |
-| `test_environment_quality_controller` | El controlador aplica niebla, SSAO y SDFGI al cambiar de perfil |
+| `test_graphics_profiles_load` | Los cuatro perfiles cargan; Bajo/Medio sin niebla volumétrica, Alto/Ultra con ella, y el atlas de sombras crece con el perfil |
+| `test_graphics_settings_apply` | `set_profile` emite `profile_changed`, actualiza el perfil activo y su atlas de sombras |
+| `test_environment_quality_controller` | El controlador aplica niebla, SSAO, SDFGI y distancia de sombras al cambiar de perfil |
 | `test_player_spawn` | El jugador aparece en la transformación de `PlayerSpawn` |
 | `test_terrain_normals_up` | Las normales del terreno apuntan hacia +Y |
 | `test_terrain_collision_shape` | El terreno tiene una forma de colisión `ConcavePolygonShape3D` |

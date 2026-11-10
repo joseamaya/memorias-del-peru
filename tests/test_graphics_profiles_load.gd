@@ -23,4 +23,8 @@ func test_graphics_profiles_load() -> bool:
 		and medium.ssao_enabled
 		and high.ssao_enabled
 		and ultra.sdfgi_enabled
+		and low.shadow_atlas_size < medium.shadow_atlas_size
+		and medium.shadow_atlas_size < high.shadow_atlas_size
+		and low.shadow_filter_quality == RenderingServer.SHADOW_QUALITY_SOFT_VERY_LOW
+		and ultra.shadow_filter_quality == RenderingServer.SHADOW_QUALITY_SOFT_HIGH
 	)

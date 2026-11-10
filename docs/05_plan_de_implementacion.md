@@ -192,7 +192,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 **Verificación manual:** realizada por el usuario el 2026-11-10; cielo, sol y niebla coherentes, terreno visible y transitable, y F2 cambia el perfil con la diferencia esperada.
 
-**Medición inicial (2026-11-10):** 55,92 FPS de media y 47,62 FPS de percentil 1 % en perfil Bajo, 1080p, GPU integrada, con `Engine.max_fps = 60`. El jugador queda apoyado en el terreno (`is_on_floor = true`).
+**Medición con recorrido fijo (2026-11-10):** Bajo **311,5 FPS** de media y **250,0 FPS** de percentil 1 %; Medio **97,5 FPS** de media y **83,3 FPS** de percentil 1 %. Sin vsync y con `Engine.max_fps = 0`, sobre un recorrido circular corriendo. El jugador queda apoyado en el terreno. La referencia con GPU dedicada sigue sin definir.
 
 ---
 

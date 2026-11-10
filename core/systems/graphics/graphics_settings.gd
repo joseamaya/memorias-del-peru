@@ -72,4 +72,6 @@ func _apply(profile: GraphicsProfile, index: int) -> void:
 		viewport.scaling_3d_scale = profile.render_scale
 		viewport.msaa_3d = profile.msaa_3d
 		viewport.screen_space_aa = profile.screen_space_aa
+	RenderingServer.directional_shadow_atlas_set_size(profile.shadow_atlas_size, false)
+	RenderingServer.directional_soft_shadow_filter_set_quality(profile.shadow_filter_quality)
 	profile_changed.emit(profile)
