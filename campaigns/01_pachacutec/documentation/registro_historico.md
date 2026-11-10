@@ -37,9 +37,12 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-004 — Quero
 - Tipo: objeto
 - Clasificación: A (piezas en colecciones) / R (decoración específica)
-- Uso en el juego: `scenes/objects/quero_chicha.tscn` (Fase 2)
+- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/quero_chicha.tscn` (Fase 2)
 - Variantes del nombre: *quero* (forma hispanizada, interfaz). Forma quechua por verificar: aparecen *qiru* y *q'iru* en distintas fuentes; hay que confirmar cuál corresponde al vaso y cuál a otro significado (se ha señalado que *q'iru* podría significar “madera/leña”) según el diccionario de referencia que adopte la campaña
-- Fuentes: pendiente — buscar catálogo de museo con queros de madera de época inca (no coloniales: la decoración pictórica figurativa con laca es mayoritariamente colonial)
+- Fuentes (identificadas; pendiente de verificación de edición y página):
+  - The Metropolitan Museum of Art, *Kero*, cultura inca, siglo XV–inicios del XVI, madera (¿escallonia?), objeto 1994.35.11. https://www.metmuseum.org/art/collection/search/316839
+  - Museo Pachacamac, *Qero* MD-00863, Horizonte Tardío (1470–1533), madera tallada e incisa, procedencia Pirámide con rampa 7.
+  - ICOM, *Kero Inca, madera*, Museo Regional de Cusco: describe la diferencia entre el kero inca de decoración incisa y el colonial policromo.
 - Discrepancias entre fuentes: —
 - Notas de representación: preferir decoración incisa geométrica; uso en pares en contextos de reciprocidad
 - Estado de verificación: pendiente
@@ -48,7 +51,11 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: alimento / bebida
 - Clasificación: H / A
 - Uso en el juego: interacción del quero; recupera estamina (la mecánica de estamina es N)
-- Fuentes: pendiente — crónicas sobre consumo ritual y festivo de chicha; estudios arqueológicos sobre producción de chicha en contextos incas
+- Fuentes (identificadas; pendiente de verificación de edición y página):
+  - Juan de Betanzos, *Suma y narración de los Incas* (1551).
+  - Pedro Cieza de León, *El señorío de los Incas*.
+  - Inca Garcilaso de la Vega, *Comentarios reales* (1609).
+  - Craig Morris y Donald Thompson, *Huánuco Pampa: An Inca City and Its Hinterland* (1985): producción y consumo de chicha en contextos estatales incas.
 - Discrepancias entre fuentes: —
 - Notas de representación: bebida de maíz fermentado vinculada a reciprocidad y ritual; su efecto en el juego es una licencia mecánica
 - Estado de verificación: pendiente

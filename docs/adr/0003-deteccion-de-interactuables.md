@@ -1,6 +1,6 @@
 # ADR-0003 — Detección de interactuables
 
-- Estado: **Propuesto** — se acepta o modifica al iniciar la Fase 2
+- Estado: **Aceptado**
 - Fecha: 2026-11-10
 
 ## Contexto

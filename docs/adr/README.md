@@ -25,6 +25,6 @@ Plantilla:
 |---|---|---|
 | [0001](0001-estructura-de-repositorio.md) | Estructura del repositorio: `docs/` y `tests/` | Aceptado |
 | [0002](0002-version-de-godot.md) | Versión de Godot | Aceptado |
-| [0003](0003-deteccion-de-interactuables.md) | Detección de interactuables | Propuesto (se decide en Fase 2) |
+| [0003](0003-deteccion-de-interactuables.md) | Detección de interactuables | Aceptado |
 | [0004](0004-herramientas-de-desarrollo.md) | Herramientas de desarrollo: skills y servidores MCP | Aceptado (selección de skills reemplazada por ADR-0005) |
 | [0005](0005-skills-de-godot.md) | Skills de Godot y desviación consciente del estilo oficial | Aceptado |

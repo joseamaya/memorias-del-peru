@@ -62,6 +62,23 @@ La aplicación efectiva del modo de ratón (`Input.mouse_mode`) depende del serv
 
 Para que la lógica sea comprobable sin entrada real, los cálculos (dirección de movimiento, clamp de pitch, desplazamiento de balanceo) se aíslan en métodos puros con parámetros, invocados desde los callbacks del motor.
 
+### Pruebas de Fase 2
+
+| Prueba | Comprueba |
+|---|---|
+| `test_interactable_contract` | `Interactable` expone `interact()` y `get_interaction_text()`; el texto base sale de `tr("INTERACT_DEFAULT")` |
+| `test_interaction_focus` | El rayo detecta un collider hijo de un `Interactable`, emite `interactable_focused` y, al salir, `interactable_unfocused` |
+| `test_interaction_blocked_by_world` | Una pared en la capa `world` impide enfocar un interactuable detrás |
+| `test_interaction_calls_interact` | La acción `interact` llama `interact(self)` sobre el interactuable enfocado |
+| `test_stamina_contract` | `consume`/`restore` respetan los límites y emiten `stamina_changed` solo cuando el valor cambia |
+| `test_stamina_find_in` | `StaminaComponent.find_in` encuentra el componente entre los hijos directos y devuelve `null` si no existe |
+| `test_run_uses_stamina` | Correr consume; sin estamina no se corre hasta alcanzar `run_resume_stamina`; sin componente, correr es ilimitado |
+| `test_quero_restores_stamina` | El quero restaura la cantidad exportada vía `StaminaComponent.find_in`, sin rutas a UI |
+| `test_ui_stamina_signal` | El HUD actualiza su estado al recibir `stamina_changed` |
+| `test_localization_tables` | Las claves usadas por Core y campaña existen en sus CSV y hay una columna `es` |
+| `test_quero_scene_loads` | `quero_chicha.tscn` instancia y su raíz es `Interactable` |
+| `test_audio_manager_buses` | `AudioManager` existe y el bus de efectos está disponible |
+
 ## 4. Verificación manual — Fase 1
 
 Ejecutar la escena sandbox y comprobar:
@@ -78,6 +95,19 @@ Ejecutar la escena sandbox y comprobar:
 10. Consola del editor sin errores ni advertencias.
 
 Si el entorno de ejecución no dispone de pantalla (agente sin GUI), los puntos 1–9 se declaran **no verificados** en el informe y se solicita verificación humana.
+
+### Verificación manual — Fase 2
+
+Con el quero colocado en el sandbox:
+
+1. Al mirarlo desde unos 2,5 m aparece la indicación; al alejarse o girar, desaparece.
+2. La indicación muestra el texto traducido, no la clave.
+3. E interactúa una sola vez por pulsación: respuesta visual, sonido y recuperación de estamina.
+4. Correr consume estamina; al agotarse no se puede correr hasta recuperar el umbral.
+5. El quero recupera estamina y el HUD se actualiza por señal.
+6. Una pared entre el jugador y el quero impide la interacción.
+7. Escape sigue pausando y recapturando el ratón.
+8. Consola sin errores ni advertencias.
 
 ## 5. Registro de resultados
 
