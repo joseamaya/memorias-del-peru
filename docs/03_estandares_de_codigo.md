@@ -79,3 +79,4 @@ Basado en la guía oficial de estilo de GDScript.
 - Mensajes de commit en español, en imperativo, con prefijo de área: `core(player): añade head bobbing`, `docs: …`, `pachacutec(world): …`.
 - Un commit = un cambio coherente.
 - `.godot/` no se versiona; los archivos `*.import` sí (necesarios para reproducir la importación en Godot 4).
+- Los archivos `*.uid` generados por Godot 4.4+ también se versionan: estabilizan las referencias entre recursos.

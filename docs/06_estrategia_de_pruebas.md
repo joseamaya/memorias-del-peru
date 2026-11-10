@@ -27,6 +27,8 @@ Validar un script concreto sin ejecutarlo:
 godot --headless --path . --check-only --script res://core/player/player_fps.gd
 ```
 
+> `--check-only` compila el script sin cargar los autoloads. Si el script referencia uno (por ejemplo, `PlayerFPS` usa `GameManager`), falla con "Identifier not found". En ese caso se valida con `--import` o con el ejecutor de pruebas, que sí cargan el proyecto.
+
 Ejecutar las pruebas automatizadas:
 
 ```bash
