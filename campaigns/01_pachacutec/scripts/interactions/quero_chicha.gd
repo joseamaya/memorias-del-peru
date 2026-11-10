@@ -11,6 +11,7 @@ extends Interactable
 @export var audio_stream: AudioStream
 
 var _mesh_node: MeshInstance3D = null
+var _tween: Tween = null
 
 
 func _ready() -> void:
@@ -35,6 +36,8 @@ func interact(interactor: Node3D) -> void:
 func _play_response() -> void:
 	if _mesh_node == null:
 		return
-	var tween: Tween = create_tween()
-	tween.tween_property(_mesh_node, "rotation_degrees", Vector3(0.0, 0.0, 14.0), 0.12)
-	tween.tween_property(_mesh_node, "rotation_degrees", Vector3.ZERO, 0.2)
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	_tween = create_tween()
+	_tween.tween_property(_mesh_node, "rotation_degrees", Vector3(0.0, 0.0, 14.0), 0.12)
+	_tween.tween_property(_mesh_node, "rotation_degrees", Vector3.ZERO, 0.2)
