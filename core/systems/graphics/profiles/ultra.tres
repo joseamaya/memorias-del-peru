@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="GraphicsProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/systems/graphics/graphics_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_name = "Ultra"
+volumetric_fog_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+shadow_distance = 120.0
+render_scale = 1.0
+msaa_3d = 2
+screen_space_aa = 1

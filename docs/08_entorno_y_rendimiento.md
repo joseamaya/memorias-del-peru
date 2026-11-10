@@ -104,3 +104,21 @@ Consecuencias de que la referencia tenga GPU integrada:
 - El perfil Bajo debe funcionar bien sin niebla volumétrica, SSAO ni SDFGI, y con escala de renderizado 3D reducida.
 - La niebla volumétrica es exclusiva de Alto/Ultra y no puede considerarse parte imprescindible de la identidad visual: la niebla de altura debe lograr por sí sola la lectura de valle andino.
 - Sin una referencia con GPU dedicada, el objetivo recomendado de 60 FPS no puede verificarse; esa falta se declarará en el informe de la Fase 3 y no bloquea su cierre (solo el objetivo vinculante lo hace).
+
+### Medición inicial (2026-11-10)
+
+Comando: `godot --path . --script res://tests/measure_performance.gd`
+
+Condiciones: 1920 × 1080, perfil Bajo, referencia con GPU integrada, ventana en primer plano, vsync activo (≈60 Hz), Godot 4.7.2.
+
+| Métrica | Valor |
+|---|---|
+| FPS medio | 59,84 |
+| FPS del percentil 1 % | 55,56 |
+| Tiempo de frame medio | 16,71 ms |
+| Tiempo de frame p99 | 18,0 ms |
+| Draw calls | 5 |
+| Memoria de vídeo | 120,3 MB |
+| Tiempo de carga de escena | 17 ms |
+
+El objetivo vinculante (≥ 30 FPS) se cumple con margen y el percentil 1 % supera 2/3 del FPS medio. La referencia con GPU dedicada sigue sin definir, por lo que los 60 FPS en perfil Medio quedan sin verificar.

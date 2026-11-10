@@ -1,0 +1,16 @@
+class_name GraphicsProfile
+extends Resource
+## Perfil de calidad gráfica.
+##
+## Los valores los aplica GraphicsSettings a nivel global y
+## EnvironmentQualityController a cada mundo.
+
+@export var profile_name: String = "Bajo"
+@export var volumetric_fog_enabled: bool = false
+@export var ssao_enabled: bool = false
+@export var ssil_enabled: bool = false
+@export var sdfgi_enabled: bool = false
+@export var shadow_distance: float = 40.0
+@export var render_scale: float = 0.75
+@export var msaa_3d: Viewport.MSAA = Viewport.MSAA_DISABLED
+@export var screen_space_aa: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_FXAA

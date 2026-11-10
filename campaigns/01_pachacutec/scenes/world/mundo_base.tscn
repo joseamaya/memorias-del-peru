@@ -1,0 +1,63 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://core/player/player_fps.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://core/ui/hud.tscn" id="2_hud"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/mundo_base.gd" id="3_world"]
+[ext_resource type="Script" path="res://core/systems/graphics/environment_quality_controller.gd" id="4_controller"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_world"]
+rayleigh_coefficient = 1.5
+rayleigh_color = Color(0.32, 0.52, 0.9, 1)
+mie_coefficient = 0.003
+mie_eccentricity = 0.8
+mie_color = Color(0.85, 0.75, 0.65, 1)
+turbidity = 2.0
+sun_disk_scale = 1.0
+ground_color = Color(0.18, 0.16, 0.13, 1)
+energy_multiplier = 1.0
+
+[sub_resource type="Sky" id="Sky_world"]
+sky_material = SubResource("PhysicalSkyMaterial_world")
+
+[sub_resource type="Environment" id="Environment_world"]
+background_mode = 2
+sky = SubResource("Sky_world")
+ambient_light_source = 3
+reflected_light_source = 2
+fog_enabled = true
+fog_light_color = Color(0.62, 0.72, 0.86, 1)
+fog_light_energy = 0.8
+fog_density = 0.004
+fog_height = 0.0
+fog_height_density = 0.05
+
+[node name="MundoBase" type="Node3D"]
+script = ExtResource("3_world")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_world")
+
+[node name="Inti" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-12, -35, 0)
+light_color = Color(1, 0.86, 0.7, 1)
+light_energy = 1.2
+shadow_enabled = true
+directional_shadow_mode = 2
+directional_shadow_max_distance = 40.0
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 0)
+
+[node name="EnvironmentAudio" type="Node3D" parent="."]
+
+[node name="EnvironmentQualityController" type="Node" parent="."]
+script = ExtResource("4_controller")
+
+[node name="PlayerFPS" parent="." instance=ExtResource("1_player")]
+position = Vector3(0, 0.05, 0)
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UILayer" instance=ExtResource("2_hud")]

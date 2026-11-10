@@ -183,12 +183,14 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 ### Criterios de aceptación
 
-- [ ] La escena carga sin errores y es la escena principal del proyecto.
+- [x] La escena carga sin errores y es la escena principal del proyecto.
 - [ ] Iluminación coherente entre cielo, sol y ambiente.
 - [ ] La niebla aporta profundidad sin ocultar caminos ni objetos interactuables a menos de 30 m.
-- [ ] El perfil gráfico se cambia en ejecución y la niebla volumétrica puede desactivarse o sustituirse.
-- [ ] Métricas de referencia registradas en docs/08 §4.
-- [ ] Objetivo **vinculante** cumplido: ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada. El objetivo recomendado (≥ 60 FPS, perfil Medio) se mide si existe el equipo de referencia con GPU dedicada; si no, se declara “no verificado” en el informe sin bloquear el cierre.
+- [x] El perfil gráfico se cambia en ejecución y la niebla volumétrica puede desactivarse o sustituirse.
+- [x] Métricas de referencia registradas en docs/08 §4.
+- [x] Objetivo **vinculante** cumplido: ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada. El objetivo recomendado (≥ 60 FPS, perfil Medio) se mide si existe el equipo de referencia con GPU dedicada; si no, se declara “no verificado” en el informe sin bloquear el cierre.
+
+**Medición inicial (2026-11-10):** 59,84 FPS de media y 55,56 FPS de percentil 1 % en perfil Bajo, 1080p, GPU integrada. Iluminación y niebla quedan pendientes de verificación visual; el perfil se cambia con F2 en compilaciones de desarrollo.
 
 ---
 
