@@ -39,18 +39,12 @@ names. They are not strictly enforced at runtime but emitting the wrong count er
 
 ## Awaiting a signal with a timeout
 
-`await` has no built-in timeout. Race the signal against a timer:
+`await` has no built-in timeout. For most gameplay, awaiting `animation_finished`, `timeout` or `tween_finished` directly is cleaner. To wait for a specific signal:
 
 ```gdscript
-func wait_for_signal_or_timeout(obj: Object, sig: String, seconds: float) -> bool:
-    var timer: SceneTreeTimer = get_tree().create_timer(seconds)
-    # Whichever emits first resumes; check which one.
-    var got = await Signal(obj, sig)  # for a fixed signal, prefer obj.signal_name
-    return true
+func wait_for_signal(sig: Signal) -> void:
+    await sig
 ```
-
-For most gameplay, awaiting `animation_finished`, `timeout`, or `tween_finished`
-directly is cleaner.
 
 ## Disconnecting safely
 

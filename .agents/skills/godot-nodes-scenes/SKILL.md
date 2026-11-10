@@ -54,12 +54,12 @@ extends Node2D
 const BULLET: PackedScene = preload("res://bullet.tscn")   # preload: loaded at compile time
 
 func shoot(at: Vector2, dir: Vector2) -> void:
-    # bullet.gd declara: class_name Bullet
-    var bullet: Bullet = BULLET.instantiate() as Bullet
+    # La raíz de bullet.tscn es Node2D y su script declara @export var direction: Vector2.
+    var bullet: Node2D = BULLET.instantiate() as Node2D
     if bullet == null:
         return
     bullet.global_position = at
-    bullet.direction = dir                      # set exported/public state
+    bullet.set(&"direction", dir)
     add_child(bullet)                           # now it's in the tree and runs
 ```
 
