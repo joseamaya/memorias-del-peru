@@ -95,6 +95,19 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_player_spawn` | El jugador aparece en la transformación de `PlayerSpawn` |
 | `test_terrain_normals_up` | Las normales del terreno apuntan hacia +Y |
 | `test_terrain_collision_shape` | El terreno tiene una forma de colisión `ConcavePolygonShape3D` |
+
+### Pruebas de Fase 4
+
+| Prueba | Comprueba |
+|---|---|
+| `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas y al menos dos caminos |
+| `test_world_bounds` | El límite del mundo tiene colisión a ~70 m del centro |
+| `test_llacta_interactables` | Quero, ofrenda y pututu existen, son `Interactable` y de tipos distintos |
+| `test_npcs_present` | Tejedora y agricultor existen con presencia |
+| `test_chasqui_event` | El pututu inicia el evento y el chasqui llega a la plaza |
+| `test_quero_cooldown` | Un segundo uso inmediato no restaura estamina; tras el tiempo de espera sí |
+| `test_offering_once` | La ofrenda solo se usa una vez por partida |
+| `test_world_spawn_south` | El jugador aparece en el camino sur |
 | `test_audio_manager_buses` | `AudioManager` existe y el bus de efectos está disponible |
 
 ## 4. Verificación manual — Fase 1

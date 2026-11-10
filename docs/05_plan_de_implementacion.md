@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** ninguna. Fase 3 cerrada; la Fase 4 comienza al aprobarse su documento de alcance.
-**Siguiente:** Fase 4 — Vertical Slice Pachacútec.
+**Fase activa:** Fase 4 — Vertical Slice Pachacútec.
+**Siguiente:** —
 
 Reglas:
 
@@ -17,7 +17,7 @@ Reglas:
 | 1 — Fundación técnica | Cerrada | 2026-11-10 |
 | 2 — Interacción | Cerrada | 2026-11-10 |
 | 3 — Entorno | Cerrada | 2026-11-10 |
-| 4 — Vertical Slice Pachacútec | No iniciada | — |
+| 4 — Vertical Slice Pachacútec | En curso | — |
 
 ---
 
@@ -203,9 +203,11 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ### Precondiciones
 
 - [x] Fase 3 cerrada.
-- [ ] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de prueba: cuestionario de comprensión, criterio de corrección y reclutamiento de jugadores ajenos al desarrollo). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
+- [x] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de prueba: cuestionario de comprensión, criterio de corrección y reclutamiento de jugadores ajenos al desarrollo). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
 
 ### Objetivo medible (provisional)
+
+Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 | Aspecto | Objetivo |
 |---|---|

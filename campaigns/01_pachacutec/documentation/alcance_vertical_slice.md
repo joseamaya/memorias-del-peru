@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Propuesto** — pendiente de aprobación
+- Estado: **Aprobado** — 2026-11-10
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -186,9 +186,9 @@ PCH-004 (quero) y PCH-005 (chicha) siguen pendientes de verificación con edici�
 
 ## 12. Aprobación
 
-- [ ] El equipo revisa y aprueba este documento.
-- [ ] Se confirman las decisiones de bordes del mundo y tiempo de espera del quero.
-- [ ] Se confirma el pipeline de Blender/glTF.
-- [ ] Se aprueba el protocolo de prueba.
+- [x] El equipo revisa y aprueba este documento.
+- [x] Se confirman las decisiones de bordes del mundo y tiempo de espera del quero.
+- [x] Se confirma el pipeline de Blender/glTF.
+- [x] Se aprueba el protocolo de prueba.
 
 Al aprobarse, se marca la precondición de la Fase 4 en [docs/05](../../../docs/05_plan_de_implementacion.md) y se abre la fase.
