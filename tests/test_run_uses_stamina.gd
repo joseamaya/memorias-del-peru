@@ -19,12 +19,16 @@ func test_run_uses_stamina() -> bool:
 	stamina.restore(25.0)
 	var resumed: bool = player.update_run_state(true, true, 1.0)
 	var idle: bool = not player.update_run_state(false, true, 1.0)
+	var unbound: PlayerFPS = PlayerFPS.new()
+	var unlimited: bool = unbound.update_run_state(true, true, 1.0)
+	unbound.free()
 	var ok: bool = (
 		ran
 		and is_equal_approx(after_run, 85.0)
 		and blocked
 		and resumed
 		and idle
+		and unlimited
 		and is_equal_approx(stamina.get_current(), 10.0)
 	)
 	player.free()
