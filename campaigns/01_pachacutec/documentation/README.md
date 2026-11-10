@@ -39,8 +39,8 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Documento | Estado |
 |---|---|
 | [registro_historico.md](registro_historico.md) | Iniciado |
-| Alcance del Vertical Slice (Fase 4) | Pendiente — precondición de la Fase 4. Los objetivos medibles provisionales ya están en [docs/05](../../../docs/05_plan_de_implementacion.md) |
-| Guion y personajes | Pendiente |
+| [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Propuesto** — precondición de la Fase 4 |
+| Guion y personajes | Borrador en el documento de alcance; detalle pendiente |
 
 ## 6. Notas de producción (Fase 2)
 
