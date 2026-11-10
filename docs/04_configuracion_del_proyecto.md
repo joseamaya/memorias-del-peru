@@ -2,7 +2,7 @@
 
 Este documento define **qué** debe contener `project.godot`. El archivo se genera en la Fase 1; conviene crearlo desde el editor de la versión instalada y luego ajustar los valores, para que `config_version` y las claves coincidan exactamente con esa versión.
 
-> Las claves listadas corresponden a Godot 4.2+ (y algunas a 4.4+, señaladas). Antes de escribirlas, verificar su existencia en la versión fijada en [ADR-0002](adr/0002-version-de-godot.md).
+> Claves verificadas con **Godot 4.7.2** el 2026-11-10 (versión fijada en [ADR-0002](adr/0002-version-de-godot.md)).
 
 ## 1. Aplicación
 
@@ -54,18 +54,21 @@ Verificación obligatoria: una prueba automatizada comprueba que cada acción ex
 
 Valores: `0` = ignorar, `1` = advertencia, `2` = error.
 
-**Política:** al crear `project.godot`, ninguna categoría quedará en `1`. Cada categoría será o bien un error que bloquea (`2`), o bien ignorada (`0`) con motivo documentado en esta tabla. La tabla cubre las categorías conocidas; la revisión completa de las demás categorías de la versión instalada forma parte de la aceptación de ADR-0002 (ver al final de esta sección). Así el criterio “cero advertencias de GDScript” es siempre satisfacible y no depende de interpretación. Cambiar una categoría requiere ADR.
+**Política:** ninguna categoría queda en `1`. Cada una es un error que bloquea (`2`) o se ignora (`0`) con motivo documentado. Lista completa revisada con **Godot 4.7.2** el 2026-11-10; cambiar una categoría requiere ADR.
 
 | Clave (`debug/gdscript/warnings/…`) | Valor | Propósito |
 |---|---|---|
 | `enable` | `true` | |
-| `exclude_addons` | `true` | No aplicar a terceros |
+| `directory_rules` | `{ "res://addons": 0 }` | Ignora advertencias en addons de terceros. En 4.7 sustituye a `exclude_addons` |
 | `untyped_declaration` | `2` | Prohíbe variables/parámetros/retornos sin tipo |
 | `inferred_declaration` | `2` | Prohíbe `:=`; tipo siempre explícito |
+| `unassigned_variable` | `2` | Uso de una variable antes de asignarla |
+| `unassigned_variable_op_assign` | `2` | Igual con asignación compuesta |
 | `unsafe_property_access` | `2` | |
 | `unsafe_method_access` | `2` | |
 | `unsafe_cast` | `2` | |
 | `unsafe_call_argument` | `2` | |
+| `unsafe_void_return` | `2` | Uso o retorno de un valor `void` |
 | `unused_variable` | `2` | |
 | `unused_local_constant` | `2` | |
 | `unused_private_class_variable` | `2` | |
@@ -74,14 +77,34 @@ Valores: `0` = ignorar, `1` = advertencia, `2` = error.
 | `shadowed_variable` | `2` | |
 | `shadowed_variable_base_class` | `2` | |
 | `shadowed_global_identifier` | `2` | |
+| `unreachable_code` | `2` | |
+| `unreachable_pattern` | `2` | |
+| `standalone_expression` | `2` | |
+| `standalone_ternary` | `2` | |
+| `incompatible_ternary` | `2` | |
+| `static_called_on_instance` | `2` | Llamar un método estático desde una instancia |
+| `missing_tool` | `2` | Script que usa APIs de editor sin `@tool` |
+| `redundant_static_unload` | `2` | |
+| `redundant_await` | `2` | |
+| `assert_always_true` / `assert_always_false` | `2` | |
+| `int_as_enum_without_cast` | `2` | Entero usado como enum sin cast explícito |
+| `int_as_enum_without_match` | `2` | Entero usado como enum sin `match` exhaustivo |
+| `enum_variable_without_default` | `2` | Variable de enum sin valor inicial explícito |
+| `empty_file` | `2` | Archivo de script vacío |
+| `deprecated_keyword` | `2` | |
+| `confusable_identifier` | `2` | Identificadores visualmente confundibles |
+| `confusable_local_declaration` | `2` | |
+| `confusable_local_usage` | `2` | |
+| `confusable_capture_reassignment` | `2` | |
+| `confusable_temporary_modification` | `2` | |
+| `property_used_as_function` | `2` | |
+| `constant_used_as_function` | `2` | |
+| `function_used_as_property` | `2` | |
 | `return_value_discarded` | `0` | Ruido excesivo con APIs del motor (p. ej. `connect`) |
 | `integer_division` | `0` | La división entera es legítima y GDScript no tiene un operador distinto para expresarla, por lo que la advertencia no puede resolverse sin supresión. Regla compensatoria en docs/03: en cálculos de coma flotante se usan literales y variables `float`; una división `int / int` intencionada lleva comentario |
 | `narrowing_conversion` | `2` | |
-| `standalone_expression` | `2` | |
-| `unreachable_code` | `2` | |
-| `assert_always_true` / `assert_always_false` | `2` | |
 
-Las categorías no listadas mantienen el valor por defecto de la versión instalada. Al aceptar ADR-0002 se revisa la lista completa de `debug/gdscript/warnings/` de esa versión y se asigna `0` o `2` explícitamente a cualquier categoría cuyo valor por defecto sea `1`.
+Las categorías no listadas conservan el valor por defecto de 4.7.2 y ninguna queda en `1`: `inference_on_variant`, `native_method_override`, `get_node_default_without_onready` y `onready_with_export` ya vienen en `2`; `missing_await` viene en `0`.
 
 Criterio de aceptación: con esta configuración, el proyecto abre y se ejecuta con **cero** errores y **cero** advertencias de GDScript procedentes de `res://`. Los mensajes del motor ajenos a los scripts (p. ej. del controlador de vídeo) no cuentan, pero se anotan en el informe si aparecen.
 

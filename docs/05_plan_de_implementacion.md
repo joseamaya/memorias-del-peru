@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** ninguna. Fase 0 cerrada; la Fase 1 comienza al cumplirse sus precondiciones.
-**Siguiente:** Fase 1 — Fundación técnica.
+**Fase activa:** Fase 1 — Fundación técnica.
+**Siguiente:** Fase 2 — Interacción.
 
 Reglas:
 
@@ -14,7 +14,7 @@ Reglas:
 | Fase | Estado | Fecha de cierre |
 |---|---|---|
 | 0 — Documentación | Cerrada | 2026-11-10 |
-| 1 — Fundación técnica | No iniciada | — |
+| 1 — Fundación técnica | En curso | — |
 | 2 — Interacción | No iniciada | — |
 | 3 — Entorno | No iniciada | — |
 | 4 — Vertical Slice Pachacútec | No iniciada | — |
@@ -42,10 +42,10 @@ Criterios de aceptación:
 
 ### Precondiciones
 
-- [ ] Fase 0 cerrada.
-- [ ] Godot instalado y accesible como `godot` en el `PATH`.
-- [ ] ADR-0002 en estado “Aceptado” con la versión exacta registrada.
-- [ ] Indicadores de línea de comandos de [06_estrategia_de_pruebas.md](06_estrategia_de_pruebas.md) §2 confirmados con `godot --help` (y el documento corregido si difieren).
+- [x] Fase 0 cerrada.
+- [x] Godot instalado y accesible como `godot` en el `PATH`.
+- [x] ADR-0002 en estado “Aceptado” con la versión exacta registrada.
+- [x] Indicadores de línea de comandos de [06_estrategia_de_pruebas.md](06_estrategia_de_pruebas.md) §2 confirmados con `godot --help` (y el documento corregido si difieren).
 
 ### Entregables
 

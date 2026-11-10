@@ -8,11 +8,11 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 
 | Dato | Valor |
 |---|---|
-| Motor | Godot 4.x (versión exacta: ver [ADR-0002](docs/adr/0002-version-de-godot.md)) |
+| Motor | Godot 4.7.2 ([ADR-0002](docs/adr/0002-version-de-godot.md)) |
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 0 cerrada.** Fase 1 pendiente de precondiciones (Godot y ADR-0002). Aún no existe código ni `project.godot`. |
+| Estado | **Fase 1 — Fundación técnica (en curso).** Precondiciones cumplidas; implementación por iniciar. Aún no existe código ni `project.godot`. |
 
 ## Requisitos
 
