@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp"
+      },
+      "godot-docs": {
+        "type": "local",
+        "command": ["npx", "-y", "@fernforestgames/mcp-server-godot-docs"],
+        "environment": {
+          "GODOT_PATH": "/usr/bin/godot"
+        },
+        "disabled": true
+      }
+    }
+  }
+}

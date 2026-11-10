@@ -1,0 +1,85 @@
+# 01 — Visión y alcance
+
+## 1. Visión
+
+Memorias del Perú es una antología de experiencias históricas en 3D. Cada **campaña** representa una época independiente de la historia peruana y comparte con las demás los sistemas fundamentales del juego (Core).
+
+Primera campaña: **Pachacútec — La defensa del Cusco.** El jugador vive los acontecimientos asociados a Cusi Yupanqui y la amenaza chanca en el siglo XV: recorre entornos andinos, interactúa con habitantes, explora una llacta y participa en acontecimientos históricos.
+
+## 2. Pilares de diseño
+
+| Pilar | Significado práctico | Cómo se evalúa |
+|---|---|---|
+| Inmersión en primera persona | Cámara, movimiento y sonido coherentes con un cuerpo humano en altura andina | HUD mínimo y contextual: la indicación de interacción solo aparece al enfocar un objeto y la estamina solo cuando cambia o no está llena; nada fijo en pantalla de forma permanente. Head bobbing natural; transiciones suaves |
+| Rigor histórico | Nada se presenta como hecho sin fuente | Cada elemento histórico tiene ficha en el registro de la campaña |
+| Exploración libre | El entorno invita a recorrer, no a seguir un pasillo | Varias rutas en el vertical slice |
+| Interacción contextualizada | Las acciones tienen sentido cultural (ofrendas, chicha, reciprocidad) | Cada interacción tiene justificación documental o narrativa declarada |
+| Narrativa ambiental | El espacio cuenta la historia | Objetos, arquitectura y sonido transmiten contexto sin texto explicativo |
+| Combate y progresión | Presentes, pero subordinados al relato | Fuera del vertical slice; ver horizonte posterior (§6) |
+| Identidad visual andina | Paleta, materiales y luz propios de los Andes | Revisión de dirección artística por fase |
+
+**Regla de desempate:** cuando dos pilares entran en conflicto, la coherencia histórica prevalece sobre la espectacularidad.
+
+## 3. Público objetivo
+
+- Jugadores de aventura/exploración en primera persona.
+- Público interesado en historia andina (incluido uso educativo).
+- Plataforma: PC de escritorio con teclado y ratón. El soporte de mando queda fuera del alcance inicial, pero el Input Map se diseña para permitirlo sin reescribir el jugador.
+
+## 4. Alcance por versión
+
+### Incluido hasta el Vertical Slice (Fases 1–4)
+
+- Controlador FPS: caminar, correr, cámara, head bobbing.
+- Sistema de interacción genérico por `RayCast3D` y clase `Interactable`.
+- Estamina básica e indicaciones de interacción.
+- Primera interacción: quero de chicha de jora.
+- Entorno base: cielo físico, niebla, sol, perfiles de calidad gráfica.
+- Una pequeña sección explorable de llacta con terreno, viviendas, caminos, vegetación, personajes, objetos interactuables y sonido ambiente.
+
+### Explícitamente fuera de alcance hasta nuevo acuerdo
+
+- Combate, inventario, diálogos ramificados y misiones (solo se documentan como puntos de extensión; no tienen fase en el plan y no se implementan sin un ADR que se la asigne, ver §6).
+- Salto (acción reservada en el Input Map, sin lógica).
+- Multijugador, consolas, móviles, VR.
+- Localización a otros idiomas (los textos de jugador sí se centralizan desde la Fase 2 en tablas de traducción, ver docs/02 §7, para facilitarla después).
+- Códice o enciclopedia histórica dentro del juego (ver §6).
+
+## 5. Definición de éxito
+
+**Objetivo comprometido:** entregar un vertical slice jugable de 10–15 minutos de la campaña 01, con todo su contenido histórico verificado y sin errores técnicos. La antología completa es la visión del proyecto, no un compromiso de esta etapa.
+
+| # | Métrica | Umbral | Cómo se mide |
+|---|---|---|---|
+| 1 | Duración del vertical slice | 10–15 min de mediana para un jugador que explora sin prisa | Sesiones de prueba cronometradas (las mismas personas de la métrica 5) |
+| 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia de gama baja (docs/08 §4). ≥ 60 FPS en perfil Medio es objetivo recomendado y se verifica cuando exista el equipo de gama media | Recorrido fijo medido con `Performance` |
+| 3 | Rigor histórico | 100 % del contenido histórico con ficha “verificado” | Registro histórico de la campaña |
+| 4 | Estabilidad técnica | 0 errores en consola, 0 bloqueos de progreso | Pruebas automatizadas + sesiones de prueba |
+| 5 | Comprensión del contexto | Muestra mínima de **6** jugadores de prueba ajenos al desarrollo; al menos **2/3** (4 de 6) explican después, con sus palabras, quién amenaza el Cusco y qué hace la élite | Cuestionario breve tras la sesión |
+
+La métrica 5 es la única que mide el valor para el público (incluido el educativo); los detalles del cuestionario se definen en el documento de alcance de la Fase 4.
+
+## 6. Horizonte posterior (visión, no compromiso)
+
+Nada de esta sección tiene fase en el plan ni se implementa sin un ADR que la convierta en fase con entregables y criterios.
+
+| Línea | Idea | Condición para planificarla |
+|---|---|---|
+| Combate y progresión | Combate cuerpo a cuerpo con armas andinas y progresión ligada al relato | Vertical slice cerrado y evaluado |
+| Diálogo, inventario, misiones | Sistemas de Core ya previstos como puntos de extensión (docs/02 §6) | Necesidad concreta de una campaña |
+| Códice histórico | Consulta en el juego de las fichas del registro histórico, con su clasificación H/A/R/N | Registro de la campaña 01 verificado |
+| Campaña 01 completa | De la vida en la llacta a la defensa del Cusco | Vertical slice aprobado |
+| Nuevas campañas | Otras épocas de la historia peruana | Campaña 01 publicada; cada campaña nueva tiene su propio documento de visión |
+
+## 7. Glosario
+
+| Término | Definición en este proyecto |
+|---|---|
+| Core | Sistemas compartidos por todas las campañas (`core/`) |
+| Shared Assets | Recursos reutilizables sin lógica de campaña (`shared_assets/`) |
+| Campaña | Contenido de una época: escenas, personajes, misiones (`campaigns/NN_nombre/`) |
+| Vertical Slice | Porción pequeña pero completa y pulida del juego final |
+| Llacta | Asentamiento/pueblo andino |
+| Quero | Vaso ceremonial de madera. Forma quechua (*qiru* / *q'iru*) pendiente de verificar con la norma de la campaña (ver ficha PCH-004) |
+| Chicha de jora | Bebida fermentada de maíz germinado (jora) |
+| Inti | Sol; nombre de la `DirectionalLight3D` principal |

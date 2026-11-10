@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "skills": {
+    "godot-nodes-scenes": {
+      "source": "minhhoit/gamedev-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/godot/godot-nodes-scenes/SKILL.md",
+      "computedHash": "658291c8c670516d41cd3850984ec579eb31f8669b8b2a8cc2ce5078f95b824b"
+    },
+    "godot-signals-groups": {
+      "source": "minhhoit/gamedev-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/godot/godot-signals-groups/SKILL.md",
+      "computedHash": "b6149b5fcf4d9c6cbf1970f2e3d58fa6e1bdefca957a09f98fdfaeda1e2717bd"
+    },
+    "verification-before-completion": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/verification-before-completion/SKILL.md",
+      "computedHash": "09b0e3a4689c1c38a3b8fc6ef57a1d4165aa33c0013d546dbde9dd348941a319"
+    }
+  }
+}

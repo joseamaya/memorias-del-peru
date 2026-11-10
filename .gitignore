@@ -1,0 +1,18 @@
+# Caché e importaciones generadas por Godot 4
+.godot/
+
+# Exportaciones
+/build/
+/export/
+
+# Mono / .NET (no se usa, por si acaso)
+.mono/
+data_*/
+mono_crash.*.json
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+*.tmp
+.vscode/
+.idea/
