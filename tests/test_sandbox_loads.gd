@@ -14,6 +14,14 @@ func test_sandbox_loads() -> bool:
 		sandbox.free()
 		return false
 	tree.root.add_child(sandbox)
-	var ok: bool = sandbox.is_inside_tree()
+	var quero: Node = sandbox.get_node_or_null("QueroChicha")
+	var hud: PlayerHud = sandbox.get_node_or_null("UILayer/HUD") as PlayerHud
+	var ok: bool = (
+		sandbox.is_inside_tree()
+		and quero is Interactable
+		and hud != null
+		and hud.player != null
+		and hud.stamina != null
+	)
 	sandbox.queue_free()
 	return ok

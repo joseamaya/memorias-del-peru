@@ -1,6 +1,9 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="PackedScene" path="res://core/player/player_fps.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://core/ui/hud.tscn" id="2_hud"]
+[ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/quero_chicha.tscn" id="3_quero"]
+[ext_resource type="Script" path="res://tests/scenes/player_sandbox.gd" id="4_sandbox"]
 
 [sub_resource type="Environment" id="Environment_sandbox"]
 background_mode = 1
@@ -45,7 +48,14 @@ size = Vector3(4, 0.3, 4)
 [sub_resource type="BoxShape3D" id="BoxShape_platform"]
 size = Vector3(4, 0.3, 4)
 
+[sub_resource type="BoxMesh" id="BoxMesh_pedestal"]
+size = Vector3(0.6, 0.8, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape_pedestal"]
+size = Vector3(0.6, 0.8, 0.6)
+
 [node name="PlayerSandbox" type="Node3D"]
+script = ExtResource("4_sandbox")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_sandbox")
@@ -130,3 +140,19 @@ shape = SubResource("BoxShape_ramp_b")
 
 [node name="PlayerFPS" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 8)
+
+[node name="Pedestal" type="StaticBody3D" parent="."]
+position = Vector3(2, 0.4, 5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pedestal"]
+mesh = SubResource("BoxMesh_pedestal")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pedestal"]
+shape = SubResource("BoxShape_pedestal")
+
+[node name="QueroChicha" parent="." instance=ExtResource("3_quero")]
+position = Vector3(2, 0.91, 5)
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UILayer" instance=ExtResource("2_hud")]

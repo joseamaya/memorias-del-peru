@@ -41,3 +41,8 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | [registro_historico.md](registro_historico.md) | Iniciado |
 | Alcance del Vertical Slice (Fase 4) | Pendiente — precondición de la Fase 4. Los objetivos medibles provisionales ya están en [docs/05](../../../docs/05_plan_de_implementacion.md) |
 | Guion y personajes | Pendiente |
+
+## 6. Notas de producción (Fase 2)
+
+- Modelo del quero: cilindro de bloqueo; la forma y la decoración incisa se ajustarán en la Fase 4.
+- Sonido del quero (`shared_assets/audio/quero_bebida.wav`): placeholder sintético generado para el proyecto, sin licencia de terceros; se sustituirá por una grabación licenciada antes de la Fase 4.

@@ -13,12 +13,14 @@ func test_player_scene_structure() -> bool:
 	var head: Node3D = player.get_node_or_null("Head") as Node3D
 	var camera: Camera3D = player.get_node_or_null("Head/Camera3D") as Camera3D
 	var ray: RayCast3D = player.get_node_or_null("Head/Camera3D/InteractionRay") as RayCast3D
+	var stamina: StaminaComponent = player.get_node_or_null("StaminaComponent") as StaminaComponent
 	var ok: bool = (
 		collision != null
 		and head != null
 		and camera != null
 		and ray != null
-		and not ray.enabled
+		and ray.enabled
+		and stamina != null
 	)
 	player.free()
 	return ok

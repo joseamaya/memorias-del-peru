@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 [autoload]
 
 GameManager="*res://core/autoload/game_manager.gd"
+AudioManager="*res://core/autoload/audio_manager.gd"
 
 [debug]
 
@@ -134,3 +135,8 @@ common/physics_interpolation=false
 [rendering]
 
 renderer/rendering_method="forward_plus"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://core/localization/core_texts.es.translation", "res://campaigns/01_pachacutec/localization/pachacutec_texts.es.translation")
+locale/fallback="es"
