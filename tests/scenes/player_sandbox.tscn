@@ -139,10 +139,10 @@ mesh = SubResource("BoxMesh_ramp_b")
 shape = SubResource("BoxShape_ramp_b")
 
 [node name="PlayerFPS" parent="." instance=ExtResource("1_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 8)
 
 [node name="Pedestal" type="StaticBody3D" parent="."]
-position = Vector3(2, 0.4, 5)
+position = Vector3(0.9, 0.4, 6.3)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Pedestal"]
 mesh = SubResource("BoxMesh_pedestal")
@@ -151,7 +151,7 @@ mesh = SubResource("BoxMesh_pedestal")
 shape = SubResource("BoxShape_pedestal")
 
 [node name="QueroChicha" parent="." instance=ExtResource("3_quero")]
-position = Vector3(2, 0.91, 5)
+position = Vector3(0.9, 0.91, 6.3)
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 

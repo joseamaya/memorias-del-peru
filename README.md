@@ -16,7 +16,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 
 ## Requisitos
 
-- Godot 4.x estable (edición estándar, no .NET). Debe estar disponible en el `PATH` como `godot` para ejecutar las validaciones de línea de comandos.
+- Godot 4.7.2 estable (edición estándar, no .NET). Debe estar disponible en el `PATH` como `godot` para ejecutar las validaciones de línea de comandos.
 - GPU compatible con Vulkan (requisito de Forward+).
 
 ## Controles (Fase 1)

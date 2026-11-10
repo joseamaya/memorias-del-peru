@@ -10,13 +10,14 @@ signal interactable_focused(interactable: Interactable)
 signal interactable_unfocused()
 
 const MAX_INTERACTABLE_SEARCH_DEPTH: int = 8
+const BOB_PHASE_WRAP: float = TAU * 2.0
 
 @export_group("Movimiento")
 @export var walk_speed: float = 3.5
 @export var run_speed: float = 6.5
 @export var acceleration: float = 10.0
 @export var deceleration: float = 12.0
-@export var gravity: float = 9.8
+@export var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 
 @export_group("Cámara")
 @export var mouse_sensitivity: float = 0.15
@@ -166,7 +167,7 @@ func calculate_head_bob_offset(horizontal_speed: float, grounded: bool, delta: f
 	var frequency: float = lerpf(bob_walk_frequency, bob_run_frequency, speed_ratio)
 	var amplitude: float = lerpf(bob_walk_amplitude, bob_run_amplitude, speed_ratio)
 	if moving:
-		_bob_phase = fposmod(_bob_phase + delta * frequency * TAU, TAU)
+		_bob_phase = fposmod(_bob_phase + delta * frequency * TAU, BOB_PHASE_WRAP)
 	var offset: Vector3 = Vector3.ZERO
 	offset.y = sin(_bob_phase) * amplitude * _bob_weight
 	offset.x = cos(_bob_phase * 0.5) * amplitude * 0.5 * _bob_weight

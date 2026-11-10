@@ -13,7 +13,7 @@ Principio: **una funcionalidad está terminada cuando se comprobó**, no cuando 
 
 ## 2. Comandos
 
-> **Pendiente de verificación.** Godot no está instalado aún, así que ningún comando de esta sección se ha comprobado. Confirmarlos con `godot --help` es una precondición de la Fase 1 (docs/05).
+> Comandos verificados con Godot 4.7.2 el 2026-11-10. `--check-only` no carga los autoloads; para scripts que los usan, validar con `--import` o con el ejecutor de pruebas.
 
 Importar el proyecto y detectar errores de recursos/scripts (sale al terminar):
 
@@ -53,6 +53,9 @@ Sin dependencias externas en la Fase 1: un ejecutor propio mínimo en `tests/run
 | `test_player_scene_structure` | `player_fps.tscn` instancia; raíz `CharacterBody3D` con script `PlayerFPS`; existen `CollisionShape3D`, `Head`, `Head/Camera3D`, `Head/Camera3D/InteractionRay` con sus tipos |
 | `test_pitch_clamp` | Aplicar un desplazamiento vertical grande deja el pitch en ±80° |
 | `test_head_bob_no_drift` | Tras N ticks simulados de movimiento y M de reposo, la cámara vuelve a la posición base (tolerancia 1e-3) |
+| `test_head_bob_max_step` | El desplazamiento del balanceo no cambia más de 0,02 m por tick en caminata y carrera |
+| `test_player_eye_height` | El origen del jugador está a los pies: ojos a 1,60 m y fondo de la cápsula a 0,00 m |
+| `test_gravity_default` | `gravity` coincide con `physics/3d/default_gravity` |
 | `test_pause` | Sobre una instancia de `game_manager.gd` creada por la prueba: `set_paused(true)` emite `pause_changed(true)` y deja `get_tree().paused == true`; `set_paused(false)` revierte ambos; llamar dos veces con el mismo valor no emite la señal de nuevo |
 | `test_mouse_mode_for_pause` | `PlayerFPS.mouse_mode_for_pause(true)` devuelve `MOUSE_MODE_VISIBLE` y `(false)` devuelve `MOUSE_MODE_CAPTURED` |
 | `test_player_collision_layers` | `PlayerFPS` usa la capa `player` y la máscara `world` + `npc` (docs/04 §7) |
@@ -77,6 +80,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_ui_stamina_signal` | El HUD actualiza su estado al recibir `stamina_changed` |
 | `test_localization_tables` | Las claves usadas por Core y campaña existen en sus CSV y hay una columna `es` |
 | `test_quero_scene_loads` | `quero_chicha.tscn` instancia y su raíz es `Interactable` |
+| `test_sandbox_interaction_hud` | El sandbox, con el jugador mirando al quero, muestra “Beber chicha” en el HUD |
 | `test_audio_manager_buses` | `AudioManager` existe y el bus de efectos está disponible |
 
 ## 4. Verificación manual — Fase 1

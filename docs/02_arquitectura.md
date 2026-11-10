@@ -93,6 +93,8 @@ Esta es la jerarquía de la Fase 1. En la Fase 2 se añade `StaminaComponent` co
 
 Así la rotación vertical nunca altera la orientación física y el balanceo nunca toca el origen físico.
 
+El origen de `PlayerFPS` está a los pies: la cápsula se centra a 0.875 m y `Head` queda a 1.60 m sobre el suelo.
+
 ### Composición en escena (quién instancia al jugador)
 
 `player_fps.tscn` no instancia nada por sí mismo; lo instancia la escena que lo usa:

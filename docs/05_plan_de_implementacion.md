@@ -103,7 +103,8 @@ El cambio de la Fase 3 es un criterio de aceptación de esa fase. Ninguna export
 | Parámetro | Valor | Unidad |
 |---|---|---|
 | Altura de cápsula / radio | 1.75 / 0.35 | m |
-| Altura de `Head` | 1.60 | m |
+| Centro de la cápsula (origen a los pies) | 0.875 | m |
+| Altura de `Head` (ojos sobre los pies) | 1.60 | m |
 | `walk_speed` | 3.5 | m/s |
 | `run_speed` | 6.5 | m/s |
 | `acceleration` | 10.0 | m/s² |
@@ -131,7 +132,9 @@ El cambio de la Fase 3 es un criterio de aceptación de esa fase. Ninguna export
 - [x] Cero errores en consola durante la ejecución.
 - [x] Pruebas automatizadas en verde.
 
-**Verificación manual:** realizada por el usuario el 2026-11-10 a 60 Hz; los 12 puntos del checklist de [06_estrategia_de_pruebas.md](06_estrategia_de_pruebas.md) §4 pasaron. La interpolación de física sigue desactivada; el escalonamiento a frecuencias superiores a 60 Hz queda sin evaluar y no bloquea la fase.
+**Verificación manual:** realizada por el usuario el 2026-11-10 a 60 Hz; los 10 puntos del checklist de [06_estrategia_de_pruebas.md](06_estrategia_de_pruebas.md) §4 pasaron. La interpolación de física sigue desactivada; el escalonamiento a frecuencias superiores a 60 Hz queda sin evaluar y no bloquea la fase.
+
+**Corrección posterior (2026-11-10):** se corrigieron la altura de ojos (la cápsula estaba centrada en el origen y elevaba la cámara a 2,475 m) y el salto lateral del balanceo al envolver la fase en `TAU`. Ambas correcciones tienen prueba automatizada (`test_player_eye_height`, `test_head_bob_max_step`) y requieren una nueva verificación manual del balanceo.
 
 ---
 
