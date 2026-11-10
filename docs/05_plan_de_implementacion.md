@@ -1,6 +1,6 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 2 — Interacción.
+**Fase activa:** ninguna. Fase 2 cerrada; la Fase 3 comienza al aprobarse el equipo de referencia.
 **Siguiente:** Fase 3 — Entorno.
 
 Reglas:
@@ -15,7 +15,7 @@ Reglas:
 |---|---|---|
 | 0 — Documentación | Cerrada | 2026-11-10 |
 | 1 — Fundación técnica | Cerrada | 2026-11-10 |
-| 2 — Interacción | En curso | — |
+| 2 — Interacción | Cerrada | 2026-11-10 |
 | 3 — Entorno | No iniciada | — |
 | 4 — Vertical Slice Pachacútec | No iniciada | — |
 
@@ -156,13 +156,15 @@ Comportamiento del quero: enfoque → indicación → E → respuesta visual (an
 
 ### Criterios de aceptación
 
-- [ ] Un objeto nuevo se vuelve interactuable sin modificar `player_fps.gd`.
-- [ ] La detección funciona cuando el collider es hijo (directo o indirecto) del interactuable.
-- [ ] No se interactúa a través de paredes.
-- [ ] La estamina se actualiza y la UI lo refleja vía señales.
-- [ ] El quero no contiene rutas a nodos de UI.
-- [ ] Ningún texto para el jugador está escrito literalmente en código: todos pasan por `tr()`.
-- [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`; pruebas en verde.
+- [x] Un objeto nuevo se vuelve interactuable sin modificar `player_fps.gd`.
+- [x] La detección funciona cuando el collider es hijo (directo o indirecto) del interactuable.
+- [x] No se interactúa a través de paredes.
+- [x] La estamina se actualiza y la UI lo refleja vía señales.
+- [x] El quero no contiene rutas a nodos de UI.
+- [x] Ningún texto para el jugador está escrito literalmente en código: todos pasan por `tr()`.
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`; pruebas en verde.
+
+**Verificación manual:** realizada por el usuario el 2026-11-10; la indicación aparece, E interactúa, el quero se inclina, suena y recupera estamina; la pausa sigue funcionando.
 
 ---
 
@@ -170,7 +172,7 @@ Comportamiento del quero: enfoque → indicación → E → respuesta visual (an
 
 ### Precondiciones
 
-- [ ] Fase 2 cerrada.
+- [x] Fase 2 cerrada.
 - [ ] Equipo de referencia de gama baja aprobado ([08_entorno_y_rendimiento.md](08_entorno_y_rendimiento.md) §4). El de gama media puede seguir sin definir.
 
 ### Entregables

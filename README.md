@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 2 — Interacción (en curso).** Fase 1 cerrada; existen proyecto Godot, jugador FPS y sandbox. |
+| Estado | **Fase 2 cerrada.** Fase 3 pendiente de aprobar el equipo de referencia. |
 
 ## Requisitos
 
@@ -26,7 +26,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Avanzar / Retroceder | W / S |
 | Izquierda / Derecha | A / D |
 | Correr | Shift izquierdo (mantener) |
-| Interactuar | E (Fase 2) |
+| Interactuar | E |
 | Saltar | Espacio (reservado, sin implementar) |
 | Pausa / liberar ratón | Escape |
 | Mirar | Ratón |
