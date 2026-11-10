@@ -13,6 +13,7 @@ var _start_ms: int = 0
 var _last_ms: int = 0
 var _frame_times: Array[float] = []
 var _load_ms: int = 0
+var _player: CharacterBody3D = null
 
 
 func _initialize() -> void:
@@ -20,7 +21,12 @@ func _initialize() -> void:
 	var packed: PackedScene = load("res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn") as PackedScene
 	var world: Node = packed.instantiate()
 	root.add_child(world)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+	Engine.max_fps = 60
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_load_ms = Time.get_ticks_msec() - load_start
+	_player = world.get_node_or_null("PlayerFPS") as CharacterBody3D
 	_start_ms = Time.get_ticks_msec()
 	_last_ms = _start_ms
 	process_frame.connect(_on_frame)
@@ -65,4 +71,7 @@ func _finish() -> void:
 	print("DRAW_CALLS=", draw_calls)
 	print("VIDEO_MEM_MB=", video_mem / (1024.0 * 1024.0))
 	print("LOAD_MS=", _load_ms)
+	if _player != null:
+		print("PLAYER_Y=", _player.global_position.y)
+		print("PLAYER_ON_FLOOR=", _player.is_on_floor())
 	quit(0)

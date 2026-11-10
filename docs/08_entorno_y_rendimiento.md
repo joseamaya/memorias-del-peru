@@ -109,16 +109,20 @@ Consecuencias de que la referencia tenga GPU integrada:
 
 Comando: `godot --path . --script res://tests/measure_performance.gd`
 
-Condiciones: 1920 × 1080, perfil Bajo, referencia con GPU integrada, ventana en primer plano, vsync activo (≈60 Hz), Godot 4.7.2.
+Condiciones: 1920 × 1080, perfil Bajo, referencia con GPU integrada, ventana en primer plano, vsync activo y `Engine.max_fps = 60` para que la comparación sea estable, Godot 4.7.2.
 
 | Métrica | Valor |
 |---|---|
-| FPS medio | 59,84 |
-| FPS del percentil 1 % | 55,56 |
-| Tiempo de frame medio | 16,71 ms |
-| Tiempo de frame p99 | 18,0 ms |
+| FPS medio | 55,92 |
+| FPS del percentil 1 % | 47,62 |
+| Tiempo de frame medio | 17,88 ms |
+| Tiempo de frame p99 | 21,0 ms |
 | Draw calls | 5 |
 | Memoria de vídeo | 120,3 MB |
-| Tiempo de carga de escena | 17 ms |
+| Tiempo de carga de escena | 36 ms |
 
-El objetivo vinculante (≥ 30 FPS) se cumple con margen y el percentil 1 % supera 2/3 del FPS medio. La referencia con GPU dedicada sigue sin definir, por lo que los 60 FPS en perfil Medio quedan sin verificar.
+El objetivo vinculante (≥ 30 FPS) se cumple con margen y el percentil 1 % supera 2/3 del FPS medio. La medición confirma además que el jugador queda apoyado en el terreno (`y ≈ 0,0001`, `is_on_floor = true`) tras el calentamiento.
+
+> La medición anterior (59,84 FPS) quedó invalidada: el terreno tenía los triángulos invertidos, no se renderizaba desde arriba y el jugador caía a través de él. La corrección está cubierta por `test_terrain_normals_up` y `test_terrain_collision_shape`.
+
+La referencia con GPU dedicada sigue sin definir, por lo que los 60 FPS en perfil Medio quedan sin verificar.

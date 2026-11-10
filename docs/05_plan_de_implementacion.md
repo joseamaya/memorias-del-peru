@@ -190,7 +190,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [x] Métricas de referencia registradas en docs/08 §4.
 - [x] Objetivo **vinculante** cumplido: ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada. El objetivo recomendado (≥ 60 FPS, perfil Medio) se mide si existe el equipo de referencia con GPU dedicada; si no, se declara “no verificado” en el informe sin bloquear el cierre.
 
-**Medición inicial (2026-11-10):** 59,84 FPS de media y 55,56 FPS de percentil 1 % en perfil Bajo, 1080p, GPU integrada. Iluminación y niebla quedan pendientes de verificación visual; el perfil se cambia con F2 en compilaciones de desarrollo.
+**Medición inicial (2026-11-10):** 55,92 FPS de media y 47,62 FPS de percentil 1 % en perfil Bajo, 1080p, GPU integrada, con `Engine.max_fps = 60`. El jugador queda apoyado en el terreno (`is_on_floor = true`). Iluminación y niebla quedan pendientes de verificación visual; el perfil se cambia con F2 en compilaciones de desarrollo.
 
 ---
 

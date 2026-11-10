@@ -93,6 +93,8 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_graphics_settings_apply` | `set_profile` emite `profile_changed` y actualiza el perfil activo |
 | `test_environment_quality_controller` | El controlador aplica niebla, SSAO y SDFGI al cambiar de perfil |
 | `test_player_spawn` | El jugador aparece en la transformación de `PlayerSpawn` |
+| `test_terrain_normals_up` | Las normales del terreno apuntan hacia +Y |
+| `test_terrain_collision_shape` | El terreno tiene una forma de colisión `ConcavePolygonShape3D` |
 | `test_audio_manager_buses` | `AudioManager` existe y el bus de efectos está disponible |
 
 ## 4. Verificación manual — Fase 1
