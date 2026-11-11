@@ -212,7 +212,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 
 ## Fuera del vertical slice
 
-Fichas de elementos que se valoraron pero **no están en el juego**. No forman parte del cierre de la Fase 4, porque docs/07 §3 se aplica a los elementos del slice. Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
+Fichas de elementos que se valoraron pero **no están en el juego**. No forman parte del cierre de la Fase 4, por decisión del responsable del proyecto del 2026-11-11; la regla general está propuesta en [ADR-0011](../../../docs/adr/0011-fichas-fuera-del-slice.md). Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
 
 ### PCH-014 — Llama / alpaca (opcional)
 - Tipo: fauna
