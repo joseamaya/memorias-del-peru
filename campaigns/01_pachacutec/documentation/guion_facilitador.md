@@ -1,6 +1,6 @@
 # Guion del facilitador — sesiones de prueba del vertical slice
 
-- Estado: **Borrador** — pendiente de aprobación
+- Estado: **Listo para el piloto** (2026-11-11)
 - Aplica: [alcance_vertical_slice.md](alcance_vertical_slice.md) §9 (protocolo aprobado). Si este guion y el alcance difieren, prevalece el alcance.
 - Registro de cada sesión: [plantilla_sesion.md](plantilla_sesion.md)
 
@@ -20,9 +20,9 @@ El piloto responde a dos preguntas antes de invertir en assets:
 1. **¿Se entiende la historia?** Preguntas 1 y 2 del cuestionario.
 2. **¿Se lee la espera como un fallo?** El mensajero llega a los 4 minutos ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). Hay que observar si la persona cree que el juego se ha quedado parado, lo pregunta o abandona.
 
-## 2. Definición operativa de la duración (propuesta)
+## 2. Medición de la duración
 
-El alcance pide una duración mediana de 5–8 min, pero no define cuándo termina la sesión: el juego no tiene pantalla final. Se propone:
+Definida en el alcance §9.2 (v3.1, aprobada el 2026-11-11). Resumen:
 
 - **Inicio:** el primer movimiento de la persona tras la explicación de controles.
 - **Fin:** lo primero que ocurra de lo siguiente:
@@ -30,8 +30,6 @@ El alcance pide una duración mediana de 5–8 min, pero no define cuándo termi
   - Pasan 60 s desde que el grupo sale de la plaza (el cierre «La llacta queda en silencio…»).
   - Se llega a 12 min.
 - Se anota también el momento del cierre, para separar el tiempo de la historia del tiempo de exploración libre.
-
-> Esta definición debe aprobarse e incorporarse al alcance (§9.2) antes de las sesiones oficiales. En el piloto se usa tal cual.
 
 ## 3. Preparación (10 min antes)
 

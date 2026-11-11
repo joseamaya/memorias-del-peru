@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3)** — 2026-11-10; sustituye a la v2
+- Estado: **Aprobado (v3.1)** — 2026-11-11; sustituye a la v3
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -13,6 +13,7 @@
 | v1 | Primera propuesta, aprobada el 2026-11-10. Incompleta como precondición: sin cuestionario, criterio de corrección ni reclutamiento; el pututu era el único disparador del evento. |
 | v2 | Añade el protocolo de prueba completo, la secuencia con disparo garantizado, los personajes que faltaban, el reparto de textos, la estimación de duración y el cambio de “chasqui” a “mensajero”. |
 | v3 | Disparo por reloj, pututu disponible solo en la llamada, aviso de la llamada, habitantes que no parten, casas fuera de los caminos, camino norte y mirador, y duración ajustada a 5–8 min. |
+| v3.1 | Define cuándo empieza y termina una sesión para medir la duración (§9.2). Aprobada por el responsable del proyecto el 2026-11-11. |
 
 ## 1. Objetivo
 
@@ -247,6 +248,14 @@ Se supera el cuestionario si **ambas** respuestas son correctas.
 - Si discrepan, una tercera persona decide.
 - Si la discrepancia persiste, la sesión cuenta como **no superada**.
 - Éxito de la métrica 5: **≥ 4 de 6** sesiones superadas.
+**Medición de la duración.** El juego no tiene pantalla final, así que la duración de una sesión se mide así:
+
+- **Inicio:** primer movimiento de la persona tras la explicación de controles.
+- **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; pasan 60 s desde el subtítulo de cierre («La llacta queda en silencio…»); se llega a 12 min.
+- Se anota también el momento del subtítulo de cierre, para separar el tiempo de la historia del de exploración libre.
+
+El procedimiento completo está en [guion_facilitador.md](guion_facilitador.md).
+
 
 ### 9.5 Registro
 
@@ -300,3 +309,4 @@ La mediana esperada es **6–7 minutos**. Si la prueba con seis personas queda p
 - [x] Se confirman la salida por el camino norte y la permanencia de los vecinos.
 
 Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.
+- [x] Se confirma la medición de la duración de §9.2 (v3.1, 2026-11-11).
