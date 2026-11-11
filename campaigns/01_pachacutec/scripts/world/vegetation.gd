@@ -106,6 +106,7 @@ static func load_meshes(files: Array[String]) -> Array[Mesh]:
 		if not found.is_empty():
 			var mesh_instance: MeshInstance3D = found[0] as MeshInstance3D
 			if mesh_instance.mesh != null:
+				ModelSlot.enable_vertex_colors(mesh_instance.mesh)
 				meshes.append(mesh_instance.mesh)
 		instance.free()
 	return meshes

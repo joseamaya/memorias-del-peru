@@ -170,6 +170,17 @@ Mismo comando y condiciones, con la carga del sistema entre 1,9 y 2,2. La escena
 
 Sin cambios apreciables respecto a la medición con vegetación.
 
+### Medición con mallas agrupadas (Fase 4, provisional, 2026-11-11)
+
+Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada modelo generado pasa a ser una sola malla, sin material y con color por vértice, de una cara salvo las hojas del ichu. Antes eran varias mallas, con hasta nueve materiales a dos caras por vivienda. Además, los personajes recuperan el balanceo de reposo. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 224,8 (222,9–225,6) | 166,7 | 4,45 ms | 6 ms | 62–70 | 94,6 MB |
+| Medio | 80,7 (71,8–83,7) | 66,7 (55,6–71,4) | 12,39 ms | 14–18 ms | 57–65 | 167,4 MB |
+
+Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
+
 ### Medición de la llacta completa (Fase 4, provisional)
 
 Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.

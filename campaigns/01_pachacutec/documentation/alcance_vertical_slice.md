@@ -199,7 +199,7 @@ Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo 
 
 La vegetación la reparte `scripts/world/vegetation.gd` (`LlactaVegetation`): unas 3 100 matas de ichu en bloques de 22 m que se ocultan a 50 m y no proyectan sombra, y 24 queñuas en cuatro bosquecillos junto a la cresta, con colisión en el tronco. El reparto es determinista y deja libres la plaza, los caminos, las casas, las terrazas y el rincón de la tejedora.
 
-«Generado» significa producido por `pch_models.py` (ADR-0010): low-poly con colores planos, sustituible por un modelo hecho a mano que cumpla las mismas reglas. La forma concreta de cada modelo es una reconstrucción (R) según su ficha.
+«Generado» significa producido por `pch_models.py` (ADR-0010): low-poly con colores planos, sustituible por un modelo hecho a mano que cumpla las mismas reglas. Cada modelo se exporta como una sola malla visible, sin material y con el color por vértice, para dibujarse con una llamada; `ModelSlot` activa ese color al cargarlo. Los personajes cuelgan su hueco del cuerpo del bloqueo y heredan su balanceo de reposo. Un modelo hecho a mano puede traer materiales propios. La forma concreta de cada modelo es una reconstrucción (R) según su ficha.
 
 Reglas que comprueba `test_model_files_valid` en cada archivo:
 - nombre `pch_*.glb` en `snake_case` y ningún `.blend`;

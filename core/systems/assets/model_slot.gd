@@ -46,6 +46,41 @@ static func has_collision(root: Node) -> bool:
 	return not root.find_children("*", "CollisionShape3D", true, false).is_empty()
 
 
+## Activa el color por vértice como albedo en cada superficie de [param mesh]
+## que lo trae. Los modelos sin material propio (como los que genera el script
+## de Blender, ADR-0010) llegan del importador glTF con un material que ignora
+## ese color. Devuelve cuántas superficies se ajustaron.
+static func enable_vertex_colors(mesh: Mesh) -> int:
+	var array_mesh: ArrayMesh = mesh as ArrayMesh
+	if array_mesh == null:
+		return 0
+	var changed: int = 0
+	for surface: int in range(array_mesh.get_surface_count()):
+		if (array_mesh.surface_get_format(surface) & Mesh.ARRAY_FORMAT_COLOR) == 0:
+			continue
+		var material: BaseMaterial3D = array_mesh.surface_get_material(surface) as BaseMaterial3D
+		if material == null:
+			if array_mesh.surface_get_material(surface) != null:
+				continue
+			material = StandardMaterial3D.new()
+			array_mesh.surface_set_material(surface, material)
+		if not material.vertex_color_use_as_albedo:
+			material.vertex_color_use_as_albedo = true
+			changed += 1
+	return changed
+
+
+## [method enable_vertex_colors] en todas las mallas bajo [param root].
+static func enable_vertex_colors_in(root: Node) -> int:
+	var changed: int = 0
+	var nodes: Array[Node] = root.find_children("*", "MeshInstance3D", true, false)
+	if root is MeshInstance3D:
+		nodes.append(root)
+	for node: Node in nodes:
+		changed += enable_vertex_colors((node as MeshInstance3D).mesh)
+	return changed
+
+
 ## Carga el modelo si existe. Devuelve `true` si hay un modelo cargado.
 ## Las llamadas repetidas no lo duplican.
 func load_model() -> bool:
@@ -63,6 +98,7 @@ func load_model() -> bool:
 		instance.free()
 		return false
 	instance_3d.name = "Model"
+	enable_vertex_colors_in(instance_3d)
 	add_child(instance_3d)
 	model = instance_3d
 	loaded_path = path

@@ -540,10 +540,17 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	actor.add_to_group("npcs")
 	var body_mesh: MeshInstance3D = actor.get_node_or_null("Body") as MeshInstance3D
 	var blockout: Array[Node3D] = []
+	var slot_parent: Node3D = actor
+	var slot_offset: Vector3 = Vector3.ZERO
 	if body_mesh != null:
 		blockout.append(body_mesh)
+		# El hueco cuelga del cuerpo del bloqueo para heredar su balanceo de
+		# reposo; se compensa la altura del cuerpo para que los pies queden en
+		# el origen del personaje.
+		slot_parent = body_mesh
+		slot_offset = -body_mesh.position
 	# La cápsula de colisión del bloqueo se conserva (alcance §7).
 	var no_collisions: Array[Node] = []
-	var slot: ModelSlot = _attach_model(actor, "ModelSlot", Vector3.ZERO, npc_model_files(node_name), blockout, no_collisions)
+	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, npc_model_files(node_name), blockout, no_collisions)
 	slot.use_model_collision = false
 	return actor

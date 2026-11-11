@@ -208,6 +208,7 @@ Reglas:
 
 - `core/systems/assets/model_slot.gd` (`class_name ModelSlot extends Node3D`): al entrar en el árbol carga como hijo `Model` el primer archivo existente de `model_paths: Array[String]` y oculta `blockout_nodes: Array[Node3D]`. Si el hueco cuelga de uno de esos nodos (para heredar sus animaciones), a ese nodo se le quita la malla en lugar de ocultarlo. Si no existe ningún archivo, no hace nada.
 - `blockout_collisions: Array[Node]` se eliminan solo si el modelo trae colisión propia y `use_model_collision` es `true`. Señal `model_loaded(model: Node3D)`.
+- Color por vértice: `static enable_vertex_colors(mesh: Mesh) -> int` activa `vertex_color_use_as_albedo` en cada superficie con color por vértice (y le crea un `StandardMaterial3D` si no tiene material). Hace falta porque el importador glTF de Godot ignora ese color en los modelos exportados sin material. `load_model()` lo aplica al modelo con `enable_vertex_colors_in(root)`, y la vegetación de la campaña lo aplica a las mallas que repite con `MultiMesh`.
 - `ModelSlot` no conoce campañas: la escena del mundo decide qué archivo corresponde a cada bloqueo (en la campaña 01, tabla en el alcance del vertical slice, §7).
 - Las reglas de los `.glb` (nombre, metros, origen en la base, escalas aplicadas, colisión) se comprueban en `tests/asset_validation.gd`, que usan `test_model_validator` y `test_model_files_valid`.
 

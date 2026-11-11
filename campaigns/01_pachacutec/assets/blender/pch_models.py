@@ -88,30 +88,27 @@ def srgb_to_linear(value):
 	return ((value + 0.055) / 1.055) ** 2.4
 
 
-def material(name):
-	"""Material Principled con el color de la paleta (se reutiliza por nombre)."""
-	key = "pch_" + name
-	existing = bpy.data.materials.get(key)
-	if existing is not None:
-		return existing
-	color, roughness = PALETTE[name]
-	mat = bpy.data.materials.new(key)
-	mat.use_nodes = True
-	bsdf = mat.node_tree.nodes.get("Principled BSDF")
-	linear = [srgb_to_linear(c) for c in color]
-	bsdf.inputs["Base Color"].default_value = (linear[0], linear[1], linear[2], 1.0)
-	bsdf.inputs["Roughness"].default_value = roughness
-	bsdf.inputs["Metallic"].default_value = 0.0
-	mat.diffuse_color = (linear[0], linear[1], linear[2], 1.0)
-	return mat
+# Los modelos se exportan sin material: el importador glTF de Godot crea
+# entonces uno propio que usa el color por vértice (COLOR_0) como albedo, y
+# cada modelo se dibuja con una sola llamada. Con un material propio, Godot
+# ignora el color por vértice.
+
+
+def linear_color(name):
+	color, _roughness = PALETTE[name]
+	return [srgb_to_linear(c) for c in color] + [1.0]
 
 
 class MeshBuilder:
-	"""Acumula geometría en un bmesh y la vuelca en un objeto con materiales."""
+	"""Acumula geometría en un bmesh y la vuelca en un objeto. Cada cara lleva
+	el color de su entrada de la paleta como color por vértice. Con
+	[double_sided], cada cara se duplica del revés (hojas finas de la
+	vegetación), porque sin material propio no hay dibujo a dos caras."""
 
-	def __init__(self):
+	def __init__(self, double_sided=False):
 		self.bm = bmesh.new()
 		self.materials = []
+		self.double_sided = double_sided
 
 	def mat_index(self, name):
 		if name not in self.materials:
@@ -122,6 +119,9 @@ class MeshBuilder:
 		verts = [self.bm.verts.new(p) for p in points]
 		new_face = self.bm.faces.new(verts)
 		new_face.material_index = self.mat_index(mat_name)
+		if self.double_sided:
+			back = [self.bm.verts.new(p) for p in reversed(points)]
+			self.bm.faces.new(back).material_index = new_face.material_index
 		return new_face
 
 	def box(self, center, size, mat_name, rotation=None):
@@ -225,14 +225,20 @@ class MeshBuilder:
 
 	def to_object(self, name, collection):
 		mesh = bpy.data.meshes.new(name)
-		bmesh.ops.remove_doubles(self.bm, verts=self.bm.verts, dist=0.0)
+		if not self.double_sided:
+			bmesh.ops.remove_doubles(self.bm, verts=self.bm.verts, dist=0.0)
 		self.bm.normal_update()
 		self.bm.to_mesh(mesh)
 		self.bm.free()
-		for mat_name in self.materials:
-			mesh.materials.append(material(mat_name))
+		colors = mesh.color_attributes.new("Color", "FLOAT_COLOR", "CORNER")
+		palette = [linear_color(mat_name) for mat_name in self.materials]
 		for polygon in mesh.polygons:
+			rgba = palette[polygon.material_index] if palette else [1.0, 1.0, 1.0, 1.0]
+			for loop_index in polygon.loop_indices:
+				colors.data[loop_index].color = rgba
+			polygon.material_index = 0
 			polygon.use_smooth = False
+		mesh.color_attributes.active_color = colors
 		obj = bpy.data.objects.new(name, mesh)
 		collection.objects.link(obj)
 		return obj
@@ -669,7 +675,7 @@ def build_ichu(rng, blades, height):
 	"""Mata de ichu: hojas finas que nacen juntas y se arquean hacia fuera.
 	Material de doble cara (sin descarte de caras traseras)."""
 	collection = bpy.context.scene.collection
-	builder = MeshBuilder()
+	builder = MeshBuilder(double_sided=True)
 	for _ in range(blades):
 		heading = rng.uniform(0.0, 2.0 * math.pi)
 		lean = rng.uniform(0.15, 0.75)
@@ -949,6 +955,20 @@ def scene_bounds():
 	return low, high
 
 
+def join_visible(name):
+	"""Une en un solo objeto todas las mallas visibles del modelo (las de
+	colisión se quedan aparte) para que Godot las dibuje con una llamada."""
+	visible = [o for o in bpy.context.scene.objects if o.type == "MESH" and not o.name.endswith("-convcolonly")]
+	if len(visible) > 1:
+		for obj in bpy.context.scene.objects:
+			obj.select_set(obj in visible)
+		bpy.context.view_layer.objects.active = visible[0]
+		bpy.ops.object.join()
+	joined = bpy.context.view_layer.objects.active if len(visible) > 1 else visible[0]
+	joined.name = name
+	joined.data.name = name
+
+
 def export(name, out_dir):
 	path = os.path.join(out_dir, name + ".glb")
 	bpy.ops.export_scene.gltf(
@@ -960,6 +980,7 @@ def export(name, out_dir):
 		export_cameras=False,
 		export_lights=False,
 		export_extras=False,
+		export_vertex_color="ACTIVE",
 	)
 	return path
 
@@ -987,9 +1008,17 @@ def render_preview(name, preview_dir):
 	world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.55, 0.62, 0.7, 1.0)
 	world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.6
 	scene.world = world
+	# Material solo para el render: los modelos se exportan sin material.
+	preview = bpy.data.materials.new("PreviewVertexColor")
+	preview.use_nodes = True
+	color_node = preview.node_tree.nodes.new("ShaderNodeVertexColor")
+	color_node.layer_name = "Color"
+	preview.node_tree.links.new(color_node.outputs["Color"], preview.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
 	for obj in scene.objects:
 		if obj.name.endswith("-convcolonly"):
 			obj.hide_render = True
+		elif obj.type == "MESH" and not obj.data.materials:
+			obj.data.materials.append(preview)
 	scene.render.engine = "BLENDER_EEVEE"
 	scene.render.resolution_x = 900
 	scene.render.resolution_y = 700
@@ -1015,11 +1044,13 @@ def main():
 			raise SystemExit("Modelo desconocido: %s" % name)
 		reset_scene()
 		MODELS[name](random.Random(name))
+		join_visible(name)
 		low, high = scene_bounds()
 		path = export(name, args.out)
-		tris = sum(len(p.vertices) - 2 for o in bpy.context.scene.objects if o.type == "MESH" for p in o.data.polygons)
-		print("MODELO %s -> %s | min %s max %s | triángulos %d" % (
-			name, path, tuple(round(c, 3) for c in low), tuple(round(c, 3) for c in high), tris))
+		meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+		tris = sum(len(p.vertices) - 2 for o in meshes for p in o.data.polygons)
+		print("MODELO %s -> %s | min %s max %s | triángulos %d | mallas %d" % (
+			name, path, tuple(round(c, 3) for c in low), tuple(round(c, 3) for c in high), tris, len(meshes)))
 		if args.preview:
 			render_preview(name, args.preview)
 
