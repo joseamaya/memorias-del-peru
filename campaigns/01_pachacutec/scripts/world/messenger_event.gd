@@ -22,6 +22,8 @@ const KEY_CALL: StringName = &"PCH_NARR_CALL"
 const KEY_CLOSING_FIRST: StringName = &"PCH_NARR_CLOSING_1"
 const KEY_CLOSING_SECOND: StringName = &"PCH_NARR_CLOSING_2"
 const KEY_WAIT: StringName = &"PCH_NARR_WAIT"
+const KEY_GATHER: StringName = &"PCH_NARR_GATHER"
+const KEY_GREET: StringName = &"PCH_NARR_GREET"
 
 const OPENING_SECONDS: float = 6.0
 const NEWS_SECONDS: float = 6.0
@@ -31,9 +33,15 @@ const CALL_SECONDS: float = 5.0
 const CLOSING_SECONDS: float = 6.0
 const CLOSING_SECOND_DELAY: float = 6.0
 const DEPARTURE_TIMEOUT: float = 45.0
-## Señal intermedia de la espera (ADR-0012): a mitad del reloj, un texto
-## recuerda que el mensajero aún no llega.
-const WAIT_CUE_TIME: float = 70.0
+## Señal intermedia de la espera (ADR-0012, ADR-0013): a mitad del reloj, un
+## texto recuerda que el mensajero aún no llega.
+const WAIT_CUE_TIME: float = 45.0
+const GATHER_SECONDS: float = 6.0
+## Vecino que recibe al jugador en el camino sur (ADR-0013): habla cuando el
+## jugador se acerca a esta distancia.
+const GREET_DISTANCE: float = 9.0
+const GREET_SECONDS: float = 6.0
+const GREET_PAUSE: float = 3.0
 const WAIT_SECONDS: float = 6.0
 ## Pausa de los vecinos en cada punto de su paseo, antes de la noticia.
 const WANDER_PAUSE: float = 4.0
@@ -45,11 +53,13 @@ const MEETING_RADIUS: float = 5.5
 const MEETING_RADIUS_STAGGER: float = 1.0
 const MEETING_ARC_SLOTS: int = 6
 
-## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0012,
-## que sustituye los 240 s de ADR-0009).
-@export var arrival_delay: float = 120.0
-## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza.
-@export var arrival_grace: float = 60.0
+## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0013;
+## antes, 240 s en ADR-0009 y 120 s en ADR-0012).
+@export var arrival_delay: float = 75.0
+## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza:
+## el mensajero sale como tarde a los 150 s. Mientras tanto, un aviso llama a
+## la plaza.
+@export var arrival_grace: float = 75.0
 @export var arrival_radius: float = 22.0
 @export var call_timeout: float = 60.0
 
@@ -75,6 +85,9 @@ var _arrival_by_grace: bool = false
 var _curaca_called: bool = false
 var _curaca_is_calling: bool = false
 var _wait_cue_sent: bool = false
+var _gather_cue_sent: bool = false
+var _greeter: NpcActor = null
+var _greeted: bool = false
 ## Paseo de los vecinos antes de la noticia: puntos de cada uno, punto actual y
 ## pausa restante.
 var _wander_routes: Dictionary[NpcActor, PackedVector3Array] = {}
@@ -131,6 +144,21 @@ func set_wander_routes(routes: Dictionary[NpcActor, PackedVector3Array]) -> void
 		order += 1
 
 
+## Coloca a [param actor] en [param point] para recibir al jugador. No pasea
+## hasta que lo saluda; después se une a su ruta.
+func set_greeter(actor: NpcActor, point: Vector3) -> void:
+	_greeter = actor
+	_greeted = false
+	if actor != null:
+		actor.stop()
+		actor.position = point
+
+
+## Indica si el vecino ya recibió al jugador.
+func has_greeted() -> bool:
+	return _greeted
+
+
 ## Detiene a un vecino durante [param seconds] (por ejemplo, mientras el
 ## jugador habla con él). Después retoma su paseo.
 func hold(actor: NpcActor, seconds: float) -> void:
@@ -175,6 +203,7 @@ func step(delta: float) -> void:
 
 func _step_idle(delta: float) -> void:
 	_idle_time += delta
+	_step_greeter(delta)
 	_step_wander(delta)
 	if not _wait_cue_sent and WAIT_CUE_TIME < arrival_delay and _idle_time >= WAIT_CUE_TIME:
 		_wait_cue_sent = true
@@ -185,13 +214,30 @@ func _step_idle(delta: float) -> void:
 		_arrival_by_grace = false
 		_enter(Phase.ARRIVAL)
 		return
+	if not _gather_cue_sent:
+		_gather_cue_sent = true
+		subtitle_requested.emit(KEY_GATHER, GATHER_SECONDS)
 	if _idle_time >= arrival_delay + arrival_grace:
 		_arrival_by_grace = true
 		_enter(Phase.ARRIVAL)
 
 
+func _step_greeter(_delta: float) -> void:
+	if _greeter == null or _greeted or _player == null:
+		return
+	_greeter.face(_player.global_position)
+	if _greeter.flat_distance_to(_player.global_position) > GREET_DISTANCE:
+		return
+	_greeted = true
+	subtitle_requested.emit(KEY_GREET, GREET_SECONDS)
+	if _wander_routes.has(_greeter):
+		_wander_pause[_greeter] = GREET_PAUSE
+
+
 func _step_wander(delta: float) -> void:
 	for actor: NpcActor in _wander_routes:
+		if actor == _greeter and not _greeted:
+			continue
 		var route: PackedVector3Array = _wander_routes[actor]
 		if route.is_empty():
 			continue

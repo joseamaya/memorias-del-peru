@@ -18,7 +18,7 @@ Las personas del piloto quedan excluidas de las sesiones oficiales: ya conocen l
 El piloto responde a dos preguntas antes de las sesiones oficiales:
 
 1. **¿Se entiende la historia?** Preguntas 1 y 2 del cuestionario.
-2. **¿Se lee la espera como un fallo?** El mensajero llega a los 2 minutos (antes, 4; ver ADR-0012) ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). Hay que observar si la persona cree que el juego se ha quedado parado, lo pregunta o abandona.
+2. **¿Se lee la espera como un fallo?** El mensajero sale a los 75 s si la persona está en la plaza, y si no la espera, como tarde hasta los 150 s (ADR-0013; antes, 4 min y luego 2) ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). Hay que observar si la persona cree que el juego se ha quedado parado, lo pregunta o abandona.
 
 ## 2. Medición de la duración
 
@@ -27,7 +27,7 @@ Definida en el alcance §9.2 (v3.1, aprobada el 2026-11-11). Resumen:
 - **Inicio:** el primer movimiento de la persona tras la explicación de controles.
 - **Fin:** lo primero que ocurra de lo siguiente:
   - La persona dice que ha terminado.
-  - Pasan 60 s desde que el grupo sale de la plaza (el cierre «La llacta queda en silencio…»).
+  - Pasan 60 s desde que el grupo sale de la plaza (el cierre «La llacta queda en silencio…»). En el juego coincide con la tarjeta «Fin del fragmento» (v3.5).
   - Se llega a 12 min.
 - Se anota también el momento del cierre, para separar el tiempo de la historia del tiempo de exploración libre.
 
@@ -92,7 +92,7 @@ Al terminar, agradecer y pedir que no comente la historia con otras personas que
 
 ## 8. Qué decidir tras el piloto
 
-**PIL-1 (2026-11-11):** textos demasiado rápidos, ninguna orientación al inicio, lugar sin identificar y aburrimiento en la espera. Se corrigió con [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) (alcance v3.4). PIL-2 comprueba las correcciones con el commit nuevo.
+**PIL-1 (2026-11-11):** textos demasiado rápidos, ninguna orientación al inicio, lugar sin identificar y aburrimiento en la espera. Se corrigió con [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) (alcance v3.4). Después, una revisión del slice llevó a [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) (alcance v3.5): espera de 75 s, vecino que recibe, tarjeta de fin y piernas que se balancean. PIL-2 comprueba todas las correcciones con el commit nuevo.
 
 | Si en el piloto… | Entonces |
 |---|---|

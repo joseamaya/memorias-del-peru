@@ -19,7 +19,7 @@ MundoBase (Node3D)
 - Objetivo: azul profundo de altura, horizonte atmosférico natural, gradientes suaves, sin saturación artificial.
 - Parámetros a ajustar (existentes en `PhysicalSkyMaterial`): `rayleigh_coefficient`, `rayleigh_color`, `mie_coefficient`, `mie_eccentricity`, `mie_color`, `turbidity`, `sun_disk_scale`, `ground_color`, `energy_multiplier`. La altitud se simula con baja turbidez y Mie reducido (aire más limpio y seco).
 - La posición del sol en el cielo físico la determina la `DirectionalLight3D`, por lo que cielo y luz se mantienen coherentes automáticamente.
-- Iluminación ambiental y reflejos tomados del cielo (`ambient_light_source = SKY`, `reflected_light_source = SKY`).
+- Iluminación ambiental y reflejos tomados del cielo (`ambient_light_source = SKY`, `reflected_light_source = SKY`). La luz ambiental mezcla el cielo (60 %) con un relleno azul grisáceo y tiene energía 1,5, para que las sombras no queden negras.
 
 ### 1.2 Niebla
 
@@ -35,7 +35,7 @@ Para niebla localizada en valles: `FogVolume` (solo perfiles con volumétrica). 
 ### 1.3 Sol (Inti)
 
 - Color cálido de amanecer (temperatura objetivo ~3000–4000 K; si la versión soporta unidades físicas de luz, documentar la configuración usada).
-- Ángulo bajo inicial (amanecer) coherente con el cielo.
+- Sol de media mañana, a unos 26° sobre el horizonte, coherente con el cielo y con el guion: el mensajero llega «a media mañana» y la señal de espera dice que el sol ya está alto. Hasta el 2026-11-11 estaba a 12°, al amanecer: dejaba la plaza en sombras largas casi negras.
 - Sombras: `shadow_enabled = true`, modo `SHADOW_PARALLEL_4_SPLITS`; distancia y resolución dependen del perfil.
 
 ## 2. Perfiles gráficos

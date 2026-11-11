@@ -36,6 +36,12 @@ func get_interaction_text() -> String:
 	return tr(interaction_text_key)
 
 
+## Durante la espera entre usos no se enfoca (ADR-0008); vuelve a ofrecerse
+## cuando termina.
+func is_available() -> bool:
+	return _cooldown_remaining <= 0.0
+
+
 func interact(interactor: Node3D) -> void:
 	if _cooldown_remaining > 0.0:
 		return

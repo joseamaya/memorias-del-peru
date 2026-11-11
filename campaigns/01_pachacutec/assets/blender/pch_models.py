@@ -65,6 +65,7 @@ PALETTE = {
 	"wool_dark": ((0.16, 0.12, 0.12), 0.9),
 	"wool_cream": ((0.86, 0.80, 0.66), 0.9),
 	"wool_green": ((0.22, 0.36, 0.26), 0.9),
+	"wool_warp": ((0.62, 0.54, 0.42), 0.9),
 	"ichu_base": ((0.52, 0.50, 0.30), 1.0),
 	"ichu_tip": ((0.80, 0.70, 0.44), 1.0),
 	"quenua_bark": ((0.50, 0.26, 0.17), 0.9),
@@ -473,14 +474,14 @@ def build_pututu(rng):
 	de la espira."""
 	collection = bpy.context.scene.collection
 	stone = MeshBuilder()
-	stone_h = 0.12
-	stone.lathe([(0.17, 0.0), (0.19, 0.03), (0.18, stone_h - 0.02), (0.14, stone_h)], 9,
+	stone_h = 0.05
+	stone.lathe([(0.2, 0.0), (0.22, 0.015), (0.21, stone_h - 0.01), (0.18, stone_h)], 9,
 		lambda s, r: "stone_b", cap_bottom=True, cap_top=True,
 		radial_fn=lambda s, r: 1.0 + 0.12 * math.sin(s * 2.3 + 0.7))
 	stone.to_object("pch_pututu_stone", collection)
 
 	shell = MeshBuilder()
-	length = 0.3
+	length = 0.4
 	segments = 16
 	rows = 20
 	profile = []
@@ -489,11 +490,11 @@ def build_pututu(rng):
 		# t=0 punta de la espira (embocadura), t=1 canal sifonal.
 		if t <= 0.25:
 			whorl = math.floor(t / 0.0625)
-			radius = 0.012 + 0.07 * (t / 0.25) + 0.006 * (t / 0.0625 - whorl)
+			radius = 0.016 + 0.09 * (t / 0.25) + 0.008 * (t / 0.0625 - whorl)
 		elif t <= 0.35:
-			radius = 0.1
+			radius = 0.13
 		else:
-			radius = 0.1 * (1.0 - (t - 0.35) / 0.65) ** 1.1 + 0.014
+			radius = 0.13 * (1.0 - (t - 0.35) / 0.65) ** 1.1 + 0.018
 		profile.append((radius, length * t))
 
 	def lip_weight(s):
@@ -519,7 +520,7 @@ def build_pututu(rng):
 		return "shell"
 
 	# Eje tendido sobre la piedra, a lo largo de X; ligeramente aplanado.
-	axis_z = stone_h + 0.086
+	axis_z = stone_h + 0.11
 	lie = (Matrix.Translation((-length * 0.5, 0.0, axis_z))
 		@ Matrix.Rotation(math.pi / 2, 4, "Y") @ Matrix.Scale(0.85, 4, (1, 0, 0)))
 	shell.lathe(profile, segments, shell_mat, axis_frame=lie, cap_bottom=True, cap_top=True, radial_fn=shape)
@@ -641,7 +642,7 @@ def build_loom(rng):
 	for i in range(threads):
 		x = -width * 0.5 + width * (i + 0.5) / threads
 		mid = start + direction * (span * 0.5) + side * x
-		builder.box(mid, (0.01, span, 0.004), "wool_cream" if i % 4 else "wool_red", basis)
+		builder.box(mid, (0.01, span, 0.004), "wool_warp" if i % 4 else "wool_red", basis)
 	# Tejido terminado: rombos escalonados sobre fondo rojo, con bandas.
 	cols = 21
 	rows = 26
@@ -783,15 +784,21 @@ def build_person(rng, spec):
 	def v(x, y, z):
 		return Vector((x * k, y * k, z * k))
 
-	# Piernas y ojotas.
+	# Piernas y ojotas: un objeto por pierna («LegL», «LegR») con el origen
+	# en lo alto de la pierna, para que el juego las balancee al caminar.
 	leg_top = 0.55 if spec["garment"] == "unku" else 0.3
-	for side in (-1.0, 1.0):
+	for side, leg_name in ((1.0, "LegL"), (-1.0, "LegR")):
+		leg = MeshBuilder()
 		x = 0.09 * side
-		b.tube([v(x, 0.0, leg_top), v(x, 0.005, 0.3), v(x, 0.0, 0.07)],
+		leg.tube([v(x, 0.0, leg_top), v(x, 0.005, 0.3), v(x, 0.0, 0.07)],
 			[0.06 * k, 0.05 * k, 0.04 * k], 6, lambda r: "skin")
-		b.box(v(x, 0.05, 0.035), (0.085 * k, 0.2 * k, 0.05 * k), "skin")
-		b.box(v(x, 0.05, 0.008), (0.1 * k, 0.23 * k, 0.016 * k), "sole")
-		b.box(v(x, 0.05, 0.06), (0.012 * k, 0.12 * k, 0.012 * k), "sole")
+		leg.box(v(x, 0.05, 0.035), (0.085 * k, 0.2 * k, 0.05 * k), "skin")
+		leg.box(v(x, 0.05, 0.008), (0.1 * k, 0.23 * k, 0.016 * k), "sole")
+		leg.box(v(x, 0.05, 0.06), (0.012 * k, 0.12 * k, 0.012 * k), "sole")
+		leg_obj = leg.to_object(leg_name, collection)
+		pivot = v(x, 0.0, leg_top)
+		leg_obj.data.transform(Matrix.Translation(-pivot))
+		leg_obj.location = pivot
 
 	# Prenda principal como sólido de revolución achatado en profundidad.
 	rows = 16
@@ -958,7 +965,9 @@ def scene_bounds():
 def join_visible(name):
 	"""Une en un solo objeto todas las mallas visibles del modelo (las de
 	colisión se quedan aparte) para que Godot las dibuje con una llamada."""
-	visible = [o for o in bpy.context.scene.objects if o.type == "MESH" and not o.name.endswith("-convcolonly")]
+	# Las piernas de los personajes se quedan aparte: el juego las mueve.
+	visible = [o for o in bpy.context.scene.objects
+		if o.type == "MESH" and not o.name.endswith("-convcolonly") and not o.name.startswith("Leg")]
 	if len(visible) > 1:
 		for obj in bpy.context.scene.objects:
 			obj.select_set(obj in visible)
@@ -967,6 +976,7 @@ def join_visible(name):
 	joined = bpy.context.view_layer.objects.active if len(visible) > 1 else visible[0]
 	joined.name = name
 	joined.data.name = name
+	bpy.context.view_layer.update()
 
 
 def export(name, out_dir):

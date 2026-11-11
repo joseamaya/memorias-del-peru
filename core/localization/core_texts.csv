@@ -1,2 +1,5 @@
 keys,es
 INTERACT_DEFAULT,Interactuar
+UI_PAUSED,Pausa · Esc para continuar
+UI_STAMINA,Aliento
+UI_END_HINT,R para volver a empezar · Esc para salir

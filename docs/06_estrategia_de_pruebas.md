@@ -118,8 +118,9 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_party_leaves_and_neighbors_stay` | La comitiva sale por el camino norte y se oculta; los vecinos se quedan |
 | `test_narrative_beats_order` | Apertura, señal intermedia de la espera, noticia, aviso de llamada y cierre se emiten en orden y una sola vez |
 | `test_subtitle_widget` | El HUD da a cada subtítulo al menos su tiempo de lectura, pone en cola los siguientes sin repetirlos, limita la cola y la vacía con `clear_subtitle()`; el rótulo de lugar aparece con fundido y se oculta (ADR-0012) |
-| `test_quero_cooldown` | Un segundo uso inmediato no restaura estamina; tras el tiempo de espera sí |
-| `test_offering_once` | La ofrenda solo se usa una vez por partida |
+| `test_hud_feedback` | El HUD muestra y oculta el aviso de pausa y etiqueta la barra de aliento; la tarjeta de fin aparece 50 s después de terminar el evento, con fundido y texto traducido; `InteractionHighlight` resalta las mallas del interactuable, o las de su padre si no tiene, y restaura la superposición anterior al cambiar o perder el foco |
+| `test_quero_cooldown` | El quero respeta su espera entre usos y no está disponible mientras dura (ADR-0008) |
+| `test_offering_once` | La ofrenda solo se usa una vez y, ya usada, deja de estar disponible (ADR-0008) |
 | `test_world_spawn_south` | El jugador aparece en el camino sur |
 | `test_mouse_capture_requires_focus` | El jugador solo pide capturar el ratón en juego y con la ventana enfocada |
 | `test_footsteps_follow_bob` | Un paso por ciclo de balanceo, más frecuentes al correr, ninguno quieto o en el aire, y siempre con la cámara en su punto bajo |
@@ -130,7 +131,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_model_validator` | El validador de modelos acepta casos correctos y rechaza nombre, escala, origen, tamaño, colisión de casa y altura de personaje incorrectos; incluye un `.glb` exportado e importado con `GLTFDocument` |
 | `test_model_files_valid` | Todo `.glb` de `campaigns/01_pachacutec/assets/models/` cumple las reglas de §7 del alcance y no hay `.blend` (sin modelos, pasa sin comprobar nada) |
 | `test_model_slot` | `ModelSlot` conserva el bloqueo sin archivo, carga el modelo y oculta el bloqueo con archivo, y solo sustituye la colisión si el modelo trae la suya; el mundo tiene hueco en 8 casas, 9 personajes (colgado del cuerpo, con los pies en el origen del personaje), 3 objetos y el telar; `enable_vertex_colors` activa el color por vértice solo en las superficies que lo traen |
-| `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale a los 120 s como máximo con 60 s de espera; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean, se detienen al hablarles y dejan de pasear cuando llega el mensajero (ADR-0012) |
+| `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale a los 75 s como mínimo y a los 150 s como máximo; el vecino del camino sur saluda solo cuando el jugador se acerca; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean balanceando las piernas, se detienen al hablarles y dejan de pasear cuando llega el mensajero (ADR-0012, ADR-0013) |
 | `test_vegetation` | El reparto de ichu y queñua es determinista y deja libres la plaza, los caminos, las casas, las terrazas, la tejedora, el inicio, la salida de la comitiva y el mirador; las matas se apoyan en el terreno; los bloques de ichu se ocultan a 50 m y no proyectan sombra; cada queñua tiene tronco con colisión y separación mínima |
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
 

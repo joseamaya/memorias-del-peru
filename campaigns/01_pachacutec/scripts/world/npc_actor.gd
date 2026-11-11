@@ -9,12 +9,20 @@ extends Node3D
 @export var body_color: Color = Color(0.6, 0.45, 0.35, 1.0)
 @export var walk_speed: float = 3.2
 
+## Balanceo de piernas al caminar (ADR-0013): sin rig, el modelo trae las
+## piernas como nodos aparte y el personaje las gira sobre su eje X.
+const LEG_SWING_DEGREES: float = 24.0
+## Metros recorridos en medio ciclo de paso.
+const STRIDE_LENGTH: float = 0.75
+
 @onready var body: MeshInstance3D = $Body
 @onready var collision: StaticBody3D = $Collision
 
 var target: Vector3 = Vector3.ZERO
 var moving: bool = false
 var _idle_tween: Tween = null
+var _legs: Array[Node3D] = []
+var _stride_phase: float = 0.0
 
 
 func _ready() -> void:
@@ -36,9 +44,30 @@ func walk_to(point: Vector3) -> void:
 		_idle_tween.pause()
 
 
+## Asigna las piernas del modelo (pueden faltar: entonces no hay balanceo).
+func set_legs(left: Node3D, right: Node3D) -> void:
+	_legs.clear()
+	if left != null and right != null:
+		_legs.append(left)
+		_legs.append(right)
+	_apply_legs()
+
+
+## Indica si el personaje tiene piernas que balancear.
+func has_legs() -> bool:
+	return not _legs.is_empty()
+
+
+## Ángulo actual de la pierna izquierda, en grados (para las pruebas).
+func left_leg_angle() -> float:
+	return rad_to_deg(_legs[0].rotation.x) if has_legs() else 0.0
+
+
 ## Se detiene donde está.
 func stop() -> void:
 	moving = false
+	_stride_phase = 0.0
+	_apply_legs()
 	if _idle_tween != null and _idle_tween.is_valid():
 		_idle_tween.play()
 
@@ -62,7 +91,17 @@ func advance(delta: float) -> bool:
 		stop()
 		return true
 	global_position = global_position.move_toward(target, step)
+	_stride_phase += step / STRIDE_LENGTH * PI
+	_apply_legs()
 	return false
+
+
+func _apply_legs() -> void:
+	if _legs.is_empty():
+		return
+	var angle: float = deg_to_rad(LEG_SWING_DEGREES) * sin(_stride_phase)
+	_legs[0].rotation.x = angle
+	_legs[1].rotation.x = -angle
 
 
 ## Distancia horizontal al punto indicado.

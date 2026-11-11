@@ -29,6 +29,9 @@ sky_material = SubResource("PhysicalSkyMaterial_world")
 background_mode = 2
 sky = SubResource("Sky_world")
 ambient_light_source = 3
+ambient_light_color = Color(0.62, 0.66, 0.74, 1)
+ambient_light_sky_contribution = 0.6
+ambient_light_energy = 1.5
 reflected_light_source = 2
 fog_enabled = true
 fog_light_color = Color(0.62, 0.72, 0.86, 1)
@@ -44,7 +47,7 @@ script = ExtResource("3_world")
 environment = SubResource("Environment_world")
 
 [node name="Inti" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-12, -35, 0)
+rotation_degrees = Vector3(-26, -35, 0)
 light_color = Color(1, 0.86, 0.7, 1)
 light_energy = 1.2
 shadow_enabled = true

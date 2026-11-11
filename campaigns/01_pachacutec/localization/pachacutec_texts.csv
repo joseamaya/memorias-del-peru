@@ -17,3 +17,6 @@ PCH_TALK_VILLAGER_1,"Somos un ayllu pequeño. Cuando el Cusco llama, los hombres
 PCH_TALK_VILLAGER_2,"Los viajeros hablan de los chancas, allá por Andahuaylas. Dicen que cada vez son más."
 PCH_TALK_VILLAGER_3,"El curaca no se mueve de la plaza. Él será el primero en oír lo que traiga el mensajero."
 PCH_TALK_CURACA,"Espero noticias del Cusco. Quédate cerca de la plaza."
+PCH_NARR_GATHER,"Desde la plaza llaman a la gente: el mensajero está por llegar."
+PCH_NARR_GREET,"¡Llegas a tiempo! Ven a la plaza: hoy esperamos noticias del Cusco."
+PCH_END_TITLE,Fin del fragmento

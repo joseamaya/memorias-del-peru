@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://core/ui/hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stamina_bg"]
+bg_color = Color(0, 0, 0, 0.55)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stamina_fill"]
+bg_color = Color(0.88, 0.72, 0.32, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="HUD" type="Control"]
 anchors_preset = 15
@@ -73,13 +87,107 @@ visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = -80.0
-offset_right = 240.0
-offset_bottom = -50.0
+offset_left = 48.0
+offset_top = -76.0
+offset_right = 368.0
+offset_bottom = -56.0
 grow_vertical = 0
 mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_stamina_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_stamina_fill")
 max_value = 100.0
 value = 100.0
 show_percentage = false
 visible = false
+
+[node name="StaminaLabel" type="Label" parent="StaminaBar"]
+layout_mode = 0
+offset_top = -34.0
+offset_right = 320.0
+offset_bottom = -4.0
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "UI_STAMINA"
+
+[node name="PausePanel" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.45)
+visible = false
+
+[node name="PauseLabel" type="Label" parent="PausePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = -40.0
+offset_right = 500.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 52
+text = "UI_PAUSED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndPanel" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+visible = false
+
+[node name="EndTitle" type="Label" parent="EndPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -700.0
+offset_top = -110.0
+offset_right = 700.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 64
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndHint" type="Label" parent="EndPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -700.0
+offset_top = 20.0
+offset_right = 700.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1

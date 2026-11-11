@@ -16,6 +16,9 @@ const MIN_SUBTITLE_SECONDS: float = 4.0
 const SUBTITLE_GAP: float = 0.3
 ## Subtítulos en espera como máximo; si se llena, se descarta el más antiguo.
 const QUEUE_LIMIT: int = 4
+## Fundido de la tarjeta de fin y opacidad final del fondo.
+const END_FADE: float = 2.0
+const END_ALPHA: float = 0.85
 ## Fundidos del rótulo de lugar.
 const TITLE_FADE_IN: float = 0.8
 const TITLE_FADE_OUT: float = 1.2
@@ -27,6 +30,10 @@ const TITLE_FADE_OUT: float = 1.2
 @onready var stamina_bar: ProgressBar = $StaminaBar
 @onready var subtitle_label: Label = $SubtitleLabel
 @onready var title_label: Label = $TitleLabel
+@onready var pause_panel: Control = $PausePanel
+@onready var end_panel: ColorRect = $EndPanel
+@onready var end_title: Label = $EndPanel/EndTitle
+@onready var end_hint: Label = $EndPanel/EndHint
 
 var _subtitle_remaining: float = 0.0
 var _gap_remaining: float = 0.0
@@ -34,17 +41,26 @@ var _queue_texts: Array[String] = []
 var _queue_seconds: Array[float] = []
 var _title_total: float = 0.0
 var _title_elapsed: float = 0.0
+var _end_elapsed: float = -1.0
 
 
 func _ready() -> void:
 	_connect_refs()
 	subtitle_label.visible = false
 	title_label.visible = false
+	pause_panel.visible = false
+	end_panel.visible = false
+	# El aviso de pausa debe actualizarse con el árbol en pausa.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	var manager: Node = get_node_or_null("/root/GameManager")
+	if manager != null and manager.has_signal("pause_changed"):
+		manager.connect("pause_changed", show_pause)
 
 
 func _process(delta: float) -> void:
 	advance_subtitle(delta)
 	advance_title(delta)
+	advance_end_card(delta)
 
 
 ## Asigna el jugador y su estamina desde la escena que compone el HUD.
@@ -53,6 +69,40 @@ func bind(player_node: PlayerFPS, stamina_node: StaminaComponent) -> void:
 	stamina = stamina_node
 	if is_node_ready():
 		_connect_refs()
+
+
+## Muestra la tarjeta de fin con un fundido: título y cómo seguir.
+func show_end_card(title: String, hint: String) -> void:
+	end_title.text = title
+	end_hint.text = hint
+	end_panel.visible = true
+	_end_elapsed = 0.0
+	_apply_end_fade()
+
+
+## Avanza el fundido de la tarjeta de fin.
+func advance_end_card(delta: float) -> void:
+	if _end_elapsed < 0.0 or _end_elapsed >= END_FADE:
+		return
+	_end_elapsed = minf(_end_elapsed + delta, END_FADE)
+	_apply_end_fade()
+
+
+## Indica si la tarjeta de fin está a la vista.
+func is_end_card_visible() -> bool:
+	return end_panel.visible
+
+
+func _apply_end_fade() -> void:
+	var t: float = clampf(_end_elapsed / END_FADE, 0.0, 1.0)
+	end_panel.color = Color(0.0, 0.0, 0.0, END_ALPHA * t)
+	end_title.modulate.a = t
+	end_hint.modulate.a = t
+
+
+## Muestra u oculta el aviso de pausa.
+func show_pause(paused: bool) -> void:
+	pause_panel.visible = paused
 
 
 ## Segundos que necesita [param text] para leerse con calma; nunca menos que

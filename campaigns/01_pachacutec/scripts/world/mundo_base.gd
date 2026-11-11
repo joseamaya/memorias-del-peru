@@ -18,7 +18,7 @@ const RIDGE_HEIGHT: float = 11.0
 const PASS_HALF_WIDTH: float = 5.0
 const PASS_EDGE: float = 12.0
 const GRASS_COLOR: Color = Color(0.35, 0.4, 0.22, 1.0)
-const ROCK_COLOR: Color = Color(0.46, 0.43, 0.38, 1.0)
+const ROCK_COLOR: Color = Color(0.36, 0.33, 0.28, 1.0)
 const ROCK_FROM_HEIGHT: float = 1.0
 const ROCK_FULL_HEIGHT: float = 4.0
 const DEBUG_PROFILE_KEY: Key = KEY_F2
@@ -62,6 +62,15 @@ const TITLE_SECONDS: float = 7.0
 ## «Hablar»: escena del cuerpo interactuable y pausa del vecino que habla.
 const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.tscn"
 const TALK_HOLD_SECONDS: float = 7.0
+## Vecino que recibe al jugador junto al camino sur (ADR-0013).
+const GREETER_POINT: Vector3 = Vector3(3.2, 0.0, 18.0)
+## Tarjeta de fin (ADR-0013): aparece este tiempo después de que la comitiva
+## sale de la plaza, unos 60 s después del último subtítulo, como el fin de
+## sesión del protocolo de prueba.
+const END_CARD_DELAY: float = 50.0
+const END_TITLE_KEY: StringName = &"PCH_END_TITLE"
+const END_HINT_KEY: StringName = &"UI_END_HINT"
+const RESTART_KEY: Key = KEY_R
 ## Velocidad de paseo de los vecinos antes de la noticia.
 const NEIGHBOR_WALK_SPEED: float = 1.4
 ## Tierra de cultivo sobre cada terraza: surcos paralelos al muro de
@@ -89,6 +98,9 @@ const SURFACE_STONE: StringName = &"stone"
 @onready var hud: PlayerHud = $UILayer/HUD
 @onready var environment_controller: EnvironmentQualityController = $EnvironmentQualityController
 
+var _end_card_remaining: float = -1.0
+var _end_card_shown: bool = false
+
 
 func _ready() -> void:
 	_build_terrain()
@@ -100,7 +112,45 @@ func _ready() -> void:
 	environment_controller.bind(world_environment, sun)
 
 
+func _process(delta: float) -> void:
+	advance_end_card(delta)
+
+
+## Cuenta atrás de la tarjeta de fin; pública para poder probarla.
+func advance_end_card(delta: float) -> void:
+	if _end_card_shown or _end_card_remaining < 0.0:
+		return
+	_end_card_remaining -= delta
+	if _end_card_remaining > 0.0:
+		return
+	_end_card_shown = true
+	if hud != null:
+		hud.show_end_card(tr(String(END_TITLE_KEY)), tr(String(END_HINT_KEY)))
+
+
+## Indica si la tarjeta de fin está a la vista.
+func is_end_card_shown() -> bool:
+	return _end_card_shown
+
+
+func _on_event_finished() -> void:
+	_end_card_remaining = END_CARD_DELAY
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if _end_card_shown:
+		# Con la tarjeta de fin, R reinicia y Esc sale (no pausa).
+		if event.is_action_pressed("pause"):
+			get_viewport().set_input_as_handled()
+			var manager: Node = get_node_or_null("/root/GameManager")
+			if manager != null:
+				manager.call("request_quit")
+			return
+		var restart: InputEventKey = event as InputEventKey
+		if restart != null and restart.pressed and not restart.echo and restart.keycode == RESTART_KEY:
+			get_viewport().set_input_as_handled()
+			get_tree().reload_current_scene()
+			return
 	if not OS.is_debug_build():
 		return
 	if not (event is InputEventKey):
@@ -193,8 +243,10 @@ func _build_llacta() -> void:
 	_add_visual_box(llacta, "Plaza", Vector3(0.0, 0.03, 0.0), Vector3(26.0, 0.06, 26.0), dirt)
 	_add_visual_box(llacta, "PathSouth", Vector3(0.0, 0.035, 30.0), Vector3(4.0, 0.07, 30.0), dirt)
 	_add_visual_box(llacta, "PathNorth", Vector3(0.0, 0.035, -35.0), Vector3(4.0, 0.07, 30.0), dirt)
-	_add_visual_box(llacta, "PathEast", Vector3(20.0, 0.035, 0.0), Vector3(30.0, 0.07, 4.0), dirt)
-	_add_visual_box(llacta, "PathWest", Vector3(-20.0, 0.035, 0.0), Vector3(30.0, 0.07, 4.0), dirt)
+	# Los caminos este y oeste empiezan en el borde de la plaza: si se solapan
+	# con ella, sus caras superiores casi coplanarias parpadean (z-fighting).
+	_add_visual_box(llacta, "PathEast", Vector3(24.0, 0.035, 0.0), Vector3(22.0, 0.07, 4.0), dirt)
+	_add_visual_box(llacta, "PathWest", Vector3(-24.0, 0.035, 0.0), Vector3(22.0, 0.07, 4.0), dirt)
 
 	var houses: Node3D = Node3D.new()
 	houses.name = "Houses"
@@ -271,9 +323,12 @@ func _build_llacta() -> void:
 			event.subtitle_requested.connect(_on_subtitle_requested)
 		if not event.phase_changed.is_connected(_on_event_phase_changed):
 			event.phase_changed.connect(_on_event_phase_changed)
+		if not event.finished.is_connected(_on_event_finished):
+			event.finished.connect(_on_event_finished)
 		event.bind(player, plaza_point, messenger, curaca, principals, neighbors, pututu)
 		for actor: NpcActor in neighbors:
 			actor.walk_speed = NEIGHBOR_WALK_SPEED
+		event.set_greeter(neighbor_three, GREETER_POINT)
 		event.set_wander_routes(neighbor_routes(neighbor_one, neighbor_two, neighbor_three))
 		for talk: NpcTalk in talks:
 			if talk != null:
@@ -719,4 +774,6 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	var no_collisions: Array[Node] = []
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, npc_model_files(node_name), blockout, no_collisions)
 	slot.use_model_collision = false
+	if slot.model != null:
+		actor.set_legs(slot.model.find_child("LegL", true, false) as Node3D, slot.model.find_child("LegR", true, false) as Node3D)
 	return actor

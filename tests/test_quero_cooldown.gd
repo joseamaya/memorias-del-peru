@@ -1,5 +1,6 @@
 extends RefCounted
-## Comprueba el tiempo de espera del quero.
+## Comprueba el tiempo de espera del quero y que no está disponible mientras
+## dura (ADR-0008).
 
 
 func test_quero_cooldown() -> bool:
@@ -16,15 +17,19 @@ func test_quero_cooldown() -> bool:
 	var quero: QueroChicha = QueroChicha.new()
 	quero.restore_amount = 35.0
 	quero.cooldown_seconds = 10.0
+	var available_before: bool = quero.is_available()
 	quero.interact(interactor)
 	var after_first: float = stamina.get_current()
+	var available_during: bool = quero.is_available()
 	quero.interact(interactor)
 	var after_second: float = stamina.get_current()
 	quero.tick_cooldown(10.0)
+	var available_after: bool = quero.is_available()
 	quero.interact(interactor)
 	var after_third: float = stamina.get_current()
 	var ok: bool = (
-		is_equal_approx(after_first, 35.0)
+		available_before and not available_during and available_after
+		and is_equal_approx(after_first, 35.0)
 		and is_equal_approx(after_second, 35.0)
 		and is_equal_approx(after_third, 70.0)
 	)

@@ -1,8 +1,8 @@
 extends RefCounted
-## Comprueba los cambios del primer piloto (ADR-0012): el rótulo de lugar al
-## empezar, «Hablar» con seis personajes solo antes de la noticia, la frase en
+## Comprueba los cambios del primer piloto (ADR-0012, ADR-0013): el rótulo de
+## lugar al empezar, el vecino que recibe al jugador en el camino sur, «Hablar» con seis personajes solo antes de la noticia, la frase en
 ## el HUD con el personaje girado hacia el jugador, y el paseo de los vecinos,
-## que se detiene cuando llega el mensajero.
+## que se detiene cuando llega el mensajero, con las piernas balanceándose.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 const TALKERS: Array[String] = ["Tejedora", "Agricultor", "Curaca", "Habitante1", "Habitante2", "Habitante3"]
@@ -25,7 +25,17 @@ func test_npc_talk_and_wander() -> bool:
 		world.free()
 		return false
 	ok = ok and title.visible and not title.text.begins_with("PCH_")
-	ok = ok and event.arrival_delay <= 120.0 and event.arrival_grace <= 60.0
+	ok = ok and event.arrival_delay <= 75.0 and event.arrival_delay + event.arrival_grace <= 150.0
+
+	# El vecino que recibe espera junto al camino sur y saluda al acercarse.
+	var greeter: NpcActor = world.get_node("Llacta/NPCs/Habitante3") as NpcActor
+	ok = ok and greeter.global_position.distance_to(Vector3(3.2, 0.0, 18.0)) < 0.01 and not event.has_greeted()
+	player.global_position = Vector3(0.0, 0.05, 40.0)
+	event.step(0.1)
+	ok = ok and not event.has_greeted()
+	player.global_position = Vector3(0.0, 0.05, 24.0)
+	event.step(0.1)
+	ok = ok and event.has_greeted()
 
 	# «Hablar»: seis personajes, en la capa de interactuables y disponibles.
 	var talks: Array[NpcTalk] = []
@@ -56,9 +66,14 @@ func test_npc_talk_and_wander() -> bool:
 	# Paseo: los vecinos se mueven antes de la noticia.
 	var neighbor: NpcActor = world.get_node("Llacta/NPCs/Habitante1") as NpcActor
 	var start: Vector3 = neighbor.global_position
-	for i: int in range(20):
-		event.step(0.5)
+	var max_swing: float = 0.0
+	ok = ok and neighbor.has_legs()
+	for i: int in range(40):
+		event.step(0.25)
+		max_swing = maxf(max_swing, absf(neighbor.left_leg_angle()))
 	ok = ok and neighbor.global_position.distance_to(start) > 1.0
+	# Al caminar balancea las piernas (ADR-0013).
+	ok = ok and max_swing > 10.0
 	ok = ok and event.phase == MessengerEvent.Phase.IDLE
 
 	# Hablar con un vecino lo detiene un rato.
@@ -67,6 +82,7 @@ func test_npc_talk_and_wander() -> bool:
 	var held_at: Vector3 = neighbor.global_position
 	event.step(2.0)
 	ok = ok and neighbor.global_position.distance_to(held_at) < 0.01
+	ok = ok and is_zero_approx(neighbor.left_leg_angle())
 
 	# Al llegar el mensajero, nadie más habla y los vecinos dejan de pasear.
 	event.start()

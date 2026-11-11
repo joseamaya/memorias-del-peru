@@ -23,6 +23,12 @@ func get_interaction_text() -> String:
 	return tr("PCH_OFFERING_INTERACT")
 
 
+## Una vez dejada la ofrenda deja de enfocarse: el HUD no ofrece una acción
+## que ya no responde (ADR-0008).
+func is_available() -> bool:
+	return not used
+
+
 func interact(_interactor: Node3D) -> void:
 	if used:
 		return
