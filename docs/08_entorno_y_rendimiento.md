@@ -123,3 +123,14 @@ En ambos perfiles el jugador terminó apoyado en el terreno (`is_on_floor = true
 El objetivo vinculante (≥ 30 FPS) se cumple con amplio margen. La referencia con GPU dedicada sigue sin definir, por lo que los 60 FPS recomendados en esa referencia quedan sin verificar.
 
 > La medición anterior (55,92 FPS, jugador quieto y con `Engine.max_fps = 60`) queda invalidada por no usar un recorrido fijo y por ocultar el margen. También quedó invalidada la primera medición con el terreno invertido.
+
+### Medición con bloqueo de llacta (Fase 4, provisional)
+
+Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas, terrazas, límites, 3 interactuables y 3 NPC de bloqueo.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 262,8 | 200,0 | 3,81 ms | 5,0 ms | 38 | 84,9 MB |
+| Medio | 70,2 | 50,0 | 14,24 ms | 20,0 ms | 32 | 163,7 MB |
+
+El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Es una medición provisional: cambiará al incorporar los assets definitivos, vegetación y animaciones.

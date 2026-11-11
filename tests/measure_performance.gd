@@ -8,7 +8,7 @@ extends SceneTree
 
 const WARMUP_MS: int = 3000
 const MEASURE_MS: int = 8000
-const TURN_RAD_PER_SECOND: float = 0.2
+const TURN_RAD_PER_SECOND: float = 0.65
 const PROFILE_LABELS: Array[String] = ["LOW", "MEDIUM"]
 
 var _player: CharacterBody3D = null
@@ -22,10 +22,16 @@ var _frame_times: Array[float] = []
 
 
 func _initialize() -> void:
+	_start.call_deferred()
+
+
+func _start() -> void:
 	var packed: PackedScene = load("res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn") as PackedScene
 	var world: Node = packed.instantiate()
 	root.add_child(world)
 	_player = world.get_node_or_null("PlayerFPS") as CharacterBody3D
+	if _player != null:
+		_player.global_position = Vector3(0.0, 0.05, 0.0)
 	_stamina = world.get_node_or_null("PlayerFPS/StaminaComponent")
 	_settings = root.get_node_or_null("GraphicsSettings")
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)

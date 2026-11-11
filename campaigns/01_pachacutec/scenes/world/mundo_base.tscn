@@ -1,9 +1,13 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://core/player/player_fps.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://core/ui/hud.tscn" id="2_hud"]
 [ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/mundo_base.gd" id="3_world"]
 [ext_resource type="Script" path="res://core/systems/graphics/environment_quality_controller.gd" id="4_controller"]
+[ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/quero_chicha.tscn" id="5_quero"]
+[ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/ofrenda_pachamama.tscn" id="6_ofrenda"]
+[ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/pututu.tscn" id="7_pututu"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/chasqui_event.gd" id="8_event"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_world"]
 rayleigh_coefficient = 1.5
@@ -48,15 +52,34 @@ directional_shadow_max_distance = 40.0
 [node name="Terrain" type="Node3D" parent="."]
 
 [node name="PlayerSpawn" type="Marker3D" parent="."]
-position = Vector3(0, 0.05, 0)
+position = Vector3(0, 0.05, 45)
+
+[node name="PlazaPoint" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 2)
 
 [node name="EnvironmentAudio" type="Node3D" parent="."]
+
+[node name="Llacta" type="Node3D" parent="."]
+
+[node name="Boundary" type="Node3D" parent="."]
+
+[node name="EventController" type="Node" parent="."]
+script = ExtResource("8_event")
+
+[node name="QueroChicha" parent="." instance=ExtResource("5_quero")]
+position = Vector3(4, 0.91, 4)
+
+[node name="OfrendaPachamama" parent="." instance=ExtResource("6_ofrenda")]
+position = Vector3(-8, 0.15, 7)
+
+[node name="Pututu" parent="." instance=ExtResource("7_pututu")]
+position = Vector3(-4, 1, 4)
 
 [node name="EnvironmentQualityController" type="Node" parent="."]
 script = ExtResource("4_controller")
 
 [node name="PlayerFPS" parent="." instance=ExtResource("1_player")]
-position = Vector3(0, 0.05, 0)
+position = Vector3(0, 0.05, 45)
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
