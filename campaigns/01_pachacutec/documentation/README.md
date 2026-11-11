@@ -43,6 +43,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Guion y personajes | En el alcance v2 §2, §5 y §6.4 |
 | [guion_facilitador.md](guion_facilitador.md) | Listo para el piloto — sesiones de prueba |
 | [plantilla_sesion.md](plantilla_sesion.md) | Plantilla de registro de cada sesión |
+| [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
 
 ## 6. Notas de producción (Fase 2)
 

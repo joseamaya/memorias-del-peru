@@ -224,7 +224,7 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 | PCH-006 | Llacta / asentamiento | A / R | pendiente |
 | PCH-007 | Vivienda rural de piedra y barro | A / R | pendiente |
 | PCH-008 | Terraza agrícola | A | pendiente |
-| PCH-009 | Pututu | A / H | verificado (A) |
+| PCH-009 | Pututu | A / H | pendiente (verificación retirada el 2026-11-11) |
 | PCH-010 | Telar y textil | A / R | pendiente |
 | PCH-011 | Mensajero (no chasqui) | H / R | pendiente |
 | PCH-012 | Ofrenda a la Pachamama | H / R | pendiente |

@@ -91,10 +91,13 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: instrumento
 - Clasificación: A (piezas en colecciones) / H (su uso anunciando la llegada)
 - Uso en el juego: `campaigns/01_pachacutec/scenes/objects/pututu.tscn`; modelo `pch_pututu.glb` (R: caracola con labio rosado sobre una piedra)
-- Fuentes: Museo Larco, ficha ML002220, «Ceremonial Trumpet or Pututo», sala 9, vitrina 114: caracola *Strombus*, Perú, 1–1532 d. C., usada como trompeta ceremonial. Guamán Poma de Ayala, *Nueva corónica y buen gobierno* (c. 1615), grabado «Hatun chasqui, churo mullo chasqui» (folio por confirmar).
+- Fuentes:
+  - Museo Larco, ML002220, «Personaje con Pututo Mochica» (https://coleccion.museolarco.org/detail/2220): botella escultórica de cerámica que representa a un músico con un caracol *Strombus*; cultura mochica, Época Auge (1–800 d. C.), valle de Santa. Es evidencia iconográfica del uso del pututu, **no** la trompeta de caracola en sí ni una pieza inca.
+  - Falta una trompeta de caracola *Strombus* concreta en una colección, preferiblemente del Horizonte Tardío.
+  - Guamán Poma de Ayala, *Nueva corónica y buen gobierno* (c. 1615), dibujo 138 «Hatun chasqui, churu mullu chasqui», pág. 350 [352] del facsímil de Det Kgl. Bibliotek (https://poma.kb.dk/permalink/2006/poma/352/es/text/). Localizado el 2026-11-11; falta que una persona lo lea.
 - Discrepancias entre fuentes: —
 - Notas de representación: se representa la versión de caracola marina, anterior a los cuernos de vacuno introducidos tras 1532. La forma exacta es una reconstrucción (R).
-- Estado de verificación: **verificado (A)** — la ficha de colección del Museo Larco se consultó en línea el 2026-11-10. La afirmación H sobre su uso por los chasquis sigue pendiente de folio.
+- Estado de verificación: **pendiente**. Se marcó «verificado (A)» el 2026-11-10 a partir de una descripción de ML002220 que no corresponde a la pieza. El 2026-11-11 se comprobó que la ficha del museo describe una botella mochica con un músico, no una caracola-trompeta, y la verificación se retiró. Para volver a verificar hace falta una caracola-trompeta concreta en una colección (A) y la lectura del dibujo 138 de Guamán Poma (H).
 
 ### PCH-010 — Telar y textil
 - Tipo: herramienta / vestimenta

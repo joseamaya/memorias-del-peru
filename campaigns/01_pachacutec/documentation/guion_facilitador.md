@@ -9,13 +9,13 @@
 | | Piloto | Oficial |
 |---|---|---|
 | Personas | 1–2 | 6 (P1–P6) |
-| Versión del juego | Bloqueo actual (cajas y cápsulas) | Slice con assets definitivos |
+| Versión del juego | Slice con los modelos generados (estáticos, reconstrucción R; alcance v3.3) | La misma versión, con los cambios que salgan del piloto |
 | ¿Cuenta para la métrica 5 y la duración? | **No** | Sí |
 | Código | PIL-1, PIL-2 | P1–P6 |
 
 Las personas del piloto quedan excluidas de las sesiones oficiales: ya conocen la historia.
 
-El piloto responde a dos preguntas antes de invertir en assets:
+El piloto responde a dos preguntas antes de las sesiones oficiales:
 
 1. **¿Se entiende la historia?** Preguntas 1 y 2 del cuestionario.
 2. **¿Se lee la espera como un fallo?** El mensajero llega a los 4 minutos ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). Hay que observar si la persona cree que el juego se ha quedado parado, lo pregunta o abandona.
@@ -39,6 +39,14 @@ Definida en el alcance §9.2 (v3.1, aprobada el 2026-11-11). Resumen:
 - [ ] Cerrar el resto de ventanas. Abrir el juego desde un terminal visible al facilitador (no a la persona) para ver la consola: `godot --path .`
 - [ ] Partida recién abierta: el reloj del mensajero empieza al cargar el mundo. Si la persona tarda en empezar, cerrar y volver a abrir justo antes.
 - [ ] Cronómetro y la hoja de [plantilla_sesion.md](plantilla_sesion.md), impresa o en otra pantalla.
+
+## 3.1 Invitación
+
+Por invitación directa y fuera del círculo del equipo (alcance §9.1). El mensaje **no** menciona la historia, los incas, los chancas ni el tema histórico, para no sesgar las respuestas ni atraer solo a quien ya le interesa. Texto orientativo:
+
+> «Hola, estoy probando un videojuego corto en desarrollo y busco personas que no lo hayan visto para jugarlo unos 10 minutos y responder cinco preguntas. Son unos 20 minutos en total, en [lugar], el [día] a la [hora]. No hace falta experiencia con videojuegos. ¿Te animas?»
+
+Para el piloto basta con 1–2 personas. Anotar aparte, fuera del repositorio, quién es cada código; en el repositorio solo figura el código (PIL-1, PIL-2).
 
 ## 4. Texto para leer
 
