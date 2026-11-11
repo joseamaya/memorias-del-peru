@@ -102,6 +102,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | Prueba | Comprueba |
 |---|---|
 | `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas y al menos dos caminos |
+| `test_terraces_have_ramps` | Cada nivel de terraza tiene una rampa inclinada con colisión |
 | `test_world_bounds` | El límite del mundo tiene colisión a ~70 m del centro |
 | `test_llacta_interactables` | Quero, ofrenda y pututu existen, son `Interactable` y de tipos distintos |
 | `test_npcs_present` | Tejedora y agricultor existen con presencia |

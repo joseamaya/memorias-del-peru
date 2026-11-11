@@ -125,9 +125,9 @@ func _build_llacta() -> void:
 	var terraces: Node3D = Node3D.new()
 	terraces.name = "Terraces"
 	llacta.add_child(terraces)
-	_add_box_body(terraces, "Terrace01", Vector3(34.0, 0.4, 0.0), Vector3(8.0, 0.8, 30.0), stone, 1)
-	_add_box_body(terraces, "Terrace02", Vector3(42.0, 1.2, 0.0), Vector3(8.0, 0.8, 30.0), stone, 1)
-	_add_box_body(terraces, "Terrace03", Vector3(50.0, 2.0, 0.0), Vector3(8.0, 0.8, 30.0), stone, 1)
+	_add_terrace(terraces, "Terrace01", 34.0, 0.0, 0.8, stone)
+	_add_terrace(terraces, "Terrace02", 42.0, 0.8, 1.6, stone)
+	_add_terrace(terraces, "Terrace03", 50.0, 1.6, 2.4, stone)
 
 	_add_box_body(llacta, "PedestalQuero", Vector3(4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1)
 	_add_box_body(llacta, "PedestalPututu", Vector3(-4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1)
@@ -233,6 +233,41 @@ func _add_box_body(parent: Node3D, node_name: String, at: Vector3, size: Vector3
 	body.add_child(collision)
 	parent.add_child(body)
 	return body
+
+
+func _add_terrace(parent: Node3D, node_name: String, center_x: float, bottom_y: float, top_y: float, material: Material) -> void:
+	var height: float = top_y - bottom_y
+	var center_y: float = bottom_y + height * 0.5
+	_add_box_body(parent, node_name + "North", Vector3(center_x, center_y, -8.5), Vector3(8.0, height, 13.0), material, 1)
+	_add_box_body(parent, node_name + "South", Vector3(center_x, center_y, 8.5), Vector3(8.0, height, 13.0), material, 1)
+	_add_ramp(parent, node_name + "Ramp", Vector3(center_x - 4.0, bottom_y, 0.0), 8.0, height, 4.0, material)
+
+
+## Rampa transitable entre dos niveles de terraza. El cuerpo gira sobre Z y la
+## cara superior pasa por el punto de arranque.
+func _add_ramp(parent: Node3D, node_name: String, start: Vector3, run: float, rise: float, width: float, material: Material) -> void:
+	var angle: float = atan2(rise, run)
+	var length: float = sqrt(run * run + rise * rise)
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = node_name
+	body.position = start + Vector3(run * 0.5, rise * 0.5, 0.0)
+	body.rotation = Vector3(0.0, 0.0, angle)
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	var box_mesh: BoxMesh = BoxMesh.new()
+	box_mesh.size = Vector3(length, 0.3, width)
+	mesh_instance.mesh = box_mesh
+	mesh_instance.material_override = material
+	mesh_instance.position = Vector3(0.0, -0.15, 0.0)
+	body.add_child(mesh_instance)
+	var collision: CollisionShape3D = CollisionShape3D.new()
+	var box_shape: BoxShape3D = BoxShape3D.new()
+	box_shape.size = Vector3(length, 0.3, width)
+	collision.shape = box_shape
+	collision.position = Vector3(0.0, -0.15, 0.0)
+	body.add_child(collision)
+	parent.add_child(body)
 
 
 func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch: Material) -> void:

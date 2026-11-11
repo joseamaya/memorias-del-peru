@@ -10,6 +10,7 @@ const WARMUP_MS: int = 3000
 const MEASURE_MS: int = 8000
 const TURN_RAD_PER_SECOND: float = 0.65
 const PROFILE_LABELS: Array[String] = ["LOW", "MEDIUM"]
+const FINISH_GRACE_FRAMES: int = 30
 
 var _player: CharacterBody3D = null
 var _stamina: Node = null
@@ -18,6 +19,7 @@ var _profile_index: int = 0
 var _warmup: bool = true
 var _phase_start_ms: int = 0
 var _last_ms: int = 0
+var _finish_frames: int = 0
 var _frame_times: Array[float] = []
 
 
@@ -116,7 +118,20 @@ func _print_result(label: String) -> void:
 func _finish() -> void:
 	Input.action_release("move_forward")
 	Input.action_release("run")
+	if process_frame.is_connected(_on_frame):
+		process_frame.disconnect(_on_frame)
 	var audio: AudioManagerService = root.get_node_or_null("AudioManager") as AudioManagerService
 	if audio != null:
 		audio.stop_all()
-	quit(0)
+	var world: Node = root.get_node_or_null("MundoBase")
+	if world != null:
+		world.queue_free()
+	_finish_frames = FINISH_GRACE_FRAMES
+	process_frame.connect(_on_frame_after_finish)
+
+
+func _on_frame_after_finish() -> void:
+	_finish_frames -= 1
+	if _finish_frames <= 0:
+		process_frame.disconnect(_on_frame_after_finish)
+		quit(0)
