@@ -159,6 +159,17 @@ Mismo comando y condiciones que la medición anterior, con la carga del sistema 
 
 Una primera versión más densa en triángulos (150 por mata y 2 000 por árbol) bajaba el perfil Medio a 61–66 FPS con p1 de 40–45. Al quitar por separado el ichu o la queñua se recuperaban unos 70 FPS en cada caso, así que se aligeraron los dos modelos. El objetivo vinculante (≥ 30 FPS) se sigue cumpliendo con margen y el perfil Medio queda por encima de 60 FPS de media, aunque su p1 baja de 60. Si hiciera falta más margen, las palancas son la distancia de ocultación del ichu y la sombra de las queñuas.
 
+### Medición con personajes (Fase 4, provisional, 2026-11-11)
+
+Mismo comando y condiciones, con la carga del sistema entre 1,9 y 2,2. La escena sustituye las cápsulas de los 9 personajes por modelos estáticos de ~950–1 100 triángulos (alcance v3.3). Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 195,4 (192,1–201,7) | 142,9 (142,9–166,7) | 5,12 ms | 6–7 ms | 182–198 | 94,5 MB |
+| Medio | 72,3 (70,9–75,7) | 55,6 (50,0–58,8) | 13,83 ms | 17–20 ms | 164–172 | 167,4 MB |
+
+Sin cambios apreciables respecto a la medición con vegetación.
+
 ### Medición de la llacta completa (Fase 4, provisional)
 
 Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.

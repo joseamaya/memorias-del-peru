@@ -108,7 +108,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-011 — Mensajero (no chasqui)
 - Tipo: personaje
 - Clasificación: H / R
-- Uso en el juego: `mundo_base.tscn` (`Llacta/NPCs/Mensajero`) y `messenger_event.gd`
+- Uso en el juego: `mundo_base.tscn` (`Llacta/NPCs/Mensajero`) y `messenger_event.gd`; modelo `pch_npc_messenger.glb` (R: unku de viaje sin insignias, paño en la cabeza, chuspa y bulto atado a la espalda)
 - Fuentes (identificadas; pendiente de comprobación con la edición a la vista):
   - Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. 27 «The Chancas attack Cuzco» (trad. Bauer y Smith, University of Texas Press, 2007): un **quillis-cachi** huye del campamento chanca y da la noticia en el Cusco. El rango de páginas (107–111) procede del índice publicado por la editorial; **no se han leído esas páginas**, así que no cuentan como verificación.
   - Inca Garcilaso de la Vega, *Comentarios reales*, I parte, lib. VI, cap. VII «Postas y correos, y los despachos que llevaban» (texto leído en edición digital). El capítulo describe el sistema de postas; **no se afirma** que lo feche en el reinado de Pachacútec. Que el libro VI trate de ese reinado no basta para fechar la institución.
@@ -167,7 +167,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-017 — Curaca y hombres principales
 - Tipo: personaje / organización social
 - Clasificación: H / R
-- Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`
+- Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`; modelos `pch_npc_curaca.glb`, `pch_npc_principal.glb` y `pch_npc_authority.glb` (R: unku con franja ajedrezada, manto teñido y cinta en la cabeza como distintivos discretos; sin vara ni orejeras, que serían coloniales o imperiales)
 - Fuentes (identificadas; pendiente de capítulo y página): María Rostworowski, *Curacas y sucesiones: costa norte* (1961) y *Señoríos indígenas de Lima y Canta* (1978); Sarmiento de Gamboa, *Historia de los Incas*, cap. 27 (Inca Yupanqui convoca a los curacas).
 - Discrepancias entre fuentes: —
 - Notas de representación: el curaca y los hombres principales **parten hacia el Cusco para sumarse a la defensa**; el guion debe impedir la lectura de huida. Distintivos de autoridad discretos (R).
@@ -176,7 +176,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-018 — Vestimenta y apariencia del habitante común
 - Tipo: vestimenta
 - Clasificación: R (a partir de A)
-- Uso en el juego: tejedora, agricultor, mensajero y habitantes
+- Uso en el juego: tejedora, agricultor, mensajero y habitantes; modelos `pch_npc_weaver.glb` y `pch_npc_villager.glb` (R: anacu con faja, lliclla con franjas sujeta con tupu, trenzas), `pch_npc_farmer.glb` (R: unku, manto, paño en la cabeza, chuspa y chaquitaclla) y `pch_npc_commoner.glb` (R: unku, manto y chuspa). Ojotas en todos
 - Fuentes (identificadas; pendiente de ficha y página): piezas textiles arqueológicas en colecciones públicas; Guamán Poma de Ayala, *Nueva corónica* (c. 1615), dibujos de habitantes (posteriores a la conquista: se usan solo como indicio, no como modelo directo).
 - Discrepancias entre fuentes: —
 - Notas de representación: sin retratos “auténticos”; variantes de color y de tocado para distinguir oficios; sin prendas ni elementos coloniales. La apariencia es interpretación declarada.

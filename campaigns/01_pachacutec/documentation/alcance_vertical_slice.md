@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.2)** — 2026-11-11; sustituye a la v3.1
+- Estado: **Aprobado (v3.3)** — 2026-11-11; sustituye a la v3.2
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -15,6 +15,7 @@
 | v3 | Disparo por reloj, pututu disponible solo en la llamada, aviso de la llamada, habitantes que no parten, casas fuera de los caminos, camino norte y mirador, y duración ajustada a 5–8 min. |
 | v3.1 | Define cuándo empieza y termina una sesión para medir la duración (§9.2). Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.2 | Aplica [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md): Blender 5.x y modelos generados por script (§7 y §7.1). Cambio de herramienta; no altera el contenido ni el protocolo. |
+| v3.3 | Personajes estáticos, sin rig ni animación, para el piloto y las sesiones (§5, §6.1 y §7.1). El rig queda para después del piloto si las sesiones muestran que el desplazamiento sin animación distrae. Aprobada por el responsable del proyecto el 2026-11-11. |
 
 ## 1. Objetivo
 
@@ -116,6 +117,8 @@ Reglas:
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
 
+**Modelos estáticos (v3.3).** Los personajes no tienen rig ni animación: se desplazan y se giran como hasta ahora, pero sin mover brazos ni piernas. El leve balanceo de reposo del bloqueo no pasa al modelo. Las presencias de la tabla que piden gestos (tejer, girar la cabeza, hablar con gestos) quedan sin animación propia y se sostienen con la orientación, la posición y los subtítulos. Si el piloto muestra que el desplazamiento sin animación distrae o se lee mal, se añadirá el rig con un ADR.
+
 La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo. El resto forma parte del evento: solo el curaca y los dos hombres principales parten; los vecinos permanecen en la plaza, como dice el cierre.
 
 ## 6. Assets
@@ -131,7 +134,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Pututu | `.glb` | Blender | Propia | PCH-009 |
 | Telar | `.glb` | Blender | Propia | PCH-010 |
 | Quero | `.glb` | Blender | Propia | PCH-004 |
-| Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` riggeado | Blender | Propia | PCH-018 |
+| Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` estático (v3.3; rig pospuesto) | Blender | Propia | PCH-018 |
 | Variante de curaca y hombres principales | `.glb` | Blender, variante del cuerpo base | Propia | PCH-017 |
 | Ichu y queñua | Mallas o billboards | Blender / procedural | Propia | PCH-013 |
 | Llama o alpaca (opcional) | `.glb` | Blender | Propia | PCH-014 |
@@ -187,9 +190,9 @@ Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo 
 | Bloqueo | Archivos, en orden de preferencia | Origen del modelo | Estado |
 |---|---|---|---|
 | Viviendas pares / impares | `pch_house_a.glb` / `pch_house_b.glb` | Base de la vivienda, mirando a la plaza por −Z; con colisión propia (`-convcolonly` o `-col`) | Generadas (R) |
-| Tejedora, agricultor, mensajero | `pch_npc_weaver.glb`, `pch_npc_farmer.glb`, `pch_npc_messenger.glb` → `pch_npc_commoner.glb` | Pies | Pendiente (bloqueo) |
-| Habitantes 1–3 | `pch_npc_villager.glb` → `pch_npc_commoner.glb` | Pies | Pendiente (bloqueo) |
-| Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies | Pendiente (bloqueo) |
+| Tejedora, agricultor, mensajero | `pch_npc_weaver.glb`, `pch_npc_farmer.glb`, `pch_npc_messenger.glb` → `pch_npc_commoner.glb` | Pies | Generados, estáticos (R) |
+| Habitantes 1–3 | `pch_npc_villager.glb` → `pch_npc_commoner.glb` | Pies | Generados, estáticos (R); los tres comparten modelo |
+| Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies | Generados, estáticos (R) |
 | Quero, pututu, adoratorio | `pch_quero.glb`, `pch_pututu.glb`, `pch_offering_shrine.glb` | Base del objeto | Generados (R) |
 | Telar (sin bloqueo) | `pch_loom.glb` | Extremo de la tejedora; el telar se extiende hacia +Z de Godot hasta la estaca | Generado (R) |
 | Vegetación (sin bloqueo) | `pch_ichu_a.glb`, `pch_ichu_b.glb`; `pch_quenua_a.glb`, `pch_quenua_b.glb` | Base de la mata o del tronco; un único objeto por archivo, porque se repite con `MultiMesh` | Generados (R) |
@@ -339,5 +342,6 @@ La mediana esperada es **6–7 minutos**. Si la prueba con seis personas queda p
 - [x] Se confirma el reparto de textos, incluido el aviso de la llamada.
 - [x] Se confirman la salida por el camino norte y la permanencia de los vecinos.
 - [x] Se confirma la medición de la duración de §9.2 (v3.1, 2026-11-11).
+- [x] Se confirman los personajes estáticos para el piloto y las sesiones (v3.3, 2026-11-11).
 
 Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.

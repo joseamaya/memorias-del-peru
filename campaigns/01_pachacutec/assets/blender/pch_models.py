@@ -21,7 +21,7 @@ Convenciones (alcance §7 y §7.1):
   colisión convexa al importar y no se dibujan.
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
-(PCH-004, 007, 009, 010, 012 y 013); ninguna forma concreta está documentada como
+(PCH-004, 007, 009, 010, 011, 012, 013, 017 y 018); ninguna forma concreta está documentada como
 hecho.
 """
 
@@ -71,6 +71,14 @@ PALETTE = {
 	"quenua_peel": ((0.70, 0.46, 0.33), 0.9),
 	"quenua_leaf": ((0.22, 0.31, 0.18), 0.9),
 	"quenua_leaf_light": ((0.31, 0.40, 0.23), 0.9),
+	"skin": ((0.55, 0.37, 0.26), 0.7),
+	"hair": ((0.07, 0.05, 0.05), 0.8),
+	"eye": ((0.05, 0.04, 0.04), 0.5),
+	"sole": ((0.30, 0.24, 0.16), 1.0),
+	"copper": ((0.74, 0.46, 0.26), 0.45),
+	"wool_brown": ((0.43, 0.30, 0.20), 0.9),
+	"wool_blue": ((0.20, 0.24, 0.36), 0.9),
+	"wool_grey": ((0.52, 0.48, 0.42), 0.9),
 }
 
 
@@ -738,6 +746,176 @@ def build_quenua(rng):
 	builder.to_object("quenua", collection)
 
 
+# --- Personajes (PCH-011, 017 y 018) ---------------------------------------
+
+def _garment_profile(points, rows):
+	"""Interpola [(altura, radio), ...] en [rows] anillos de abajo arriba."""
+	profile = []
+	low, high = points[0][0], points[-1][0]
+	for r in range(rows + 1):
+		z = low + (high - low) * r / rows
+		for i in range(len(points) - 1):
+			z0, r0 = points[i]
+			z1, r1 = points[i + 1]
+			if z0 <= z <= z1:
+				t = 0.0 if z1 == z0 else (z - z0) / (z1 - z0)
+				profile.append((r0 + (r1 - r0) * t, z))
+				break
+	return profile
+
+
+def build_person(rng, spec):
+	"""Persona estática de pie, mirando hacia +Y, con los pies en el origen.
+
+	[spec] describe la ropa: "garment" ("unku" para el hombre, "anacu" para la
+	mujer), colores de prenda y de franjas, manto, lliclla, tocado, chuspa,
+	herramienta o bulto. Sin rig ni animación (alcance v3.3)."""
+	collection = bpy.context.scene.collection
+	b = MeshBuilder()
+	k = spec.get("scale", 1.0)
+
+	def v(x, y, z):
+		return Vector((x * k, y * k, z * k))
+
+	# Piernas y ojotas.
+	leg_top = 0.55 if spec["garment"] == "unku" else 0.3
+	for side in (-1.0, 1.0):
+		x = 0.09 * side
+		b.tube([v(x, 0.0, leg_top), v(x, 0.005, 0.3), v(x, 0.0, 0.07)],
+			[0.06 * k, 0.05 * k, 0.04 * k], 6, lambda r: "skin")
+		b.box(v(x, 0.05, 0.035), (0.085 * k, 0.2 * k, 0.05 * k), "skin")
+		b.box(v(x, 0.05, 0.008), (0.1 * k, 0.23 * k, 0.016 * k), "sole")
+		b.box(v(x, 0.05, 0.06), (0.012 * k, 0.12 * k, 0.012 * k), "sole")
+
+	# Prenda principal como sólido de revolución achatado en profundidad.
+	rows = 16
+	body = spec["body"]
+	band = spec.get("band")
+	band_style = spec.get("band_style", "stripe")
+	if spec["garment"] == "unku":
+		points = [(0.48, 0.25), (0.9, 0.215), (1.12, 0.215), (1.3, 0.22), (1.37, 0.17), (1.41, 0.07)]
+		band_rows = {1, 2, 9}
+	else:
+		points = [(0.06, 0.2), (0.5, 0.21), (0.88, 0.18), (1.18, 0.2), (1.3, 0.19), (1.36, 0.15), (1.4, 0.07)]
+		band_rows = {7, 8}
+	profile = [(radius * k, z * k) for radius, z in _garment_profile(points, rows)]
+
+	def garment_mat(seg, ring):
+		if band is not None and ring in band_rows:
+			if band_style == "tocapu" and (seg + ring) % 2 == 0:
+				return spec.get("band_alt", "wool_cream")
+			return band
+		return body
+
+	b.lathe(profile, 14, garment_mat, axis_frame=Matrix.Diagonal((1.0, 0.62, 1.0, 1.0)), cap_bottom=True, cap_top=True)
+
+	# Lliclla: manta sobre los hombros con franjas, sujeta con un tupu.
+	if spec.get("lliclla"):
+		shawl = _garment_profile([(1.02, 0.215), (1.2, 0.225), (1.33, 0.205), (1.38, 0.16)], 6)
+		stripe = spec.get("lliclla_stripe", "wool_red")
+		b.lathe([(radius * k, z * k) for radius, z in shawl], 14,
+			lambda seg, ring: stripe if ring in (0, 3) else spec["lliclla"],
+			axis_frame=Matrix.Diagonal((1.0, 0.66, 1.0, 1.0)), cap_bottom=False, cap_top=False)
+		b.lathe([(0.0, 0.0), (0.025 * k, 0.004 * k), (0.0, 0.008 * k)], 8, lambda seg, ring: "copper",
+			axis_frame=Matrix.Translation(v(0.0, 0.15, 1.28)) @ Matrix.Rotation(-math.pi / 2, 4, "X"), cap_bottom=False)
+
+	# Manto (yacolla) a la espalda, anudado al pecho.
+	if spec.get("manto"):
+		b.box(v(0.0, -0.15, 1.02), (0.46 * k, 0.022 * k, 0.64 * k), spec["manto"], rot_x(0.08))
+		b.box(v(0.0, -0.11, 1.355), (0.42 * k, 0.1 * k, 0.03 * k), spec["manto"])
+		b.blob(v(0.0, 0.15, 1.33), (0.04 * k, 0.03 * k, 0.035 * k), spec["manto"], rng, rows=3, segments=6)
+
+	# Brazos y manos.
+	pose = spec.get("arms", (0.0, 0.0))
+	for index, side in enumerate((-1.0, 1.0)):
+		forward = pose[index]
+		shoulder = v(0.235 * side, 0.0, 1.31)
+		elbow = v(0.27 * side, 0.03 + forward * 0.5, 1.05)
+		wrist = v(0.26 * side, 0.06 + forward, 0.83 + forward * 0.25)
+		b.tube([shoulder, elbow, wrist], [0.05 * k, 0.042 * k, 0.034 * k], 6, lambda r: "skin")
+		b.blob(wrist + v(0.0, 0.01, -0.04), (0.035 * k, 0.03 * k, 0.05 * k), "skin", rng, rows=3, segments=6)
+
+	# Cuello y cabeza: pelo detrás y encima, cara al frente.
+	b.tube([v(0.0, 0.0, 1.38), v(0.0, 0.005, 1.45)], [0.045 * k, 0.045 * k], 6, lambda r: "skin")
+	head_rows = 6
+	head_profile = []
+	for r in range(head_rows + 1):
+		phi = math.pi * r / head_rows
+		head_profile.append((math.sin(phi) * 0.1 * k, (1.53 - math.cos(phi) * 0.115) * k))
+
+	def head_mat(seg, ring):
+		angle = 2.0 * math.pi * (seg + 0.5) / 10
+		facing = math.cos(angle - math.pi / 2.0)
+		if ring >= head_rows - 2:
+			return "hair"
+		if facing > 0.35 and ring >= 1:
+			return "skin"
+		if ring == 0:
+			return "skin"
+		return "hair"
+
+	b.lathe(head_profile, 10, head_mat, axis_frame=Matrix.Diagonal((1.0, 1.08, 1.0, 1.0)), cap_bottom=False)
+	b.box(v(0.0, 0.112, 1.51), (0.03 * k, 0.03 * k, 0.05 * k), "skin")
+	for side in (-1.0, 1.0):
+		b.box(v(0.035 * side, 0.1, 1.55), (0.022 * k, 0.012 * k, 0.012 * k), "eye")
+	if spec.get("braids"):
+		for side in (-1.0, 1.0):
+			b.tube([v(0.06 * side, -0.07, 1.5), v(0.07 * side, -0.11, 1.32), v(0.06 * side, -0.13, 1.12)],
+				[0.022 * k, 0.02 * k, 0.014 * k], 5, lambda r: "hair")
+	if spec.get("headband"):
+		b.lathe([(0.104 * k, 1.565 * k), (0.104 * k, 1.6 * k)], 12, lambda seg, ring: spec["headband"],
+			axis_frame=Matrix.Diagonal((1.0, 1.08, 1.0, 1.0)), cap_bottom=False)
+	if spec.get("head_cloth"):
+		b.lathe([(0.108 * k, 1.56 * k), (0.11 * k, 1.6 * k), (0.07 * k, 1.66 * k)], 12,
+			lambda seg, ring: spec["head_cloth"], axis_frame=Matrix.Diagonal((1.0, 1.1, 1.0, 1.0)), cap_bottom=False, cap_top=True)
+
+	# Chuspa (bolsa) al costado con su correa.
+	if spec.get("chuspa"):
+		b.box(v(-0.24, 0.04, 0.82), (0.05 * k, 0.15 * k, 0.16 * k), spec["chuspa"])
+		b.box(v(0.0, 0.0, 1.1), (0.56 * k, 0.29 * k, 0.025 * k), spec["chuspa"], rot_z(0.0) @ Matrix.Rotation(-0.9, 3, "Y"))
+
+	# Chaquitaclla (arado de pie) apoyada en el suelo junto a la mano derecha.
+	if spec.get("tool") == "chaquitaclla":
+		base = v(0.36, 0.1, 0.0)
+		b.tube([base, base + v(0.0, -0.03, 1.55)], [0.02 * k, 0.018 * k], 6, lambda r: "wood")
+		b.box(base + v(0.0, 0.0, 0.4), (0.03 * k, 0.16 * k, 0.025 * k), "wood_light")
+		b.box(base + v(0.0, 0.02, 0.04), (0.04 * k, 0.07 * k, 0.08 * k), "wood_light")
+
+	# Bulto de viaje atado a la espalda (q'ipi).
+	if spec.get("bundle"):
+		b.blob(v(0.0, -0.24, 1.05), (0.17 * k, 0.11 * k, 0.2 * k), spec["bundle"], rng, rows=4, segments=8)
+		b.box(v(0.0, -0.05, 1.3), (0.44 * k, 0.33 * k, 0.025 * k), "rope", rot_x(0.5))
+
+	b.to_object("person", collection)
+
+
+PEOPLE = {
+	# Habitantes comunes (PCH-018): fibra sin teñir y tintes de tierra.
+	"pch_npc_weaver": dict(garment="anacu", scale=0.94, body="wool_brown", band="wool_red", band_style="tocapu",
+		band_alt="wool_ochre", lliclla="wool_cream", lliclla_stripe="wool_red", braids=True, arms=(0.18, 0.18)),
+	"pch_npc_farmer": dict(garment="unku", body="wool_cream", band="wool_brown", manto="wool_brown",
+		head_cloth="wool_red", chuspa="wool_ochre", tool="chaquitaclla", arms=(0.0, 0.1)),
+	"pch_npc_villager": dict(garment="anacu", scale=0.94, body="wool_dark", band="wool_ochre", lliclla="wool_grey",
+		lliclla_stripe="wool_green", braids=True),
+	"pch_npc_commoner": dict(garment="unku", body="wool_grey", band="wool_dark", manto="wool_cream",
+		chuspa="wool_red"),
+	# Mensajero (PCH-011): ropa de viaje sin insignias, con su bulto.
+	"pch_npc_messenger": dict(garment="unku", body="wool_brown", band="wool_dark", bundle="wool_cream",
+		head_cloth="wool_grey", chuspa="wool_cream"),
+	# Autoridades (PCH-017): distintivos discretos (franja ajedrezada, tocado, manto teñido).
+	"pch_npc_curaca": dict(garment="unku", body="wool_cream", band="wool_red", band_style="tocapu",
+		band_alt="wool_dark", manto="wool_red", headband="wool_ochre", chuspa="wool_blue"),
+	"pch_npc_principal": dict(garment="unku", body="wool_ochre", band="wool_dark", band_style="tocapu",
+		band_alt="wool_cream", manto="wool_blue", headband="wool_red"),
+	"pch_npc_authority": dict(garment="unku", body="wool_cream", band="wool_dark", band_style="tocapu",
+		band_alt="wool_red", manto="wool_brown", headband="wool_red"),
+}
+
+
+def _person_builder(name):
+	return lambda rng: build_person(rng, PEOPLE[name])
+
+
 MODELS = {
 	"pch_house_a": build_house_a,
 	"pch_house_b": build_house_b,
@@ -750,6 +928,7 @@ MODELS = {
 	"pch_quenua_a": build_quenua,
 	"pch_quenua_b": build_quenua,
 }
+MODELS.update({name: _person_builder(name) for name in PEOPLE})
 
 
 # --- Exportación y vista previa -----------------------------------------
