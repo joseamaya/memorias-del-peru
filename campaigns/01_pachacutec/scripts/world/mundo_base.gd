@@ -38,6 +38,21 @@ const MURMUR_VOLUME_DB: float = -8.0
 const MURMUR_SILENT_DB: float = -40.0
 const MURMUR_FADE_IN: float = 2.0
 const MURMUR_FADE_OUT: float = 5.0
+## Modelos definitivos (alcance §6.1 y §7). Cada bloqueo tiene un hueco que
+## carga el primer archivo existente de su lista; sin archivo, sigue el bloqueo.
+const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
+const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb"]
+const MODEL_QUERO: String = "pch_quero.glb"
+const MODEL_PUTUTU: String = "pch_pututu.glb"
+const MODEL_OFFERING: String = "pch_offering_shrine.glb"
+const MODEL_LOOM: String = "pch_loom.glb"
+const MODEL_COMMONER: String = "pch_npc_commoner.glb"
+const MODEL_AUTHORITY: String = "pch_npc_authority.glb"
+## Base de cada malla de bloqueo de los objetos (su origen está en el centro).
+const QUERO_BASE: Vector3 = Vector3(0.0, -0.11, 0.0)
+const PUTUTU_BASE: Vector3 = Vector3(0.0, -0.2, 0.0)
+const OFFERING_BASE: Vector3 = Vector3(0.0, -0.15, 0.0)
+const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
 ## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
 const TERRACE_CAP_THICKNESS: float = 0.3
 const TERRACE_CAP_INSET: float = 0.05
@@ -206,6 +221,7 @@ func _build_llacta() -> void:
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
 	weaver.face(_plaza_center_flat())
 	farmer.face(_plaza_center_flat())
+	_attach_object_models(llacta)
 
 	var event: MessengerEvent = $EventController as MessengerEvent
 	var pututu: Pututu = $Pututu as Pututu
@@ -421,7 +437,7 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	root.position = at
 	parent.add_child(root)
 	root.look_at(Vector3(0.0, at.y, 0.0), Vector3.UP)
-	_add_box_body(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, 1)
+	var base: StaticBody3D = _add_box_body(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, 1)
 	var roof: MeshInstance3D = MeshInstance3D.new()
 	roof.name = "Roof"
 	roof.position = Vector3(0.0, 3.25, 0.0)
@@ -431,6 +447,77 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	roof.material_override = thatch
 	root.add_child(roof)
 	root.add_to_group("houses")
+	var blockout: Array[Node3D] = [roof]
+	var collisions: Array[Node] = []
+	for child: Node in base.get_children():
+		if child is MeshInstance3D:
+			blockout.append(child as MeshInstance3D)
+		elif child is CollisionShape3D:
+			collisions.append(child)
+	var files: Array[String] = [MODEL_HOUSES[index % MODEL_HOUSES.size()]]
+	_attach_model(root, "ModelSlot", Vector3.ZERO, files, blockout, collisions)
+
+
+## Archivos candidatos para un personaje: primero el de su papel
+## (`pch_npc_<papel>.glb`), luego la variante común o de autoridad.
+static func npc_model_files(node_name: String) -> Array[String]:
+	var role: String = "villager"
+	var generic: String = MODEL_COMMONER
+	match node_name:
+		"Tejedora":
+			role = "weaver"
+		"Agricultor":
+			role = "farmer"
+		"Mensajero":
+			role = "messenger"
+		"Curaca":
+			role = "curaca"
+			generic = MODEL_AUTHORITY
+		"Principal1", "Principal2":
+			role = "principal"
+			generic = MODEL_AUTHORITY
+	var files: Array[String] = ["pch_npc_%s.glb" % role, generic]
+	return files
+
+
+## Crea un hueco de modelo bajo [param parent]. Las listas se fijan antes de
+## añadirlo al árbol para que cargue en su _ready().
+func _attach_model(parent: Node3D, slot_name: String, at: Vector3, files: Array[String], blockout: Array[Node3D], collisions: Array[Node]) -> ModelSlot:
+	var slot: ModelSlot = ModelSlot.new()
+	slot.name = slot_name
+	slot.position = at
+	var paths: Array[String] = []
+	for file: String in files:
+		paths.append(MODEL_DIR + file)
+	slot.model_paths = paths
+	slot.blockout_nodes = blockout
+	slot.blockout_collisions = collisions
+	parent.add_child(slot)
+	return slot
+
+
+func _attach_object_models(llacta: Node3D) -> void:
+	var targets: Array[Array] = [
+		[$QueroChicha, MODEL_QUERO, QUERO_BASE],
+		[$Pututu, MODEL_PUTUTU, PUTUTU_BASE],
+		[$OfrendaPachamama, MODEL_OFFERING, OFFERING_BASE],
+	]
+	for target: Array in targets:
+		var object_root: Node = target[0]
+		var mesh: MeshInstance3D = object_root.get_node_or_null("MeshInstance3D") as MeshInstance3D
+		if mesh == null:
+			continue
+		var file: String = target[1]
+		var base: Vector3 = target[2]
+		# El hueco cuelga de la malla para heredar las animaciones de respuesta.
+		var files: Array[String] = [file]
+		var blockout: Array[Node3D] = [mesh]
+		var no_collisions: Array[Node] = []
+		_attach_model(mesh, "ModelSlot", base, files, blockout, no_collisions)
+	var loom_files: Array[String] = [MODEL_LOOM]
+	var nothing: Array[Node3D] = []
+	var no_loom_collisions: Array[Node] = []
+	_attach_model(llacta, "LoomSlot", LOOM_POSITION, loom_files, nothing, no_loom_collisions)
 
 
 func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> NpcActor:
@@ -445,4 +532,12 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	actor.body_color = color
 	parent.add_child(actor)
 	actor.add_to_group("npcs")
+	var body_mesh: MeshInstance3D = actor.get_node_or_null("Body") as MeshInstance3D
+	var blockout: Array[Node3D] = []
+	if body_mesh != null:
+		blockout.append(body_mesh)
+	# La cápsula de colisión del bloqueo se conserva (alcance §7).
+	var no_collisions: Array[Node] = []
+	var slot: ModelSlot = _attach_model(actor, "ModelSlot", Vector3.ZERO, npc_model_files(node_name), blockout, no_collisions)
+	slot.use_model_collision = false
 	return actor

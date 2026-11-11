@@ -179,6 +179,31 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 - Sin addons de Blender ni de Godot sin ADR.
 - Si un asset no está listo, se usa un bloqueo declarado como placeholder; no se presenta como definitivo.
 
+### 7.1 Dónde entra cada modelo
+
+Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo tiene un hueco (`ModelSlot`, [docs/02](../../../docs/02_arquitectura.md) §5) que carga el primer archivo existente de su lista y oculta el bloqueo; sin archivo, el bloqueo sigue. Basta con añadir el archivo e importarlo (`godot --headless --path . --import`).
+
+| Bloqueo | Archivos, en orden de preferencia | Origen del modelo |
+|---|---|---|
+| Viviendas pares / impares | `pch_house_a.glb` / `pch_house_b.glb` | Base de la vivienda, mirando a la plaza por −Z; con colisión `-col` |
+| Tejedora, agricultor, mensajero | `pch_npc_weaver.glb`, `pch_npc_farmer.glb`, `pch_npc_messenger.glb` → `pch_npc_commoner.glb` | Pies |
+| Habitantes 1–3 | `pch_npc_villager.glb` → `pch_npc_commoner.glb` | Pies |
+| Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies |
+| Quero, pututu, adoratorio | `pch_quero.glb`, `pch_pututu.glb`, `pch_offering_shrine.glb` | Base del objeto |
+| Telar (sin bloqueo) | `pch_loom.glb` | Base, junto a la tejedora |
+
+Reglas que comprueba `test_model_files_valid` en cada archivo:
+- nombre `pch_*.glb` en `snake_case` y ningún `.blend`;
+- tamaño entre 0,05 y 20 m;
+- base del modelo a menos de 5 cm del origen;
+- escalas aplicadas;
+- colisión propia en las viviendas;
+- personajes de 1,2 a 2,1 m y sin colisión, porque se usa la cápsula de la escena.
+
+Los personajes conservan siempre la cápsula de colisión del bloqueo, y los objetos su colisión de interacción.
+
+**Orientación.** Los personajes y las viviendas se orientan con `look_at`, que apunta el eje −Z de Godot. El exportador glTF de Blender convierte el frente habitual de Blender (−Y, vista frontal) en +Z de Godot, así que los personajes y las fachadas deben modelarse **mirando hacia +Y en Blender** (vista trasera). Si un modelo aparece de espaldas, es esto.
+
 ## 8. Registro histórico
 
 Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verificado** ([docs/07](../../../docs/07_convenciones_historicas.md) §3).
@@ -223,6 +248,14 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 
 El facilitador solo responde dudas de **controles**. Si hay un bloqueo técnico, lo anota y no ayuda con el contenido.
 
+**Medición de la duración.** El juego no tiene pantalla final, así que la duración de una sesión se mide así:
+
+- **Inicio:** primer movimiento de la persona tras la explicación de controles.
+- **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; pasan 60 s desde el subtítulo de cierre («La llacta queda en silencio…»); se llega a 12 min.
+- Se anota también el momento del subtítulo de cierre, para separar el tiempo de la historia del de exploración libre.
+
+El procedimiento completo está en [guion_facilitador.md](guion_facilitador.md).
+
 ### 9.3 Cuestionario
 
 Se lee en voz alta y se anota la respuesta literal:
@@ -248,14 +281,6 @@ Se supera el cuestionario si **ambas** respuestas son correctas.
 - Si discrepan, una tercera persona decide.
 - Si la discrepancia persiste, la sesión cuenta como **no superada**.
 - Éxito de la métrica 5: **≥ 4 de 6** sesiones superadas.
-**Medición de la duración.** El juego no tiene pantalla final, así que la duración de una sesión se mide así:
-
-- **Inicio:** primer movimiento de la persona tras la explicación de controles.
-- **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; pasan 60 s desde el subtítulo de cierre («La llacta queda en silencio…»); se llega a 12 min.
-- Se anota también el momento del subtítulo de cierre, para separar el tiempo de la historia del de exploración libre.
-
-El procedimiento completo está en [guion_facilitador.md](guion_facilitador.md).
-
 
 ### 9.5 Registro
 
@@ -307,6 +332,6 @@ La mediana esperada es **6–7 minutos**. Si la prueba con seis personas queda p
 - [x] Se confirma la duración objetivo de 5–8 min (ADR-0009).
 - [x] Se confirma el reparto de textos, incluido el aviso de la llamada.
 - [x] Se confirman la salida por el camino norte y la permanencia de los vecinos.
+- [x] Se confirma la medición de la duración de §9.2 (v3.1, 2026-11-11).
 
 Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.
-- [x] Se confirma la medición de la duración de §9.2 (v3.1, 2026-11-11).

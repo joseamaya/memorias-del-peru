@@ -126,6 +126,17 @@ El objetivo vinculante (≥ 30 FPS) se cumple con amplio margen. La referencia c
 
 > La medición anterior (55,92 FPS, jugador quieto y con `Engine.max_fps = 60`) queda invalidada por no usar un recorrido fijo y por ocultar el margen. También quedó invalidada la primera medición con el terreno invertido.
 
+### Medición con cresta, pasos y murmullo (Fase 4, provisional, 2026-11-11)
+
+Mismo comando y condiciones que la medición anterior. La escena añade la cresta del borde (mismo número de triángulos del terreno, con color por vértice), terrazas macizas, pasos por superficie y los huecos de modelo (`ModelSlot`) sin modelos todavía. Se repitió tres veces con la carga del sistema entre 2,5 y 3. Una primera tanda con carga ~30 por procesos ajenos dio cifras de hasta 46 FPS en Medio y se descartó. Se da la mediana de las tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 276,3 (273,2–282,1) | 200,0 | 3,62 ms | 5,0 ms | 43–44 | 92,5 MB |
+| Medio | 92,0 (89,9–95,9) | 83,3 (76,9–83,3) | 10,87 ms | 12–13 ms | 32–33 | 165,3 MB |
+
+Sin cambios apreciables respecto a la medición anterior: el objetivo vinculante se cumple con margen y el perfil Medio supera los 60 FPS. Las cifras cambiarán con los modelos definitivos y la vegetación; para que una medición sea comparable, la carga del sistema debe ser baja (comprobarla con `cat /proc/loadavg`).
+
 ### Medición de la llacta completa (Fase 4, provisional)
 
 Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.

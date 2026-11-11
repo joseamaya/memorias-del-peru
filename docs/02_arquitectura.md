@@ -204,6 +204,13 @@ Reglas:
 - **UI:** el HUD recibe el `StaminaComponent` por `@export` (o se lo asigna la escena que compone jugador y HUD) y escucha `stamina_changed`. No hay rutas rígidas entre UI y jugador.
 - Los valores por defecto del bloque son propuestas iniciales, ajustables durante la Fase 2 sin cambiar el contrato.
 
+### Modelos definitivos con respaldo al bloqueo (Fase 4)
+
+- `core/systems/assets/model_slot.gd` (`class_name ModelSlot extends Node3D`): al entrar en el árbol carga como hijo `Model` el primer archivo existente de `model_paths: Array[String]` y oculta `blockout_nodes: Array[Node3D]`. Si el hueco cuelga de uno de esos nodos (para heredar sus animaciones), a ese nodo se le quita la malla en lugar de ocultarlo. Si no existe ningún archivo, no hace nada.
+- `blockout_collisions: Array[Node]` se eliminan solo si el modelo trae colisión propia y `use_model_collision` es `true`. Señal `model_loaded(model: Node3D)`.
+- `ModelSlot` no conoce campañas: la escena del mundo decide qué archivo corresponde a cada bloqueo (en la campaña 01, tabla en el alcance del vertical slice, §7).
+- Las reglas de los `.glb` (nombre, metros, origen en la base, escalas aplicadas, colisión) se comprueban en `tests/asset_validation.gd`, que usan `test_model_validator` y `test_model_files_valid`.
+
 ## 6. Puntos de extensión previstos (no implementar sin fase asignada)
 
 | Sistema | Ubicación | Relación prevista |
