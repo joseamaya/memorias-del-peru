@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/ofrenda_pachamama.tscn" id="6_ofrenda"]
 [ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/pututu.tscn" id="7_pututu"]
 [ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/messenger_event.gd" id="8_event"]
-[ext_resource type="AudioStream" path="res://shared_assets/audio/pututu_conch.ogg" id="9_pututu_audio"]
+[ext_resource type="AudioStream" path="res://shared_assets/audio/pututu_propio.wav" id="9_pututu_audio"]
 [ext_resource type="AudioStream" path="res://shared_assets/audio/ofrenda_tierra.wav" id="10_ofrenda_audio"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_world"]
@@ -58,6 +58,9 @@ position = Vector3(0, 0.05, 45)
 
 [node name="PlazaPoint" type="Marker3D" parent="."]
 position = Vector3(0, 0.05, 2)
+
+[node name="Mirador" type="Marker3D" parent="."]
+position = Vector3(52, 2.45, 0)
 
 [node name="EnvironmentAudio" type="Node3D" parent="."]
 

@@ -2,8 +2,8 @@ extends RefCounted
 ## Comprueba que el pututu convoca la reunión cuando el jugador lo toca.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
-const MAX_STEPS: int = 200
-const STEP_SECONDS: float = 0.5
+const MAX_STEPS: int = 500
+const STEP_SECONDS: float = 2.0
 
 
 func test_pututu_convenes_meeting() -> bool:
@@ -21,8 +21,6 @@ func test_pututu_convenes_meeting() -> bool:
 	if event == null or player == null or pututu == null:
 		world.free()
 		return false
-	# El driver de audio «Dummy» de las pruebas sin pantalla no libera las
-	# reproducciones; el sonido no es objeto de esta prueba.
 	pututu.audio_stream = null
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	var steps: int = 0
@@ -32,9 +30,11 @@ func test_pututu_convenes_meeting() -> bool:
 	if event.phase != MessengerEvent.Phase.CALL:
 		world.free()
 		return false
+	var available_in_call: bool = pututu.is_available()
 	pututu.interact(player)
 	var ok: bool = (
-		event.phase == MessengerEvent.Phase.DEPARTURE
+		available_in_call
+		and event.phase == MessengerEvent.Phase.DEPARTURE
 		and event.pututu_by_player
 		and pututu.used
 	)

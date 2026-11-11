@@ -94,7 +94,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Fuentes: Museo Larco, ficha ML002220, «Ceremonial Trumpet or Pututo», sala 9, vitrina 114: caracola *Strombus*, Perú, 1–1532 d. C., usada como trompeta ceremonial. Guamán Poma de Ayala, *Nueva corónica y buen gobierno* (c. 1615), grabado «Hatun chasqui, churo mullo chasqui» (folio por confirmar).
 - Discrepancias entre fuentes: —
 - Notas de representación: se representa la versión de caracola marina, anterior a los cuernos de vacuno introducidos tras 1532. La forma exacta es una reconstrucción (R).
-- Estado de verificación: **verificado** en su parte A (Museo Larco, consultado el 2026-11-10). La afirmación H sobre su uso por los chasquis queda pendiente de folio.
+- Estado de verificación: **verificado (A)** — la ficha de colección del Museo Larco se consultó en línea el 2026-11-10. La afirmación H sobre su uso por los chasquis sigue pendiente de folio.
 
 ### PCH-010 — Telar y textil
 - Tipo: herramienta / vestimenta
@@ -109,10 +109,12 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: personaje
 - Clasificación: H / R
 - Uso en el juego: `mundo_base.tscn` (`Llacta/NPCs/Mensajero`) y `messenger_event.gd`
-- Fuentes: Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. 27 «The Chancas attack Cuzco», pp. 107–111 (trad. Brian S. Bauer y Vania Smith, University of Texas Press, 2007): un **quillis-cachi** huye del campamento chanca y da la noticia en el Cusco. Inca Garcilaso de la Vega, *Comentarios reales*, I parte, lib. VI, cap. VII «Postas y correos, y los despachos que llevaban»: el sistema de postas con chasquis corresponde al Estado imperial, en el reinado de Pachacútec.
+- Fuentes (identificadas; pendiente de comprobación con la edición a la vista):
+  - Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. 27 «The Chancas attack Cuzco» (trad. Bauer y Smith, University of Texas Press, 2007): un **quillis-cachi** huye del campamento chanca y da la noticia en el Cusco. El rango de páginas (107–111) procede del índice publicado por la editorial; **no se han leído esas páginas**, así que no cuentan como verificación.
+  - Inca Garcilaso de la Vega, *Comentarios reales*, I parte, lib. VI, cap. VII «Postas y correos, y los despachos que llevaban» (texto leído en edición digital). El capítulo describe el sistema de postas; **no se afirma** que lo feche en el reinado de Pachacútec. Que el libro VI trate de ese reinado no basta para fechar la institución.
 - Discrepancias entre fuentes: las crónicas no coinciden en quién da la alarma ni en su nombre.
-- Notas de representación: en el juego es **mensajero**, no chasqui. Llamarlo chasqui en una llacta anterior a la expansión sería anacrónico: la institución de postas pertenece al Estado imperial. Ropa de viaje, sin insignias estatales; llega agotado.
-- Estado de verificación: **verificado** (agente, 2026-11-10) con las ediciones digitales citadas.
+- Notas de representación: en el juego es **mensajero**, no chasqui. Llamarlo chasqui en una llacta anterior a la expansión sería anacrónico: la institución de postas se documenta para el Estado imperial. Ropa de viaje, sin insignias estatales; llega agotado.
+- Estado de verificación: **pendiente** — requiere que una persona contraste el capítulo 27 de Sarmiento con la edición en papel y confirme la fecha de la institución en Garcilaso.
 
 ### PCH-012 — Ofrenda a la Pachamama
 - Tipo: objeto / ritual
@@ -145,10 +147,13 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: evento
 - Clasificación: H (tradición) / N (puesta en escena)
 - Uso en el juego: `messenger_event.gd` y textos `PCH_NARR_*`
-- Fuentes: Sarmiento de Gamboa, *Historia de los Incas*, caps. 26–28, pp. 104–114 (trad. Bauer y Smith, 2007); Betanzos, *Suma y narración de los Incas*, I parte, cap. 13 (ed. 1987, p. 61; facsímil de la edición de 1880 en la Biblioteca Virtual Miguel de Cervantes); J. J. Huertas Vallejos, «Los Chancas: proceso disturbativo en los Andes», *Historia y Cultura* 20.
+- Fuentes (identificadas; pendiente de comprobación con la edición a la vista):
+  - Sarmiento de Gamboa, *Historia de los Incas*, caps. 26–28 (trad. Bauer y Smith, 2007): el rango de páginas procede del índice de la editorial, no de la lectura.
+  - Betanzos, *Suma y narración de los Incas*, I parte: **capítulo por confirmar**. La referencia al capítulo 13 proviene de una cita de terceros y no se ha comprobado; otras lecturas sitúan la guerra chanca en los capítulos 6–10.
+  - J. J. Huertas Vallejos, «Los Chancas: proceso disturbativo en los Andes», *Historia y Cultura* 20.
 - Discrepancias entre fuentes: Garcilaso atribuye la victoria a Inca Viracocha; la huida del inca y su heredero aparece con matices distintos en Betanzos y Sarmiento.
 - Notas de representación: el guion sigue la versión de Betanzos y Sarmiento y la presenta como lo que dice el mensajero, no como verdad única. No se escenifica la batalla: el juego termina cuando la llacta responde. La llegada a la plaza, la reunión y la partida son puesta en escena (N).
-- Estado de verificación: **verificado** (agente, 2026-11-10) con las ediciones digitales citadas.
+- Estado de verificación: **pendiente** — requiere edición en papel. La ficha se apoya por ahora en el texto leído de Sarmiento, no en la paginación.
 
 ### PCH-016 — Plaza y caminos
 - Tipo: lugar

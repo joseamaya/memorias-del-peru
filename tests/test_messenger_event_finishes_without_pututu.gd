@@ -2,8 +2,8 @@ extends RefCounted
 ## Comprueba que el evento termina aunque el jugador nunca toque el pututu.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
-const MAX_STEPS: int = 600
-const STEP_SECONDS: float = 0.5
+const MAX_STEPS: int = 500
+const STEP_SECONDS: float = 2.0
 
 
 func test_messenger_event_finishes_without_pututu() -> bool:
@@ -21,8 +21,6 @@ func test_messenger_event_finishes_without_pututu() -> bool:
 	if event == null or player == null or pututu == null:
 		world.free()
 		return false
-	# El driver de audio «Dummy» de las pruebas sin pantalla no libera las
-	# reproducciones; el sonido no es objeto de esta prueba.
 	pututu.audio_stream = null
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	var steps: int = 0

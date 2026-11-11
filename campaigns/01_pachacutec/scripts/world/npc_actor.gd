@@ -68,3 +68,10 @@ func advance(delta: float) -> bool:
 ## Distancia horizontal al punto indicado.
 func flat_distance_to(point: Vector3) -> float:
 	return Vector2(global_position.x, global_position.z).distance_to(Vector2(point.x, point.z))
+
+
+## Saca al personaje de la escena visible y de la colisión. Se usa cuando la
+## comitiva se marcha: no debe quedar plantada contra el muro.
+func hide_actor() -> void:
+	visible = false
+	collision.collision_layer = 0

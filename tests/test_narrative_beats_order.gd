@@ -2,8 +2,8 @@ extends RefCounted
 ## Comprueba el orden y la unicidad de los subtítulos narrativos.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
-const MAX_STEPS: int = 600
-const STEP_SECONDS: float = 0.5
+const MAX_STEPS: int = 500
+const STEP_SECONDS: float = 2.0
 
 var _keys: Array[StringName] = []
 
@@ -27,15 +27,10 @@ func test_narrative_beats_order() -> bool:
 	event.subtitle_requested.connect(_on_subtitle)
 	tree.root.add_child(world)
 	var player: Node3D = world.get_node_or_null("PlayerFPS") as Node3D
-	if player == null:
-		world.free()
-		return false
 	var pututu: Pututu = world.get_node_or_null("Pututu") as Pututu
-	if pututu == null:
+	if player == null or pututu == null:
 		world.free()
 		return false
-	# El driver de audio de las pruebas sin pantalla no libera las
-	# reproducciones; el sonido no es objeto de esta prueba.
 	pututu.audio_stream = null
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	var steps: int = 0
@@ -46,6 +41,7 @@ func test_narrative_beats_order() -> bool:
 		&"PCH_NARR_OPENING",
 		&"PCH_NARR_NEWS_1",
 		&"PCH_NARR_NEWS_2",
+		&"PCH_NARR_CALL",
 		&"PCH_NARR_CLOSING_1",
 		&"PCH_NARR_CLOSING_2",
 	]

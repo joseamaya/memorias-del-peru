@@ -30,3 +30,5 @@ Plantilla:
 | [0005](0005-skills-de-godot.md) | Skills de Godot y desviación consciente del estilo oficial | Aceptado |
 | [0006](0006-secuencia-narrativa-por-subtitulos.md) | Secuencia narrativa por subtítulos | Aceptado |
 | [0007](0007-evento-del-mensajero.md) | Evento del mensajero: máquina de estados y progreso garantizado | Aceptado |
+| [0008](0008-disponibilidad-de-interactuables.md) | Disponibilidad de interactuables | Aceptado |
+| [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Aceptado |

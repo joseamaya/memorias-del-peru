@@ -73,8 +73,9 @@ func _connect_refs() -> void:
 
 
 func _on_interactable_focused(interactable: Interactable) -> void:
-	interaction_label.text = interactable.get_interaction_text()
-	interaction_label.visible = true
+	var text: String = interactable.get_interaction_text()
+	interaction_label.text = text
+	interaction_label.visible = not text.is_empty()
 
 
 func _on_interactable_unfocused() -> void:

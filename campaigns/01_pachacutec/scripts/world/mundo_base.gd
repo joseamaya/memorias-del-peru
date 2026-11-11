@@ -103,21 +103,24 @@ func _build_llacta() -> void:
 
 	_add_visual_box(llacta, "Plaza", Vector3(0.0, 0.03, 0.0), Vector3(26.0, 0.06, 26.0), dirt)
 	_add_visual_box(llacta, "PathSouth", Vector3(0.0, 0.035, 30.0), Vector3(4.0, 0.07, 30.0), dirt)
+	_add_visual_box(llacta, "PathNorth", Vector3(0.0, 0.035, -35.0), Vector3(4.0, 0.07, 30.0), dirt)
 	_add_visual_box(llacta, "PathEast", Vector3(20.0, 0.035, 0.0), Vector3(30.0, 0.07, 4.0), dirt)
 	_add_visual_box(llacta, "PathWest", Vector3(-20.0, 0.035, 0.0), Vector3(30.0, 0.07, 4.0), dirt)
 
 	var houses: Node3D = Node3D.new()
 	houses.name = "Houses"
 	llacta.add_child(houses)
+	# Tres grupos que dejan libres los ejes de los caminos: viviendas oeste,
+	# viviendas este y las dos casas del camino norte.
 	var positions: Array[Vector3] = [
-		Vector3(18.0, 0.0, 0.0),
-		Vector3(12.7, 0.0, 12.7),
-		Vector3(0.0, 0.0, 18.0),
-		Vector3(-12.7, 0.0, 12.7),
-		Vector3(-18.0, 0.0, 0.0),
-		Vector3(-12.7, 0.0, -12.7),
-		Vector3(0.0, 0.0, -18.0),
-		Vector3(12.7, 0.0, -12.7),
+		Vector3(-19.0, 0.0, 10.0),
+		Vector3(-27.0, 0.0, 6.0),
+		Vector3(-19.0, 0.0, -10.0),
+		Vector3(19.0, 0.0, 10.0),
+		Vector3(23.0, 0.0, 15.0),
+		Vector3(19.0, 0.0, -10.0),
+		Vector3(-9.0, 0.0, -21.0),
+		Vector3(9.0, 0.0, -21.0),
 	]
 	for index: int in range(positions.size()):
 		_add_house(houses, index, positions[index], stone, thatch)
@@ -141,7 +144,7 @@ func _build_llacta() -> void:
 	npcs.name = "NPCs"
 	llacta.add_child(npcs)
 	var weaver: NpcActor = _add_npc(npcs, "Tejedora", Vector3(-11.0, 0.0, 5.0), Color(0.62, 0.38, 0.3, 1.0))
-	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(30.0, 0.0, -8.0), Color(0.45, 0.35, 0.25, 1.0))
+	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(34.0, 0.8, -8.0), Color(0.45, 0.35, 0.25, 1.0))
 	var messenger: NpcActor = _add_npc(npcs, "Mensajero", Vector3(0.0, 0.0, -60.0), Color(0.75, 0.65, 0.4, 1.0))
 	messenger.walk_speed = 5.2
 	var curaca: NpcActor = _add_npc(npcs, "Curaca", Vector3(-7.0, 0.0, -3.0), Color(0.72, 0.55, 0.45, 1.0))

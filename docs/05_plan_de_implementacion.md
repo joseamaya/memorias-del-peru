@@ -207,11 +207,11 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 > **Corrección de proceso (2026-11-10).** La revisión de la primera versión del alcance encontró que la precondición se había marcado como cumplida sin estarlo: faltaban el cuestionario, el criterio de corrección y el reclutamiento. La Fase 4 quedó bloqueada hasta aprobar la revisión 2, que ya incluye el protocolo completo y la secuencia con disparo garantizado. El bloqueo de la llacta construido mientras tanto se conserva como trabajo provisional y se ajusta ahora a la revisión 2.
 
-### Objetivo medible (provisional)
+### Objetivo medible
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 10–15 minutos de mediana para un jugador que explora sin prisa (métrica 1 de docs/01 §5) |
+| Duración | 5–8 minutos de mediana para un jugador que explora sin prisa (ajustado por [ADR-0009](adr/0009-duracion-y-disparo-del-slice.md); los 10–15 min de la métrica 1 quedan para la campaña completa) |
 | Espacio | Una llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Caminos | Al menos 2 rutas distintas entre el inicio y el punto narrativo final |
@@ -225,6 +225,6 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [ ] La experiencia puede jugarse de principio a fin sin bloqueos ni errores.
 - [ ] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR).
 - [ ] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo.
-- [ ] Sesiones de prueba con al menos 6 jugadores ajenos al desarrollo: duración mediana de 10–15 min (métrica 1) y al menos 2/3 superan el cuestionario de comprensión (métrica 5).
+- [ ] Sesiones de prueba con al menos 6 jugadores ajenos al desarrollo: duración mediana de 5–8 min (ADR-0009) y al menos 2/3 superan el cuestionario de comprensión (métrica 5).
 - [ ] Todo contenido histórico tiene ficha en estado “verificado”.
 - [ ] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar.

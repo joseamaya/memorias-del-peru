@@ -101,21 +101,33 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 
 | Prueba | Comprueba |
 |---|---|
-| `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas y al menos dos caminos |
+| `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas, los cuatro caminos y el mirador |
+| `test_houses_clear_paths` | Ninguna vivienda ocupa el eje de un camino |
 | `test_terraces_have_ramps` | Cada nivel de terraza tiene una rampa inclinada con colisión |
 | `test_world_bounds` | El límite del mundo tiene colisión a ~70 m del centro |
 | `test_llacta_interactables` | Quero, ofrenda y pututu existen, son `Interactable` y de tipos distintos |
 | `test_npcs_present` | Tejedora y agricultor existen con presencia |
-| `test_messenger_event_starts_on_arrival` | El evento arranca al entrar en la plaza, no con el pututu |
-| `test_messenger_event_starts_on_timeout` | El evento arranca por tiempo si el jugador no se acerca |
+| `test_messenger_event_starts_on_clock` | El evento no arranca antes del reloj y arranca al cumplirse con el jugador en la plaza |
+| `test_messenger_event_waits_for_plaza` | Si el jugador no está en la plaza, el evento espera y arranca al agotarse la espera |
 | `test_messenger_event_finishes_without_pututu` | La máquina llega a `DONE` aunque el jugador nunca toque el pututu |
-| `test_pututu_convenes_meeting` | El pututu, usado durante `CALL`, pasa a `DEPARTURE` y marca `pututu_by_player` |
-| `test_narrative_beats_order` | Los subtítulos de apertura, noticia y cierre se emiten en orden y una sola vez cada uno |
+| `test_pututu_convenes_meeting` | El pututu está disponible en `CALL` y al usarlo pasa a `DEPARTURE` con `pututu_by_player` |
+| `test_pututu_ignores_early_touch` | Un toque antes de `CALL` no gasta el pututu y el evento termina igual |
+| `test_event_finishes_with_spent_pututu` | Con el pututu ya gastado, el relevo del curaca cierra el evento |
+| `test_curaca_calls_once` | El curaca convoca una sola vez y no reintenta cada fotograma |
+| `test_party_leaves_and_neighbors_stay` | La comitiva sale por el camino norte y se oculta; los vecinos se quedan |
+| `test_narrative_beats_order` | Apertura, noticia, aviso de llamada y cierre se emiten en orden y una sola vez |
 | `test_subtitle_widget` | El HUD muestra, mantiene y oculta los subtítulos con su duración |
 | `test_quero_cooldown` | Un segundo uso inmediato no restaura estamina; tras el tiempo de espera sí |
 | `test_offering_once` | La ofrenda solo se usa una vez por partida |
 | `test_world_spawn_south` | El jugador aparece en el camino sur |
-| `test_audio_manager_buses` | `AudioManager` existe y el bus de efectos está disponible |
+
+Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
+
+```bash
+godot --headless --path . --script res://tests/soak_messenger_event.gd
+```
+
+Carga el mundo, acelera el reloj ×20 y exige que el evento llegue a `DONE` sin intervención. Verifica el camino real de `_process`, no solo `step()`.
 
 ## 4. Verificación manual — Fase 1
 

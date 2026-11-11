@@ -45,6 +45,7 @@ var _bob_phase: float = 0.0
 var _bob_weight: float = 0.0
 var _camera_base_position: Vector3 = Vector3.ZERO
 var _focused_interactable: Interactable = null
+var _focused_candidate: Interactable = null
 var _focused_collider: Object = null
 var _run_blocked: bool = false
 
@@ -80,22 +81,25 @@ func _physics_process(delta: float) -> void:
 	update_interaction()
 
 
-## Actualiza el interactuable enfocado. Solo recalcula al cambiar el collider.
+## Actualiza el interactuable enfocado. El candidato se recalcula al cambiar el
+## collider; el foco se actualiza además cuando cambia su disponibilidad.
 func update_interaction() -> void:
 	var collider: Object = null
 	if interaction_ray.is_colliding():
 		collider = interaction_ray.get_collider()
-	if collider == _focused_collider:
+	if collider != _focused_collider:
+		_focused_collider = collider
+		_focused_candidate = null
+		if collider is Node:
+			_focused_candidate = find_interactable_from(collider as Node)
+	var available: Interactable = _focused_candidate
+	if available != null and not available.is_available():
+		available = null
+	if available == _focused_interactable:
 		return
-	_focused_collider = collider
-	var found: Interactable = null
-	if collider is Node:
-		found = find_interactable_from(collider as Node)
-	if found == _focused_interactable:
-		return
-	_focused_interactable = found
-	if found != null:
-		interactable_focused.emit(found)
+	_focused_interactable = available
+	if available != null:
+		interactable_focused.emit(available)
 	else:
 		interactable_unfocused.emit()
 
@@ -117,9 +121,11 @@ func find_interactable_from(start: Node) -> Interactable:
 	return null
 
 
-## Ejecuta la interacción sobre el objeto enfocado, si existe.
+## Ejecuta la interacción sobre el objeto enfocado, si existe y está disponible.
 func try_interact() -> void:
 	if _focused_interactable == null:
+		return
+	if not _focused_interactable.is_available():
 		return
 	_focused_interactable.interact(self)
 

@@ -126,17 +126,15 @@ El objetivo vinculante (≥ 30 FPS) se cumple con amplio margen. La referencia c
 
 > La medición anterior (55,92 FPS, jugador quieto y con `Engine.max_fps = 60`) queda invalidada por no usar un recorrido fijo y por ocultar el margen. También quedó invalidada la primera medición con el terreno invertido.
 
-### Medición con el evento y el audio (Fase 4, provisional)
+### Medición de la llacta completa (Fase 4, provisional)
 
-Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas, terrazas, límites, 3 interactuables, 9 NPC y el evento del mensajero en marcha (el jugador empieza dentro de la plaza), con ambiente de viento y aves en bucle.
+Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.
 
 | Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
 |---|---|---|---|---|---|---|
-| Bajo | 261,7 | 200,0 | 3,82 ms | 5,0 ms | 33 | 91,4 MB |
-| Medio | 85,1 | 71,4 | 11,75 ms | 14,0 ms | 33 | 164,2 MB |
+| Bajo | 259,3 | 142,9 | 3,86 ms | 7,0 ms | 43 | 92,4 MB |
+| Medio | 86,2 | 55,6 | 11,60 ms | 18,0 ms | 33 | 165,2 MB |
 
-El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Es una medición provisional: cambiará al incorporar los assets definitivos y la vegetación. La variación entre ejecuciones de la misma escena es de un 4–5 % en el FPS medio (261,7–273,2 en Bajo; 85,1–92,3 en Medio), así que las cifras se leen como orden de magnitud, no como valor exacto.
-
-Las terrazas incluyen tres rampas inclinadas en un corredor central para que la ruta alta sea transitable, tal como exige el alcance v2 §3.
+El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. La variación entre ejecuciones es apreciable: una primera ejecución en frío dio 216 / 76 FPS y las siguientes 259–262 / 86 FPS, así que las cifras se leen como orden de magnitud.
 
 > La medición anterior de esta misma escena (262,8 / 70,2 FPS y 84,9 / 163,7 MB) queda invalidada: se hizo con el atlas de sombras en 32 bits por el parámetro mal pasado. Los valores actuales usan 16 bits.

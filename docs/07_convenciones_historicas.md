@@ -44,6 +44,7 @@ Revisar antes de aprobar cualquier asset o escena:
 - **Herramientas:** sin rueda funcional para transporte, sin animales de tiro europeos, sin hierro.
 - **Alimentación:** solo especies andinas/americanas disponibles (nada de trigo, cebada, vacunos, cerdos, gallinas de origen euroasiático, etc.).
 - **Fauna y flora:** sin especies introducidas tras 1532 (p. ej. eucaliptos en el paisaje).
+- **Sonido:** el ambiente de la llacta usa una grabación de dominio público con aves que **no están identificadas como andinas** (procede de una biblioteca genérica). Se acepta como placeholder y se sustituirá por un registro propio del altiplano antes de la versión definitiva.
 - **Organización social:** cargos, parentesco (ayllu), reciprocidad y jerarquías según fuentes.
 - **Paisaje:** terrazas, caminos y asentamientos coherentes con la fecha representada.
 - **Lenguaje y denominaciones:** términos quechuas con grafía consistente; evitar términos coloniales posteriores en boca de personajes.

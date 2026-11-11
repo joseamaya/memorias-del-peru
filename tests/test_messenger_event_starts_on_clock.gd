@@ -1,5 +1,5 @@
 extends RefCounted
-## Comprueba cómo arranca el evento del mensajero (ADR-0007).
+## Comprueba cuándo arranca el evento del mensajero (ADR-0009).
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 
@@ -16,7 +16,7 @@ func _spawn_world() -> Node:
 	return world
 
 
-func test_messenger_event_starts_on_arrival() -> bool:
+func test_messenger_event_starts_on_clock() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:
 		return false
@@ -25,16 +25,16 @@ func test_messenger_event_starts_on_arrival() -> bool:
 	if event == null or player == null:
 		world.free()
 		return false
-	event.step(1.0)
-	var idle_away: bool = event.phase == MessengerEvent.Phase.IDLE
 	player.global_position = Vector3(0.0, 0.05, 2.0)
-	event.step(0.1)
+	event.step(10.0)
+	var early: bool = event.phase == MessengerEvent.Phase.IDLE
+	event.step(event.arrival_delay)
 	var started: bool = event.phase == MessengerEvent.Phase.ARRIVAL
 	world.free()
-	return idle_away and started
+	return early and started
 
 
-func test_messenger_event_starts_on_timeout() -> bool:
+func test_messenger_event_waits_for_plaza() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:
 		return false
@@ -42,9 +42,9 @@ func test_messenger_event_starts_on_timeout() -> bool:
 	if event == null:
 		world.free()
 		return false
-	event.step(1.0)
-	var idle: bool = event.phase == MessengerEvent.Phase.IDLE
-	event.step(event.arrival_timeout + 1.0)
+	event.step(event.arrival_delay + 1.0)
+	var waiting: bool = event.phase == MessengerEvent.Phase.IDLE
+	event.step(event.arrival_grace + 1.0)
 	var started: bool = event.phase == MessengerEvent.Phase.ARRIVAL
 	world.free()
-	return idle and started
+	return waiting and started

@@ -1,10 +1,10 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v2)** — 2026-11-10; sustituye a la v1
+- Estado: **Aprobado (v3)** — 2026-11-10; sustituye a la v2
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md) y [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md)
+- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md) y [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)
 
 ## 0. Historial de versiones
 
@@ -12,16 +12,17 @@
 |---|---|
 | v1 | Primera propuesta, aprobada el 2026-11-10. Incompleta como precondición: sin cuestionario, criterio de corrección ni reclutamiento; el pututu era el único disparador del evento. |
 | v2 | Añade el protocolo de prueba completo, la secuencia con disparo garantizado, los personajes que faltaban, el reparto de textos, la estimación de duración y el cambio de “chasqui” a “mensajero”. |
+| v3 | Disparo por reloj, pututu disponible solo en la llamada, aviso de la llamada, habitantes que no parten, casas fuera de los caminos, camino norte y mirador, y duración ajustada a 5–8 min. |
 
 ## 1. Objetivo
 
-Entregar una experiencia jugable de **10–15 minutos** en una llacta andina del siglo XV, con dos rutas de exploración, tres interactuables de tipos distintos, dos NPC con presencia y un evento narrativo completo. El vertical slice debe poder jugarse de principio a fin, sin bloqueos, dentro del presupuesto de rendimiento y con todo el contenido histórico registrado.
+Entregar una experiencia jugable de **5–8 minutos** en una llacta andina del siglo XV, con dos rutas de exploración, tres interactuables de tipos distintos, dos NPC con presencia y un evento narrativo completo. El vertical slice debe poder jugarse de principio a fin, sin bloqueos, dentro del presupuesto de rendimiento y con todo el contenido histórico registrado.
 
 Objetivos medibles tomados de [docs/05](../../../docs/05_plan_de_implementacion.md) Fase 4:
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 10–15 min de mediana para un jugador que explora sin prisa |
+| Duración | 5–8 min de mediana para un jugador que explora sin prisa (ADR-0009) |
 | Espacio | Llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Rutas | Al menos 2 entre el inicio y el punto narrativo final |
@@ -48,22 +49,22 @@ La noticia se presenta como lo que dice el mensajero. La tradición recoge versi
 
 ### 2.2 Secuencia y disparo
 
-La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md)). El evento **no depende del pututu**: empieza cuando el jugador entra en la plaza o, si no entra, al agotarse un tiempo máximo.
+La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md)) y un disparo por reloj ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). La noticia cierra la sesión: el jugador explora primero y el mensajero llega a media mañana.
 
 | Fase | Entra cuando | Ocurre | Subtítulo |
 |---|---|---|---|
-| `IDLE` | inicio | el mensajero espera fuera del camino norte | — |
-| `ARRIVAL` | el jugador entra en 22 m de la plaza **o** pasan 120 s | el mensajero corre hasta la plaza; los demás giran hacia él | — |
-| `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen; aviso del pututu | “¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido de la ciudad.” / “Cusi Yupanqui llama a los ayllus.” |
-| `CALL` | termina `MESSAGE` | el jugador puede tocar el pututu; si no lo hace en 60 s, lo toca el curaca | — |
-| `DEPARTURE` | suena el pututu | el grupo parte hacia el norte; el mensajero se queda | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio. Solo queda el viento.” |
-| `DONE` | el grupo sale del área | la plaza queda vacía; el jugador sigue libre | — |
+| `IDLE` | inicio | el mensajero espera fuera del camino norte | “Dicen que hoy llegará un mensajero del Cusco…” |
+| `ARRIVAL` | pasan 240 s **y** el jugador está en la plaza, o 360 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
+| `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
+| `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
+| `DEPARTURE` | suena el pututu | el curaca y los principales parten por el camino norte; los vecinos se quedan | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
+| `DONE` | el grupo llega al camino norte | la comitiva desaparece; el jugador sigue libre | — |
 
 Reglas:
 
-- El subtítulo de apertura se muestra al empezar a jugar: “Una llacta del valle. Siglo XV. La mañana empieza como cualquier otra.”
-- El subtítulo de la noticia se repite una vez si el jugador entra en la plaza durante `MESSAGE` o `CALL`.
-- El pututu conserva su papel: convoca la reunión y abre el cierre. Es opcional para terminar.
+- **Antes de `CALL` el pututu no está disponible**: no se enfoca, no muestra acción y no se gasta ([ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md)). Así ningún toque temprano puede dejar la llamada sin respuesta.
+- El curaca usa `force_play()`: aunque el pututu llegue gastado por cualquier vía, el evento termina.
+- El subtítulo de la noticia se repite una vez si el jugador entra en la plaza durante `MESSAGE` o `CALL` (caso del disparo por espera agotada).
 - El final no muestra créditos ni fundido: la plaza vacía y el viento son el cierre.
 - No hay diálogo ramificado ni sistema de misiones. Cualquier texto con opciones requiere un ADR.
 
@@ -79,12 +80,13 @@ Reglas:
 
 - **Inicio:** camino sur, con la llacta a la vista.
 - **Ruta baja:** camino sur → viviendas oeste → telar → plaza.
-- **Ruta alta:** camino sur → terrazas este → mirador → plaza.
-- **Punto final:** plaza, junto al pututu.
+- **Ruta alta:** camino sur → terrazas este → rampas → mirador → plaza.
+- **Punto final:** plaza; la comitiva sale por el camino norte.
 - **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío.
-- **Viviendas:** 6–8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo.
+- **Viviendas:** 8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo, agrupados al oeste (3), al este (3) y al norte (2). **Ninguna casa ocupa el eje de un camino**: los cuatro caminos quedan libres.
 - **Plaza:** tierra apisonada, con el pututu, el quero y el adoratorio de ofrenda.
-- **Terrazas:** tres niveles agrícolas con muro de contención y escalones transitables.
+- **Terrazas:** tres niveles agrícolas con muro de contención y un corredor central de rampas transitables.
+- **Mirador:** cornisa superior de la terraza este, al final de la ruta alta.
 - **Vegetación:** ichu y queñua; prohibido el eucalipto y cualquier especie posterior a 1532.
 
 ## 4. Interactuables
@@ -110,9 +112,9 @@ Reglas:
 | Curaca | Autoridad local que recibe la noticia y convoca | Sale de su casa, se acerca al mensajero; toca el pututu si el jugador no lo hace | PCH-017 |
 | Hombre principal 1 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
-| Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento | PCH-018 |
+| Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
 
-La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo. El resto forma parte del evento.
+La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo. El resto forma parte del evento: solo el curaca y los dos hombres principales parten; los vecinos permanecen en la plaza, como dice el cierre.
 
 ## 6. Assets
 
@@ -158,9 +160,10 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 
 | Clave | Cuándo | Texto |
 |---|---|---|
-| `PCH_NARR_OPENING` | al empezar | Una llacta del valle. Siglo XV. La mañana empieza como cualquier otra. |
+| `PCH_NARR_OPENING` | al empezar | Dicen que hoy llegará un mensajero del Cusco. La mañana empieza como cualquier otra. |
 | `PCH_NARR_NEWS_1` | llega el mensajero | ¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido de la ciudad. |
 | `PCH_NARR_NEWS_2` | tras la anterior | Cusi Yupanqui llama a los ayllus. |
+| `PCH_NARR_CALL` | empieza la llamada | Los hombres esperan. El pututu puede convocar. |
 | `PCH_NARR_CLOSING_1` | parte el grupo | El curaca y los hombres principales parten hacia el Cusco. |
 | `PCH_NARR_CLOSING_2` | tras la anterior | La llacta queda en silencio. Solo queda el viento. |
 
@@ -186,18 +189,18 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 | PCH-006 | Llacta / asentamiento | A / R | pendiente |
 | PCH-007 | Vivienda rural de piedra y barro | A / R | pendiente |
 | PCH-008 | Terraza agrícola | A | pendiente |
-| PCH-009 | Pututu | A / H | verificado |
+| PCH-009 | Pututu | A / H | verificado (A) |
 | PCH-010 | Telar y textil | A / R | pendiente |
-| PCH-011 | Mensajero (no chasqui) | H / R | verificado |
+| PCH-011 | Mensajero (no chasqui) | H / R | pendiente |
 | PCH-012 | Ofrenda a la Pachamama | H / R | pendiente |
 | PCH-013 | Ichu y queñua | A | pendiente |
 | PCH-014 | Llama / alpaca (opcional) | A | pendiente |
-| PCH-015 | Evento: la noticia chanca | H (tradición) / N | verificado |
+| PCH-015 | Evento: la noticia chanca | H (tradición) / N | pendiente |
 | PCH-016 | Plaza y caminos | A / R | pendiente |
 | PCH-017 | Curaca y hombres principales | H / R | pendiente |
 | PCH-018 | Vestimenta y apariencia del habitante común | R | pendiente |
 
-“Verificado” exige la cita completa del requisito de su clasificación. Las fichas pendientes están identificadas con sus fuentes, pero les falta edición, página o publicación comprobada.
+“Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las fichas pendientes están identificadas con sus fuentes, pero les falta edición, página o publicación comprobada: las páginas de la traducción de 2007 se tomaron de su índice publicado, no de leer el libro, y por eso no cuentan.
 
 ## 9. Protocolo de prueba
 
@@ -214,7 +217,7 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 |---|---|---|
 | Consentimiento | 2 min | Se explica que se cronometra y se toman notas anónimas; puede abandonar en cualquier momento |
 | Controles | 2 min | Solo movimiento, cámara e interacción; **no se explica la historia** |
-| Juego | 10–15 min | El facilitador observa en silencio |
+| Juego | 5–8 min | El facilitador observa en silencio |
 | Cuestionario | 5 min | Cinco preguntas abiertas, sin opciones |
 
 El facilitador solo responde dudas de **controles**. Si hay un bloqueo técnico, lo anota y no ayuda con el contenido.
@@ -259,20 +262,19 @@ Se supera el cuestionario si **ambas** respuestas son correctas.
 
 ## 10. Duración estimada
 
-Estimación para un jugador que explora sin prisa, a velocidad de caminata (3,5 m/s):
+La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duración depende de cuánto explore el jugador antes de la noticia. Dos escenarios medidos sobre el mapa actual:
 
-| Momento | Minutos |
-|---|---|
-| Apertura y camino sur | 1,5 |
-| Ruta baja: viviendas oeste y telar | 2,0 |
-| Ruta alta: terrazas y mirador | 2,5 |
-| Interacciones de la plaza (quero, ofrenda) | 2,0 |
-| Evento del mensajero y reunión | 2,5 |
-| Partida y cierre | 1,5 |
-| Margen de contemplación y recorrido libre | 2,0 |
-| **Total** | **14,0** |
+| Momento | Directo (min) | Explorador (min) |
+|---|---|---|
+| Apertura y entrada por el camino sur | 0,5 | 1,0 |
+| Viviendas oeste y telar | 0,5 | 2,0 |
+| Terrazas, rampas y mirador | 0,5 | 2,0 |
+| Quero y ofrenda | 0,5 | 1,0 |
+| Espera hasta la noticia | 2,0 | 1,0 |
+| Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
+| **Total** | **5,5** | **8,5** |
 
-Riesgo: si la mediana real queda por debajo de 10 min, la corrección es añadir dos miradores con un subtítulo breve, no más sistemas.
+La mediana esperada es **6–7 minutos**. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
 
 ## 11. Rendimiento
 
@@ -291,10 +293,10 @@ Riesgo: si la mediana real queda por debajo de 10 min, la corrección es añadir
 
 ## 13. Aprobación
 
-- [x] El equipo revisa y aprueba esta revisión 2.
-- [x] Se confirma el disparo del evento por llegada a la plaza con respaldo temporal.
-- [x] Se confirma el reparto de textos y la definición de “la élite”.
-- [x] Se confirma el protocolo de prueba y el criterio de corrección.
-- [x] Se confirman los personajes añadidos y el cambio de “chasqui” a “mensajero”.
+- [x] El equipo revisa y aprueba esta revisión 3.
+- [x] Se confirma el disparo por reloj y la disponibilidad del pututu solo en la llamada.
+- [x] Se confirma la duración objetivo de 5–8 min (ADR-0009).
+- [x] Se confirma el reparto de textos, incluido el aviso de la llamada.
+- [x] Se confirman la salida por el camino norte y la permanencia de los vecinos.
 
 Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.

@@ -1,11 +1,12 @@
 class_name MessengerEvent
 extends Node
-## Evento de la llegada del mensajero (ADR-0007).
+## Evento de la llegada del mensajero (ADR-0007 y ADR-0009).
 ##
-## Máquina de estados con disparo garantizado: el evento empieza al entrar en la
-## plaza o al agotarse un tiempo máximo, y termina aunque el jugador nunca toque
-## el pututu. El avance lo impulsa `step(delta)` para que las pruebas puedan
-## recorrer la secuencia sin esperas reales.
+## El mensajero llega a media mañana: el reloj arranca al empezar la partida y,
+## a partir de ahí, el evento espera a que el jugador esté en la plaza o agota
+## una espera máxima. El pututu solo responde durante la llamada y el curaca lo
+## toca como respaldo, de modo que la experiencia nunca puede quedarse sin
+## final. El avance lo impulsa `step(delta)` para poder probarlo sin esperas.
 
 enum Phase { IDLE, ARRIVAL, MESSAGE, CALL, DEPARTURE, DONE }
 
@@ -17,19 +18,24 @@ signal subtitle_requested(text_key: StringName, seconds: float)
 const KEY_OPENING: StringName = &"PCH_NARR_OPENING"
 const KEY_NEWS_FIRST: StringName = &"PCH_NARR_NEWS_1"
 const KEY_NEWS_SECOND: StringName = &"PCH_NARR_NEWS_2"
+const KEY_CALL: StringName = &"PCH_NARR_CALL"
 const KEY_CLOSING_FIRST: StringName = &"PCH_NARR_CLOSING_1"
 const KEY_CLOSING_SECOND: StringName = &"PCH_NARR_CLOSING_2"
 
-const OPENING_SECONDS: float = 5.0
-const NEWS_SECONDS: float = 5.0
-const NEWS_SECOND_DELAY: float = 5.5
-const MESSAGE_DURATION: float = 11.0
-const CLOSING_SECONDS: float = 5.0
-const CLOSING_SECOND_DELAY: float = 5.5
+const OPENING_SECONDS: float = 6.0
+const NEWS_SECONDS: float = 6.0
+const NEWS_SECOND_DELAY: float = 6.0
+const MESSAGE_DURATION: float = 12.0
+const CALL_SECONDS: float = 5.0
+const CLOSING_SECONDS: float = 6.0
+const CLOSING_SECOND_DELAY: float = 6.0
 const DEPARTURE_TIMEOUT: float = 45.0
 
+## Tiempo de partida antes de que el mensajero se ponga en camino.
+@export var arrival_delay: float = 240.0
+## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza.
+@export var arrival_grace: float = 120.0
 @export var arrival_radius: float = 22.0
-@export var arrival_timeout: float = 120.0
 @export var call_timeout: float = 60.0
 
 var phase: int = Phase.IDLE
@@ -50,7 +56,8 @@ var _phase_time: float = 0.0
 var _news_second_timer: float = 0.0
 var _news_repeat_allowed: bool = false
 var _closing_second_sent: bool = false
-var _arrival_by_timeout: bool = false
+var _arrival_by_grace: bool = false
+var _curaca_called: bool = false
 var _curaca_is_calling: bool = false
 
 
@@ -82,12 +89,14 @@ func bind(
 	_pututu = pututu_node
 	if _plaza != null:
 		_plaza_center = _plaza.global_position
-	if _pututu != null and not _pututu.played.is_connected(_on_pututu_played):
-		_pututu.played.connect(_on_pututu_played)
+	if _pututu != null:
+		_pututu.set_armed(false)
+		if not _pututu.played.is_connected(_on_pututu_played):
+			_pututu.played.connect(_on_pututu_played)
 	subtitle_requested.emit(KEY_OPENING, OPENING_SECONDS)
 
 
-## Inicia el evento sin esperar al jugador. Se usa en pruebas y en depuración.
+## Inicia el evento sin esperar al reloj. Se usa en pruebas y en depuración.
 func start() -> void:
 	if phase != Phase.IDLE:
 		return
@@ -120,12 +129,14 @@ func step(delta: float) -> void:
 
 func _step_idle(delta: float) -> void:
 	_idle_time += delta
+	if _idle_time < arrival_delay:
+		return
 	if player_in_plaza():
-		_arrival_by_timeout = false
+		_arrival_by_grace = false
 		_enter(Phase.ARRIVAL)
 		return
-	if _idle_time >= arrival_timeout:
-		_arrival_by_timeout = true
+	if _idle_time >= arrival_delay + arrival_grace:
+		_arrival_by_grace = true
 		_enter(Phase.ARRIVAL)
 
 
@@ -179,20 +190,27 @@ func _enter(next_phase: int) -> void:
 		Phase.MESSAGE:
 			_place_group()
 			_send_news()
+		Phase.CALL:
+			if _pututu != null:
+				_pututu.set_armed(true)
+			subtitle_requested.emit(KEY_CALL, CALL_SECONDS)
 		Phase.DEPARTURE:
+			if _pututu != null:
+				_pututu.set_armed(false)
 			_closing_second_sent = false
 			subtitle_requested.emit(KEY_CLOSING_FIRST, CLOSING_SECONDS)
 			_send_party_away()
 		Phase.DONE:
 			completed = true
 			_news_second_timer = 0.0
+			_hide_party()
 			finished.emit()
 
 
 func _send_news() -> void:
 	subtitle_requested.emit(KEY_NEWS_FIRST, NEWS_SECONDS)
 	_news_second_timer = NEWS_SECOND_DELAY
-	_news_repeat_allowed = _arrival_by_timeout
+	_news_repeat_allowed = _arrival_by_grace
 
 
 func _advance_news_second(delta: float) -> void:
@@ -251,49 +269,67 @@ func _advance_group(delta: float) -> void:
 		actor.advance(delta)
 
 
+func _exit_point() -> Vector3:
+	return _plaza_center + Vector3(0.0, 0.0, -52.0)
+
+
 func _send_party_away() -> void:
-	var exit_point: Vector3 = _plaza_center + Vector3(0.0, 0.0, -66.0)
+	var exit_point: Vector3 = _exit_point()
 	var index: int = 0
 	for actor: NpcActor in _party():
-		actor.walk_to(exit_point + Vector3(-2.0 + float(index) * 1.2, 0.0, 0.0))
+		actor.walk_to(exit_point + Vector3(-1.5 + float(index) * 1.5, 0.0, 0.0))
 		index += 1
+	for actor: NpcActor in _neighbors:
+		actor.stop()
+		actor.face(exit_point)
 	if _messenger != null:
 		_messenger.stop()
 		_messenger.face(exit_point)
 
 
 func _party_arrived() -> bool:
-	var exit_point: Vector3 = _plaza_center + Vector3(0.0, 0.0, -66.0)
+	var exit_point: Vector3 = _exit_point()
 	for actor: NpcActor in _party():
 		if actor.flat_distance_to(exit_point) > 3.0:
 			return false
 	return true
 
 
+func _hide_party() -> void:
+	for actor: NpcActor in _party():
+		actor.hide_actor()
+
+
+## La comitiva son el curaca y los hombres principales. Los vecinos se quedan
+## en la plaza: el cierre narra solo la partida del grupo.
 func _party() -> Array[NpcActor]:
 	var party: Array[NpcActor] = []
 	if _curaca != null:
 		party.append(_curaca)
 	for actor: NpcActor in _principals:
 		party.append(actor)
-	for actor: NpcActor in _neighbors:
-		party.append(actor)
 	return party
 
 
 func _all_actors() -> Array[NpcActor]:
 	var actors: Array[NpcActor] = _party()
+	for actor: NpcActor in _neighbors:
+		actors.append(actor)
 	if _messenger != null:
 		actors.append(_messenger)
 	return actors
 
 
 func _curaca_calls() -> void:
-	if _pututu == null or _curaca == null:
+	if _curaca_called:
+		return
+	_curaca_called = true
+	if _pututu == null:
 		_enter(Phase.DEPARTURE)
 		return
+	pututu_by_player = false
 	_curaca_is_calling = true
-	_pututu.interact(_curaca)
+	_pututu.force_play()
 	_curaca_is_calling = false
 
 
