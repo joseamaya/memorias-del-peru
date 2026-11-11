@@ -21,7 +21,7 @@ Convenciones (alcance §7 y §7.1):
   colisión convexa al importar y no se dibujan.
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
-(PCH-004, 007, 009, 010 y 012); ninguna forma concreta está documentada como
+(PCH-004, 007, 009, 010, 012 y 013); ninguna forma concreta está documentada como
 hecho.
 """
 
@@ -65,6 +65,12 @@ PALETTE = {
 	"wool_dark": ((0.16, 0.12, 0.12), 0.9),
 	"wool_cream": ((0.86, 0.80, 0.66), 0.9),
 	"wool_green": ((0.22, 0.36, 0.26), 0.9),
+	"ichu_base": ((0.52, 0.50, 0.30), 1.0),
+	"ichu_tip": ((0.80, 0.70, 0.44), 1.0),
+	"quenua_bark": ((0.50, 0.26, 0.17), 0.9),
+	"quenua_peel": ((0.70, 0.46, 0.33), 0.9),
+	"quenua_leaf": ((0.22, 0.31, 0.18), 0.9),
+	"quenua_leaf_light": ((0.31, 0.40, 0.23), 0.9),
 }
 
 
@@ -168,6 +174,46 @@ class MeshBuilder:
 		if cap_top and profile[-1][0] > 0.0:
 			new_face = self.bm.faces.new(rings[-1])
 			new_face.material_index = self.mat_index(mat_fn(0, len(rings) - 2))
+
+	def tube(self, points, radii, segments, mat_fn):
+		"""Tubo por una polilínea 3D con radio variable; anillos perpendiculares
+		al tramo. [mat_fn](anillo) da el material de cada tramo."""
+		rings = []
+		for i, point in enumerate(points):
+			if i == 0:
+				direction = (points[1] - points[0]).normalized()
+			elif i == len(points) - 1:
+				direction = (points[i] - points[i - 1]).normalized()
+			else:
+				direction = (points[i + 1] - points[i - 1]).normalized()
+			helper = Vector((0.0, 0.0, 1.0)) if abs(direction.z) < 0.9 else Vector((1.0, 0.0, 0.0))
+			axis_a = direction.cross(helper).normalized()
+			axis_b = direction.cross(axis_a).normalized()
+			ring = []
+			for k in range(segments):
+				angle = 2.0 * math.pi * k / segments
+				offset = (axis_a * math.cos(angle) + axis_b * math.sin(angle)) * radii[i]
+				ring.append(self.bm.verts.new(point + offset))
+			rings.append(ring)
+		for r in range(len(rings) - 1):
+			index = self.mat_index(mat_fn(r))
+			for k in range(segments):
+				t = (k + 1) % segments
+				new_face = self.bm.faces.new([rings[r][k], rings[r][t], rings[r + 1][t], rings[r + 1][k]])
+				new_face.material_index = index
+		cap = self.bm.faces.new(list(reversed(rings[-1])))
+		cap.material_index = self.mat_index(mat_fn(len(rings) - 2))
+
+	def blob(self, center, radii, mat_name, rng, rows=4, segments=7):
+		"""Mata irregular (follaje): esfera baja con el radio alterado."""
+		frame = Matrix.Translation(center) @ Matrix.Diagonal((radii[0], radii[1], radii[2], 1.0))
+		profile = []
+		for r in range(rows + 1):
+			phi = math.pi * r / rows
+			profile.append((math.sin(phi) + (0.0 if r in (0, rows) else 0.0), -math.cos(phi)))
+		noise = [[rng.uniform(0.82, 1.12) for _ in range(segments)] for _ in range(rows + 1)]
+		self.lathe(profile, segments, lambda k, r: mat_name, axis_frame=frame, cap_bottom=False, cap_top=False,
+			radial_fn=lambda k, r: noise[r][k])
 
 	def to_object(self, name, collection):
 		mesh = bpy.data.meshes.new(name)
@@ -609,6 +655,89 @@ def build_loom(rng):
 	builder.to_object("pch_loom", collection)
 
 
+# --- Vegetación (PCH-013) -------------------------------------------------
+
+def build_ichu(rng, blades, height):
+	"""Mata de ichu: hojas finas que nacen juntas y se arquean hacia fuera.
+	Material de doble cara (sin descarte de caras traseras)."""
+	collection = bpy.context.scene.collection
+	builder = MeshBuilder()
+	for _ in range(blades):
+		heading = rng.uniform(0.0, 2.0 * math.pi)
+		lean = rng.uniform(0.15, 0.75)
+		blade_h = height * rng.uniform(0.65, 1.0)
+		root = Vector((math.cos(heading), math.sin(heading), 0.0)) * rng.uniform(0.02, 0.09)
+		outward = Vector((math.cos(heading), math.sin(heading), 0.0))
+		side = Vector((-math.sin(heading), math.cos(heading), 0.0))
+		width = rng.uniform(0.018, 0.03)
+		spine = []
+		for t in (0.0, 0.08, 0.55, 1.0):
+			spread = lean * blade_h * (0.3 * t + 0.45 * t * t)
+			spine.append(root + outward * spread + Vector((0.0, 0.0, blade_h * (t - 0.22 * lean * t * t))))
+		for k in range(2):
+			w0 = width * (1.0 - k / 3.0)
+			w1 = width * (1.0 - (k + 1) / 3.0)
+			builder.face([spine[k] - side * w0, spine[k] + side * w0, spine[k + 1] + side * w1, spine[k + 1] - side * w1],
+				"ichu_base" if k == 0 else "ichu_tip")
+		w2 = width / 3.0
+		builder.face([spine[2] - side * w2, spine[2] + side * w2, spine[3]], "ichu_tip")
+	builder.to_object("ichu", collection)
+
+
+def build_ichu_a(rng):
+	build_ichu(rng, 20, 0.7)
+
+
+def build_ichu_b(rng):
+	build_ichu(rng, 15, 0.5)
+
+
+def build_quenua(rng):
+	"""Queñua (Polylepis): varios troncos retorcidos de corteza rojiza que se
+	descascara y follaje menudo en matas oscuras. Un solo objeto para que el
+	juego lo repita con MultiMesh."""
+	collection = bpy.context.scene.collection
+	builder = MeshBuilder()
+	stems = rng.randint(3, 4)
+	tips = []
+
+	def bark(ring):
+		return "quenua_peel" if (ring + rng.randint(0, 1)) % 3 == 0 else "quenua_bark"
+
+	for stem in range(stems):
+		heading = 2.0 * math.pi * stem / stems + rng.uniform(-0.4, 0.4)
+		out = Vector((math.cos(heading), math.sin(heading), 0.0))
+		height = rng.uniform(2.6, 3.6)
+		points = []
+		radii = []
+		for k in range(6):
+			t = k / 5.0
+			wobble = Vector((rng.uniform(-0.12, 0.12), rng.uniform(-0.12, 0.12), 0.0)) * (0.0 if k == 0 else 1.0)
+			points.append(out * (0.12 + 1.1 * t ** 1.5) + Vector((0.0, 0.0, height * t)) + wobble)
+			radii.append(0.15 * (1.0 - 0.7 * t) + 0.025)
+		points[0].z = 0.06
+		builder.tube(points, radii, 6, bark)
+		tips.append(points[-1])
+		# Dos ramas laterales desde la mitad superior del tronco.
+		for branch in range(2):
+			start_index = rng.randint(2, 4)
+			start = points[start_index]
+			b_heading = heading + rng.uniform(-1.3, 1.3)
+			b_out = Vector((math.cos(b_heading), math.sin(b_heading), 0.0))
+			length = rng.uniform(0.6, 1.1)
+			mid = start + b_out * length * 0.5 + Vector((0.0, 0.0, length * 0.35))
+			end = start + b_out * length + Vector((0.0, 0.0, length * 0.55))
+			builder.tube([start, mid, end], [radii[start_index] * 0.6, radii[start_index] * 0.4, 0.02], 5, bark)
+			tips.append(end)
+	for tip in tips:
+		for _ in range(2):
+			offset = Vector((rng.uniform(-0.35, 0.35), rng.uniform(-0.35, 0.35), rng.uniform(-0.1, 0.2)))
+			size = rng.uniform(0.3, 0.48)
+			builder.blob(tip + offset, (size, size * rng.uniform(0.8, 1.1), size * 0.5),
+				"quenua_leaf" if rng.random() < 0.6 else "quenua_leaf_light", rng, rows=3, segments=6)
+	builder.to_object("quenua", collection)
+
+
 MODELS = {
 	"pch_house_a": build_house_a,
 	"pch_house_b": build_house_b,
@@ -616,6 +745,10 @@ MODELS = {
 	"pch_pututu": build_pututu,
 	"pch_offering_shrine": build_offering_shrine,
 	"pch_loom": build_loom,
+	"pch_ichu_a": build_ichu_a,
+	"pch_ichu_b": build_ichu_b,
+	"pch_quenua_a": build_quenua,
+	"pch_quenua_b": build_quenua,
 }
 
 

@@ -191,6 +191,12 @@ func _build_llacta() -> void:
 	for index: int in range(positions.size()):
 		_add_house(houses, index, positions[index], stone, thatch)
 
+	# Ichu y queñua (PCH-013) fuera de la plaza, los caminos y las casas.
+	var vegetation: LlactaVegetation = LlactaVegetation.new()
+	vegetation.name = "Vegetation"
+	llacta.add_child(vegetation)
+	vegetation.build(_height_at, positions)
+
 	var terraces: Node3D = Node3D.new()
 	terraces.name = "Terraces"
 	llacta.add_child(terraces)

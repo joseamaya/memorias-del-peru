@@ -148,6 +148,17 @@ Mismo comando y condiciones que la medición anterior, con la carga del sistema 
 
 El objetivo vinculante (≥ 30 FPS) se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Las draw calls se triplican porque cada vivienda usa unos nueve materiales planos. Si hiciera falta recuperar margen, la primera medida sería agrupar esos materiales.
 
+### Medición con vegetación (Fase 4, provisional, 2026-11-11)
+
+Mismo comando y condiciones que la medición anterior, con la carga del sistema entre 2,2 y 2,6. La escena añade la vegetación de `vegetation.gd`: unas 3 100 matas de ichu (75–100 triángulos cada una) en 96 bloques `MultiMeshInstance3D` que se ocultan a 50 m y no proyectan sombra, y 24 queñuas de ~1 000 triángulos con sombra. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 204,1 (199,9–206,9) | 166,7 | 4,90 ms | 6,0 ms | 201–202 | 94,0 MB |
+| Medio | 73,2 (72,0–75,1) | 58,8 (52,6–58,8) | 13,66 ms | 17–19 ms | 165 | 166,8 MB |
+
+Una primera versión más densa en triángulos (150 por mata y 2 000 por árbol) bajaba el perfil Medio a 61–66 FPS con p1 de 40–45. Al quitar por separado el ichu o la queñua se recuperaban unos 70 FPS en cada caso, así que se aligeraron los dos modelos. El objetivo vinculante (≥ 30 FPS) se sigue cumpliendo con margen y el perfil Medio queda por encima de 60 FPS de media, aunque su p1 baja de 60. Si hiciera falta más margen, las palancas son la distancia de ocultación del ichu y la sombra de las queñuas.
+
 ### Medición de la llacta completa (Fase 4, provisional)
 
 Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.

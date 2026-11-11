@@ -128,7 +128,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-013 — Ichu y queñua
 - Tipo: flora
 - Clasificación: A
-- Uso en el juego: vegetación del terreno y de las terrazas
+- Uso en el juego: vegetación del terreno; modelos `pch_ichu_a.glb`, `pch_ichu_b.glb` (R: matas de hojas finas y pajizas) y `pch_quenua_a.glb`, `pch_quenua_b.glb` (R: varios troncos retorcidos de corteza rojiza y follaje menudo), repartidos por `vegetation.gd`. Las terrazas quedan sin vegetación por ahora
 - Fuentes (identificadas; pendiente de publicación): *Stipa ichu* (ichu) y *Polylepis* (queñua) en la flora altoandina; falta la referencia botánica concreta.
 - Discrepancias entre fuentes: —
 - Notas de representación: solo especies presentes antes de 1532. Prohibidos el eucalipto y cualquier especie introducida.

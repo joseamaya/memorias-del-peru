@@ -192,6 +192,9 @@ Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo 
 | Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies | Pendiente (bloqueo) |
 | Quero, pututu, adoratorio | `pch_quero.glb`, `pch_pututu.glb`, `pch_offering_shrine.glb` | Base del objeto | Generados (R) |
 | Telar (sin bloqueo) | `pch_loom.glb` | Extremo de la tejedora; el telar se extiende hacia +Z de Godot hasta la estaca | Generado (R) |
+| Vegetación (sin bloqueo) | `pch_ichu_a.glb`, `pch_ichu_b.glb`; `pch_quenua_a.glb`, `pch_quenua_b.glb` | Base de la mata o del tronco; un único objeto por archivo, porque se repite con `MultiMesh` | Generados (R) |
+
+La vegetación la reparte `scripts/world/vegetation.gd` (`LlactaVegetation`): unas 3 100 matas de ichu en bloques de 22 m que se ocultan a 50 m y no proyectan sombra, y 24 queñuas en cuatro bosquecillos junto a la cresta, con colisión en el tronco. El reparto es determinista y deja libres la plaza, los caminos, las casas, las terrazas y el rincón de la tejedora.
 
 «Generado» significa producido por `pch_models.py` (ADR-0010): low-poly con colores planos, sustituible por un modelo hecho a mano que cumpla las mismas reglas. La forma concreta de cada modelo es una reconstrucción (R) según su ficha.
 
