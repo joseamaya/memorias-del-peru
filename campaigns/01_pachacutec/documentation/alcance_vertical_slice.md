@@ -149,13 +149,15 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 
 | Sonido | Uso | Origen | Licencia |
 |---|---|---|---|
-| Viento de altura | Ambiente continuo en bucle | “Howling Wind Ambience”, DBlover (Freesound 405601) o equivalente | CC0 |
-| Aves andinas | Ambiente | por elegir en OpenGameArt / Wikimedia Commons | CC0 / dominio público |
-| Pasos en tierra y piedra | Jugador | `pasos_tierra_01–03.wav` y `pasos_piedra_01–03.wav` (terrazas), síntesis propia (placeholder) | Propia |
-| Quero | Interacción | placeholder actual | Propia |
-| Pututu | Interacción y evento | “Snailhorn”, Ohrwurm (Freesound) o equivalente | CC0 |
-| Ofrenda | Interacción | por elegir, CC0 | CC0 |
-| Murmullo de plaza | Evento: de la noticia a la llamada | `murmullo_plaza.wav`, síntesis propia (placeholder; sustituir por grabación) | Propia |
+| Viento de altura | Ambiente continuo en bucle | `ambiente_viento_andes.ogg`: viento en Atacama (Chile), felix.blume, Freesound 156414 | CC0 |
+| Aves andinas | Ambiente | sin grabación CC0 con aves andinas identificadas; el ambiente actual no lleva aves | — |
+| Pasos en tierra y piedra | Jugador | `pasos_tierra_01–03.wav` (Freesound 352870) y `pasos_piedra_01–03.wav` (Freesound 521590), procesados | CC0 |
+| Quero | Interacción | `quero_bebida.wav`: sorbo y trago, Freesound 320139 | CC0 |
+| Pututu | Interacción y evento | `pututu_caracola.wav`: «Snailhorn», Ohrwurm, Freesound 64830 (caracola de tipo asiático; no hay pututu andino en CC0) | CC0 |
+| Ofrenda | Interacción | `ofrenda_grano.wav`: grano vertido, Freesound 556974 | CC0 |
+| Murmullo de plaza | Evento: de la noticia a la llamada | `murmullo_plaza.wav`: murmullo de hombres, Freesound 480808, filtrado y en bucle | CC0 |
+
+Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere grabaciones propias en la sierra.
 
 - Toda pieza se registra en `shared_assets/audio/LICENSE.md` con autor, URL, licencia y fecha de descarga.
 - Si una fuente exige cuenta para descargar, se pide al responsable del proyecto y no se sustituye por material de licencia dudosa.

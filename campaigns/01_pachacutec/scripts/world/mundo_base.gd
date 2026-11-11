@@ -22,7 +22,7 @@ const ROCK_COLOR: Color = Color(0.46, 0.43, 0.38, 1.0)
 const ROCK_FROM_HEIGHT: float = 1.0
 const ROCK_FULL_HEIGHT: float = 4.0
 const DEBUG_PROFILE_KEY: Key = KEY_F2
-const AMBIENCE_PATH: String = "res://shared_assets/audio/ambience_wind_birds.ogg"
+const AMBIENCE_PATH: String = "res://shared_assets/audio/ambiente_viento_andes.ogg"
 const FOOTSTEP_PATHS: Array[String] = [
 	"res://shared_assets/audio/pasos_tierra_01.wav",
 	"res://shared_assets/audio/pasos_tierra_02.wav",
