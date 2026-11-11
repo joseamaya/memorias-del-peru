@@ -94,7 +94,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Uso en el juego: `Llacta/Terraces` en `mundo_base.tscn`
 - Fuentes (identificadas; pendiente de página): Robin A. Donkin, *Agricultural Terracing in the Aboriginal New World* (University of Arizona Press, 1979); Ann Kendall, *Aspects of Inca Architecture* (BAR, 1985).
 - Discrepancias entre fuentes: —
-- Notas de representación: tres niveles con muro de contención de piedra. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
+- Notas de representación: tres niveles con muro de contención de pirka (piedra de campo con mortero de barro, como las viviendas de PCH-007) y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
 - Estado de verificación: pendiente
 
 ### PCH-009 — Pututu

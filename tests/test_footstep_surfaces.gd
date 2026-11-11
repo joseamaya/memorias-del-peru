@@ -48,10 +48,15 @@ func _world_marks_ok() -> bool:
 	var world: Node = (load(WORLD_PATH) as PackedScene).instantiate()
 	tree.root.add_child(world)
 	var ok: bool = true
+	# Rampas de piedra; encima de los bloques, tierra de cultivo con surcos.
 	for level: String in ["Terrace01", "Terrace02", "Terrace03"]:
-		for part: String in ["North", "South", "Ramp"]:
+		var ramp: Node = world.get_node_or_null("Llacta/Terraces/%sRamp" % level)
+		ok = ok and ramp != null and PlayerFPS.surface_of(ramp) == &"stone"
+		for part: String in ["North", "South"]:
 			var body: Node = world.get_node_or_null("Llacta/Terraces/%s%s" % [level, part])
-			ok = ok and body != null and PlayerFPS.surface_of(body) == &"stone"
+			ok = ok and body != null and PlayerFPS.surface_of(body) == &""
+			var field: MeshInstance3D = world.get_node_or_null("Llacta/Terraces/%sField%s" % [level, part]) as MeshInstance3D
+			ok = ok and field != null and field.mesh != null and field.mesh.get_faces().size() > 6
 	var terrain_body: Node = world.get_node_or_null("Terrain/TerrainBody")
 	ok = ok and terrain_body != null and PlayerFPS.surface_of(terrain_body) == &""
 	world.free()

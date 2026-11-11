@@ -1,8 +1,9 @@
 extends RefCounted
 ## Comprueba que las terrazas son macizas: los bloques llegan al suelo, bajo
 ## cada rampa elevada hay relleno hasta su arranque y una tapa cierra el
-## extremo alto. Antes, los niveles 2 y 3 flotaban y el jugador podía quedarse
-## encajado bajo la rampa entrando desde el este.
+## extremo alto, y que cada nivel lleva su muro de piedras. Antes, los
+## niveles 2 y 3 flotaban y el jugador podía quedarse encajado bajo la rampa
+## entrando desde el este.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 const LEVELS: Array[String] = ["Terrace01", "Terrace02", "Terrace03"]
@@ -39,5 +40,17 @@ func test_terraces_solid() -> bool:
 			ok = ok and fill == null
 		else:
 			ok = ok and fill != null and absf(_bottom_of(fill)) < TOLERANCE
+		# Muro de pirka: una malla de piedras por terraza, determinista.
+		var walls: MeshInstance3D = world.get_node_or_null("Llacta/Terraces/%sWalls" % level) as MeshInstance3D
+		ok = ok and walls != null and walls.mesh != null and walls.mesh.get_faces().size() > 3000
+	var faces: Array[StoneWall.Face] = [StoneWall.Face.new(Vector3.ZERO, Vector3.RIGHT, Vector3.BACK, 4.0, 1.0)]
+	var stats_a: Dictionary = {}
+	var stats_b: Dictionary = {}
+	var mesh_a: ArrayMesh = StoneWall.build(faces, 7, stats_a)
+	var mesh_b: ArrayMesh = StoneWall.build(faces, 7, stats_b)
+	var stones_a: int = stats_a.get("stones", 0)
+	var stones_b: int = stats_b.get("stones", 0)
+	ok = ok and stones_a == stones_b and stones_a > 10
+	ok = ok and mesh_a.get_faces() == mesh_b.get_faces()
 	world.free()
 	return ok

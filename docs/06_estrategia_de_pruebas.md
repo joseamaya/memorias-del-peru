@@ -104,6 +104,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas, los cuatro caminos y el mirador |
 | `test_houses_clear_paths` | Ninguna vivienda ocupa el eje de un camino |
 | `test_terraces_have_ramps` | Cada nivel de terraza tiene una rampa inclinada con colisión |
+| `test_terraces_solid` | Los bloques de cada terraza llegan al suelo, bajo cada rampa elevada hay relleno y una tapa cierra el extremo alto; cada nivel tiene su malla de piedras (`TerraceNNWalls`) y `StoneWall.build()` da el mismo resultado con la misma semilla |
 | `test_world_bounds` | El límite del mundo tiene colisión a ~70 m del centro |
 | `test_llacta_interactables` | Quero, ofrenda y pututu existen, son `Interactable` y de tipos distintos |
 | `test_npcs_present` | Tejedora y agricultor existen con presencia |
@@ -123,7 +124,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_mouse_capture_requires_focus` | El jugador solo pide capturar el ratón en juego y con la ventana enfocada |
 | `test_footsteps_follow_bob` | Un paso por ciclo de balanceo, más frecuentes al correr, ninguno quieto o en el aire, y siempre con la cámara en su punto bajo |
 | `test_meeting_keeps_objects_clear` | En la reunión, todos los personajes quedan en la mitad norte de la plaza y a ≥ 2,5 m del quero, el pututu y la ofrenda |
-| `test_footstep_surfaces` | El paso usa el conjunto de la superficie pisada y, sin conjunto, el de por defecto; las terrazas del mundo son de piedra y el terreno no declara superficie |
+| `test_footstep_surfaces` | El paso usa el conjunto de la superficie pisada y, sin conjunto, el de por defecto. En el mundo, las rampas de las terrazas son de piedra, encima de los bloques se pisa tierra de cultivo (con su malla de surcos) y el terreno no declara superficie |
 | `test_plaza_murmur_phases` | El murmullo de la plaza suena en `MESSAGE` y `CALL` y calla en el resto; su recurso existe |
 | `test_boundary_ridge` | La cresta deja a nivel el interior, el inicio y el paso norte, sube más de 8 m en el borde y su ladera supera los 45° |
 | `test_model_validator` | El validador de modelos acepta casos correctos y rechaza nombre, escala, origen, tamaño, colisión de casa y altura de personaje incorrectos; incluye un `.glb` exportado e importado con `GLTFDocument` |

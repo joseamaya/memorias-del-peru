@@ -64,6 +64,20 @@ const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.t
 const TALK_HOLD_SECONDS: float = 7.0
 ## Velocidad de paseo de los vecinos antes de la noticia.
 const NEIGHBOR_WALK_SPEED: float = 1.4
+## Tierra de cultivo sobre cada terraza: surcos paralelos al muro de
+## contención (siguen la curva de nivel), separados SPACING metros.
+const FIELD_SOIL_COLOR: Color = Color(0.25, 0.17, 0.1, 1.0)
+const FIELD_RIDGE_COLOR: Color = Color(0.4, 0.28, 0.16, 1.0)
+const FIELD_FURROW_SPACING: float = 0.55
+const FIELD_RIDGE_HEIGHT: float = 0.09
+const FIELD_LIFT: float = 0.02
+const FIELD_MARGIN: float = 0.25
+## Mortero de barro entre las piedras de los muros de contención: es el color
+## del bloque de colisión, que asoma entre las piedras de StoneWall.
+const TERRACE_MORTAR_COLOR: Color = Color(0.4, 0.32, 0.24, 1.0)
+## Rampas de las terrazas: piedra clara de camino, para que se vea por dónde
+## se sube.
+const RAMP_COLOR: Color = Color(0.6, 0.53, 0.42, 1.0)
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
@@ -167,7 +181,7 @@ func _build_llacta() -> void:
 	var llacta: Node3D = $Llacta
 	var boundary: Node3D = $Boundary
 	var stone: StandardMaterial3D = StandardMaterial3D.new()
-	stone.albedo_color = Color(0.48, 0.45, 0.4, 1.0)
+	stone.albedo_color = Color(0.55, 0.54, 0.51, 1.0)
 	stone.roughness = 1.0
 	var thatch: StandardMaterial3D = StandardMaterial3D.new()
 	thatch.albedo_color = Color(0.55, 0.42, 0.2, 1.0)
@@ -211,7 +225,7 @@ func _build_llacta() -> void:
 	llacta.add_child(terraces)
 	_add_terrace(terraces, "Terrace01", 34.0, 0.0, 0.8, stone)
 	_add_terrace(terraces, "Terrace02", 42.0, 0.8, 1.6, stone)
-	_add_terrace(terraces, "Terrace03", 50.0, 1.6, 2.4, stone)
+	_add_terrace(terraces, "Terrace03", 50.0, 1.6, 2.4, stone, true)
 
 	_add_box_body(llacta, "PedestalQuero", Vector3(4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1)
 	_add_box_body(llacta, "PedestalPututu", Vector3(-4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1)
@@ -225,7 +239,8 @@ func _build_llacta() -> void:
 	npcs.name = "NPCs"
 	llacta.add_child(npcs)
 	var weaver: NpcActor = _add_npc(npcs, "Tejedora", Vector3(-11.0, 0.0, 5.0), Color(0.62, 0.38, 0.3, 1.0))
-	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(34.0, 0.8, -8.0), Color(0.45, 0.35, 0.25, 1.0))
+	# Junto a la rampa de la primera terraza, al alcance para hablarle.
+	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(36.5, 0.8, -3.0), Color(0.45, 0.35, 0.25, 1.0))
 	var messenger: NpcActor = _add_npc(npcs, "Mensajero", Vector3(0.0, 0.0, -60.0), Color(0.75, 0.65, 0.4, 1.0))
 	messenger.walk_speed = 5.2
 	var curaca: NpcActor = _add_npc(npcs, "Curaca", Vector3(-7.0, 0.0, -3.0), Color(0.72, 0.55, 0.45, 1.0))
@@ -461,17 +476,103 @@ func _add_box_body(parent: Node3D, node_name: String, at: Vector3, size: Vector3
 ## ambos lados de una rampa central que sube desde [param bottom_y]. Bajo la
 ## rampa, un relleno llega hasta [param bottom_y] y una tapa cierra su extremo
 ## alto, para que no quede hueco por el que meterse bajo la rampa.
-func _add_terrace(parent: Node3D, node_name: String, center_x: float, bottom_y: float, top_y: float, material: Material) -> void:
+func _add_terrace(parent: Node3D, node_name: String, center_x: float, bottom_y: float, top_y: float, material: Material, back_exposed: bool = false) -> void:
 	var bodies: Array[StaticBody3D] = []
-	bodies.append(_add_box_body(parent, node_name + "North", Vector3(center_x, top_y * 0.5, -8.5), Vector3(8.0, top_y, 13.0), material, 1))
-	bodies.append(_add_box_body(parent, node_name + "South", Vector3(center_x, top_y * 0.5, 8.5), Vector3(8.0, top_y, 13.0), material, 1))
-	bodies.append(_add_ramp(parent, node_name + "Ramp", Vector3(center_x - 4.0, bottom_y, 0.0), 8.0, top_y - bottom_y, 4.0, material))
+	var mortar: StandardMaterial3D = StandardMaterial3D.new()
+	mortar.albedo_color = TERRACE_MORTAR_COLOR
+	mortar.roughness = 1.0
+	var north: StaticBody3D = _add_box_body(parent, node_name + "North", Vector3(center_x, top_y * 0.5, -8.5), Vector3(8.0, top_y, 13.0), mortar, 1)
+	var south: StaticBody3D = _add_box_body(parent, node_name + "South", Vector3(center_x, top_y * 0.5, 8.5), Vector3(8.0, top_y, 13.0), mortar, 1)
+	bodies.append(north)
+	bodies.append(south)
+	var ramp_material: StandardMaterial3D = StandardMaterial3D.new()
+	ramp_material.albedo_color = RAMP_COLOR
+	ramp_material.roughness = 1.0
+	bodies.append(_add_ramp(parent, node_name + "Ramp", Vector3(center_x - 4.0, bottom_y, 0.0), 8.0, top_y - bottom_y, 4.0, ramp_material))
 	if bottom_y > 0.0:
 		bodies.append(_add_box_body(parent, node_name + "Fill", Vector3(center_x, bottom_y * 0.5, 0.0), Vector3(8.0, bottom_y, 4.0), material, 1))
 	var cap_height: float = top_y - TERRACE_CAP_INSET
 	bodies.append(_add_box_body(parent, node_name + "Cap", Vector3(center_x + 4.0 - TERRACE_CAP_THICKNESS * 0.5, cap_height * 0.5, 0.0), Vector3(TERRACE_CAP_THICKNESS, cap_height, 4.0), material, 1))
 	for body: StaticBody3D in bodies:
 		body.set_meta(PlayerFPS.FOOTSTEP_SURFACE_META, SURFACE_STONE)
+	# Encima de los muros de piedra se camina sobre tierra de cultivo.
+	for field_body: StaticBody3D in [north, south]:
+		field_body.remove_meta(PlayerFPS.FOOTSTEP_SURFACE_META)
+		parent.add_child(field_mesh(node_name + ("FieldNorth" if field_body == north else "FieldSouth"),
+			Vector3(center_x, top_y, field_body.position.z), Vector2(8.0, 13.0)))
+	parent.add_child(terrace_walls_mesh(node_name + "Walls", center_x, top_y, back_exposed))
+
+
+## Piedras de los muros de contención de una terraza: caras hacia la plaza
+## (oeste), hacia el pasillo de las rampas, hacia fuera (norte y sur) y, en la
+## última terraza, hacia la cresta (este). Una malla por terraza.
+static func terrace_walls_mesh(node_name: String, center_x: float, top_y: float, back_exposed: bool) -> MeshInstance3D:
+	var x0: float = center_x - 4.0
+	var x1: float = center_x + 4.0
+	var faces: Array[StoneWall.Face] = [
+		StoneWall.Face.new(Vector3(x0, 0.0, -15.0), Vector3.BACK, Vector3.LEFT, 13.0, top_y),
+		StoneWall.Face.new(Vector3(x0, 0.0, 2.0), Vector3.BACK, Vector3.LEFT, 13.0, top_y),
+		StoneWall.Face.new(Vector3(x0, 0.0, -2.0), Vector3.RIGHT, Vector3.BACK, 8.0, top_y),
+		StoneWall.Face.new(Vector3(x0, 0.0, 2.0), Vector3.RIGHT, Vector3.FORWARD, 8.0, top_y),
+		StoneWall.Face.new(Vector3(x0, 0.0, -15.0), Vector3.RIGHT, Vector3.FORWARD, 8.0, top_y),
+		StoneWall.Face.new(Vector3(x0, 0.0, 15.0), Vector3.RIGHT, Vector3.BACK, 8.0, top_y),
+	]
+	if back_exposed:
+		faces.append(StoneWall.Face.new(Vector3(x1, 0.0, -15.0), Vector3.BACK, Vector3.RIGHT, 13.0, top_y))
+		faces.append(StoneWall.Face.new(Vector3(x1, 0.0, 2.0), Vector3.BACK, Vector3.RIGHT, 13.0, top_y))
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.vertex_color_use_as_albedo = true
+	material.roughness = 1.0
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = node_name
+	mesh_instance.mesh = StoneWall.build(faces, hash(node_name))
+	mesh_instance.material_override = material
+	return mesh_instance
+
+
+## Tierra de cultivo con surcos sobre la cara superior de un bloque de terraza
+## centrado en [param top_center] y de planta [param size] (x, z). Los surcos
+## corren a lo largo de z, paralelos al muro de contención. Es solo visual: la
+## colisión es la del bloque.
+static func field_mesh(node_name: String, top_center: Vector3, size: Vector2) -> MeshInstance3D:
+	var surface: SurfaceTool = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var half_x: float = size.x * 0.5 - FIELD_MARGIN
+	var half_z: float = size.y * 0.5 - FIELD_MARGIN
+	var y0: float = FIELD_LIFT
+	var z0: float = -half_z
+	var z1: float = half_z
+	# Suelo entre surcos.
+	surface.set_color(FIELD_SOIL_COLOR)
+	for vertex: Vector3 in [Vector3(-half_x, y0, z0), Vector3(half_x, y0, z0), Vector3(half_x, y0, z1),
+			Vector3(-half_x, y0, z0), Vector3(half_x, y0, z1), Vector3(-half_x, y0, z1)]:
+		surface.add_vertex(vertex)
+	# Caballones: prismas triangulares a lo largo de z.
+	var ridges: int = int(floorf((half_x * 2.0) / FIELD_FURROW_SPACING))
+	var start_x: float = -half_x + (half_x * 2.0 - float(ridges - 1) * FIELD_FURROW_SPACING) * 0.5
+	var half_width: float = FIELD_FURROW_SPACING * 0.3
+	for index: int in range(ridges):
+		var x: float = start_x + float(index) * FIELD_FURROW_SPACING
+		var left: float = x - half_width
+		var right: float = x + half_width
+		var top: float = y0 + FIELD_RIDGE_HEIGHT
+		surface.set_color(FIELD_RIDGE_COLOR)
+		for vertex: Vector3 in [Vector3(left, y0, z1), Vector3(x, top, z1), Vector3(x, top, z0),
+				Vector3(left, y0, z1), Vector3(x, top, z0), Vector3(left, y0, z0),
+				Vector3(x, top, z1), Vector3(right, y0, z1), Vector3(right, y0, z0),
+				Vector3(x, top, z1), Vector3(right, y0, z0), Vector3(x, top, z0)]:
+			surface.add_vertex(vertex)
+	surface.generate_normals()
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.vertex_color_use_as_albedo = true
+	material.roughness = 1.0
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = node_name
+	mesh_instance.mesh = surface.commit()
+	mesh_instance.material_override = material
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mesh_instance.position = top_center
+	return mesh_instance
 
 
 ## Rampa transitable entre dos niveles de terraza. El cuerpo gira sobre Z y la

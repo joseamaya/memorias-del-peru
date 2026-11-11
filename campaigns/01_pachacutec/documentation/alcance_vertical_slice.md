@@ -89,7 +89,7 @@ Reglas:
 - **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío. En el bloqueo, el terreno sube ~11 m entre 61 y 73 m con una pendiente no transitable y deja un paso abierto en el camino norte; los muros a 70 m quedan como respaldo.
 - **Viviendas:** 8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo, agrupados al oeste (3), al este (3) y al norte (2). **Ninguna casa ocupa el eje de un camino**: los cuatro caminos quedan libres.
 - **Plaza:** tierra apisonada, con el pututu, el quero y el adoratorio de ofrenda.
-- **Terrazas:** tres niveles agrícolas con muro de contención y un corredor central de rampas transitables.
+- **Terrazas:** tres niveles agrícolas con muro de contención de pirka (piedra de campo con mortero de barro, malla procedural `StoneWall`), tierra de cultivo con surcos encima y un corredor central de rampas transitables, de color camino. El agricultor está junto a la rampa de la primera terraza.
 - **Mirador:** cornisa superior de la terraza este, al final de la ruta alta.
 - **Vegetación:** ichu y queñua; prohibido el eucalipto y cualquier especie posterior a 1532.
 
