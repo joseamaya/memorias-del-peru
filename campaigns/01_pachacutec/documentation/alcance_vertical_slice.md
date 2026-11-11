@@ -137,7 +137,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` estático (v3.3; rig pospuesto) | Blender | Propia | PCH-018 |
 | Variante de curaca y hombres principales | `.glb` | Blender, variante del cuerpo base | Propia | PCH-017 |
 | Ichu y queñua | Mallas o billboards | Blender / procedural | Propia | PCH-013 |
-| Llama o alpaca (opcional) | `.glb` | Blender | Propia | PCH-014 |
+| Llama o alpaca (opcional; no incluida, fuera del slice desde el 2026-11-11) | `.glb` | Blender | Propia | PCH-014 |
 
 ### 6.2 Materiales y texturas
 
@@ -219,21 +219,21 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 
 | ID | Elemento | Clasificación | Estado |
 |---|---|---|---|
-| PCH-004 | Quero | A / R | pendiente |
-| PCH-005 | Chicha de jora | H / A | pendiente |
+| PCH-004 | Quero | A / R | verificado (A), 2026-11-11 |
+| PCH-005 | Chicha de jora | H / A | verificado (H / A), 2026-11-11 |
 | PCH-006 | Llacta / asentamiento | A / R | pendiente |
 | PCH-007 | Vivienda rural de piedra y barro | A / R | pendiente |
 | PCH-008 | Terraza agrícola | A | pendiente |
-| PCH-009 | Pututu | A / H | pendiente (verificación retirada el 2026-11-11) |
-| PCH-010 | Telar y textil | A / R | pendiente |
-| PCH-011 | Mensajero (no chasqui) | H / R | pendiente |
-| PCH-012 | Ofrenda a la Pachamama | H / R | pendiente |
-| PCH-013 | Ichu y queñua | A | pendiente |
-| PCH-014 | Llama / alpaca (opcional) | A | pendiente |
-| PCH-015 | Evento: la noticia chanca | H (tradición) / N | pendiente |
+| PCH-009 | Pututu | A / H | verificado (A / H), 2026-11-11 (rehecho) |
+| PCH-010 | Telar y textil | A / R | verificado (A), 2026-11-11 |
+| PCH-011 | Mensajero (no chasqui) | H / R | verificado (H), 2026-11-11 |
+| PCH-012 | Ofrenda a la Pachamama | H / R | verificado (H / R), 2026-11-11 |
+| PCH-013 | Ichu y queñua | A | verificado (A), 2026-11-11 |
+| PCH-014 | Llama / alpaca (opcional) | A | fuera del slice: no está en el juego (2026-11-11) |
+| PCH-015 | Evento: la noticia chanca | H (tradición) / N | verificado (H), 2026-11-11 |
 | PCH-016 | Plaza y caminos | A / R | pendiente |
 | PCH-017 | Curaca y hombres principales | H / R | pendiente |
-| PCH-018 | Vestimenta y apariencia del habitante común | R | pendiente |
+| PCH-018 | Vestimenta y apariencia del habitante común | R | verificado (R), 2026-11-11 |
 
 “Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las fichas pendientes están identificadas con sus fuentes, pero les falta edición, página o publicación comprobada: las páginas de la traducción de 2007 se tomaron de su índice publicado, no de leer el libro, y por eso no cuentan.
 
