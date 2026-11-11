@@ -41,6 +41,8 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | [registro_historico.md](registro_historico.md) | En revisión: fichas PCH-004 a PCH-017 |
 | [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Aprobado (v3)** — precondición de la Fase 4 |
 | Guion y personajes | En el alcance v2 §2, §5 y §6.4 |
+| [guion_facilitador.md](guion_facilitador.md) | Borrador — sesiones de prueba y piloto |
+| [plantilla_sesion.md](plantilla_sesion.md) | Plantilla de registro de cada sesión |
 
 ## 6. Notas de producción (Fase 2)
 
