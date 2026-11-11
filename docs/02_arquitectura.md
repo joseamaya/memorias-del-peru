@@ -201,6 +201,7 @@ Reglas:
   - `run_stamina_cost_per_second: float = 15.0`: consumo mientras corre.
   - `run_resume_stamina: float = 25.0`: al agotarse la estamina, el jugador no vuelve a correr hasta que el valor actual alcance este umbral.
 - **Quero:** no conoce `PlayerFPS` ni la UI. En `interact(interactor)` llama `StaminaComponent.find_in(interactor)`; si devuelve un componente, llama `restore(restore_amount)` con su cantidad `@export`. Si no hay componente, la interacción visual y sonora ocurre igual.
+- **Subtítulos y rótulo (ADR-0006, ADR-0012):** `show_subtitle(text, seconds)` muestra un subtítulo durante al menos `PlayerHud.reading_seconds(text, seconds)`: lo pedido, 4 s como mínimo y el tiempo de lectura (largo ÷ 13 caracteres por segundo + 1,5 s). Si ya hay uno a la vista, el nuevo espera en una cola de hasta 4. `advance_subtitle(delta)`, `is_showing_subtitle()`, `queued_subtitles()` y `clear_subtitle()` permiten probarlo sin fotogramas. `show_title(text, seconds)` muestra un rótulo arriba con fundidos (`advance_title(delta)`).
 - **UI:** el HUD recibe el `StaminaComponent` por `@export` (o se lo asigna la escena que compone jugador y HUD) y escucha `stamina_changed`. No hay rutas rígidas entre UI y jugador.
 - Los valores por defecto del bloque son propuestas iniciales, ajustables durante la Fase 2 sin cambiar el contrato.
 

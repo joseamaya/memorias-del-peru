@@ -2,9 +2,18 @@ keys,es
 PCH_QUERO_INTERACT,Beber chicha
 PCH_OFFERING_INTERACT,Dejar ofrenda
 PCH_PUTUTU_PLAY,Hacer sonar el pututu
-PCH_NARR_OPENING,Dicen que hoy llegará un mensajero del Cusco. La mañana empieza como cualquier otra.
+PCH_NARR_OPENING,"Hoy se espera a un mensajero del Cusco. Mientras llega, recorre la llacta y habla con su gente."
 PCH_NARR_NEWS_1,"¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido de la ciudad."
 PCH_NARR_NEWS_2,Cusi Yupanqui llama a los ayllus.
 PCH_NARR_CALL,Los hombres esperan. El pututu puede convocar.
 PCH_NARR_CLOSING_1,El curaca y los hombres principales parten hacia el Cusco.
 PCH_NARR_CLOSING_2,La llacta queda en silencio. Solo queda el viento.
+PCH_TITLE_PLACE,"Una llacta de la sierra, cerca del Cusco · siglo XV"
+PCH_NARR_WAIT,"El sol ya está alto. Por el camino del norte todavía no viene nadie."
+PCH_TALK,Hablar
+PCH_TALK_WEAVER,"Tejo esta manta para el curaca. Dicen que hoy llega alguien del Cusco; ojalá traiga buenas noticias."
+PCH_TALK_FARMER,"Las terrazas ya están listas para sembrar. Desde aquí arriba se ve el camino del norte, el que va al Cusco."
+PCH_TALK_VILLAGER_1,"Somos un ayllu pequeño. Cuando el Cusco llama, los hombres van con el curaca."
+PCH_TALK_VILLAGER_2,"Los viajeros hablan de los chancas, allá por Andahuaylas. Dicen que cada vez son más."
+PCH_TALK_VILLAGER_3,"El curaca no se mueve de la plaza. Él será el primero en oír lo que traiga el mensajero."
+PCH_TALK_CURACA,"Espero noticias del Cusco. Quédate cerca de la plaza."

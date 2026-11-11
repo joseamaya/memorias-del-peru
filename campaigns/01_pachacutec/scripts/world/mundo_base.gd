@@ -56,6 +56,14 @@ const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
 ## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
 const TERRACE_CAP_THICKNESS: float = 0.3
 const TERRACE_CAP_INSET: float = 0.05
+## Rótulo de lugar y época al empezar (ADR-0012).
+const TITLE_KEY: StringName = &"PCH_TITLE_PLACE"
+const TITLE_SECONDS: float = 7.0
+## «Hablar»: escena del cuerpo interactuable y pausa del vecino que habla.
+const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.tscn"
+const TALK_HOLD_SECONDS: float = 7.0
+## Velocidad de paseo de los vecinos antes de la noticia.
+const NEIGHBOR_WALK_SPEED: float = 1.4
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
@@ -73,6 +81,7 @@ func _ready() -> void:
 	_build_llacta()
 	player.global_position = player_spawn.global_position
 	hud.bind(player, player.stamina)
+	hud.show_title(tr(String(TITLE_KEY)), TITLE_SECONDS)
 	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
 
@@ -228,6 +237,14 @@ func _build_llacta() -> void:
 	weaver.face(_plaza_center_flat())
 	farmer.face(_plaza_center_flat())
 	_attach_object_models(llacta)
+	var talks: Array[NpcTalk] = [
+		_add_talk(weaver, &"PCH_TALK_WEAVER"),
+		_add_talk(farmer, &"PCH_TALK_FARMER"),
+		_add_talk(curaca, &"PCH_TALK_CURACA"),
+		_add_talk(neighbor_one, &"PCH_TALK_VILLAGER_1"),
+		_add_talk(neighbor_two, &"PCH_TALK_VILLAGER_2"),
+		_add_talk(neighbor_three, &"PCH_TALK_VILLAGER_3"),
+	]
 
 	var event: MessengerEvent = $EventController as MessengerEvent
 	var pututu: Pututu = $Pututu as Pututu
@@ -240,7 +257,55 @@ func _build_llacta() -> void:
 		if not event.phase_changed.is_connected(_on_event_phase_changed):
 			event.phase_changed.connect(_on_event_phase_changed)
 		event.bind(player, plaza_point, messenger, curaca, principals, neighbors, pututu)
+		for actor: NpcActor in neighbors:
+			actor.walk_speed = NEIGHBOR_WALK_SPEED
+		event.set_wander_routes(neighbor_routes(neighbor_one, neighbor_two, neighbor_three))
+		for talk: NpcTalk in talks:
+			if talk != null:
+				talk.event = event
 	_setup_ambience()
+
+
+## Paseos de los tres vecinos antes de la noticia: cada uno vuelve a su punto
+## de partida. Los tramos son rectos y esquivan las casas, el quero, el pututu,
+## la ofrenda y el grupo del curaca.
+static func neighbor_routes(one: NpcActor, two: NpcActor, three: NpcActor) -> Dictionary[NpcActor, PackedVector3Array]:
+	var routes: Dictionary[NpcActor, PackedVector3Array] = {}
+	if one != null:
+		routes[one] = PackedVector3Array([one.position, Vector3(16.0, 0.0, 1.0), Vector3(16.0, 0.0, -5.0), Vector3(9.0, 0.0, -2.0)])
+	if two != null:
+		routes[two] = PackedVector3Array([two.position, Vector3(6.0, 0.0, -9.0), Vector3(-5.0, 0.0, -9.0), Vector3(2.0, 0.0, -3.0)])
+	if three != null:
+		routes[three] = PackedVector3Array([three.position, Vector3(12.0, 0.0, 12.0), Vector3(4.0, 0.0, 12.0)])
+	return routes
+
+
+## Añade «Hablar» a un personaje con su frase.
+func _add_talk(actor: NpcActor, line_key: StringName) -> NpcTalk:
+	if actor == null:
+		return null
+	var packed: PackedScene = load(TALK_SCENE) as PackedScene
+	if packed == null:
+		return null
+	var talk: NpcTalk = packed.instantiate() as NpcTalk
+	if talk == null:
+		return null
+	talk.line_key = line_key
+	actor.add_child(talk)
+	talk.spoke.connect(_on_npc_spoke)
+	return talk
+
+
+func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
+	if hud != null:
+		hud.show_subtitle(tr(String(line_key)), 0.0)
+	var npc: NpcActor = actor as NpcActor
+	if npc == null:
+		return
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null:
+		event.hold(npc, TALK_HOLD_SECONDS)
+	npc.face(player.global_position)
 
 
 func _plaza_center_flat() -> Vector3:

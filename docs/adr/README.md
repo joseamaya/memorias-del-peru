@@ -28,9 +28,10 @@ Plantilla:
 | [0003](0003-deteccion-de-interactuables.md) | Detección de interactuables | Aceptado |
 | [0004](0004-herramientas-de-desarrollo.md) | Herramientas de desarrollo: skills y servidores MCP | Aceptado (selección de skills reemplazada por ADR-0005) |
 | [0005](0005-skills-de-godot.md) | Skills de Godot y desviación consciente del estilo oficial | Aceptado |
-| [0006](0006-secuencia-narrativa-por-subtitulos.md) | Secuencia narrativa por subtítulos | Aceptado |
+| [0006](0006-secuencia-narrativa-por-subtitulos.md) | Secuencia narrativa por subtítulos | Aceptado (duración y reemplazo sustituidos por ADR-0012) |
 | [0007](0007-evento-del-mensajero.md) | Evento del mensajero: máquina de estados y progreso garantizado | Aceptado |
 | [0008](0008-disponibilidad-de-interactuables.md) | Disponibilidad de interactuables | Aceptado |
-| [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Aceptado |
+| [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Aceptado (reloj sustituido por ADR-0012) |
 | [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado |
 | [0011](0011-fichas-fuera-del-slice.md) | Fichas de elementos que no están en el juego | Propuesto |
+| [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado |

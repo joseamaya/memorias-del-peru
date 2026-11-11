@@ -1,10 +1,10 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.3)** — 2026-11-11; sustituye a la v3.2
+- Estado: **Aprobado (v3.4)** — 2026-11-11; sustituye a la v3.3
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md) y [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md)
+- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md) y [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md)
 
 ## 0. Historial de versiones
 
@@ -16,6 +16,7 @@
 | v3.1 | Define cuándo empieza y termina una sesión para medir la duración (§9.2). Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.2 | Aplica [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md): Blender 5.x y modelos generados por script (§7 y §7.1). Cambio de herramienta; no altera el contenido ni el protocolo. |
 | v3.3 | Personajes estáticos, sin rig ni animación, para el piloto y las sesiones (§5, §6.1 y §7.1). El rig queda para después del piloto si las sesiones muestran que el desplazamiento sin animación distrae. Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.4 | Aplica [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) tras el primer piloto: subtítulos con tiempo de lectura y en cola, rótulo de lugar, nueva apertura, mensajero a los 120 s con señal intermedia, «Hablar» con seis personajes y vecinos que pasean. Aprobada por el responsable del proyecto el 2026-11-11. |
 
 ## 1. Objetivo
 
@@ -56,8 +57,8 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 
 | Fase | Entra cuando | Ocurre | Subtítulo |
 |---|---|---|---|
-| `IDLE` | inicio | el mensajero espera fuera del camino norte | “Dicen que hoy llegará un mensajero del Cusco…” |
-| `ARRIVAL` | pasan 240 s **y** el jugador está en la plaza, o 360 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
+| `IDLE` | inicio | rótulo de lugar y época; el mensajero espera fuera del camino norte; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; a los 70 s, “El sol ya está alto…” |
+| `ARRIVAL` | pasan 120 s **y** el jugador está en la plaza, o 180 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
 | `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
 | `DEPARTURE` | suena el pututu | el curaca y los principales parten por el camino norte; los vecinos se quedan | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
@@ -119,6 +120,8 @@ Reglas:
 
 **Modelos estáticos (v3.3).** Los personajes no tienen rig ni animación: se desplazan y se giran como hasta ahora, pero sin mover brazos ni piernas. El leve balanceo de reposo del bloqueo no pasa al modelo. Las presencias de la tabla que piden gestos (tejer, girar la cabeza, hablar con gestos) quedan sin animación propia y se sostienen con la orientación, la posición y los subtítulos. Si el piloto muestra que el desplazamiento sin animación distrae o se lee mal, se añadirá el rig con un ADR.
 
+**Conversaciones y paseo (v3.4).** Antes de la noticia, la tejedora, el agricultor, el curaca y los tres vecinos tienen «Hablar»: cada uno dice una sola frase, sin opciones, y se gira hacia el jugador. Los tres vecinos pasean despacio entre la plaza y las casas, y se detienen y se vuelven hacia el mensajero cuando llega.
+
 La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo. El resto forma parte del evento: solo el curaca y los dos hombres principales parten; los vecinos permanecen en la plaza, como dice el cierre.
 
 ## 6. Assets
@@ -167,12 +170,27 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 
 | Clave | Cuándo | Texto |
 |---|---|---|
-| `PCH_NARR_OPENING` | al empezar | Dicen que hoy llegará un mensajero del Cusco. La mañana empieza como cualquier otra. |
+| `PCH_TITLE_PLACE` | al empezar, rótulo de 7 s | Una llacta de la sierra, cerca del Cusco · siglo XV |
+| `PCH_NARR_OPENING` | al empezar | Hoy se espera a un mensajero del Cusco. Mientras llega, recorre la llacta y habla con su gente. |
+| `PCH_NARR_WAIT` | a los 70 s, si no ha llegado | El sol ya está alto. Por el camino del norte todavía no viene nadie. |
 | `PCH_NARR_NEWS_1` | llega el mensajero | ¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido de la ciudad. |
 | `PCH_NARR_NEWS_2` | tras la anterior | Cusi Yupanqui llama a los ayllus. |
 | `PCH_NARR_CALL` | empieza la llamada | Los hombres esperan. El pututu puede convocar. |
 | `PCH_NARR_CLOSING_1` | parte el grupo | El curaca y los hombres principales parten hacia el Cusco. |
 | `PCH_NARR_CLOSING_2` | tras la anterior | La llacta queda en silencio. Solo queda el viento. |
+
+Frases de «Hablar» (licencia narrativa, N; la mención de Andahuaylas se apoya en PCH-003). Revisadas y aprobadas por el responsable del proyecto el 2026-11-11:
+
+| Clave | Personaje | Texto |
+|---|---|---|
+| `PCH_TALK_WEAVER` | Tejedora | Tejo esta manta para el curaca. Dicen que hoy llega alguien del Cusco; ojalá traiga buenas noticias. |
+| `PCH_TALK_FARMER` | Agricultor | Las terrazas ya están listas para sembrar. Desde aquí arriba se ve el camino del norte, el que va al Cusco. |
+| `PCH_TALK_CURACA` | Curaca | Espero noticias del Cusco. Quédate cerca de la plaza. |
+| `PCH_TALK_VILLAGER_1` | Habitante 1 | Somos un ayllu pequeño. Cuando el Cusco llama, los hombres van con el curaca. |
+| `PCH_TALK_VILLAGER_2` | Habitante 2 | Los viajeros hablan de los chancas, allá por Andahuaylas. Dicen que cada vez son más. |
+| `PCH_TALK_VILLAGER_3` | Habitante 3 | El curaca no se mueve de la plaza. Él será el primero en oír lo que traiga el mensajero. |
+
+Cada subtítulo dura al menos su tiempo de lectura (largo ÷ 13 caracteres por segundo + 1,5 s, con un mínimo de 4 s) y espera su turno si hay otro a la vista (ADR-0012).
 
 ## 7. Pipeline de assets
 
@@ -315,11 +333,11 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 | Viviendas oeste y telar | 0,5 | 2,0 |
 | Terrazas, rampas y mirador | 0,5 | 2,0 |
 | Quero y ofrenda | 0,5 | 1,0 |
-| Espera hasta la noticia | 2,0 | 1,0 |
+| Conversaciones y espera hasta la noticia (v3.4: mensajero a los 120 s) | 1,0 | 0,5 |
 | Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
-| **Total** | **5,5** | **8,5** |
+| **Total** | **4,5** | **8,0** |
 
-La mediana esperada es **6–7 minutos**. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
+Con el reloj de 120 s (v3.4), la mediana esperada baja a **5–6 minutos**. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
 
 ## 11. Rendimiento
 
@@ -345,5 +363,6 @@ La mediana esperada es **6–7 minutos**. Si la prueba con seis personas queda p
 - [x] Se confirman la salida por el camino norte y la permanencia de los vecinos.
 - [x] Se confirma la medición de la duración de §9.2 (v3.1, 2026-11-11).
 - [x] Se confirman los personajes estáticos para el piloto y las sesiones (v3.3, 2026-11-11).
+- [x] Se confirman los ajustes del primer piloto (v3.4, ADR-0012, 2026-11-11).
 
 Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.

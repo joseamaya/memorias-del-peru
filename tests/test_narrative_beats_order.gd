@@ -1,5 +1,6 @@
 extends RefCounted
-## Comprueba el orden y la unicidad de los subtítulos narrativos.
+## Comprueba el orden y la unicidad de los subtítulos narrativos, incluida la
+## señal intermedia de la espera (ADR-0012).
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 const MAX_STEPS: int = 500
@@ -39,6 +40,7 @@ func test_narrative_beats_order() -> bool:
 		steps += 1
 	var expected: Array[StringName] = [
 		&"PCH_NARR_OPENING",
+		&"PCH_NARR_WAIT",
 		&"PCH_NARR_NEWS_1",
 		&"PCH_NARR_NEWS_2",
 		&"PCH_NARR_CALL",

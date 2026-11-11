@@ -21,6 +21,7 @@ const KEY_NEWS_SECOND: StringName = &"PCH_NARR_NEWS_2"
 const KEY_CALL: StringName = &"PCH_NARR_CALL"
 const KEY_CLOSING_FIRST: StringName = &"PCH_NARR_CLOSING_1"
 const KEY_CLOSING_SECOND: StringName = &"PCH_NARR_CLOSING_2"
+const KEY_WAIT: StringName = &"PCH_NARR_WAIT"
 
 const OPENING_SECONDS: float = 6.0
 const NEWS_SECONDS: float = 6.0
@@ -30,6 +31,13 @@ const CALL_SECONDS: float = 5.0
 const CLOSING_SECONDS: float = 6.0
 const CLOSING_SECOND_DELAY: float = 6.0
 const DEPARTURE_TIMEOUT: float = 45.0
+## Señal intermedia de la espera (ADR-0012): a mitad del reloj, un texto
+## recuerda que el mensajero aún no llega.
+const WAIT_CUE_TIME: float = 70.0
+const WAIT_SECONDS: float = 6.0
+## Pausa de los vecinos en cada punto de su paseo, antes de la noticia.
+const WANDER_PAUSE: float = 4.0
+const WANDER_PAUSE_STAGGER: float = 1.5
 
 ## Disposición de la reunión (ver _meeting_point()).
 const MESSENGER_OFFSET: Vector3 = Vector3(0.0, 0.0, -1.0)
@@ -37,10 +45,11 @@ const MEETING_RADIUS: float = 5.5
 const MEETING_RADIUS_STAGGER: float = 1.0
 const MEETING_ARC_SLOTS: int = 6
 
-## Tiempo de partida antes de que el mensajero se ponga en camino.
-@export var arrival_delay: float = 240.0
+## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0012,
+## que sustituye los 240 s de ADR-0009).
+@export var arrival_delay: float = 120.0
 ## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza.
-@export var arrival_grace: float = 120.0
+@export var arrival_grace: float = 60.0
 @export var arrival_radius: float = 22.0
 @export var call_timeout: float = 60.0
 
@@ -65,6 +74,12 @@ var _closing_second_sent: bool = false
 var _arrival_by_grace: bool = false
 var _curaca_called: bool = false
 var _curaca_is_calling: bool = false
+var _wait_cue_sent: bool = false
+## Paseo de los vecinos antes de la noticia: puntos de cada uno, punto actual y
+## pausa restante.
+var _wander_routes: Dictionary[NpcActor, PackedVector3Array] = {}
+var _wander_index: Dictionary[NpcActor, int] = {}
+var _wander_pause: Dictionary[NpcActor, float] = {}
 
 
 func _ready() -> void:
@@ -102,6 +117,31 @@ func bind(
 	subtitle_requested.emit(KEY_OPENING, OPENING_SECONDS)
 
 
+## Fija los paseos de los vecinos mientras no ha llegado el mensajero. Cada
+## ruta es una lista de puntos que el vecino recorre en bucle, con una pausa en
+## cada uno. La escena del mundo conoce el mapa; el evento solo los mueve.
+func set_wander_routes(routes: Dictionary[NpcActor, PackedVector3Array]) -> void:
+	_wander_routes = routes
+	_wander_index.clear()
+	_wander_pause.clear()
+	var order: int = 0
+	for actor: NpcActor in routes:
+		_wander_index[actor] = 0
+		_wander_pause[actor] = WANDER_PAUSE_STAGGER * float(order)
+		order += 1
+
+
+## Detiene a un vecino durante [param seconds] (por ejemplo, mientras el
+## jugador habla con él). Después retoma su paseo.
+func hold(actor: NpcActor, seconds: float) -> void:
+	if actor == null:
+		return
+	actor.stop()
+	if _wander_routes.has(actor):
+		var current: float = _wander_pause.get(actor, 0.0)
+		_wander_pause[actor] = maxf(current, seconds)
+
+
 ## Inicia el evento sin esperar al reloj. Se usa en pruebas y en depuración.
 func start() -> void:
 	if phase != Phase.IDLE:
@@ -135,6 +175,10 @@ func step(delta: float) -> void:
 
 func _step_idle(delta: float) -> void:
 	_idle_time += delta
+	_step_wander(delta)
+	if not _wait_cue_sent and WAIT_CUE_TIME < arrival_delay and _idle_time >= WAIT_CUE_TIME:
+		_wait_cue_sent = true
+		subtitle_requested.emit(KEY_WAIT, WAIT_SECONDS)
 	if _idle_time < arrival_delay:
 		return
 	if player_in_plaza():
@@ -144,6 +188,26 @@ func _step_idle(delta: float) -> void:
 	if _idle_time >= arrival_delay + arrival_grace:
 		_arrival_by_grace = true
 		_enter(Phase.ARRIVAL)
+
+
+func _step_wander(delta: float) -> void:
+	for actor: NpcActor in _wander_routes:
+		var route: PackedVector3Array = _wander_routes[actor]
+		if route.is_empty():
+			continue
+		if actor.moving:
+			actor.advance(delta)
+			continue
+		var pause: float = _wander_pause.get(actor, 0.0)
+		pause -= delta
+		_wander_pause[actor] = pause
+		if pause > 0.0:
+			continue
+		var index: int = _wander_index.get(actor, 0)
+		index = (index + 1) % route.size()
+		_wander_index[actor] = index
+		_wander_pause[actor] = WANDER_PAUSE
+		actor.walk_to(route[index])
 
 
 func _step_arrival(delta: float) -> void:
@@ -190,6 +254,9 @@ func _enter(next_phase: int) -> void:
 	match phase:
 		Phase.ARRIVAL:
 			started.emit()
+			# Los vecinos dejan su paseo y se vuelven hacia el recién llegado.
+			for actor: NpcActor in _wander_routes:
+				actor.stop()
 			if _messenger != null:
 				_messenger.walk_to(_meeting_point(0))
 			_face_all()
