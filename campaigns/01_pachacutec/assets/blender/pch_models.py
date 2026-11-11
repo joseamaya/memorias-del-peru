@@ -891,8 +891,8 @@ def build_person(rng, spec):
 
 PEOPLE = {
 	# Habitantes comunes (PCH-018): fibra sin teñir y tintes de tierra.
-	"pch_npc_weaver": dict(garment="anacu", scale=0.94, body="wool_brown", band="wool_red", band_style="tocapu",
-		band_alt="wool_ochre", lliclla="wool_cream", lliclla_stripe="wool_red", braids=True, arms=(0.18, 0.18)),
+	"pch_npc_weaver": dict(garment="anacu", scale=0.94, body="wool_brown", band="wool_red",
+		lliclla="wool_cream", lliclla_stripe="wool_red", braids=True, arms=(0.18, 0.18)),
 	"pch_npc_farmer": dict(garment="unku", body="wool_cream", band="wool_brown", manto="wool_brown",
 		head_cloth="wool_red", chuspa="wool_ochre", tool="chaquitaclla", arms=(0.0, 0.1)),
 	"pch_npc_villager": dict(garment="anacu", scale=0.94, body="wool_dark", band="wool_ochre", lliclla="wool_grey",
@@ -903,6 +903,7 @@ PEOPLE = {
 	"pch_npc_messenger": dict(garment="unku", body="wool_brown", band="wool_dark", bundle="wool_cream",
 		head_cloth="wool_grey", chuspa="wool_cream"),
 	# Autoridades (PCH-017): distintivos discretos (franja ajedrezada, tocado, manto teñido).
+	# La franja imita el t'oqapu, de alto rango: solo la llevan las autoridades.
 	"pch_npc_curaca": dict(garment="unku", body="wool_cream", band="wool_red", band_style="tocapu",
 		band_alt="wool_dark", manto="wool_red", headband="wool_ochre", chuspa="wool_blue"),
 	"pch_npc_principal": dict(garment="unku", body="wool_ochre", band="wool_dark", band_style="tocapu",
