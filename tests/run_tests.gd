@@ -39,4 +39,7 @@ func _run_tests() -> void:
 				printerr("FALLO ", file_name, "::", method_name)
 				failures += 1
 	print("Pruebas finalizadas: ", failures, " fallo(s)")
+	var audio: AudioManagerService = root.get_node_or_null("AudioManager") as AudioManagerService
+	if audio != null:
+		audio.stop_all()
 	quit(1 if failures > 0 else 0)

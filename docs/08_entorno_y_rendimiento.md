@@ -126,15 +126,15 @@ El objetivo vinculante (≥ 30 FPS) se cumple con amplio margen. La referencia c
 
 > La medición anterior (55,92 FPS, jugador quieto y con `Engine.max_fps = 60`) queda invalidada por no usar un recorrido fijo y por ocultar el margen. También quedó invalidada la primera medición con el terreno invertido.
 
-### Medición con bloqueo de llacta (Fase 4, provisional)
+### Medición con el evento y el audio (Fase 4, provisional)
 
-Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas, terrazas, límites, 3 interactuables y 3 NPC de bloqueo.
+Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas, terrazas, límites, 3 interactuables, 9 NPC y el evento del mensajero en marcha (el jugador empieza dentro de la plaza), con ambiente de viento y aves en bucle.
 
 | Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
 |---|---|---|---|---|---|---|
-| Bajo | 272,1 | 200,0 | 3,67 ms | 5,0 ms | 43 | 82,9 MB |
-| Medio | 73,3 | 45,5 | 13,65 ms | 22,0 ms | 47 | 155,7 MB |
+| Bajo | 273,2 | 200,0 | 3,66 ms | 5,0 ms | 33 | 82,8 MB |
+| Medio | 92,3 | 76,9 | 10,84 ms | 13,0 ms | 31 | 165,2 MB |
 
-El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Es una medición provisional: cambiará al incorporar los assets definitivos, vegetación y animaciones.
+El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Es una medición provisional: cambiará al incorporar los assets definitivos y la vegetación.
 
 > La medición anterior de esta misma escena (262,8 / 70,2 FPS y 84,9 / 163,7 MB) queda invalidada: se hizo con el atlas de sombras en 32 bits por el parámetro mal pasado. Los valores actuales usan 16 bits.

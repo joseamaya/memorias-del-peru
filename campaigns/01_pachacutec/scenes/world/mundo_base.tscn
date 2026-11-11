@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://core/player/player_fps.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://core/ui/hud.tscn" id="2_hud"]
@@ -7,7 +7,9 @@
 [ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/quero_chicha.tscn" id="5_quero"]
 [ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/ofrenda_pachamama.tscn" id="6_ofrenda"]
 [ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/objects/pututu.tscn" id="7_pututu"]
-[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/chasqui_event.gd" id="8_event"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/messenger_event.gd" id="8_event"]
+[ext_resource type="AudioStream" path="res://shared_assets/audio/pututu_conch.ogg" id="9_pututu_audio"]
+[ext_resource type="AudioStream" path="res://shared_assets/audio/ofrenda_tierra.wav" id="10_ofrenda_audio"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_world"]
 rayleigh_coefficient = 1.5
@@ -71,9 +73,11 @@ position = Vector3(4, 0.91, 4)
 
 [node name="OfrendaPachamama" parent="." instance=ExtResource("6_ofrenda")]
 position = Vector3(-8, 0.15, 7)
+audio_stream = ExtResource("10_ofrenda_audio")
 
 [node name="Pututu" parent="." instance=ExtResource("7_pututu")]
 position = Vector3(-4, 1, 4)
+audio_stream = ExtResource("9_pututu_audio")
 
 [node name="EnvironmentQualityController" type="Node" parent="."]
 script = ExtResource("4_controller")

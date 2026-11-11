@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 4 — Vertical Slice Pachacútec (en curso).** Documento de alcance aprobado; bloqueo de la llacta en construcción. |
+| Estado | **Fase 4 — Vertical Slice Pachacútec (en curso).** Alcance v2 aprobado; bloqueo de la llacta, evento narrativo, subtítulos y audio implementados. Pendiente: assets definitivos, fichas y prueba con jugadores. |
 
 ## Requisitos
 

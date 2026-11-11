@@ -1,6 +1,6 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 4 — Vertical Slice Pachacútec (bloqueada: precondición sin cumplir).
+**Fase activa:** Fase 4 — Vertical Slice Pachacútec.
 **Siguiente:** —
 
 Reglas:
@@ -17,7 +17,7 @@ Reglas:
 | 1 — Fundación técnica | Cerrada | 2026-11-10 |
 | 2 — Interacción | Cerrada | 2026-11-10 |
 | 3 — Entorno | Cerrada | 2026-11-10 |
-| 4 — Vertical Slice Pachacútec | En curso — bloqueada | — |
+| 4 — Vertical Slice Pachacútec | En curso | — |
 
 ---
 
@@ -203,9 +203,9 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ### Precondiciones
 
 - [x] Fase 3 cerrada.
-- [ ] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de prueba: cuestionario de comprensión, criterio de corrección y reclutamiento de jugadores ajenos al desarrollo). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
+- [x] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de prueba: cuestionario de comprensión, criterio de corrección y reclutamiento de jugadores ajenos al desarrollo). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
 
-> **Corrección de proceso (2026-11-10).** La revisión de la primera versión del alcance encontró que la precondición se había marcado como cumplida sin estarlo: faltaban el cuestionario, el criterio de corrección y el reclutamiento. La Fase 4 queda **bloqueada** hasta aprobar la revisión 2 del documento. El bloqueo de la llacta ya construido se conserva como **trabajo provisional**: no cuenta como criterio cumplido ni como avance de fase.
+> **Corrección de proceso (2026-11-10).** La revisión de la primera versión del alcance encontró que la precondición se había marcado como cumplida sin estarlo: faltaban el cuestionario, el criterio de corrección y el reclutamiento. La Fase 4 quedó bloqueada hasta aprobar la revisión 2, que ya incluye el protocolo completo y la secuencia con disparo garantizado. El bloqueo de la llacta construido mientras tanto se conserva como trabajo provisional y se ajusta ahora a la revisión 2.
 
 ### Objetivo medible (provisional)
 

@@ -116,4 +116,7 @@ func _print_result(label: String) -> void:
 func _finish() -> void:
 	Input.action_release("move_forward")
 	Input.action_release("run")
+	var audio: AudioManagerService = root.get_node_or_null("AudioManager") as AudioManagerService
+	if audio != null:
+		audio.stop_all()
 	quit(0)

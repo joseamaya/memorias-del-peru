@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Propuesto (v2)** — pendiente de aprobación; sustituye a la v1
+- Estado: **Aprobado (v2)** — 2026-11-10; sustituye a la v1
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -291,10 +291,10 @@ Riesgo: si la mediana real queda por debajo de 10 min, la corrección es añadir
 
 ## 13. Aprobación
 
-- [ ] El equipo revisa y aprueba esta revisión 2.
-- [ ] Se confirma el disparo del evento por llegada a la plaza con respaldo temporal.
-- [ ] Se confirma el reparto de textos y la definición de “la élite”.
-- [ ] Se confirma el protocolo de prueba y el criterio de corrección.
-- [ ] Se confirman los personajes añadidos y el cambio de “chasqui” a “mensajero”.
+- [x] El equipo revisa y aprueba esta revisión 2.
+- [x] Se confirma el disparo del evento por llegada a la plaza con respaldo temporal.
+- [x] Se confirma el reparto de textos y la definición de “la élite”.
+- [x] Se confirma el protocolo de prueba y el criterio de corrección.
+- [x] Se confirman los personajes añadidos y el cambio de “chasqui” a “mensajero”.
 
-Al aprobarse, se marca la precondición de la Fase 4 en [docs/05](../../../docs/05_plan_de_implementacion.md) y se reanuda la fase.
+Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.

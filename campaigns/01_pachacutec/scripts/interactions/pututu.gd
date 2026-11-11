@@ -3,10 +3,12 @@ extends Interactable
 ## Pututu ceremonial que convoca a la comunidad.
 ##
 ## Solo puede usarse una vez por partida y avisa al evento mediante una señal.
+## Tanto el jugador como el curaca lo usan a través de `interact()`.
 
 signal played
 
 @export var mesh: MeshInstance3D
+@export var audio_stream: AudioStream
 
 var used: bool = false
 var _mesh_node: MeshInstance3D = null
@@ -26,6 +28,8 @@ func interact(_interactor: Node3D) -> void:
 	if used:
 		return
 	used = true
+	if audio_stream != null:
+		AudioManager.play_sfx(audio_stream)
 	played.emit()
 	if _mesh_node == null:
 		return

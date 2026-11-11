@@ -9,6 +9,7 @@ const TERRAIN_RESOLUTION: int = 64
 const PLATEAU_RADIUS: float = 55.0
 const BOUNDARY_RADIUS: float = 70.0
 const DEBUG_PROFILE_KEY: Key = KEY_F2
+const AMBIENCE_PATH: String = "res://shared_assets/audio/ambience_wind_birds.ogg"
 
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Inti
@@ -139,17 +140,66 @@ func _build_llacta() -> void:
 	var npcs: Node3D = Node3D.new()
 	npcs.name = "NPCs"
 	llacta.add_child(npcs)
-	var weaver: Node3D = _add_npc(npcs, "Tejedora", Vector3(-11.0, 0.0, 5.0), Color(0.62, 0.38, 0.3, 1.0))
-	var farmer: Node3D = _add_npc(npcs, "Agricultor", Vector3(30.0, 0.0, -8.0), Color(0.45, 0.35, 0.25, 1.0))
-	var chasqui: Node3D = _add_npc(npcs, "Chasqui", Vector3(0.0, 0.0, -60.0), Color(0.75, 0.65, 0.4, 1.0))
+	var weaver: NpcActor = _add_npc(npcs, "Tejedora", Vector3(-11.0, 0.0, 5.0), Color(0.62, 0.38, 0.3, 1.0))
+	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(30.0, 0.0, -8.0), Color(0.45, 0.35, 0.25, 1.0))
+	var messenger: NpcActor = _add_npc(npcs, "Mensajero", Vector3(0.0, 0.0, -60.0), Color(0.75, 0.65, 0.4, 1.0))
+	messenger.walk_speed = 5.2
+	var curaca: NpcActor = _add_npc(npcs, "Curaca", Vector3(-7.0, 0.0, -3.0), Color(0.72, 0.55, 0.45, 1.0))
+	var principal_one: NpcActor = _add_npc(npcs, "Principal1", Vector3(-8.5, 0.0, -1.0), Color(0.55, 0.42, 0.32, 1.0))
+	var principal_two: NpcActor = _add_npc(npcs, "Principal2", Vector3(-9.0, 0.0, 2.0), Color(0.5, 0.4, 0.3, 1.0))
+	var neighbor_one: NpcActor = _add_npc(npcs, "Habitante1", Vector3(9.0, 0.0, 4.0), Color(0.48, 0.36, 0.28, 1.0))
+	var neighbor_two: NpcActor = _add_npc(npcs, "Habitante2", Vector3(11.0, 0.0, -1.0), Color(0.42, 0.33, 0.26, 1.0))
+	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
+	weaver.face(_plaza_center_flat())
+	farmer.face(_plaza_center_flat())
 
-	var event: ChasquiEvent = $EventController as ChasquiEvent
+	var event: MessengerEvent = $EventController as MessengerEvent
 	var pututu: Pututu = $Pututu as Pututu
 	var plaza_point: Marker3D = $PlazaPoint as Marker3D
 	if event != null:
-		event.bind(chasqui, weaver, farmer, plaza_point)
-		if pututu != null:
-			pututu.played.connect(event.start)
+		var principals: Array[NpcActor] = [principal_one, principal_two]
+		var neighbors: Array[NpcActor] = [neighbor_one, neighbor_two, neighbor_three]
+		if not event.subtitle_requested.is_connected(_on_subtitle_requested):
+			event.subtitle_requested.connect(_on_subtitle_requested)
+		event.bind(player, plaza_point, messenger, curaca, principals, neighbors, pututu)
+	_setup_ambience()
+
+
+func _plaza_center_flat() -> Vector3:
+	var plaza_point: Marker3D = $PlazaPoint as Marker3D
+	if plaza_point == null:
+		return Vector3.ZERO
+	return plaza_point.global_position
+
+
+func _on_subtitle_requested(text_key: StringName, seconds: float) -> void:
+	if hud == null:
+		return
+	hud.show_subtitle(tr(String(text_key)), seconds)
+
+
+func _setup_ambience() -> void:
+	if AudioServer.get_driver_name() == "Dummy":
+		return
+	if not ResourceLoader.exists(AMBIENCE_PATH):
+		return
+	var stream: AudioStream = load(AMBIENCE_PATH) as AudioStream
+	if stream == null:
+		return
+	if stream is AudioStreamWAV:
+		var wav: AudioStreamWAV = stream as AudioStreamWAV
+		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		wav.loop_end = roundi(wav.get_length() * float(wav.mix_rate))
+	elif stream is AudioStreamOggVorbis:
+		var ogg: AudioStreamOggVorbis = stream as AudioStreamOggVorbis
+		ogg.loop = true
+	var player_audio: AudioStreamPlayer = AudioStreamPlayer.new()
+	player_audio.name = "WindAmbience"
+	player_audio.stream = stream
+	player_audio.volume_db = -16.0
+	player_audio.autoplay = true
+	$EnvironmentAudio.add_child(player_audio)
+
 
 
 func _add_visual_box(parent: Node3D, node_name: String, at: Vector3, size: Vector3, material: Material) -> MeshInstance3D:
@@ -203,34 +253,16 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	root.add_to_group("houses")
 
 
-func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> Node3D:
-	var root: Node3D = Node3D.new()
-	root.name = node_name
-	root.position = at
-	parent.add_child(root)
-	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	mesh_instance.position = Vector3(0.0, 0.85, 0.0)
-	var capsule: CapsuleMesh = CapsuleMesh.new()
-	capsule.radius = 0.3
-	capsule.height = 1.7
-	mesh_instance.mesh = capsule
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = color
-	mesh_instance.material_override = material
-	root.add_child(mesh_instance)
-	var body: StaticBody3D = StaticBody3D.new()
-	body.collision_layer = 8
-	body.collision_mask = 0
-	var collision: CollisionShape3D = CollisionShape3D.new()
-	collision.position = Vector3(0.0, 0.85, 0.0)
-	var shape: CapsuleShape3D = CapsuleShape3D.new()
-	shape.radius = 0.3
-	shape.height = 1.7
-	collision.shape = shape
-	body.add_child(collision)
-	root.add_child(body)
-	root.add_to_group("npcs")
-	var tween: Tween = create_tween().set_loops()
-	tween.tween_property(mesh_instance, "position:y", 0.03, 0.9).as_relative()
-	tween.tween_property(mesh_instance, "position:y", -0.03, 0.9).as_relative()
-	return root
+func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> NpcActor:
+	var packed: PackedScene = load("res://campaigns/01_pachacutec/scenes/npcs/npc_actor.tscn") as PackedScene
+	if packed == null:
+		return null
+	var actor: NpcActor = packed.instantiate() as NpcActor
+	if actor == null:
+		return null
+	actor.name = node_name
+	actor.position = at
+	actor.body_color = color
+	parent.add_child(actor)
+	actor.add_to_group("npcs")
+	return actor

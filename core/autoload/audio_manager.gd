@@ -41,6 +41,13 @@ func set_bus_volume(bus_name: StringName, linear: float) -> void:
 	AudioServer.set_bus_volume_db(index, linear_to_db(clampf(linear, 0.0, 1.0)))
 
 
+## Detiene los efectos en curso y libera sus recursos.
+func stop_all() -> void:
+	for player: AudioStreamPlayer in _players:
+		player.stop()
+		player.stream = null
+
+
 func _ensure_bus(bus_name: StringName) -> void:
 	if AudioServer.get_bus_index(bus_name) >= 0:
 		return

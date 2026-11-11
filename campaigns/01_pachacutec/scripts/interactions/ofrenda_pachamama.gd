@@ -7,6 +7,7 @@ extends Interactable
 signal offered
 
 @export var mesh: MeshInstance3D
+@export var audio_stream: AudioStream
 
 var used: bool = false
 var _mesh_node: MeshInstance3D = null
@@ -26,6 +27,8 @@ func interact(_interactor: Node3D) -> void:
 	if used:
 		return
 	used = true
+	if audio_stream != null:
+		AudioManager.play_sfx(audio_stream)
 	offered.emit()
 	if _mesh_node == null:
 		return
