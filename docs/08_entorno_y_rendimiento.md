@@ -64,6 +64,8 @@ Así Core no conoce las escenas de campaña: cada mundo de campaña incluye su c
 
 Implementación actual de sombras: atlas de 1024 / 2048 / 4096 / 4096 y filtro `SOFT_VERY_LOW` / `SOFT_LOW` / `SOFT_MEDIUM` / `SOFT_HIGH`. La distancia de sombras la aplica el controlador del mundo según el perfil.
 
+El atlas se fija con `RenderingServer.directional_shadow_atlas_set_size(size, is_16bits)`. **El segundo parámetro es `is_16bits`, no “alta calidad”**: pasar `false` cambia el atlas a 32 bits y duplica su memoria. Los perfiles pasan `true` (`GraphicsSettingsService.SHADOW_ATLAS_16_BITS`). La diferencia se comprobó en la memoria de vídeo: −2 MB en Bajo (1024²) y −8 MB en Medio (2048²) al corregirlo.
+
 Los valores concretos se fijan tras medir (ver §4). La tabla es una intención, no un compromiso.
 
 ## 3. Escalabilidad prevista
@@ -130,7 +132,9 @@ Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m den
 
 | Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
 |---|---|---|---|---|---|---|
-| Bajo | 262,8 | 200,0 | 3,81 ms | 5,0 ms | 38 | 84,9 MB |
-| Medio | 70,2 | 50,0 | 14,24 ms | 20,0 ms | 32 | 163,7 MB |
+| Bajo | 272,1 | 200,0 | 3,67 ms | 5,0 ms | 43 | 82,9 MB |
+| Medio | 73,3 | 45,5 | 13,65 ms | 22,0 ms | 47 | 155,7 MB |
 
 El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Es una medición provisional: cambiará al incorporar los assets definitivos, vegetación y animaciones.
+
+> La medición anterior de esta misma escena (262,8 / 70,2 FPS y 84,9 / 163,7 MB) queda invalidada: se hizo con el atlas de sombras en 32 bits por el parámetro mal pasado. Los valores actuales usan 16 bits.

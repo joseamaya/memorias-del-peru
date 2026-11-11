@@ -14,8 +14,24 @@ const PROFILE_PATHS: Array[String] = [
 	"res://core/systems/graphics/profiles/ultra.tres",
 ]
 
+## Los perfiles usan el atlas de sombras direccionales de 16 bits.
+##
+## El segundo parámetro de [method RenderingServer.directional_shadow_atlas_set_size]
+## es `is_16bits`, no "alta calidad": pasar `false` cambia el atlas a 32 bits,
+## que duplica la memoria y el coste de sombreado sin mejorar la imagen de forma
+## perceptible en la referencia con GPU integrada (docs/08 §2).
+const SHADOW_ATLAS_16_BITS: bool = true
+
 var _profiles: Array[GraphicsProfile] = []
 var _active_index: int = 0
+
+## Valores enviados al motor en la última aplicación del perfil.
+##
+## [RenderingServer] no expone un getter del atlas de sombras direccionales, de
+## modo que estas copias son el único punto de observación verificable: reflejan
+## lo que el autoload ordenó al motor, no el estado interno del renderizador.
+var last_applied_shadow_atlas_size: int = 0
+var last_applied_shadow_atlas_16bits: bool = SHADOW_ATLAS_16_BITS
 
 
 func _ready() -> void:
@@ -72,6 +88,8 @@ func _apply(profile: GraphicsProfile, index: int) -> void:
 		viewport.scaling_3d_scale = profile.render_scale
 		viewport.msaa_3d = profile.msaa_3d
 		viewport.screen_space_aa = profile.screen_space_aa
-	RenderingServer.directional_shadow_atlas_set_size(profile.shadow_atlas_size, false)
+	RenderingServer.directional_shadow_atlas_set_size(profile.shadow_atlas_size, SHADOW_ATLAS_16_BITS)
 	RenderingServer.directional_soft_shadow_filter_set_quality(profile.shadow_filter_quality)
+	last_applied_shadow_atlas_size = profile.shadow_atlas_size
+	last_applied_shadow_atlas_16bits = SHADOW_ATLAS_16_BITS
 	profile_changed.emit(profile)

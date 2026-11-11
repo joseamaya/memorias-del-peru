@@ -38,8 +38,8 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 | Documento | Estado |
 |---|---|
-| [registro_historico.md](registro_historico.md) | Iniciado |
-| [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Propuesto** — precondición de la Fase 4 |
+| [registro_historico.md](registro_historico.md) | En revisión: fichas PCH-004 a PCH-017 |
+| [alcance_vertical_slice.md](alcance_vertical_slice.md) | **En revisión (v2)** — precondición de la Fase 4 |
 | Guion y personajes | Borrador en el documento de alcance; detalle pendiente |
 
 ## 6. Notas de producción (Fase 2)

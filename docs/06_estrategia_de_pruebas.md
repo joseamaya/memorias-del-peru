@@ -90,7 +90,8 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_world_scene_loads` | `mundo_base` contiene `WorldEnvironment`, `Inti`, `Terrain` con malla y colisión, `PlayerSpawn`, `EnvironmentAudio`, `PlayerFPS` y HUD |
 | `test_sky_material` | El `Environment` usa `PhysicalSkyMaterial` |
 | `test_graphics_profiles_load` | Los cuatro perfiles cargan; Bajo/Medio sin niebla volumétrica, Alto/Ultra con ella, y el atlas de sombras crece con el perfil |
-| `test_graphics_settings_apply` | `set_profile` emite `profile_changed`, actualiza el perfil activo y su atlas de sombras |
+| `test_graphics_settings_apply` | `set_profile` emite `profile_changed`, aplica escala, MSAA y antialiasing al Viewport, y deja constancia del atlas de sombras y de sus 16 bits |
+| `test_shadow_atlas_per_profile` | Los cuatro perfiles fijan su tamaño de atlas y todos usan 16 bits |
 | `test_environment_quality_controller` | El controlador aplica niebla, SSAO, SDFGI y distancia de sombras al cambiar de perfil |
 | `test_player_spawn` | El jugador aparece en la transformación de `PlayerSpawn` |
 | `test_terrain_normals_up` | Las normales del terreno apuntan hacia +Y |
