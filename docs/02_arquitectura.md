@@ -167,7 +167,8 @@ Diseño propuesto en [ADR-0003](adr/0003-deteccion-de-interactuables.md) (se ace
 
 - Un paso por ciclo de balanceo vertical, al mismo ritmo (`bob_frequency_for(horizontal_speed)`) y en el punto más bajo de la cámara (`FOOTSTEP_CYCLE_POINT = 0.75` del ciclo, mínimo de `sin`). `advance_footstep(horizontal_speed, grounded, delta) -> bool` avanza el ciclo solo con las mismas condiciones que el balanceo, así que ambos quedan sincronizados.
 - En cada paso se emite `footstep_taken` y, si `footstep_streams` no está vacío, se reproduce la siguiente variante con `AudioManager.play_sfx(stream, footstep_volume_db)`.
-- `PlayerFPS` no conoce los sonidos: la escena del mundo asigna `footstep_streams` (en la campaña 01, `pasos_tierra_01–03.wav`). Una sola superficie por ahora (tierra).
+- `PlayerFPS` no conoce los sonidos: la escena del mundo asigna `footstep_streams` (por defecto; en la campaña 01, tierra) y `footstep_sets: Array[FootstepSet]` (`core/player/footstep_set.gd`: `surface: StringName`, `streams: Array[AudioStream]`).
+- **Superficie:** en cada paso, un rayo corto bajo los pies busca el suelo; si el cuerpo tiene el metadato `footstep_surface` (`PlayerFPS.FOOTSTEP_SURFACE_META`), se usa el conjunto con esa superficie, y si no, los de por defecto. Core no define superficies; la campaña 01 marca como `&"stone"` los muros y rampas de las terrazas.
 
 ### Estamina (Fase 2)
 

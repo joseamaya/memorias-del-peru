@@ -82,7 +82,7 @@ Reglas:
 - **Ruta baja:** camino sur → viviendas oeste → telar → plaza.
 - **Ruta alta:** camino sur → terrazas este → rampas → mirador → plaza.
 - **Punto final:** plaza; la comitiva sale por el camino norte.
-- **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío.
+- **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío. En el bloqueo, el terreno sube ~11 m entre 61 y 73 m con una pendiente no transitable y deja un paso abierto en el camino norte; los muros a 70 m quedan como respaldo.
 - **Viviendas:** 8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo, agrupados al oeste (3), al este (3) y al norte (2). **Ninguna casa ocupa el eje de un camino**: los cuatro caminos quedan libres.
 - **Plaza:** tierra apisonada, con el pututu, el quero y el adoratorio de ofrenda.
 - **Terrazas:** tres niveles agrícolas con muro de contención y un corredor central de rampas transitables.
@@ -146,11 +146,11 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 |---|---|---|---|
 | Viento de altura | Ambiente continuo en bucle | “Howling Wind Ambience”, DBlover (Freesound 405601) o equivalente | CC0 |
 | Aves andinas | Ambiente | por elegir en OpenGameArt / Wikimedia Commons | CC0 / dominio público |
-| Pasos en tierra y piedra | Jugador | Tierra: `pasos_tierra_01–03.wav`, síntesis propia (placeholder). Piedra: pendiente | Propia |
+| Pasos en tierra y piedra | Jugador | `pasos_tierra_01–03.wav` y `pasos_piedra_01–03.wav` (terrazas), síntesis propia (placeholder) | Propia |
 | Quero | Interacción | placeholder actual | Propia |
 | Pututu | Interacción y evento | “Snailhorn”, Ohrwurm (Freesound) o equivalente | CC0 |
 | Ofrenda | Interacción | por elegir, CC0 | CC0 |
-| Murmullo de plaza | Evento | por elegir o grabar | Propia |
+| Murmullo de plaza | Evento: de la noticia a la llamada | `murmullo_plaza.wav`, síntesis propia (placeholder; sustituir por grabación) | Propia |
 
 - Toda pieza se registra en `shared_assets/audio/LICENSE.md` con autor, URL, licencia y fecha de descarga.
 - Si una fuente exige cuenta para descargar, se pide al responsable del proyecto y no se sustituye por material de licencia dudosa.

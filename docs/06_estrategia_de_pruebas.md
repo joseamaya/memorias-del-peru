@@ -123,6 +123,9 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_mouse_capture_requires_focus` | El jugador solo pide capturar el ratón en juego y con la ventana enfocada |
 | `test_footsteps_follow_bob` | Un paso por ciclo de balanceo, más frecuentes al correr, ninguno quieto o en el aire, y siempre con la cámara en su punto bajo |
 | `test_meeting_keeps_objects_clear` | En la reunión, todos los personajes quedan en la mitad norte de la plaza y a ≥ 2,5 m del quero, el pututu y la ofrenda |
+| `test_footstep_surfaces` | El paso usa el conjunto de la superficie pisada y, sin conjunto, el de por defecto; las terrazas del mundo son de piedra y el terreno no declara superficie |
+| `test_plaza_murmur_phases` | El murmullo de la plaza suena en `MESSAGE` y `CALL` y calla en el resto; su recurso existe |
+| `test_boundary_ridge` | La cresta deja a nivel el interior, el inicio y el paso norte, sube más de 8 m en el borde y su ladera supera los 45° |
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):

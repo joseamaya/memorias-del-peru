@@ -8,6 +8,8 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `ofrenda_tierra.wav` | Interacción de la ofrenda | Equipo del proyecto | Propia, síntesis con Python | Propia | 2026-11-10 |
 | `pututu_propio.wav` | Interacción del pututu | Equipo del proyecto | Propia, síntesis con Python | Propia | 2026-11-10 |
 | `pasos_tierra_01.wav`, `pasos_tierra_02.wav`, `pasos_tierra_03.wav` | Pasos del jugador en tierra | Equipo del proyecto | Propia, síntesis con Python (ruido con filtro paso bajo y golpe grave) | Propia | 2026-11-10 |
+| `pasos_piedra_01.wav`, `pasos_piedra_02.wav`, `pasos_piedra_03.wav` | Pasos del jugador en las terrazas | Equipo del proyecto | Propia, síntesis con Python (ruido agudo y golpe corto) | Propia | 2026-11-11 |
+| `murmullo_plaza.wav` | Murmullo de la plaza durante el evento (bucle de 12 s) | Equipo del proyecto | Propia, síntesis con Python (ruido con formantes vocálicos a ritmo silábico); placeholder | Propia | 2026-11-11 |
 | `ambience_wind_birds.ogg` | Ambiente de la llacta | ezwa | PDSounds n.º 129, vía Wikimedia Commons: `File:Gentle breeze and birds singing.ogg` | Dominio público | 2026-11-10 |
 
 ## Criterios

@@ -15,6 +15,10 @@ const BOB_PHASE_WRAP: float = TAU * 2.0
 ## Punto del ciclo de balanceo en que suena el paso: el mínimo de sin(), cuando
 ## la cámara está más baja.
 const FOOTSTEP_CYCLE_POINT: float = 0.75
+## Metadato con el que un cuerpo del mundo declara su superficie de paso.
+const FOOTSTEP_SURFACE_META: StringName = &"footstep_surface"
+## Distancia bajo los pies a la que se busca el suelo para elegir el sonido.
+const FOOTSTEP_PROBE_DEPTH: float = 0.4
 ## Segundos tras _ready() antes del intento de captura de respaldo.
 const INITIAL_CAPTURE_DELAY: float = 0.3
 
@@ -38,8 +42,11 @@ const INITIAL_CAPTURE_DELAY: float = 0.3
 @export var bob_min_speed: float = 0.1
 
 @export_group("Pasos")
-## Variantes de sonido de paso; se alternan en orden. Vacío: sin pasos.
+## Variantes de sonido de paso por defecto (suelo sin superficie declarada);
+## se alternan en orden. Vacío: sin pasos por defecto.
 @export var footstep_streams: Array[AudioStream] = []
+## Conjuntos por superficie; tienen prioridad sobre los de por defecto.
+@export var footstep_sets: Array[FootstepSet] = []
 @export var footstep_volume_db: float = -10.0
 
 @export_group("Estamina")
@@ -266,12 +273,51 @@ func _apply_head_bob(delta: float) -> void:
 		_play_footstep()
 
 
+## Superficie declarada por un cuerpo del mundo, o vacía si no declara ninguna.
+static func surface_of(collider: Object) -> StringName:
+	if collider == null or not collider.has_meta(FOOTSTEP_SURFACE_META):
+		return &""
+	var surface: StringName = collider.get_meta(FOOTSTEP_SURFACE_META)
+	return surface
+
+
+## Devuelve el siguiente sonido de paso para [param surface] y avanza la
+## alternancia. Sin conjunto para esa superficie usa [member footstep_streams];
+## devuelve [code]null[/code] si no hay ninguno.
+func next_footstep_stream(surface: StringName) -> AudioStream:
+	var streams: Array[AudioStream] = footstep_streams
+	if surface != &"":
+		for footstep_set: FootstepSet in footstep_sets:
+			if footstep_set != null and footstep_set.surface == surface and not footstep_set.streams.is_empty():
+				streams = footstep_set.streams
+				break
+	if streams.is_empty():
+		return null
+	var stream: AudioStream = streams[_footstep_index % streams.size()]
+	_footstep_index += 1
+	return stream
+
+
+func _floor_surface() -> StringName:
+	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var origin: Vector3 = global_position + Vector3.UP * 0.1
+	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		origin, origin + Vector3.DOWN * (0.1 + FOOTSTEP_PROBE_DEPTH), collision_mask, [get_rid()]
+	)
+	var hit: Dictionary = space.intersect_ray(query)
+	if hit.is_empty():
+		return &""
+	var collider: Object = hit.get("collider")
+	return surface_of(collider)
+
+
 func _play_footstep() -> void:
 	footstep_taken.emit()
-	if footstep_streams.is_empty() or AudioManager == null:
+	if AudioManager == null:
 		return
-	var stream: AudioStream = footstep_streams[_footstep_index % footstep_streams.size()]
-	_footstep_index = (_footstep_index + 1) % footstep_streams.size()
+	var stream: AudioStream = next_footstep_stream(_floor_surface())
+	if stream == null:
+		return
 	AudioManager.play_sfx(stream, footstep_volume_db)
 
 

@@ -8,6 +8,19 @@ const TERRAIN_SIZE: float = 150.0
 const TERRAIN_RESOLUTION: int = 64
 const PLATEAU_RADIUS: float = 55.0
 const BOUNDARY_RADIUS: float = 70.0
+## Cresta del borde: el terreno sube entre RIDGE_START y RIDGE_FULL (distancia
+## de Chebyshev al centro) hasta RIDGE_HEIGHT metros, con una pendiente que el
+## jugador no puede subir. Los muros de BOUNDARY_RADIUS quedan como respaldo.
+const RIDGE_START: float = 61.0
+const RIDGE_FULL: float = 73.0
+const RIDGE_HEIGHT: float = 11.0
+## Paso abierto en la cresta norte, por donde llega el mensajero.
+const PASS_HALF_WIDTH: float = 5.0
+const PASS_EDGE: float = 12.0
+const GRASS_COLOR: Color = Color(0.35, 0.4, 0.22, 1.0)
+const ROCK_COLOR: Color = Color(0.46, 0.43, 0.38, 1.0)
+const ROCK_FROM_HEIGHT: float = 1.0
+const ROCK_FULL_HEIGHT: float = 4.0
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 const AMBIENCE_PATH: String = "res://shared_assets/audio/ambience_wind_birds.ogg"
 const FOOTSTEP_PATHS: Array[String] = [
@@ -15,6 +28,21 @@ const FOOTSTEP_PATHS: Array[String] = [
 	"res://shared_assets/audio/pasos_tierra_02.wav",
 	"res://shared_assets/audio/pasos_tierra_03.wav",
 ]
+const STONE_FOOTSTEP_PATHS: Array[String] = [
+	"res://shared_assets/audio/pasos_piedra_01.wav",
+	"res://shared_assets/audio/pasos_piedra_02.wav",
+	"res://shared_assets/audio/pasos_piedra_03.wav",
+]
+const MURMUR_PATH: String = "res://shared_assets/audio/murmullo_plaza.wav"
+const MURMUR_VOLUME_DB: float = -8.0
+const MURMUR_SILENT_DB: float = -40.0
+const MURMUR_FADE_IN: float = 2.0
+const MURMUR_FADE_OUT: float = 5.0
+## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
+const TERRACE_CAP_THICKNESS: float = 0.3
+const TERRACE_CAP_INSET: float = 0.05
+## Superficie de los muros y rampas de las terrazas.
+const SURFACE_STONE: StringName = &"stone"
 
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Inti
@@ -60,16 +88,14 @@ func _build_terrain() -> void:
 			var p10: Vector3 = Vector3(x1, _height_at(x1, z0), z0)
 			var p01: Vector3 = Vector3(x0, _height_at(x0, z1), z1)
 			var p11: Vector3 = Vector3(x1, _height_at(x1, z1), z1)
-			surface.add_vertex(p00)
-			surface.add_vertex(p10)
-			surface.add_vertex(p11)
-			surface.add_vertex(p00)
-			surface.add_vertex(p11)
-			surface.add_vertex(p01)
+			for vertex: Vector3 in [p00, p10, p11, p00, p11, p01]:
+				surface.set_color(_terrain_color(vertex.y))
+				surface.add_vertex(vertex)
 	surface.generate_normals()
 	var mesh: ArrayMesh = surface.commit()
 	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = Color(0.35, 0.4, 0.22, 1.0)
+	material.albedo_color = Color.WHITE
+	material.vertex_color_use_as_albedo = true
 	material.roughness = 1.0
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "TerrainMesh"
@@ -91,7 +117,26 @@ func _height_at(x: float, z: float) -> float:
 	var distance: float = Vector2(x, z).length()
 	var blend: float = clampf((distance - PLATEAU_RADIUS) / 15.0, 0.0, 1.0)
 	var height: float = 0.7 * sin(x * 0.06) * cos(z * 0.07) + 0.3 * sin((x + z) * 0.11)
-	return height * blend
+	return height * blend + ridge_height_at(x, z)
+
+
+## Altura añadida por la cresta del borde en (x, z); cero en el interior y en
+## el paso norte.
+static func ridge_height_at(x: float, z: float) -> float:
+	var edge_distance: float = maxf(absf(x), absf(z))
+	var rise: float = smoothstep(RIDGE_START, RIDGE_FULL, edge_distance)
+	if rise <= 0.0:
+		return 0.0
+	var roughness: float = 1.0 + 0.18 * sin(x * 0.21) * cos(z * 0.17)
+	var opening: float = 1.0
+	if z < 0.0:
+		opening = smoothstep(PASS_HALF_WIDTH, PASS_EDGE, absf(x))
+	return RIDGE_HEIGHT * rise * roughness * opening
+
+
+func _terrain_color(height: float) -> Color:
+	var rock: float = smoothstep(ROCK_FROM_HEIGHT, ROCK_FULL_HEIGHT, height)
+	return GRASS_COLOR.lerp(ROCK_COLOR, rock)
 
 
 func _build_llacta() -> void:
@@ -170,6 +215,8 @@ func _build_llacta() -> void:
 		var neighbors: Array[NpcActor] = [neighbor_one, neighbor_two, neighbor_three]
 		if not event.subtitle_requested.is_connected(_on_subtitle_requested):
 			event.subtitle_requested.connect(_on_subtitle_requested)
+		if not event.phase_changed.is_connected(_on_event_phase_changed):
+			event.phase_changed.connect(_on_event_phase_changed)
 		event.bind(player, plaza_point, messenger, curaca, principals, neighbors, pututu)
 	_setup_ambience()
 
@@ -187,19 +234,83 @@ func _on_subtitle_requested(text_key: StringName, seconds: float) -> void:
 	hud.show_subtitle(tr(String(text_key)), seconds)
 
 
+## Indica si el murmullo de la plaza debe sonar en una fase del evento: desde
+## la noticia hasta que suena el pututu.
+static func murmur_plays_in(phase: int) -> bool:
+	return phase == MessengerEvent.Phase.MESSAGE or phase == MessengerEvent.Phase.CALL
+
+
+func _on_event_phase_changed(phase: int) -> void:
+	if murmur_plays_in(phase):
+		_start_murmur()
+	else:
+		_stop_murmur()
+
+
+func _start_murmur() -> void:
+	var murmur: AudioStreamPlayer3D = $EnvironmentAudio.get_node_or_null("PlazaMurmur") as AudioStreamPlayer3D
+	if murmur == null:
+		murmur = _create_murmur()
+	if murmur == null or murmur.playing:
+		return
+	murmur.volume_db = MURMUR_SILENT_DB
+	murmur.play()
+	var tween: Tween = murmur.create_tween()
+	tween.tween_property(murmur, "volume_db", MURMUR_VOLUME_DB, MURMUR_FADE_IN)
+
+
+func _stop_murmur() -> void:
+	var murmur: AudioStreamPlayer3D = $EnvironmentAudio.get_node_or_null("PlazaMurmur") as AudioStreamPlayer3D
+	if murmur == null or not murmur.playing:
+		return
+	var tween: Tween = murmur.create_tween()
+	tween.tween_property(murmur, "volume_db", MURMUR_SILENT_DB, MURMUR_FADE_OUT)
+	tween.tween_callback(murmur.stop)
+
+
+func _create_murmur() -> AudioStreamPlayer3D:
+	# Mismo motivo que el ambiente: el driver «Dummy» no libera reproducciones.
+	if AudioServer.get_driver_name() == "Dummy":
+		return null
+	if not ResourceLoader.exists(MURMUR_PATH):
+		return null
+	var stream: AudioStreamWAV = load(MURMUR_PATH) as AudioStreamWAV
+	if stream == null:
+		return null
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_end = roundi(stream.get_length() * float(stream.mix_rate))
+	var murmur: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
+	murmur.name = "PlazaMurmur"
+	murmur.stream = stream
+	murmur.unit_size = 12.0
+	murmur.max_distance = 70.0
+	$EnvironmentAudio.add_child(murmur)
+	murmur.global_position = _plaza_center_flat() + Vector3(0.0, 1.5, -3.0)
+	return murmur
+
+
 func _setup_footsteps() -> void:
 	# Con el driver «Dummy» de las pruebas sin pantalla las reproducciones no se
 	# liberan; los pasos no son objeto de esas pruebas.
 	if AudioServer.get_driver_name() == "Dummy":
 		return
+	player.footstep_streams = _load_streams(FOOTSTEP_PATHS)
+	var stone: FootstepSet = FootstepSet.new()
+	stone.surface = SURFACE_STONE
+	stone.streams = _load_streams(STONE_FOOTSTEP_PATHS)
+	var sets: Array[FootstepSet] = [stone]
+	player.footstep_sets = sets
+
+
+func _load_streams(paths: Array[String]) -> Array[AudioStream]:
 	var streams: Array[AudioStream] = []
-	for path: String in FOOTSTEP_PATHS:
+	for path: String in paths:
 		if not ResourceLoader.exists(path):
 			continue
 		var stream: AudioStream = load(path) as AudioStream
 		if stream != null:
 			streams.append(stream)
-	player.footstep_streams = streams
+	return streams
 
 
 func _setup_ambience() -> void:
@@ -259,17 +370,26 @@ func _add_box_body(parent: Node3D, node_name: String, at: Vector3, size: Vector3
 	return body
 
 
+## Nivel de terraza: dos bloques macizos desde el suelo hasta [param top_y] a
+## ambos lados de una rampa central que sube desde [param bottom_y]. Bajo la
+## rampa, un relleno llega hasta [param bottom_y] y una tapa cierra su extremo
+## alto, para que no quede hueco por el que meterse bajo la rampa.
 func _add_terrace(parent: Node3D, node_name: String, center_x: float, bottom_y: float, top_y: float, material: Material) -> void:
-	var height: float = top_y - bottom_y
-	var center_y: float = bottom_y + height * 0.5
-	_add_box_body(parent, node_name + "North", Vector3(center_x, center_y, -8.5), Vector3(8.0, height, 13.0), material, 1)
-	_add_box_body(parent, node_name + "South", Vector3(center_x, center_y, 8.5), Vector3(8.0, height, 13.0), material, 1)
-	_add_ramp(parent, node_name + "Ramp", Vector3(center_x - 4.0, bottom_y, 0.0), 8.0, height, 4.0, material)
+	var bodies: Array[StaticBody3D] = []
+	bodies.append(_add_box_body(parent, node_name + "North", Vector3(center_x, top_y * 0.5, -8.5), Vector3(8.0, top_y, 13.0), material, 1))
+	bodies.append(_add_box_body(parent, node_name + "South", Vector3(center_x, top_y * 0.5, 8.5), Vector3(8.0, top_y, 13.0), material, 1))
+	bodies.append(_add_ramp(parent, node_name + "Ramp", Vector3(center_x - 4.0, bottom_y, 0.0), 8.0, top_y - bottom_y, 4.0, material))
+	if bottom_y > 0.0:
+		bodies.append(_add_box_body(parent, node_name + "Fill", Vector3(center_x, bottom_y * 0.5, 0.0), Vector3(8.0, bottom_y, 4.0), material, 1))
+	var cap_height: float = top_y - TERRACE_CAP_INSET
+	bodies.append(_add_box_body(parent, node_name + "Cap", Vector3(center_x + 4.0 - TERRACE_CAP_THICKNESS * 0.5, cap_height * 0.5, 0.0), Vector3(TERRACE_CAP_THICKNESS, cap_height, 4.0), material, 1))
+	for body: StaticBody3D in bodies:
+		body.set_meta(PlayerFPS.FOOTSTEP_SURFACE_META, SURFACE_STONE)
 
 
 ## Rampa transitable entre dos niveles de terraza. El cuerpo gira sobre Z y la
 ## cara superior pasa por el punto de arranque.
-func _add_ramp(parent: Node3D, node_name: String, start: Vector3, run: float, rise: float, width: float, material: Material) -> void:
+func _add_ramp(parent: Node3D, node_name: String, start: Vector3, run: float, rise: float, width: float, material: Material) -> StaticBody3D:
 	var angle: float = atan2(rise, run)
 	var length: float = sqrt(run * run + rise * rise)
 	var body: StaticBody3D = StaticBody3D.new()
@@ -292,6 +412,7 @@ func _add_ramp(parent: Node3D, node_name: String, start: Vector3, run: float, ri
 	collision.position = Vector3(0.0, -0.15, 0.0)
 	body.add_child(collision)
 	parent.add_child(body)
+	return body
 
 
 func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch: Material) -> void:
