@@ -137,6 +137,17 @@ Mismo comando y condiciones que la medición anterior. La escena añade la crest
 
 Sin cambios apreciables respecto a la medición anterior: el objetivo vinculante se cumple con margen y el perfil Medio supera los 60 FPS. Las cifras cambiarán con los modelos definitivos y la vegetación; para que una medición sea comparable, la carga del sistema debe ser baja (comprobarla con `cat /proc/loadavg`).
 
+### Medición con los primeros modelos (Fase 4, provisional, 2026-11-11)
+
+Mismo comando y condiciones que la medición anterior, con la carga del sistema entre 0,6 y 0,9. La escena carga los seis modelos generados ([ADR-0010](adr/0010-modelos-generados-con-blender.md)): 8 viviendas de ~9 000–10 000 triángulos cada una, más el quero, el pututu, el adoratorio y el telar. Los personajes siguen como bloqueo. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 237,0 (230,1–238,7) | 166,7 (142,9–200,0) | 4,22 ms | — | 118–124 | — |
+| Medio | 87,1 (79,8–87,9) | 71,4 (55,6–71,4) | 11,48 ms | — | 81–122 | — |
+
+El objetivo vinculante (≥ 30 FPS) se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. Las draw calls se triplican porque cada vivienda usa unos nueve materiales planos. Si hiciera falta recuperar margen, la primera medida sería agrupar esos materiales.
+
 ### Medición de la llacta completa (Fase 4, provisional)
 
 Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.

@@ -39,7 +39,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Documento | Estado |
 |---|---|
 | [registro_historico.md](registro_historico.md) | En revisión: fichas PCH-004 a PCH-017 |
-| [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Aprobado (v3.1)** — precondición de la Fase 4 |
+| [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Aprobado (v3.2)** — precondición de la Fase 4 |
 | Guion y personajes | En el alcance v2 §2, §5 y §6.4 |
 | [guion_facilitador.md](guion_facilitador.md) | Listo para el piloto — sesiones de prueba |
 | [plantilla_sesion.md](plantilla_sesion.md) | Plantilla de registro de cada sesión |
@@ -47,4 +47,5 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 ## 6. Notas de producción (Fase 2)
 
 - Modelo del quero: cilindro de bloqueo; la forma y la decoración incisa se ajustarán en la Fase 4.
+- Fase 4: el quero, el pututu, el adoratorio, el telar y las dos viviendas tienen modelo generado por `assets/blender/pch_models.py` ([ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md)); los personajes siguen como bloqueo.
 - Sonido del quero (`shared_assets/audio/quero_bebida.wav`): placeholder sintético generado para el proyecto, sin licencia de terceros; se sustituirá por una grabación licenciada antes de la Fase 4.

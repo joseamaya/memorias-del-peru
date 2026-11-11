@@ -37,7 +37,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-004 — Quero
 - Tipo: objeto
 - Clasificación: A (piezas en colecciones) / R (decoración específica)
-- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/quero_chicha.tscn` (Fase 2)
+- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/quero_chicha.tscn` (Fase 2); modelo `pch_quero.glb` (R: perfil abocinado con bandas incisas de zigzag)
 - Variantes del nombre: *quero* (forma hispanizada, interfaz). Forma quechua por verificar: aparecen *qiru* y *q'iru* en distintas fuentes; hay que confirmar cuál corresponde al vaso y cuál a otro significado (se ha señalado que *q'iru* podría significar “madera/leña”) según el diccionario de referencia que adopte la campaña
 - Fuentes (identificadas; pendiente de verificación de edición y página):
   - The Metropolitan Museum of Art, *Kero*, cultura inca, siglo XV–inicios del XVI, madera (¿escallonia?), objeto 1994.35.11. https://www.metmuseum.org/art/collection/search/316839
@@ -72,7 +72,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-007 — Vivienda rural de piedra y barro
 - Tipo: arquitectura
 - Clasificación: A / R
-- Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`
+- Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`; modelos `pch_house_a.glb` y `pch_house_b.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas)
 - Fuentes (identificadas; pendiente de página): Morris y Thompson, *Huánuco Pampa* (1985): casas rectangulares de **pirka**, muros dobles de piedra de campo con relleno de ripio y barro y nichos trapezoidales; Vincent R. Lee, «Inca Architecture and Building Methods», *Andean Past* (2016), sobre «pirca» de piedra de campo con mortero de arcilla.
 - Discrepancias entre fuentes: —
 - Notas de representación: se descarta la sillería imperial fina, anacrónica para una llacta rural anterior a la expansión. Huánuco Pampa es un centro imperial: sirve de analogía constructiva, no de prueba directa del tipo de vivienda representado.
@@ -90,7 +90,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-009 — Pututu
 - Tipo: instrumento
 - Clasificación: A (piezas en colecciones) / H (su uso anunciando la llegada)
-- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/pututu.tscn`
+- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/pututu.tscn`; modelo `pch_pututu.glb` (R: caracola con labio rosado sobre una piedra)
 - Fuentes: Museo Larco, ficha ML002220, «Ceremonial Trumpet or Pututo», sala 9, vitrina 114: caracola *Strombus*, Perú, 1–1532 d. C., usada como trompeta ceremonial. Guamán Poma de Ayala, *Nueva corónica y buen gobierno* (c. 1615), grabado «Hatun chasqui, churo mullo chasqui» (folio por confirmar).
 - Discrepancias entre fuentes: —
 - Notas de representación: se representa la versión de caracola marina, anterior a los cuernos de vacuno introducidos tras 1532. La forma exacta es una reconstrucción (R).
@@ -99,7 +99,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-010 — Telar y textil
 - Tipo: herramienta / vestimenta
 - Clasificación: A / R
-- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`
+- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`; modelo `pch_loom.glb` (R: telar de cintura atado a una estaca, con rombos escalonados en el tejido)
 - Fuentes (identificadas; pendiente de página): piezas textiles incas en colecciones públicas (falta ficha concreta); John V. Murra, *La organización económica del estado inca* (1978), sobre producción textil y reciprocidad.
 - Discrepancias entre fuentes: —
 - Notas de representación: telar de cintura, fibras de camélido y algodón, tintes naturales; el motivo geométrico concreto es una reconstrucción (R).
@@ -119,7 +119,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-012 — Ofrenda a la Pachamama
 - Tipo: objeto / ritual
 - Clasificación: H / R
-- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/ofrenda_pachamama.tscn`
+- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/ofrenda_pachamama.tscn`; modelo `pch_offering_shrine.glb` (R: plataforma baja de piedra con losa, plato de maíz, mazorca y hojas de coca)
 - Fuentes (identificadas; pendiente de capítulo y página): Polo de Ondegardo, *Informaciones acerca de la religión y gobierno de los incas*; Pedro Cieza de León, *El señorío de los Incas*; Guamán Poma de Ayala, *Nueva corónica*.
 - Discrepancias entre fuentes: —
 - Notas de representación: ofrenda de alimentos y hojas de coca en un adoratorio bajo; la forma del adoratorio es una reconstrucción (R). El gesto se representa como acto de reciprocidad, no como pago.

@@ -1,10 +1,10 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.1)** — 2026-11-11; sustituye a la v3
+- Estado: **Aprobado (v3.2)** — 2026-11-11; sustituye a la v3.1
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md) y [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)
+- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md) y [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md)
 
 ## 0. Historial de versiones
 
@@ -14,6 +14,7 @@
 | v2 | Añade el protocolo de prueba completo, la secuencia con disparo garantizado, los personajes que faltaban, el reparto de textos, la estimación de duración y el cambio de “chasqui” a “mensajero”. |
 | v3 | Disparo por reloj, pututu disponible solo en la llamada, aviso de la llamada, habitantes que no parten, casas fuera de los caminos, camino norte y mirador, y duración ajustada a 5–8 min. |
 | v3.1 | Define cuándo empieza y termina una sesión para medir la duración (§9.2). Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.2 | Aplica [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md): Blender 5.x y modelos generados por script (§7 y §7.1). Cambio de herramienta; no altera el contenido ni el protocolo. |
 
 ## 1. Objetivo
 
@@ -170,7 +171,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 
 ## 7. Pipeline de assets
 
-- **Blender 4.x LTS** para modelos, rigging y animación.
+- **Blender 5.x** para modelos, rigging y animación ([ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md); sustituye a la 4.x LTS). Los modelos se generan con el script versionado `assets/blender/pch_models.py`.
 - Exportación a **glTF 2.0 binario (`.glb`)**; no se importan `.blend`.
 - 1 unidad = 1 metro; transformaciones aplicadas; origen en los pies para personajes.
 - Nombres `snake_case` con prefijo `pch_` (`pch_house_a.glb`, `pch_npc_weaver.glb`).
@@ -183,14 +184,16 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 
 Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo tiene un hueco (`ModelSlot`, [docs/02](../../../docs/02_arquitectura.md) §5) que carga el primer archivo existente de su lista y oculta el bloqueo; sin archivo, el bloqueo sigue. Basta con añadir el archivo e importarlo (`godot --headless --path . --import`).
 
-| Bloqueo | Archivos, en orden de preferencia | Origen del modelo |
-|---|---|---|
-| Viviendas pares / impares | `pch_house_a.glb` / `pch_house_b.glb` | Base de la vivienda, mirando a la plaza por −Z; con colisión `-col` |
-| Tejedora, agricultor, mensajero | `pch_npc_weaver.glb`, `pch_npc_farmer.glb`, `pch_npc_messenger.glb` → `pch_npc_commoner.glb` | Pies |
-| Habitantes 1–3 | `pch_npc_villager.glb` → `pch_npc_commoner.glb` | Pies |
-| Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies |
-| Quero, pututu, adoratorio | `pch_quero.glb`, `pch_pututu.glb`, `pch_offering_shrine.glb` | Base del objeto |
-| Telar (sin bloqueo) | `pch_loom.glb` | Base, junto a la tejedora |
+| Bloqueo | Archivos, en orden de preferencia | Origen del modelo | Estado |
+|---|---|---|---|
+| Viviendas pares / impares | `pch_house_a.glb` / `pch_house_b.glb` | Base de la vivienda, mirando a la plaza por −Z; con colisión propia (`-convcolonly` o `-col`) | Generadas (R) |
+| Tejedora, agricultor, mensajero | `pch_npc_weaver.glb`, `pch_npc_farmer.glb`, `pch_npc_messenger.glb` → `pch_npc_commoner.glb` | Pies | Pendiente (bloqueo) |
+| Habitantes 1–3 | `pch_npc_villager.glb` → `pch_npc_commoner.glb` | Pies | Pendiente (bloqueo) |
+| Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies | Pendiente (bloqueo) |
+| Quero, pututu, adoratorio | `pch_quero.glb`, `pch_pututu.glb`, `pch_offering_shrine.glb` | Base del objeto | Generados (R) |
+| Telar (sin bloqueo) | `pch_loom.glb` | Extremo de la tejedora; el telar se extiende hacia +Z de Godot hasta la estaca | Generado (R) |
+
+«Generado» significa producido por `pch_models.py` (ADR-0010): low-poly con colores planos, sustituible por un modelo hecho a mano que cumpla las mismas reglas. La forma concreta de cada modelo es una reconstrucción (R) según su ficha.
 
 Reglas que comprueba `test_model_files_valid` en cada archivo:
 - nombre `pch_*.glb` en `snake_case` y ningún `.blend`;
