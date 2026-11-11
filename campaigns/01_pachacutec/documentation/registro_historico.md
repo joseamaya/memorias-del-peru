@@ -10,8 +10,8 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: personaje
 - Clasificación: H (existencia y papel en la tradición); detalles de su vida: según fuente
 - Uso en el juego: por definir
-- Fuentes: Betanzos, *Suma y narración de los Incas* (1551); Sarmiento de Gamboa, *Historia de los Incas* (1572); Cieza de León, *El señorío de los Incas*; Rostworowski, *Pachacútec Inca Yupanqui* (1953)
-- Discrepancias entre fuentes: Garcilaso atribuye la victoria sobre los chancas a Inca Viracocha
+- Fuentes: Betanzos, *Suma y narración de los Incas* (1551); Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. 26–28 (pp. 104–114, trad. Bauer y Smith, University of Texas Press, 2007); Cieza de León, *El señorío de los Incas*; Rostworowski, *Pachacútec Inca Yupanqui* (1953)
+- Discrepancias entre fuentes: Garcilaso atribuye la victoria sobre los chancas a Inca Viracocha. Falta su cita con capítulo y página para cerrar esta ficha.
 - Notas de representación: no mostrar retratos “auténticos”; toda apariencia física es R
 - Estado de verificación: pendiente
 
@@ -58,4 +58,121 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - Craig Morris y Donald Thompson, *Huánuco Pampa: An Inca City and Its Hinterland* (1985): producción y consumo de chicha en contextos estatales incas.
 - Discrepancias entre fuentes: —
 - Notas de representación: bebida de maíz fermentado vinculada a reciprocidad y ritual; su efecto en el juego es una licencia mecánica
+- Estado de verificación: pendiente
+
+### PCH-006 — Llacta / asentamiento
+- Tipo: lugar
+- Clasificación: A (asentamientos excavados) / R (esta llacta concreta)
+- Uso en el juego: escena completa `mundo_base.tscn`
+- Fuentes (identificadas; pendiente de página): Craig Morris y Donald Thompson, *Huánuco Pampa: An Inca City and its Hinterland* (Thames and Hudson, 1985); John Hyslop, *Inka Settlement Planning* (University of Texas Press, 1990).
+- Discrepancias entre fuentes: —
+- Notas de representación: la llacta del juego no se identifica con ningún sitio real ni recibe nombre propio. Los conjuntos excavados de la sierra son en su mayoría imperiales o administrativos; una llacta rural anterior a la expansión se reconstruye por analogía y se declara como tal.
+- Estado de verificación: pendiente
+
+### PCH-007 — Vivienda rural de piedra y barro
+- Tipo: arquitectura
+- Clasificación: A / R
+- Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`
+- Fuentes (identificadas; pendiente de página): Morris y Thompson, *Huánuco Pampa* (1985): casas rectangulares de **pirka**, muros dobles de piedra de campo con relleno de ripio y barro y nichos trapezoidales; Vincent R. Lee, «Inca Architecture and Building Methods», *Andean Past* (2016), sobre «pirca» de piedra de campo con mortero de arcilla.
+- Discrepancias entre fuentes: —
+- Notas de representación: se descarta la sillería imperial fina, anacrónica para una llacta rural anterior a la expansión. Huánuco Pampa es un centro imperial: sirve de analogía constructiva, no de prueba directa del tipo de vivienda representado.
+- Estado de verificación: pendiente
+
+### PCH-008 — Terraza agrícola
+- Tipo: arquitectura
+- Clasificación: A
+- Uso en el juego: `Llacta/Terraces` en `mundo_base.tscn`
+- Fuentes (identificadas; pendiente de página): Robin A. Donkin, *Agricultural Terracing in the Aboriginal New World* (University of Arizona Press, 1979); Ann Kendall, *Aspects of Inca Architecture* (BAR, 1985).
+- Discrepancias entre fuentes: —
+- Notas de representación: tres niveles con muro de contención de piedra. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
+- Estado de verificación: pendiente
+
+### PCH-009 — Pututu
+- Tipo: instrumento
+- Clasificación: A (piezas en colecciones) / H (su uso anunciando la llegada)
+- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/pututu.tscn`
+- Fuentes: Museo Larco, ficha ML002220, «Ceremonial Trumpet or Pututo», sala 9, vitrina 114: caracola *Strombus*, Perú, 1–1532 d. C., usada como trompeta ceremonial. Guamán Poma de Ayala, *Nueva corónica y buen gobierno* (c. 1615), grabado «Hatun chasqui, churo mullo chasqui» (folio por confirmar).
+- Discrepancias entre fuentes: —
+- Notas de representación: se representa la versión de caracola marina, anterior a los cuernos de vacuno introducidos tras 1532. La forma exacta es una reconstrucción (R).
+- Estado de verificación: **verificado** en su parte A (Museo Larco, consultado el 2026-11-10). La afirmación H sobre su uso por los chasquis queda pendiente de folio.
+
+### PCH-010 — Telar y textil
+- Tipo: herramienta / vestimenta
+- Clasificación: A / R
+- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`
+- Fuentes (identificadas; pendiente de página): piezas textiles incas en colecciones públicas (falta ficha concreta); John V. Murra, *La organización económica del estado inca* (1978), sobre producción textil y reciprocidad.
+- Discrepancias entre fuentes: —
+- Notas de representación: telar de cintura, fibras de camélido y algodón, tintes naturales; el motivo geométrico concreto es una reconstrucción (R).
+- Estado de verificación: pendiente
+
+### PCH-011 — Mensajero (no chasqui)
+- Tipo: personaje
+- Clasificación: H / R
+- Uso en el juego: `mundo_base.tscn` (`Llacta/NPCs/Mensajero`) y `messenger_event.gd`
+- Fuentes: Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. 27 «The Chancas attack Cuzco», pp. 107–111 (trad. Brian S. Bauer y Vania Smith, University of Texas Press, 2007): un **quillis-cachi** huye del campamento chanca y da la noticia en el Cusco. Inca Garcilaso de la Vega, *Comentarios reales*, I parte, lib. VI, cap. VII «Postas y correos, y los despachos que llevaban»: el sistema de postas con chasquis corresponde al Estado imperial, en el reinado de Pachacútec.
+- Discrepancias entre fuentes: las crónicas no coinciden en quién da la alarma ni en su nombre.
+- Notas de representación: en el juego es **mensajero**, no chasqui. Llamarlo chasqui en una llacta anterior a la expansión sería anacrónico: la institución de postas pertenece al Estado imperial. Ropa de viaje, sin insignias estatales; llega agotado.
+- Estado de verificación: **verificado** (agente, 2026-11-10) con las ediciones digitales citadas.
+
+### PCH-012 — Ofrenda a la Pachamama
+- Tipo: objeto / ritual
+- Clasificación: H / R
+- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/ofrenda_pachamama.tscn`
+- Fuentes (identificadas; pendiente de capítulo y página): Polo de Ondegardo, *Informaciones acerca de la religión y gobierno de los incas*; Pedro Cieza de León, *El señorío de los Incas*; Guamán Poma de Ayala, *Nueva corónica*.
+- Discrepancias entre fuentes: —
+- Notas de representación: ofrenda de alimentos y hojas de coca en un adoratorio bajo; la forma del adoratorio es una reconstrucción (R). El gesto se representa como acto de reciprocidad, no como pago.
+- Estado de verificación: pendiente
+
+### PCH-013 — Ichu y queñua
+- Tipo: flora
+- Clasificación: A
+- Uso en el juego: vegetación del terreno y de las terrazas
+- Fuentes (identificadas; pendiente de publicación): *Stipa ichu* (ichu) y *Polylepis* (queñua) en la flora altoandina; falta la referencia botánica concreta.
+- Discrepancias entre fuentes: —
+- Notas de representación: solo especies presentes antes de 1532. Prohibidos el eucalipto y cualquier especie introducida.
+- Estado de verificación: pendiente
+
+### PCH-014 — Llama / alpaca (opcional)
+- Tipo: fauna
+- Clasificación: A
+- Uso en el juego: opcional; no incluida en el bloqueo actual
+- Fuentes (identificadas; pendiente de publicación): estudios de camélidos sudamericanos domésticos; falta referencia concreta.
+- Discrepancias entre fuentes: —
+- Notas de representación: si se incluye, sin aparejos de origen europeo.
+- Estado de verificación: pendiente
+
+### PCH-015 — Evento: la noticia chanca
+- Tipo: evento
+- Clasificación: H (tradición) / N (puesta en escena)
+- Uso en el juego: `messenger_event.gd` y textos `PCH_NARR_*`
+- Fuentes: Sarmiento de Gamboa, *Historia de los Incas*, caps. 26–28, pp. 104–114 (trad. Bauer y Smith, 2007); Betanzos, *Suma y narración de los Incas*, I parte, cap. 13 (ed. 1987, p. 61; facsímil de la edición de 1880 en la Biblioteca Virtual Miguel de Cervantes); J. J. Huertas Vallejos, «Los Chancas: proceso disturbativo en los Andes», *Historia y Cultura* 20.
+- Discrepancias entre fuentes: Garcilaso atribuye la victoria a Inca Viracocha; la huida del inca y su heredero aparece con matices distintos en Betanzos y Sarmiento.
+- Notas de representación: el guion sigue la versión de Betanzos y Sarmiento y la presenta como lo que dice el mensajero, no como verdad única. No se escenifica la batalla: el juego termina cuando la llacta responde. La llegada a la plaza, la reunión y la partida son puesta en escena (N).
+- Estado de verificación: **verificado** (agente, 2026-11-10) con las ediciones digitales citadas.
+
+### PCH-016 — Plaza y caminos
+- Tipo: lugar
+- Clasificación: A / R
+- Uso en el juego: `Llacta/Plaza`, `Llacta/PathSouth`, `Llacta/PathEast`, `Llacta/PathWest`
+- Fuentes (identificadas; pendiente de página): Morris y Thompson, *Huánuco Pampa* (1985), sobre la plaza y el ushnu; John Hyslop, *The Inka Road System* (Academic Press, 1984).
+- Discrepancias entre fuentes: —
+- Notas de representación: la plaza de tierra apisonada y los caminos de tierra son reconstrucción (R). No se incluye ushnu: no está documentado para una llacta de este tamaño.
+- Estado de verificación: pendiente
+
+### PCH-017 — Curaca y hombres principales
+- Tipo: personaje / organización social
+- Clasificación: H / R
+- Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`
+- Fuentes (identificadas; pendiente de capítulo y página): María Rostworowski, *Curacas y sucesiones: costa norte* (1961) y *Señoríos indígenas de Lima y Canta* (1978); Sarmiento de Gamboa, *Historia de los Incas*, cap. 27 (Inca Yupanqui convoca a los curacas).
+- Discrepancias entre fuentes: —
+- Notas de representación: el curaca y los hombres principales **parten hacia el Cusco para sumarse a la defensa**; el guion debe impedir la lectura de huida. Distintivos de autoridad discretos (R).
+- Estado de verificación: pendiente
+
+### PCH-018 — Vestimenta y apariencia del habitante común
+- Tipo: vestimenta
+- Clasificación: R (a partir de A)
+- Uso en el juego: tejedora, agricultor, mensajero y habitantes
+- Fuentes (identificadas; pendiente de ficha y página): piezas textiles arqueológicas en colecciones públicas; Guamán Poma de Ayala, *Nueva corónica* (c. 1615), dibujos de habitantes (posteriores a la conquista: se usan solo como indicio, no como modelo directo).
+- Discrepancias entre fuentes: —
+- Notas de representación: sin retratos “auténticos”; variantes de color y de tocado para distinguir oficios; sin prendas ni elementos coloniales. La apariencia es interpretación declarada.
 - Estado de verificación: pendiente

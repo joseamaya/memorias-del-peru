@@ -28,3 +28,5 @@ Plantilla:
 | [0003](0003-deteccion-de-interactuables.md) | Detección de interactuables | Aceptado |
 | [0004](0004-herramientas-de-desarrollo.md) | Herramientas de desarrollo: skills y servidores MCP | Aceptado (selección de skills reemplazada por ADR-0005) |
 | [0005](0005-skills-de-godot.md) | Skills de Godot y desviación consciente del estilo oficial | Aceptado |
+| [0006](0006-secuencia-narrativa-por-subtitulos.md) | Secuencia narrativa por subtítulos | Aceptado |
+| [0007](0007-evento-del-mensajero.md) | Evento del mensajero: máquina de estados y progreso garantizado | Aceptado |

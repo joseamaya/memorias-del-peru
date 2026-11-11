@@ -105,7 +105,10 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_world_bounds` | El límite del mundo tiene colisión a ~70 m del centro |
 | `test_llacta_interactables` | Quero, ofrenda y pututu existen, son `Interactable` y de tipos distintos |
 | `test_npcs_present` | Tejedora y agricultor existen con presencia |
-| `test_chasqui_event` | El pututu inicia el evento del chasqui |
+| `test_messenger_event_starts_on_arrival` | El evento arranca al entrar en la plaza, no con el pututu |
+| `test_messenger_event_finishes_without_pututu` | La máquina llega a `DONE` aunque el jugador nunca toque el pututu |
+| `test_pututu_convenes_meeting` | El pututu, usado durante `CALL`, pasa a `DEPARTURE` y marca `pututu_by_player` |
+| `test_narrative_beats_order` | Los subtítulos de apertura, noticia y cierre se emiten en orden y una sola vez cada uno |
 | `test_quero_cooldown` | Un segundo uso inmediato no restaura estamina; tras el tiempo de espera sí |
 | `test_offering_once` | La ofrenda solo se usa una vez por partida |
 | `test_world_spawn_south` | El jugador aparece en el camino sur |
