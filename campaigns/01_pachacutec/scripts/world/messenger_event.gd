@@ -31,6 +31,12 @@ const CLOSING_SECONDS: float = 6.0
 const CLOSING_SECOND_DELAY: float = 6.0
 const DEPARTURE_TIMEOUT: float = 45.0
 
+## Disposición de la reunión (ver _meeting_point()).
+const MESSENGER_OFFSET: Vector3 = Vector3(0.0, 0.0, -1.0)
+const MEETING_RADIUS: float = 5.5
+const MEETING_RADIUS_STAGGER: float = 1.0
+const MEETING_ARC_SLOTS: int = 6
+
 ## Tiempo de partida antes de que el mensajero se ponga en camino.
 @export var arrival_delay: float = 240.0
 ## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza.
@@ -258,9 +264,16 @@ func _place_group() -> void:
 	_face_all()
 
 
+## Punto de reunión de cada personaje. El hueco 0 es el mensajero, en el centro;
+## el resto forma un arco en la mitad norte de la plaza. El quero, el pututu y
+## la ofrenda están en la mitad sur, así que la reunión nunca los tapa y el
+## jugador, que llega desde el sur, ve al grupo de frente.
 func _meeting_point(slot: int) -> Vector3:
-	var angle: float = TAU * float(slot) / 9.0
-	var radius: float = 6.0 + 1.1 * float(slot % 3)
+	if slot <= 0:
+		return _plaza_center + MESSENGER_OFFSET
+	var t: float = float(slot - 1) / float(MEETING_ARC_SLOTS - 1)
+	var angle: float = PI + PI * clampf(t, 0.0, 1.0)
+	var radius: float = MEETING_RADIUS + MEETING_RADIUS_STAGGER * float(slot % 2)
 	return _plaza_center + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
 
 

@@ -8,9 +8,15 @@ extends CharacterBody3D
 
 signal interactable_focused(interactable: Interactable)
 signal interactable_unfocused()
+signal footstep_taken()
 
 const MAX_INTERACTABLE_SEARCH_DEPTH: int = 8
 const BOB_PHASE_WRAP: float = TAU * 2.0
+## Punto del ciclo de balanceo en que suena el paso: el mínimo de sin(), cuando
+## la cámara está más baja.
+const FOOTSTEP_CYCLE_POINT: float = 0.75
+## Segundos tras _ready() antes del intento de captura de respaldo.
+const INITIAL_CAPTURE_DELAY: float = 0.3
 
 @export_group("Movimiento")
 @export var walk_speed: float = 3.5
@@ -31,6 +37,11 @@ const BOB_PHASE_WRAP: float = TAU * 2.0
 @export var bob_blend_speed: float = 6.0
 @export var bob_min_speed: float = 0.1
 
+@export_group("Pasos")
+## Variantes de sonido de paso; se alternan en orden. Vacío: sin pasos.
+@export var footstep_streams: Array[AudioStream] = []
+@export var footstep_volume_db: float = -10.0
+
 @export_group("Estamina")
 @export var stamina: StaminaComponent
 @export var run_stamina_cost_per_second: float = 15.0
@@ -48,18 +59,37 @@ var _focused_interactable: Interactable = null
 var _focused_candidate: Interactable = null
 var _focused_collider: Object = null
 var _run_blocked: bool = false
+var _step_cycle: float = 0.0
+var _footstep_index: int = 0
 
 
 func _ready() -> void:
 	_camera_base_position = camera.position
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# No se captura aquí: durante _ready() la ventana puede no ser visible aún y
+	# X11 rechaza la captura («NO GRAB») aunque declare tener el foco. Se captura
+	# al recibir el foco, con un clic o, como respaldo, poco después de arrancar.
+	if is_inside_tree():
+		get_tree().create_timer(INITIAL_CAPTURE_DELAY).timeout.connect(_capture_mouse_if_allowed)
 	if stamina == null:
 		stamina = StaminaComponent.find_in(self)
 	if GameManager != null:
 		GameManager.pause_changed.connect(_on_game_manager_pause_changed)
 
 
+func _notification(what: int) -> void:
+	# El sistema solo concede la captura a una ventana con foco. Se captura al
+	# recibirlo (también al arrancar) y se recaptura al recuperarlo.
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN or what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_capture_mouse_if_allowed()
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var button: InputEventMouseButton = event as InputEventMouseButton
+		if button.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and not _is_game_paused():
+			_capture_mouse_if_allowed()
+			get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed("interact"):
 		try_interact()
 		get_viewport().set_input_as_handled()
@@ -160,6 +190,12 @@ static func mouse_mode_for_pause(paused: bool) -> Input.MouseMode:
 	return Input.MOUSE_MODE_VISIBLE if paused else Input.MOUSE_MODE_CAPTURED
 
 
+## Indica si debe pedirse la captura del ratón: solo en juego y con la ventana
+## enfocada.
+static func should_capture_mouse(paused: bool, window_focused: bool) -> bool:
+	return window_focused and not paused
+
+
 ## Calcula el desplazamiento local de la cámara para un tick de física.
 ##
 ## [param horizontal_speed] es la velocidad horizontal en m/s y [param grounded]
@@ -170,7 +206,7 @@ func calculate_head_bob_offset(horizontal_speed: float, grounded: bool, delta: f
 	var target_weight: float = 1.0 if moving else 0.0
 	_bob_weight = move_toward(_bob_weight, target_weight, bob_blend_speed * delta)
 	var speed_ratio: float = clampf(horizontal_speed / run_speed, 0.0, 1.0)
-	var frequency: float = lerpf(bob_walk_frequency, bob_run_frequency, speed_ratio)
+	var frequency: float = bob_frequency_for(horizontal_speed)
 	var amplitude: float = lerpf(bob_walk_amplitude, bob_run_amplitude, speed_ratio)
 	if moving:
 		_bob_phase = fposmod(_bob_phase + delta * frequency * TAU, BOB_PHASE_WRAP)
@@ -178,6 +214,26 @@ func calculate_head_bob_offset(horizontal_speed: float, grounded: bool, delta: f
 	offset.y = sin(_bob_phase) * amplitude * _bob_weight
 	offset.x = cos(_bob_phase * 0.5) * amplitude * 0.5 * _bob_weight
 	return offset
+
+
+## Frecuencia del balanceo (y de los pasos) para una velocidad horizontal.
+func bob_frequency_for(horizontal_speed: float) -> float:
+	var speed_ratio: float = clampf(horizontal_speed / run_speed, 0.0, 1.0)
+	return lerpf(bob_walk_frequency, bob_run_frequency, speed_ratio)
+
+
+## Avanza el ciclo de pasos al mismo ritmo que el balanceo. Devuelve `true` en
+## el tick en que el ciclo cruza [constant FOOTSTEP_CYCLE_POINT], es decir, un
+## paso por ciclo de balanceo vertical.
+func advance_footstep(horizontal_speed: float, grounded: bool, delta: float) -> bool:
+	if not grounded or horizontal_speed <= bob_min_speed:
+		return false
+	var previous: float = _step_cycle
+	var advanced: float = previous + delta * bob_frequency_for(horizontal_speed)
+	_step_cycle = fposmod(advanced, 1.0)
+	var crossed: bool = previous < FOOTSTEP_CYCLE_POINT and advanced >= FOOTSTEP_CYCLE_POINT
+	var wrapped_past: bool = advanced >= 1.0 + FOOTSTEP_CYCLE_POINT
+	return crossed or wrapped_past
 
 
 func _move(delta: float) -> void:
@@ -206,7 +262,37 @@ func _apply_head_bob(delta: float) -> void:
 	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
 	var offset: Vector3 = calculate_head_bob_offset(horizontal_speed, is_on_floor(), delta)
 	camera.position = _camera_base_position + offset
+	if advance_footstep(horizontal_speed, is_on_floor(), delta):
+		_play_footstep()
+
+
+func _play_footstep() -> void:
+	footstep_taken.emit()
+	if footstep_streams.is_empty() or AudioManager == null:
+		return
+	var stream: AudioStream = footstep_streams[_footstep_index % footstep_streams.size()]
+	_footstep_index = (_footstep_index + 1) % footstep_streams.size()
+	AudioManager.play_sfx(stream, footstep_volume_db)
 
 
 func _on_game_manager_pause_changed(paused: bool) -> void:
-	Input.mouse_mode = mouse_mode_for_pause(paused)
+	if paused:
+		Input.mouse_mode = mouse_mode_for_pause(paused)
+		return
+	_capture_mouse_if_allowed()
+
+
+func _capture_mouse_if_allowed() -> void:
+	if not is_inside_tree():
+		return
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		return
+	if not should_capture_mouse(_is_game_paused(), DisplayServer.window_is_focused()):
+		return
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _is_game_paused() -> bool:
+	if GameManager == null:
+		return false
+	return GameManager.is_paused()

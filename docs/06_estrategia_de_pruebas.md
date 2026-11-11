@@ -120,6 +120,9 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_quero_cooldown` | Un segundo uso inmediato no restaura estamina; tras el tiempo de espera sí |
 | `test_offering_once` | La ofrenda solo se usa una vez por partida |
 | `test_world_spawn_south` | El jugador aparece en el camino sur |
+| `test_mouse_capture_requires_focus` | El jugador solo pide capturar el ratón en juego y con la ventana enfocada |
+| `test_footsteps_follow_bob` | Un paso por ciclo de balanceo, más frecuentes al correr, ninguno quieto o en el aire, y siempre con la cámara en su punto bajo |
+| `test_meeting_keeps_objects_clear` | En la reunión, todos los personajes quedan en la mitad norte de la plaza y a ≥ 2,5 m del quero, el pututu y la ofrenda |
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):

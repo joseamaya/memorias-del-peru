@@ -124,7 +124,7 @@ Todos como `@export` con tipo y agrupados (`@export_group`): `walk_speed`, `run_
 
 - Rotación en `_unhandled_input` con `InputEventMouseMotion.relative` (solo si el ratón está capturado).
 - Yaw → `rotate_y` del cuerpo. Pitch → `Head.rotation.x`, con `clampf` a `±deg_to_rad(pitch_limit_degrees)`.
-- Captura inicial en `_ready()` (`Input.mouse_mode = Input.MOUSE_MODE_CAPTURED`).
+- Captura solo con la ventana enfocada y en juego (`static func should_capture_mouse(paused: bool, window_focused: bool) -> bool`): al recibir el foco (`NOTIFICATION_WM_WINDOW_FOCUS_IN` / `NOTIFICATION_APPLICATION_FOCUS_IN`), con un clic si el ratón está libre, al salir de la pausa y, como respaldo, 0,3 s después de `_ready()`. No se captura dentro de `_ready()`: la ventana puede no ser visible aún y X11 responde «NO GRAB».
 - El jugador **no** decide la pausa: escucha `GameManager.pause_changed` y libera o recaptura el ratón. `GameManager` procesa la acción `pause` (con `process_mode = PROCESS_MODE_ALWAYS` para seguir recibiendo entrada en pausa) y aplica `get_tree().paused`.
 - **Reanudar:** en la Fase 1 no hay menú de pausa; la acción `pause` (Escape) **alterna** entre pausado y en juego. Cuando exista un menú de pausa, su botón “Continuar” llamará a `GameManager.set_paused(false)`.
 - La elección del modo de ratón según el estado de pausa se aísla en un método puro estático (`static func mouse_mode_for_pause(paused: bool) -> Input.MouseMode`) para poder probarla sin pantalla.
@@ -162,6 +162,12 @@ Diseño propuesto en [ADR-0003](adr/0003-deteccion-de-interactuables.md) (se ace
 - En cada tick de física el jugador lee el collider de `InteractionRay`. Solo si el collider **cambió** respecto al tick anterior, recalcula el interactuable subiendo por los ancestros hasta encontrar un nodo `is Interactable` (o llegar al límite definido en ADR-0003); si no cambió, reutiliza el resultado cacheado.
 - El jugador emite señales (`interactable_focused(interactable: Interactable)`, `interactable_unfocused()`); la UI de indicaciones se suscribe. El jugador no conoce la UI ni tipos concretos de objetos.
 - Al presionar `interact`, el jugador llama `interact(self)` sobre el interactuable enfocado.
+
+### Pasos (Fase 4)
+
+- Un paso por ciclo de balanceo vertical, al mismo ritmo (`bob_frequency_for(horizontal_speed)`) y en el punto más bajo de la cámara (`FOOTSTEP_CYCLE_POINT = 0.75` del ciclo, mínimo de `sin`). `advance_footstep(horizontal_speed, grounded, delta) -> bool` avanza el ciclo solo con las mismas condiciones que el balanceo, así que ambos quedan sincronizados.
+- En cada paso se emite `footstep_taken` y, si `footstep_streams` no está vacío, se reproduce la siguiente variante con `AudioManager.play_sfx(stream, footstep_volume_db)`.
+- `PlayerFPS` no conoce los sonidos: la escena del mundo asigna `footstep_streams` (en la campaña 01, `pasos_tierra_01–03.wav`). Una sola superficie por ahora (tierra).
 
 ### Estamina (Fase 2)
 

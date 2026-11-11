@@ -146,7 +146,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 |---|---|---|---|
 | Viento de altura | Ambiente continuo en bucle | “Howling Wind Ambience”, DBlover (Freesound 405601) o equivalente | CC0 |
 | Aves andinas | Ambiente | por elegir en OpenGameArt / Wikimedia Commons | CC0 / dominio público |
-| Pasos en tierra y piedra | Jugador | por elegir, CC0 | CC0 |
+| Pasos en tierra y piedra | Jugador | Tierra: `pasos_tierra_01–03.wav`, síntesis propia (placeholder). Piedra: pendiente | Propia |
 | Quero | Interacción | placeholder actual | Propia |
 | Pututu | Interacción y evento | “Snailhorn”, Ohrwurm (Freesound) o equivalente | CC0 |
 | Ofrenda | Interacción | por elegir, CC0 | CC0 |

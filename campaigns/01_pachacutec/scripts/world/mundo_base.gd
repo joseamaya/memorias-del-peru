@@ -10,6 +10,11 @@ const PLATEAU_RADIUS: float = 55.0
 const BOUNDARY_RADIUS: float = 70.0
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 const AMBIENCE_PATH: String = "res://shared_assets/audio/ambience_wind_birds.ogg"
+const FOOTSTEP_PATHS: Array[String] = [
+	"res://shared_assets/audio/pasos_tierra_01.wav",
+	"res://shared_assets/audio/pasos_tierra_02.wav",
+	"res://shared_assets/audio/pasos_tierra_03.wav",
+]
 
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Inti
@@ -25,6 +30,7 @@ func _ready() -> void:
 	_build_llacta()
 	player.global_position = player_spawn.global_position
 	hud.bind(player, player.stamina)
+	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
 
 
@@ -179,6 +185,21 @@ func _on_subtitle_requested(text_key: StringName, seconds: float) -> void:
 	if hud == null:
 		return
 	hud.show_subtitle(tr(String(text_key)), seconds)
+
+
+func _setup_footsteps() -> void:
+	# Con el driver «Dummy» de las pruebas sin pantalla las reproducciones no se
+	# liberan; los pasos no son objeto de esas pruebas.
+	if AudioServer.get_driver_name() == "Dummy":
+		return
+	var streams: Array[AudioStream] = []
+	for path: String in FOOTSTEP_PATHS:
+		if not ResourceLoader.exists(path):
+			continue
+		var stream: AudioStream = load(path) as AudioStream
+		if stream != null:
+			streams.append(stream)
+	player.footstep_streams = streams
 
 
 func _setup_ambience() -> void:
