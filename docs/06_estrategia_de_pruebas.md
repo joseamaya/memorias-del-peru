@@ -120,6 +120,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_quero_cooldown` | Un segundo uso inmediato no restaura estamina; tras el tiempo de espera sí |
 | `test_offering_once` | La ofrenda solo se usa una vez por partida |
 | `test_world_spawn_south` | El jugador aparece en el camino sur |
+| `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 

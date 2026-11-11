@@ -62,7 +62,7 @@ Los directorios se crean **solo** cuando reciben su primer archivo funcional.
 
 | Autoload | Responsabilidad | Fase en que nace |
 |---|---|---|
-| `GameManager` | Estado global de juego (en juego / pausado): `set_paused(paused: bool)`, `is_paused() -> bool`, señal `pause_changed(paused: bool)`. (El parámetro se llama `paused` y no `is_paused` para no ensombrecer el método `is_paused()`, lo que dispararía `SHADOWED_VARIABLE`.) No gestiona escenas de campaña concretas. | Fase 1 (versión mínima: solo pausa) |
+| `GameManager` | Estado global de juego (en juego / pausado): `set_paused(paused: bool)`, `is_paused() -> bool`, señal `pause_changed(paused: bool)`. (El parámetro se llama `paused` y no `is_paused` para no ensombrecer el método `is_paused()`, lo que dispararía `SHADOWED_VARIABLE`.) No gestiona escenas de campaña concretas. Gobierna también el cierre: desactiva `auto_accept_quit` y, ante `NOTIFICATION_WM_CLOSE_REQUEST`, `request_quit(exit_code: int = 0)` detiene todos los reproductores de audio (`stop_audio_in(root: Node) -> int`), espera 100 ms de tiempo real y sale. En 4.7.2, salir con un Ogg sonando deja la reproducción sin liberar y el motor imprime un error. | Fase 1 (versión mínima: solo pausa); cierre ordenado en Fase 4 |
 | `AudioManager` | Buses, reproducción de efectos y ambiente, volumen | Fase 2 (primer sonido: quero) |
 | `GraphicsSettings` | Perfil gráfico activo, aplicación de ajustes de `Viewport`/`RenderingServer`, señal `profile_changed` | Fase 3 (ver §6 y docs/08 §2) |
 | `SaveManager` | Serialización del estado | Cuando exista estado que guardar (posterior a Fase 3) |
