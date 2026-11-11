@@ -87,11 +87,14 @@ func test_model_slot() -> bool:
 	tree.root.add_child(world)
 	var slots: Array[Node] = world.find_children("*", "ModelSlot", true, false)
 	var by_parent: Dictionary[String, int] = {"house": 0, "npc": 0, "object": 0, "loom": 0}
+	var props: int = 0
 	for node: Node in slots:
 		var slot: ModelSlot = node as ModelSlot
 		var parent: Node = slot.get_parent()
 		var actor: Node = parent.get_parent()
-		if parent.is_in_group("houses"):
+		if parent.is_in_group("houses") and String(slot.name).begins_with("Prop"):
+			props += 1
+		elif parent.is_in_group("houses"):
 			by_parent["house"] += 1
 		elif actor != null and actor.is_in_group("npcs"):
 			# El hueco del personaje cuelga de su cuerpo para heredar el
@@ -105,6 +108,8 @@ func test_model_slot() -> bool:
 		for path: String in slot.model_paths:
 			ok = ok and AssetValidation.validate_file_name(path.get_file()).is_empty()
 	ok = ok and by_parent["house"] == 8 and by_parent["npc"] == 9
+	# Props junto a las casas: cántaros y leña (PCH-019 y PCH-020).
+	ok = ok and props >= 8
 	ok = ok and _vertex_colors_enabled()
 	ok = ok and by_parent["object"] == 3 and by_parent["loom"] == 1
 	world.free()

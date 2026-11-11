@@ -12,6 +12,8 @@ extends Node3D
 ## Balanceo de piernas al caminar (ADR-0013): sin rig, el modelo trae las
 ## piernas como nodos aparte y el personaje las gira sobre su eje X.
 const LEG_SWING_DEGREES: float = 24.0
+## Los brazos acompañan en sentido contrario a la pierna de su lado.
+const ARM_SWING_RATIO: float = 0.7
 ## Metros recorridos en medio ciclo de paso.
 const STRIDE_LENGTH: float = 0.75
 
@@ -22,6 +24,7 @@ var target: Vector3 = Vector3.ZERO
 var moving: bool = false
 var _idle_tween: Tween = null
 var _legs: Array[Node3D] = []
+var _arms: Array[Node3D] = []
 var _stride_phase: float = 0.0
 
 
@@ -51,6 +54,20 @@ func set_legs(left: Node3D, right: Node3D) -> void:
 		_legs.append(left)
 		_legs.append(right)
 	_apply_legs()
+
+
+## Asigna los brazos del modelo, del mismo lado que [method set_legs].
+func set_arms(left: Node3D, right: Node3D) -> void:
+	_arms.clear()
+	if left != null and right != null:
+		_arms.append(left)
+		_arms.append(right)
+	_apply_legs()
+
+
+## Ángulo actual del brazo izquierdo, en grados (para las pruebas).
+func left_arm_angle() -> float:
+	return rad_to_deg(_arms[0].rotation.x) if not _arms.is_empty() else 0.0
 
 
 ## Indica si el personaje tiene piernas que balancear.
@@ -97,11 +114,13 @@ func advance(delta: float) -> bool:
 
 
 func _apply_legs() -> void:
-	if _legs.is_empty():
-		return
 	var angle: float = deg_to_rad(LEG_SWING_DEGREES) * sin(_stride_phase)
-	_legs[0].rotation.x = angle
-	_legs[1].rotation.x = -angle
+	if not _legs.is_empty():
+		_legs[0].rotation.x = angle
+		_legs[1].rotation.x = -angle
+	if not _arms.is_empty():
+		_arms[0].rotation.x = -angle * ARM_SWING_RATIO
+		_arms[1].rotation.x = angle * ARM_SWING_RATIO
 
 
 ## Distancia horizontal al punto indicado.

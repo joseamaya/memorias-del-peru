@@ -67,13 +67,15 @@ func test_npc_talk_and_wander() -> bool:
 	var neighbor: NpcActor = world.get_node("Llacta/NPCs/Habitante1") as NpcActor
 	var start: Vector3 = neighbor.global_position
 	var max_swing: float = 0.0
+	var max_arm: float = 0.0
 	ok = ok and neighbor.has_legs()
 	for i: int in range(40):
 		event.step(0.25)
 		max_swing = maxf(max_swing, absf(neighbor.left_leg_angle()))
+		max_arm = maxf(max_arm, absf(neighbor.left_arm_angle()))
 	ok = ok and neighbor.global_position.distance_to(start) > 1.0
 	# Al caminar balancea las piernas (ADR-0013).
-	ok = ok and max_swing > 10.0
+	ok = ok and max_swing > 10.0 and max_arm > 7.0
 	ok = ok and event.phase == MessengerEvent.Phase.IDLE
 
 	# Hablar con un vecino lo detiene un rato.

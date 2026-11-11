@@ -33,9 +33,9 @@ const ICHU_JITTER: float = 0.45
 const ICHU_INNER_RADIUS: float = 15.0
 const ICHU_FULL_RADIUS: float = 30.0
 const ICHU_MIN_DENSITY: float = 0.25
-## En la roca de la cresta, la mitad de matas.
+## En la roca de la cresta, algo menos de matas que en el campo.
 const ICHU_ROCK_HEIGHT: float = 3.0
-const ICHU_ROCK_FACTOR: float = 0.5
+const ICHU_ROCK_FACTOR: float = 0.85
 const ICHU_SCALE_MIN: float = 0.75
 const ICHU_SCALE_MAX: float = 1.35
 ## Las matas se hunden un poco para que la base no flote en la pendiente.

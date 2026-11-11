@@ -1,3 +1,4 @@
+class_name MundoBase
 extends Node3D
 ## Mundo base de la campaña 01.
 ##
@@ -17,6 +18,15 @@ const RIDGE_HEIGHT: float = 11.0
 ## Paso abierto en la cresta norte, por donde llega el mensajero.
 const PASS_HALF_WIDTH: float = 5.0
 const PASS_EDGE: float = 12.0
+## Lomas suaves fuera del núcleo de la llacta: empiezan a RELIEF_START m del
+## centro y no tocan las terrazas ni los caminos, que siguen a cota 0.
+const RELIEF_AMPLITUDE: float = 1.3
+const RELIEF_START: float = 30.0
+const RELIEF_FULL: float = 42.0
+const TERRACE_ZONE: Rect2 = Rect2(26.0, -19.0, 32.0, 38.0)
+const RELIEF_EDGE: float = 8.0
+const PATH_CLEAR: float = 4.0
+const PATH_BLEND: float = 9.0
 const GRASS_COLOR: Color = Color(0.35, 0.4, 0.22, 1.0)
 const ROCK_COLOR: Color = Color(0.36, 0.33, 0.28, 1.0)
 const ROCK_FROM_HEIGHT: float = 1.0
@@ -46,6 +56,12 @@ const MODEL_QUERO: String = "pch_quero.glb"
 const MODEL_PUTUTU: String = "pch_pututu.glb"
 const MODEL_OFFERING: String = "pch_offering_shrine.glb"
 const MODEL_LOOM: String = "pch_loom.glb"
+## Props junto a la puerta de las viviendas (PCH-019 y PCH-020).
+const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
+const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
+## Fondo de las viviendas A y B, para dejar los props delante del muro.
+const HOUSE_DEPTHS: Array[float] = [5.0, 4.6]
+const PROP_WALL_GAP: float = 0.45
 const MODEL_COMMONER: String = "pch_npc_commoner.glb"
 const MODEL_AUTHORITY: String = "pch_npc_authority.glb"
 ## Base de cada malla de bloqueo de los objetos (su origen está en el centro).
@@ -205,7 +221,25 @@ func _height_at(x: float, z: float) -> float:
 	var distance: float = Vector2(x, z).length()
 	var blend: float = clampf((distance - PLATEAU_RADIUS) / 15.0, 0.0, 1.0)
 	var height: float = 0.7 * sin(x * 0.06) * cos(z * 0.07) + 0.3 * sin((x + z) * 0.11)
-	return height * blend + ridge_height_at(x, z)
+	return height * blend + relief_height_at(x, z) + ridge_height_at(x, z)
+
+
+## Lomas suaves del campo, cero en la plaza, las casas, las terrazas y los
+## caminos (alcance §3).
+static func relief_height_at(x: float, z: float) -> float:
+	var mask: float = smoothstep(RELIEF_START, RELIEF_FULL, Vector2(x, z).length())
+	if mask <= 0.0:
+		return 0.0
+	var outside_x: float = maxf(maxf(TERRACE_ZONE.position.x - x, x - TERRACE_ZONE.end.x), 0.0)
+	var outside_z: float = maxf(maxf(TERRACE_ZONE.position.y - z, z - TERRACE_ZONE.end.y), 0.0)
+	mask *= smoothstep(0.0, RELIEF_EDGE, maxf(outside_x, outside_z))
+	# Caminos norte y sur (todo el eje) y caminos este y oeste.
+	mask *= smoothstep(PATH_CLEAR, PATH_BLEND, absf(x))
+	mask *= maxf(smoothstep(PATH_CLEAR, PATH_BLEND, absf(z)), smoothstep(36.0, 42.0, absf(x)))
+	if mask <= 0.0:
+		return 0.0
+	var wave: float = 0.6 * sin(x * 0.09 + 1.3) * cos(z * 0.08 - 0.4) + 0.4 * sin((x - z) * 0.15 + 0.7)
+	return RELIEF_AMPLITUDE * mask * (wave + 0.35)
 
 
 ## Altura añadida por la cresta del borde en (x, z); cero en el interior y en
@@ -683,6 +717,33 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 			collisions.append(child)
 	var files: Array[String] = [MODEL_HOUSES[index % MODEL_HOUSES.size()]]
 	_attach_model(root, "ModelSlot", Vector3.ZERO, files, blockout, collisions)
+	_add_house_props(root, index)
+
+
+## Cántaros y leña delante de la vivienda, a los lados de la puerta. El frente
+## mira a −Z local; la puerta de la variante B está desplazada hacia −X.
+func _add_house_props(root: Node3D, index: int) -> void:
+	var variant: int = index % MODEL_HOUSES.size()
+	var front: float = -HOUSE_DEPTHS[variant] * 0.5 - PROP_WALL_GAP
+	var left_x: float = -2.4 if variant == 1 else -2.1
+	var props: Array[Array] = []
+	match index % 3:
+		0:
+			props = [[MODEL_PROP_JAR, Vector3(1.8, 0.0, front)], [MODEL_PROP_JAR, Vector3(2.3, 0.0, front - 0.25)],
+				[MODEL_PROP_FIREWOOD, Vector3(left_x, 0.0, front)]]
+		1:
+			props = [[MODEL_PROP_FIREWOOD, Vector3(2.0, 0.0, front)], [MODEL_PROP_JAR, Vector3(left_x - 0.2, 0.0, front)]]
+		_:
+			props = [[MODEL_PROP_JAR, Vector3(2.0, 0.0, front)]]
+	var no_blockout: Array[Node3D] = []
+	var no_collisions: Array[Node] = []
+	for prop_index: int in range(props.size()):
+		var entry: Array = props[prop_index]
+		var file: String = entry[0]
+		var at: Vector3 = entry[1]
+		var prop_files: Array[String] = [file]
+		var slot: ModelSlot = _attach_model(root, "Prop%d" % prop_index, at, prop_files, no_blockout, no_collisions)
+		slot.rotation.y = 0.35 * float((index + prop_index) % 3 - 1)
 
 
 ## Archivos candidatos para un personaje: primero el de su papel
@@ -776,4 +837,5 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	slot.use_model_collision = false
 	if slot.model != null:
 		actor.set_legs(slot.model.find_child("LegL", true, false) as Node3D, slot.model.find_child("LegR", true, false) as Node3D)
+		actor.set_arms(slot.model.find_child("ArmL", true, false) as Node3D, slot.model.find_child("ArmR", true, false) as Node3D)
 	return actor

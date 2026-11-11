@@ -208,6 +208,26 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - Sin retratos «auténticos»; variantes de color y de tocado para distinguir oficios; sin prendas ni elementos coloniales. La apariencia es interpretación declarada.
 - Estado de verificación: **verificado (R)** por el responsable del proyecto el 2026-11-11: se indican las piezas A en que se basa y qué se infiere.
 
+
+### PCH-019 — Cerámica doméstica (cántaros)
+- Tipo: objeto
+- Clasificación: A (estilo Killke del Cusco) / R (forma y tamaño de uso doméstico)
+- Uso en el juego: cántaros junto a la puerta de las viviendas; modelo `pch_prop_jar.glb` (R: dos asas, cuerpo globular, cuello cóncavo, fondo crema con bandas rojas bordeadas de negro y triángulos negros colgando del borde)
+- Fuentes (identificadas; pendiente de verificación con la edición a la vista):
+  - Brian S. Bauer y Charles Stanish, *Killke and Killke-related pottery from Cuzco, Peru, in the Field Museum of Natural History*, Fieldiana Anthropology, n. s., 15 (Field Museum, 1990), en archive.org: `killkekillkerela15baue`. Describe 17 vasijas Killke y relacionadas del valle del Cusco, el estilo inmediatamente anterior al inca clásico: jarras de una o dos asas con cuello cóncavo y borde algo abierto, ollas de dos asas, decoración negra sobre crema con rombos reticulados, triángulos colgantes y bandas rojas bordeadas de negro.
+- Discrepancias entre fuentes: —
+- Notas de representación: se elige el estilo Killke, y no el inca imperial (aríbalos), porque la llacta es anterior a la expansión. Las piezas del estudio son vasijas finas de unos 8 a 18 cm; el cántaro del juego, de 35 cm y de uso doméstico, es una reconstrucción (R).
+- Estado de verificación: pendiente
+
+### PCH-020 — Leña de queñua
+- Tipo: objeto / recurso
+- Clasificación: R (a partir de A)
+- Uso en el juego: haces de leña junto a la puerta de las viviendas; modelo `pch_prop_firewood.glb` (R: ramas de corteza rojiza atadas con cuerda)
+- Fuentes: B. B. Simpson, *A revision of the genus Polylepis*, Smithsonian Contributions to Botany 43 (1979), p. 52 (ver PCH-013, verificada): la madera de *Polylepis incana* se usa como leña, entre otros usos.
+- Discrepancias entre fuentes: —
+- Notas de representación: la fuente documenta el uso actual de la madera de queñua como leña. Que una casa del siglo XV guardara un haz atado junto a la puerta es reconstrucción (R).
+- Estado de verificación: pendiente
+
 ---
 
 ## Fuera del vertical slice

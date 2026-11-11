@@ -87,6 +87,7 @@ Reglas:
 - **Ruta baja:** camino sur → viviendas oeste → telar → plaza.
 - **Ruta alta:** camino sur → terrazas este → rampas → mirador → plaza.
 - **Punto final:** plaza; la comitiva sale por el camino norte.
+- **Campo:** lomas suaves de hasta 1,3 m fuera del núcleo de la llacta, a partir de unos 30 m del centro, que no tocan la plaza, las casas, las terrazas ni los caminos.
 - **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío. En el bloqueo, el terreno sube ~11 m entre 61 y 73 m con una pendiente no transitable y deja un paso abierto en el camino norte; los muros a 70 m quedan como respaldo.
 - **Viviendas:** 8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo, agrupados al oeste (3), al este (3) y al norte (2). **Ninguna casa ocupa el eje de un camino**: los cuatro caminos quedan libres.
 - **Plaza:** tierra apisonada, con el pututu, el quero y el adoratorio de ofrenda.
@@ -119,7 +120,7 @@ Reglas:
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
 
-**Modelos sin rig (v3.3, matizado en v3.5).** Los personajes no tienen rig: se desplazan y se giran, y desde la v3.5 balancean las piernas al caminar (nodos `LegL` y `LegR` del modelo). Brazos, tronco y cabeza siguen rígidos. El leve balanceo de reposo del bloqueo no pasa al modelo. Las presencias de la tabla que piden gestos (tejer, girar la cabeza, hablar con gestos) quedan sin animación propia y se sostienen con la orientación, la posición y los subtítulos. Si el piloto muestra que el desplazamiento sin animación distrae o se lee mal, se añadirá el rig con un ADR.
+**Modelos sin rig (v3.3, matizado en v3.5).** Los personajes no tienen rig: se desplazan y se giran, y desde la v3.5 balancean las piernas y los brazos al caminar (nodos `LegL`, `LegR`, `ArmL` y `ArmR` del modelo). Tronco y cabeza siguen rígidos. El leve balanceo de reposo del bloqueo no pasa al modelo. Las presencias de la tabla que piden gestos (tejer, girar la cabeza, hablar con gestos) quedan sin animación propia y se sostienen con la orientación, la posición y los subtítulos. Si el piloto muestra que el desplazamiento sin animación distrae o se lee mal, se añadirá el rig con un ADR.
 
 **Conversaciones y paseo (v3.4).** Antes de la noticia, la tejedora, el agricultor, el curaca y los tres vecinos tienen «Hablar»: cada uno dice una sola frase, sin opciones, y se gira hacia el jugador. Los tres vecinos pasean despacio entre la plaza y las casas, y se detienen y se vuelven hacia el mensajero cuando llega.
 
@@ -141,6 +142,8 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` sin rig, con piernas aparte para el balanceo (v3.5) | Blender | Propia | PCH-018 |
 | Variante de curaca y hombres principales | `.glb` | Blender, variante del cuerpo base | Propia | PCH-017 |
 | Ichu y queñua | Mallas o billboards | Blender / procedural | Propia | PCH-013 |
+| Cántaros de estilo Killke | `.glb` | Blender (generador) | Propia | PCH-019 |
+| Haces de leña de queñua | `.glb` | Blender (generador) | Propia | PCH-020 |
 | Llama o alpaca (opcional; no incluida, fuera del slice desde el 2026-11-11) | `.glb` | Blender | Propia | PCH-014 |
 
 ### 6.2 Materiales y texturas
@@ -219,6 +222,7 @@ Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo 
 | Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies | Generados, estáticos (R) |
 | Quero, pututu, adoratorio | `pch_quero.glb`, `pch_pututu.glb`, `pch_offering_shrine.glb` | Base del objeto | Generados (R) |
 | Telar (sin bloqueo) | `pch_loom.glb` | Extremo de la tejedora; el telar se extiende hacia +Z de Godot hasta la estaca | Generado (R) |
+| Props de las viviendas (sin bloqueo) | `pch_prop_jar.glb`, `pch_prop_firewood.glb` | Base; delante del muro frontal, a los lados de la puerta | Generados (R) |
 | Vegetación (sin bloqueo) | `pch_ichu_a.glb`, `pch_ichu_b.glb`; `pch_quenua_a.glb`, `pch_quenua_b.glb` | Base de la mata o del tronco; un único objeto por archivo, porque se repite con `MultiMesh` | Generados (R) |
 
 La vegetación la reparte `scripts/world/vegetation.gd` (`LlactaVegetation`): unas 3 100 matas de ichu en bloques de 22 m que se ocultan a 50 m y no proyectan sombra, y 24 queñuas en cuatro bosquecillos junto a la cresta, con colisión en el tronco. El reparto es determinista y deja libres la plaza, los caminos, las casas, las terrazas y el rincón de la tejedora.
@@ -258,6 +262,8 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 | PCH-016 | Plaza y caminos | A / R | pendiente |
 | PCH-017 | Curaca y hombres principales | H / R | pendiente |
 | PCH-018 | Vestimenta y apariencia del habitante común | R | verificado (R), 2026-11-11 |
+| PCH-019 | Cerámica doméstica (cántaros) | A / R | pendiente |
+| PCH-020 | Leña de queñua | R | pendiente |
 
 “Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las fichas pendientes están identificadas con sus fuentes, pero les falta edición, página o publicación comprobada: las páginas de la traducción de 2007 se tomaron de su índice publicado, no de leer el libro, y por eso no cuentan.
 

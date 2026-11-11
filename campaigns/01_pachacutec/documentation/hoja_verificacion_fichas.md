@@ -86,6 +86,12 @@ Verificado por: responsable del proyecto · Fecha: 2026-11-11
 
 Verificado por: responsable del proyecto · Fecha: 2026-11-11
 
+### PCH-019 — Cerámica doméstica (A / R) y PCH-020 — Leña de queñua (R)
+- [ ] Bauer y Stanish (1990), *Killke and Killke-related pottery from Cuzco*, en abierto: https://archive.org/details/killkekillkerela15baue. Confirmar las formas (jarras de asa, ollas de dos asas, cuello cóncavo) y la decoración negra sobre crema con bandas rojas, y anotar las páginas o figuras.
+- [ ] Simpson (1979), p. 52 (el mismo enlace de PCH-013): confirmar el uso de *Polylepis incana* como leña.
+
+Verificado por: ________ Fecha: ________
+
 ## 3. Solo en biblioteca
 
 Para una visita a biblioteca. En estas obras, un capítulo o una página bastan para cerrar la ficha.

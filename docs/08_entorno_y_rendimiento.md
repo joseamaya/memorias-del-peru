@@ -181,6 +181,17 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con terrazas de pirka, props y relieve (Fase 4, provisional, 2026-11-11)
+
+Mismo comando y condiciones, con la carga del sistema entre 1,2 y 2,5. La escena añade los muros de pirka de las terrazas, la tierra con surcos, cántaros y leña junto a las casas, el relieve del campo, más ichu en la cresta, la luz ambiental más alta y el balanceo de piernas y brazos. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 217,1 (216,8–218,4) | 166,7 | 4,61 ms | 6 ms | 62 | 117,0 MB |
+| Medio | 77,1 (74,5–80,2) | 62,5 (58,8–71,4) | 12,98 ms | 14–17 ms | 56–60 | 190,1 MB |
+
+Respecto a la medición con mallas agrupadas, el perfil Medio baja unos 4 FPS y la memoria de vídeo sube unos 23 MB. El objetivo vinculante y los 60 FPS de media se siguen cumpliendo.
+
 ### Medición de la llacta completa (Fase 4, provisional)
 
 Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m dentro de la plaza, corriendo, estamina restaurada, 3 s de calentamiento y 8 s de medida, sin vsync y con `Engine.max_fps = 0`. La escena incluye plaza, 8 viviendas agrupadas, terrazas con rampas, mirador, límites, 3 interactuables, 9 NPC y ambiente de viento y aves. **El evento no arranca durante la medición**: el reloj de llegada es de 240 s y la medida dura unos 25 s.

@@ -21,7 +21,7 @@ Convenciones (alcance §7 y §7.1):
   colisión convexa al importar y no se dibujan.
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
-(PCH-004, 007, 009, 010, 011, 012, 013, 017 y 018); ninguna forma concreta está documentada como
+(PCH-004, 007, 009, 010, 011, 012, 013, 017, 018, 019 y 020); ninguna forma concreta está documentada como
 hecho.
 """
 
@@ -66,6 +66,10 @@ PALETTE = {
 	"wool_cream": ((0.86, 0.80, 0.66), 0.9),
 	"wool_green": ((0.22, 0.36, 0.26), 0.9),
 	"wool_warp": ((0.62, 0.54, 0.42), 0.9),
+	"clay_buff": ((0.78, 0.64, 0.47), 0.8),
+	"clay_red": ((0.58, 0.2, 0.12), 0.8),
+	"clay_black": ((0.13, 0.1, 0.08), 0.8),
+	"clay_inside": ((0.25, 0.17, 0.12), 0.9),
 	"ichu_base": ((0.52, 0.50, 0.30), 1.0),
 	"ichu_tip": ((0.80, 0.70, 0.44), 1.0),
 	"quenua_bark": ((0.50, 0.26, 0.17), 0.9),
@@ -753,6 +757,61 @@ def build_quenua(rng):
 	builder.to_object("quenua", collection)
 
 
+# --- Props de las viviendas (PCH-019 y PCH-020) ----------------------------
+
+def build_jar(rng):
+	"""Cántaro de dos asas inspirado en la cerámica Killke del Cusco (PCH-019):
+	cuerpo globular, cuello cóncavo, borde algo abierto, fondo crema con bandas
+	rojas bordeadas de negro y triángulos negros colgando del borde. La forma y
+	el tamaño de uso doméstico son reconstrucción (R)."""
+	collection = bpy.context.scene.collection
+	b = MeshBuilder()
+	points = [(0.0, 0.05), (0.04, 0.1), (0.13, 0.15), (0.22, 0.13), (0.27, 0.075), (0.31, 0.068), (0.35, 0.085)]
+	profile = [(r, z) for r, z in _garment_profile([(z, r) for z, r in points], 18)]
+	segments = 16
+
+	def jar_mat(seg, ring):
+		if ring in (9, 12):
+			return "clay_black"
+		if ring in (10, 11):
+			return "clay_red"
+		if ring >= 15 and (seg % 4 == 0 or (seg % 4 == 1 and ring >= 16)):
+			return "clay_black"
+		return "clay_buff"
+
+	b.lathe(profile, segments, jar_mat, cap_bottom=True)
+	# Boca oscura.
+	b.lathe([(0.0, 0.335), (0.08, 0.335)], segments, lambda s_, r: "clay_inside", cap_bottom=False)
+	# Asas a los lados del cuerpo.
+	for side in (-1.0, 1.0):
+		points3 = [Vector((side * 0.14, 0.0, 0.18)), Vector((side * 0.185, 0.0, 0.15)), Vector((side * 0.15, 0.0, 0.11))]
+		b.tube(points3, [0.016, 0.016, 0.016], 5, lambda r: "clay_buff")
+	b.to_object("pch_prop_jar", collection)
+
+
+def build_firewood(rng):
+	"""Haz de leña de queñua apilada junto a la casa (PCH-020, R a partir de los
+	usos de Polylepis en PCH-013)."""
+	collection = bpy.context.scene.collection
+	b = MeshBuilder()
+	rows = [(4, 0.0), (3, 1.0), (2, 2.0)]
+	for count, row in rows:
+		for i in range(count):
+			radius = rng.uniform(0.035, 0.05)
+			length = rng.uniform(0.8, 1.0)
+			y = (i - (count - 1) * 0.5) * 0.1
+			z = radius + row * 0.085
+			x0 = -length * 0.5 + rng.uniform(-0.05, 0.05)
+			bark = "quenua_bark" if rng.random() < 0.6 else "quenua_peel"
+			b.tube([Vector((x0, y, z)), Vector((x0 + length * 0.5, y + rng.uniform(-0.02, 0.02), z)), Vector((x0 + length, y, z))],
+				[radius, radius * 0.95, radius * 0.85], 6, lambda r, m=bark: m)
+	# Dos amarres de cuerda alrededor del haz.
+	for x in (-0.25, 0.25):
+		loop = [Vector((x, math.cos(2 * math.pi * i / 10) * 0.22, 0.13 + math.sin(2 * math.pi * i / 10) * 0.15)) for i in range(11)]
+		b.tube(loop, [0.012] * len(loop), 5, lambda r: "rope")
+	b.to_object("pch_prop_firewood", collection)
+
+
 # --- Personajes (PCH-011, 017 y 018) ---------------------------------------
 
 def _garment_profile(points, rows):
@@ -838,15 +897,20 @@ def build_person(rng, spec):
 		b.box(v(0.0, -0.11, 1.355), (0.42 * k, 0.1 * k, 0.03 * k), spec["manto"])
 		b.blob(v(0.0, 0.15, 1.33), (0.04 * k, 0.03 * k, 0.035 * k), spec["manto"], rng, rows=3, segments=6)
 
-	# Brazos y manos.
+	# Brazos y manos: un objeto por brazo («ArmL» del lado +X, como «LegL»),
+	# con el origen en el hombro, para que el juego los balancee al caminar.
 	pose = spec.get("arms", (0.0, 0.0))
 	for index, side in enumerate((-1.0, 1.0)):
 		forward = pose[index]
+		arm = MeshBuilder()
 		shoulder = v(0.235 * side, 0.0, 1.31)
 		elbow = v(0.27 * side, 0.03 + forward * 0.5, 1.05)
 		wrist = v(0.26 * side, 0.06 + forward, 0.83 + forward * 0.25)
-		b.tube([shoulder, elbow, wrist], [0.05 * k, 0.042 * k, 0.034 * k], 6, lambda r: "skin")
-		b.blob(wrist + v(0.0, 0.01, -0.04), (0.035 * k, 0.03 * k, 0.05 * k), "skin", rng, rows=3, segments=6)
+		arm.tube([shoulder, elbow, wrist], [0.05 * k, 0.042 * k, 0.034 * k], 6, lambda r: "skin")
+		arm.blob(wrist + v(0.0, 0.01, -0.04), (0.035 * k, 0.03 * k, 0.05 * k), "skin", rng, rows=3, segments=6)
+		arm_obj = arm.to_object("ArmL" if side > 0.0 else "ArmR", collection)
+		arm_obj.data.transform(Matrix.Translation(-shoulder))
+		arm_obj.location = shoulder
 
 	# Cuello y cabeza: pelo detrás y encima, cara al frente.
 	b.tube([v(0.0, 0.0, 1.38), v(0.0, 0.005, 1.45)], [0.045 * k, 0.045 * k], 6, lambda r: "skin")
@@ -937,6 +1001,8 @@ MODELS = {
 	"pch_pututu": build_pututu,
 	"pch_offering_shrine": build_offering_shrine,
 	"pch_loom": build_loom,
+	"pch_prop_jar": build_jar,
+	"pch_prop_firewood": build_firewood,
 	"pch_ichu_a": build_ichu_a,
 	"pch_ichu_b": build_ichu_b,
 	"pch_quenua_a": build_quenua,
@@ -965,9 +1031,9 @@ def scene_bounds():
 def join_visible(name):
 	"""Une en un solo objeto todas las mallas visibles del modelo (las de
 	colisión se quedan aparte) para que Godot las dibuje con una llamada."""
-	# Las piernas de los personajes se quedan aparte: el juego las mueve.
+	# Piernas y brazos de los personajes se quedan aparte: el juego los mueve.
 	visible = [o for o in bpy.context.scene.objects
-		if o.type == "MESH" and not o.name.endswith("-convcolonly") and not o.name.startswith("Leg")]
+		if o.type == "MESH" and not o.name.endswith("-convcolonly") and not o.name.startswith(("Leg", "Arm"))]
 	if len(visible) > 1:
 		for obj in bpy.context.scene.objects:
 			obj.select_set(obj in visible)
