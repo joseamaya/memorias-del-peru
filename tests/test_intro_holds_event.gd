@@ -49,6 +49,9 @@ func test_intro_holds_event_clock() -> bool:
 		world.free()
 		return false
 	ok = ok and director.get_camera().is_current() and not player_camera.is_current()
+	# Música (ADR-0027): suena durante las tarjetas.
+	var music: AudioStreamPlayer = world.get_intro_music()
+	ok = ok and music != null and music.stream != null and music.playing
 	ok = ok and intro.is_card_opaque(0) and not intro.is_card_opaque(MundoBase.INTRO_SHOT_ANDES)
 	ok = ok and intro.get_node_or_null("Overlays") != null and intro.get_node("Overlays").get_child(0) is IntroMap
 	ok = ok and player.process_mode == Node.PROCESS_MODE_DISABLED
@@ -66,6 +69,11 @@ func test_intro_holds_event_clock() -> bool:
 	# La última toma termina en los ojos del jugador y su cámara vuelve a mandar.
 	ok = ok and player_camera.is_current() and not director.get_camera().is_current()
 	ok = ok and director.get_camera().global_transform.origin.distance_to(player_camera.global_transform.origin) < 0.01
+	# La música se funde al tomar el control y se detiene.
+	world.advance_intro_music(MundoBase.INTRO_MUSIC_FADE * 0.5)
+	ok = ok and music.playing and music.volume_db < MundoBase.INTRO_MUSIC_VOLUME_DB - 3.0
+	world.advance_intro_music(MundoBase.INTRO_MUSIC_FADE)
+	ok = ok and not music.playing
 	world.free()
 	return ok
 

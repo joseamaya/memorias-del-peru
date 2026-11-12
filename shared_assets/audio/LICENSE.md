@@ -12,6 +12,7 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `quero_bebida.wav` | Interacción del quero | OwlStorm | Freesound n.º 320139, «Drink Sip and Swallow»: https://freesound.org/people/OwlStorm/sounds/320139/ | CC0 1.0 | 2026-11-11 |
 | `ofrenda_grano.wav` | Interacción de la ofrenda | lucasfuchs | Freesound n.º 556974, «Pouring grain or seeds»: https://freesound.org/people/lucasfuchs/sounds/556974/ | CC0 1.0 | 2026-11-11 |
 | `telar_golpe.wav` | Golpe del batán de la tejedora en el telar (3D, ADR-0015) | Autoría propia del proyecto | Síntesis con Python y NumPy: golpe sordo de 95–245 Hz con caída de tono, ruido filtrado en dos resonancias de madera (820 y 1450 Hz) y un segundo golpe más débil a 75 ms | Propia | 2026-11-12 |
+| `musica_intro_quena.ogg` | Música de la introducción (ADR-0027) | Composición propia con notas de «quena scale.wav», de MarleneAyni | Notas: Freesound n.º 569392, «quena scale.wav» (escala de sol en dos octavas, quena de caña): https://freesound.org/people/MarleneAyni/sounds/569392/. Bordón y tinya: síntesis propia | CC0 1.0 (notas) / Propia (composición) | 2026-11-12 |
 
 Los originales se descargaron con la cuenta del responsable del proyecto el 2026-11-11 y **no se versionan**: son WAV de 48–96 kHz que pesan hasta 66 MB. Lo que entra en el juego es una versión procesada con ffmpeg y Python:
 
@@ -32,3 +33,13 @@ Sustituyen a los placeholders sintéticos anteriores (`pututu_propio.wav`, `ofre
 - No se usa material de licencia dudosa ni descargas que exijan cuenta sin permiso del responsable del proyecto.
 - Cada archivo importado por Godot conserva su `.import` versionado.
 - Las grabaciones de Freesound son **sustitutos declarados**: solo el viento tiene origen andino conocido (Atacama, Chile); del resto no consta el lugar, y la caracola es de tipo asiático porque no hay ningún pututu andino en CC0. Para la versión definitiva se prefieren grabaciones propias en la sierra.
+
+## Música de la introducción
+
+`musica_intro_quena.ogg` (44 s, estéreo, 44,1 kHz) se genera con `componer_musica_intro.py`, que se versiona junto a ella. La grabación original de la quena se descargó con la cuenta del responsable del proyecto el 2026-11-12 (WAV de 60 s, SHA-256 `d825301f…`) y **no se versiona**.
+
+- Se toman 6 notas de la escala (re5, mi5, sol5, la5, si5 y re6) con su ataque natural, igualadas en sonoridad y con un final suave, y se ordenan en cinco frases lentas sobre la pentatónica de mi (mi, sol, la, si, re).
+- Bordón sintetizado en mi3 y si3, con aire filtrado y una respiración lenta. Una tinya sintetizada (golpe sordo de 150 a 55 Hz) marca un pulso suave entre los 12 y los 34 s.
+- Reverberación sintética de 2,4 s, nivel de unos −22 dB RMS y final fundido en los últimos 5 s.
+- Solo instrumentos de tipo prehispánico (quena, bordón de aliento y tambor): sin charango, guitarra, violín ni arpa (docs/07 §4).
+

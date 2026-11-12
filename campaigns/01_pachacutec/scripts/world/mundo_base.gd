@@ -115,6 +115,11 @@ const INTRO_OPAQUE: Array[bool] = [true, false, false, false]
 const INTRO_SHOT_ANDES: int = 1
 const INTRO_MAP_CARD: int = 2
 const INTRO_SHOT_LLACTA: int = 3
+## Música de la introducción (ADR-0027): composición propia con notas de quena
+## CC0; se funde al tomar el control y deja solo el viento.
+const INTRO_MUSIC_PATH: String = "res://shared_assets/audio/musica_intro_quena.ogg"
+const INTRO_MUSIC_VOLUME_DB: float = -6.0
+const INTRO_MUSIC_FADE: float = 3.0
 ## Toma de los Andes: desde la cresta del suroeste, mirando al otro lado del
 ## valle, con un giro lento.
 const ANDES_FROM: Vector3 = Vector3(-30.0, 26.0, 66.0)
@@ -176,6 +181,8 @@ enum IntroMode { AUTO, ALWAYS, NEVER }
 
 var _intro: IntroCards = null
 var _director: IntroDirector = null
+var _intro_music: AudioStreamPlayer = null
+var _music_fade_remaining: float = -1.0
 var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
 
@@ -232,6 +239,7 @@ func _start_intro() -> void:
 	_director.set_shot(INTRO_SHOT_ANDES, _shot(ANDES_FROM, ANDES_FROM_LOOK), _shot(ANDES_TO, ANDES_TO_LOOK))
 	_director.set_shot_to_player(INTRO_SHOT_LLACTA, _shot(LLACTA_FROM, LLACTA_FROM_LOOK))
 	_director.bind(_intro, player_camera)
+	_start_intro_music()
 	var texts: Array[String] = []
 	for key: StringName in INTRO_KEYS:
 		texts.append(tr(String(key)))
@@ -252,6 +260,8 @@ func get_intro_director() -> IntroDirector:
 
 func _on_intro_finished() -> void:
 	player.process_mode = Node.PROCESS_MODE_INHERIT
+	if _intro_music != null and _intro_music.playing:
+		_music_fade_remaining = INTRO_MUSIC_FADE
 	hud.show_hint(tr(String(CONTROLS_HINT_KEY)), CONTROLS_HINT_SECONDS)
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
@@ -260,6 +270,38 @@ func _on_intro_finished() -> void:
 
 func _process(delta: float) -> void:
 	advance_end_card(delta)
+	advance_intro_music(delta)
+
+
+## Música de la introducción, para las pruebas.
+func get_intro_music() -> AudioStreamPlayer:
+	return _intro_music
+
+
+## Funde la música de la introducción al tomar el control; pública para poder
+## probarla sin depender de los fotogramas.
+func advance_intro_music(delta: float) -> void:
+	if _intro_music == null or _music_fade_remaining < 0.0:
+		return
+	_music_fade_remaining -= delta
+	if _music_fade_remaining <= 0.0:
+		_music_fade_remaining = -1.0
+		_intro_music.stop()
+		return
+	var level: float = _music_fade_remaining / INTRO_MUSIC_FADE
+	_intro_music.volume_db = INTRO_MUSIC_VOLUME_DB + linear_to_db(maxf(level, 0.001))
+
+
+func _start_intro_music() -> void:
+	var stream: AudioStream = load(INTRO_MUSIC_PATH) as AudioStream
+	if stream == null:
+		return
+	_intro_music = AudioStreamPlayer.new()
+	_intro_music.name = "IntroMusic"
+	_intro_music.stream = stream
+	_intro_music.volume_db = INTRO_MUSIC_VOLUME_DB
+	add_child(_intro_music)
+	_intro_music.play()
 
 
 ## Cuenta atrás de la tarjeta de fin; pública para poder probarla.
