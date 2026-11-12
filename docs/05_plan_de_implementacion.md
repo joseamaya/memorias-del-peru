@@ -223,7 +223,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ### Criterios de aceptación
 
 - [ ] La experiencia puede jugarse de principio a fin sin bloqueos ni errores.
-- [ ] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR).
+- [x] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR). *(2026-11-12, inspección de `mundo_base.tscn` cargada y `demo_playthrough.gd` con `DEMO_OK`: espacio de 140 × 140 m dentro de los límites a ±70 m; 8 viviendas; 4 caminos y dos rutas, la baja por las viviendas del oeste y la alta por las terrazas, las rampas y el mirador; 3 interactuables de tipos distintos (quero, ofrenda y pututu) más «Hablar» en 6 personajes; 9 NPC, con la tejedora y el agricultor en su animación de trabajo; el evento del mensajero llega de principio a fin; ambiente de viento y sonido en las tres interacciones. La duración solo se mide en las sesiones de prueba, y queda en el criterio de las sesiones.)*
 - [ ] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo.
 - [ ] Sesiones de prueba con al menos 6 jugadores ajenos al desarrollo: duración mediana de 5–8 min (ADR-0009) y al menos 2/3 superan el cuestionario de comprensión (métrica 5).
 - [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
