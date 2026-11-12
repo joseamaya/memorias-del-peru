@@ -26,6 +26,16 @@ signal beat(animation: StringName)
 
 ## A partir de esta velocidad corre en lugar de caminar.
 const RUN_SPEED_THRESHOLD: float = 2.6
+## Arranque, frenada y giro de una persona (no de golpe): aceleración y
+## frenada en m/s², giro en grados por segundo, al caminar y al correr.
+const WALK_ACCELERATION: float = 2.0
+const RUN_ACCELERATION: float = 4.5
+const WALK_TURN_RATE: float = 260.0
+const RUN_TURN_RATE: float = 360.0
+const IDLE_TURN_RATE: float = 200.0
+## Por debajo de esta fracción de su velocidad, la animación no se frena más
+## (andar a cámara lenta se ve raro): mejor un paso algo más corto.
+const MIN_ANIMATION_RATE: float = 0.35
 ## Velocidad de desplazamiento de cada ciclo a velocidad de reproducción 1 y
 ## metros por paso, si el modelo no trae los suyos. Los personajes de
 ## `pch_people.py` (ADR-0016) traen los de su captura en los «extras» del
@@ -36,7 +46,12 @@ const STRIDE_LENGTH: float = 0.66
 const RUN_STRIDE_LENGTH: float = 1.1
 const EXTRAS_META: StringName = &"extras"
 const BLEND_SECONDS: float = 0.3
-const LOOPED_ANIMATIONS: Array[StringName] = [&"idle", &"walk", &"run", &"talk", &"tired", &"weave", &"work"]
+const LOOPED_ANIMATIONS: Array[StringName] = [&"idle", &"idle_b", &"walk", &"run", &"talk", &"tired", &"weave", &"work"]
+## Variantes del reposo «idle»: se alternan cada IDLE_SWITCH_MIN–MAX segundos.
+const IDLE_VARIANTS: Array[StringName] = [&"idle", &"idle_b"]
+const IDLE_SWITCH_MIN: float = 6.0
+const IDLE_SWITCH_MAX: float = 13.0
+const IDLE_SWITCH_BLEND: float = 0.8
 ## Mirada: distancia máxima, ángulo de giro del cuello y rapidez del cambio.
 const LOOK_RADIUS: float = 6.0
 const LOOK_YAW_LIMIT_DEGREES: float = 140.0
@@ -77,6 +92,16 @@ var _springs: SpringBoneSimulator3D = null
 var _perform_animation: StringName = &""
 var _perform_left: float = 0.0
 var _stride_distance: float = 0.0
+## Velocidad actual (sube y baja poco a poco hasta walk_speed).
+var _speed: float = 0.0
+## Orientación buscada en planta, en radianes; se alcanza poco a poco.
+var _target_yaw: float = 0.0
+var _turning: bool = false
+var _idle_switch_left: float = 0.0
+var _idle_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+## Punto al que mirar al llegar, si se pidió mirar algo mientras caminaba.
+var _arrival_face: Vector3 = Vector3.ZERO
+var _has_arrival_face: bool = false
 var _last_position: float = -1.0
 var _steps_player: AudioStreamPlayer3D = null
 var _step_streams: Array[AudioStream] = []
@@ -108,6 +133,8 @@ func set_model(model: Node3D) -> void:
 		return
 	_prepare_loops(_animation_player)
 	_read_rhythm(model)
+	_idle_rng.seed = hash(String(name))
+	_idle_switch_left = _idle_rng.randf_range(IDLE_SWITCH_MIN, IDLE_SWITCH_MAX)
 	if _idle_tween != null and _idle_tween.is_valid():
 		_idle_tween.kill()
 	body.position.y = 0.85
@@ -185,38 +212,83 @@ func perform(animation: StringName, seconds: float) -> void:
 ## Fija un destino. La orientación se actualiza al empezar a caminar.
 func walk_to(point: Vector3) -> void:
 	target = Vector3(point.x, global_position.y, point.z)
+	if not moving:
+		_speed = 0.0
 	moving = true
 	_perform_left = 0.0
-	face(target)
+	_has_arrival_face = false
+	_aim(target)
 	_play_locomotion()
 
 
 ## Se detiene donde está.
 func stop() -> void:
 	moving = false
+	_speed = 0.0
 	_stride_distance = 0.0
 	_play(_perform_animation if _perform_left > 0.0 else idle_animation)
 
 
-## Gira el cuerpo hacia un punto, sin inclinarlo.
-func face(point: Vector3) -> void:
+## Gira el cuerpo hacia un punto, sin inclinarlo. Por defecto gira poco a
+## poco, como una persona; con [param instant], de golpe (al colocar).
+##
+## Si está caminando, mirará a ese punto al llegar: no camina de lado.
+func face(point: Vector3, instant: bool = false) -> void:
+	if moving and not instant:
+		_arrival_face = point
+		_has_arrival_face = true
+		return
+	if not _aim(point):
+		return
+	if instant:
+		rotation.y = _target_yaw
+		_turning = false
+	else:
+		_turning = true
+
+
+## Fija la orientación buscada hacia [param point]. Devuelve `false` si el
+## punto está encima del personaje.
+func _aim(point: Vector3) -> bool:
 	var flat: Vector3 = Vector3(point.x, global_position.y, point.z)
 	if flat.is_equal_approx(global_position):
-		return
-	look_at(flat, Vector3.UP)
+		return false
+	var direction: Vector3 = (flat - global_position).normalized()
+	_target_yaw = atan2(-direction.x, -direction.z)
+	return true
+
+
+## Velocidad actual en m/s.
+func current_speed() -> float:
+	return _speed
 
 
 ## Avanza hacia el destino. Devuelve `true` si acaba de llegar.
+##
+## Como una persona: acelera al arrancar, gira poco a poco hacia donde va (y
+## frena si el giro es cerrado) y frena al acercarse al destino.
 func advance(delta: float) -> bool:
 	if not moving:
 		return false
 	var distance: float = global_position.distance_to(target)
-	var step: float = walk_speed * delta
-	if distance <= step:
+	var running: bool = walk_speed >= RUN_SPEED_THRESHOLD
+	var acceleration: float = RUN_ACCELERATION if running else WALK_ACCELERATION
+	_aim(target)
+	var heading_error: float = absf(_turn_towards_target(delta, RUN_TURN_RATE if running else WALK_TURN_RATE))
+	var wanted: float = walk_speed * clampf(1.0 - heading_error / deg_to_rad(110.0), 0.3, 1.0)
+	# Frenada: la velocidad que permite parar justo en el destino.
+	wanted = minf(wanted, maxf(sqrt(2.0 * acceleration * distance), walk_speed * 0.12))
+	_speed = move_toward(_speed, wanted, acceleration * delta)
+	var step: float = _speed * delta
+	if distance <= maxf(step, 0.02):
 		global_position = target
 		stop()
+		if _has_arrival_face:
+			_has_arrival_face = false
+			face(_arrival_face)
 		return true
 	global_position = global_position.move_toward(target, step)
+	_update_locomotion_rate()
 	_stride_distance += step
 	var stride: float = _run_stride if walk_speed >= RUN_SPEED_THRESHOLD else _walk_stride
 	if _stride_distance >= stride:
@@ -226,12 +298,33 @@ func advance(delta: float) -> bool:
 
 
 func _process(delta: float) -> void:
+	if _turning and not moving:
+		_turn_towards_target(delta, IDLE_TURN_RATE)
 	if _perform_left > 0.0:
 		_perform_left -= delta
 		if _perform_left <= 0.0 and not moving:
 			_play(idle_animation)
 	_update_look(delta)
 	_check_beat()
+	_vary_idle(delta)
+
+
+## Quieto en el reposo general, cambia de cuando en cuando entre sus
+## variantes con una mezcla lenta.
+func _vary_idle(delta: float) -> void:
+	if _animation_player == null or moving or _perform_left > 0.0 or idle_animation != &"idle":
+		return
+	var current: StringName = StringName(_animation_player.current_animation)
+	if not IDLE_VARIANTS.has(current):
+		return
+	_idle_switch_left -= delta
+	if _idle_switch_left > 0.0:
+		return
+	_idle_switch_left = _idle_rng.randf_range(IDLE_SWITCH_MIN, IDLE_SWITCH_MAX)
+	var next: StringName = IDLE_VARIANTS[(IDLE_VARIANTS.find(current) + 1) % IDLE_VARIANTS.size()]
+	if _animation_player.has_animation(next):
+		_animation_player.speed_scale = 1.0
+		_animation_player.play(next, IDLE_SWITCH_BLEND)
 
 
 ## Da voz a los pasos con [param streams], que se alternan en orden. El sonido
@@ -309,11 +402,35 @@ func hide_actor() -> void:
 	process_mode = Node.PROCESS_MODE_DISABLED
 
 
+## Gira hacia [member _target_yaw] a [param degrees_per_second]. Devuelve
+## el ángulo que aún falta (con signo).
+func _turn_towards_target(delta: float, degrees_per_second: float) -> float:
+	var remaining: float = wrapf(_target_yaw - rotation.y, -PI, PI)
+	var step: float = deg_to_rad(degrees_per_second) * delta
+	if absf(remaining) <= step:
+		rotation.y = _target_yaw
+		_turning = false
+		return 0.0
+	rotation.y += signf(remaining) * step
+	return remaining - signf(remaining) * step
+
+
 func _play_locomotion() -> void:
-	if walk_speed >= RUN_SPEED_THRESHOLD:
-		_play(&"run", walk_speed / _run_cycle_speed)
-	else:
-		_play(&"walk", walk_speed / _walk_cycle_speed)
+	_play(&"run" if walk_speed >= RUN_SPEED_THRESHOLD else &"walk")
+	_update_locomotion_rate()
+
+
+## La animación avanza a la velocidad real: los pies no patinan aunque el
+## personaje esté acelerando o frenando.
+func _update_locomotion_rate() -> void:
+	if _animation_player == null:
+		return
+	var cycle: float = _run_cycle_speed if walk_speed >= RUN_SPEED_THRESHOLD else _walk_cycle_speed
+	_animation_player.speed_scale = _locomotion_rate(cycle)
+
+
+func _locomotion_rate(cycle: float) -> float:
+	return maxf(_speed, walk_speed * MIN_ANIMATION_RATE) / maxf(cycle, 0.01)
 
 
 func _play(animation: StringName, speed: float = 1.0) -> void:
@@ -321,7 +438,9 @@ func _play(animation: StringName, speed: float = 1.0) -> void:
 		return
 	if not _animation_player.has_animation(animation):
 		animation = &"idle"
-	# Si ya suena, `play` la continúa y solo cambia la velocidad.
+	# Si ya suena, `play` la continúa y solo cambia la velocidad. La escala
+	# general solo la usa la locomoción (_update_locomotion_rate).
+	_animation_player.speed_scale = 1.0
 	_animation_player.play(animation, BLEND_SECONDS, speed)
 
 

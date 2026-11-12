@@ -1344,12 +1344,29 @@ def _rotation_between(a, b):
 	return a.normalized().rotation_difference(b.normalized()).to_matrix()
 
 
-def find_cycle(take, min_seconds, max_seconds, bones=("lfemur", "rfemur", "ltibia", "rtibia", "lhumerus", "rhumerus")):
-	"""Busca dentro de la toma un tramo cuyo final se parezca a su comienzo."""
+ARM_MOTION = ("lhumerus", "rhumerus", "lradius", "rradius", "lwrist", "rwrist")
+
+
+def find_cycle(take, min_seconds, max_seconds, bones=("lfemur", "rfemur", "ltibia", "rtibia", "lhumerus", "rhumerus"),
+		motion_bones=(), motion_weight=0.0):
+	"""Busca dentro de la toma un tramo cuyo final se parezca a su comienzo.
+
+	Con [motion_weight], además premia el movimiento de [motion_bones] dentro
+	del tramo: solo con el parecido del bucle ganan los tramos más quietos, y
+	en los gestos y el trabajo eso deja los brazos casi parados."""
 	best = (1e9, 0, len(take) - 1)
 	low = int(min_seconds * ANIM_FPS)
 	high = int(max_seconds * ANIM_FPS)
 	margin = len(take) // 10
+	# Movimiento por fotograma (rad/s) y sumas acumuladas para cada tramo.
+	prefix = [0.0]
+	for f in range(len(take) - 1):
+		step = 0.0
+		for name in motion_bones:
+			a = take.local[f][name].to_quaternion()
+			b = take.local[f + 1][name].to_quaternion()
+			step += a.rotation_difference(b).angle * ANIM_FPS
+		prefix.append(prefix[-1] + step)
 	for start in range(margin, len(take) - low - margin, 2):
 		for length in range(low, high + 1):
 			end = start + length
@@ -1360,6 +1377,8 @@ def find_cycle(take, min_seconds, max_seconds, bones=("lfemur", "rfemur", "ltibi
 				a = take.local[start][name].to_quaternion()
 				b = take.local[end][name].to_quaternion()
 				cost += a.rotation_difference(b).angle
+			if motion_weight > 0.0:
+				cost -= motion_weight * (prefix[end] - prefix[start]) / length
 			if cost < best[0]:
 				best = (cost, start, end)
 	return best[1], best[2]
@@ -1378,9 +1397,12 @@ class Retargeter:
 		# tramo se lleva a la del esqueleto (+X) con un giro en planta. Así el
 		# personaje mira al frente aunque el sujeto mirara a otro lado.
 		end = len(take) - 1 if end is None else end
+		# Izquierda menos derecha: los huesos de la cadera también apuntan algo
+		# hacia delante y hacia abajo; restándolos queda solo el eje lateral.
+		hip_axis = take.bones["lhipjoint"].direction - take.bones["rhipjoint"].direction
 		source_left = Vector((0.0, 0.0, 0.0))
 		for index in range(start, end + 1, 3):
-			left = Y_UP_TO_Z_UP @ (take.globals_at(index)["root"] @ take.bones["lhipjoint"].direction)
+			left = Y_UP_TO_Z_UP @ (take.globals_at(index)["root"] @ hip_axis)
 			left.z = 0.0
 			if left.length > 1e-6:
 				source_left += left.normalized()
@@ -1390,7 +1412,7 @@ class Retargeter:
 		self.frame = Matrix.Rotation(heading, 3, "Z") @ Y_UP_TO_Z_UP
 		# Las direcciones de reposo de CMU se giran solo con el cambio de ejes
 		# y el giro de reposo; el giro del tramo se aplica a la pose.
-		rest_left = Y_UP_TO_Z_UP @ take.bones["lhipjoint"].direction
+		rest_left = Y_UP_TO_Z_UP @ hip_axis
 		rest_left.z = 0.0
 		rest_heading = math.atan2(target_left.y, target_left.x) - math.atan2(rest_left.y, rest_left.x)
 		self.rest_frame = Matrix.Rotation(rest_heading, 3, "Z") @ Y_UP_TO_Z_UP
@@ -1435,6 +1457,83 @@ class Retargeter:
 		world = self.frame @ position * self.scale
 		offset = world - self.rest_head["Hips"]
 		return self.rest["Hips"].inverted() @ offset
+
+
+def _toe_track(armature, name, count):
+	"""Posición (armazón) de las puntas de los pies en cada fotograma de la
+	pista [name], recién horneada."""
+	scene = bpy.context.scene
+	for track in armature.animation_data.nla_tracks:
+		track.mute = track.name != name
+	toes = []
+	for frame in range(count):
+		scene.frame_set(frame + 1)
+		bpy.context.view_layer.update()
+		toes.append((armature.pose.bones["LeftToeBase"].head.copy(), armature.pose.bones["RightToeBase"].head.copy()))
+	for track in armature.animation_data.nla_tracks:
+		track.mute = False
+	scene.frame_set(1)
+	return toes
+
+
+def lock_feet(armature, name, frames, contact=0.06, smooth_passes=3):
+	"""Pies sin patinar en un ciclo de locomoción sin avance.
+
+	Mide la punta del pie de apoyo (la más baja, si toca el suelo) en el ciclo
+	horneado. Su velocidad media hacia atrás es la velocidad real del ciclo.
+	Después corrige el adelanto de la cadera fotograma a fotograma para que el
+	pie de apoyo retroceda a esa velocidad constante: así, al mover al
+	personaje a esa velocidad, el pie queda fijo en el suelo. MakeHuman mira a
+	−Y, así que «hacia atrás» es +Y del armazón.
+
+	Devuelve (velocidad del ciclo en m/s, longitud del paso en m)."""
+	count = len(frames) - 1
+	toes = _toe_track(armature, name, count + 1)
+	steps = []
+	for f in range(count):
+		left, right = toes[f]
+		planted = 0 if left.z <= right.z else 1
+		if min(left.z, right.z) > contact:
+			steps.append(None)
+			continue
+		steps.append(toes[f + 1][planted] - toes[f][planted])
+	known = [d for d in steps if d is not None]
+	if not known:
+		return 0.0, 0.0
+	per_frame = sum(d.y for d in known) / len(known)
+
+	def periodic(correction):
+		# Periódica y centrada, y suavizada para que la cadera no dé tirones.
+		drift = correction[-1]
+		correction = [c - drift * k / count for k, c in enumerate(correction)]
+		for _ in range(smooth_passes):
+			correction = [(correction[k - 1] + 2.0 * correction[k] + correction[(k + 1) % (count + 1)]) * 0.25
+				for k in range(count + 1)]
+			correction[-1] = correction[0]
+		mean = sum(correction[:-1]) / count
+		return [c - mean for c in correction]
+
+	# Hacia atrás (Y) el pie debe retroceder a velocidad constante; de lado
+	# (X), quedarse quieto.
+	forward = [0.0]
+	lateral = [0.0]
+	for d in steps:
+		forward.append(forward[-1] + (0.0 if d is None else per_frame - d.y))
+		lateral.append(lateral[-1] + (0.0 if d is None else -d.x))
+	forward = periodic(forward)
+	lateral = periodic(lateral)
+	rest = armature.data.bones["Hips"].matrix_local.to_3x3().inverted()
+	locked = []
+	for k, (rotations, hips) in enumerate(frames):
+		locked.append((rotations, hips + rest @ Vector((lateral[k], forward[k], 0.0))))
+	# Rehornear la pista con la cadera corregida.
+	track = armature.animation_data.nla_tracks[name]
+	action = track.strips[0].action
+	armature.animation_data.nla_tracks.remove(track)
+	bpy.data.actions.remove(action)
+	bake_action(armature, name, locked)
+	speed = per_frame * ANIM_FPS
+	return speed, speed * (count / ANIM_FPS) * 0.5
 
 
 def bake_action(armature, name, frames):
@@ -1589,6 +1688,13 @@ def build_animations(armature, spec, cmu_dir):
 		add_rotation(world, "LowerBack", pitch=-(16.0 + 2.0 * breath), children=upper[1:])
 		add_rotation(world, "Neck", pitch=12.0, children=("Neck1", "Head"))
 
+	# Segundo reposo (toma 77_02, «standing»): el juego alterna los dos para
+	# que nadie repita el mismo bucle de pocos segundos.
+	standing = take("77", "02")
+	start_b, end_b = find_cycle(standing, 4.0, 6.0)
+	rt_b = Retargeter(standing, armature, start_b, end_b)
+	frames, _ = cycle_frames(standing, rt_b, start_b, end_b, blend=20)
+	bake_action(armature, "idle_b", frames)
 	start2, end2 = find_cycle(idle, 1.4, 1.6)
 	frames, _ = cycle_frames(idle, rt, start2, end2, blend=8, extra=tired)
 	bake_action(armature, "tired", frames)
@@ -1599,26 +1705,26 @@ def build_animations(armature, spec, cmu_dir):
 	rt = Retargeter(walk, armature, start, end)
 	frames, advance = cycle_frames(walk, rt, start, end)
 	bake_action(armature, "walk", frames)
-	info["walk_cycle_speed"] = (Vector((advance.x, advance.z)).length * rt.scale) / ((end - start) / ANIM_FPS)
-	info["walk_stride"] = Vector((advance.x, advance.z)).length * rt.scale * 0.5
+	info["walk_cycle_speed"], info["walk_stride"] = lock_feet(armature, "walk", frames)
 	run = take("09", "01")
 	start, end = find_cycle(run, 0.55, 0.9)
 	rt = Retargeter(run, armature, start, end)
 	frames, advance = cycle_frames(run, rt, start, end, blend=3)
 	bake_action(armature, "run", frames)
-	info["run_cycle_speed"] = (Vector((advance.x, advance.z)).length * rt.scale) / ((end - start) / ANIM_FPS)
-	info["run_stride"] = Vector((advance.x, advance.z)).length * rt.scale * 0.5
+	info["run_cycle_speed"], info["run_stride"] = lock_feet(armature, "run", frames)
 
 	# Hablar con gestos.
 	talk = take("18", "08")
-	start, end = find_cycle(talk, 2.5, 4.0, bones=("lhumerus", "rhumerus", "lradius", "rradius", "lfemur", "rfemur"))
+	start, end = find_cycle(talk, 2.5, 4.0, bones=("lhumerus", "rhumerus", "lradius", "rradius", "lfemur", "rfemur"),
+		motion_bones=ARM_MOTION, motion_weight=0.12)
 	rt = Retargeter(talk, armature, start, end)
 	frames, _ = cycle_frames(talk, rt, start, end, blend=12)
 	bake_action(armature, "talk", frames)
 
 	if "work" in spec.get("animations", ()):
 		dig = take("79", "04")
-		start, end = find_cycle(dig, 2.0, 3.2, bones=("lhumerus", "rhumerus", "lradius", "rradius", "lowerback", "thorax"))
+		start, end = find_cycle(dig, 2.0, 3.2, bones=("lhumerus", "rhumerus", "lradius", "rradius", "lowerback", "thorax"),
+			motion_bones=ARM_MOTION + ("lowerback",), motion_weight=0.08)
 		rt = Retargeter(dig, armature, start, end)
 		frames, _ = cycle_frames(dig, rt, start, end, blend=10)
 		bake_action(armature, "work", frames)
@@ -1631,7 +1737,8 @@ def build_animations(armature, spec, cmu_dir):
 		# postura: la parte baja se calcula con la geometría del esqueleto y
 		# el tronco, los brazos y la cabeza salen de la toma de coser (79_05).
 		sew = take("79", "05")
-		start, end = find_cycle(sew, 2.4, 3.4, bones=("lhumerus", "rhumerus", "lradius", "rradius"))
+		start, end = find_cycle(sew, 2.4, 3.4, bones=("lhumerus", "rhumerus", "lradius", "rradius"),
+			motion_bones=ARM_MOTION, motion_weight=0.08)
 		rt = Retargeter(sew, armature, start, end)
 		bones = armature.data.bones
 		hips_head = bones["Hips"].head_local

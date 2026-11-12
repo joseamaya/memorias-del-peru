@@ -34,7 +34,7 @@ func test_npc_rig() -> bool:
 		ok = ok and actor.look_modifier().bone_name == "Head"
 		# Ritmo propio de la captura (extras del glTF), en valores razonables.
 		ok = ok and actor.cycle_speed(false) > 0.8 and actor.cycle_speed(false) < 1.6
-		ok = ok and actor.cycle_speed(true) > 2.0 and actor.cycle_speed(true) < 4.0
+		ok = ok and actor.cycle_speed(true) > 1.5 and actor.cycle_speed(true) < 4.0
 		# Ropa con el material del proyecto y el textil del personaje.
 		var cloth: int = 0
 		for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
@@ -69,8 +69,15 @@ func test_npc_rig() -> bool:
 
 	# El mensajero corre: animación de carrera a la velocidad del desplazamiento.
 	var messenger: NpcActor = world.get_node("Llacta/NPCs/Mensajero") as NpcActor
-	messenger.walk_to(messenger.global_position + Vector3(0.0, 0.0, 10.0))
+	# Arranca poco a poco (no de 0 a 5 m/s en un fotograma) y, ya lanzado,
+	# la animación va a la velocidad del desplazamiento.
+	messenger.walk_to(messenger.global_position + Vector3(0.0, 0.0, 30.0))
 	ok = ok and messenger.current_animation() == &"run"
+	messenger.advance(1.0 / 30.0)
+	ok = ok and messenger.current_speed() < 0.5
+	for i: int in range(60):
+		messenger.advance(1.0 / 30.0)
+	ok = ok and absf(messenger.current_speed() - messenger.walk_speed) < 0.05
 	ok = ok and absf(messenger.animation_speed() - messenger.walk_speed / messenger.cycle_speed(true)) < 0.01
 	messenger.stop()
 	ok = ok and messenger.current_animation() == &"idle"

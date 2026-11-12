@@ -351,10 +351,10 @@ func _build_llacta() -> void:
 	var neighbor_one: NpcActor = _add_npc(npcs, "Habitante1", Vector3(9.0, 0.0, 4.0), Color(0.48, 0.36, 0.28, 1.0))
 	var neighbor_two: NpcActor = _add_npc(npcs, "Habitante2", Vector3(11.0, 0.0, -1.0), Color(0.42, 0.33, 0.26, 1.0))
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
-	weaver.face(_plaza_center_flat())
+	weaver.face(_plaza_center_flat(), true)
 	weaver.turn_body_to_talk = false
 	weaver.set_idle_animation(&"weave")
-	farmer.face(_plaza_center_flat())
+	farmer.face(_plaza_center_flat(), true)
 	farmer.set_idle_animation(&"work")
 	for actor: Node in npcs.get_children():
 		(actor as NpcActor).watch_target = player

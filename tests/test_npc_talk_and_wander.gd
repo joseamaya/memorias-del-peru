@@ -72,6 +72,8 @@ func test_npc_talk_and_wander() -> bool:
 	ok = ok and farmer.current_animation() == &"work"
 	player.global_position = farmer.global_position + Vector3(2.0, 0.0, 0.0)
 	talks[1].interact(player)
+	# Se vuelve poco a poco, como una persona (no de golpe).
+	farmer._process(1.0)
 	var to_player: Vector3 = (player.global_position - farmer.global_position).normalized()
 	ok = ok and (-farmer.global_transform.basis.z).dot(to_player) > 0.9
 	ok = ok and farmer.current_animation() == &"idle"

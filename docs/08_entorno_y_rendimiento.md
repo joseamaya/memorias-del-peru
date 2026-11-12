@@ -181,6 +181,19 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con movimiento natural de personajes (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU, con el movimiento de [ADR-0019](adr/0019-movimiento-natural-de-personajes.md): aceleración y giro en `NpcActor`, pies fijados en los ciclos y segundo reposo. Carga del sistema entre 4,8 y 6,0.
+
+| Perfil | FPS medio (2 ejecuciones) | Vídeo |
+|---|---|---|
+| Bajo | 141,1–147,2 | 208,6 MB |
+| Medio | 56,8–57,0 | 281,4 MB |
+
+Sin cambio apreciable respecto a la medición anterior.
+
+El movimiento se mide aparte con `tests/measure_motion.gd`: deslizamiento del pie de apoyo, giros por fotograma y aceleración. Los valores están en ADR-0019.
+
 ### Medición con textiles, caída y manto con muelles (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas ([ADR-0018](adr/0018-ropa-textiles-caida-y-muelles.md)). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.

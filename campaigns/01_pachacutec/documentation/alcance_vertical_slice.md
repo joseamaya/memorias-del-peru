@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.0)** — 2026-11-12; sustituye a la v3.9
+- Estado: **Aprobado (v4.1)** — 2026-11-12; sustituye a la v4.0
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -23,6 +23,7 @@
 | v3.8 | Aplica [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md): personajes realistas con cuerpos de MakeHuman (CC0), ropa andina propia ajustada al cuerpo y captura de movimiento de CMU (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12, tras las quejas de los jugadores sobre el aspecto de los personajes. |
 | v3.9 | Aplica [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md): cabezas de la Microsoft Rocketbox Avatar Library (MIT) sobre los cuerpos de MakeHuman; tres vecinas distintas en lugar de tres copias (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.0 | Ropa más realista (§5): textiles con diseño propio (franjas, zigzag escalonado, rombos de gradas y t'oqapu en las autoridades) a la altura real de cada prenda, caída de la tela simulada en Blender y manto que se mece con huesos de muelle (`SpringBoneSimulator3D`). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.1 | Aplica [ADR-0019](../../../docs/adr/0019-movimiento-natural-de-personajes.md): pies sin patinar, arranque, frenada y giro progresivos, orientación corregida de las tomas, gestos con movimiento y reposo variado (§5). Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -141,6 +142,11 @@ Reglas:
   - **Manto:** franjas en el borde inferior.
   - **Cinta:** zigzag. **Paño:** a rayas.
   - Los diseños son reconstrucción (R) a partir de las piezas de PCH-010, PCH-017 y PCH-018.
+- **Movimiento natural (v4.1, [ADR-0019](../../../docs/adr/0019-movimiento-natural-de-personajes.md)):**
+  - Los pies no patinan al caminar ni al correr.
+  - Los personajes arrancan, frenan y giran poco a poco, y no caminan de lado.
+  - Al hablar gesticulan con los brazos.
+  - Quietos, alternan dos reposos distintos.
 - **Caída y movimiento (v4.0):** la falda, el manto y el borde de la lliclla caen por su peso (simulación de tela en Blender, horneada en el modelo). El manto se mece al caminar con tres cadenas de muelle que chocan con la cadera y el pecho.
 
 Lo que sigue de la v3.7 (ADR-0015) se mantiene, ahora con estos cuerpos y estos movimientos. Cada personaje tiene esqueleto y animaciones:
