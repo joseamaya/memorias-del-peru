@@ -103,9 +103,10 @@ const WEAVER_LOOM_GAP: float = 0.22
 ## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
 const TERRACE_CAP_THICKNESS: float = 0.3
 const TERRACE_CAP_INSET: float = 0.05
-## Rótulo de lugar y época al empezar (ADR-0012).
-const TITLE_KEY: StringName = &"PCH_TITLE_PLACE"
-const TITLE_SECONDS: float = 7.0
+## Introducción antes de tomar el control (ADR-0023). Sustituye al rótulo de
+## lugar y época de ADR-0012.
+const INTRO_KEYS: Array[StringName] = [&"PCH_INTRO_1", &"PCH_INTRO_2", &"PCH_INTRO_3"]
+const INTRO_HINT_KEY: StringName = &"PCH_INTRO_HINT"
 ## «Hablar»: escena del cuerpo interactuable y pausa del vecino que habla.
 const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.tscn"
 const TALK_HOLD_SECONDS: float = 7.0
@@ -139,6 +140,13 @@ const RAMP_COLOR: Color = Color(0.62, 0.56, 0.47, 1.0)
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
+## Cuándo se muestra la introducción: AUTO, solo si el mundo es la escena
+## principal (partida real y reinicio con R), para que las pruebas que cargan
+## el mundo directamente no esperen a las tarjetas; ALWAYS y NEVER la fuerzan.
+enum IntroMode { AUTO, ALWAYS, NEVER }
+
+@export var intro_mode: IntroMode = IntroMode.AUTO
+
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Inti
 @onready var terrain: Node3D = $Terrain
@@ -147,18 +155,66 @@ const SURFACE_STONE: StringName = &"stone"
 @onready var hud: PlayerHud = $UILayer/HUD
 @onready var environment_controller: EnvironmentQualityController = $EnvironmentQualityController
 
+var _intro: IntroCards = null
 var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
 
 
 func _ready() -> void:
+	var with_intro: bool = should_play_intro()
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null and with_intro:
+		# El reloj del mensajero espera a que termine la introducción.
+		event.start_on_bind = false
+		event.set_process(false)
 	_build_terrain()
 	_build_llacta()
 	player.global_position = player_spawn.global_position
 	hud.bind(player, player.stamina)
-	hud.show_title(tr(String(TITLE_KEY)), TITLE_SECONDS)
 	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
+	if with_intro:
+		_start_intro()
+
+
+## Indica si esta partida empieza con la introducción.
+func should_play_intro() -> bool:
+	match intro_mode:
+		IntroMode.ALWAYS:
+			return true
+		IntroMode.NEVER:
+			return false
+	return is_inside_tree() and get_tree().current_scene == self
+
+
+## Indica si la introducción está a la vista.
+func is_intro_playing() -> bool:
+	return _intro != null and _intro.is_playing()
+
+
+## Tarjetas de la introducción, para las pruebas.
+func get_intro() -> IntroCards:
+	return _intro
+
+
+func _start_intro() -> void:
+	# El jugador no se mueve, no mira ni interactúa hasta que termina.
+	player.process_mode = Node.PROCESS_MODE_DISABLED
+	_intro = IntroCards.new()
+	_intro.name = "IntroCards"
+	hud.add_child(_intro)
+	_intro.finished.connect(_on_intro_finished)
+	var texts: Array[String] = []
+	for key: StringName in INTRO_KEYS:
+		texts.append(tr(String(key)))
+	_intro.play(texts, tr(String(INTRO_HINT_KEY)))
+
+
+func _on_intro_finished() -> void:
+	player.process_mode = Node.PROCESS_MODE_INHERIT
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null:
+		event.begin()
 
 
 func _process(delta: float) -> void:

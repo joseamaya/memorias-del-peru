@@ -64,6 +64,10 @@ const MEETING_ARC_SLOTS: int = 6
 @export var arrival_grace: float = 75.0
 @export var arrival_radius: float = 22.0
 @export var call_timeout: float = 60.0
+## Si está activo, el reloj arranca al conectar el evento con el mundo. La
+## escena lo desactiva cuando hay introducción y llama a [method begin] al
+## terminarla (ADR-0023).
+@export var start_on_bind: bool = true
 
 var phase: int = Phase.IDLE
 var completed: bool = false
@@ -78,6 +82,7 @@ var _principals: Array[NpcActor] = []
 var _neighbors: Array[NpcActor] = []
 var _pututu: Pututu = null
 
+var _begun: bool = false
 var _idle_time: float = 0.0
 var _phase_time: float = 0.0
 var _news_second_timer: float = 0.0
@@ -98,7 +103,7 @@ var _wander_pause: Dictionary[NpcActor, float] = {}
 
 
 func _ready() -> void:
-	set_process(true)
+	set_process(start_on_bind)
 
 
 func _process(delta: float) -> void:
@@ -129,7 +134,24 @@ func bind(
 		_pututu.set_armed(false)
 		if not _pututu.played.is_connected(_on_pututu_played):
 			_pututu.played.connect(_on_pututu_played)
+	if start_on_bind:
+		begin()
+
+
+## Pone en marcha el reloj y pide el subtítulo de apertura. Con
+## [member start_on_bind] desactivado, la escena lo llama al terminar la
+## introducción (ADR-0023); hasta entonces el evento no avanza.
+func begin() -> void:
+	if _begun:
+		return
+	_begun = true
+	set_process(true)
 	subtitle_requested.emit(KEY_OPENING, OPENING_SECONDS)
+
+
+## Indica si el reloj del evento ya está en marcha.
+func has_begun() -> bool:
+	return _begun
 
 
 ## Fija los paseos de los vecinos mientras no ha llegado el mensajero. Cada

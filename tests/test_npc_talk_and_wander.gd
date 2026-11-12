@@ -1,6 +1,6 @@
 extends RefCounted
-## Comprueba los cambios del primer piloto (ADR-0012, ADR-0013): el rótulo de
-## lugar al empezar, el vecino que recibe al jugador en el camino sur, «Hablar» con seis personajes solo antes de la noticia, la frase en
+## Comprueba los cambios del primer piloto (ADR-0012, ADR-0013): sin el rótulo
+## de lugar, que la introducción sustituye (ADR-0023), el vecino que recibe al jugador en el camino sur, «Hablar» con seis personajes solo antes de la noticia, la frase en
 ## el HUD con el personaje girado hacia el jugador, y el paseo de los vecinos,
 ## que se detiene cuando llega el mensajero. Con el esqueleto (ADR-0015): la
 ## tejedora teje arrodillada y solo gira la cabeza, el agricultor deja el
@@ -26,7 +26,7 @@ func test_npc_talk_and_wander() -> bool:
 	if not ok:
 		world.free()
 		return false
-	ok = ok and title.visible and not title.text.begins_with("PCH_")
+	ok = ok and not title.visible
 	ok = ok and event.arrival_delay <= 75.0 and event.arrival_delay + event.arrival_grace <= 150.0
 
 	# El vecino que recibe espera junto al camino sur y saluda al acercarse.

@@ -6,7 +6,7 @@ extends SceneTree
 ## Vídeo con Movie Maker (AVI MJPEG con sonido; luego se puede pasar a MP4):
 ##   godot --path . --write-movie demo.avi --fixed-fps 30 --script res://tests/demo_playthrough.gd
 ##
-## El jugador recorre la plaza, bebe del quero, deja la ofrenda, habla con la
+## Tras la introducción, el jugador recorre la plaza, bebe del quero, deja la ofrenda, habla con la
 ## tejedora, visita las casas del oeste, sube al mirador, vuelve a la plaza, mira al
 ## mensajero, toca el pututu y sigue a la comitiva hasta el cierre. Al final
 ## comprueba que el evento terminó, que el quero y la ofrenda respondieron y que
@@ -24,6 +24,8 @@ const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_bas
 ## Límite de tiempo de juego: la partida dura unos 5 min.
 const MAX_GAME_SECONDS: float = 600.0
 const ARRIVE_DISTANCE: float = 0.6
+## MundoBase.IntroMode.ALWAYS (sin usar el tipo, ver la cabecera).
+const INTRO_MODE_ALWAYS: int = 1
 
 
 class Step:
@@ -58,10 +60,14 @@ var look_target: Vector3 = Vector3(0.0, 1.5, 0.0)
 var closing: bool = false
 var quero_responded: bool = false
 var talked: bool = false
+var saw_intro: bool = false
 
 
 func _initialize() -> void:
 	world = (load(WORLD_PATH) as PackedScene).instantiate()
+	# La partida real empieza con la introducción (ADR-0023): se fuerza, porque
+	# aquí el mundo no es la escena principal.
+	world.set("intro_mode", INTRO_MODE_ALWAYS)
 	root.add_child(world)
 	steps = [
 		Step.new("look", Vector3(0, 1.4, 0), 4.0),
@@ -146,6 +152,10 @@ func _process(delta: float) -> bool:
 		if talk != null:
 			talk.connect("spoke", _on_spoke)
 	if frames < 3 or closing:
+		return false
+	# Se espera a que terminen las tarjetas, sin pulsar nada, como quien lee.
+	if world.call("is_intro_playing"):
+		saw_intro = true
 		return false
 	clock += delta
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -234,6 +244,7 @@ func _close() -> void:
 	var offering_used: Variant = ofrenda.get("used") if ofrenda != null else false
 	var by_player: Variant = event.get("pututu_by_player")
 	var checks: Dictionary[String, bool] = {
+		"introducción mostrada": saw_intro,
 		"evento terminado": _phase() == PHASE_DONE,
 		"quero respondió": quero_responded,
 		"habló con la tejedora": talked,

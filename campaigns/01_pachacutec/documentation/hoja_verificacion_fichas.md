@@ -168,3 +168,13 @@ Puntos abiertos:
 3. **Murmullo de la plaza.** Hay que escuchar `murmullo_plaza.wav` y confirmar que no se entiende ninguna palabra de un idioma actual. Si se entiende, es un anacronismo. **Comprobado el 2026-11-12 por el responsable del proyecto:** no se entiende ninguna palabra.
 
 Con los tres puntos resueltos, el criterio de docs/05 («Ningún anacronismo… queda sin justificar») se marca como cumplido el 2026-11-12.
+
+## 8. PCH-022 — El Cusco antes de la expansión inca (A / R) · bloquea el cierre
+
+El agente localizó y leyó la fuente el 2026-11-12 (ADR-0023). Falta la comprobación y la firma de una persona.
+
+- [ ] **Covey y otros (2025), conclusión:** https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B. Confirmar que los incas «built alliances, conquered rivals and consolidated sovereign control over their capital region» antes de la expansión.
+- [ ] **El mismo artículo:** confirmar la mención de los muchos grupos de la región del Cusco en el Intermedio Tardío (c. 1000–1400).
+- [ ] Opcional: Covey (2006), *How the Incas Built Their Heartland*, en acceso abierto: https://doi.org/10.3998/mpub.88668.
+
+Verificado por: ________ · Fecha: ________

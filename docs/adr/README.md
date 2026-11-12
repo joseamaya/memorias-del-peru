@@ -34,7 +34,7 @@ Plantilla:
 | [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Aceptado (reloj sustituido por ADR-0012) |
 | [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado (texturas matizadas por ADR-0014; personajes, por ADR-0015 y ADR-0016) |
 | [0011](0011-fichas-fuera-del-slice.md) | Fichas de elementos que no están en el juego | Aceptado |
-| [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013) |
+| [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013; rótulo, por ADR-0023) |
 | [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Aceptado (balanceo de piernas sustituido por ADR-0015) |
 | [0014](0014-texturas-de-detalle-triplanares.md) | Texturas de detalle triplanares | Aceptado |
 | [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016) |
@@ -45,3 +45,4 @@ Plantilla:
 | [0020](0020-ropa-cortada-y-cosida.md) | Ropa cortada y cosida, con caída en la postura de reposo | Aceptado |
 | [0021](0021-construcciones-de-pirca.md) | Construcciones de pirca: casas, poyos, terrazas y corrales | Aceptado |
 | [0022](0022-skills-de-arte-y-shaders.md) | Skills de producción de arte y de técnica de shaders | Aceptado |
+| [0023](0023-introduccion-del-slice.md) | Introducción del vertical slice | Aceptado |

@@ -258,12 +258,6 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Notas de representación: la fuente documenta el uso actual de la madera de queñua como leña. Que una casa del siglo XV guardara un haz atado junto a la puerta es reconstrucción (R).
 - Estado de verificación: **verificado (R)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en la edición digital citada, p. 52 ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente la edición.
 
----
-
-## Fuera del vertical slice
-
-Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre de la Fase 4, por decisión del responsable del proyecto del 2026-11-11 y según [ADR-0011](../../../docs/adr/0011-fichas-fuera-del-slice.md). Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
-
 ### PCH-021 — Corral de pirca seca
 - Tipo: arquitectura / pastoreo
 - Clasificación: R
@@ -277,6 +271,30 @@ Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean
   - Se infiere (R) que una llacta de la región del Cusco hacia 1438 tendría corrales de piedra en sus afueras. Es una analogía regional: ninguna de las dos fuentes describe un corral de un sitio del Cusco de esa fecha.
   - El tamaño, la altura del muro (1 m), la entrada única, la piedra seca sin mortero y la posición en las afueras son R.
 - Estado de verificación: **verificado (R)** por el responsable del proyecto el 2026-11-12, con el cap. 6, párrafos 11 y 32, de Bauer y colaboradores a la vista ([hoja de verificación](hoja_verificacion_fichas.md) §6). El agente había localizado y leído las dos fuentes ese mismo día.
+
+### PCH-022 — El Cusco antes de la expansión inca
+- Tipo: evento / contexto político
+- Clasificación: A (el Cusco consolida su región antes de expandirse) / R («el señorío más fuerte de la región»)
+- Uso en el juego: tarjetas de la introducción `PCH_INTRO_1` y `PCH_INTRO_2` ([ADR-0023](../../../docs/adr/0023-introduccion-del-slice.md)): «Los Andes, siglo XV.» y «En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región.»
+- Fuentes:
+  - A (leída por el agente el 2026-11-12 en la edición en línea; sin paginación por pasaje): R. Alan Covey, Kylie E. Quave y otros, «Settlement discontinuity at Ak'awillay and the development of the Inca imperial capital region», *Antiquity* 99 (404): 481–499 (2025), la misma obra que PCH-006: https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B.
+    - Habla de «the many named groups living in the Cuzco region during the Late Intermediate Period (c. AD 1000–1400)».
+    - Según las crónicas, hubo alianzas matrimoniales y anexiones incas «as late as the early 1400s».
+    - Conclusión: los incas «built alliances, conquered rivals and consolidated sovereign control over their capital region».
+    - Sitúa el periodo imperial en el siglo XV; la expansión fuera de la región del Cusco la fechaba la cronología tradicional en 1438, y modelos recientes la adelantan unas décadas.
+  - A (identificada, sin consultar): R. Alan Covey, *How the Incas Built Their Heartland: State Formation and the Innovation of Imperial Strategies in the Sacred Valley, Peru*, University of Michigan Press, 2006; edición en acceso abierto de 2025: https://doi.org/10.3998/mpub.88668. Según la descripción de la editorial, describe la sociedad inca «in the centuries leading up to imperial expansion».
+- Discrepancias entre fuentes: la fecha del inicio de la expansión (1438 en la cronología tradicional; algo antes según los modelos recientes que cita Covey). Por eso las tarjetas dicen «siglo XV», sin año.
+- Notas de representación:
+  - «Todavía no son un imperio»: se apoya en Covey y otros (2025). Antes de la expansión, los incas consolidan su dominio en la región del Cusco, entre muchos otros grupos.
+  - «El señorío más fuerte de la región» es una inferencia (R): la fuente dice que se aliaron con unos grupos, vencieron a sus rivales y consolidaron su control, no que fueran ya el más fuerte en un año concreto.
+  - «Señorío» es un término castellano para una entidad política andina; se usa en lugar de «reino» o «estado» para no presuponer su forma de gobierno.
+- Estado de verificación: pendiente de firma. Falta que una persona compruebe en Covey y otros (2025) la conclusión citada y firme ([hoja de verificación](hoja_verificacion_fichas.md) §8).
+
+---
+
+## Fuera del vertical slice
+
+Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre de la Fase 4, por decisión del responsable del proyecto del 2026-11-11 y según [ADR-0011](../../../docs/adr/0011-fichas-fuera-del-slice.md). Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
 
 ### PCH-014 — Llama / alpaca (opcional)
 - Tipo: fauna
