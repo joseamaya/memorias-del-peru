@@ -36,6 +36,9 @@ func test_intro_holds_event_clock() -> bool:
 		return false
 	# Durante la introducción: sin reloj, sin apertura y sin control.
 	var ok: bool = world.is_intro_playing() and not event.has_begun() and not event.is_processing()
+	# La primera tarjeta es la nota histórica (ADR-0024).
+	ok = ok and intro.current_text() == tr("PCH_INTRO_NOTE") and MundoBase.INTRO_KEYS.size() == 4
+	ok = ok and not hud.is_showing_hint()
 	ok = ok and not hud.is_showing_subtitle()
 	ok = ok and player.process_mode == Node.PROCESS_MODE_DISABLED
 	# Se recorren las tarjetas hasta el final.
@@ -47,6 +50,8 @@ func test_intro_holds_event_clock() -> bool:
 	ok = ok and event.has_begun() and event.is_processing() and event.phase == MessengerEvent.Phase.IDLE
 	ok = ok and hud.is_showing_subtitle()
 	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
+	# Los controles aparecen al tomar el control (ADR-0024).
+	ok = ok and hud.is_showing_hint()
 	world.free()
 	return ok
 

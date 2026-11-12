@@ -10,7 +10,8 @@ Este documento define **qué** debe contener `project.godot`. El archivo se gene
 |---|---|
 | `application/config/name` | `"Memorias del Perú"` |
 | `application/config/features` | versión instalada + `"Forward Plus"` |
-| `application/run/main_scene` | Según la tabla “Escena principal” de [05_plan_de_implementacion.md](05_plan_de_implementacion.md) (Fases 1–2: sandbox de `tests/`; desde Fase 3: `mundo_base.tscn`) |
+| `application/run/main_scene` | Según la tabla “Escena principal” de [05_plan_de_implementacion.md](05_plan_de_implementacion.md) (Fases 1–2: sandbox de `tests/`; Fase 3: `mundo_base.tscn`; desde ADR-0024: `core/ui/title_screen.tscn`) |
+| `memorias/campaign/first` | Ruta del `CampaignInfo` de la campaña que abre la pantalla de título (ADR-0024): `res://campaigns/01_pachacutec/campaign.tres` |
 
 ## 2. Renderizado
 

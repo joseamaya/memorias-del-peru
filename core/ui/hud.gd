@@ -6,7 +6,8 @@ extends Control
 ## solo cuando no está llena, los subtítulos narrativos (ADR-0006) y un rótulo
 ## de lugar. Los subtítulos duran lo que hace falta para leerlos y se ponen en
 ## cola en lugar de pisarse (ADR-0012). Se comunica exclusivamente por señales
-## y no conoce la campaña.
+## y no conoce la campaña. También muestra una indicación breve, como los
+## controles al empezar (ADR-0024).
 
 ## Velocidad de lectura supuesta y margen añadido a cada subtítulo.
 const CHARS_PER_SECOND: float = 13.0
@@ -30,6 +31,7 @@ const TITLE_FADE_OUT: float = 1.2
 @onready var stamina_bar: ProgressBar = $StaminaBar
 @onready var subtitle_label: Label = $SubtitleLabel
 @onready var title_label: Label = $TitleLabel
+@onready var hint_label: Label = $HintLabel
 @onready var pause_panel: Control = $PausePanel
 @onready var end_panel: ColorRect = $EndPanel
 @onready var end_title: Label = $EndPanel/EndTitle
@@ -41,6 +43,8 @@ var _queue_texts: Array[String] = []
 var _queue_seconds: Array[float] = []
 var _title_total: float = 0.0
 var _title_elapsed: float = 0.0
+var _hint_total: float = 0.0
+var _hint_elapsed: float = 0.0
 var _end_elapsed: float = -1.0
 
 
@@ -48,6 +52,7 @@ func _ready() -> void:
 	_connect_refs()
 	subtitle_label.visible = false
 	title_label.visible = false
+	hint_label.visible = false
 	pause_panel.visible = false
 	end_panel.visible = false
 	# El aviso de pausa debe actualizarse con el árbol en pausa.
@@ -60,6 +65,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	advance_subtitle(delta)
 	advance_title(delta)
+	advance_hint(delta)
 	advance_end_card(delta)
 
 
@@ -192,6 +198,36 @@ func advance_title(delta: float) -> void:
 	var fade_in: float = clampf(_title_elapsed / TITLE_FADE_IN, 0.0, 1.0)
 	var fade_out: float = clampf((_title_total - _title_elapsed) / TITLE_FADE_OUT, 0.0, 1.0)
 	title_label.modulate.a = minf(fade_in, fade_out)
+
+
+## Muestra una indicación breve (por ejemplo, los controles) con fundidos,
+## durante [param seconds] en total.
+func show_hint(text: String, seconds: float) -> void:
+	if text.is_empty() or seconds <= 0.0:
+		return
+	hint_label.text = text
+	hint_label.visible = true
+	hint_label.modulate.a = 0.0
+	_hint_total = seconds
+	_hint_elapsed = 0.0
+
+
+## Indica si la indicación breve está a la vista.
+func is_showing_hint() -> bool:
+	return hint_label.visible
+
+
+## Avanza los fundidos de la indicación breve.
+func advance_hint(delta: float) -> void:
+	if not hint_label.visible:
+		return
+	_hint_elapsed += delta
+	if _hint_elapsed >= _hint_total:
+		hint_label.visible = false
+		return
+	var fade_in: float = clampf(_hint_elapsed / TITLE_FADE_IN, 0.0, 1.0)
+	var fade_out: float = clampf((_hint_total - _hint_elapsed) / TITLE_FADE_OUT, 0.0, 1.0)
+	hint_label.modulate.a = minf(fade_in, fade_out)
 
 
 func _display_subtitle(text: String, duration: float) -> void:

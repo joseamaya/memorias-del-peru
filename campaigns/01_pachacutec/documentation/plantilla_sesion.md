@@ -19,7 +19,7 @@
 
 | Momento | Cronómetro (mm:ss) |
 |---|---|
-| Inicio (aparece la primera tarjeta de la introducción, alcance v4.5) | 00:00 |
+| Inicio (pulsa Comenzar y aparece la primera tarjeta, alcance v4.6) | 00:00 |
 | Fin de la introducción (la persona toma el control) | |
 | Primer movimiento | |
 | Llegada del mensajero (subtítulo de la noticia) | |

@@ -24,7 +24,7 @@ El piloto responde a dos preguntas antes de las sesiones oficiales:
 
 Definida en el alcance §9.2 (v3.1, aprobada el 2026-11-11). Resumen:
 
-- **Inicio:** aparece la primera tarjeta de la introducción, al lanzar el juego tras la explicación de controles (alcance v4.5, ADR-0023). Anota también cuándo termina la introducción. No leas ni comentes las tarjetas: la persona las lee sola.
+- **Inicio:** aparece la primera tarjeta de la introducción. Deja el juego en la pantalla de título mientras explicas los controles; la persona pulsa Comenzar (alcance v4.6, ADR-0024). Anota también cuándo termina la introducción. No leas ni comentes las tarjetas: la persona las lee sola.
 - **Fin:** lo primero que ocurra de lo siguiente:
   - La persona dice que ha terminado.
   - Pasan 60 s desde que el grupo sale de la plaza (el cierre «La llacta queda en silencio…»). En el juego coincide con la tarjeta «Fin del fragmento» (v3.5).

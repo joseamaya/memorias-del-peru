@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.5)** — 2026-11-12; sustituye a la v4.4
+- Estado: **Aprobado (v4.6)** — 2026-11-12; sustituye a la v4.5
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -35,6 +35,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.3 | Aplica [ADR-0020](../../../docs/adr/0020-ropa-cortada-y-cosida.md): ropa cortada y cosida como paños de telar (unku, anacu, lliclla, manto, q'ipi y chuspa), caída simulada con los brazos bajados, sin piel que asome bajo la tela, y tejido de lana CC0 de ambientCG en lugar de arpillera (§5). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.4 | Aplica [ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md): casas, terrazas y poyos de pirca de piedra tosca; casas con talud, enlucido desconchado, puerta baja con dintel de palos, techo de ichu con mechones, tierra pisada alrededor, tercera variante y giro respecto a la plaza; dos corrales de pirca seca (PCH-021) (§6.1 y §7). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.5 | Aplica [ADR-0023](../../../docs/adr/0023-introduccion-del-slice.md): introducción de tres tarjetas antes de tomar el control, que sitúa al jugador sin adelantar la noticia; sustituye al rótulo de lugar y época; el reloj del mensajero espera a que termine; ficha PCH-022 (§2.2, §6.4, §8, §9.2 y §10). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
+| v4.6 | Aplica [ADR-0024](../../../docs/adr/0024-titulo-nota-historica-y-controles.md): pantalla de título de `core/` («Memorias del Perú» · «Una mañana en la llacta», Comenzar y Salir) como escena principal; nota histórica como primera tarjeta de la introducción; controles en pantalla 8 s al tomar el control (§2.2, §6.4, §9.2 y §10). Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -75,7 +76,8 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 
 | Fase | Entra cuando | Ocurre | Subtítulo |
 |---|---|---|---|
-| introducción | inicio | tres tarjetas sobre fondo negro (ADR-0023); el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
+| título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
+| introducción | se pulsa Comenzar | cuatro tarjetas sobre fondo negro (ADR-0023 y ADR-0024): la nota histórica y tres de contexto; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
 | `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero espera fuera del camino norte; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; a los 45 s, “El sol ya está alto…”; a los 75 s, si el jugador no está en la plaza, “Desde la plaza llaman a la gente…” |
 | `ARRIVAL` | pasan 75 s **y** el jugador está en la plaza, o 150 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
 | `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
@@ -240,6 +242,8 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 
 | Clave | Cuándo | Texto |
 |---|---|---|
+| `UI_GAME_TITLE` · `PCH_CAMPAIGN_SUBTITLE` | pantalla de título | Memorias del Perú · Una mañana en la llacta |
+| `PCH_INTRO_NOTE` | introducción, nota histórica (ADR-0024) | Esta historia se basa en crónicas coloniales y en la arqueología. Algunos elementos son reconstrucción o licencia narrativa. |
 | `PCH_INTRO_1` | introducción, tarjeta 1 | Los Andes, siglo XV. |
 | `PCH_INTRO_2` | introducción, tarjeta 2 | En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región. |
 | `PCH_INTRO_3` | introducción, tarjeta 3 | Tú vives en una llacta, una pequeña aldea de la sierra cerca del Cusco. Hoy se esperan noticias. |
@@ -361,7 +365,7 @@ El facilitador solo responde dudas de **controles**. Si hay un bloqueo técnico,
 
 **Medición de la duración.** El juego no tiene pantalla final, así que la duración de una sesión se mide así:
 
-- **Inicio:** aparece la primera tarjeta de la introducción, al lanzar el juego tras la explicación de controles (v4.5; antes, el primer movimiento). Se anota también el momento en que termina la introducción.
+- **Inicio:** aparece la primera tarjeta de la introducción, cuando la persona pulsa Comenzar en la pantalla de título tras la explicación de controles (v4.6; antes, el primer movimiento). Se anota también el momento en que termina la introducción.
 - **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; pasan 60 s desde el subtítulo de cierre («La llacta queda en silencio…»); se llega a 12 min.
 - Se anota también el momento del subtítulo de cierre, para separar el tiempo de la historia del de exploración libre.
 
@@ -411,16 +415,16 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 
 | Momento | Directo (min) | Explorador (min) |
 |---|---|---|
-| Introducción (tres tarjetas, v4.5) | 0,3 | 0,4 |
+| Título e introducción (cuatro tarjetas, v4.6) | 0,5 | 0,6 |
 | Apertura y entrada por el camino sur | 0,5 | 1,0 |
 | Viviendas oeste y telar | 0,5 | 2,0 |
 | Terrazas, rampas y mirador | 0,5 | 2,0 |
 | Quero y ofrenda | 0,5 | 1,0 |
 | Conversaciones y espera hasta la noticia (v3.5: mensajero a los 75 s, que espera al jugador) | 0,5 | 0,0 |
 | Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
-| **Total** | **4,3** | **7,9** |
+| **Total** | **4,5** | **8,1** |
 
-Con el reloj de 75 s que espera al jugador (v3.5), la mediana esperada queda en **4–6 minutos** (unos 20 s más con la introducción de la v4.5): quien explora ve el evento al llegar a la plaza, como tarde a los 150 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
+Con el reloj de 75 s que espera al jugador (v3.5), la mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6): quien explora ve el evento al llegar a la plaza, como tarde a los 150 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
 
 ## 11. Rendimiento
 

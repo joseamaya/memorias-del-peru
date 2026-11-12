@@ -104,8 +104,11 @@ const WEAVER_LOOM_GAP: float = 0.22
 const TERRACE_CAP_THICKNESS: float = 0.3
 const TERRACE_CAP_INSET: float = 0.05
 ## Introducción antes de tomar el control (ADR-0023). Sustituye al rótulo de
-## lugar y época de ADR-0012.
-const INTRO_KEYS: Array[StringName] = [&"PCH_INTRO_1", &"PCH_INTRO_2", &"PCH_INTRO_3"]
+## lugar y época de ADR-0012. La primera tarjeta es la nota histórica (ADR-0024).
+const INTRO_KEYS: Array[StringName] = [&"PCH_INTRO_NOTE", &"PCH_INTRO_1", &"PCH_INTRO_2", &"PCH_INTRO_3"]
+## Controles en pantalla al tomar el control (ADR-0024).
+const CONTROLS_HINT_KEY: StringName = &"UI_CONTROLS_HINT"
+const CONTROLS_HINT_SECONDS: float = 8.0
 const INTRO_HINT_KEY: StringName = &"PCH_INTRO_HINT"
 ## «Hablar»: escena del cuerpo interactuable y pausa del vecino que habla.
 const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.tscn"
@@ -212,6 +215,7 @@ func _start_intro() -> void:
 
 func _on_intro_finished() -> void:
 	player.process_mode = Node.PROCESS_MODE_INHERIT
+	hud.show_hint(tr(String(CONTROLS_HINT_KEY)), CONTROLS_HINT_SECONDS)
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
 		event.begin()

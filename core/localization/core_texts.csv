@@ -3,3 +3,7 @@ INTERACT_DEFAULT,Interactuar
 UI_PAUSED,Pausa · Esc para continuar
 UI_STAMINA,Aliento
 UI_END_HINT,R para volver a empezar · Esc para salir
+UI_GAME_TITLE,Memorias del Perú
+UI_START,Comenzar
+UI_QUIT,Salir
+UI_CONTROLS_HINT,WASD moverse · Ratón mirar · Mayús correr · Espacio saltar · E interactuar · Esc pausa

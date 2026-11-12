@@ -82,7 +82,7 @@ No se incluyen escalones: `CharacterBody3D` no los sube automáticamente y subir
 |---|---|---|
 | Fases 1–2 | `res://tests/scenes/player_sandbox.tscn` | No existe todavía escena de juego |
 | Desde Fase 3 | `res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn` | Primera escena de juego real; el sandbox sigue disponible como escena de prueba |
-| Cuando exista un menú/selector de campaña | Escena de Core (p. ej. `res://core/ui/main_menu.tscn`) | Las campañas no deben ser el punto de entrada de la antología |
+| Desde ADR-0024 (2026-11-12) | `res://core/ui/title_screen.tscn` | Las campañas no deben ser el punto de entrada de la antología. La pantalla de título abre la campaña configurada en `memorias/campaign/first`; el selector de campañas llegará con la segunda campaña |
 
 El cambio de la Fase 3 es un criterio de aceptación de esa fase. Ninguna exportación distribuible se crea mientras la escena principal esté en `tests/`.
 
