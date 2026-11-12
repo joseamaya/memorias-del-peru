@@ -156,7 +156,7 @@ El agente revisó el 2026-11-12 las diez categorías de la lista contra el conte
 | Herramientas | Sin anacronismos | Chaquitaclla, telar de cintura, quero de madera, cántaros, leña y pututu. Sin metal, sin rueda y sin animales de tiro. |
 | Alimentación | Sin anacronismos | Chicha de maíz (PCH-005) y ofrenda de maíz y coca (PCH-012). |
 | Fauna y flora | Sin anacronismos | Ichu y queñua (PCH-013). No hay animales y el ambiente no lleva aves. La textura de hierba es solo variación sobre la paleta. |
-| Sonido | Justificado (2); **por comprobar (3)** | El viento y la caracola ya están declarados en docs/07 §4. Los pasos son grabaciones con botas de montaña, y el murmullo es una grabación de hombres hablando. |
+| Sonido | Justificado (2); comprobado (3) | El viento y la caracola ya están declarados en docs/07 §4. Los pasos son grabaciones con botas de montaña, y el murmullo es una grabación de hombres hablando. |
 | Organización social | Sin anacronismos | Curaca, hombres principales, ayllu y la llamada de Cusi Yupanqui (PCH-001, 015 y 017). |
 | Paisaje | Sin anacronismos | Terrazas, caminos y asentamiento (PCH-006, 008 y 016). La plaza es licencia narrativa declarada (N, PCH-016). |
 | Lenguaje y denominaciones | Sin anacronismos | Términos quechuas con grafía hispanizada y consistente en pantalla (*curaca*, *ayllu*, *pututu*, *llacta*, *chicha*), como permite docs/07 §5. Sin términos coloniales posteriores en boca de los personajes. |
@@ -165,6 +165,6 @@ Puntos abiertos:
 
 1. **Peinados modernos.** Las cabezas de Rocketbox llevan los peinados de sus avatares, actuales: corto de oficina, coleta, moño o melena (ADR-0017, PCH-018). La ficha los declara como interpretación, pero no justifica que sean de hoy. **Decidido el 2026-11-12 por el responsable del proyecto:** se justifican como anacronismo declarado, por limitación de los recursos libres. Queda anotado en PCH-018 junto con lo que debería llevar la versión definitiva.
 2. **Pasos grabados con botas.** El jugador y los personajes suenan con grabaciones de botas en tierra y en piedra, filtradas para suavizar el golpe (`shared_assets/audio/LICENSE.md`). Los personajes llevan ojotas. **Decidido el 2026-11-12 por el responsable del proyecto:** se declaran como sustituto en docs/07 §4, junto al viento y la caracola.
-3. **Murmullo de la plaza.** Hay que escuchar `murmullo_plaza.wav` y confirmar que no se entiende ninguna palabra de un idioma actual. Si se entiende, es un anacronismo.
+3. **Murmullo de la plaza.** Hay que escuchar `murmullo_plaza.wav` y confirmar que no se entiende ninguna palabra de un idioma actual. Si se entiende, es un anacronismo. **Comprobado el 2026-11-12 por el responsable del proyecto:** no se entiende ninguna palabra.
 
-El criterio de docs/05 («Ningún anacronismo… queda sin justificar») queda sin marcar hasta comprobar el punto 3.
+Con los tres puntos resueltos, el criterio de docs/05 («Ningún anacronismo… queda sin justificar») se marca como cumplido el 2026-11-12.

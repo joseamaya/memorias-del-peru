@@ -227,4 +227,4 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [ ] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo.
 - [ ] Sesiones de prueba con al menos 6 jugadores ajenos al desarrollo: duración mediana de 5–8 min (ADR-0009) y al menos 2/3 superan el cuestionario de comprensión (métrica 5).
 - [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
-- [ ] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar.
+- [x] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar. *(2026-11-12: revisión de las diez categorías en la [hoja de verificación](../campaigns/01_pachacutec/documentation/hoja_verificacion_fichas.md) §7; peinados de Rocketbox y pasos con botas declarados como limitación, y murmullo comprobado sin palabras inteligibles.)*
