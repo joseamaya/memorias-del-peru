@@ -155,7 +155,9 @@ void fragment() {
 		}
 		if (steep_layer >= 0) {
 			float upness = normalize(mat3(INV_VIEW_MATRIX) * NORMAL).y;
-			float steep = smoothstep(steep_normal_range.x, steep_normal_range.y, upness);
+			// GLSL no define smoothstep con el primer borde mayor que el segundo:
+			// se invierte el resultado en lugar de los bordes.
+			float steep = 1.0 - smoothstep(steep_normal_range.y, steep_normal_range.x, upness);
 			steep = max(steep, smoothstep(steep_height_range.x, steep_height_range.y, world_pos.y));
 			if (steep > 0.001) {
 				vec3 p = tri_pos * layer_scale[steep_layer];
