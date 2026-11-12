@@ -27,7 +27,7 @@ Definida en el alcance §9.2 (v3.1, aprobada el 2026-11-11). Resumen:
 - **Inicio:** aparece la primera tarjeta de la introducción. Deja el juego en la pantalla de título mientras explicas los controles; la persona pulsa Comenzar (alcance v4.6, ADR-0024). Anota también cuándo termina la introducción. No leas ni comentes las tarjetas: la persona las lee sola.
 - **Fin:** lo primero que ocurra de lo siguiente:
   - La persona dice que ha terminado.
-  - Pasan 60 s desde que el grupo sale de la plaza (el cierre «La llacta queda en silencio…»). En el juego coincide con la tarjeta «Fin del fragmento» (v3.5).
+  - Aparece la tarjeta «Fin del fragmento», unos 8 s después de «La llacta queda en silencio…» (alcance v4.8, ADR-0026; antes, 60 s).
   - Se llega a 12 min.
 - Se anota también el momento del cierre, para separar el tiempo de la historia del tiempo de exploración libre.
 

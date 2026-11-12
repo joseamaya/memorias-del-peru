@@ -25,7 +25,7 @@
 | Llegada del mensajero (subtítulo de la noticia) | |
 | Suena el pututu (¿jugador o curaca?) | |
 | Cierre («La llacta queda en silencio…») | |
-| Fin de la sesión (motivo: «he terminado» / 60 s tras el cierre / 12 min) | |
+| Fin de la sesión (motivo: «he terminado» / tarjeta «Fin del fragmento» / 12 min) | |
 | **Duración** | |
 
 ## Observaciones durante el juego

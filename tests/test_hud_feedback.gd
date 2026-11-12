@@ -73,10 +73,10 @@ func test_end_card() -> bool:
 	var hud: PlayerHud = world.get_node("UILayer/HUD") as PlayerHud
 	var title: Label = world.get_node("UILayer/HUD/EndPanel/EndTitle") as Label
 	var ok: bool = not world.call("is_end_card_shown") and not hud.is_end_card_visible()
+	# Cierre corto (ADR-0026): la tarjeta llega casi en cuanto termina el evento.
 	event.finished.emit()
-	world.call("advance_end_card", 10.0)
 	ok = ok and not hud.is_end_card_visible()
-	world.call("advance_end_card", 45.0)
+	world.call("advance_end_card", 1.0)
 	ok = ok and world.call("is_end_card_shown") and hud.is_end_card_visible()
 	ok = ok and title.text == tr("PCH_END_TITLE") and not title.text.begins_with("PCH_")
 	hud.advance_end_card(3.0)

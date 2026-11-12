@@ -146,6 +146,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - La traducción de Bauer y Smith (2007) no se ha consultado; sus páginas (107–111) proceden del índice de la editorial y no se usan.
 - Discrepancias entre fuentes: las crónicas no coinciden en quién da la alarma ni en su nombre.
 - Notas de representación: en el juego es **mensajero**, no chasqui. Llamarlo chasqui en una llacta anterior a la expansión sería anacrónico: la institución de postas se documenta para el Estado imperial. Ropa de viaje, sin insignias estatales; llega agotado.
+- Tras el pututu, el mensajero vuelve al Cusco guiando a la comitiva (alcance v4.8, ADR-0026). Es reconstrucción (R) al servicio del relato: las fuentes citadas no dicen qué hizo quien llevó la noticia después de darla.
 - Estado de verificación: **verificado (H)** por el responsable del proyecto el 2026-11-11, con las ediciones digitales citadas a la vista (Sarmiento, cap. XXVII; Garcilaso, lib. VI, cap. VII). La parte R (ropa de viaje, llegada agotado) se basa en esas fuentes y no requiere cita propia.
 
 ### PCH-012 — Ofrenda a la Pachamama

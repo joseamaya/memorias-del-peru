@@ -34,7 +34,13 @@ const MESSENGER_BREATH_SECONDS: float = 2.5
 const CALL_SECONDS: float = 5.0
 const CLOSING_SECONDS: float = 6.0
 const CLOSING_SECOND_DELAY: float = 6.0
+## Tiempo máximo para que la comitiva salga de la vista; si no llega al
+## camino norte, se oculta igual.
 const DEPARTURE_TIMEOUT: float = 45.0
+## Cierre corto (ADR-0026): el evento termina este tiempo después del segundo
+## subtítulo de cierre, aunque la comitiva siga caminando, para que la tarjeta
+## de fin llegue sin un vacío tras el pututu.
+const CLOSING_HOLD: float = 8.0
 ## Señal intermedia de la espera (ADR-0012, ADR-0013): a mitad del reloj, un
 ## texto recuerda que el mensajero aún no llega.
 const WAIT_CUE_TIME: float = 45.0
@@ -88,6 +94,7 @@ var _phase_time: float = 0.0
 var _news_second_timer: float = 0.0
 var _news_repeat_allowed: bool = false
 var _closing_second_sent: bool = false
+var _party_hidden: bool = false
 var _arrival_by_grace: bool = false
 var _curaca_called: bool = false
 var _curaca_is_calling: bool = false
@@ -222,7 +229,7 @@ func step(delta: float) -> void:
 		Phase.DEPARTURE:
 			_step_departure(delta)
 		Phase.DONE:
-			pass
+			_step_done(delta)
 
 
 func _step_idle(delta: float) -> void:
@@ -313,8 +320,35 @@ func _step_departure(delta: float) -> void:
 	if not _closing_second_sent and _phase_time >= CLOSING_SECOND_DELAY:
 		_closing_second_sent = true
 		subtitle_requested.emit(KEY_CLOSING_SECOND, CLOSING_SECONDS)
-	if _phase_time >= DEPARTURE_TIMEOUT or _party_arrived():
+	if _closing_second_sent and _phase_time >= CLOSING_SECOND_DELAY + CLOSING_HOLD:
 		_enter(Phase.DONE)
+		return
+	_hide_party_if_gone()
+
+
+## Tras el cierre, la comitiva sigue caminando hasta salir por el camino norte.
+func _step_done(delta: float) -> void:
+	_phase_time += delta
+	_advance_group(delta)
+	_hide_party_if_gone()
+
+
+## Oculta la comitiva cuando llega al camino norte o se agota su tiempo.
+func _hide_party_if_gone() -> void:
+	if _party_hidden:
+		return
+	if _departure_time() >= DEPARTURE_TIMEOUT or _party_arrived():
+		_party_hidden = true
+		_hide_party()
+
+
+## Segundos desde que la comitiva echó a andar.
+func _departure_time() -> float:
+	if phase == Phase.DEPARTURE:
+		return _phase_time
+	if phase == Phase.DONE:
+		return CLOSING_SECOND_DELAY + CLOSING_HOLD + _phase_time
+	return 0.0
 
 
 func _enter(next_phase: int) -> void:
@@ -355,7 +389,6 @@ func _enter(next_phase: int) -> void:
 		Phase.DONE:
 			completed = true
 			_news_second_timer = 0.0
-			_hide_party()
 			finished.emit()
 
 
@@ -434,6 +467,9 @@ func _exit_point() -> Vector3:
 
 func _send_party_away() -> void:
 	var exit_point: Vector3 = _exit_point()
+	# El mensajero llegó corriendo; de vuelta camina al paso de la comitiva.
+	if _messenger != null and _curaca != null:
+		_messenger.walk_speed = _curaca.walk_speed
 	var index: int = 0
 	for actor: NpcActor in _party():
 		actor.walk_to(exit_point + Vector3(-1.5 + float(index) * 1.5, 0.0, 0.0))
@@ -441,9 +477,6 @@ func _send_party_away() -> void:
 	for actor: NpcActor in _neighbors:
 		actor.stop()
 		actor.face(exit_point)
-	if _messenger != null:
-		_messenger.stop()
-		_messenger.face(exit_point)
 
 
 func _party_arrived() -> bool:
@@ -459,10 +492,13 @@ func _hide_party() -> void:
 		actor.hide_actor()
 
 
-## La comitiva son el curaca y los hombres principales. Los vecinos se quedan
-## en la plaza: el cierre narra solo la partida del grupo.
+## La comitiva son el mensajero, que la guía de vuelta al Cusco (ADR-0026), el
+## curaca y los hombres principales. Los vecinos se quedan en la plaza: el
+## cierre narra solo la partida del grupo.
 func _party() -> Array[NpcActor]:
 	var party: Array[NpcActor] = []
+	if _messenger != null:
+		party.append(_messenger)
 	if _curaca != null:
 		party.append(_curaca)
 	for actor: NpcActor in _principals:

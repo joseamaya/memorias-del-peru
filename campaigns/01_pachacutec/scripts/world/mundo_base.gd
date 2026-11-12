@@ -131,10 +131,10 @@ const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.t
 const TALK_HOLD_SECONDS: float = 7.0
 ## Vecino que recibe al jugador junto al camino sur (ADR-0013).
 const GREETER_POINT: Vector3 = Vector3(3.2, 0.0, 18.0)
-## Tarjeta de fin (ADR-0013): aparece este tiempo después de que la comitiva
-## sale de la plaza, unos 60 s después del último subtítulo, como el fin de
-## sesión del protocolo de prueba.
-const END_CARD_DELAY: float = 50.0
+## Tarjeta de fin (ADR-0026, sustituye el retraso de 50 s de ADR-0013): el
+## evento ya termina unos 8 s después del último subtítulo, así que la tarjeta
+## se funde casi enseguida, mientras la comitiva se aleja.
+const END_CARD_DELAY: float = 0.5
 const END_TITLE_KEY: StringName = &"PCH_END_TITLE"
 const END_HINT_KEY: StringName = &"UI_END_HINT"
 const RESTART_KEY: Key = KEY_R

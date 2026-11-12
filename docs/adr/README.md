@@ -35,7 +35,7 @@ Plantilla:
 | [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado (texturas matizadas por ADR-0014; personajes, por ADR-0015 y ADR-0016) |
 | [0011](0011-fichas-fuera-del-slice.md) | Fichas de elementos que no están en el juego | Aceptado |
 | [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013; rótulo, por ADR-0023) |
-| [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Aceptado (balanceo de piernas sustituido por ADR-0015) |
+| [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Aceptado (balanceo de piernas sustituido por ADR-0015; retraso de la tarjeta de fin, por ADR-0026) |
 | [0014](0014-texturas-de-detalle-triplanares.md) | Texturas de detalle triplanares | Aceptado |
 | [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016) |
 | [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Aceptado (cabezas matizadas por ADR-0017) |
@@ -48,3 +48,4 @@ Plantilla:
 | [0023](0023-introduccion-del-slice.md) | Introducción del vertical slice | Aceptado (ampliado por ADR-0024 y ADR-0025) |
 | [0024](0024-titulo-nota-historica-y-controles.md) | Pantalla de título, nota histórica y controles en pantalla | Aceptado (ampliado por ADR-0025) |
 | [0025](0025-imagenes-de-la-introduccion.md) | Imágenes de fondo en la introducción | Aceptado |
+| [0026](0026-cierre-corto-y-mensajero.md) | Cierre corto y partida del mensajero | Aceptado |

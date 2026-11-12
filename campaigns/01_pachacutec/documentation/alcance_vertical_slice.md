@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.7)** — 2026-11-12; sustituye a la v4.6
+- Estado: **Aprobado (v4.8)** — 2026-11-12; sustituye a la v4.7
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -37,6 +37,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.5 | Aplica [ADR-0023](../../../docs/adr/0023-introduccion-del-slice.md): introducción de tres tarjetas antes de tomar el control, que sitúa al jugador sin adelantar la noticia; sustituye al rótulo de lugar y época; el reloj del mensajero espera a que termine; ficha PCH-022 (§2.2, §6.4, §8, §9.2 y §10). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
 | v4.6 | Aplica [ADR-0024](../../../docs/adr/0024-titulo-nota-historica-y-controles.md): pantalla de título de `core/` («Memorias del Perú» · «Una mañana en la llacta», Comenzar y Salir) como escena principal; nota histórica como primera tarjeta de la introducción; controles en pantalla 8 s al tomar el control (§2.2, §6.4, §9.2 y §10). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.7 | Aplica [ADR-0025](../../../docs/adr/0025-imagenes-de-la-introduccion.md): imágenes de fondo en la introducción. La nota sigue sobre negro; los Andes y la llacta se ven con tomas del propio juego, y la última termina en los ojos del jugador; el valle del Cusco se explica con un mapa propio (PCH-023) (§2.2, §6.4 y §8). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
+| v4.8 | Aplica [ADR-0026](../../../docs/adr/0026-cierre-corto-y-mensajero.md), tras la prueba del responsable del proyecto: el mensajero parte con la comitiva hacia el Cusco, y la tarjeta de fin llega unos 8 s después de «La llacta queda en silencio…», sin esperar a que el grupo salga de la vista (§2.2, §5, §9.2 y §10). Aprobada el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -83,15 +84,15 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 | `ARRIVAL` | pasan 75 s **y** el jugador está en la plaza, o 150 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
 | `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
-| `DEPARTURE` | suena el pututu | el curaca y los principales parten por el camino norte; los vecinos se quedan | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
-| `DONE` | el grupo llega al camino norte | la comitiva desaparece; el jugador sigue libre; 50 s después, tarjeta de fin | «Fin del fragmento» · «R para volver a empezar · Esc para salir» |
+| `DEPARTURE` | suena el pututu | el mensajero, el curaca y los principales parten por el camino norte; los vecinos se quedan (v4.8) | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
+| `DONE` | 8 s después de «La llacta queda en silencio…» (v4.8) | la tarjeta de fin se funde mientras la comitiva se aleja; al llegar al camino norte desaparece | «Fin del fragmento» · «R para volver a empezar · Esc para salir» |
 
 Reglas:
 
 - **Antes de `CALL` el pututu no está disponible**: no se enfoca, no muestra acción y no se gasta ([ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md)). Así ningún toque temprano puede dejar la llamada sin respuesta.
 - El curaca usa `force_play()`: aunque el pututu llegue gastado por cualquier vía, el evento termina.
 - El subtítulo de la noticia se repite una vez si el jugador entra en la plaza durante `MESSAGE` o `CALL` (caso del disparo por espera agotada).
-- El cierre empieza con la plaza vacía y el viento. Unos 60 s después del último subtítulo, un fundido muestra la tarjeta de fin: R reinicia y Esc sale (v3.5, ADR-0013; antes no había tarjeta).
+- El cierre es corto: unos 8 s después del último subtítulo, un fundido muestra la tarjeta de fin, y R reinicia y Esc sale (v4.8, ADR-0026). Antes la tarjeta llegaba unos 60 s después (v3.5, ADR-0013), y en la prueba ese hueco dejaba al jugador sin saber qué hacer.
 - No hay diálogo ramificado ni sistema de misiones. Cualquier texto con opciones requiere un ADR.
 
 ## 3. Mapa y rutas
@@ -136,7 +137,7 @@ Reglas:
 |---|---|---|---|
 | Tejedora | Mujer adulta que trabaja el telar junto a una vivienda | Idle de tejido; gira la cabeza hacia el jugador si está cerca | PCH-010, PCH-018 |
 | Agricultor | Hombre que trabaja en las terrazas | Idle de trabajo; se detiene y mira al mensajero | PCH-008, PCH-018 |
-| Mensajero | Quillis-cachi fugitivo que trae la noticia por el camino norte | Entra corriendo y agotado, se detiene en la plaza y habla con gestos | PCH-011 |
+| Mensajero | Quillis-cachi fugitivo que trae la noticia por el camino norte | Entra corriendo y agotado, se detiene en la plaza y habla con gestos; tras el pututu guía a la comitiva de vuelta al Cusco (v4.8) | PCH-011 |
 | Curaca | Autoridad local que recibe la noticia y convoca | Sale de su casa, se acerca al mensajero; toca el pututu si el jugador no lo hace | PCH-017 |
 | Hombre principal 1 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
@@ -178,7 +179,7 @@ Lo que sigue de la v3.7 (ADR-0015) se mantiene, ahora con estos cuerpos y estos 
 - **Mensajero:** entra corriendo, recobra el aliento agotado y cuenta la noticia con gestos.
 - **Curaca:** gesticula durante la llamada.
 - **Vecinos y curaca:** acompañan su frase de «Hablar» con gestos.
-- **Comitiva:** el curaca y los hombres principales caminan a 1,8 m/s.
+- **Comitiva:** el mensajero, el curaca y los hombres principales caminan a 1,8 m/s; el mensajero va con ellos al paso, ya sin correr (v4.8).
 
 **Conversaciones y paseo (v3.4).** Antes de la noticia, la tejedora, el agricultor, el curaca y los tres vecinos tienen «Hablar»: cada uno dice una sola frase, sin opciones, y se gira hacia el jugador. Los tres vecinos pasean despacio entre la plaza y las casas, y se detienen y se vuelven hacia el mensajero cuando llega.
 
@@ -369,7 +370,7 @@ El facilitador solo responde dudas de **controles**. Si hay un bloqueo técnico,
 **Medición de la duración.** El juego no tiene pantalla final, así que la duración de una sesión se mide así:
 
 - **Inicio:** aparece la primera tarjeta de la introducción, cuando la persona pulsa Comenzar en la pantalla de título tras la explicación de controles (v4.6; antes, el primer movimiento). Se anota también el momento en que termina la introducción.
-- **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; pasan 60 s desde el subtítulo de cierre («La llacta queda en silencio…»); se llega a 12 min.
+- **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; aparece la tarjeta «Fin del fragmento» (v4.8; antes, 60 s tras el subtítulo de cierre); se llega a 12 min.
 - Se anota también el momento del subtítulo de cierre, para separar el tiempo de la historia del de exploración libre.
 
 El procedimiento completo está en [guion_facilitador.md](guion_facilitador.md).
@@ -427,7 +428,7 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 | Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
 | **Total** | **4,5** | **8,1** |
 
-Con el reloj de 75 s que espera al jugador (v3.5), la mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6): quien explora ve el evento al llegar a la plaza, como tarde a los 150 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
+Con el reloj de 75 s que espera al jugador (v3.5), la mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6, y unos 50 s menos con el cierre corto de la v4.8, que ya no espera 60 s tras el último subtítulo): quien explora ve el evento al llegar a la plaza, como tarde a los 150 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
 
 ## 11. Rendimiento
 
