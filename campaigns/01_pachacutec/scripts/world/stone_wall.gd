@@ -1,12 +1,12 @@
 class_name StoneWall
 extends RefCounted
-## Cara de muro de pirka (piedra de campo con mortero de barro) generada en
-## Godot para los muros de contención de las terrazas (alcance §6.1: malla
+## Cara de muro de piedra de campo generada en Godot para los muros de
+## contención de las terrazas (alcance §6.1: malla
 ## procedural; ficha PCH-008, reconstrucción R).
 ##
 ## Cada cara se llena de hiladas de piedras irregulares que sobresalen un poco
-## del bloque de colisión; el bloque, de color barro, hace de mortero entre
-## ellas. Una sola malla con color por vértice por terraza: una llamada de
+## del bloque de colisión; el bloque asoma entre ellas como junta (oscura,
+## de piedra seca, en las terrazas). Una sola malla con color por vértice por terraza: una llamada de
 ## dibujo. El reparto es determinista para una semilla dada.
 
 const COURSE_MIN: float = 0.2

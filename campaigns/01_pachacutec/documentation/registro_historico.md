@@ -74,28 +74,37 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: lugar
 - Clasificación: A (asentamientos excavados) / R (esta llacta concreta)
 - Uso en el juego: escena completa `mundo_base.tscn`
-- Fuentes (identificadas; pendiente de página): Craig Morris y Donald Thompson, *Huánuco Pampa: An Inca City and its Hinterland* (Thames and Hudson, 1985); John Hyslop, *Inka Settlement Planning* (University of Texas Press, 1990).
-- Discrepancias entre fuentes: —
-- Notas de representación: la llacta del juego no se identifica con ningún sitio real ni recibe nombre propio. Los conjuntos excavados de la sierra son en su mayoría imperiales o administrativos; una llacta rural anterior a la expansión se reconstruye por analogía y se declara como tal.
-- Estado de verificación: pendiente
+- Fuentes:
+  - A: R. Alan Covey, Kylie E. Quave y otros, «Settlement discontinuity at Ak'awillay and the development of the Inca imperial capital region», *Antiquity* 99 (404): 481–499 (2025), acceso abierto: https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B. Las prospecciones de cobertura total registran «approximately 1000 Late Intermediate Period sites» en la región del Cusco (p. 483). En el valle de Xaquixaguana, «approximately 150 small villages and hamlets occupied the alluvial terraces and low hillslopes near the valley floor» (p. 487). Se han excavado sitios preimperiales mayores (Chokepukio, Wat'a, Pukara Pantillijlla) y contextos de «local households, tombs and public spaces» (pp. 483–484).
+  - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. III «De sus pueblos y casas» (pp. 163–164): «Los quichuas llaman al pueblo Llacta»; los pueblos «eran pequeños como aldeas de á cien vecinos para abajo».
+  - Identificadas y sin consultar: Morris y Thompson, *Huánuco Pampa* (1985); Hyslop, *Inka Settlement Planning* (1990).
+- Discrepancias entre fuentes: Cobo, testimonio colonial y general, dice que fuera del Cusco y de algunos lugares grandes los pueblos no tenían «calles ni plazas» (ver PCH-016); Covey y colaboradores mencionan espacios públicos en sitios del Intermedio Tardío.
+- Notas de representación: la llacta del juego no se identifica con ningún sitio real ni recibe nombre propio. Su tamaño (8 viviendas) cabe en las aldeas y caseríos del Intermedio Tardío que registran las prospecciones del Cusco. La disposición concreta es reconstrucción (R).
+- Estado de verificación: **verificado (A / R)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-007 — Vivienda rural de piedra y barro
 - Tipo: arquitectura
 - Clasificación: A / R
 - Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`; modelos `pch_house_a.glb` y `pch_house_b.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas)
-- Fuentes (identificadas; pendiente de página): Morris y Thompson, *Huánuco Pampa* (1985): casas rectangulares de **pirka**, muros dobles de piedra de campo con relleno de ripio y barro y nichos trapezoidales; Vincent R. Lee, «Inca Architecture and Building Methods», *Andean Past* (2016), sobre «pirca» de piedra de campo con mortero de arcilla.
+- Fuentes:
+  - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. III (pp. 166–168): «En la Sierra hacen las casas de piedra y barro y las cubren de paja. La piedra es tosca y puesta sin orden y concierto, más que irla asentando y juntando con pelladas de barro»; «Las casas son unas redondas y otras á dos aguas; las redondas son más usadas y comunes en tierras frías, como en las provincias del Collao». Sobre las puertas, p. 168: «pequeñas y llanas, y las más tan bajas y estrechas».
+  - A (localizada por búsqueda automática, sin contrastar directamente): Susan A. Niles, «Niched Walls in Inca Design», *Journal of the Society of Architectural Historians* 46 (3): 277–285 (1987), copia en línea: https://drmsh.com/PaleoBabble/Niched%20Walls%20in%20Inca%20Design.pdf. Describe edificios rectangulares de una sola sala, con cimientos de piedra y techo de paja, y muros de piedra de campo en matriz de arcilla (p. 277). Las casas de agricultores de Raqay-Raqayniyoq, cerca del Cusco, tenían nichos de forma trapezoidal a casi rectangular (p. 279).
+  - Retirada: la cita de Vincent R. Lee en *Andean Past* (2016), que no existe. Identificada y sin consultar: Morris y Thompson, *Huánuco Pampa* (1985).
 - Discrepancias entre fuentes: —
-- Notas de representación: se descarta la sillería imperial fina, anacrónica para una llacta rural anterior a la expansión. Huánuco Pampa es un centro imperial: sirve de analogía constructiva, no de prueba directa del tipo de vivienda representado.
-- Estado de verificación: pendiente
+- Notas de representación: se descarta la sillería imperial fina, anacrónica para una llacta rural anterior a la expansión. La planta rectangular a dos aguas sigue a Cobo, que la da junto a la redonda (más común en el Collao). La puerta trapezoidal no está documentada para casas rurales en estas fuentes (Cobo solo dice que eran pequeñas y bajas): es reconstrucción (R).
+- Estado de verificación: **verificado (A / R)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-008 — Terraza agrícola
 - Tipo: arquitectura
 - Clasificación: A
 - Uso en el juego: `Llacta/Terraces` en `mundo_base.tscn`
-- Fuentes (identificadas; pendiente de página): Robin A. Donkin, *Agricultural Terracing in the Aboriginal New World* (University of Arizona Press, 1979); Ann Kendall, *Aspects of Inca Architecture* (BAR, 1985).
+- Fuentes:
+  - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. VIII «Del conocimiento y uso que tenían de la agricultura» (pp. 188–189): allanaban las laderas con paredes de piedra que sostenían la tierra a nivel, «todas ellas de piedra seca … como son muchos de los andenes que todavía permanecen en la comarca del Cuzco».
+  - A (localizada por búsqueda automática, sin contrastar directamente): Frank Meddens y otros, «Where the Water Flows…», *Latin American Antiquity* 37 (2): 189–207 (2026), CC BY 4.0: https://www.cambridge.org/core/product/ADEECF01245B8D8CC483B5C822646030/core-reader. Documenta terrazas con muro de contención inclinado (tipología de Kendall y Rodríguez 2009) introducidas en el valle de Chicha-Soras en el Horizonte Medio, antes de los incas.
+  - Identificadas y sin consultar: Donkin (1979); Kendall (1985).
 - Discrepancias entre fuentes: —
-- Notas de representación: tres niveles con muro de contención de pirka (piedra de campo con mortero de barro, como las viviendas de PCH-007) y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
-- Estado de verificación: pendiente
+- Notas de representación: tres niveles con muro de contención de piedra seca, sin mortero, como describe Cobo para los andenes del Cusco, y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Las juntas oscuras entre piedras representan la piedra seca. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
+- Estado de verificación: **verificado (A)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-009 — Pututu
 - Tipo: instrumento
@@ -177,21 +186,28 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 
 ### PCH-016 — Plaza y caminos
 - Tipo: lugar
-- Clasificación: A / R
+- Clasificación: A / R / N (plaza como licencia de diseño)
 - Uso en el juego: `Llacta/Plaza`, `Llacta/PathSouth`, `Llacta/PathEast`, `Llacta/PathWest`
-- Fuentes (identificadas; pendiente de página): Morris y Thompson, *Huánuco Pampa* (1985), sobre la plaza y el ushnu; John Hyslop, *The Inka Road System* (Academic Press, 1984).
-- Discrepancias entre fuentes: —
-- Notas de representación: la plaza de tierra apisonada y los caminos de tierra son reconstrucción (R). No se incluye ushnu: no está documentado para una llacta de este tamaño.
-- Estado de verificación: pendiente
+- Fuentes:
+  - A: Covey, Quave y otros, *Antiquity* 99 (2025), pp. 483–484 (ver PCH-006): en los sitios del Intermedio Tardío de la región del Cusco hay contextos excavados de «public spaces».
+  - Caminos (localizada por búsqueda automática, sin contrastar directamente): Ministerio de Cultura del Perú, Proyecto Qhapaq Ñan, *Guía de identificación y registro del Qhapaq Ñan* (2023), https://qhapaqnan.cultura.pe/sites/default/files/mi/archivo/GuiaIdentificacionRegistrosCaminos2023.pdf. Caminos con calzada de tierra y caminos empedrados (§4.2–4.3), y rutas anteriores a los incas reutilizadas por el Estado inca (§2.1). Cita a Hyslop (1992 [1984]).
+  - Ushnu (localizada por búsqueda automática, sin contrastar directamente): Rubén Stehberg y otros, «Plataforma ceremonial ushnu inca de Chena», *Chungara* 48 (4): 557–588 (2016), https://www.redalyc.org/pdf/326/32649574006.pdf. El ushnu se halla «solo en instalaciones políticamente jerarquizadas dentro del planeamiento urbano inka» (p. 560).
+  - Identificadas y sin consultar: Morris y Thompson (1985); Hyslop, *The Inka Road System* (1984).
+- Discrepancias entre fuentes: **Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Jiménez de la Espada, t. IV (1893), lib. XIV, cap. III, p. 163**: fuera del Cusco y de algunos lugares grandes, en los pueblos «las casas estaban amontonadas, sin orden … de modo que ni formaban calles ni plazas». Es un testimonio colonial que generaliza, pero contradice que toda aldea tuviera plaza. Covey y colaboradores sí hablan de espacios públicos en sitios del Intermedio Tardío.
+- Notas de representación: la plaza central de tierra apisonada es una **licencia de diseño (N)** apoyada en los espacios públicos del Intermedio Tardío (R): el juego necesita un lugar de reunión visible para el evento, aunque Cobo dice que las aldeas pequeñas no solían tener plaza. Los caminos de tierra son reconstrucción (R). No se incluye ushnu, que corresponde a centros incas jerarquizados.
+- Estado de verificación: **verificado (A / R / N)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-017 — Curaca y hombres principales
 - Tipo: personaje / organización social
 - Clasificación: H / R
 - Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`; modelos `pch_npc_curaca.glb`, `pch_npc_principal.glb` y `pch_npc_authority.glb` (R: unku con franja ajedrezada, manto teñido y cinta en la cabeza como distintivos discretos; sin vara ni orejeras, que serían coloniales o imperiales)
-- Fuentes (identificadas; pendiente de capítulo y página): María Rostworowski, *Curacas y sucesiones: costa norte* (1961) y *Señoríos indígenas de Lima y Canta* (1978); Sarmiento de Gamboa, *Historia de los Incas*, cap. 27 (Inca Yupanqui convoca a los curacas).
-- Discrepancias entre fuentes: —
+- Fuentes:
+  - H: Juan de Betanzos, *Suma y narración de los Incas*, I parte, cap. VII, ed. Jiménez de la Espada (Madrid, 1880), Project Gutenberg n.º 25705 (p. 26 y ss.): ante el avance de Uscovilca, Inca Yupanqui decide «inviar sus mensajeros á los caciques de los pueblos comarcanos … que les rogaba que le favoresciesen con sus poderes y gente», y envía a sus cuatro compañeros «á los caciques y Señores que ansí eran en torno de la ciudad en espacio de tres leguas». Los caciques responden que solo ayudarán cuando él junte gente propia.
+  - Definición de curaca (localizadas por búsqueda automática, sin contrastar directamente): María Rostworowski, «Las macroetnias en el ámbito andino», *Allpanchis* 35/36: 3–28 (1990), https://revistas.ucsp.edu.pe/index.php/Allpanchis/article/download/882/1280/6247: grupos étnicos «gobernados por sus Hatun Curaca», con «varios curacas subalternos» (p. 18). Ricardo Alva Mariñas, *Bulletin de l'IFEA* 37 (1) (2008), https://www.redalyc.org/pdf/126/12611728018.pdf: los curacas, «llamados también caciques», con autoridad política y religiosa basada en el linaje (p. 258).
+  - Corregida: la cita anterior a Sarmiento, cap. 27 («Inca Yupanqui convoca a los curacas») no se sostiene; en los caps. XXVI–XXVIII Sarmiento no recoge esa petición. Identificadas y sin consultar: Rostworowski (1961 y 1978).
+- Discrepancias entre fuentes: Betanzos llama «caciques y Señores» a los jefes de los pueblos vecinos y dice que al principio no acudieron; el juego muestra a un curaca que parte hacia el Cusco tras la noticia, una puesta en escena (N) que no contradice la petición documentada.
 - Notas de representación: el curaca y los hombres principales **parten hacia el Cusco para sumarse a la defensa**; el guion debe impedir la lectura de huida. Distintivos de autoridad discretos (R). La franja ajedrezada del unku imita el t'oqapu, que según Dumbarton Oaks (PC.B.518) solo podía llevar la gente de alto rango en el Estado inca. Ponerla en un curaca local anterior a la expansión es reconstrucción (R) y no está documentado.
-- Estado de verificación: pendiente
+- Estado de verificación: **verificado (H / R)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-018 — Vestimenta y apariencia del habitante común
 - Tipo: vestimenta
@@ -213,20 +229,23 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: objeto
 - Clasificación: A (estilo Killke del Cusco) / R (forma y tamaño de uso doméstico)
 - Uso en el juego: cántaros junto a la puerta de las viviendas; modelo `pch_prop_jar.glb` (R: dos asas, cuerpo globular, cuello cóncavo, fondo crema con bandas rojas bordeadas de negro y triángulos negros colgando del borde)
-- Fuentes (identificadas; pendiente de verificación con la edición a la vista):
-  - Brian S. Bauer y Charles Stanish, *Killke and Killke-related pottery from Cuzco, Peru, in the Field Museum of Natural History*, Fieldiana Anthropology, n. s., 15 (Field Museum, 1990), en archive.org: `killkekillkerela15baue`. Describe 17 vasijas Killke y relacionadas del valle del Cusco, el estilo inmediatamente anterior al inca clásico: jarras de una o dos asas con cuello cóncavo y borde algo abierto, ollas de dos asas, decoración negra sobre crema con rombos reticulados, triángulos colgantes y bandas rojas bordeadas de negro.
+- Fuentes:
+  - Brian S. Bauer y Charles Stanish, *Killke and Killke-related pottery from Cuzco, Peru, in the Field Museum of Natural History*, Fieldiana Anthropology, n. s., 15 (Field Museum, 1990), texto completo en https://archive.org/details/killkekillkerela15baue.
+    - «Definition of Killke Style» (pp. 1–2): los motivos más frecuentes son «broad red or occasionally black bands outlined by one to three narrow black lines», rombos reticulados y «rows of pendant solid or cross-hatched triangles», pintados sobre un engobe crema sin pigmento («unpigmented buff slip background»).
+    - «Killke Polychrome Vessels» (pp. 5–11): jarras de asa alta con cuello cóncavo y borde algo abierto (figs. 2–4, pp. 6–8) y una olla de dos asas (fig. 9, p. 10).
+    - El estudio presenta el estilo Killke como el antecedente inmediato de la cerámica inca clásica en la región del Cusco.
 - Discrepancias entre fuentes: —
 - Notas de representación: se elige el estilo Killke, y no el inca imperial (aríbalos), porque la llacta es anterior a la expansión. Las piezas del estudio son vasijas finas de unos 8 a 18 cm; el cántaro del juego, de 35 cm y de uso doméstico, es una reconstrucción (R).
-- Estado de verificación: pendiente
+- Estado de verificación: **verificado (A / R)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en la edición digital citada (secciones y figuras indicadas) ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-020 — Leña de queñua
 - Tipo: objeto / recurso
 - Clasificación: R (a partir de A)
 - Uso en el juego: haces de leña junto a la puerta de las viviendas; modelo `pch_prop_firewood.glb` (R: ramas de corteza rojiza atadas con cuerda)
-- Fuentes: B. B. Simpson, *A revision of the genus Polylepis*, Smithsonian Contributions to Botany 43 (1979), p. 52 (ver PCH-013, verificada): la madera de *Polylepis incana* se usa como leña, entre otros usos.
+- Fuentes: B. B. Simpson, *A revision of the genus Polylepis*, Smithsonian Contributions to Botany 43 (1979), p. 52, *Polylepis incana* (texto abierto: https://archive.org/details/revisionofgenus431979simp): «The wood is used by Indians to manufacture instruments for cultivation, for house construction, and as firewood». Ver PCH-013, verificada.
 - Discrepancias entre fuentes: —
 - Notas de representación: la fuente documenta el uso actual de la madera de queñua como leña. Que una casa del siglo XV guardara un haz atado junto a la puerta es reconstrucción (R).
-- Estado de verificación: pendiente
+- Estado de verificación: **verificado (R)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en la edición digital citada, p. 52 ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente la edición.
 
 ---
 

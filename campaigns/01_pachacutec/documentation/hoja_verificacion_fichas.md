@@ -113,3 +113,22 @@ Para una visita a biblioteca. En estas obras, un capítulo o una página bastan 
 
 - **PCH-014 Llama / alpaca:** **fuera del slice desde el 2026-11-11**, por decisión del responsable del proyecto. La ficha pasa a la sección «Fuera del vertical slice» del registro y no bloquea el cierre. Si se añade al juego, vuelve como pendiente; hay una referencia identificada: J. C. Wheeler, *Biological Journal of the Linnean Society* 54(3): 271–295 (1995), DOI 10.1016/0024-4066(95)90021-7.
 - **PCH-001 y PCH-002:** **verificadas el 2026-11-11** con Sarmiento, caps. XXVI–XXVIII, y las fuentes de PCH-003 y PCH-015.
+
+## 5. Comprobación en línea por el agente (2026-11-11)
+
+A petición del responsable del proyecto, el agente buscó y leyó fuentes en línea para las siete fichas que quedaban (PCH-006, 007, 008, 016, 017, 019 y 020). Las citas, páginas y enlaces están en cada ficha del registro.
+
+- **Contrastados directamente:** Covey y otros (2025), Cobo (ed. 1893), Betanzos (ed. 1880), Bauer y Stanish (1990) y Simpson (1979).
+- **Localizados por búsqueda automática, sin contrastar directamente** (marcados así en las fichas): Niles (1987), Meddens y otros (2026), Stehberg y otros (2016), la guía del Qhapaq Ñan (2023), Rostworowski (1990) y Alva Mariñas (2008).
+
+Las reglas (docs/07 y alcance §8) exigen la firma de una persona. El responsable del proyecto **firmó las siete en bloque el 2026-11-11** sobre esta comprobación, sin consultar él mismo las ediciones; queda anotado así en cada ficha.
+
+Lo que cambió al comprobarlas:
+
+| Ficha | Hallazgo | Cómo queda |
+|---|---|---|
+| PCH-016 Plaza | Cobo dice que fuera del Cusco y de lugares grandes los pueblos no formaban «calles ni plazas» | La plaza pasa a licencia de diseño (N), con la discrepancia declarada |
+| PCH-008 Terrazas | Cobo describe los andenes del Cusco de piedra seca, sin mortero | Las juntas de los muros pasan a oscuras, de piedra seca, en lugar de barro |
+| PCH-017 Curaca | Sarmiento, cap. 27, no recoge la petición a los curacas | Se cita Betanzos, cap. VII, que sí la recoge (a «caciques y Señores» de los pueblos vecinos) |
+| PCH-007 Vivienda | Ninguna fuente documenta la puerta trapezoidal en casas rurales | La puerta queda como reconstrucción (R); Cobo solo dice que eran pequeñas y bajas |
+| PCH-006 Llacta | Los sitios del Intermedio Tardío del Cusco se conocen por prospección y también por excavación | Se corrige la nota de representación |

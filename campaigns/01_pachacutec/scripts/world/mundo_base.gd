@@ -97,9 +97,11 @@ const FIELD_FURROW_SPACING: float = 0.55
 const FIELD_RIDGE_HEIGHT: float = 0.09
 const FIELD_LIFT: float = 0.02
 const FIELD_MARGIN: float = 0.25
-## Mortero de barro entre las piedras de los muros de contención: es el color
-## del bloque de colisión, que asoma entre las piedras de StoneWall.
-const TERRACE_MORTAR_COLOR: Color = Color(0.4, 0.32, 0.24, 1.0)
+## Juntas entre las piedras de los muros de contención: es el color del bloque
+## de colisión, que asoma entre las piedras de StoneWall. Oscuro, como las
+## juntas de la piedra seca sin mortero que Cobo describe en los andenes del
+## Cusco (PCH-008).
+const TERRACE_MORTAR_COLOR: Color = Color(0.2, 0.19, 0.17, 1.0)
 ## Rampas de las terrazas: piedra clara de camino, para que se vea por dónde
 ## se sube.
 const RAMP_COLOR: Color = Color(0.6, 0.53, 0.42, 1.0)

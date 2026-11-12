@@ -16,7 +16,7 @@ El jugador recorre entornos andinos, convive con habitantes de una llacta y part
 
 ## 3. Contexto historiográfico (resumen inicial)
 
-Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_convenciones_historicas.md). Todas las referencias están **pendientes de verificación con edición, capítulo y página**.
+Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_convenciones_historicas.md). Las referencias de este resumen son orientativas; las citas con edición, capítulo y página están en las fichas del [registro histórico](registro_historico.md).
 
 | Aspecto | Estado de la cuestión | Clasif. |
 |---|---|---|
@@ -38,7 +38,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 | Documento | Estado |
 |---|---|
-| [registro_historico.md](registro_historico.md) | En revisión: 12 fichas verificadas; pendientes PCH-006, 007, 008, 016, 017, 019 y 020 |
+| [registro_historico.md](registro_historico.md) | Completo para el slice: 19 fichas verificadas (7 sobre la comprobación del agente); PCH-014 fuera del slice |
 | [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Aprobado (v3.3)** — precondición de la Fase 4 |
 | Guion y personajes | En el alcance v2 §2, §5 y §6.4 |
 | [guion_facilitador.md](guion_facilitador.md) | Listo para el piloto — sesiones de prueba |
