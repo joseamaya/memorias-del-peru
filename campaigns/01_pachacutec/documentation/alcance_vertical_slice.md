@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.3)** — 2026-11-12; sustituye a la v4.2
+- Estado: **Aprobado (v4.4)** — 2026-11-12; sustituye a la v4.3
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -33,6 +33,7 @@
 
 Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.3 | Aplica [ADR-0020](../../../docs/adr/0020-ropa-cortada-y-cosida.md): ropa cortada y cosida como paños de telar (unku, anacu, lliclla, manto, q'ipi y chuspa), caída simulada con los brazos bajados, sin piel que asome bajo la tela, y tejido de lana CC0 de ambientCG en lugar de arpillera (§5). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.4 | Aplica [ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md): casas, terrazas y poyos de pirca de piedra tosca; casas con talud, enlucido desconchado, puerta baja con dintel de palos, techo de ichu con mechones, tierra pisada alrededor, tercera variante y giro respecto a la plaza; dos corrales de pirca seca (PCH-021) (§6.1 y §7). Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -105,6 +106,7 @@ Reglas:
 - **Campo:** lomas suaves de hasta 1,3 m fuera del núcleo de la llacta, a partir de unos 30 m del centro, que no tocan la plaza, las casas, las terrazas ni los caminos.
 - **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío. En el bloqueo, el terreno sube ~11 m entre 61 y 73 m con una pendiente no transitable y deja un paso abierto en el camino norte; los muros a 70 m quedan como respaldo.
 - **Viviendas:** 8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo, agrupados al oeste (3), al este (3) y al norte (2). **Ninguna casa ocupa el eje de un camino**: los cuatro caminos quedan libres.
+- **Corrales (v4.4):** dos corrales bajos de pirca seca en las afueras del oeste y el noroeste, fuera de los caminos (PCH-021).
 - **Plaza:** tierra apisonada, con el pututu, el quero y el adoratorio de ofrenda.
 - **Terrazas:** tres niveles agrícolas con muro de contención de piedra seca (malla procedural `StoneWall`; PCH-008), tierra de cultivo con surcos encima y un corredor central de rampas transitables, de color camino. El agricultor está junto a la rampa de la primera terraza.
 - **Mirador:** cornisa superior de la terraza este, al final de la ruta alta.
@@ -196,6 +198,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Ichu y queñua | Mallas o billboards | Blender / procedural | Propia | PCH-013 |
 | Cántaros de estilo Killke | `.glb` | Blender (generador) | Propia | PCH-019 |
 | Haces de leña de queñua | `.glb` | Blender (generador) | Propia | PCH-020 |
+| Poyos de pirca y corrales de piedra seca | `.glb` / malla procedural | Blender (generador) / Godot | Propia | PCH-007, PCH-021 |
 | Llama o alpaca (opcional; no incluida, fuera del slice desde el 2026-11-11) | `.glb` | Blender | Propia | PCH-014 |
 
 ### 6.2 Materiales y texturas
@@ -277,7 +280,8 @@ Los `.glb` se guardan en `campaigns/01_pachacutec/assets/models/`. Cada bloqueo 
 
 | Bloqueo | Archivos, en orden de preferencia | Origen del modelo | Estado |
 |---|---|---|---|
-| Viviendas pares / impares | `pch_house_a.glb` / `pch_house_b.glb` | Base de la vivienda, mirando a la plaza por −Z; con colisión propia (`-convcolonly` o `-col`) | Generadas (R) |
+| Viviendas (se alternan) | `pch_house_a.glb` / `pch_house_b.glb` / `pch_house_c.glb` | Base de la vivienda, mirando a la plaza por −Z; con colisión propia (`-convcolonly` o `-col`) | Generadas (R) |
+| Poyo del quero y del pututu | `pch_pedestal.glb` | Base del poyo; la colisión es la caja del bloqueo | Generado (R) |
 | Tejedora, agricultor, mensajero | `pch_npc_weaver.glb`, `pch_npc_farmer.glb`, `pch_npc_messenger.glb` → `pch_npc_commoner.glb` | Pies | Generados, estáticos (R) |
 | Habitantes 1–3 | `pch_npc_villager.glb` → `pch_npc_commoner.glb` | Pies | Generados, estáticos (R); los tres comparten modelo |
 | Curaca / hombres principales | `pch_npc_curaca.glb` / `pch_npc_principal.glb` → `pch_npc_authority.glb` | Pies | Generados, estáticos (R) |
@@ -325,6 +329,7 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 | PCH-018 | Vestimenta y apariencia del habitante común | R | verificado (R), 2026-11-11 |
 | PCH-019 | Cerámica doméstica (cántaros) | A / R | verificado (A / R), 2026-11-11 (comprobación del agente) |
 | PCH-020 | Leña de queñua | R | verificado (R), 2026-11-11 (comprobación del agente) |
+| PCH-021 | Corral de pirca seca | R | pendiente: fuente de apoyo sin contrastar (2026-11-12) |
 
 “Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las siete fichas marcadas «comprobación del agente» las firmó el responsable del proyecto el 2026-11-11 sobre la comprobación en línea del agente, sin consultar él mismo las ediciones ([hoja de verificación](hoja_verificacion_fichas.md) §5). Las páginas de la traducción de 2007 tomadas de su índice publicado no cuentan como cita.
 

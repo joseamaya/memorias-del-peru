@@ -85,7 +85,12 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-007 — Vivienda rural de piedra y barro
 - Tipo: arquitectura
 - Clasificación: A / R
-- Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`; modelos `pch_house_a.glb` y `pch_house_b.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas)
+- Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`; modelos `pch_house_a.glb` y `pch_house_b.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas). Desde el alcance v4.4 ([ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md)):
+  - los muros son de piedra tosca de contorno irregular asentada en barro, en hiladas desiguales, como describe Cobo (a partir de H);
+  - la puerta es más baja (1,55 m), según Cobo;
+  - se añade una tercera variante, `pch_house_c.glb`;
+  - son reconstrucción (R): el talud del muro, el enlucido de barro desconchado (variantes B y C), el dintel de dos palos, las correas que asoman por los hastiales, el techo de haces con mechones en el alero, la tierra pisada alrededor y el giro de cada casa respecto a la plaza.
+  - Los poyos de pirca bajo el quero y el pututu (`pch_pedestal.glb`) son también reconstrucción (R).
 - Fuentes:
   - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. III (pp. 166–168): «En la Sierra hacen las casas de piedra y barro y las cubren de paja. La piedra es tosca y puesta sin orden y concierto, más que irla asentando y juntando con pelladas de barro»; «Las casas son unas redondas y otras á dos aguas; las redondas son más usadas y comunes en tierras frías, como en las provincias del Collao». Sobre las puertas, p. 168: «pequeñas y llanas, y las más tan bajas y estrechas».
   - A (localizada por búsqueda automática, sin contrastar directamente): Susan A. Niles, «Niched Walls in Inca Design», *Journal of the Society of Architectural Historians* 46 (3): 277–285 (1987), copia en línea: https://drmsh.com/PaleoBabble/Niched%20Walls%20in%20Inca%20Design.pdf. Describe edificios rectangulares de una sola sala, con cimientos de piedra y techo de paja, y muros de piedra de campo en matriz de arcilla (p. 277). Las casas de agricultores de Raqay-Raqayniyoq, cerca del Cusco, tenían nichos de forma trapezoidal a casi rectangular (p. 279).
@@ -103,7 +108,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - A (localizada por búsqueda automática, sin contrastar directamente): Frank Meddens y otros, «Where the Water Flows…», *Latin American Antiquity* 37 (2): 189–207 (2026), CC BY 4.0: https://www.cambridge.org/core/product/ADEECF01245B8D8CC483B5C822646030/core-reader. Documenta terrazas con muro de contención inclinado (tipología de Kendall y Rodríguez 2009) introducidas en el valle de Chicha-Soras en el Horizonte Medio, antes de los incas.
   - Identificadas y sin consultar: Donkin (1979); Kendall (1985).
 - Discrepancias entre fuentes: —
-- Notas de representación: tres niveles con muro de contención de piedra seca, sin mortero, como describe Cobo para los andenes del Cusco, y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Las juntas oscuras entre piedras representan la piedra seca. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
+- Notas de representación: tres niveles con muro de contención de piedra seca, sin mortero, como describe Cobo para los andenes del Cusco (desde el alcance v4.4, piedra tosca de contorno irregular en hiladas desiguales, [ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md)), y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Las juntas oscuras entre piedras representan la piedra seca. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
 - Estado de verificación: **verificado (A)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-009 — Pututu
@@ -258,6 +263,16 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ## Fuera del vertical slice
 
 Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre de la Fase 4, por decisión del responsable del proyecto del 2026-11-11 y según [ADR-0011](../../../docs/adr/0011-fichas-fuera-del-slice.md). Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
+
+### PCH-021 — Corral de pirca seca
+- Tipo: arquitectura / pastoreo
+- Clasificación: R
+- Uso en el juego: `Llacta/Corrals` en `mundo_base.tscn`: dos corrales bajos de pirca seca (1 m), con una entrada, en las afueras del oeste y el noroeste ([ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md)). Están vacíos: las llamas siguen fuera del slice (PCH-014).
+- Fuentes:
+  - A (localizada por búsqueda automática, sin contrastar directamente): Trinidad Aguilar Meza, «Estructuras para la caza y el pastoreo: un legado prehispánico», *Devenir* 5 (9): 153–172 (2018), DOI 10.21754/devenir.v5i9.205, https://revistas.uni.edu.pe/index.php/devenir/article/view/205. Prospección en comunidades altoandinas del Cusco (Waqoto, La Raya, Qelloqocha). Según el resumen, «las kanchas sirven para el pastoreo de llamas y alpacas» y se asocian a las viviendas. El resumen no dice que sean de piedra ni las data en el siglo XV.
+- Discrepancias entre fuentes: —
+- Notas de representación: el corral de piedra para camélidos junto a la aldea es una reconstrucción (R) por analogía con las kanchas pastoriles que describe la fuente, presentadas como legado prehispánico. El tamaño, la altura del muro y la piedra seca sin mortero son R.
+- Estado de verificación: pendiente. Falta contrastar la fuente y localizar una referencia arqueológica del Intermedio Tardío en la región del Cusco.
 
 ### PCH-014 — Llama / alpaca (opcional)
 - Tipo: fauna

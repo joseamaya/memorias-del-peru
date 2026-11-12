@@ -49,6 +49,8 @@ const PATH_HALF_WIDTH: float = 3.5
 ## Los caminos este y oeste llegan hasta las terrazas y las casas exteriores.
 const EAST_WEST_PATH_END: float = 37.0
 const HOUSE_CLEARANCE: float = 5.5
+## Margen sin vegetación alrededor de los corrales.
+const CORRAL_CLEARANCE: float = 1.0
 const FREE_RECTS: Array[Rect2] = [
 	Rect2(-14.5, -14.5, 29.0, 29.0), # plaza
 	Rect2(28.0, -16.0, 30.0, 32.0), # terrazas y mirador
@@ -132,6 +134,12 @@ static func is_free(point: Vector2, houses: Array[Vector3]) -> bool:
 			return false
 	for house: Vector3 in houses:
 		if Vector2(house.x, house.z).distance_to(point) < HOUSE_CLEARANCE:
+			return false
+	# Los corrales de la llacta (ADR-0021), con un metro de margen.
+	for corral: Array in MundoBase.CORRALS:
+		var center: Vector3 = corral[0]
+		var size: Vector2 = corral[1]
+		if Rect2(Vector2(center.x, center.z) - size * 0.5, size).grow(CORRAL_CLEARANCE).has_point(point):
 			return false
 	return true
 

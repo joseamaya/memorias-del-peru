@@ -62,7 +62,7 @@ const MURMUR_FADE_OUT: float = 5.0
 ## Modelos definitivos (alcance §6.1 y §7). Cada bloqueo tiene un hueco que
 ## carga el primer archivo existente de su lista; sin archivo, sigue el bloqueo.
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
-const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb"]
+const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
 const MODEL_QUERO: String = "pch_quero.glb"
 const MODEL_PUTUTU: String = "pch_pututu.glb"
 const MODEL_OFFERING: String = "pch_offering_shrine.glb"
@@ -70,8 +70,26 @@ const MODEL_LOOM: String = "pch_loom.glb"
 ## Props junto a la puerta de las viviendas (PCH-019 y PCH-020).
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
-## Fondo de las viviendas A y B, para dejar los props delante del muro.
-const HOUSE_DEPTHS: Array[float] = [5.0, 4.6]
+## Fondo de las viviendas A, B y C, para dejar los props delante del muro.
+const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0]
+## Lado izquierdo de la puerta de cada variante, donde van la leña o un cántaro.
+const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7]
+## Giro de cada vivienda respecto a la plaza, en grados: sin él, todas la
+## miran de frente y el trazado parece planificado (ADR-0021).
+const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
+## Corrales de pirca seca en las afueras (ADR-0021): centro, planta (x, z) y
+## lado de la entrada. Lejos de los caminos y de los paseos de los vecinos.
+const CORRALS: Array[Array] = [
+	[Vector3(-31.0, 0.0, -12.0), Vector2(7.0, 5.5), Vector3.RIGHT],
+	[Vector3(-24.0, 0.0, -27.0), Vector2(6.0, 5.0), Vector3.BACK],
+]
+const CORRAL_WALL_HEIGHT: float = 1.0
+const CORRAL_WALL_THICKNESS: float = 0.5
+const CORRAL_ENTRANCE: float = 1.4
+## Lo que el muro se hunde en el suelo para no quedar en el aire en las lomas.
+const CORRAL_SINK: float = 0.35
+## Poyo de piedra bajo el quero y el pututu (ADR-0021).
+const MODEL_PEDESTAL: String = "pch_pedestal.glb"
 const PROP_WALL_GAP: float = 0.45
 const MODEL_COMMONER: String = "pch_npc_commoner.glb"
 const MODEL_AUTHORITY: String = "pch_npc_authority.glb"
@@ -320,6 +338,16 @@ func _build_llacta() -> void:
 	wind.materials = vegetation.wind_materials
 	add_child(wind)
 
+	var corrals: Node3D = Node3D.new()
+	corrals.name = "Corrals"
+	llacta.add_child(corrals)
+	for index: int in range(CORRALS.size()):
+		var corral: Array = CORRALS[index]
+		var corral_center: Vector3 = corral[0]
+		var corral_size: Vector2 = corral[1]
+		var corral_entrance: Vector3 = corral[2]
+		_add_corral(corrals, "Corral%02d" % (index + 1), corral_center, corral_size, corral_entrance)
+
 	var terraces: Node3D = Node3D.new()
 	terraces.name = "Terraces"
 	llacta.add_child(terraces)
@@ -327,8 +355,11 @@ func _build_llacta() -> void:
 	_add_terrace(terraces, "Terrace02", 42.0, 0.8, 1.6, stone)
 	_add_terrace(terraces, "Terrace03", 50.0, 1.6, 2.4, stone, true)
 
-	_add_box_body(llacta, "PedestalQuero", Vector3(4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1)
-	_add_box_body(llacta, "PedestalPututu", Vector3(-4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1)
+	for pedestal: StaticBody3D in [
+		_add_box_body(llacta, "PedestalQuero", Vector3(4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1),
+		_add_box_body(llacta, "PedestalPututu", Vector3(-4.0, 0.4, 4.0), Vector3(0.6, 0.8, 0.6), stone, 1),
+	]:
+		_attach_pedestal(pedestal)
 
 	_add_box_body(boundary, "North", Vector3(0.0, 1.0, -BOUNDARY_RADIUS), Vector3(BOUNDARY_RADIUS * 2.0, 2.0, 1.0), stone, 1)
 	_add_box_body(boundary, "South", Vector3(0.0, 1.0, BOUNDARY_RADIUS), Vector3(BOUNDARY_RADIUS * 2.0, 2.0, 1.0), stone, 1)
@@ -745,6 +776,7 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	root.position = at
 	parent.add_child(root)
 	root.look_at(Vector3(0.0, at.y, 0.0), Vector3.UP)
+	root.rotate_y(deg_to_rad(HOUSE_YAW_JITTER[index % HOUSE_YAW_JITTER.size()]))
 	var base: StaticBody3D = _add_box_body(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, 1)
 	var roof: MeshInstance3D = MeshInstance3D.new()
 	roof.name = "Roof"
@@ -772,7 +804,7 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 func _add_house_props(root: Node3D, index: int) -> void:
 	var variant: int = index % MODEL_HOUSES.size()
 	var front: float = -HOUSE_DEPTHS[variant] * 0.5 - PROP_WALL_GAP
-	var left_x: float = -2.4 if variant == 1 else -2.1
+	var left_x: float = HOUSE_LEFT_PROP_X[variant]
 	var props: Array[Array] = []
 	match index % 3:
 		0:
@@ -822,6 +854,65 @@ static func npc_model_files(node_name: String) -> Array[String]:
 
 ## Crea un hueco de modelo bajo [param parent]. Las listas se fijan antes de
 ## añadirlo al árbol para que cargue en su _ready().
+## Corral de pirca seca baja: cuatro muros con una entrada en el lado
+## [param entrance] (dirección hacia fuera). Cada tramo es un bloque con
+## colisión que asoma entre las piedras como junta, como en las terrazas.
+func _add_corral(parent: Node3D, node_name: String, center: Vector3, size: Vector2, entrance: Vector3) -> void:
+	var root: Node3D = Node3D.new()
+	root.name = node_name
+	parent.add_child(root)
+	var base_y: float = _height_at(center.x, center.z) - CORRAL_SINK
+	var height: float = CORRAL_WALL_HEIGHT + CORRAL_SINK
+	var half: Vector2 = size * 0.5
+	var mortar: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.ROCK, TERRACE_MORTAR_COLOR)
+	# Lados: esquina de partida, dirección, largo y normal hacia fuera.
+	var sides: Array[Array] = [
+		[Vector3(-half.x, 0.0, -half.y), Vector3.RIGHT, size.x, Vector3.FORWARD],
+		[Vector3(half.x, 0.0, -half.y), Vector3.BACK, size.y, Vector3.RIGHT],
+		[Vector3(half.x, 0.0, half.y), Vector3.LEFT, size.x, Vector3.BACK],
+		[Vector3(-half.x, 0.0, half.y), Vector3.FORWARD, size.y, Vector3.LEFT],
+	]
+	var faces: Array[StoneWall.Face] = []
+	var segment_index: int = 0
+	for side: Array in sides:
+		var start: Vector3 = side[0]
+		var along: Vector3 = side[1]
+		var length: float = side[2]
+		var outward: Vector3 = side[3]
+		var spans: Array[Vector2] = [Vector2(0.0, length)]
+		if outward.is_equal_approx(entrance):
+			var middle: float = length * 0.5
+			spans = [Vector2(0.0, middle - CORRAL_ENTRANCE * 0.5), Vector2(middle + CORRAL_ENTRANCE * 0.5, length)]
+		for span: Vector2 in spans:
+			var span_length: float = span.y - span.x
+			var a: Vector3 = center + start + along * span.x + Vector3(0.0, base_y, 0.0)
+			var mid: Vector3 = a + along * (span_length * 0.5) + Vector3(0.0, height * 0.5, 0.0)
+			var box_size: Vector3 = (along.abs() * span_length + outward.abs() * CORRAL_WALL_THICKNESS) + Vector3(0.0, height, 0.0)
+			segment_index += 1
+			_add_box_body(root, "Wall%d" % segment_index, mid, box_size, mortar, 1)
+			var half_t: Vector3 = outward * (CORRAL_WALL_THICKNESS * 0.5)
+			faces.append(StoneWall.Face.new(a + half_t, along, outward, span_length, height))
+			faces.append(StoneWall.Face.new(a + along * span_length - half_t, -along, -outward, span_length, height))
+			faces.append(StoneWall.Face.new(a - half_t, outward, -along, CORRAL_WALL_THICKNESS, height))
+			faces.append(StoneWall.Face.new(a + along * span_length + half_t, -outward, along, CORRAL_WALL_THICKNESS, height))
+	var stones: MeshInstance3D = MeshInstance3D.new()
+	stones.name = "Stones"
+	stones.mesh = StoneWall.build(faces, hash(node_name))
+	stones.material_override = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, Color.WHITE, true)
+	root.add_child(stones)
+
+
+## Poyo de pirca en lugar de la caja del bloqueo; la caja conserva la colisión.
+func _attach_pedestal(pedestal: StaticBody3D) -> void:
+	var blockout: Array[Node3D] = []
+	for child: Node in pedestal.get_children():
+		if child is MeshInstance3D:
+			blockout.append(child as MeshInstance3D)
+	var files: Array[String] = [MODEL_PEDESTAL]
+	var keep_collisions: Array[Node] = []
+	_attach_model(pedestal, "ModelSlot", Vector3(0.0, -0.4, 0.0), files, blockout, keep_collisions)
+
+
 func _attach_model(parent: Node3D, slot_name: String, at: Vector3, files: Array[String], blockout: Array[Node3D], collisions: Array[Node]) -> ModelSlot:
 	var slot: ModelSlot = ModelSlot.new()
 	slot.name = slot_name

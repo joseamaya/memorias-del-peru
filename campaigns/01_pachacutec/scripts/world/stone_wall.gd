@@ -10,17 +10,25 @@ extends RefCounted
 ## dibujo. El reparto es determinista para una semilla dada.
 
 const COURSE_MIN: float = 0.2
-const COURSE_MAX: float = 0.3
-const STONE_MIN: float = 0.3
-const STONE_MAX: float = 0.6
-const GAP: float = 0.025
-const DEPTH: float = 0.12
-const BULGE_MAX: float = 0.035
+const COURSE_MAX: float = 0.34
+## Primera hilada: piedras grandes que asientan el muro.
+const BASE_COURSE_MIN: float = 0.34
+const BASE_COURSE_MAX: float = 0.46
+const STONE_MIN: float = 0.28
+const STONE_MAX: float = 0.7
+const BASE_STONE_MIN: float = 0.55
+const BASE_STONE_MAX: float = 0.95
+const GAP_MIN: float = 0.012
+const GAP_MAX: float = 0.026
+## Lados del contorno de cada piedra.
+const SIDES: int = 6
+const PROUD_MIN: float = 0.035
+const PROUD_MAX: float = 0.08
 const STONE_COLORS: Array[Color] = [
-	Color(0.5, 0.47, 0.42, 1.0),
-	Color(0.42, 0.4, 0.36, 1.0),
-	Color(0.58, 0.54, 0.47, 1.0),
-	Color(0.55, 0.46, 0.37, 1.0),
+	Color(0.45, 0.42, 0.37, 1.0),
+	Color(0.37, 0.35, 0.32, 1.0),
+	Color(0.52, 0.48, 0.41, 1.0),
+	Color(0.5, 0.41, 0.33, 1.0),
 ]
 ## Variación de brillo de cada piedra.
 const SHADE_JITTER: float = 0.06
@@ -62,15 +70,20 @@ static func _fill_face(surface: SurfaceTool, rng: RandomNumberGenerator, face: F
 	var up: Vector3 = Vector3.UP
 	var count: int = 0
 	var v: float = 0.0
+	var first: bool = true
 	while v < face.height - 0.06:
-		var course: float = minf(rng.randf_range(COURSE_MIN, COURSE_MAX), face.height - v)
-		var u: float = -rng.randf_range(0.0, 0.25)
+		var course: float = rng.randf_range(BASE_COURSE_MIN, BASE_COURSE_MAX) if first else rng.randf_range(COURSE_MIN, COURSE_MAX)
+		course = minf(course, face.height - v)
+		var u: float = -rng.randf_range(0.0, 0.3)
 		while u < face.length:
-			var stone_len: float = rng.randf_range(STONE_MIN, STONE_MAX)
+			var stone_len: float = rng.randf_range(BASE_STONE_MIN, BASE_STONE_MAX) if first else rng.randf_range(STONE_MIN, STONE_MAX)
 			var u0: float = maxf(u, 0.0)
 			var u1: float = minf(u + stone_len, face.length)
 			u += stone_len
-			var bulge: float = rng.randf_range(0.0, BULGE_MAX)
+			var stone_h: float = course * rng.randf_range(0.86, 1.0)
+			var lift: float = rng.randf_range(0.0, course - stone_h)
+			var gap: float = rng.randf_range(GAP_MIN, GAP_MAX)
+			var proud: float = rng.randf_range(PROUD_MIN, PROUD_MAX) * (1.3 if first else 1.0)
 			var color: Color = STONE_COLORS[rng.randi_range(0, STONE_COLORS.size() - 1)]
 			var shade: float = rng.randf_range(-SHADE_JITTER, SHADE_JITTER)
 			if u1 - u0 < 0.1:
@@ -79,42 +92,51 @@ static func _fill_face(surface: SurfaceTool, rng: RandomNumberGenerator, face: F
 			# La paleta está en sRGB; el color por vértice va en lineal, como en los
 			# modelos de Blender.
 			color = color.srgb_to_linear()
-			var a: Vector3 = face.origin + face.along * (u0 + GAP * 0.5) + up * (v + GAP * 0.5)
-			var size_u: float = (u1 - u0) - GAP
-			var size_v: float = course - GAP
-			_add_stone(surface, a, face.along * size_u, up * size_v, face.normal, bulge, color)
+			var center: Vector3 = face.origin + face.along * ((u0 + u1) * 0.5) + up * (v + lift + stone_h * 0.5)
+			_add_stone(surface, rng, center, face.along, up, face.normal, (u1 - u0) - gap, stone_h - gap, proud, color)
 			count += 1
 		v += course
+		first = false
 	return count
 
 
-## Piedra como caja con cinco caras visibles (la trasera queda dentro del
-## bloque): desde [param corner], con lados [param side_u] y [param side_v] en
-## el plano del muro, y saliente [param bulge] hacia [param normal].
-static func _add_stone(surface: SurfaceTool, corner: Vector3, side_u: Vector3, side_v: Vector3, normal: Vector3, bulge: float, color: Color) -> void:
-	var back: Vector3 = -normal * (DEPTH - bulge)
-	var front: Vector3 = normal * bulge
-	var b0: Vector3 = corner + back
-	var f0: Vector3 = corner + front
-	var quads: Array[PackedVector3Array] = [
-		# Frente.
-		PackedVector3Array([f0, f0 + side_u, f0 + side_u + side_v, f0 + side_v]),
-		# Arriba y abajo.
-		PackedVector3Array([f0 + side_v, f0 + side_u + side_v, b0 + side_u + side_v, b0 + side_v]),
-		PackedVector3Array([b0, b0 + side_u, f0 + side_u, f0]),
-		# Lados.
-		PackedVector3Array([b0, f0, f0 + side_v, b0 + side_v]),
-		PackedVector3Array([f0 + side_u, b0 + side_u, b0 + side_u + side_v, f0 + side_u + side_v]),
-	]
+## Piedra tosca vista de frente: contorno casi rectangular e irregular en el
+## plano del muro (centro [param center], ejes [param axis_u] y
+## [param axis_v]), bisel hasta la cara y cara algo abombada que sobresale
+## [param proud] hacia [param normal]. La base queda en la cara del bloque,
+## que asoma entre las piedras como junta.
+static func _add_stone(surface: SurfaceTool, rng: RandomNumberGenerator, center: Vector3, axis_u: Vector3, axis_v: Vector3, normal: Vector3, size_u: float, size_v: float, proud: float, color: Color) -> void:
+	var phase: float = rng.randf_range(0.0, TAU)
+	var tilt: float = rng.randf_range(-0.12, 0.12)
+	var base: PackedVector3Array = PackedVector3Array()
+	var front: PackedVector3Array = PackedVector3Array()
+	for k: int in range(SIDES):
+		var angle: float = phase + TAU * float(k) / float(SIDES)
+		var c: float = cos(angle)
+		var s: float = sin(angle)
+		# Superelipse casi rectangular: piedra de caras planas, no canto rodado.
+		var r: float = 1.0 / pow(pow(absf(c), 5.0) + pow(absf(s), 5.0), 0.2) * rng.randf_range(0.9, 1.03)
+		var u: float = c * r * size_u * 0.5
+		var w: float = s * r * size_v * 0.5
+		var edge: Vector3 = axis_u * (u * cos(tilt) - w * sin(tilt)) + axis_v * (u * sin(tilt) + w * cos(tilt))
+		base.append(center + edge)
+		front.append(center + edge * rng.randf_range(0.84, 0.93) + normal * (proud * rng.randf_range(0.8, 0.98)))
+	var peak: Vector3 = center + normal * (proud * rng.randf_range(1.0, 1.08))
 	surface.set_color(color)
-	for quad: PackedVector3Array in quads:
-		# Orden de vértices para que la cara mire hacia fuera.
-		var n: Vector3 = (quad[1] - quad[0]).cross(quad[2] - quad[0])
-		var center: Vector3 = (quad[0] + quad[2]) * 0.5
-		var stone_center: Vector3 = corner + (side_u + side_v) * 0.5 + normal * (bulge - (DEPTH - bulge)) * 0.5
-		if n.dot(center - stone_center) > 0.0:
-			for index: int in [0, 2, 1, 0, 3, 2]:
-				surface.add_vertex(quad[index])
-		else:
-			for index: int in [0, 1, 2, 0, 2, 3]:
-				surface.add_vertex(quad[index])
+	for k: int in range(SIDES):
+		var j: int = (k + 1) % SIDES
+		_add_triangle(surface, base[k], base[j], front[j], normal)
+		_add_triangle(surface, base[k], front[j], front[k], normal)
+		_add_triangle(surface, front[k], front[j], peak, normal)
+
+
+## Triángulo orientado hacia fuera del muro ([param normal]).
+static func _add_triangle(surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, normal: Vector3) -> void:
+	if (b - a).cross(c - a).dot(normal) > 0.0:
+		surface.add_vertex(a)
+		surface.add_vertex(c)
+		surface.add_vertex(b)
+	else:
+		surface.add_vertex(a)
+		surface.add_vertex(b)
+		surface.add_vertex(c)

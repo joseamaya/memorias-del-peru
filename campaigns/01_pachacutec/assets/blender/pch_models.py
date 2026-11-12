@@ -23,8 +23,8 @@ Convenciones (alcance §7 y §7.1):
 - Los personajes los genera `pch_people.py` (ADR-0016).
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
-(PCH-004, 007, 009, 010, 012, 013, 019 y 020); ninguna forma concreta está documentada como
-hecho.
+(PCH-004, 007, 009, 010, 012, 013, 019 y 020; casas y poyos de pirca según ADR-0021);
+ninguna forma concreta está documentada como hecho.
 """
 
 import argparse
@@ -43,12 +43,14 @@ DEFAULT_OUT = os.path.normpath(os.path.join(SCRIPT_DIR, "..", "models"))
 # Paleta (color base sRGB, rugosidad). El color va por vértice; el detalle lo
 # pone el juego con texturas según SURFACE_CLASS.
 PALETTE = {
-	"stone_a": ((0.50, 0.47, 0.42), 0.95),
-	"stone_b": ((0.42, 0.40, 0.36), 0.95),
-	"stone_c": ((0.58, 0.54, 0.47), 0.95),
-	"stone_warm": ((0.55, 0.46, 0.37), 0.95),
+	"stone_a": ((0.45, 0.42, 0.37), 0.95),
+	"stone_b": ((0.37, 0.35, 0.32), 0.95),
+	"stone_c": ((0.52, 0.48, 0.41), 0.95),
+	"stone_warm": ((0.50, 0.41, 0.33), 0.95),
 	"mud": ((0.47, 0.36, 0.26), 1.0),
 	"mud_dark": ((0.30, 0.23, 0.17), 1.0),
+	"mud_plaster": ((0.55, 0.43, 0.31), 1.0),
+	"earth_trodden": ((0.42, 0.33, 0.24), 1.0),
 	"thatch_a": ((0.74, 0.63, 0.38), 1.0),
 	"thatch_b": ((0.64, 0.53, 0.30), 1.0),
 	"thatch_c": ((0.54, 0.44, 0.24), 1.0),
@@ -96,7 +98,7 @@ PALETTE = {
 # textura porque el juego proyecta las texturas en triplanar.
 SURFACE_CLASS = {
 	"stone_a": 1, "stone_b": 1, "stone_c": 1, "stone_warm": 1,
-	"mud": 2, "mud_dark": 2,
+	"mud": 2, "mud_dark": 2, "mud_plaster": 2, "earth_trodden": 7,
 	"thatch_a": 3, "thatch_b": 3, "thatch_c": 3,
 	"wood": 4, "wood_light": 4, "quenua_bark": 4, "quenua_peel": 4,
 	"wool_red": 5, "wool_ochre": 5, "wool_dark": 5, "wool_cream": 5, "wool_green": 5,
@@ -288,65 +290,202 @@ def collision_box(collection, name, center, size):
 
 
 # --- Muros de pirka -------------------------------------------------------
+#
+# Cobo (PCH-007): en la sierra, «piedra tosca y puesta sin orden y concierto,
+# más que irla asentando y juntando con pelladas de barro». Cada piedra es un
+# canto de contorno irregular y redondeado, con la cara abombada y un bisel
+# que baja hasta el barro de la junta. Las hiladas son irregulares, con
+# piedras grandes abajo y cuñas pequeñas en los huecos.
 
-def stone_course(builder, rng, length, height, top_fn, outer_frame, skip_fn, stone_mats):
-	"""Cara exterior de un muro de piedra de campo con mortero de barro.
+MORTAR_DEPTH = 0.028
+
+
+def rough_stone(builder, rng, center, axis_u, axis_v, normal, size_u, size_v, proud, mat_name, sides=6):
+	"""Piedra de campo vista de frente, asentada en el barro: contorno
+	irregular en el plano del muro (centro [center], ejes [axis_u], [axis_v]),
+	bisel hasta la cara y cara abombada que sobresale [proud]."""
+	phase = rng.uniform(0.0, 2.0 * math.pi)
+	tilt = rng.uniform(-0.12, 0.12)
+	cos_t, sin_t = math.cos(tilt), math.sin(tilt)
+	base, front = [], []
+	for k in range(sides):
+		angle = phase + 2.0 * math.pi * k / sides
+		c, s = math.cos(angle), math.sin(angle)
+		# Superelipse casi rectangular: piedra tosca de caras planas, no canto
+		# rodado.
+		r = 1.0 / ((abs(c) ** 5.0 + abs(s) ** 5.0) ** 0.2)
+		r *= rng.uniform(0.9, 1.03)
+		u, v = c * r * size_u * 0.5, s * r * size_v * 0.5
+		u, v = u * cos_t - v * sin_t, u * sin_t + v * cos_t
+		edge = axis_u * u + axis_v * v
+		base.append(center + edge)
+		front.append(center + edge * rng.uniform(0.84, 0.93) + normal * (proud * rng.uniform(0.8, 0.98)))
+	peak = center + normal * (proud * rng.uniform(1.0, 1.08)) + (axis_u * rng.uniform(-0.1, 0.1) * size_u
+		+ axis_v * rng.uniform(-0.1, 0.1) * size_v)
+	index = builder.mat_index(mat_name)
+	bm = builder.bm
+	ring_base = [bm.verts.new(p) for p in base]
+	ring_front = [bm.verts.new(p) for p in front]
+	top = bm.verts.new(peak)
+	# Cada cara mira hacia fuera de la piedra (Godot no dibuja el reverso):
+	# lejos de un punto detrás de su centro.
+	behind = center - normal * 0.05
+	for k in range(sides):
+		j = (k + 1) % sides
+		for verts in ([ring_base[k], ring_base[j], ring_front[j], ring_front[k]], [ring_front[k], ring_front[j], top]):
+			new_face = bm.faces.new(verts)
+			new_face.material_index = index
+			new_face.normal_update()
+			if new_face.normal.dot(new_face.calc_center_median() - behind) < 0.0:
+				new_face.normal_flip()
+
+
+def stone_course(builder, rng, length, height, top_fn, outer_frame, skip_fn, stone_mats, plastered=None):
+	"""Cara exterior de un muro de pirka sobre su núcleo de barro.
 
 	[outer_frame] = (origen, eje_u, eje_v, normal hacia fuera). [top_fn](u)
 	da la altura máxima de las piedras en u (hastiales). [skip_fn](u0, u1, v0,
-	v1) excluye huecos (puertas)."""
+	v1) excluye huecos (puertas). [plastered](u, v) indica dónde el enlucido
+	de barro tapa las piedras."""
 	origin, axis_u, axis_v, normal = outer_frame
+	mortar = origin - normal * MORTAR_DEPTH
 	v = 0.0
-	while v < height - 0.08:
-		course = rng.uniform(0.2, 0.32)
+	first = True
+	while v < height - 0.06:
+		# La primera hilada, de piedras grandes que asientan el muro.
+		course = rng.uniform(0.34, 0.46) if first else rng.uniform(0.2, 0.34)
 		if v + course > height:
 			course = height - v
-		u = -rng.uniform(0.0, 0.25)
+		u = -rng.uniform(0.0, 0.3)
 		while u < length:
-			stone_len = rng.uniform(0.28, 0.6)
+			stone_len = rng.uniform(0.55, 0.95) if first else rng.uniform(0.28, 0.7)
 			u0 = max(u, 0.0)
 			u1 = min(u + stone_len, length)
 			u = u + stone_len
-			if u1 - u0 < 0.12:
+			if u1 - u0 < 0.1:
 				continue
-			v1 = v + course
-			if v1 > min(top_fn(u0), top_fn(u1)) + 0.02:
+			stone_h = course * rng.uniform(0.86, 1.0)
+			lift = rng.uniform(0.0, course - stone_h)
+			v0, v1 = v + lift, v + lift + stone_h
+			if v1 > min(top_fn(u0), top_fn(u1)) + 0.03:
 				continue
-			if skip_fn(u0, u1, v, v1):
+			if skip_fn(u0, u1, v0, v1):
 				continue
-			gap = 0.025
-			depth = rng.uniform(0.14, 0.2)
-			bulge = rng.uniform(0.0, 0.04)
-			center = (origin + axis_u * ((u0 + u1) * 0.5) + axis_v * (v + course * 0.5)
-				+ normal * (bulge - depth * 0.5 + 0.02))
-			size_u = (u1 - u0) - gap
-			size_v = course - gap
-			basis = Matrix((axis_u, axis_v, normal)).transposed()
-			jitter = Matrix.Rotation(rng.uniform(-0.04, 0.04), 3, "Z") @ Matrix.Rotation(rng.uniform(-0.03, 0.03), 3, "X")
-			builder.box(center, (size_u, size_v, depth), rng.choice(stone_mats), basis @ jitter)
+			cu, cv = (u0 + u1) * 0.5, (v0 + v1) * 0.5
+			if plastered is not None and plastered(cu, cv):
+				continue
+			gap = rng.uniform(0.012, 0.026)
+			proud = rng.uniform(0.06, 0.1) if first else rng.uniform(0.035, 0.075)
+			center = mortar + axis_u * cu + axis_v * cv
+			rough_stone(builder, rng, center, axis_u, axis_v, normal, (u1 - u0) - gap, stone_h - gap,
+				proud + MORTAR_DEPTH, rng.choice(stone_mats), sides=rng.choice((6, 6, 7)))
+			# Cuña en la junta con la siguiente piedra.
+			if rng.random() < 0.4 and u1 < length - 0.1:
+				size = rng.uniform(0.06, 0.11)
+				wedge = mortar + axis_u * u1 + axis_v * (v + rng.uniform(0.25, 0.75) * course)
+				if top_fn(u1) > v + course and not skip_fn(u1 - size, u1 + size, v, v + course) and (plastered is None or not plastered(u1, v + course * 0.5)):
+					rough_stone(builder, rng, wedge, axis_u, axis_v, normal, size, size * rng.uniform(0.7, 1.1),
+						rng.uniform(0.02, 0.04) + MORTAR_DEPTH, rng.choice(stone_mats), sides=5)
 		v += course
+		first = False
 
 
-def build_house(name, rng, width, depth, wall_height, ridge_height, door_center, stone_mats, thatch_mats):
+def plaster_cells(builder, length, height, top_fn, outer_frame, skip_fn, plastered, cell=0.18):
+	"""Enlucido de barro sobre la cara: celdas donde [plastered] es cierto,
+	casi a ras de las piedras. Su borde en escalera deja ver la piedra donde
+	el barro se ha desconchado."""
+	origin, axis_u, axis_v, normal = outer_frame
+	surface = origin + normal * 0.04
+	count_u = max(1, int(round(length / cell)))
+	count_v = max(1, int(round(height / cell)))
+	du, dv = length / count_u, height / count_v
+	for i in range(count_u):
+		for j in range(count_v):
+			u0, u1 = i * du, (i + 1) * du
+			v0, v1 = j * dv, (j + 1) * dv
+			if v1 > min(top_fn(u0), top_fn(u1)) + 0.01 or skip_fn(u0, u1, v0, v1):
+				continue
+			if not plastered((u0 + u1) * 0.5, (v0 + v1) * 0.5):
+				continue
+			cell_face = builder.face([surface + axis_u * u0 + axis_v * v0, surface + axis_u * u1 + axis_v * v0,
+				surface + axis_u * u1 + axis_v * v1, surface + axis_u * u0 + axis_v * v1], "mud_plaster")
+			cell_face.normal_update()
+			if cell_face.normal.dot(normal) < 0.0:
+				cell_face.normal_flip()
+
+
+def plaster_mask(rng, amount):
+	"""Zonas enlucidas: un campo suave de ruido, sin el pie del muro (lo lava
+	la lluvia) ni las esquinas (se desconchan antes). [amount] ≈ fracción."""
+	if amount <= 0.0:
+		return None
+	waves = [(rng.uniform(1.5, 4.0), rng.uniform(1.5, 4.0), rng.uniform(0.0, 6.3)) for _ in range(4)]
+	threshold = 1.0 - 2.0 * amount
+
+	def plastered(u, v):
+		value = sum(math.sin(u * a + v * b + c) for a, b, c in waves) / len(waves)
+		edge = 0.0 if v > 0.45 else -1.0
+		return value + edge > threshold * 0.6
+
+	return plastered
+
+
+def batter(builder, rate):
+	"""Muro en talud: se cierra hacia arriba [rate] metros por metro."""
+	for vertex in builder.bm.verts:
+		scale = 1.0 - rate * max(vertex.co.z, 0.0)
+		vertex.co.x *= scale
+		vertex.co.y *= scale
+
+
+def trodden_apron(builder, rng, half_x, half_y, reach=(0.9, 1.7), segments=28):
+	"""Tierra pisada alrededor de la casa, de borde irregular, y piedras
+	sueltas junto al pie del muro: la casa asienta en el suelo."""
+	outline = []
+	for k in range(segments):
+		angle = 2.0 * math.pi * k / segments
+		c, s = math.cos(angle), math.sin(angle)
+		r = 1.0 / ((abs(c) ** 4.0 + abs(s) ** 4.0) ** 0.25)
+		extra = rng.uniform(*reach)
+		outline.append(Vector((c * (half_x * r + extra), s * (half_y * r + extra), 0.012)))
+	center = Vector((0.0, 0.0, 0.012))
+	for k in range(segments):
+		builder.face([center, outline[k], outline[(k + 1) % segments]], "earth_trodden")
+	for _ in range(12):
+		angle = rng.uniform(0.0, 2.0 * math.pi)
+		c, s = math.cos(angle), math.sin(angle)
+		r = 1.0 / ((abs(c) ** 4.0 + abs(s) ** 4.0) ** 0.25)
+		size = rng.uniform(0.08, 0.2)
+		# Apoyadas en el suelo: la base del modelo queda en su origen.
+		at = Vector((c * (half_x * r + rng.uniform(0.15, 0.6)), s * (half_y * r + rng.uniform(0.15, 0.6)), size * 0.55 * 1.12))
+		builder.blob(at, (size, size * rng.uniform(0.6, 1.0), size * 0.55), rng.choice(["stone_a", "stone_b", "stone_c"]), rng, rows=3, segments=6)
+
+
+def build_house(name, rng, width, depth, wall_height, ridge_height, door_center, stone_mats, thatch_mats,
+		plaster=0.0):
 	"""Vivienda rectangular de pirka con techo de ichu a dos aguas.
 
-	Planta [width] (X) × [depth] (Y); la puerta trapezoidal se abre en el muro
-	frontal (+Y), bajo el alero; los hastiales de piedra cierran los lados X."""
+	Planta [width] (X) × [depth] (Y); la puerta, pequeña y baja (Cobo), se
+	abre en el muro frontal (+Y), bajo el alero; los hastiales de piedra
+	cierran los lados X. [plaster] ≈ fracción del muro enlucida de barro."""
 	collection = bpy.context.scene.collection
 	thickness = 0.45
-	door_bottom = 0.9
-	door_top = 0.7
-	door_height = 1.7
+	door_bottom = 0.8
+	door_top = 0.64
+	door_height = 1.55
 	hw, hd = width * 0.5, depth * 0.5
 
 	core = MeshBuilder()
 	stones = MeshBuilder()
 
 	def door_skip(u0, u1, v0, v1):
-		if v0 > door_height + 0.05:
+		if v0 > door_height + 0.12:
 			return False
-		half = door_bottom * 0.5 + 0.06
+		half = door_bottom * 0.5 + 0.05
 		return u1 > door_center - half + hw and u0 < door_center + half + hw
+
+	def no_skip(*_args):
+		return False
 
 	def flat_top(_u):
 		return wall_height
@@ -356,14 +495,15 @@ def build_house(name, rng, width, depth, wall_height, ridge_height, door_center,
 	def gable_top(u):
 		return ridge_height - abs(u - hd) * slope
 
-	# Núcleo de barro (cara interior enlucida) con la muesca de la puerta.
+	# Núcleo de barro (junta entre piedras y cara interior) con la muesca de
+	# la puerta.
 	c = door_center + hw
 	front_outline = [
 		(0.0, 0.0), (c - door_bottom * 0.5, 0.0), (c - door_top * 0.5, door_height),
 		(c + door_top * 0.5, door_height), (c + door_bottom * 0.5, 0.0), (width, 0.0),
 		(width, wall_height), (0.0, wall_height),
 	]
-	inset = 0.03
+	inset = MORTAR_DEPTH
 	core_thickness = thickness - inset
 	x_axis, y_axis, z_axis = Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1))
 	# Frontal (+Y): marco con normal hacia dentro (−Y) desde la cara exterior.
@@ -376,30 +516,40 @@ def build_house(name, rng, width, depth, wall_height, ridge_height, door_center,
 	for side in (-1.0, 1.0):
 		core.prism(gable_outline, core_thickness, "mud",
 			(Vector((side * (hw - inset), -hd, 0.0)), y_axis, z_axis, Vector((-side, 0, 0))))
-	# Dintel de piedra sobre la puerta.
-	stones.box((door_center, hd - thickness * 0.5 + 0.01, door_height + 0.08),
-		(door_top + 0.5, thickness + 0.04, 0.16), stone_mats[0])
+	# Dintel de dos palos sobre la puerta (R).
+	for k, offset in enumerate((-0.09, 0.09)):
+		y = hd - thickness * 0.5 + offset
+		stones.tube([Vector((door_center - door_top * 0.5 - 0.28, y, door_height + 0.06 + 0.012 * k)),
+			Vector((door_center + door_top * 0.5 + 0.28, y, door_height + 0.06 - 0.01 * k))],
+			[0.055, 0.05], 7, lambda r: "wood")
 	# Suelo interior de tierra apisonada.
 	core.box((0.0, 0.0, 0.01), (width - 2 * thickness, depth - 2 * thickness, 0.02), "mud_dark")
 
-	# Piedras de la cara exterior.
-	stone_course(stones, rng, width, wall_height, flat_top,
-		(Vector((-hw, hd, 0.0)), x_axis, z_axis, y_axis), door_skip, stone_mats)
-	stone_course(stones, rng, width, wall_height, flat_top,
-		(Vector((hw, -hd, 0.0)), -x_axis, z_axis, -y_axis), lambda *a: False, stone_mats)
-	stone_course(stones, rng, depth, ridge_height, gable_top,
-		(Vector((hw, hd, 0.0)), -y_axis, z_axis, x_axis), lambda *a: False, stone_mats)
-	stone_course(stones, rng, depth, ridge_height, gable_top,
-		(Vector((-hw, -hd, 0.0)), y_axis, z_axis, -x_axis), lambda *a: False, stone_mats)
+	# Piedras (y enlucido) de las cuatro caras exteriores.
+	faces = [
+		(width, wall_height, flat_top, (Vector((-hw, hd, 0.0)), x_axis, z_axis, y_axis), door_skip),
+		(width, wall_height, flat_top, (Vector((hw, -hd, 0.0)), -x_axis, z_axis, -y_axis), no_skip),
+		(depth, ridge_height, gable_top, (Vector((hw, hd, 0.0)), -y_axis, z_axis, x_axis), no_skip),
+		(depth, ridge_height, gable_top, (Vector((-hw, -hd, 0.0)), y_axis, z_axis, -x_axis), no_skip),
+	]
+	for length, height, top_fn, frame, skip in faces:
+		mask = plaster_mask(rng, plaster)
+		stone_course(stones, rng, length, height, top_fn, frame, skip, stone_mats, mask)
+		if mask is not None:
+			plaster_cells(core, length, height, top_fn, frame, skip, mask)
+	# Talud: el muro se cierra un poco hacia arriba.
+	batter(core, 0.012)
+	batter(stones, 0.012)
 
-	# Techo de ichu: cada faldón en hiladas solapadas, de la cumbrera al alero.
+	# Techo de ichu: cada faldón en hiladas solapadas de haces, de la cumbrera
+	# al alero, con mechones colgando en el alero y en los bordes.
 	roof = MeshBuilder()
-	overhang = 0.45
-	roof_thickness = 0.22
+	overhang = 0.5
+	roof_thickness = 0.3
 	angle = math.atan2(ridge_height - wall_height, hd)
 	run = (hd + overhang) / math.cos(angle)
-	tiers = 6
-	roof_len = width + 0.6
+	tiers = 7
+	roof_len = width + 0.7
 	for side in (-1.0, 1.0):
 		rotation = rot_x(-side * angle)
 		down = rotation @ Vector((0.0, side, 0.0))
@@ -408,32 +558,66 @@ def build_house(name, rng, width, depth, wall_height, ridge_height, door_center,
 			t0 = run * tier / tiers
 			t1 = run * (tier + 1) / tiers
 			# Cada hilada se apoya sobre la siguiente: escalón visible de ichu.
-			lift = (tiers - tier) * 0.03
+			lift = (tiers - tier) * 0.035
 			top = Vector((0.0, 0.0, ridge_height + roof_thickness * 0.5)) + normal * lift
-			center = top + down * ((t0 + t1) * 0.5)
-			roof.box(center, (roof_len, t1 - t0 + 0.1, roof_thickness), thatch_mats[tier % 2], rotation)
-			# Borde inferior de la hilada en mechones de largo desigual.
-			edge = top + down * t1 + normal * (roof_thickness * 0.15)
+			# Haces de largo desigual: la hilada no es una tabla recta.
 			x = -roof_len * 0.5
 			while x < roof_len * 0.5 - 0.05:
-				tuft = min(rng.uniform(0.18, 0.34), roof_len * 0.5 - x)
-				drop = rng.uniform(0.06, 0.2) if tier == tiers - 1 else rng.uniform(0.03, 0.1)
+				bundle = min(rng.uniform(0.45, 0.9), roof_len * 0.5 - x)
+				wobble = rng.uniform(-0.02, 0.02)
+				reach = rng.uniform(-0.03, 0.04)
+				center = top + down * ((t0 + t1 + reach) * 0.5) + normal * wobble + Vector((x + bundle * 0.5, 0.0, 0.0))
+				twist = Matrix.Rotation(rng.uniform(-0.03, 0.03), 3, "Z")
+				# Casi todo del mismo tono: el ichu de un techo se corta a la vez.
+				shade = thatch_mats[1] if rng.random() < 0.15 else thatch_mats[0]
+				roof.box(center, (bundle + 0.04, t1 - t0 + 0.12 + reach, roof_thickness), shade, rotation @ twist)
+				x += bundle
+			# Borde inferior de la hilada en mechones de largo desigual; en el
+			# alero, largos y caídos.
+			edge = top + down * t1 + normal * (roof_thickness * 0.1)
+			eave = tier == tiers - 1
+			x = -roof_len * 0.5
+			while x < roof_len * 0.5 - 0.04:
+				tuft = min(rng.uniform(0.08, 0.18) if eave else rng.uniform(0.16, 0.32), roof_len * 0.5 - x)
+				drop = rng.uniform(0.14, 0.36) if eave else rng.uniform(0.03, 0.1)
+				hang = rot_x(-side * rng.uniform(0.25, 0.6)) if eave else Matrix.Identity(3)
 				mat_name = thatch_mats[2] if rng.random() < 0.5 else thatch_mats[(tier + 1) % 2]
-				roof.box(edge + Vector((x + tuft * 0.5, 0.0, 0.0)) + down * (drop * 0.5),
-					(tuft - 0.02, drop + 0.08, roof_thickness * 0.7), mat_name, rotation)
+				roof.box(edge + Vector((x + tuft * 0.5, 0.0, 0.0)) + (hang @ down) * (drop * 0.5),
+					(tuft - 0.015, drop + 0.06, roof_thickness * (0.45 if eave else 0.7)), mat_name, hang @ rotation)
 				x += tuft
-	# Caballete de la cumbrera.
-	roof.lathe([(0.16, -roof_len * 0.5), (0.16, roof_len * 0.5)], 8, lambda s, r: thatch_mats[2],
-		axis_frame=Matrix.Translation((0.0, 0.0, ridge_height + roof_thickness + 0.02)) @ Matrix.Rotation(math.pi / 2, 4, "Y"),
-		cap_bottom=True, cap_top=True)
+		# Mechones en los bordes de los hastiales.
+		for end in (-1.0, 1.0):
+			t = 0.1
+			while t < run:
+				length = rng.uniform(0.1, 0.24)
+				point = Vector((end * (roof_len * 0.5 + length * 0.3), 0.0, ridge_height + roof_thickness * 0.4)) + down * t
+				roof.box(point, (length, rng.uniform(0.1, 0.2), roof_thickness * 0.5), thatch_mats[rng.randrange(3)],
+					rotation @ Matrix.Rotation(end * rng.uniform(-0.3, 0.3), 3, "Y"))
+				t += rng.uniform(0.14, 0.24)
+		# Correas de madera bajo el ichu, que asoman por los hastiales.
+		for k in range(1, 4):
+			t = run * k / 4.0
+			beam = Vector((0.0, 0.0, ridge_height - 0.06)) + down * t - normal * 0.05
+			roof.tube([beam + Vector((-roof_len * 0.5 - 0.18, 0.0, 0.0)), beam + Vector((roof_len * 0.5 + 0.18, 0.0, 0.0))],
+				[0.05, 0.045], 6, lambda r: "wood")
+	# Caballete de la cumbrera: un haz grueso atado.
+	roof.lathe([(0.17, -roof_len * 0.5 - 0.05), (0.2, 0.0), (0.17, roof_len * 0.5 + 0.05)], 9, lambda s, r: thatch_mats[2],
+		axis_frame=Matrix.Translation((0.0, 0.0, ridge_height + roof_thickness + 0.03)) @ Matrix.Rotation(math.pi / 2, 4, "Y"),
+		cap_bottom=True, cap_top=True, radial_fn=lambda s, r: 1.0 + 0.08 * math.sin(s * 2.3 + r))
+	roof.tube([Vector((-roof_len * 0.5 - 0.3, 0.0, ridge_height + 0.02)), Vector((roof_len * 0.5 + 0.3, 0.0, ridge_height + 0.02))],
+		[0.07, 0.065], 7, lambda r: "wood")
 	# Amarres de cuerda sobre el caballete.
-	for i in range(5):
-		x = -roof_len * 0.4 + i * roof_len * 0.2
-		roof.box((x, 0.0, ridge_height + roof_thickness + 0.02), (0.05, 0.36, 0.36), "rope")
+	for i in range(6):
+		x = -roof_len * 0.42 + i * roof_len * 0.168
+		roof.box((x, 0.0, ridge_height + roof_thickness + 0.03), (0.05, 0.4, 0.42), "rope")
+
+	ground = MeshBuilder()
+	trodden_apron(ground, rng, hw, hd)
 
 	core.to_object(name + "_walls", collection)
 	stones.to_object(name + "_stones", collection)
 	roof.to_object(name + "_roof", collection)
+	ground.to_object(name + "_ground", collection)
 	collision_box(collection, name + "_body", (0.0, 0.0, wall_height * 0.5), (width, depth, wall_height))
 
 
@@ -444,7 +628,41 @@ def build_house_a(rng):
 
 def build_house_b(rng):
 	build_house("pch_house_b", rng, 5.6, 4.6, 2.2, 3.7, -1.1,
-		["stone_warm", "stone_a", "stone_b"], ["thatch_b", "thatch_a", "thatch_c"])
+		["stone_warm", "stone_a", "stone_b"], ["thatch_b", "thatch_a", "thatch_c"], plaster=0.45)
+
+
+def build_house_c(rng):
+	build_house("pch_house_c", rng, 4.8, 4.0, 2.0, 3.4, 0.7,
+		["stone_b", "stone_c", "stone_warm"], ["thatch_c", "thatch_b", "thatch_a"], plaster=0.75)
+
+
+def build_pedestal(rng):
+	"""Poyo de pirca de 0,6 × 0,6 × 0,8 m con una losa tosca encima, donde se
+	dejan el quero y el pututu (sustituye a la caja del bloqueo)."""
+	collection = bpy.context.scene.collection
+	side, height, slab = 0.6, 0.72, 0.08
+	half = side * 0.5
+	core = MeshBuilder()
+	stones = MeshBuilder()
+	core.box((0.0, 0.0, height * 0.5), (side - 2 * MORTAR_DEPTH, side - 2 * MORTAR_DEPTH, height), "mud")
+	x_axis, y_axis, z_axis = Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1))
+	frames = [
+		(Vector((-half, half, 0.0)), x_axis, z_axis, y_axis),
+		(Vector((half, -half, 0.0)), -x_axis, z_axis, -y_axis),
+		(Vector((half, half, 0.0)), -y_axis, z_axis, x_axis),
+		(Vector((-half, -half, 0.0)), y_axis, z_axis, -x_axis),
+	]
+	for frame in frames:
+		stone_course(stones, rng, side, height, lambda _u: height, frame, lambda *a: False, ["stone_a", "stone_b", "stone_c"])
+	outline = []
+	for k in range(10):
+		angle = 2.0 * math.pi * k / 10
+		c, s_ = math.cos(angle), math.sin(angle)
+		r = 1.0 / ((abs(c) ** 4.0 + abs(s_) ** 4.0) ** 0.25) * rng.uniform(0.9, 1.0)
+		outline.append((c * r * 0.37, s_ * r * 0.36))
+	stones.prism(outline, slab, "stone_c", (Vector((0.0, 0.0, height)), x_axis, y_axis, z_axis))
+	core.to_object("pch_pedestal_core", collection)
+	stones.to_object("pch_pedestal_stones", collection)
 
 
 # --- Objetos --------------------------------------------------------------
@@ -862,6 +1080,8 @@ def _garment_profile(points, rows):
 MODELS = {
 	"pch_house_a": build_house_a,
 	"pch_house_b": build_house_b,
+	"pch_house_c": build_house_c,
+	"pch_pedestal": build_pedestal,
 	"pch_quero": build_quero,
 	"pch_pututu": build_pututu,
 	"pch_offering_shrine": build_offering_shrine,

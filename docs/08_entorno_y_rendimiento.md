@@ -210,6 +210,24 @@ Cada personaje tiene entre 8700 y 9900 triángulos (600–1300 más que antes): 
 
 Sin cambio apreciable respecto a la medición anterior. El movimiento medido con `tests/measure_motion.gd` tampoco cambia.
 
+### Medición con construcciones de pirca (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU, con las construcciones de [ADR-0021](adr/0021-construcciones-de-pirca.md):
+- casas y terrazas de piedra tosca;
+- tercera variante de casa;
+- poyos de pirca;
+- dos corrales.
+
+Las casas pasan de 9000–10 300 triángulos a 11 300–21 300. La carga del sistema estaba entre 8 y 17 por procesos ajenos, así que el commit anterior (aa88d48) se midió alternando con el actual, en una copia aparte.
+
+| Medición | Bajo | Medio |
+|---|---|---|
+| Ahora (2 ejecuciones) | 122,6–132,6 FPS | 51,7–51,9 FPS |
+| Commit anterior, misma carga (2 ejecuciones) | 138,8–140,6 FPS | 52,5–55,4 FPS |
+
+- **Coste:** la pirca cuesta un 5–12 % en Bajo y un 1–6 % en Medio. El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
+- **Palanca si hiciera falta:** una versión simplificada de las piedras a distancia.
+
 ### Medición con textiles, caída y manto con muelles (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas ([ADR-0018](adr/0018-ropa-textiles-caida-y-muelles.md)). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.
