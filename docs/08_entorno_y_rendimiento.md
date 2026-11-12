@@ -181,6 +181,18 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con textiles, caída y manto con muelles (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas ([ADR-0018](adr/0018-ropa-textiles-caida-y-muelles.md)). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.
+
+| Perfil | FPS medio (2 ejecuciones) | Vídeo |
+|---|---|---|
+| Bajo | 141,6–148,1 | 208,6 MB |
+| Medio | 51,4–54,9 | 281,7 MB |
+
+- Frente a la medición con cabezas de Rocketbox, los FPS no cambian de forma apreciable y la memoria de vídeo sube unos 10 MB.
+- Con textiles de 1536 × 2048, la memoria subía unos 62 MB; por eso se reducen a la mitad.
+
 ### Medición con cabezas de Rocketbox (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU. Diez personajes con cabeza de Rocketbox ([ADR-0017](adr/0017-cabezas-rocketbox.md)): entre 6900 y 8600 triángulos cada uno, con texturas de cara de 1K y mapa de normales. La carga del sistema rondaba 10 por procesos ajenos (navegador sin ventana, base de datos), así que el commit anterior (e05b752) se midió justo antes, en las mismas condiciones.

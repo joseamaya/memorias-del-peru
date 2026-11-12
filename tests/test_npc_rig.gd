@@ -8,6 +8,7 @@ const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_bas
 const ACTORS: Array[String] = ["Tejedora", "Agricultor", "Mensajero", "Curaca", "Principal1", "Principal2", "Habitante1", "Habitante2", "Habitante3"]
 const BASE_ANIMATIONS: Array[StringName] = [&"idle", &"walk", &"run", &"talk", &"tired"]
 const BONE_COUNT: int = 31
+const CAPE_BONES: int = 6
 
 
 func test_npc_rig() -> bool:
@@ -27,17 +28,23 @@ func test_npc_rig() -> bool:
 			ok = ok and player.has_animation(animation_name)
 			ok = ok and player.get_animation(animation_name).loop_mode == Animation.LOOP_LINEAR
 		var skeletons: Array[Node] = actor.find_children("*", "Skeleton3D", true, false)
-		ok = ok and skeletons.size() == 1 and (skeletons[0] as Skeleton3D).get_bone_count() == BONE_COUNT
+		# 31 huesos de MakeHuman, más seis de muelle si lleva manto.
+		var bones: int = (skeletons[0] as Skeleton3D).get_bone_count() if skeletons.size() == 1 else 0
+		ok = ok and skeletons.size() == 1 and (bones == BONE_COUNT or bones == BONE_COUNT + CAPE_BONES)
 		ok = ok and actor.look_modifier().bone_name == "Head"
 		# Ritmo propio de la captura (extras del glTF), en valores razonables.
 		ok = ok and actor.cycle_speed(false) > 0.8 and actor.cycle_speed(false) < 1.6
 		ok = ok and actor.cycle_speed(true) > 2.0 and actor.cycle_speed(true) < 4.0
-		# Ropa con el material del proyecto.
+		# Ropa con el material del proyecto y el textil del personaje.
 		var cloth: int = 0
 		for node: Node in actor.find_children("*", "MeshInstance3D", true, false):
 			var mesh_instance: MeshInstance3D = node as MeshInstance3D
 			for surface: int in range(mesh_instance.get_surface_override_material_count()):
-				if mesh_instance.get_surface_override_material(surface) == SurfaceMaterials.cloth_material():
+				var override: ShaderMaterial = mesh_instance.get_surface_override_material(surface) as ShaderMaterial
+				if override == null:
+					continue
+				var textile: Variant = override.get_shader_parameter("textile")
+				if override.get_shader_parameter("use_textile") == true and textile is Texture2D:
 					cloth += 1
 		ok = ok and cloth >= 1
 
@@ -73,6 +80,28 @@ func test_npc_rig() -> bool:
 	messenger._process(0.6)
 	ok = ok and messenger.current_animation() == &"idle"
 
+	# Las prendas del curaca llegan a Godot con V invertida (1 − prenda): al
+	# decodificarlas como el shader deben salir el cuerpo del unku (1) y el
+	# manto (4) (alcance v4.0).
+	var pieces: Dictionary[int, bool] = {}
+	for node: Node in world.get_node("Llacta/NPCs/Curaca").find_children("*", "MeshInstance3D", true, false):
+		var mesh: ArrayMesh = (node as MeshInstance3D).mesh as ArrayMesh
+		if mesh == null:
+			continue
+		for surface: int in range(mesh.get_surface_count()):
+			var material: Material = mesh.surface_get_material(surface)
+			if material == null or material.resource_name != SurfaceMaterials.CLOTH_MATERIAL_NAME:
+				continue
+			var uvs: PackedVector2Array = mesh.surface_get_arrays(surface)[Mesh.ARRAY_TEX_UV]
+			for uv: Vector2 in uvs:
+				pieces[int(roundf(1.0 - uv.y))] = true
+	ok = ok and pieces.has(1) and pieces.has(4)
+	# El manto del curaca se mece con muelles que chocan con el cuerpo
+	# (alcance v4.0); la tejedora no lleva manto.
+	var curaca_springs: SpringBoneSimulator3D = (world.get_node("Llacta/NPCs/Curaca") as NpcActor).spring_simulator()
+	ok = ok and curaca_springs != null and curaca_springs.setting_count == 3
+	ok = ok and curaca_springs != null and curaca_springs.get_child_count() == 2
+	ok = ok and weaver.spring_simulator() == null
 	# La comitiva camina (ya no a 3,2 m/s, que solo cabía corriendo).
 	var curaca: NpcActor = world.get_node("Llacta/NPCs/Curaca") as NpcActor
 	ok = ok and curaca.walk_speed < NpcActor.RUN_SPEED_THRESHOLD

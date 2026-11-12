@@ -342,6 +342,10 @@ class Garment:
 		self.faces = []
 		self.face_colors = []
 		self.face_uvs = []
+		self.face_pieces = []
+		# Prenda a la que pertenecen las caras que se añaden (columna del
+		# textil, ver TEXTILE_PIECES); 0 = color liso por vértice.
+		self.piece = 0
 
 	def add_vertex(self, point, weights):
 		self.verts.append(point)
@@ -352,6 +356,7 @@ class Garment:
 		self.faces.append(indices)
 		self.face_colors.append(color)
 		self.face_uvs.append(uvs)
+		self.face_pieces.append(self.piece)
 
 	def tube(self, rings, color_fn, weight_fn, closed_top=False):
 		"""[rings]: lista de anillos (listas de puntos, mismo número). Une
@@ -477,11 +482,18 @@ class Garment:
 		cloth = mesh.uv_layers.new(name="Cloth")
 		for polygon in mesh.polygons:
 			color = self.face_colors[polygon.index]
-			uvs = self.face_uvs[polygon.index]
+			piece = float(self.face_pieces[polygon.index])
+			# Coordenadas del textil en metros: alrededor del cuerpo y altura.
+			# Así el dibujo del textil cae a la altura real de cada prenda.
+			coords = [textile_coords(mesh.vertices[mesh.loops[li].vertex_index].co) for li in polygon.loop_indices]
+			low = min(c[0] for c in coords)
 			for corner, loop_index in enumerate(polygon.loop_indices):
+				u, v = coords[corner]
+				if u - low > TEXTILE_AROUND * 0.5:
+					u -= TEXTILE_AROUND
 				colors.data[loop_index].color = color
-				surface.data[loop_index].uv = (FABRIC_CLASS, 0.0)
-				cloth.data[loop_index].uv = uvs[corner % len(uvs)]
+				surface.data[loop_index].uv = (FABRIC_CLASS, piece)
+				cloth.data[loop_index].uv = (u, v)
 			polygon.use_smooth = True
 		mesh.color_attributes.active_color = colors
 		material = bpy.data.materials.get(CLOTH_MATERIAL) or bpy.data.materials.new(CLOTH_MATERIAL)
@@ -501,6 +513,238 @@ class Garment:
 		modifier = obj.modifiers.new("Armature", "ARMATURE")
 		modifier.object = armature
 		return obj
+
+
+# --- Textiles (alcance v4.0) -------------------------------------------------
+#
+# Cada personaje lleva una textura de tela pintada aquí, con una columna por
+# prenda. La ropa guarda en UV1 sus coordenadas en metros (vuelta al cuerpo y
+# altura) y en UV0.y la prenda; el shader del juego elige la columna y repite
+# el dibujo cada TEXTILE_PERIOD metros. Los diseños son reconstrucciones (R)
+# a partir de las piezas de museo de PCH-010, PCH-017 y PCH-018.
+
+TEXTILE_PIECES = {"garment": 1, "belt": 2, "lliclla": 3, "manto": 4, "headwear": 5, "bag": 6}
+TEXTILE_COLUMNS = 6
+TEXTILE_PERIOD = 0.3
+TEXTILE_HEIGHT = 2.0
+TEXTILE_AROUND = 1.2
+TEXTILE_COLUMN_PX = 128
+TEXTILE_HEIGHT_PX = 1024
+TEXTILE_CENTER_Y = 0.03
+
+
+def textile_coords(point):
+	"""(u, v) en metros: vuelta alrededor del eje del cuerpo y altura."""
+	angle = math.atan2(point.y - TEXTILE_CENTER_Y, point.x) % (2.0 * math.pi)
+	return angle / (2.0 * math.pi) * TEXTILE_AROUND, point.z
+
+
+class TextileCanvas:
+	"""Lienzo del textil: columnas de TEXTILE_COLUMN_PX píxeles de ancho
+	(un periodo del dibujo) por TEXTILE_HEIGHT_PX de alto (de 0 a
+	TEXTILE_HEIGHT metros de altura)."""
+
+	def __init__(self, seed):
+		import numpy as np
+		self.np = np
+		self.width = TEXTILE_COLUMN_PX
+		self.pixels = np.zeros((TEXTILE_HEIGHT_PX, TEXTILE_COLUMNS * self.width, 3), dtype=np.float32)
+		self.rng = np.random.default_rng(seed)
+
+	def _rows(self, z0, z1):
+		a = int(max(0.0, min(z0, z1)) / TEXTILE_HEIGHT * TEXTILE_HEIGHT_PX)
+		b = int(min(TEXTILE_HEIGHT, max(z0, z1)) / TEXTILE_HEIGHT * TEXTILE_HEIGHT_PX)
+		return a, max(a + 1, b)
+
+	def column(self, piece):
+		return self.pixels[:, (piece - 1) * self.width:piece * self.width]
+
+	def fill(self, piece, color):
+		self.column(piece)[:] = WOOL[color]
+
+	def band(self, piece, z0, z1, color):
+		a, b = self._rows(z0, z1)
+		self.column(piece)[a:b] = WOOL[color]
+
+	def stripes(self, piece, z0, z1, colors, count):
+		"""Franjas horizontales iguales entre z0 y z1."""
+		a, b = self._rows(z0, z1)
+		edges = self.np.linspace(a, b, count + 1).astype(int)
+		for k in range(count):
+			self.column(piece)[edges[k]:edges[k + 1]] = WOOL[colors[k % len(colors)]]
+
+	def zigzag(self, piece, z0, z1, ground, figure, teeth=4):
+		"""Zigzag escalonado: [teeth] dientes por periodo."""
+		np = self.np
+		a, b = self._rows(z0, z1)
+		height = b - a
+		col = self.column(piece)
+		col[a:b] = WOOL[ground]
+		x = np.arange(self.width)
+		phase = (x * teeth / self.width) % 1.0
+		tri = np.abs(phase * 2.0 - 1.0)
+		steps = np.floor(tri * 4.0) / 4.0
+		for row in range(height):
+			level = row / max(height - 1, 1)
+			mask = np.abs(steps - level) < 0.18
+			col[a + row, mask] = WOOL[figure]
+
+	def diamonds(self, piece, z0, z1, ground, figure, inner, count=3):
+		"""Rombos escalonados (rombos de gradas) con un punto central."""
+		np = self.np
+		a, b = self._rows(z0, z1)
+		height = b - a
+		col = self.column(piece)
+		col[a:b] = WOOL[ground]
+		cell = self.width / count
+		ys, xs = np.mgrid[0:height, 0:self.width]
+		cx = (xs % cell) / cell * 2.0 - 1.0
+		cy = ys / max(height - 1, 1) * 2.0 - 1.0
+		d = np.floor((np.abs(cx) + np.abs(cy)) * 4.0) / 4.0
+		ring = (d >= 0.5) & (d < 0.75)
+		center = d < 0.25
+		region = col[a:b]
+		region[ring] = WOOL[figure]
+		region[center] = WOOL[inner]
+
+	def tocapu(self, piece, z0, z1, colors, rows=2):
+		"""Fila de t'oqapu: cuadros con motivos geométricos sencillos
+		(PCH-017, R). Cada cuadro mide la altura de una fila."""
+		np = self.np
+		a, b = self._rows(z0, z1)
+		col = self.column(piece)
+		row_h = (b - a) // rows
+		size = row_h
+		per_row = max(1, self.width // size)
+		size = self.width // per_row
+		for r in range(rows):
+			for c in range(per_row):
+				y0 = a + r * row_h
+				x0 = c * size
+				ground = colors[(r + c) % len(colors)]
+				figure = colors[(r + c + 2) % len(colors)]
+				cell = col[y0:y0 + row_h, x0:x0 + size]
+				cell[:] = WOOL[ground]
+				h, w = cell.shape[:2]
+				ys, xs = np.mgrid[0:h, 0:w]
+				u = xs / max(w - 1, 1) * 2.0 - 1.0
+				v = ys / max(h - 1, 1) * 2.0 - 1.0
+				kind = (r * 3 + c) % 4
+				if kind == 0:
+					mask = (np.abs(u) < 0.25) | (np.abs(v) < 0.25)
+				elif kind == 1:
+					mask = ((np.floor((u + 1.0) * 2.0) + np.floor((v + 1.0) * 2.0)) % 2) == 0
+				elif kind == 2:
+					mask = (np.maximum(np.abs(u), np.abs(v)) > 0.45) & (np.maximum(np.abs(u), np.abs(v)) < 0.75)
+				else:
+					mask = np.abs(u - v) < 0.3
+				cell[mask] = WOOL[figure]
+				cell[:, :max(1, w // 24)] = WOOL["wool_dark"]
+				cell[:max(1, h // 24), :] = WOOL["wool_dark"]
+
+	def weave(self, strength=0.07):
+		"""Hilo y trama: variación fina por columnas (urdimbre) y filas
+		(trama), como un tejido de cara de urdimbre."""
+		np = self.np
+		height, width = self.pixels.shape[:2]
+		warp = self.rng.normal(0.0, 1.0, width)
+		weft = self.rng.normal(0.0, 1.0, height)
+		ribs = (np.arange(width) % 3 == 0).astype(np.float32) * -0.5
+		shade = 1.0 + strength * (warp[None, :] * 0.6 + weft[:, None] * 0.4 + ribs[None, :])
+		self.pixels *= shade[..., None]
+		np.clip(self.pixels, 0.0, 1.0, out=self.pixels)
+
+	def to_image(self, name):
+		np = self.np
+		height, width = self.pixels.shape[:2]
+		rgba = np.ones((height, width, 4), dtype=np.float32)
+		rgba[..., :3] = self.pixels
+		# Blender guarda las filas de abajo arriba.
+		image = bpy.data.images.new(name, width, height, alpha=False)
+		image.pixels.foreach_set(rgba.ravel())
+		image.pack()
+		return image
+
+
+def paint_textile(spec, dims, seed):
+	"""Textil del personaje según su ropa y las alturas reales de las
+	prendas ([dims], en metros)."""
+	canvas = TextileCanvas(seed)
+	garment = TEXTILE_PIECES["garment"]
+	body = spec["body"]
+	band = spec.get("band", "wool_dark")
+	alt = spec.get("band_alt", "wool_cream")
+	canvas.fill(garment, body)
+	if spec["garment"] == "unku":
+		hem = dims["bottom"]
+		canvas.band(garment, hem, hem + 0.012, "wool_dark")
+		canvas.zigzag(garment, hem + 0.012, hem + 0.06, band, alt if band != alt else "wool_cream")
+		canvas.band(garment, hem + 0.06, hem + 0.07, "wool_dark")
+		if spec.get("band_style") == "tocapu":
+			# Cinturón de t'oqapu a la altura de la cintura (solo autoridades).
+			waist = dims["waist"]
+			canvas.tocapu(garment, waist - 0.05, waist + 0.03, [band, alt, "wool_red", "wool_ochre", "wool_cream"], rows=2)
+		else:
+			waist = dims["waist"]
+			canvas.stripes(garment, waist - 0.02, waist + 0.005, [band, body, band], 3)
+	else:
+		hem = dims["bottom"]
+		canvas.stripes(garment, hem, hem + 0.05, [band, body, band], 3)
+		belt = TEXTILE_PIECES["belt"]
+		stripe = spec.get("belt", "wool_red")
+		canvas.fill(belt, stripe)
+		waist = dims["waist"]
+		canvas.band(belt, waist - 0.045, waist - 0.035, "wool_cream")
+		canvas.diamonds(belt, waist - 0.035, waist + 0.035, stripe, "wool_cream", "wool_dark", count=4)
+		canvas.band(belt, waist + 0.035, waist + 0.045, "wool_cream")
+	if spec.get("lliclla"):
+		piece = TEXTILE_PIECES["lliclla"]
+		main = spec["lliclla"]
+		stripe = spec.get("lliclla_stripe", "wool_red")
+		canvas.fill(piece, main)
+		low = dims["shoulder"] - 0.26
+		# Bandas decoradas (pallay) entre franjas lisas.
+		canvas.stripes(piece, low, low + 0.03, [stripe, "wool_cream", stripe], 3)
+		canvas.diamonds(piece, low + 0.07, low + 0.12, stripe, "wool_cream", "wool_dark", count=3)
+		canvas.zigzag(piece, low + 0.17, low + 0.21, main, stripe)
+		canvas.stripes(piece, low + 0.25, low + 0.29, [stripe, main, stripe], 3)
+	if spec.get("manto"):
+		piece = TEXTILE_PIECES["manto"]
+		manto = spec["manto"]
+		canvas.fill(piece, manto)
+		low = dims["knee"]
+		canvas.stripes(piece, low, low + 0.08, ["wool_dark", manto, "wool_cream", manto, "wool_dark"], 5)
+		canvas.band(piece, dims["shoulder"] - 0.12, dims["shoulder"] - 0.1, "wool_dark")
+	headwear = TEXTILE_PIECES["headwear"]
+	if spec.get("headband"):
+		canvas.fill(headwear, spec["headband"])
+		canvas.zigzag(headwear, 0.0, TEXTILE_HEIGHT, spec["headband"], "wool_dark", teeth=10)
+	elif spec.get("head_cloth"):
+		canvas.stripes(headwear, 1.3, 2.0, [spec["head_cloth"], "wool_cream", spec["head_cloth"], "wool_dark"], 28)
+	if spec.get("chuspa"):
+		bag = TEXTILE_PIECES["bag"]
+		canvas.diamonds(bag, 0.0, TEXTILE_HEIGHT, spec["chuspa"], "wool_cream", "wool_dark", count=2)
+	canvas.weave()
+	return canvas.to_image("pch_textile")
+
+
+def set_cloth_texture(image):
+	"""El textil va como color base del material de la ropa, para que el
+	glTF lo lleve y Godot lo pase al shader."""
+	material = bpy.data.materials.get(CLOTH_MATERIAL)
+	if material is None:
+		return
+	material.use_nodes = True
+	tree = material.node_tree
+	for node in list(tree.nodes):
+		tree.nodes.remove(node)
+	output = tree.nodes.new("ShaderNodeOutputMaterial")
+	bsdf = tree.nodes.new("ShaderNodeBsdfPrincipled")
+	texture = tree.nodes.new("ShaderNodeTexImage")
+	texture.image = image
+	tree.links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
+	tree.links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
+	bsdf.inputs["Roughness"].default_value = 0.9
 
 
 def _ring_points(center, radii, z, segments, offset, noise=None):
@@ -540,7 +784,7 @@ def build_clothes(spec, body, armature, rig_bones):
 	del cuerpo con [BodyInfo.push_out]."""
 	collection = bpy.context.scene.collection
 	g = Garment()
-	segments = 32
+	segments = 48
 	female = spec["garment"] == "anacu"
 	hip_z = rig_bones["LeftUpLeg"].head_local.z
 	waist_z = rig_bones["Spine"].head_local.z
@@ -555,6 +799,7 @@ def build_clothes(spec, body, armature, rig_bones):
 	def is_neck_or_head(i):
 		return body.part_weight(i, ("Neck", "Neck1", "Head")) > 0.35
 
+	g.piece = TEXTILE_PIECES["garment"]
 	# 1. Cuerpo de la prenda: del bajo de la cadera a los hombros, sin brazos
 	#    ni cuello.
 	# Sisa con corte limpio: un plano vertical poco más allá de la
@@ -598,7 +843,8 @@ def build_clothes(spec, body, armature, rig_bones):
 		else:
 			center = Vector((0.0, hip_center.y, z))
 			legs = body.ring(z, segments, center, band=0.03, include=lambda i: body.part_weight(i, LEG_BONES) > 0.3)
-			flare = 1.0 + (0.08 if not female else 0.04) * (hip_z - z) / 0.4
+			# Vuelo: la tela sobrante es la que forma pliegues al caer.
+			flare = 1.0 + (0.22 if not female else 0.16) * (hip_z - z) / 0.4
 			radii = [max(hip_radii[s] * flare, legs[s] + 0.035) for s in range(segments)]
 		profile.append((z, center, radii))
 	# Por debajo de la cadera la tela cae: el radio nunca encoge hacia el bajo
@@ -648,6 +894,7 @@ def build_clothes(spec, body, armature, rig_bones):
 	g.resolve(body, ease + 0.008, first=first, iterations=1, smooth=0.15)
 
 	# 3. Faja (chumpi) del anacu.
+	g.piece = TEXTILE_PIECES["belt"]
 	if female:
 		first = len(g.verts)
 		center = _trunk_center(body, waist_z)
@@ -659,6 +906,7 @@ def build_clothes(spec, body, armature, rig_bones):
 		g.resolve(body, ease + 0.02, first=first, iterations=1, smooth=0.0)
 
 	# 4. Lliclla: manta sobre hombros, espalda alta y brazos, con su tupu.
+	g.piece = TEXTILE_PIECES["lliclla"]
 	if spec.get("lliclla"):
 		stripe = _linear(spec.get("lliclla_stripe", "wool_red"))
 		main = _linear(spec["lliclla"])
@@ -674,10 +922,12 @@ def build_clothes(spec, body, armature, rig_bones):
 
 		g.add_body_surface(body, shawl_face, ease + 0.022, shawl_color)
 		chest = rig_bones["Spine1"].head_local
+		g.piece = 0
 		pin = body.push_out(Vector((0.0, chest.y - 0.2, shoulder_z - 0.08)), ease + 0.03)
 		g.box(pin, (0.035, 0.01, 0.035), Matrix.Identity(3), _linear("copper"), {"Spine1": 1.0})
 
 	# 5. Manto (yacolla): cae a la espalda desde los hombros hasta las rodillas.
+	g.piece = TEXTILE_PIECES["manto"]
 	if spec.get("manto"):
 		first = len(g.verts)
 		color = _linear(spec["manto"])
@@ -686,8 +936,11 @@ def build_clothes(spec, body, armature, rig_bones):
 		radii = body.ring(shoulder_z - 0.04, segments, center, include=lambda i: body.part_weight(i, ARM_BONES) < 0.7)
 		half = segments // 2
 		cape = []
-		for k, z in enumerate((shoulder_z + 0.04, shoulder_z - 0.06, waist_z, hip_z, (hip_z + knee_z) * 0.5, knee_z + 0.06)):
-			spread = 1.0 + 0.04 * k
+		# Filas suficientes para que el manto se doble con los huesos de muelle.
+		cape_levels = [shoulder_z + 0.04, shoulder_z - 0.06]
+		cape_levels += [shoulder_z - 0.06 - (shoulder_z - 0.06 - (knee_z + 0.06)) * t / 8.0 for t in range(1, 9)]
+		for k, z in enumerate(cape_levels):
+			spread = 1.0 + 0.025 * k
 			ring = _ring_points(center, [r * spread for r in radii], z, segments, ease + 0.035,
 				lambda angle, kk=k: 0.006 * kk * math.sin(angle * 7.0))
 			# Espalda (+Y): 150° centrados en ella.
@@ -695,21 +948,32 @@ def build_clothes(spec, body, armature, rig_bones):
 			hi = int(round(segments * (90.0 + 75.0) / 360.0))
 			cape.append([ring[i % segments] for i in range(lo, hi + 1)])
 		def cape_weights(p):
-			# Arriba sigue a los hombros y la espalda; abajo, solo a la cadera,
-			# para que no se levante al inclinarse.
-			upper = body.nearest_weights(Vector((p.x * 0.6, p.y, max(p.z, waist_z))), exclude=ARM_BONES)
-			t = min(1.0, max(0.0, (waist_z - p.z) / max(waist_z - hip_z + 0.15, 0.05)))
-			weights = {bone: w * (1.0 - t) for bone, w in upper.items()}
-			weights["Hips"] = weights.get("Hips", 0.0) + t
+			# Arriba sigue a los hombros y la espalda; por debajo, a los huesos
+			# de muelle del manto (CAPE_CHAINS), que se mecen en el juego.
+			upper = body.nearest_weights(Vector((p.x * 0.6, p.y, max(p.z, shoulder_z - 0.06))), exclude=ARM_BONES)
+			hang = _smooth(shoulder_z - 0.06, shoulder_z - 0.2, p.z)
+			lower = _smooth(waist_z + 0.06, waist_z - 0.06, p.z)
+			weights = {bone: w * (1.0 - hang) for bone, w in upper.items()}
+			side = max(-1.0, min(1.0, p.x / CAPE_SPREAD))
+			shares = {"L": max(0.0, side), "R": max(0.0, -side)}
+			shares["C"] = 1.0 - shares["L"] - shares["R"]
+			for chain, share in shares.items():
+				if share <= 0.0:
+					continue
+				weights["Cape_%s_1" % chain] = weights.get("Cape_%s_1" % chain, 0.0) + hang * share * (1.0 - lower)
+				weights["Cape_%s_2" % chain] = weights.get("Cape_%s_2" % chain, 0.0) + hang * share * lower
 			return weights
 
 		ids = [[g.add_vertex(p, cape_weights(p)) for p in row] for row in cape]
 		for r in range(len(ids) - 1):
 			for s in range(len(ids[r]) - 1):
-				g.add_face([ids[r][s], ids[r][s + 1], ids[r + 1][s + 1], ids[r + 1][s]], color,
+				# Las filas van de arriba abajo: este orden deja la cara visible
+				# hacia fuera (el juego no dibuja el reverso de la tela).
+				g.add_face([ids[r][s], ids[r + 1][s], ids[r + 1][s + 1], ids[r][s + 1]], color,
 					[(s * 0.05, r * 0.2), ((s + 1) * 0.05, r * 0.2), ((s + 1) * 0.05, (r + 1) * 0.2), (s * 0.05, (r + 1) * 0.2)])
 		g.resolve(body, ease + 0.03, first=first, iterations=2, smooth=0.3)
 
+	g.piece = TEXTILE_PIECES["headwear"]
 	# 6. Tocados sobre la cabeza: cinta (llautu) o paño que sigue el cráneo.
 	head = rig_bones["Head"]
 	forehead_z = head.head_local.z + (head.tail_local.z - head.head_local.z) * 0.55
@@ -723,11 +987,13 @@ def build_clothes(spec, body, armature, rig_bones):
 		g.add_body_surface(body, cloth_face, 0.024, lambda i: _linear(spec["head_cloth"]))
 
 	# 7. Chuspa al costado izquierdo con la correa cruzada al hombro derecho.
+	g.piece = TEXTILE_PIECES["bag"]
 	if spec.get("chuspa"):
 		color = _linear(spec["chuspa"])
 		left_hip = rig_bones["LeftUpLeg"].head_local
 		bag = body.push_out(Vector((left_hip.x + 0.1, hip_center.y - 0.01, hip_z + 0.03)), ease + 0.04)
 		g.box(bag, (0.035, 0.15, 0.17), Matrix.Identity(3), color, {"Hips": 0.7, "LeftUpLeg": 0.3})
+		g.piece = 0
 		shoulder = rig_bones["RightArm"].head_local
 		for side in (-1.0, 1.0):
 			path = []
@@ -739,6 +1005,7 @@ def build_clothes(spec, body, armature, rig_bones):
 				path.append(body.push_out(p, ease + 0.03))
 			g.ribbon(body, path, 0.03, color)
 
+	g.piece = 0
 	# 8. Bulto de viaje (q'ipi) a la espalda.
 	if spec.get("bundle"):
 		first = len(g.verts)
@@ -769,7 +1036,124 @@ def build_clothes(spec, body, armature, rig_bones):
 		g.box(mid, (0.1, length + 0.02, 0.016), frame, _linear("sole"), weights)
 		g.box(body.push_out(mid + Vector((0.0, -length * 0.15, 0.045)), 0.006), (0.1, 0.014, 0.01), frame, _linear("sole"), weights)
 
-	return g.to_object("clothes", collection, armature)
+	# Espalda (MakeHuman mira a −Y): el punto más atrasado del tronco entre la
+	# cintura y los hombros, para colocar los huesos del manto detrás.
+	back_y = max(body.points[i].y for i in range(len(body.points))
+		if waist_z - 0.05 < body.points[i].z < shoulder_z and body.is_trunk(i))
+	dims = {"bottom": bottom_z, "waist": waist_z, "shoulder": shoulder_z, "knee": knee_z, "hip": hip_z,
+		"back": back_y + 0.06}
+	return g.to_object("clothes", collection, armature), dims
+
+
+# --- Huesos de muelle del manto (alcance v4.0) ------------------------------
+#
+# Tres cadenas de dos huesos detrás de la espalda (izquierda, centro y
+# derecha), del hombro a la rodilla. En el juego, SpringBoneSimulator3D las
+# mece con la inercia del cuerpo (NpcActor).
+
+CAPE_CHAINS = ("L", "C", "R")
+CAPE_SPREAD = 0.13
+
+
+def add_cape_bones(armature, dims, back_y):
+	data = armature.data
+	bpy.context.view_layer.objects.active = armature
+	bpy.ops.object.mode_set(mode="EDIT")
+	parent = data.edit_bones["Spine1"]
+	for chain in CAPE_CHAINS:
+		x = {"L": CAPE_SPREAD, "C": 0.0, "R": -CAPE_SPREAD}[chain]
+		top = Vector((x, back_y, dims["shoulder"] - 0.06))
+		middle = Vector((x, back_y + 0.02, dims["waist"]))
+		bottom = Vector((x, back_y + 0.04, dims["knee"] + 0.06))
+		first = data.edit_bones.new("Cape_%s_1" % chain)
+		first.head, first.tail = top, middle
+		first.parent = parent
+		second = data.edit_bones.new("Cape_%s_2" % chain)
+		second.head, second.tail = middle, bottom
+		second.parent = first
+		second.use_connect = True
+	bpy.ops.object.mode_set(mode="OBJECT")
+	for chain in CAPE_CHAINS:
+		for index in (1, 2):
+			armature.pose.bones["Cape_%s_%d" % (chain, index)].rotation_mode = "QUATERNION"
+
+
+# --- Caída de la tela (alcance v4.0) ----------------------------------------
+#
+# Antes de exportar, la parte libre de las prendas (falda, manto y borde de la
+# lliclla) cae por su peso sobre el cuerpo en reposo con la simulación de tela
+# de Blender. La forma resultante queda en la malla: en el juego no cuesta
+# nada y la ropa sigue al esqueleto con los mismos pesos.
+
+DRAPE_FRAMES = 50
+
+
+def _pin_weights(clothes, dims):
+	"""Peso de sujeción por vértice: 1 = fijo (cuerpo de la prenda, faja,
+	tocados, correas); 0 = libre. La transición es gradual."""
+	surface = clothes.data.uv_layers["Surface"]
+	piece_of = {}
+	for polygon in clothes.data.polygons:
+		piece = int(round(surface.data[polygon.loop_indices[0]].uv[1]))
+		for index in polygon.vertices:
+			piece_of[index] = max(piece_of.get(index, 0), piece)
+	group = clothes.vertex_groups.new(name="pch_pin")
+	for vertex in clothes.data.vertices:
+		z = vertex.co.z
+		piece = piece_of.get(vertex.index, 0)
+		if piece == TEXTILE_PIECES["garment"]:
+			pin = _smooth(dims["hip"] - 0.12, dims["hip"] + 0.02, z)
+		elif piece == TEXTILE_PIECES["manto"]:
+			pin = _smooth(dims["shoulder"] - 0.16, dims["shoulder"] - 0.02, z)
+		elif piece == TEXTILE_PIECES["lliclla"]:
+			pin = _smooth(dims["shoulder"] - 0.2, dims["shoulder"] - 0.08, z)
+		else:
+			pin = 1.0
+		group.add([vertex.index], pin, "REPLACE")
+	return group
+
+
+def _smooth(edge0, edge1, x):
+	t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
+	return t * t * (3.0 - 2.0 * t)
+
+
+def drape_clothes(clothes, body_object, dims):
+	scene = bpy.context.scene
+	armature_modifiers = [(m.name, m.object) for m in clothes.modifiers if m.type == "ARMATURE"]
+	for name, _target in armature_modifiers:
+		clothes.modifiers.remove(clothes.modifiers[name])
+	pin = _pin_weights(clothes, dims)
+	collision = body_object.modifiers.new("pch_collision", "COLLISION")
+	body_object.collision.thickness_outer = 0.006
+	body_object.collision.cloth_friction = 8.0
+	cloth = clothes.modifiers.new("pch_cloth", "CLOTH")
+	settings = cloth.settings
+	settings.quality = 8
+	settings.mass = 0.25
+	settings.tension_stiffness = 20.0
+	settings.compression_stiffness = 20.0
+	settings.shear_stiffness = 6.0
+	settings.bending_stiffness = 0.15
+	settings.air_damping = 2.0
+	settings.vertex_group_mass = pin.name
+	settings.pin_stiffness = 1.0
+	cloth.collision_settings.distance_min = 0.006
+	cloth.collision_settings.use_self_collision = False
+	cloth.point_cache.frame_start = 1
+	cloth.point_cache.frame_end = DRAPE_FRAMES
+	for frame in range(1, DRAPE_FRAMES + 1):
+		scene.frame_set(frame)
+	bpy.context.view_layer.objects.active = clothes
+	bpy.ops.object.modifier_apply(modifier=cloth.name)
+	scene.frame_set(1)
+	body_object.modifiers.remove(collision)
+	leftover = clothes.vertex_groups.get("pch_pin")
+	if leftover is not None:
+		clothes.vertex_groups.remove(leftover)
+	for name, target in armature_modifiers:
+		modifier = clothes.modifiers.new(name, "ARMATURE")
+		modifier.object = target
 
 
 def build_tool(armature, beat_seconds):
@@ -1523,6 +1907,7 @@ def build_headwear(spec, head, eye_z, armature):
 	normals = [v.normal.copy() for v in data.vertices]
 	scalp = [p for p in data.polygons if data.materials[p.material_index].name == "rb.head"]
 	g = Garment()
+	g.piece = TEXTILE_PIECES["headwear"]
 
 	def cover(low, high, offset, color):
 		mapping = {}
@@ -1585,10 +1970,14 @@ def build_person(name, cmu_dir, rocketbox_dir):
 	armature, proxy, extras = build_body(spec)
 	tint_materials(proxy, extras)
 	body = BodyInfo(proxy)
-	clothes = build_clothes(spec, body, armature, armature.data.bones)
+	clothes, dims = build_clothes(spec, body, armature, armature.data.bones)
+	if spec.get("manto"):
+		add_cape_bones(armature, dims, dims["back"])
+	drape_clothes(clothes, proxy, dims)
 	if spec.get("head"):
 		head, _head_tree, eye_z = graft_rocketbox_head(spec, rocketbox_dir, armature, proxy, extras, body)
 		build_headwear(spec, head, eye_z, armature)
+	set_cloth_texture(paint_textile(spec, dims, seed=sum(ord(c) for c in name)))
 	info = build_animations(armature, spec, cmu_dir)
 	if spec.get("tool") == "chaquitaclla":
 		build_tool(armature, info["work_beat"])
@@ -1635,6 +2024,65 @@ def export(name, out_dir):
 	return path
 
 
+def _preview_cloth(material, textile):
+	"""Material de vista previa que imita el shader del juego: columna de la
+	prenda y repetición cada TEXTILE_PERIOD metros; color por vértice en las
+	piezas lisas."""
+	tree = material.node_tree
+	for node in list(tree.nodes):
+		tree.nodes.remove(node)
+	output = tree.nodes.new("ShaderNodeOutputMaterial")
+	bsdf = tree.nodes.new("ShaderNodeBsdfPrincipled")
+	bsdf.inputs["Roughness"].default_value = 0.9
+	tree.links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
+	vertex = tree.nodes.new("ShaderNodeVertexColor")
+	vertex.layer_name = "Color"
+	if textile is None:
+		tree.links.new(vertex.outputs["Color"], bsdf.inputs["Base Color"])
+		return
+
+	def node(kind, **values):
+		created = tree.nodes.new(kind)
+		for key, value in values.items():
+			setattr(created, key, value)
+		return created
+
+	def math(operation, a, b=None):
+		created = node("ShaderNodeMath", operation=operation)
+		for index, value in enumerate((a, b)):
+			if value is None:
+				continue
+			if isinstance(value, float):
+				created.inputs[index].default_value = value
+			else:
+				tree.links.new(value, created.inputs[index])
+		return created.outputs[0]
+
+	cloth_uv = node("ShaderNodeUVMap", uv_map="Cloth")
+	surface_uv = node("ShaderNodeUVMap", uv_map="Surface")
+	cloth_xyz = node("ShaderNodeSeparateXYZ")
+	surface_xyz = node("ShaderNodeSeparateXYZ")
+	tree.links.new(cloth_uv.outputs["UV"], cloth_xyz.inputs[0])
+	tree.links.new(surface_uv.outputs["UV"], surface_xyz.inputs[0])
+	repeat = math("FRACT", math("DIVIDE", cloth_xyz.outputs["X"], TEXTILE_PERIOD))
+	column = math("SUBTRACT", math("ROUND", surface_xyz.outputs["Y"]), 1.0)
+	u = math("DIVIDE", math("ADD", column, repeat), float(TEXTILE_COLUMNS))
+	v = math("DIVIDE", cloth_xyz.outputs["Y"], TEXTILE_HEIGHT)
+	combine = node("ShaderNodeCombineXYZ")
+	tree.links.new(u, combine.inputs[0])
+	tree.links.new(v, combine.inputs[1])
+	texture = node("ShaderNodeTexImage")
+	texture.image = textile
+	texture.interpolation = "Closest"
+	tree.links.new(combine.outputs[0], texture.inputs["Vector"])
+	use_textile = math("GREATER_THAN", surface_xyz.outputs["Y"], 0.5)
+	mix = node("ShaderNodeMix", data_type="RGBA")
+	tree.links.new(use_textile, mix.inputs["Factor"])
+	tree.links.new(vertex.outputs["Color"], mix.inputs[6])
+	tree.links.new(texture.outputs["Color"], mix.inputs[7])
+	tree.links.new(mix.outputs[2], bsdf.inputs["Base Color"])
+
+
 def render_preview(name, preview_dir, pose=""):
 	"""Vista de frente (+Y) y de cara, opcionalmente en un instante de una
 	animación («walk:0.3»)."""
@@ -1665,11 +2113,10 @@ def render_preview(name, preview_dir, pose=""):
 	world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.7
 	scene.world = world
 	cloth = bpy.data.materials.get(CLOTH_MATERIAL)
-	if cloth is not None:
-		cloth.use_nodes = True
-		color_node = cloth.node_tree.nodes.new("ShaderNodeVertexColor")
-		color_node.layer_name = "Color"
-		cloth.node_tree.links.new(color_node.outputs["Color"], cloth.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
+	textile = None
+	if cloth is not None and cloth.node_tree is not None:
+		textile = next((n.image for n in cloth.node_tree.nodes if n.type == "TEX_IMAGE"), None)
+		_preview_cloth(cloth, textile)
 	scene.render.engine = "BLENDER_EEVEE"
 	scene.render.resolution_x = 640
 	scene.render.resolution_y = 900
@@ -1679,8 +2126,8 @@ def render_preview(name, preview_dir, pose=""):
 		scene.render.filepath = os.path.join(preview_dir, name + suffix + view + ".png")
 		bpy.ops.render.render(write_still=True)
 	if cloth is not None:
-		cloth.node_tree.nodes.clear()
-		cloth.use_nodes = False
+		if textile is not None:
+			set_cloth_texture(textile)
 	if not os.environ.get("PCH_KEEP_PREVIEW"):
 		for obj in (cam, sun):
 			bpy.data.objects.remove(obj)

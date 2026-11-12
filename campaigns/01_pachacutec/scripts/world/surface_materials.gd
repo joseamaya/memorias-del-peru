@@ -27,6 +27,8 @@ const HAIR_ALPHA_SCISSOR: float = 0.4
 
 static var _model_material: ShaderMaterial = null
 static var _cloth_material: ShaderMaterial = null
+## Materiales de ropa con textil propio, uno por textura de personaje.
+static var _textile_materials: Dictionary[Texture2D, ShaderMaterial] = {}
 
 
 ## Material compartido de los modelos generados: capa según la clase de
@@ -48,6 +50,19 @@ static func cloth_material() -> ShaderMaterial:
 		scales[Layer.FABRIC] = CLOTH_SCALE
 		_cloth_material.set_shader_parameter("layer_scale", scales)
 	return _cloth_material
+
+
+## Ropa con el textil del personaje (alcance v4.0): [param textile] es la
+## textura que el generador pone como color base del material «pch_cloth».
+static func textile_cloth_material(textile: Texture2D) -> ShaderMaterial:
+	if textile == null:
+		return cloth_material()
+	if not _textile_materials.has(textile):
+		var material: ShaderMaterial = cloth_material().duplicate() as ShaderMaterial
+		material.set_shader_parameter("textile", textile)
+		material.set_shader_parameter("use_textile", true)
+		_textile_materials[textile] = material
+	return _textile_materials[textile]
 
 
 ## Material de la vegetación generada: como [method model_material], y además
@@ -130,7 +145,8 @@ static func apply_to_model(root: Node) -> int:
 		for surface: int in range(array_mesh.get_surface_count()):
 			var material: Material = array_mesh.surface_get_material(surface)
 			if material != null and material.resource_name == CLOTH_MATERIAL_NAME:
-				mesh_instance.set_surface_override_material(surface, cloth_material())
+				var textile: Texture2D = (material as BaseMaterial3D).albedo_texture if material is BaseMaterial3D else null
+				mesh_instance.set_surface_override_material(surface, textile_cloth_material(textile))
 				touched = true
 			elif material is BaseMaterial3D and (material.resource_name.ends_with(".body") or material.resource_name == "rb.head"):
 				# Piel: algo de brillo suave y luz de borde, que la aleja del

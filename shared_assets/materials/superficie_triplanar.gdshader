@@ -27,6 +27,14 @@ uniform bool use_vertex_color = true;
 // UV2 de la prenda en lugar de la proyección triplanar, para que no resbale
 // cuando el cuerpo se mueve.
 uniform bool cloth_uv2 = false;
+// Textil del personaje (alcance v4.0): una columna por prenda, elegida por
+// UV.y; UV2 trae la vuelta al cuerpo y la altura en metros. El dibujo se
+// repite cada textile_period metros alrededor del cuerpo.
+uniform sampler2D textile : source_color, filter_linear_mipmap, repeat_enable;
+uniform bool use_textile = false;
+uniform float textile_period = 0.3;
+uniform float textile_columns = 6.0;
+uniform float textile_height = 2.0;
 // Proyección en coordenadas del mundo (piezas fijas sin girar: terreno, muros)
 // en lugar de las del objeto (modelos que se mueven o giran).
 uniform bool world_projection = false;
@@ -69,6 +77,7 @@ varying vec3 tri_pos;
 varying vec3 tri_weights;
 varying vec3 world_pos;
 varying flat int base_layer;
+varying flat int cloth_piece;
 
 void vertex() {
 	if (wind_bend > 0.0) {
@@ -93,6 +102,9 @@ void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	tri_pos = (world_projection ? world_pos : VERTEX) * vec3(1.0, -1.0, 1.0);
 	base_layer = fixed_layer >= 0 ? fixed_layer : int(UV.x + 0.5) - 1;
+	// El exportador glTF de Blender invierte V (v → 1 − v): la prenda y la
+	// altura llegan como 1 − valor.
+	cloth_piece = int(1.0 - UV.y + 0.5);
 }
 
 // Los planos con peso casi nulo no se muestrean: en el suelo llano y en los
@@ -131,6 +143,15 @@ void fragment() {
 		float normal_fade = 1.0 - smoothstep(normal_distance * 0.7, normal_distance, length(VERTEX));
 		bool near = normal_fade > 0.0;
 		if (base_layer >= 0 && cloth_uv2) {
+			if (use_textile && cloth_piece > 0) {
+				// Coordenadas continuas para las derivadas (sin el salto de
+				// fract), así el mipmap no marca una línea en cada repetición.
+				float height = 1.0 - UV2.y;
+				vec2 smooth_uv = vec2(UV2.x / textile_period / textile_columns, -height / textile_height);
+				float column = (float(cloth_piece - 1) + 0.004 + fract(UV2.x / textile_period) * 0.992) / textile_columns;
+				vec2 tuv = vec2(column, 1.0 - clamp(height / textile_height, 0.001, 0.999));
+				base_color = textureGrad(textile, tuv, dFdx(smooth_uv), dFdy(smooth_uv)).rgb;
+			}
 			vec3 uv = vec3(UV2 * layer_scale[base_layer], float(base_layer));
 			vec4 detail = texture(detail_array, uv);
 			albedo = base_color * mix(vec3(1.0), detail.rgb * 2.0, detail_strength);

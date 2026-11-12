@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.9)** — 2026-11-12; sustituye a la v3.8
+- Estado: **Aprobado (v4.0)** — 2026-11-12; sustituye a la v3.9
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -22,6 +22,7 @@
 | v3.7 | Aplica [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md): personajes con esqueleto y animaciones generadas (reposo, paseo, carrera, gestos, agotamiento, tejer arrodillada y trabajar con la chaquitaclla), mirada hacia el jugador y comitiva al paso. Añade vida y sonido: viento en el ichu y la queñua, pasos de los personajes y golpes del telar y de la chaquitaclla (§5, §6.1 y §6.3). Pedida por el responsable del proyecto el 2026-11-12. |
 | v3.8 | Aplica [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md): personajes realistas con cuerpos de MakeHuman (CC0), ropa andina propia ajustada al cuerpo y captura de movimiento de CMU (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12, tras las quejas de los jugadores sobre el aspecto de los personajes. |
 | v3.9 | Aplica [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md): cabezas de la Microsoft Rocketbox Avatar Library (MIT) sobre los cuerpos de MakeHuman; tres vecinas distintas en lugar de tres copias (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.0 | Ropa más realista (§5): textiles con diseño propio (franjas, zigzag escalonado, rombos de gradas y t'oqapu en las autoridades) a la altura real de cada prenda, caída de la tela simulada en Blender y manto que se mece con huesos de muelle (`SpringBoneSimulator3D`). Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -133,6 +134,14 @@ Reglas:
 - **Cara:** boca cerrada y ojos castaños.
 - **Cabezas (v3.9, [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md)):** de la Rocketbox Avatar Library, de calidad de artista, con la piel igualada al cuerpo. Los peinados son los de cada avatar.
 - **Variedad:** los tres vecinos son tres mujeres distintas (`pch_npc_villager`, `_b` y `_c`).
+- **Textiles (v4.0):** cada personaje lleva una textura de tela pintada por el generador, con trama de hilo:
+  - **Unku:** franjas en la cintura y zigzag escalonado en el bajo. Las autoridades llevan además un cinturón de t'oqapu.
+  - **Anacu:** franjas en el bajo; la faja, con rombos de gradas.
+  - **Lliclla:** franjas y bandas decoradas.
+  - **Manto:** franjas en el borde inferior.
+  - **Cinta:** zigzag. **Paño:** a rayas.
+  - Los diseños son reconstrucción (R) a partir de las piezas de PCH-010, PCH-017 y PCH-018.
+- **Caída y movimiento (v4.0):** la falda, el manto y el borde de la lliclla caen por su peso (simulación de tela en Blender, horneada en el modelo). El manto se mece al caminar con tres cadenas de muelle que chocan con la cadera y el pecho.
 
 Lo que sigue de la v3.7 (ADR-0015) se mantiene, ahora con estos cuerpos y estos movimientos. Cada personaje tiene esqueleto y animaciones:
 

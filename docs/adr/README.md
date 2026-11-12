@@ -40,3 +40,4 @@ Plantilla:
 | [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016) |
 | [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Aceptado (cabezas matizadas por ADR-0017) |
 | [0017](0017-cabezas-rocketbox.md) | Cabezas de la Microsoft Rocketbox Avatar Library | Aceptado |
+| [0018](0018-ropa-textiles-caida-y-muelles.md) | Ropa: textiles con diseño, caída simulada y manto con muelles | Aceptado |
