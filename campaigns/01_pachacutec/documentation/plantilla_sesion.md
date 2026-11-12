@@ -19,7 +19,9 @@
 
 | Momento | Cronómetro (mm:ss) |
 |---|---|
-| Inicio (primer movimiento) | 00:00 |
+| Inicio (aparece la primera tarjeta de la introducción, alcance v4.5) | 00:00 |
+| Fin de la introducción (la persona toma el control) | |
+| Primer movimiento | |
 | Llegada del mensajero (subtítulo de la noticia) | |
 | Suena el pututu (¿jugador o curaca?) | |
 | Cierre («La llacta queda en silencio…») | |
@@ -28,11 +30,37 @@
 
 ## Observaciones durante el juego
 
+Anota lo que ves, no lo que supones que piensa la persona. No preguntes durante el juego.
+
+### Introducción y primer minuto
+
+- ¿Lee las tarjetas con calma, las pasa rápido con `E` o se impacienta?
+- Al tomar el control, ¿se orienta (mira alrededor y avanza hacia la llacta) o se queda quieta sin saber qué hacer?
+- ¿Comenta algo en voz alta sobre dónde está o qué tiene que hacer? (literal)
+
+### Momentos de confusión
+
+Dónde se detiene, duda, da vueltas o pregunta algo que no es de controles.
+
+| mm:ss | Qué hacía | Qué se observa |
+|---|---|---|
+| | | |
+
+Señales de desconcierto durante la espera (sí/no y descripción):
+
+### Momentos de interés
+
+Lo que le llama la atención: se acerca a mirar, comenta, repite algo o sonríe.
+
+| mm:ss | Qué | Observación |
+|---|---|---|
+| | | |
+
+### Otras observaciones
+
 | mm:ss | Observación |
 |---|---|
 | | |
-
-Señales de desconcierto durante la espera (sí/no y descripción):
 
 Interacciones usadas: quero ☐ ofrenda ☐ pututu ☐
 
@@ -64,5 +92,19 @@ Rutas recorridas: viviendas oeste ☐ terrazas ☐ mirador ☐ camino norte ☐
 | mm:ss | Descripción | Línea de consola | Reproducida / corregida en |
 |---|---|---|---|
 | | | | |
+
+## Tres prioridades de la sesión
+
+Al terminar, el facilitador anota lo más importante que deja esta sesión, de más a menos, con su tipo:
+
+- **Error:** algo que se rompe (bloqueo, caída, fallo visible). Va también en «Incidencias técnicas».
+- **Diseño:** algo que impide entender o seguir la experiencia.
+- **Pulido:** algo que molesta, pero no impide entender ni seguir.
+
+| # | Prioridad | Tipo (error / diseño / pulido) | Momento (mm:ss) |
+|---|---|---|---|
+| 1 | | | |
+| 2 | | | |
+| 3 | | | |
 
 ## Notas libres
