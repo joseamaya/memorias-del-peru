@@ -303,7 +303,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - Que la llacta quede al sur del Cusco es una reconstrucción (R) coherente con el juego, no un dato.
   - El relieve en «^» es un recurso gráfico (N): indica sierra, no montañas concretas.
   - No se marcan ríos, territorios, fronteras ni pueblos vecinos, para no afirmar geografía sin fuente ni adelantar la noticia.
-- Estado de verificación: pendiente de firma. Falta que una persona compruebe que el mapa solo muestra lo descrito y firme ([hoja de verificación](hoja_verificacion_fichas.md) §9).
+- Estado de verificación: **verificado (R / N)** por el responsable del proyecto el 2026-11-12, tras ver el mapa en el juego ([hoja de verificación](hoja_verificacion_fichas.md) §9).
 
 ---
 

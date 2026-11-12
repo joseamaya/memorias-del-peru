@@ -179,11 +179,11 @@ El agente localizó y leyó la fuente el 2026-11-12 (ADR-0023); el responsable d
 
 Verificado por: responsable del proyecto · Fecha: 2026-11-12
 
-## 9. PCH-023 — Mapa de la introducción (R / N) · bloquea el cierre
+## 9. PCH-023 — Mapa de la introducción (R / N)
 
-El mapa no cita fuentes nuevas: se apoya en PCH-006 y en la geografía interna del juego. Falta que una persona lo mire en el juego y firme.
+El mapa no cita fuentes nuevas: se apoya en PCH-006 y en la geografía interna del juego. El responsable del proyecto lo miró en el juego y firmó el 2026-11-12.
 
-- [ ] En la tarjeta «En el valle del Cusco…», el mapa solo muestra el Cusco al norte, «Tu llacta» al sur, el camino entre ambos, el relieve y la flecha del norte.
-- [ ] No aparece ningún territorio, frontera, río ni pueblo que no esté en la ficha.
+- [x] En la tarjeta «En el valle del Cusco…», el mapa solo muestra el Cusco al norte, «Tu llacta» al sur, el camino entre ambos, el relieve y la flecha del norte.
+- [x] No aparece ningún territorio, frontera, río ni pueblo que no esté en la ficha.
 
-Verificado por: ________ · Fecha: ________
+Verificado por: responsable del proyecto · Fecha: 2026-11-12

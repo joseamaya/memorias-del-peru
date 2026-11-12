@@ -342,7 +342,7 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 | PCH-020 | Leña de queñua | R | verificado (R), 2026-11-11 (comprobación del agente) |
 | PCH-021 | Corral de pirca seca | R | verificado (R), 2026-11-12 |
 | PCH-022 | El Cusco antes de la expansión inca | A / R | verificado (A / R), 2026-11-12 |
-| PCH-023 | Mapa de la introducción | R / N | pendiente de firma (2026-11-12) |
+| PCH-023 | Mapa de la introducción | R / N | verificado (R / N), 2026-11-12 |
 
 “Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las siete fichas marcadas «comprobación del agente» las firmó el responsable del proyecto el 2026-11-11 sobre la comprobación en línea del agente, sin consultar él mismo las ediciones ([hoja de verificación](hoja_verificacion_fichas.md) §5). Las páginas de la traducción de 2007 tomadas de su índice publicado no cuentan como cita.
 
