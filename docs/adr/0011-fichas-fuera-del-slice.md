@@ -1,7 +1,7 @@
 # ADR-0011 — Fichas de elementos que no están en el juego
 
-- Estado: Propuesto
-- Fecha: 2026-11-11
+- Estado: Aceptado
+- Fecha: 2026-11-11 (propuesto y aceptado por el responsable del proyecto el mismo día)
 
 ## Contexto
 
@@ -19,7 +19,7 @@ Esa interpretación no está escrita en docs/07. Según [AGENTS.md](../../AGENTS
 
 ## Decisión
 
-Opción 3, si se acepta.
+Opción 3.
 
 - El registro de cada campaña puede tener una sección **«Fuera del vertical slice»** para fichas de elementos que no están en el juego.
 - Esas fichas conservan su clasificación y su estado, pero **no bloquean** el cierre de la fase.
@@ -28,6 +28,6 @@ Opción 3, si se acepta.
 
 ## Consecuencias
 
-- Al aceptar este ADR, docs/07 §3 debe añadir: «Las fichas de elementos que no están en el juego pueden figurar en una sección aparte del registro y no bloquean el cierre (ADR-0011)».
-- PCH-014 queda en esa sección. Hasta que se acepte este ADR, su exclusión se apoya en la decisión del responsable del proyecto del 2026-11-11, anotada en el alcance §8.
+- docs/07 §3 añade: «Las fichas de elementos que no están en el juego pueden figurar en una sección aparte del registro y no bloquean el cierre (ADR-0011)».
+- PCH-014 queda en esa sección; su exclusión está anotada en el alcance §8 con fecha 2026-11-11.
 - Una revisión del cierre de la Fase 4 debe comprobar que ningún elemento de esa sección aparece en el juego.

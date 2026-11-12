@@ -32,7 +32,7 @@ Cada campaña mantiene `documentation/registro_historico.md` con una ficha por e
 - Estado de verificación: pendiente | verificado por <persona/fecha>
 ```
 
-Ningún asset histórico entra en el Vertical Slice sin ficha. Las fichas con estado “pendiente” se marcan como bloqueantes para el cierre de la Fase 4.
+Ningún asset histórico entra en el Vertical Slice sin ficha. Las fichas con estado “pendiente” se marcan como bloqueantes para el cierre de la Fase 4. Las fichas de elementos que no están en el juego pueden figurar en una sección aparte del registro y no bloquean el cierre ([ADR-0011](adr/0011-fichas-fuera-del-slice.md)).
 
 ## 4. Lista de control de anacronismos
 
