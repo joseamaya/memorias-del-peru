@@ -49,4 +49,5 @@ Plantilla:
 | [0024](0024-titulo-nota-historica-y-controles.md) | Pantalla de título, nota histórica y controles en pantalla | Aceptado (ampliado por ADR-0025) |
 | [0025](0025-imagenes-de-la-introduccion.md) | Imágenes de fondo en la introducción | Aceptado |
 | [0026](0026-cierre-corto-y-mensajero.md) | Cierre corto y partida del mensajero | Aceptado |
-| [0027](0027-musica-de-la-introduccion.md) | Música de la introducción | Aceptado |
+| [0027](0027-musica-de-la-introduccion.md) | Música de la introducción | Reemplazado por ADR-0028 |
+| [0028](0028-musica-epica-de-la-introduccion.md) | Música épica de la introducción | Aceptado |

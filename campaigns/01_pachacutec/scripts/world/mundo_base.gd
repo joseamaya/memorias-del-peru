@@ -115,9 +115,10 @@ const INTRO_OPAQUE: Array[bool] = [true, false, false, false]
 const INTRO_SHOT_ANDES: int = 1
 const INTRO_MAP_CARD: int = 2
 const INTRO_SHOT_LLACTA: int = 3
-## Música de la introducción (ADR-0027): composición propia con notas de quena
-## CC0; se funde al tomar el control y deja solo el viento.
-const INTRO_MUSIC_PATH: String = "res://shared_assets/audio/musica_intro_quena.ogg"
+## Música de la introducción (ADR-0028, sustituye la pieza de quena de
+## ADR-0027): los primeros 44 s de «Atlas • Bolivia» (Pixabay); se funde al
+## tomar el control y deja solo el viento.
+const INTRO_MUSIC_PATH: String = "res://shared_assets/audio/musica_intro_atlas_bolivia.ogg"
 const INTRO_MUSIC_VOLUME_DB: float = -6.0
 const INTRO_MUSIC_FADE: float = 3.0
 ## Toma de los Andes: desde la cresta del suroeste, mirando al otro lado del

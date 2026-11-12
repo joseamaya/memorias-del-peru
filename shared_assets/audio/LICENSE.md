@@ -12,7 +12,7 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `quero_bebida.wav` | Interacción del quero | OwlStorm | Freesound n.º 320139, «Drink Sip and Swallow»: https://freesound.org/people/OwlStorm/sounds/320139/ | CC0 1.0 | 2026-11-11 |
 | `ofrenda_grano.wav` | Interacción de la ofrenda | lucasfuchs | Freesound n.º 556974, «Pouring grain or seeds»: https://freesound.org/people/lucasfuchs/sounds/556974/ | CC0 1.0 | 2026-11-11 |
 | `telar_golpe.wav` | Golpe del batán de la tejedora en el telar (3D, ADR-0015) | Autoría propia del proyecto | Síntesis con Python y NumPy: golpe sordo de 95–245 Hz con caída de tono, ruido filtrado en dos resonancias de madera (820 y 1450 Hz) y un segundo golpe más débil a 75 ms | Propia | 2026-11-12 |
-| `musica_intro_quena.ogg` | Música de la introducción (ADR-0027) | Composición propia con notas de «quena scale.wav», de MarleneAyni | Notas: Freesound n.º 569392, «quena scale.wav» (escala de sol en dos octavas, quena de caña): https://freesound.org/people/MarleneAyni/sounds/569392/. Bordón y tinya: síntesis propia | CC0 1.0 (notas) / Propia (composición) | 2026-11-12 |
+| `musica_intro_atlas_bolivia.ogg` | Música de la introducción (ADR-0028) | Vadim_Makes_Sound | Pixabay, «Atlas • Bolivia»: https://pixabay.com/music/orchestral-atlas-bolivia-602511/. **Generada con IA** según la propia página | Pixabay Content License (uso comercial, sin atribución obligatoria; prohíbe redistribuirla sola) | 2026-11-12 |
 
 Los originales se descargaron con la cuenta del responsable del proyecto el 2026-11-11 y **no se versionan**: son WAV de 48–96 kHz que pesan hasta 66 MB. Lo que entra en el juego es una versión procesada con ffmpeg y Python:
 
@@ -36,10 +36,9 @@ Sustituyen a los placeholders sintéticos anteriores (`pututu_propio.wav`, `ofre
 
 ## Música de la introducción
 
-`musica_intro_quena.ogg` (44 s, estéreo, 44,1 kHz) se genera con `componer_musica_intro.py`, que se versiona junto a ella. La grabación original de la quena se descargó con la cuenta del responsable del proyecto el 2026-11-12 (WAV de 60 s, SHA-256 `d825301f…`) y **no se versiona**.
+`musica_intro_atlas_bolivia.ogg` son los primeros 44 s de «Atlas • Bolivia» (Vadim_Makes_Sound, Pixabay; música de sikuri con sikus, bombo y orquesta). La descargó el responsable del proyecto el 2026-11-12 desde su cuenta (MP3 de 3:07, 256 kb/s, SHA-256 `53891086…`), y el original **no se versiona**.
 
-- Se toman 6 notas de la escala (re5, mi5, sol5, la5, si5 y re6) con su ataque natural, igualadas en sonoridad y con un final suave, y se ordenan en cinco frases lentas sobre la pentatónica de mi (mi, sol, la, si, re).
-- Bordón sintetizado en mi3 y si3, con aire filtrado y una respiración lenta. Una tinya sintetizada (golpe sordo de 150 a 55 Hz) marca un pulso suave entre los 12 y los 34 s.
-- Reverberación sintética de 2,4 s, nivel de unos −22 dB RMS y final fundido en los últimos 5 s.
-- Solo instrumentos de tipo prehispánico (quena, bordón de aliento y tambor): sin charango, guitarra, violín ni arpa (docs/07 §4).
-
+- Se recortó a 44 s, con un fundido de salida de 5 s; se igualó a −20 dB RMS (pico a −6,3 dBFS) y se guardó en Ogg Vorbis.
+- **Licencia:** Pixabay Content License (https://pixabay.com/service/license-summary/). Permite el uso comercial y la modificación sin atribución; no permite venderla ni distribuirla sola. Se acredita igualmente aquí: «Music by Vadim_Makes_Sound from Pixabay».
+- **Contenido generado con IA:** la página de Pixabay la marca así. Hay que declararla en las encuestas de las tiendas que lo pidan (por ejemplo, el apartado de IA de Steam).
+- Sustituye a `musica_intro_quena.ogg` (ADR-0027), una composición propia con notas de quena que al responsable del proyecto no le sonó andina.

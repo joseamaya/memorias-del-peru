@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.9)** — 2026-11-12; sustituye a la v4.8
+- Estado: **Aprobado (v4.10)** — 2026-11-12; sustituye a la v4.9
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -39,6 +39,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.7 | Aplica [ADR-0025](../../../docs/adr/0025-imagenes-de-la-introduccion.md): imágenes de fondo en la introducción. La nota sigue sobre negro; los Andes y la llacta se ven con tomas del propio juego, y la última termina en los ojos del jugador; el valle del Cusco se explica con un mapa propio (PCH-023) (§2.2, §6.4 y §8). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
 | v4.8 | Aplica [ADR-0026](../../../docs/adr/0026-cierre-corto-y-mensajero.md), tras la prueba del responsable del proyecto: el mensajero parte con la comitiva hacia el Cusco, y la tarjeta de fin llega unos 8 s después de «La llacta queda en silencio…», sin esperar a que el grupo salga de la vista (§2.2, §5, §9.2 y §10). Aprobada el 2026-11-12. |
 | v4.9 | Aplica [ADR-0027](../../../docs/adr/0027-musica-de-la-introduccion.md): música de la introducción, compuesta con notas de quena CC0, un bordón y una tinya sintetizados; se funde al tomar el control (§6.3). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.10 | Aplica [ADR-0028](../../../docs/adr/0028-musica-epica-de-la-introduccion.md): la música de la introducción pasa a ser los primeros 44 s de «Atlas • Bolivia» (Pixabay, sikuri épico generado con IA), anacronismo declarado; sustituye a la pieza de quena de la v4.9 (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -234,7 +235,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Telar | Golpe del batán de la tejedora, en 3D (v3.7) | `telar_golpe.wav`: síntesis propia | Propia |
 | Chaquitaclla | Golpe del agricultor al hincarla, en 3D (v3.7) | `pasos_tierra_02.wav` a 0,62 de velocidad | CC0 |
 | Murmullo de plaza | Evento: de la noticia a la llamada | `murmullo_plaza.wav`: murmullo de hombres, Freesound 480808, filtrado y en bucle | CC0 |
-| Música de la introducción | Desde la nota histórica hasta tomar el control; se funde en 3 s (v4.9) | `musica_intro_quena.ogg`: composición propia con notas de quena (MarleneAyni, Freesound 569392), bordón y tinya sintetizados | CC0 (notas) / Propia |
+| Música de la introducción | Desde la nota histórica hasta tomar el control; se funde en 3 s (v4.10) | `musica_intro_atlas_bolivia.ogg`: primeros 44 s de «Atlas • Bolivia», Vadim_Makes_Sound, Pixabay; generada con IA | Pixabay Content License |
 
 Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere grabaciones propias en la sierra.
 

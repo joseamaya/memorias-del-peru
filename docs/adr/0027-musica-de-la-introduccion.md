@@ -1,6 +1,6 @@
 # ADR-0027 — Música de la introducción
 
-- Estado: Aceptado (pedido por el responsable del proyecto el 2026-11-12)
+- Estado: Reemplazado por [ADR-0028](0028-musica-epica-de-la-introduccion.md)
 - Fecha: 2026-11-12
 - Amplía: [ADR-0023](0023-introduccion-del-slice.md) y [ADR-0025](0025-imagenes-de-la-introduccion.md)
 
