@@ -195,6 +195,7 @@ La carga del sistema estaba entre 5,2 y 6,7 por procesos ajenos y varió mucho e
 | Medio, commit anterior, carga parecida | 50,1–52,9 | — | — |
 
 - Las diferencias entran en el ruido de la medición. La memoria de vídeo sube unos 37 MB por las texturas de piel, pelo y ojos.
+- Tras corregir postura, boca y ojos (con pestañas y sin dientes), una ejecución con carga 5,1 dio Bajo 142,5 FPS y Medio 53,6 FPS: sin cambio apreciable.
 - El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
 
 ### Medición con personajes con esqueleto y viento (Fase 4, provisional, 2026-11-12)

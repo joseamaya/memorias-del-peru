@@ -64,11 +64,25 @@ También autorizó las descargas.
 - La ropa usa el shader de superficie con tejido por UV2.
 - `NpcActor` no cambia de contrato. La mirada usa el hueso `Head`.
 
+### Corrección tras la primera revisión (2026-11-12)
+
+El responsable del proyecto dijo que los personajes «parecen zombis». En las capturas de cerca se veían estas causas, todas corregidas en `pch_people.py`:
+
+| Causa | Corrección |
+|---|---|
+| Cabeza caída e inclinada a un lado | El cuello inclinado de MakeHuman se sumaba a la captura. Ahora cuello y cabeza siguen sobre todo al pecho (conservan el 30 % del movimiento de la toma) y la cara se nivela: se quita el 75 % del cabeceo y del alabeo. |
+| Tronco encorvado | La columna se endereza un 40 % hacia su relación de reposo. |
+| Reposo agachado o con pasos | Las tomas 140_06 (en guardia) y 141_20 (con pasos) se sustituyen por los primeros seis segundos de la 82_08 («stand still»). |
+| Boca entreabierta que dejaba ver los dientes | Se cierra con objetivos de boca de MakeHuman. Dientes y lengua se quitan, porque asomaban a través de los labios. |
+| Iris rojizo | Se oscurece a castaño; el blanco del ojo se aclara. Los ojos y la piel tienen brillo propio en Godot. |
+| Dedos abiertos y rígidos | Curvatura relajada fija. |
+| Hombros del unku rasgados, con la piel asomando | Sisa con corte vertical limpio que cubre todo el hombro, y borde alisado. |
+
 ## Consecuencias
 
 - Personajes con anatomía, cara, manos y ropa con volumen. Su aspecto pasa de figura geométrica a realista de juego independiente; no es fotorrealista.
 - **Generar los personajes requiere instalar MPFB2 y sus recursos.** El procedimiento queda en la cabecera de `pch_people.py`. Los modelos que no son personajes siguen saliendo de `pch_models.py` sin complementos.
-- **Más peso por personaje:** entre 8500 y 10 100 triángulos y 5–6 mallas, frente a unos 1200 triángulos y una malla.
+- **Más peso por personaje:** entre 8900 y 10 600 triángulos y 6–7 mallas, frente a unos 1200 triángulos y una malla.
   - Las texturas van embebidas en WebP (1K) y Godot las importa como Basis Universal, sin extraer archivos sueltos.
   - Los 8 `.glb` suman 6,6 MB.
 - **Rendimiento:** en la GPU integrada de referencia, la diferencia con el commit anterior queda dentro del ruido de la medición (docs/08). El objetivo vinculante se sigue cumpliendo con margen.

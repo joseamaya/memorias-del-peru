@@ -128,7 +128,8 @@ Reglas:
 - Los genera `assets/blender/pch_people.py` con el complemento MPFB2 de MakeHuman.
 - **Cuerpo:** humano con cara, manos y esqueleto, de complexión baja y robusta. La piel está teñida a un moreno de la sierra y el pelo es negro: interpretación declarada (PCH-018).
 - **Ropa andina propia** (unku, anacu con faja, lliclla con tupu, manto, tocados, chuspa, ojotas y bulto) ajustada al cuerpo.
-- **Movimiento:** captura real de CMU para reposo, paseo, carrera, gestos y trabajo.
+- **Movimiento:** captura real de CMU para reposo, paseo, carrera, gestos y trabajo, con la postura corregida: espalda más recta, cabeza estable y nivelada, dedos relajados.
+- **Cara:** boca cerrada y ojos castaños.
 - Las mujeres llevan el pelo largo suelto.
 
 Lo que sigue de la v3.7 (ADR-0015) se mantiene, ahora con estos cuerpos y estos movimientos. Cada personaje tiene esqueleto y animaciones:

@@ -89,6 +89,16 @@ ARM_BONES = ("Arm", "ForeArm", "Hand", "Thumb", "FingerBase", "HandFinger1")
 LEG_BONES = ("UpLeg", "Leg", "Foot", "ToeBase")
 
 
+# Ajustes de la boca (objetivos de MakeHuman) para cerrarla.
+MOUTH_TARGETS = (
+	("mouth-lowerlip-middle-up", 1.0),
+	("mouth-upperlip-middle-down", 0.7),
+	("mouth-lowerlip-ext-up", 0.6),
+	("mouth-upperlip-ext-down", 0.4),
+	("mouth-scale-vert-decr", 0.45),
+)
+
+
 # --- MPFB2 ------------------------------------------------------------------
 
 def mpfb():
@@ -111,6 +121,10 @@ def build_body(spec):
 	macro.update(spec["macro"])
 	macro["race"] = {"asian": 0.72, "caucasian": 0.08, "african": 0.2}
 	base = HumanService.create_human(macro_detail_dict=macro)
+	# Boca cerrada y relajada: la cara neutra de MakeHuman tiene los labios
+	# separados, y con los dientes a la vista parece una mueca.
+	for target, weight in MOUTH_TARGETS:
+		TargetService.load_target(base, TargetService.target_full_path(target), weight=weight)
 	rig = HumanService.add_builtin_rig(base, "cmu_mb")
 	female = spec["garment"] == "anacu"
 	proxy_name = "female1605" if female else "male1591"
@@ -118,8 +132,10 @@ def build_body(spec):
 		base, asset_type="Proxymeshes", subdiv_levels=0)
 	HumanService.set_character_skin(os.path.join(data, "skins", spec["skin"], spec["skin"] + ".mhmat"),
 		base, bodyproxy=proxy, skin_type="GAMEENGINE")
+	# Pestañas: ojos con vida. Sin dientes ni lengua: con la boca cerrada
+	# (MOUTH_TARGETS) asomarían a través de los labios.
 	parts = [("eyes/low-poly", "low-poly", "Eyes"), ("eyebrows/eyebrow001", "eyebrow001", "Eyebrows"),
-		("hair/" + spec["hair"], spec["hair"], "Hair")]
+		("eyelashes/eyelashes01", "eyelashes01", "Eyelashes"), ("hair/" + spec["hair"], spec["hair"], "Hair")]
 	extra = []
 	for folder, name, kind in parts:
 		extra.append(HumanService.add_mhclo_asset(os.path.join(data, folder, name + ".mhclo"), base,
@@ -175,6 +191,31 @@ def _make_opaque(obj):
 				alpha.default_value = 1.0
 
 
+def _darken_iris(image):
+	"""Ojos castaño oscuro: el iris marrón de MakeHuman es rojizo y a
+	distancia parece rojo; el blanco del ojo se aclara un poco."""
+	import numpy as np
+	width, height = image.size
+	pixels = np.empty(width * height * 4, dtype=np.float32)
+	image.pixels.foreach_get(pixels)
+	pixels = pixels.reshape(height, width, 4)
+	rgb = pixels[..., :3]
+	high = rgb.max(axis=2)
+	low = rgb.min(axis=2)
+	saturation = (high - low) / np.maximum(high, 1e-3)
+	iris = np.clip((saturation - 0.25) / 0.2, 0.0, 1.0)[..., None]
+	luminance = (rgb @ np.array([0.3, 0.55, 0.15], dtype=np.float32))[..., None]
+	dark = luminance * np.array([0.42, 0.27, 0.17], dtype=np.float32) * 1.3
+	sclera = np.clip(rgb * 1.12 + 0.03, 0.0, 1.0)
+	pixels[..., :3] = dark * iris + sclera * (1.0 - iris)
+	copy = bpy.data.images.new(image.name + "_pch", width, height, alpha=True)
+	copy.pixels.foreach_set(pixels.ravel())
+	if width > TEXTURE_SIZE // 2:
+		copy.scale(TEXTURE_SIZE // 2, TEXTURE_SIZE // 2)
+	copy.pack()
+	return copy
+
+
 def tint_materials(proxy, extras):
 	"""Piel morena y pelo negro sobre las texturas de MakeHuman."""
 	_make_opaque(proxy)
@@ -189,7 +230,11 @@ def tint_materials(proxy, extras):
 	for obj in extras:
 		for node in _image_nodes(obj):
 			image = node.image
-			if obj.name.endswith(("short02", "braid01", "long01", "ponytail01", "eyebrow001")):
+			if obj.name.endswith("low-poly"):
+				if image.name not in tinted:
+					tinted[image.name] = _darken_iris(image)
+				node.image = tinted[image.name]
+			elif obj.name.endswith(("short02", "braid01", "long01", "ponytail01", "eyebrow001", "eyelashes01")):
 				if image.name not in tinted:
 					tinted[image.name] = _tint_image(image, HAIR_TARGET, strength=0.92)
 				node.image = tinted[image.name]
@@ -333,7 +378,7 @@ class Garment:
 				self.add_face([top[s], top[(s + 1) % segments], c], color_fn(s, len(rings) - 1),
 					[(0.0, 0.0), (0.1, 0.0), (0.05, 0.1)])
 
-	def add_body_surface(self, body, face_filter, offset, color_fn, uv_scale=1.8):
+	def add_body_surface(self, body, face_filter, offset, color_fn, uv_scale=1.8, border_passes=6):
 		"""Copia las caras del cuerpo que cumplen [face_filter], separadas
 		[offset] por la normal, con los pesos exactos del cuerpo."""
 		mapping = {}
@@ -363,7 +408,7 @@ class Garment:
 			if n == 1:
 				border.setdefault(a, []).append(b)
 				border.setdefault(b, []).append(a)
-		for _ in range(6):
+		for _ in range(border_passes):
 			moved = {}
 			for i, others in border.items():
 				if len(others) == 2:
@@ -508,15 +553,23 @@ def build_clothes(spec, body, armature, rig_bones):
 
 	# 1. Cuerpo de la prenda: del bajo de la cadera a los hombros, sin brazos
 	#    ni cuello.
+	# Sisa con corte limpio: un plano vertical poco más allá de la
+	# articulación del hombro, y por debajo de la axila, lo que pesa en el
+	# brazo. El cuello se abre por los pesos de cuello y cabeza.
+	armhole_x = abs(rig_bones["LeftArm"].head_local.x) + (0.07 if not female else 0.04)
+	armpit_z = shoulder_z - 0.09
+
 	def top_face(verts):
-		# Sobre los hombros, el unku cubre también el arranque del brazo.
 		def ok(i):
-			arm_limit = 0.75 if body.points[i].z > shoulder_z - 0.05 else 0.5
-			return (body.points[i].z > hip_z - 0.03 and body.part_weight(i, ARM_BONES) < arm_limit
-				and body.part_weight(i, LEG_BONES) < 0.5 and not is_neck_or_head(i))
+			p = body.points[i]
+			if p.z < hip_z - 0.03 or body.part_weight(i, LEG_BONES) >= 0.5 or body.part_weight(i, ("Neck", "Neck1", "Head")) > 0.5:
+				return False
+			if abs(p.x) > armhole_x:
+				return False
+			return p.z > armpit_z or body.part_weight(i, ARM_BONES) < 0.5
 		return all(ok(i) for i in verts)
 
-	g.add_body_surface(body, top_face, ease, lambda i: body_color)
+	g.add_body_surface(body, top_face, ease + 0.006, lambda i: body_color, border_passes=14)
 
 	# 2. Falda: de la cintura al bajo (rodilla en el unku, tobillo en el anacu),
 	#    encerrando las piernas y por encima del cuerpo de la prenda.
@@ -652,8 +705,6 @@ def build_clothes(spec, body, armature, rig_bones):
 				g.add_face([ids[r][s], ids[r][s + 1], ids[r + 1][s + 1], ids[r + 1][s]], color,
 					[(s * 0.05, r * 0.2), ((s + 1) * 0.05, r * 0.2), ((s + 1) * 0.05, (r + 1) * 0.2), (s * 0.05, (r + 1) * 0.2)])
 		g.resolve(body, ease + 0.03, first=first, iterations=2, smooth=0.3)
-		knot = body.push_out(Vector((0.0, rig_bones["Spine1"].head_local.y - 0.2, shoulder_z - 0.02)), ease + 0.03)
-		g.box(knot, (0.045, 0.02, 0.03), Matrix.Identity(3), color, {"Spine1": 1.0})
 
 	# 6. Tocados sobre la cabeza: cinta (llautu) o paño que sigue el cráneo.
 	head = rig_bones["Head"]
@@ -1024,6 +1075,59 @@ def bake_action(armature, name, frames):
 	armature.animation_data.action = None
 
 
+def _slerp_matrix(a, b, t):
+	return a.to_quaternion().slerp(b.to_quaternion(), t).to_matrix()
+
+
+def _following(world, rest, bone, parent):
+	"""Rotación de [bone] si mantuviera su relación de reposo con [parent]."""
+	return world[parent] @ rest[parent].inverted() @ rest[bone]
+
+
+# MakeHuman mira a −Y: delante y arriba de la cabeza en el armazón.
+FACE_FORWARD = Vector((0.0, -1.0, 0.0))
+FACE_UP = Vector((0.0, 0.0, 1.0))
+
+
+def tidy_posture(world, rest, straighten=0.4, neck_keep=0.3, level=0.75):
+	"""Corrige lo que la captura trae de más para un cuerpo de MakeHuman:
+	- la columna se endereza en parte (los sujetos de CMU van algo
+	  encorvados y el pecho de MakeHuman ya se inclina hacia delante);
+	- cuello y cabeza siguen sobre todo al pecho, y solo conservan
+	  [neck_keep] del movimiento propio de la toma;
+	- la cara se nivela: se quita casi todo el cabeceo y el alabeo respecto
+	  al horizonte, para que no cuelgue ni se tuerza."""
+	for bone, parent in (("Spine", "LowerBack"), ("Spine1", "Spine")):
+		world[bone] = _slerp_matrix(world[bone], _following(world, rest, bone, parent), straighten)
+	for bone, parent in (("Neck", "Spine1"), ("Neck1", "Neck"), ("Head", "Neck1")):
+		world[bone] = _slerp_matrix(world[bone], _following(world, rest, bone, parent), 1.0 - neck_keep)
+	head = world["Head"] @ rest["Head"].inverted()
+	face = head @ FACE_FORWARD
+	flat = Vector((face.x, face.y, 0.0))
+	if flat.length > 1e-4:
+		pitch_fix = face.rotation_difference(flat.normalized())
+		pitch_fix = Quaternion().slerp(pitch_fix, level)
+		head = pitch_fix.to_matrix() @ head
+		face = head @ FACE_FORWARD
+		up = head @ FACE_UP
+		wanted = (FACE_UP - face * FACE_UP.dot(face)).normalized()
+		current = (up - face * up.dot(face)).normalized()
+		roll_fix = Quaternion().slerp(current.rotation_difference(wanted), level)
+		world["Head"] = roll_fix.to_matrix() @ head @ rest["Head"]
+
+
+# Dedos relajados: la captura de CMU apenas trae dedos y la pose de reposo de
+# MakeHuman los tiene abiertos y rígidos. Curvatura local en grados.
+FINGER_CURL = {"LeftFingerBase": 22.0, "RightFingerBase": 22.0, "LeftHandFinger1": 38.0,
+	"RightHandFinger1": 38.0, "LThumb": 12.0, "RThumb": 12.0}
+
+
+def relax_fingers(basis):
+	for bone, degrees in FINGER_CURL.items():
+		basis[bone] = Quaternion((1.0, 0.0, 0.0), math.radians(degrees))
+	return basis
+
+
 def cycle_frames(take, retarget, start, end, in_place=True, blend=6, override=None, extra=None, hips=None):
 	"""Fotogramas de un ciclo cerrado: se quita el avance de la raíz y los
 	últimos fotogramas se funden con los primeros."""
@@ -1041,6 +1145,7 @@ def cycle_frames(take, retarget, start, end, in_place=True, blend=6, override=No
 		globals_ = take.globals_at(i)
 		take.local[i] = saved
 		world = retarget.world_rotations(globals_)
+		tidy_posture(world, retarget.rest)
 		if extra is not None:
 			extra(world, k / max(count, 1))
 		position = take.root_pos[i].copy()
@@ -1049,7 +1154,7 @@ def cycle_frames(take, retarget, start, end, in_place=True, blend=6, override=No
 			position.x -= drift.x
 			position.z -= drift.z
 		location = hips(k) if hips is not None else retarget.hips_location(position)
-		frames.append((retarget.basis(world), location))
+		frames.append((relax_fingers(retarget.basis(world)), location))
 	# Fundido: el ciclo acaba exactamente donde empieza.
 	first_rot, first_hips = frames[0]
 	for b in range(blend):
@@ -1079,9 +1184,10 @@ def build_animations(armature, spec, cmu_dir):
 	def take(subject, motion):
 		return Take(os.path.join(cmu_dir, "%s.asf" % subject), os.path.join(cmu_dir, "%s_%s.amc" % (subject, motion)))
 
-	# Reposo: un tramo tranquilo de la toma «Waiting» (141_20).
-	idle = take("141", "20")
-	start, end = find_cycle(idle, 4.0, 6.0)
+	# Reposo: los primeros seis segundos de la toma 82_08 («stand still»), en
+	# los que el sujeto está de pie, relajado y apenas se mueve.
+	idle = Take(os.path.join(cmu_dir, "82.asf"), os.path.join(cmu_dir, "82_08.amc"), 0, 6 * 120)
+	start, end = find_cycle(idle, 3.5, 5.0)
 	rt = Retargeter(idle, armature, start, end)
 	frames, _ = cycle_frames(idle, rt, start, end, blend=20)
 	bake_action(armature, "idle", frames)
