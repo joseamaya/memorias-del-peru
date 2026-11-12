@@ -26,13 +26,15 @@ signal beat(animation: StringName)
 
 ## A partir de esta velocidad corre en lugar de caminar.
 const RUN_SPEED_THRESHOLD: float = 2.6
-## Velocidad de desplazamiento de cada ciclo a velocidad de reproducción 1
-## (dos pasos de 0,75 m en 1,1 s y dos zancadas de 1,3 m en 0,7 s; ADR-0015).
-const WALK_CYCLE_SPEED: float = 1.5 / 1.1
-const RUN_CYCLE_SPEED: float = 2.6 / 0.7
-## Metros por paso, para el sonido de pasos.
-const STRIDE_LENGTH: float = 0.75
-const RUN_STRIDE_LENGTH: float = 1.3
+## Velocidad de desplazamiento de cada ciclo a velocidad de reproducción 1 y
+## metros por paso, si el modelo no trae los suyos. Los personajes de
+## `pch_people.py` (ADR-0016) traen los de su captura en los «extras» del
+## glTF (claves `pch_*`), que Godot importa como metadato `extras`.
+const WALK_CYCLE_SPEED: float = 1.2
+const RUN_CYCLE_SPEED: float = 3.0
+const STRIDE_LENGTH: float = 0.66
+const RUN_STRIDE_LENGTH: float = 1.1
+const EXTRAS_META: StringName = &"extras"
 const BLEND_SECONDS: float = 0.3
 const LOOPED_ANIMATIONS: Array[StringName] = [&"idle", &"walk", &"run", &"talk", &"tired", &"weave", &"work"]
 ## Mirada: distancia máxima, ángulo de giro del cuello y rapidez del cambio.
@@ -42,10 +44,11 @@ const LOOK_PITCH_LIMIT_DEGREES: float = 50.0
 const LOOK_FADE_PER_SECOND: float = 2.5
 ## Altura de los ojos del objetivo sobre su origen (el jugador mide 1,7 m).
 const LOOK_TARGET_HEIGHT: float = 1.55
-const HEAD_BONE: String = "head"
-## Instante del golpe dentro de cada ciclo de trabajo, en segundos (las
-## funciones de `_anim_weave` y `_anim_work` del generador, ADR-0015).
-const ANIMATION_BEATS: Dictionary[StringName, float] = {&"weave": 0.7, &"work": 1.15}
+## Hueso de la cabeza: «Head» en el esqueleto de MakeHuman (ADR-0016).
+const HEAD_BONES: Array[String] = ["Head", "head"]
+## Instante del golpe dentro de cada ciclo de trabajo, en segundos, si el
+## modelo no trae el suyo (`pch_weave_beat`, `pch_work_beat`).
+const ANIMATION_BEATS: Dictionary[StringName, float] = {&"weave": 0.6, &"work": 2.37}
 ## Sonido de pasos: volumen y distancia a la que deja de oírse.
 const STEP_VOLUME_DB: float = -6.0
 const STEP_MAX_DISTANCE: float = 22.0
@@ -68,6 +71,11 @@ var _last_position: float = -1.0
 var _steps_player: AudioStreamPlayer3D = null
 var _step_streams: Array[AudioStream] = []
 var _step_index: int = 0
+var _walk_cycle_speed: float = WALK_CYCLE_SPEED
+var _run_cycle_speed: float = RUN_CYCLE_SPEED
+var _walk_stride: float = STRIDE_LENGTH
+var _run_stride: float = RUN_STRIDE_LENGTH
+var _beats: Dictionary[StringName, float] = ANIMATION_BEATS.duplicate()
 
 
 func _ready() -> void:
@@ -89,6 +97,7 @@ func set_model(model: Node3D) -> void:
 	if _animation_player == null:
 		return
 	_prepare_loops(_animation_player)
+	_read_rhythm(model)
 	if _idle_tween != null and _idle_tween.is_valid():
 		_idle_tween.kill()
 	body.position.y = 0.85
@@ -113,6 +122,17 @@ func current_animation() -> StringName:
 	if _animation_player == null:
 		return &""
 	return StringName(_animation_player.current_animation)
+
+
+## Velocidad de desplazamiento del ciclo de paseo o de carrera del modelo
+## a velocidad de reproducción 1.
+func cycle_speed(running: bool) -> float:
+	return _run_cycle_speed if running else _walk_cycle_speed
+
+
+## Instante del golpe de [param animation] dentro de su ciclo (o -1).
+func beat_time(animation: StringName) -> float:
+	return _beats.get(animation, -1.0)
 
 
 ## Velocidad de reproducción de la animación actual.
@@ -182,7 +202,7 @@ func advance(delta: float) -> bool:
 		return true
 	global_position = global_position.move_toward(target, step)
 	_stride_distance += step
-	var stride: float = RUN_STRIDE_LENGTH if walk_speed >= RUN_SPEED_THRESHOLD else STRIDE_LENGTH
+	var stride: float = _run_stride if walk_speed >= RUN_SPEED_THRESHOLD else _walk_stride
 	if _stride_distance >= stride:
 		_stride_distance -= stride
 		stepped.emit()
@@ -232,11 +252,11 @@ func _check_beat() -> void:
 		_last_position = -1.0
 		return
 	var animation: StringName = StringName(_animation_player.current_animation)
-	if not ANIMATION_BEATS.has(animation):
+	if not _beats.has(animation):
 		_last_position = -1.0
 		return
 	var playback: float = _animation_player.current_animation_position
-	var at: float = ANIMATION_BEATS[animation]
+	var at: float = _beats[animation]
 	if _last_position >= 0.0:
 		var crossed: bool = _last_position < at and playback >= at
 		# La animación dio la vuelta y el golpe quedó dentro del salto.
@@ -275,9 +295,9 @@ func hide_actor() -> void:
 
 func _play_locomotion() -> void:
 	if walk_speed >= RUN_SPEED_THRESHOLD:
-		_play(&"run", walk_speed / RUN_CYCLE_SPEED)
+		_play(&"run", walk_speed / _run_cycle_speed)
 	else:
-		_play(&"walk", walk_speed / WALK_CYCLE_SPEED)
+		_play(&"walk", walk_speed / _walk_cycle_speed)
 
 
 func _play(animation: StringName, speed: float = 1.0) -> void:
@@ -308,8 +328,58 @@ static func _prepare_loops(player: AnimationPlayer) -> void:
 			animation.length = last_key
 
 
+## Lee el ritmo propio del modelo (claves `pch_*` de sus extras glTF).
+func _read_rhythm(model: Node) -> void:
+	var nodes: Array[Node] = model.find_children("*", "", true, false)
+	nodes.push_front(model)
+	for node: Node in nodes:
+		if not node.has_meta(EXTRAS_META):
+			continue
+		var extras: Variant = node.get_meta(EXTRAS_META)
+		if not extras is Dictionary:
+			continue
+		var data: Dictionary = extras
+		_walk_cycle_speed = _positive(data, "pch_walk_cycle_speed", _walk_cycle_speed)
+		_run_cycle_speed = _positive(data, "pch_run_cycle_speed", _run_cycle_speed)
+		_walk_stride = _positive(data, "pch_walk_stride", _walk_stride)
+		_run_stride = _positive(data, "pch_run_stride", _run_stride)
+		if data.has("pch_weave_beat"):
+			_beats[&"weave"] = _positive(data, "pch_weave_beat", _beats[&"weave"])
+		if data.has("pch_work_beat"):
+			_beats[&"work"] = _positive(data, "pch_work_beat", _beats[&"work"])
+
+
+static func _positive(data: Dictionary, key: String, fallback: float) -> float:
+	var value: Variant = data.get(key, fallback)
+	if value is float or value is int:
+		var number: float = value
+		if number > 0.0:
+			return number
+	return fallback
+
+
+## Eje del hueso [param bone] que apunta hacia delante del personaje en la
+## pose de reposo (la cara, en el hueso de la cabeza).
+func _forward_axis(skeleton: Skeleton3D, bone: int) -> SkeletonModifier3D.BoneAxis:
+	var bone_basis: Basis = (skeleton.global_transform * skeleton.get_bone_global_rest(bone)).basis.orthonormalized()
+	var forward: Vector3 = -global_transform.basis.z.normalized()
+	var axes: Array[Vector3] = [bone_basis.x, -bone_basis.x, bone_basis.y, -bone_basis.y, bone_basis.z, -bone_basis.z]
+	var best: int = 0
+	for index: int in range(axes.size()):
+		if axes[index].dot(forward) > axes[best].dot(forward):
+			best = index
+	return best as SkeletonModifier3D.BoneAxis
+
+
 func _setup_look(skeleton: Skeleton3D) -> void:
-	if skeleton == null or skeleton.find_bone(HEAD_BONE) < 0:
+	if skeleton == null:
+		return
+	var head_bone: String = ""
+	for candidate: String in HEAD_BONES:
+		if skeleton.find_bone(candidate) >= 0:
+			head_bone = candidate
+			break
+	if head_bone.is_empty():
 		return
 	_look_point = Marker3D.new()
 	_look_point.name = "LookPoint"
@@ -318,9 +388,10 @@ func _setup_look(skeleton: Skeleton3D) -> void:
 	_look = LookAtModifier3D.new()
 	_look.name = "HeadLook"
 	skeleton.add_child(_look)
-	_look.bone_name = HEAD_BONE
-	# En el esqueleto importado, la cara mira hacia −Z del hueso de la cabeza.
-	_look.forward_axis = SkeletonModifier3D.BONE_AXIS_MINUS_Z
+	_look.bone_name = head_bone
+	# El eje de la cara depende del esqueleto importado: se busca el que mira
+	# hacia delante en la pose de reposo.
+	_look.forward_axis = _forward_axis(skeleton, skeleton.find_bone(head_bone))
 	_look.primary_rotation_axis = Vector3.AXIS_Y
 	_look.use_angle_limitation = true
 	_look.symmetry_limitation = true

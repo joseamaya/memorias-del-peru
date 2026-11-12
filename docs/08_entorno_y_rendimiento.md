@@ -181,6 +181,22 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con personajes de MakeHuman (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU. Los nueve personajes pasan a ser los de MakeHuman con ropa propia y captura de CMU ([ADR-0016](adr/0016-personajes-realistas-makehuman.md)): unos 8500–10 100 triángulos y 5–6 mallas cada uno.
+
+La carga del sistema estaba entre 5,2 y 6,7 por procesos ajenos y varió mucho entre ejecuciones. Por eso el commit anterior (1f53822) se midió justo después, en condiciones parecidas.
+
+| Perfil | FPS medio (3 ejecuciones) | Draw calls | Vídeo |
+|---|---|---|---|
+| Bajo | 141,2 (140,1–147,1) | 54–72 | 182,7 MB |
+| Medio | 55,6 (54,6–59,5) | 55–150 | 255,5 MB |
+| Bajo, commit anterior, carga parecida | 143,5–157,6 | — | — |
+| Medio, commit anterior, carga parecida | 50,1–52,9 | — | — |
+
+- Las diferencias entran en el ruido de la medición. La memoria de vídeo sube unos 37 MB por las texturas de piel, pelo y ojos.
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
+
 ### Medición con personajes con esqueleto y viento (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU que la medición con texturas de detalle. La escena añade:

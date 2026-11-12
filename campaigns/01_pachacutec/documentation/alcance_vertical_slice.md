@@ -1,10 +1,10 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.7)** — 2026-11-12; sustituye a la v3.6
+- Estado: **Aprobado (v3.8)** — 2026-11-12; sustituye a la v3.7
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md) y [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md)
+- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md) [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md) y [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md)
 
 ## 0. Historial de versiones
 
@@ -20,6 +20,7 @@
 | v3.5 | Aplica [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md): mensajero a los 75 s que espera al jugador (como tarde a los 150 s, con aviso), vecino que recibe en el camino sur, tarjeta de fin con reinicio y balanceo de piernas. Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.6 | Aplica [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md): texturas de detalle CC0 en proyección triplanar para modelos, terreno, muros y campos; la plaza y los caminos se pintan en el terreno con borde irregular; *tonemap* AgX. Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.7 | Aplica [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md): personajes con esqueleto y animaciones generadas (reposo, paseo, carrera, gestos, agotamiento, tejer arrodillada y trabajar con la chaquitaclla), mirada hacia el jugador y comitiva al paso. Añade vida y sonido: viento en el ichu y la queñua, pasos de los personajes y golpes del telar y de la chaquitaclla (§5, §6.1 y §6.3). Pedida por el responsable del proyecto el 2026-11-12. |
+| v3.8 | Aplica [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md): personajes realistas con cuerpos de MakeHuman (CC0), ropa andina propia ajustada al cuerpo y captura de movimiento de CMU (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12, tras las quejas de los jugadores sobre el aspecto de los personajes. |
 
 ## 1. Objetivo
 
@@ -122,7 +123,15 @@ Reglas:
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
 
-**Personajes con esqueleto (v3.7, [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md)).** Sustituye a los modelos sin rig de la v3.3 y al balanceo de piernas de la v3.5. Cada personaje tiene un esqueleto y animaciones generadas por el script de Blender:
+**Personajes realistas (v3.8, [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md)).**
+
+- Los genera `assets/blender/pch_people.py` con el complemento MPFB2 de MakeHuman.
+- **Cuerpo:** humano con cara, manos y esqueleto, de complexión baja y robusta. La piel está teñida a un moreno de la sierra y el pelo es negro: interpretación declarada (PCH-018).
+- **Ropa andina propia** (unku, anacu con faja, lliclla con tupu, manto, tocados, chuspa, ojotas y bulto) ajustada al cuerpo.
+- **Movimiento:** captura real de CMU para reposo, paseo, carrera, gestos y trabajo.
+- Las mujeres llevan el pelo largo suelto.
+
+Lo que sigue de la v3.7 (ADR-0015) se mantiene, ahora con estos cuerpos y estos movimientos. Cada personaje tiene esqueleto y animaciones:
 
 - **Todos:** respiran en reposo, caminan o corren según la velocidad, sin que patinen los pies, y giran la cabeza hacia el jugador cuando está cerca.
 - **Tejedora:** teje **arrodillada** en el extremo del telar de cintura, como en el dibujo 80 de Guamán Poma (PCH-010, R). Al hablar no se aparta del telar: solo gira la cabeza.
@@ -149,8 +158,8 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Pututu | `.glb` | Blender | Propia | PCH-009 |
 | Telar | `.glb` | Blender | Propia | PCH-010 |
 | Quero | `.glb` | Blender | Propia | PCH-004 |
-| Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` con esqueleto y animaciones (v3.7, ADR-0015) | Blender | Propia | PCH-018 |
-| Variante de curaca y hombres principales | `.glb` | Blender, variante del cuerpo base | Propia | PCH-017 |
+| Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` con esqueleto, ropa y animaciones (v3.8, ADR-0016) | Blender + MPFB2 (`pch_people.py`) | Cuerpo, piel, ojos y pelo de MakeHuman (CC0); ropa propia; captura de CMU (uso libre) | PCH-018 |
+| Variante de curaca y hombres principales | `.glb` | Blender + MPFB2 (`pch_people.py`) | Como el cuerpo base | PCH-017 |
 | Ichu y queñua | Mallas o billboards | Blender / procedural | Propia | PCH-013 |
 | Cántaros de estilo Killke | `.glb` | Blender (generador) | Propia | PCH-019 |
 | Haces de leña de queñua | `.glb` | Blender (generador) | Propia | PCH-020 |

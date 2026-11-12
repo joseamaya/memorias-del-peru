@@ -59,6 +59,11 @@ func test_world_uses_surface_materials() -> bool:
 	var textured_models: int = 0
 	for node: Node in world.find_children("*", "MeshInstance3D", true, false):
 		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		# Los personajes (ADR-0016) traen materiales con nombre: piel, ojos,
+		# pelo y ropa; esos no usan el material de modelo.
+		var first: Material = mesh_instance.mesh.surface_get_material(0) if mesh_instance.mesh != null and mesh_instance.mesh.get_surface_count() > 0 else null
+		if first != null and not first.resource_name.is_empty():
+			continue
 		if SurfaceMaterials.has_surface_class(mesh_instance.mesh):
 			model_meshes += 1
 			if mesh_instance.material_override == SurfaceMaterials.model_material():

@@ -23,6 +23,10 @@ uniform sampler2DArray normal_array : filter_linear_mipmap, repeat_enable;
 uniform float layer_scale[9];
 uniform int fixed_layer = -1;
 uniform bool use_vertex_color = true;
+// Ropa de los personajes (ADR-0016): el tejido se lee con las coordenadas
+// UV2 de la prenda en lugar de la proyección triplanar, para que no resbale
+// cuando el cuerpo se mueve.
+uniform bool cloth_uv2 = false;
 // Proyección en coordenadas del mundo (piezas fijas sin girar: terreno, muros)
 // en lugar de las del objeto (modelos que se mueven o giran).
 uniform bool world_projection = false;
@@ -126,7 +130,15 @@ void fragment() {
 		vec3 normal_map = vec3(0.5, 0.5, 1.0);
 		float normal_fade = 1.0 - smoothstep(normal_distance * 0.7, normal_distance, length(VERTEX));
 		bool near = normal_fade > 0.0;
-		if (base_layer >= 0) {
+		if (base_layer >= 0 && cloth_uv2) {
+			vec3 uv = vec3(UV2 * layer_scale[base_layer], float(base_layer));
+			vec4 detail = texture(detail_array, uv);
+			albedo = base_color * mix(vec3(1.0), detail.rgb * 2.0, detail_strength);
+			roughness = detail.a;
+			if (near) {
+				normal_map = texture(normal_array, uv).rgb;
+			}
+		} else if (base_layer >= 0) {
 			vec3 p = tri_pos * layer_scale[base_layer];
 			vec4 detail = triplanar(detail_array, p, tri_weights, float(base_layer));
 			albedo = base_color * mix(vec3(1.0), detail.rgb * 2.0, detail_strength);

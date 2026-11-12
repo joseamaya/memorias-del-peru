@@ -63,7 +63,7 @@ func test_npc_steps_and_work_beats() -> bool:
 		weaver._process(0.05)
 		farmer.animation_player().advance(0.05)
 		farmer._process(0.05)
-	# 6 s: unos dos ciclos de 2,8 s y de 2,6 s.
+	# 6 s: dos o tres ciclos de tejer y de trabajar (2,4–3,4 s cada uno).
 	var ok: bool = beats[0] >= 2 and beats[0] <= 3 and beats[1] >= 2 and beats[1] <= 3
 	# Los pasos salen del propio personaje.
 	var streams: Array[AudioStream] = [load("res://shared_assets/audio/pasos_tierra_01.wav") as AudioStream]

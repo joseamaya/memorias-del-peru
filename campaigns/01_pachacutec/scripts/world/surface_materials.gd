@@ -14,8 +14,16 @@ const NORMAL_PATH: String = "res://shared_assets/textures/superficies_normal.web
 ## Repeticiones por metro de cada capa, en el orden de [enum Layer].
 const LAYER_SCALES: PackedFloat32Array = [0.7, 0.5, 0.7, 1.0, 3.0, 0.25, 0.35, 0.15, 0.3]
 const MAX_OVERLAY_RECTS: int = 8
+## Material que el generador de personajes pone a la ropa (ADR-0016).
+const CLOTH_MATERIAL_NAME: String = "pch_cloth"
+## Repeticiones por metro del tejido de la ropa (las coordenadas UV2 van en
+## metros).
+const CLOTH_SCALE: float = 6.0
+## Umbral de recorte del pelo y las cejas.
+const HAIR_ALPHA_SCISSOR: float = 0.4
 
 static var _model_material: ShaderMaterial = null
+static var _cloth_material: ShaderMaterial = null
 
 
 ## Material compartido de los modelos generados: capa según la clase de
@@ -24,6 +32,18 @@ static func model_material() -> ShaderMaterial:
 	if _model_material == null:
 		_model_material = _base_material()
 	return _model_material
+
+
+## Material compartido de la ropa de los personajes: tejido por UV2 y color
+## por vértice.
+static func cloth_material() -> ShaderMaterial:
+	if _cloth_material == null:
+		_cloth_material = _base_material()
+		_cloth_material.set_shader_parameter("cloth_uv2", true)
+		var scales: PackedFloat32Array = LAYER_SCALES.duplicate()
+		scales[Layer.FABRIC] = CLOTH_SCALE
+		_cloth_material.set_shader_parameter("layer_scale", scales)
+	return _cloth_material
 
 
 ## Material de la vegetación generada: como [method model_material], y además
@@ -79,8 +99,13 @@ static func set_overlay_areas(material: ShaderMaterial, boxes: Array[MeshInstanc
 	return count
 
 
-## Pone [method model_material] en todas las mallas bajo [param root] que
-## traen la clase de superficie (UV). Devuelve cuántas cambió.
+## Pone los materiales del proyecto en las mallas bajo [param root]:
+## - modelos de `pch_models.py` (una superficie sin material propio y con la
+##   clase de superficie en UV): [method model_material] en toda la malla;
+## - personajes de `pch_people.py` (ADR-0016): [method cloth_material] en la
+##   ropa, y recorte por alfa en el pelo y las cejas; la piel y los ojos
+##   conservan su material importado.
+## Devuelve cuántas mallas cambió.
 static func apply_to_model(root: Node) -> int:
 	if root == null:
 		return 0
@@ -90,10 +115,35 @@ static func apply_to_model(root: Node) -> int:
 		meshes.append(root)
 	for node: Node in meshes:
 		var mesh_instance: MeshInstance3D = node as MeshInstance3D
-		if has_surface_class(mesh_instance.mesh):
+		var array_mesh: ArrayMesh = mesh_instance.mesh as ArrayMesh
+		if array_mesh == null:
+			continue
+		if has_surface_class(array_mesh) and not _is_named(array_mesh.surface_get_material(0)):
 			mesh_instance.material_override = model_material()
 			changed += 1
+			continue
+		var touched: bool = false
+		for surface: int in range(array_mesh.get_surface_count()):
+			var material: Material = array_mesh.surface_get_material(surface)
+			if material != null and material.resource_name == CLOTH_MATERIAL_NAME:
+				mesh_instance.set_surface_override_material(surface, cloth_material())
+				touched = true
+			elif material is BaseMaterial3D and (material as BaseMaterial3D).transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+				# Pelo y cejas: recorte sin mezcla, para no tener problemas de
+				# orden; las tarjetas del pelo se ven por las dos caras.
+				var hair: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
+				hair.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+				hair.alpha_scissor_threshold = HAIR_ALPHA_SCISSOR
+				hair.cull_mode = BaseMaterial3D.CULL_DISABLED
+				mesh_instance.set_surface_override_material(surface, hair)
+				touched = true
+		if touched:
+			changed += 1
 	return changed
+
+
+static func _is_named(material: Material) -> bool:
+	return material != null and not material.resource_name.is_empty()
 
 
 ## Verdadero si la primera superficie de [param mesh] trae UV (la clase de

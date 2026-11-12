@@ -212,7 +212,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-018 — Vestimenta y apariencia del habitante común
 - Tipo: vestimenta
 - Clasificación: R (a partir de A)
-- Uso en el juego: tejedora, agricultor, mensajero y habitantes; modelos `pch_npc_weaver.glb` y `pch_npc_villager.glb` (R: anacu con faja de franjas, lliclla con franjas sujeta con tupu, trenzas), `pch_npc_farmer.glb` (R: unku, manto, paño en la cabeza, chuspa y chaquitaclla) y `pch_npc_commoner.glb` (R: unku, manto y chuspa). Ojotas en todos
+- Uso en el juego: tejedora, agricultor, mensajero y habitantes; modelos `pch_npc_weaver.glb` y `pch_npc_villager.glb` (R: anacu con faja de franjas, lliclla con franjas sujeta con tupu, trenzas), `pch_npc_farmer.glb` (R: unku, manto, paño en la cabeza, chuspa y chaquitaclla) y `pch_npc_commoner.glb` (R: unku, manto y chuspa). Ojotas en todos. Desde el alcance v3.8 ([ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md)), los cuerpos son de MakeHuman, con la piel teñida a un moreno de la sierra y el pelo negro (R: interpretación sin retratos auténticos), y las mujeres llevan el pelo largo suelto en lugar de trenzas, porque la trenza disponible en MakeHuman trae un flequillo moderno
 - Fuentes en que se basa (A, consultadas el 2026-11-11):
   - Dumbarton Oaks, *All T'oqapu Tunic*, PC.B.518: túnica (unku) tejida como un rectángulo doblado con abertura para el cuello y los lados cosidos hasta las sisas; algodón y fibra de camélido teñida. Según la ficha, el t'oqapu estaba reservado a personas de alto rango.
   - The Met, *Tunic*, inca, 1460–1540, 33.149.100 (https://www.metmuseum.org/art/collection/search/308120): pelo de camélido y algodón, 75,6 × 94 cm.
