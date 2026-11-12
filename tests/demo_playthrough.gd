@@ -74,9 +74,10 @@ func _initialize() -> void:
 		Step.new("walk", Vector3(-6.4, 0, 8.2)),
 		Step.new("look", Vector3(-8, 0.3, 7), 1.2),
 		Step.new("interact", Vector3(-8, 0.3, 7), 3.5),
-		Step.new("walk", Vector3(-9.3, 0, 6.0)),
-		Step.new("look", Vector3(-11, 1.3, 5), 1.0),
-		Step.new("interact", Vector3(-11, 1.3, 5), 4.0),
+		# La tejedora teje arrodillada al extremo del telar (ADR-0015).
+		Step.new("walk", Vector3(-8.9, 0, 7.6)),
+		Step.new("look", Vector3(-10.35, 0.6, 6.35), 1.0),
+		Step.new("interact", Vector3(-10.35, 0.6, 6.35), 4.0),
 		Step.new("look", Vector3(-10, 0.3, 7.5), 2.0),
 		Step.new("walk", Vector3(-12, 0, 0)),
 		Step.new("walk", Vector3(-30, 0, 0), 0.0, true),

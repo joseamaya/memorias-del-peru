@@ -7,6 +7,7 @@ extends Node3D
 ## con colisión en el tronco. El reparto es determinista y deja libres la
 ## plaza, los caminos, las casas, las terrazas y el rincón de la tejedora.
 ## Sin los modelos no se crea nada: la vegetación no tiene bloqueo.
+## El ichu y la copa de la queñua se mecen con el viento ([LlactaWind]).
 
 ## Una mata o un árbol: transformación global y variante de modelo.
 class Placement:
@@ -68,7 +69,13 @@ const QUENUA_SCALE_MIN: float = 0.8
 const QUENUA_SCALE_MAX: float = 1.2
 const TRUNK_RADIUS: float = 0.4
 const TRUNK_HEIGHT: float = 2.5
+## Flexión con el viento por metro² de altura: unos 6 cm en lo alto de una
+## mata de ichu y unos 10 cm en la copa de una queñua, con ráfaga media.
+const ICHU_WIND_BEND: float = 0.17
+const QUENUA_WIND_BEND: float = 0.008
 
+## Materiales que mece el viento (los recibe [LlactaWind]).
+var wind_materials: Array[ShaderMaterial] = []
 var _height_source: Callable = Callable()
 var _houses: Array[Vector3] = []
 
@@ -224,6 +231,8 @@ func _build_ichu(meshes: Array[Mesh]) -> void:
 		if not chunks.has(key):
 			chunks[key] = []
 		chunks[key].append(placement.transform)
+	var material: ShaderMaterial = SurfaceMaterials.vegetation_material(ICHU_WIND_BEND)
+	wind_materials.append(material)
 	var keys: Array[Vector3i] = []
 	keys.assign(chunks.keys())
 	keys.sort()
@@ -243,6 +252,7 @@ func _build_ichu(meshes: Array[Mesh]) -> void:
 		instance.name = "IchuChunk_%d_%d_%d" % [key.x, key.y, key.z]
 		instance.position = center
 		instance.multimesh = multimesh
+		instance.material_override = material
 		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		instance.visibility_range_end = ICHU_VISIBILITY_END
 		instance.visibility_range_end_margin = ICHU_VISIBILITY_MARGIN
@@ -255,6 +265,10 @@ func _build_quenua(meshes: Array[Mesh]) -> void:
 	quenua_root.name = "Quenua"
 	add_child(quenua_root)
 	var placements: Array[Placement] = quenua_placements()
+	# Corteza con textura de madera (clase de superficie del generador) y copa
+	# que se mece.
+	var material: ShaderMaterial = SurfaceMaterials.vegetation_material(QUENUA_WIND_BEND)
+	wind_materials.append(material)
 	for variant: int in range(meshes.size()):
 		var transforms: Array[Transform3D] = []
 		for placement: Placement in placements:
@@ -271,9 +285,8 @@ func _build_quenua(meshes: Array[Mesh]) -> void:
 		var instance: MultiMeshInstance3D = MultiMeshInstance3D.new()
 		instance.name = "QuenuaTrees_%d" % variant
 		instance.multimesh = multimesh
-		# Corteza con textura de madera (clase de superficie del generador).
 		if SurfaceMaterials.has_surface_class(meshes[variant]):
-			instance.material_override = SurfaceMaterials.model_material()
+			instance.material_override = material
 		quenua_root.add_child(instance)
 	# Colisión del tronco: el jugador no atraviesa los árboles.
 	for index: int in range(placements.size()):

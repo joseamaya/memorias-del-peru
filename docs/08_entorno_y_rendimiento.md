@@ -181,6 +181,28 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con personajes con esqueleto y viento (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU que la medición con texturas de detalle. La escena añade:
+
+- nueve personajes con esqueleto de 18 huesos y animaciones ([ADR-0015](adr/0015-personajes-con-esqueleto.md));
+- la cabeza que gira hacia el jugador;
+- el viento en el ichu y la queñua;
+- los pasos y los golpes de trabajo en 3D.
+
+La carga del sistema estaba entre 4,3 y 4,5 por procesos ajenos, así que el commit anterior (433a54f) se midió en las mismas condiciones. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | Frame medio | Draw calls | Vídeo |
+|---|---|---|---|---|
+| Bajo | 153,9 (153,6–154,0) | 6,5 ms | 57 | 145,7 MB |
+| Medio | 59,0 (58,7–60,0) | 17,0 ms | 56 | 218,8 MB |
+| Bajo, commit anterior, misma carga | 166,8 | — | — | — |
+| Medio, commit anterior, misma carga | 60,1 | — | — | — |
+
+- El esqueleto y el viento cuestan aproximadamente 0,5 ms por fotograma: 13 FPS en Bajo y prácticamente nada en Medio, donde manda el sombreado de píxeles.
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
+- Los personajes que salen de la escena (la comitiva) dejan de procesarse.
+
 ### Medición con texturas de detalle (Fase 4, provisional, 2026-11-11)
 
 Mismo comando, en la GPU integrada de referencia (Intel Graphics RPL-S, Vulkan, Forward+). La escena añade el shader triplanar con texturas de detalle ([ADR-0014](adr/0014-texturas-de-detalle-triplanares.md)), el *tonemap* AgX y la plaza y los caminos pintados en el terreno. La carga del sistema estaba entre 3 y 6 por procesos ajenos (navegador sin ventana), así que el commit anterior se midió en las mismas condiciones para comparar. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.

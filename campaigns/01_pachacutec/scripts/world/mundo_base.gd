@@ -46,6 +46,14 @@ const STONE_FOOTSTEP_PATHS: Array[String] = [
 	"res://shared_assets/audio/pasos_piedra_02.wav",
 	"res://shared_assets/audio/pasos_piedra_03.wav",
 ]
+## Golpe del telar (sintético propio) y paso que hace de chaquitaclla al
+## entrar en la tierra (punto 4 del plan de realismo, ADR-0015).
+const LOOM_BEAT_PATH: String = "res://shared_assets/audio/telar_golpe.wav"
+const LOOM_BEAT_VOLUME_DB: float = -9.0
+const DIG_PATH: String = "res://shared_assets/audio/pasos_tierra_02.wav"
+const DIG_VOLUME_DB: float = -4.0
+const DIG_PITCH: float = 0.62
+const WORK_SOUND_MAX_DISTANCE: float = 18.0
 const MURMUR_PATH: String = "res://shared_assets/audio/murmullo_plaza.wav"
 const MURMUR_VOLUME_DB: float = -8.0
 const MURMUR_SILENT_DB: float = -40.0
@@ -72,6 +80,8 @@ const QUERO_BASE: Vector3 = Vector3(0.0, -0.11, 0.0)
 const PUTUTU_BASE: Vector3 = Vector3(0.0, -0.2, 0.0)
 const OFFERING_BASE: Vector3 = Vector3(0.0, -0.15, 0.0)
 const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
+## Distancia entre la tejedora arrodillada y el extremo del telar.
+const WEAVER_LOOM_GAP: float = 0.38
 ## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
 const TERRACE_CAP_THICKNESS: float = 0.3
 const TERRACE_CAP_INSET: float = 0.05
@@ -304,6 +314,11 @@ func _build_llacta() -> void:
 	vegetation.name = "Vegetation"
 	llacta.add_child(vegetation)
 	vegetation.build(_height_at, positions)
+	# El viento mece el ichu y la queñua y modula el ambiente.
+	var wind: LlactaWind = LlactaWind.new()
+	wind.name = "Wind"
+	wind.materials = vegetation.wind_materials
+	add_child(wind)
 
 	var terraces: Node3D = Node3D.new()
 	terraces.name = "Terraces"
@@ -323,7 +338,9 @@ func _build_llacta() -> void:
 	var npcs: Node3D = Node3D.new()
 	npcs.name = "NPCs"
 	llacta.add_child(npcs)
-	var weaver: NpcActor = _add_npc(npcs, "Tejedora", Vector3(-11.0, 0.0, 5.0), Color(0.62, 0.38, 0.3, 1.0))
+	# La tejedora se arrodilla en el extremo del telar de cintura (PCH-010,
+	# ADR-0015), mirando a lo largo del telar hacia la plaza.
+	var weaver: NpcActor = _add_npc(npcs, "Tejedora", weaver_position(), Color(0.62, 0.38, 0.3, 1.0))
 	# Junto a la rampa de la primera terraza, al alcance para hablarle.
 	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(36.5, 0.8, -3.0), Color(0.45, 0.35, 0.25, 1.0))
 	var messenger: NpcActor = _add_npc(npcs, "Mensajero", Vector3(0.0, 0.0, -60.0), Color(0.75, 0.65, 0.4, 1.0))
@@ -335,7 +352,13 @@ func _build_llacta() -> void:
 	var neighbor_two: NpcActor = _add_npc(npcs, "Habitante2", Vector3(11.0, 0.0, -1.0), Color(0.42, 0.33, 0.26, 1.0))
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
 	weaver.face(_plaza_center_flat())
+	weaver.turn_body_to_talk = false
+	weaver.set_idle_animation(&"weave")
 	farmer.face(_plaza_center_flat())
+	farmer.set_idle_animation(&"work")
+	for actor: Node in npcs.get_children():
+		(actor as NpcActor).watch_target = player
+	_setup_npc_sounds(npcs, weaver, farmer)
 	_attach_object_models(llacta)
 	var talks: Array[NpcTalk] = [
 		_add_talk(weaver, &"PCH_TALK_WEAVER"),
@@ -408,7 +431,11 @@ func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
 		event.hold(npc, TALK_HOLD_SECONDS)
-	npc.face(player.global_position)
+	# La tejedora sigue tejiendo y solo gira la cabeza. El agricultor deja la
+	# chaquitaclla; los demás acompañan la frase con gestos (ADR-0015).
+	if npc.turn_body_to_talk:
+		npc.face(player.global_position)
+		npc.perform(&"talk" if npc.idle_animation == &"idle" else &"idle", TALK_HOLD_SECONDS)
 
 
 func _plaza_center_flat() -> Vector3:
@@ -492,6 +519,33 @@ func _setup_footsteps() -> void:
 	player.footstep_sets = sets
 
 
+## Pasos de los personajes y sonidos de su trabajo, en 3D.
+func _setup_npc_sounds(npcs: Node3D, weaver: NpcActor, farmer: NpcActor) -> void:
+	if AudioServer.get_driver_name() == "Dummy":
+		return
+	var steps: Array[AudioStream] = _load_streams(FOOTSTEP_PATHS)
+	for actor: Node in npcs.get_children():
+		(actor as NpcActor).set_footsteps(steps)
+	_add_beat_sound(weaver, "LoomSound", LOOM_BEAT_PATH, LOOM_BEAT_VOLUME_DB, 1.0, Vector3(0.0, 0.4, -0.4))
+	_add_beat_sound(farmer, "DigSound", DIG_PATH, DIG_VOLUME_DB, DIG_PITCH, Vector3(0.3, 0.1, -0.3))
+
+
+func _add_beat_sound(actor: NpcActor, sound_name: String, path: String, volume_db: float, pitch: float, offset: Vector3) -> void:
+	if actor == null or not ResourceLoader.exists(path):
+		return
+	var sound: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
+	sound.name = sound_name
+	sound.stream = load(path) as AudioStream
+	sound.bus = &"SFX"
+	sound.volume_db = volume_db
+	sound.pitch_scale = pitch
+	sound.max_distance = WORK_SOUND_MAX_DISTANCE
+	sound.unit_size = 3.0
+	sound.position = offset
+	actor.add_child(sound)
+	actor.beat.connect(func(_animation: StringName) -> void: sound.play())
+
+
 func _load_streams(paths: Array[String]) -> Array[AudioStream]:
 	var streams: Array[AudioStream] = []
 	for path: String in paths:
@@ -524,6 +578,10 @@ func _setup_ambience() -> void:
 	player_audio.volume_db = -16.0
 	player_audio.autoplay = true
 	$EnvironmentAudio.add_child(player_audio)
+	var wind: LlactaWind = get_node_or_null("Wind") as LlactaWind
+	if wind != null:
+		wind.ambience = player_audio
+		wind.ambience_base_db = player_audio.volume_db
 
 
 
@@ -795,7 +853,8 @@ func _attach_object_models(llacta: Node3D) -> void:
 	var loom_files: Array[String] = [MODEL_LOOM]
 	var nothing: Array[Node3D] = []
 	var no_loom_collisions: Array[Node] = []
-	_attach_model(llacta, "LoomSlot", LOOM_POSITION, loom_files, nothing, no_loom_collisions)
+	var loom_slot: ModelSlot = _attach_model(llacta, "LoomSlot", LOOM_POSITION, loom_files, nothing, no_loom_collisions)
+	loom_slot.transform = loom_transform()
 
 
 func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> NpcActor:
@@ -816,9 +875,9 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	var slot_offset: Vector3 = Vector3.ZERO
 	if body_mesh != null:
 		blockout.append(body_mesh)
-		# El hueco cuelga del cuerpo del bloqueo para heredar su balanceo de
-		# reposo; se compensa la altura del cuerpo para que los pies queden en
-		# el origen del personaje.
+		# El hueco cuelga del cuerpo del bloqueo; se compensa la altura del
+		# cuerpo para que los pies queden en el origen del personaje. Con un
+		# modelo animado, el balanceo del bloqueo se detiene (ADR-0015).
 		slot_parent = body_mesh
 		slot_offset = -body_mesh.position
 	# La cápsula de colisión del bloqueo se conserva (alcance §7).
@@ -826,6 +885,19 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, npc_model_files(node_name), blockout, no_collisions)
 	slot.use_model_collision = false
 	if slot.model != null:
-		actor.set_legs(slot.model.find_child("LegL", true, false) as Node3D, slot.model.find_child("LegR", true, false) as Node3D)
-		actor.set_arms(slot.model.find_child("ArmL", true, false) as Node3D, slot.model.find_child("ArmR", true, false) as Node3D)
+		actor.set_model(slot.model)
 	return actor
+
+
+## Telar orientado con su extremo de trabajo en [constant LOOM_POSITION] y
+## el resto tendido hacia la plaza (el modelo se extiende hacia su +Z).
+func loom_transform() -> Transform3D:
+	var toward: Vector3 = _plaza_center_flat() - LOOM_POSITION
+	toward.y = 0.0
+	return Transform3D(Basis.looking_at(-toward.normalized(), Vector3.UP), LOOM_POSITION)
+
+
+## Sitio de la tejedora: arrodillada justo detrás del extremo del telar.
+func weaver_position() -> Vector3:
+	var loom: Transform3D = loom_transform()
+	return loom.origin - loom.basis.z * WEAVER_LOOM_GAP

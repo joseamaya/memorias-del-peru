@@ -1,10 +1,10 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.6)** — 2026-11-11; sustituye a la v3.5
+- Estado: **Aprobado (v3.7)** — 2026-11-12; sustituye a la v3.6
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) y [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md)
+- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md) y [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md)
 
 ## 0. Historial de versiones
 
@@ -19,6 +19,7 @@
 | v3.4 | Aplica [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) tras el primer piloto: subtítulos con tiempo de lectura y en cola, rótulo de lugar, nueva apertura, mensajero a los 120 s con señal intermedia, «Hablar» con seis personajes y vecinos que pasean. Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.5 | Aplica [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md): mensajero a los 75 s que espera al jugador (como tarde a los 150 s, con aviso), vecino que recibe en el camino sur, tarjeta de fin con reinicio y balanceo de piernas. Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.6 | Aplica [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md): texturas de detalle CC0 en proyección triplanar para modelos, terreno, muros y campos; la plaza y los caminos se pintan en el terreno con borde irregular; *tonemap* AgX. Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.7 | Aplica [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md): personajes con esqueleto y animaciones generadas (reposo, paseo, carrera, gestos, agotamiento, tejer arrodillada y trabajar con la chaquitaclla), mirada hacia el jugador y comitiva al paso. Añade vida y sonido: viento en el ichu y la queñua, pasos de los personajes y golpes del telar y de la chaquitaclla (§5, §6.1 y §6.3). Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -121,7 +122,15 @@ Reglas:
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
 
-**Modelos sin rig (v3.3, matizado en v3.5).** Los personajes no tienen rig: se desplazan y se giran, y desde la v3.5 balancean las piernas y los brazos al caminar (nodos `LegL`, `LegR`, `ArmL` y `ArmR` del modelo). Tronco y cabeza siguen rígidos. El leve balanceo de reposo del bloqueo no pasa al modelo. Las presencias de la tabla que piden gestos (tejer, girar la cabeza, hablar con gestos) quedan sin animación propia y se sostienen con la orientación, la posición y los subtítulos. Si el piloto muestra que el desplazamiento sin animación distrae o se lee mal, se añadirá el rig con un ADR.
+**Personajes con esqueleto (v3.7, [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md)).** Sustituye a los modelos sin rig de la v3.3 y al balanceo de piernas de la v3.5. Cada personaje tiene un esqueleto y animaciones generadas por el script de Blender:
+
+- **Todos:** respiran en reposo, caminan o corren según la velocidad, sin que patinen los pies, y giran la cabeza hacia el jugador cuando está cerca.
+- **Tejedora:** teje **arrodillada** en el extremo del telar de cintura, como en el dibujo 80 de Guamán Poma (PCH-010, R). Al hablar no se aparta del telar: solo gira la cabeza.
+- **Agricultor:** hinca y levanta la chaquitaclla; al hablar la deja y se vuelve hacia el jugador.
+- **Mensajero:** entra corriendo, recobra el aliento agotado y cuenta la noticia con gestos.
+- **Curaca:** gesticula durante la llamada.
+- **Vecinos y curaca:** acompañan su frase de «Hablar» con gestos.
+- **Comitiva:** el curaca y los hombres principales caminan a 1,8 m/s.
 
 **Conversaciones y paseo (v3.4).** Antes de la noticia, la tejedora, el agricultor, el curaca y los tres vecinos tienen «Hablar»: cada uno dice una sola frase, sin opciones, y se gira hacia el jugador. Los tres vecinos pasean despacio entre la plaza y las casas, y se detienen y se vuelven hacia el mensajero cuando llega.
 
@@ -140,7 +149,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Pututu | `.glb` | Blender | Propia | PCH-009 |
 | Telar | `.glb` | Blender | Propia | PCH-010 |
 | Quero | `.glb` | Blender | Propia | PCH-004 |
-| Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` sin rig, con piernas aparte para el balanceo (v3.5) | Blender | Propia | PCH-018 |
+| Cuerpo base de habitante (tejedora, agricultor, mensajero, habitantes) | `.glb` con esqueleto y animaciones (v3.7, ADR-0015) | Blender | Propia | PCH-018 |
 | Variante de curaca y hombres principales | `.glb` | Blender, variante del cuerpo base | Propia | PCH-017 |
 | Ichu y queñua | Mallas o billboards | Blender / procedural | Propia | PCH-013 |
 | Cántaros de estilo Killke | `.glb` | Blender (generador) | Propia | PCH-019 |
@@ -157,6 +166,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
   - Un shader triplanar las aplica como detalle sobre la paleta: el color sigue siendo el de las fichas.
   - La plaza y los caminos se pintan en el terreno con borde irregular, en lugar de losas.
   - El ichu, la cerámica, la piel y los objetos pequeños siguen con color plano.
+- **Hecho en v3.7:** el mismo shader mece con el viento el ichu y la copa de la queñua. La ráfaga es lenta y variable, y sube a la vez el volumen del ambiente de viento (`LlactaWind`).
 
 ### 6.3 Audio
 
@@ -168,6 +178,9 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Quero | Interacción | `quero_bebida.wav`: sorbo y trago, Freesound 320139 | CC0 |
 | Pututu | Interacción y evento | `pututu_caracola.wav`: «Snailhorn», Ohrwurm, Freesound 64830 (caracola de tipo asiático; no hay pututu andino en CC0) | CC0 |
 | Ofrenda | Interacción | `ofrenda_grano.wav`: grano vertido, Freesound 556974 | CC0 |
+| Pasos de los personajes | Personajes al caminar o correr, en 3D (v3.7) | Los mismos `pasos_tierra_01–03.wav` del jugador | CC0 |
+| Telar | Golpe del batán de la tejedora, en 3D (v3.7) | `telar_golpe.wav`: síntesis propia | Propia |
+| Chaquitaclla | Golpe del agricultor al hincarla, en 3D (v3.7) | `pasos_tierra_02.wav` a 0,62 de velocidad | CC0 |
 | Murmullo de plaza | Evento: de la noticia a la llamada | `murmullo_plaza.wav`: murmullo de hombres, Freesound 480808, filtrado y en bucle | CC0 |
 
 Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere grabaciones propias en la sierra.

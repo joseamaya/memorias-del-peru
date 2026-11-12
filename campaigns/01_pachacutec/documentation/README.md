@@ -48,5 +48,5 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 ## 6. Notas de producción (Fase 2)
 
 - Modelo del quero: cilindro de bloqueo; la forma y la decoración incisa se ajustarán en la Fase 4.
-- Fase 4: el quero, el pututu, el adoratorio, el telar y las dos viviendas tienen modelo generado por `assets/blender/pch_models.py` ([ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md)); los personajes tienen modelo estático, sin rig (alcance v3.3). El ichu y la queñua (`pch_ichu_*`, `pch_quenua_*`) los reparte `scripts/world/vegetation.gd`.
+- Fase 4: el quero, el pututu, el adoratorio, el telar y las dos viviendas tienen modelo generado por `assets/blender/pch_models.py` ([ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md)); los personajes tienen esqueleto y animaciones generados por el mismo script ([ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md), alcance v3.7). El ichu y la queñua (`pch_ichu_*`, `pch_quenua_*`) los reparte `scripts/world/vegetation.gd`.
 - Sonido del quero (`shared_assets/audio/quero_bebida.wav`): era un placeholder sintético. Desde el 2026-11-11 es una grabación CC0 de Freesound, como el resto del audio (`shared_assets/audio/LICENSE.md`).

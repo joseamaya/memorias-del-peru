@@ -121,7 +121,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-010 — Telar y textil
 - Tipo: herramienta / vestimenta
 - Clasificación: A / R
-- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`; modelo `pch_loom.glb` (R: telar de cintura atado a una estaca, con rombos escalonados en el tejido)
+- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`; modelo `pch_loom.glb` (R: telar de cintura atado a una estaca, con rombos escalonados en el tejido). Desde el alcance v3.7 (ADR-0015), la tejedora teje arrodillada en el extremo del telar, como en el dibujo 80 de Guamán Poma citado abajo (R: postura y gesto de tejer reconstruidos sobre esa misma fuente, sin fuente nueva)
 - Fuentes:
   - Dumbarton Oaks, *All T'oqapu Tunic*, PC.B.518 (https://museum.doaks.org/objects-1/info/23071), consultado el 2026-11-11. Inca, Horizonte Tardío, 1450–1540; lana y algodón. Urdimbre de algodón sin teñir y trama de fibra de camélido teñida; tejida como un solo rectángulo, doblado y cosido.
   - The Met, *Unfinished Sampler Panel on Loom*, 63.97 (https://www.metmuseum.org/art/collection/search/308378), consultado el 2026-11-11. Costa central del Perú (?), siglos X–XV; algodón, pelo de camélido y madera. Tejido sin terminar sobre su telar; la ficha no indica el tipo de telar.

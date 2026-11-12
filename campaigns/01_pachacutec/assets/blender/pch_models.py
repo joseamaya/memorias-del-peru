@@ -11,7 +11,8 @@ Uso (desde la raíz del repositorio):
         [--out DIR] [--preview DIR] [nombre ...]
 
 Sin nombres genera todos. `--preview` guarda además un render PNG de cada
-modelo para revisarlo sin abrir Blender.
+modelo para revisarlo sin abrir Blender; con `--pose walk:0.3`, los
+personajes posan en ese instante de la animación.
 
 Convenciones (alcance §7 y §7.1):
 - 1 unidad = 1 metro, transformaciones aplicadas, origen en la base.
@@ -19,6 +20,8 @@ Convenciones (alcance §7 y §7.1):
   Godot, el eje que apunta `look_at`.
 - Las mallas cuyo nombre termina en `-convcolonly` las convierte Godot en
   colisión convexa al importar y no se dibujan.
+- Los personajes llevan esqueleto, pesos y animaciones generados aquí mismo
+  (ADR-0015).
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
 (PCH-004, 007, 009, 010, 011, 012, 013, 017, 018, 019 y 020); ninguna forma concreta está documentada como
@@ -849,36 +852,149 @@ def _garment_profile(points, rows):
 	return profile
 
 
+# Esqueleto (ADR-0015). Coordenadas sin escalar: el frente mira a +Y, así que
+# el lado +X es el derecho del personaje («.R»). Cada hueso: (padre, cabeza, cola).
+SKELETON = {
+	"root": (None, (0.0, 0.0, 0.0), (0.0, 0.18, 0.0)),
+	"hips": ("root", (0.0, 0.0, 0.88), (0.0, 0.0, 1.02)),
+	"spine": ("hips", (0.0, 0.0, 1.02), (0.0, 0.0, 1.18)),
+	"chest": ("spine", (0.0, 0.0, 1.18), (0.0, 0.0, 1.38)),
+	"neck": ("chest", (0.0, 0.0, 1.38), (0.0, 0.0, 1.46)),
+	"head": ("neck", (0.0, 0.0, 1.46), (0.0, 0.0, 1.68)),
+}
+SHOULDER = (0.235, 0.0, 1.31)
+ELBOW = (0.27, 0.03, 1.05)
+WRIST = (0.26, 0.06, 0.83)
+HIP = (0.09, 0.0, 0.85)
+KNEE = (0.09, 0.012, 0.46)
+ANKLE = (0.09, 0.0, 0.08)
+TOE = (0.09, 0.16, 0.02)
+for _suffix, _side in ((".R", 1.0), (".L", -1.0)):
+	def _m(p, s=_side):
+		return (p[0] * s, p[1], p[2])
+	SKELETON["upper_arm" + _suffix] = ("chest", _m(SHOULDER), _m(ELBOW))
+	SKELETON["forearm" + _suffix] = ("upper_arm" + _suffix, _m(ELBOW), _m(WRIST))
+	SKELETON["hand" + _suffix] = ("forearm" + _suffix, _m(WRIST), _m((WRIST[0], WRIST[1] + 0.01, WRIST[2] - 0.1)))
+	SKELETON["thigh" + _suffix] = ("hips", _m(HIP), _m(KNEE))
+	SKELETON["shin" + _suffix] = ("thigh" + _suffix, _m(KNEE), _m(ANKLE))
+	SKELETON["foot" + _suffix] = ("shin" + _suffix, _m(ANKLE), _m(TOE))
+
+ANIM_FPS = 30
+
+
+def _smooth(edge0, edge1, x):
+	t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
+	return t * t * (3.0 - 2.0 * t)
+
+
+def _side_bone(base, x):
+	return base + (".R" if x >= 0.0 else ".L")
+
+
+def _torso_weights(p, k, skirt_follow):
+	"""Prenda y piezas del tronco: cadera, columna y pecho por altura. Por
+	debajo de 0,8 m la falda sigue en parte al muslo de su lado."""
+	z = p.z / k
+	to_spine = _smooth(1.0, 1.12, z)
+	to_chest = _smooth(1.12, 1.24, z)
+	weights = {"hips": 1.0 - to_spine, "spine": to_spine * (1.0 - to_chest), "chest": to_chest}
+	if skirt_follow > 0.0 and z < 0.8:
+		follow = skirt_follow * _smooth(0.8, 0.3, z)
+		side = max(-1.0, min(1.0, p.x / (0.08 * k)))
+		weights = {name: w * (1.0 - follow) for name, w in weights.items()}
+		weights["thigh.R"] = follow * (0.5 + 0.5 * side)
+		weights["thigh.L"] = follow * (0.5 - 0.5 * side)
+	return weights
+
+
+def _head_weights(p, k):
+	to_head = _smooth(1.43, 1.49, p.z / k)
+	return {"neck": 1.0 - to_head, "head": to_head}
+
+
+def _leg_weights(p, k):
+	z = p.z / k
+	suffix = ".R" if p.x >= 0.0 else ".L"
+	to_shin = _smooth(0.5, 0.42, z)
+	to_foot = _smooth(0.12, 0.07, z)
+	return {"thigh" + suffix: 1.0 - to_shin, "shin" + suffix: to_shin * (1.0 - to_foot), "foot" + suffix: to_foot}
+
+
+def _arm_weights(p, k):
+	suffix = ".R" if p.x >= 0.0 else ".L"
+	side = 1.0 if p.x >= 0.0 else -1.0
+	elbow = Vector((ELBOW[0] * side, ELBOW[1], ELBOW[2])) * k
+	wrist = Vector((WRIST[0] * side, WRIST[1], WRIST[2])) * k
+	shoulder = Vector((SHOULDER[0] * side, SHOULDER[1], SHOULDER[2])) * k
+	# Parámetro a lo largo del brazo: 0 en el hombro, 1 en el codo, 2 en la muñeca.
+	upper = elbow - shoulder
+	t_upper = max(0.0, min(1.0, (p - shoulder).dot(upper) / upper.length_squared))
+	fore = wrist - elbow
+	t_fore = (p - elbow).dot(fore) / fore.length_squared
+	t = t_upper if t_fore <= 0.0 else 1.0 + t_fore
+	to_fore = _smooth(0.85, 1.15, t)
+	to_hand = _smooth(1.85, 2.05, t)
+	return {"upper_arm" + suffix: 1.0 - to_fore, "forearm" + suffix: to_fore * (1.0 - to_hand), "hand" + suffix: to_hand}
+
+
+def _assign_weights(obj, weight_fn):
+	groups = {}
+	for vertex in obj.data.vertices:
+		for bone, weight in weight_fn(obj.matrix_world @ vertex.co).items():
+			if weight <= 0.0005:
+				continue
+			if bone not in groups:
+				groups[bone] = obj.vertex_groups.get(bone) or obj.vertex_groups.new(name=bone)
+			groups[bone].add([vertex.index], weight, "REPLACE")
+
+
+def _build_armature(collection, k):
+	data = bpy.data.armatures.new("Skeleton")
+	armature = bpy.data.objects.new("Skeleton", data)
+	collection.objects.link(armature)
+	bpy.context.view_layer.objects.active = armature
+	bpy.ops.object.mode_set(mode="EDIT")
+	for name, (parent, head, tail) in SKELETON.items():
+		bone = data.edit_bones.new(name)
+		bone.head = Vector(head) * k
+		bone.tail = Vector(tail) * k
+		bone.roll = 0.0
+		if parent is not None:
+			bone.parent = data.edit_bones[parent]
+			bone.use_connect = False
+	bpy.ops.object.mode_set(mode="OBJECT")
+	return armature
+
+
 def build_person(rng, spec):
-	"""Persona estática de pie, mirando hacia +Y, con los pies en el origen.
+	"""Persona de pie, mirando hacia +Y, con los pies en el origen.
 
 	[spec] describe la ropa: "garment" ("unku" para el hombre, "anacu" para la
 	mujer), colores de prenda y de franjas, manto, lliclla, tocado, chuspa,
-	herramienta o bulto. Sin rig ni animación (alcance v3.3)."""
+	herramienta o bulto. Cada pieza recibe pesos del esqueleto (ADR-0015) y
+	todo se une en una sola malla con piel."""
 	collection = bpy.context.scene.collection
-	b = MeshBuilder()
 	k = spec.get("scale", 1.0)
+	skirt_follow = 0.6 if spec["garment"] == "anacu" else 0.45
 
 	def v(x, y, z):
 		return Vector((x * k, y * k, z * k))
 
-	# Piernas y ojotas: un objeto por pierna («LegL», «LegR») con el origen
-	# en lo alto de la pierna, para que el juego las balancee al caminar.
-	leg_top = 0.55 if spec["garment"] == "unku" else 0.3
-	for side, leg_name in ((1.0, "LegL"), (-1.0, "LegR")):
+	parts = []
+
+	# Piernas y ojotas: de la cadera (oculta bajo la prenda) al tobillo.
+	for side in (1.0, -1.0):
 		leg = MeshBuilder()
 		x = 0.09 * side
-		leg.tube([v(x, 0.0, leg_top), v(x, 0.005, 0.3), v(x, 0.0, 0.07)],
-			[0.06 * k, 0.05 * k, 0.04 * k], 6, lambda r: "skin")
+		leg.tube([v(x, 0.0, 0.85), v(x, 0.006, 0.64), v(x, 0.012, 0.5), v(x, 0.012, 0.42), v(x, 0.006, 0.25), v(x, 0.0, 0.08)],
+			[0.07 * k, 0.062 * k, 0.052 * k, 0.05 * k, 0.046 * k, 0.04 * k], 6, lambda r: "skin")
 		leg.box(v(x, 0.05, 0.035), (0.085 * k, 0.2 * k, 0.05 * k), "skin")
 		leg.box(v(x, 0.05, 0.008), (0.1 * k, 0.23 * k, 0.016 * k), "sole")
 		leg.box(v(x, 0.05, 0.06), (0.012 * k, 0.12 * k, 0.012 * k), "sole")
-		leg_obj = leg.to_object(leg_name, collection)
-		pivot = v(x, 0.0, leg_top)
-		leg_obj.data.transform(Matrix.Translation(-pivot))
-		leg_obj.location = pivot
+		parts.append((leg.to_object("leg", collection), lambda p: _leg_weights(p, k)))
 
 	# Prenda principal como sólido de revolución achatado en profundidad.
+	torso = MeshBuilder()
 	rows = 16
 	body = spec["body"]
 	band = spec.get("band")
@@ -898,41 +1014,57 @@ def build_person(rng, spec):
 			return band
 		return body
 
-	b.lathe(profile, 14, garment_mat, axis_frame=Matrix.Diagonal((1.0, 0.62, 1.0, 1.0)), cap_bottom=True, cap_top=True)
+	torso.lathe(profile, 14, garment_mat, axis_frame=Matrix.Diagonal((1.0, 0.62, 1.0, 1.0)), cap_bottom=True, cap_top=True)
+	parts.append((torso.to_object("garment", collection), lambda p: _torso_weights(p, k, skirt_follow)))
 
+	# Piezas sobre el tronco, sin seguir a las piernas.
+	extras = MeshBuilder()
+	has_extras = False
 	# Lliclla: manta sobre los hombros con franjas, sujeta con un tupu.
 	if spec.get("lliclla"):
+		has_extras = True
 		shawl = _garment_profile([(1.02, 0.215), (1.2, 0.225), (1.33, 0.205), (1.38, 0.16)], 6)
 		stripe = spec.get("lliclla_stripe", "wool_red")
-		b.lathe([(radius * k, z * k) for radius, z in shawl], 14,
+		extras.lathe([(radius * k, z * k) for radius, z in shawl], 14,
 			lambda seg, ring: stripe if ring in (0, 3) else spec["lliclla"],
 			axis_frame=Matrix.Diagonal((1.0, 0.66, 1.0, 1.0)), cap_bottom=False, cap_top=False)
-		b.lathe([(0.0, 0.0), (0.025 * k, 0.004 * k), (0.0, 0.008 * k)], 8, lambda seg, ring: "copper",
+		extras.lathe([(0.0, 0.0), (0.025 * k, 0.004 * k), (0.0, 0.008 * k)], 8, lambda seg, ring: "copper",
 			axis_frame=Matrix.Translation(v(0.0, 0.15, 1.28)) @ Matrix.Rotation(-math.pi / 2, 4, "X"), cap_bottom=False)
-
 	# Manto (yacolla) a la espalda, anudado al pecho.
 	if spec.get("manto"):
-		b.box(v(0.0, -0.15, 1.02), (0.46 * k, 0.022 * k, 0.64 * k), spec["manto"], rot_x(0.08))
-		b.box(v(0.0, -0.11, 1.355), (0.42 * k, 0.1 * k, 0.03 * k), spec["manto"])
-		b.blob(v(0.0, 0.15, 1.33), (0.04 * k, 0.03 * k, 0.035 * k), spec["manto"], rng, rows=3, segments=6)
+		has_extras = True
+		extras.box(v(0.0, -0.15, 1.02), (0.46 * k, 0.022 * k, 0.64 * k), spec["manto"], rot_x(0.08))
+		extras.box(v(0.0, -0.11, 1.355), (0.42 * k, 0.1 * k, 0.03 * k), spec["manto"])
+		extras.blob(v(0.0, 0.15, 1.33), (0.04 * k, 0.03 * k, 0.035 * k), spec["manto"], rng, rows=3, segments=6)
+	# Chuspa (bolsa) al costado con su correa.
+	if spec.get("chuspa"):
+		has_extras = True
+		extras.box(v(-0.24, 0.04, 0.82), (0.05 * k, 0.15 * k, 0.16 * k), spec["chuspa"])
+		extras.box(v(0.0, 0.0, 1.1), (0.56 * k, 0.29 * k, 0.025 * k), spec["chuspa"], rot_z(0.0) @ Matrix.Rotation(-0.9, 3, "Y"))
+	# Bulto de viaje atado a la espalda (q'ipi).
+	if spec.get("bundle"):
+		has_extras = True
+		extras.blob(v(0.0, -0.24, 1.05), (0.17 * k, 0.11 * k, 0.2 * k), spec["bundle"], rng, rows=4, segments=8)
+		extras.box(v(0.0, -0.05, 1.3), (0.44 * k, 0.33 * k, 0.025 * k), "rope", rot_x(0.5))
+	if has_extras:
+		parts.append((extras.to_object("extras", collection), lambda p: _torso_weights(p, k, 0.0)))
+	else:
+		extras.bm.free()
 
-	# Brazos y manos: un objeto por brazo («ArmL» del lado +X, como «LegL»),
-	# con el origen en el hombro, para que el juego los balancee al caminar.
-	pose = spec.get("arms", (0.0, 0.0))
-	for index, side in enumerate((-1.0, 1.0)):
-		forward = pose[index]
+	# Brazos y manos, colgando junto al cuerpo: las poses las ponen las animaciones.
+	for side in (-1.0, 1.0):
 		arm = MeshBuilder()
-		shoulder = v(0.235 * side, 0.0, 1.31)
-		elbow = v(0.27 * side, 0.03 + forward * 0.5, 1.05)
-		wrist = v(0.26 * side, 0.06 + forward, 0.83 + forward * 0.25)
-		arm.tube([shoulder, elbow, wrist], [0.05 * k, 0.042 * k, 0.034 * k], 6, lambda r: "skin")
+		shoulder = v(SHOULDER[0] * side, SHOULDER[1], SHOULDER[2])
+		elbow = v(ELBOW[0] * side, ELBOW[1], ELBOW[2])
+		wrist = v(WRIST[0] * side, WRIST[1], WRIST[2])
+		arm.tube([shoulder, shoulder.lerp(elbow, 0.5), elbow, elbow.lerp(wrist, 0.5), wrist],
+			[0.05 * k, 0.046 * k, 0.042 * k, 0.038 * k, 0.034 * k], 6, lambda r: "skin")
 		arm.blob(wrist + v(0.0, 0.01, -0.04), (0.035 * k, 0.03 * k, 0.05 * k), "skin", rng, rows=3, segments=6)
-		arm_obj = arm.to_object("ArmL" if side > 0.0 else "ArmR", collection)
-		arm_obj.data.transform(Matrix.Translation(-shoulder))
-		arm_obj.location = shoulder
+		parts.append((arm.to_object("arm", collection), lambda p: _arm_weights(p, k)))
 
 	# Cuello y cabeza: pelo detrás y encima, cara al frente.
-	b.tube([v(0.0, 0.0, 1.38), v(0.0, 0.005, 1.45)], [0.045 * k, 0.045 * k], 6, lambda r: "skin")
+	head = MeshBuilder()
+	head.tube([v(0.0, 0.0, 1.38), v(0.0, 0.005, 1.45)], [0.045 * k, 0.045 * k], 6, lambda r: "skin")
 	head_rows = 6
 	head_profile = []
 	for r in range(head_rows + 1):
@@ -950,47 +1082,263 @@ def build_person(rng, spec):
 			return "skin"
 		return "hair"
 
-	b.lathe(head_profile, 10, head_mat, axis_frame=Matrix.Diagonal((1.0, 1.08, 1.0, 1.0)), cap_bottom=False)
-	b.box(v(0.0, 0.112, 1.51), (0.03 * k, 0.03 * k, 0.05 * k), "skin")
+	head.lathe(head_profile, 10, head_mat, axis_frame=Matrix.Diagonal((1.0, 1.08, 1.0, 1.0)), cap_bottom=False)
+	head.box(v(0.0, 0.112, 1.51), (0.03 * k, 0.03 * k, 0.05 * k), "skin")
 	for side in (-1.0, 1.0):
-		b.box(v(0.035 * side, 0.1, 1.55), (0.022 * k, 0.012 * k, 0.012 * k), "eye")
-	if spec.get("braids"):
-		for side in (-1.0, 1.0):
-			b.tube([v(0.06 * side, -0.07, 1.5), v(0.07 * side, -0.11, 1.32), v(0.06 * side, -0.13, 1.12)],
-				[0.022 * k, 0.02 * k, 0.014 * k], 5, lambda r: "hair")
+		head.box(v(0.035 * side, 0.1, 1.55), (0.022 * k, 0.012 * k, 0.012 * k), "eye")
 	if spec.get("headband"):
-		b.lathe([(0.104 * k, 1.565 * k), (0.104 * k, 1.6 * k)], 12, lambda seg, ring: spec["headband"],
+		head.lathe([(0.104 * k, 1.565 * k), (0.104 * k, 1.6 * k)], 12, lambda seg, ring: spec["headband"],
 			axis_frame=Matrix.Diagonal((1.0, 1.08, 1.0, 1.0)), cap_bottom=False)
 	if spec.get("head_cloth"):
-		b.lathe([(0.108 * k, 1.56 * k), (0.11 * k, 1.6 * k), (0.07 * k, 1.66 * k)], 12,
+		head.lathe([(0.108 * k, 1.56 * k), (0.11 * k, 1.6 * k), (0.07 * k, 1.66 * k)], 12,
 			lambda seg, ring: spec["head_cloth"], axis_frame=Matrix.Diagonal((1.0, 1.1, 1.0, 1.0)), cap_bottom=False, cap_top=True)
+	parts.append((head.to_object("head", collection), lambda p: _head_weights(p, k)))
+	# Trenzas: siguen a la cabeza.
+	if spec.get("braids"):
+		braids = MeshBuilder()
+		for side in (-1.0, 1.0):
+			braids.tube([v(0.06 * side, -0.07, 1.5), v(0.07 * side, -0.11, 1.32), v(0.06 * side, -0.13, 1.12)],
+				[0.022 * k, 0.02 * k, 0.014 * k], 5, lambda r: "hair")
+		parts.append((braids.to_object("braids", collection), lambda p: {"head": 1.0}))
 
-	# Chuspa (bolsa) al costado con su correa.
-	if spec.get("chuspa"):
-		b.box(v(-0.24, 0.04, 0.82), (0.05 * k, 0.15 * k, 0.16 * k), spec["chuspa"])
-		b.box(v(0.0, 0.0, 1.1), (0.56 * k, 0.29 * k, 0.025 * k), spec["chuspa"], rot_z(0.0) @ Matrix.Rotation(-0.9, 3, "Y"))
-
-	# Chaquitaclla (arado de pie) apoyada en el suelo junto a la mano derecha.
+	# Chaquitaclla (arado de pie) en la mano derecha, con la punta en el suelo.
 	if spec.get("tool") == "chaquitaclla":
-		base = v(0.36, 0.1, 0.0)
-		b.tube([base, base + v(0.0, -0.03, 1.55)], [0.02 * k, 0.018 * k], 6, lambda r: "wood")
-		b.box(base + v(0.0, 0.0, 0.4), (0.03 * k, 0.16 * k, 0.025 * k), "wood_light")
-		b.box(base + v(0.0, 0.02, 0.04), (0.04 * k, 0.07 * k, 0.08 * k), "wood_light")
+		tool = MeshBuilder()
+		base = v(WRIST[0] + 0.03, WRIST[1] + 0.02, 0.0)
+		tool.tube([base, base + v(0.0, -0.03, 1.55)], [0.02 * k, 0.018 * k], 6, lambda r: "wood")
+		tool.box(base + v(0.0, 0.0, 0.4), (0.03 * k, 0.16 * k, 0.025 * k), "wood_light")
+		tool.box(base + v(0.0, 0.02, 0.04), (0.04 * k, 0.07 * k, 0.08 * k), "wood_light")
+		parts.append((tool.to_object("tool", collection), lambda p: {"hand.R": 1.0}))
 
-	# Bulto de viaje atado a la espalda (q'ipi).
-	if spec.get("bundle"):
-		b.blob(v(0.0, -0.24, 1.05), (0.17 * k, 0.11 * k, 0.2 * k), spec["bundle"], rng, rows=4, segments=8)
-		b.box(v(0.0, -0.05, 1.3), (0.44 * k, 0.33 * k, 0.025 * k), "rope", rot_x(0.5))
+	for obj, weight_fn in parts:
+		_assign_weights(obj, weight_fn)
+	armature = _build_armature(collection, k)
+	for obj, _weight_fn in parts:
+		obj.parent = armature
+		modifier = obj.modifiers.new("Skeleton", "ARMATURE")
+		modifier.object = armature
+	_build_actions(armature, spec)
 
-	b.to_object("person", collection)
+
+# --- Animaciones (ADR-0015) -------------------------------------------------
+#
+# Cada animación es una función del tiempo que devuelve, por hueso, una
+# rotación (cabeceo, giro, alabeo en grados, en ejes del personaje: X a la
+# derecha, Y al frente, Z arriba) y, para la cadera, un desplazamiento en
+# metros. Cabeceo positivo: un hueso que cuelga va hacia delante; uno que sube,
+# hacia atrás.
+
+def _legs_walk(pose, phase, thigh_amp, knee_base, knee_amp, foot_ratio):
+	for suffix, offset in ((".L", 0.0), (".R", math.pi)):
+		phi = phase + offset
+		thigh = thigh_amp * math.sin(phi)
+		shin = -(knee_base + knee_amp * max(0.0, math.cos(phi)))
+		pose["thigh" + suffix] = (thigh, 0.0, 0.0)
+		pose["shin" + suffix] = (shin, 0.0, 0.0)
+		pose["foot" + suffix] = (-(thigh + shin) * foot_ratio, 0.0, 0.0)
+
+
+def _anim_idle(t, length):
+	phi = 2.0 * math.pi * t / length
+	breath = math.sin(2.0 * phi)
+	return {
+		"hips": (0.0, 0.0, 1.2 * math.sin(phi)),
+		"hips@": (0.012 * math.sin(phi), 0.0, 0.0),
+		"spine": (-1.0, 0.0, -0.8 * math.sin(phi)),
+		"chest": (-1.2 * breath, 0.0, 0.0),
+		"head": (2.0 * math.sin(phi + 0.6), 7.0 * math.sin(phi + 1.3), 0.0),
+		"upper_arm.L": (2.0 * math.sin(phi + 0.4), 0.0, -3.0),
+		"upper_arm.R": (2.0 * math.sin(phi + 1.1), 0.0, 3.0),
+		"forearm.L": (10.0 + 2.0 * breath, 0.0, 0.0),
+		"forearm.R": (10.0 + 2.0 * breath, 0.0, 0.0),
+		"thigh.L": (0.0, 0.0, -1.2 * math.sin(phi)),
+		"thigh.R": (0.0, 0.0, -1.2 * math.sin(phi)),
+	}
+
+
+def _anim_walk(t, length):
+	phi = 2.0 * math.pi * t / length
+	pose = {
+		"hips": (0.0, 4.0 * math.sin(phi), 2.0 * math.cos(phi)),
+		"hips@": (0.0, 0.0, -0.025 * math.cos(2.0 * phi)),
+		"spine": (-3.0, 0.0, 0.0),
+		"chest": (0.0, -6.0 * math.sin(phi), -1.5 * math.cos(phi)),
+		"head": (1.5 * math.cos(2.0 * phi), 2.0 * math.sin(phi), 0.0),
+		"upper_arm.L": (-20.0 * math.sin(phi), 0.0, -4.0),
+		"upper_arm.R": (20.0 * math.sin(phi), 0.0, 4.0),
+		"forearm.L": (14.0 + 12.0 * max(0.0, -math.sin(phi)), 0.0, 0.0),
+		"forearm.R": (14.0 + 12.0 * max(0.0, math.sin(phi)), 0.0, 0.0),
+	}
+	_legs_walk(pose, phi, 24.0, 6.0, 34.0, 0.55)
+	return pose
+
+
+def _anim_run(t, length):
+	phi = 2.0 * math.pi * t / length
+	pose = {
+		"hips": (-6.0, 7.0 * math.sin(phi), 3.0 * math.cos(phi)),
+		"hips@": (0.0, 0.0, -0.06 + 0.04 * math.cos(2.0 * phi)),
+		"spine": (-8.0, 0.0, 0.0),
+		"chest": (-2.0, -10.0 * math.sin(phi), 0.0),
+		"head": (8.0, 3.0 * math.sin(phi), 0.0),
+		"upper_arm.L": (-40.0 * math.sin(phi), 0.0, -8.0),
+		"upper_arm.R": (40.0 * math.sin(phi), 0.0, 8.0),
+		"forearm.L": (70.0 + 15.0 * math.sin(phi), 0.0, 0.0),
+		"forearm.R": (70.0 - 15.0 * math.sin(phi), 0.0, 0.0),
+	}
+	_legs_walk(pose, phi, 40.0, 18.0, 70.0, 0.4)
+	return pose
+
+
+def _anim_talk(t, length):
+	phi = 2.0 * math.pi * t / length
+	pose = _anim_idle(t, length)
+	beat = math.sin(2.0 * phi)
+	pose.update({
+		"chest": (-1.0, 6.0 * math.sin(phi), 0.0),
+		"head": (-4.0 * beat, 8.0 * math.sin(phi + 0.8), 2.0 * math.sin(phi)),
+		"upper_arm.R": (30.0 + 10.0 * beat, -10.0, 12.0 + 6.0 * math.sin(phi)),
+		"forearm.R": (55.0 + 18.0 * math.sin(2.0 * phi + 0.7), 0.0, 0.0),
+		"hand.R": (0.0, 20.0 * math.sin(2.0 * phi), -15.0),
+		"upper_arm.L": (12.0 + 6.0 * math.sin(phi + 2.0), 0.0, -6.0),
+		"forearm.L": (35.0 + 10.0 * math.sin(phi + 2.4), 0.0, 0.0),
+	})
+	return pose
+
+
+def _anim_tired(t, length):
+	phi = 2.0 * math.pi * t / length
+	breath = math.sin(phi)
+	return {
+		"hips": (-14.0, 0.0, 0.0),
+		"hips@": (0.0, -0.03, -0.07),
+		"spine": (-14.0 - 2.0 * breath, 0.0, 0.0),
+		"chest": (-6.0 - 4.0 * breath, 0.0, 0.0),
+		"neck": (10.0, 0.0, 0.0),
+		"head": (14.0 + 2.0 * breath, 0.0, 0.0),
+		"upper_arm.L": (30.0 + 3.0 * breath, 0.0, -6.0),
+		"upper_arm.R": (30.0 + 3.0 * breath, 0.0, 6.0),
+		"forearm.L": (40.0, 0.0, 0.0),
+		"forearm.R": (40.0, 0.0, 0.0),
+		"thigh.L": (34.0, 0.0, -3.0),
+		"thigh.R": (28.0, 0.0, 3.0),
+		"shin.L": (-34.0, 0.0, 0.0),
+		"shin.R": (-30.0, 0.0, 0.0),
+		"foot.L": (0.0, 0.0, 0.0),
+		"foot.R": (2.0, 0.0, 0.0),
+	}
+
+
+def _anim_weave(t, length):
+	"""Tejedora arrodillada, sentada sobre los talones, ante el telar de
+	cintura (PCH-010, a partir del dibujo 80 de Guamán Poma)."""
+	phi = 2.0 * math.pi * t / length
+	beat = max(0.0, math.sin(phi)) ** 3
+	return {
+		"hips@": (0.0, 0.02, -0.6),
+		"hips": (6.0, 0.0, 0.0),
+		"spine": (-10.0 - 4.0 * beat, 3.0 * math.sin(phi * 0.5), 0.0),
+		"chest": (-6.0 - 3.0 * beat, 0.0, 0.0),
+		"head": (-14.0, 4.0 * math.sin(phi * 0.5), 0.0),
+		"thigh.L": (52.0, 0.0, -6.0),
+		"thigh.R": (52.0, 0.0, 6.0),
+		"shin.L": (-142.0, 0.0, 0.0),
+		"shin.R": (-142.0, 0.0, 0.0),
+		"foot.L": (-30.0, 0.0, 0.0),
+		"foot.R": (-30.0, 0.0, 0.0),
+		"upper_arm.L": (34.0 - 14.0 * beat, -8.0, -10.0 + 8.0 * math.sin(phi * 0.5)),
+		"upper_arm.R": (34.0 - 14.0 * beat, 8.0, 10.0 + 8.0 * math.sin(phi * 0.5)),
+		"forearm.L": (58.0 + 22.0 * beat, 0.0, 0.0),
+		"forearm.R": (58.0 + 22.0 * beat, 0.0, 0.0),
+	}
+
+
+def _anim_work(t, length):
+	"""Agricultor que hinca la chaquitaclla y la levanta (PCH-008)."""
+	phi = 2.0 * math.pi * t / length
+	lift = 0.5 - 0.5 * math.cos(phi)
+	push = max(0.0, math.sin(phi - 1.2)) ** 2
+	upper = 14.0 + 16.0 * lift
+	fore = 22.0 + 24.0 * lift - 16.0 * push
+	return {
+		"hips": (-4.0, 0.0, 0.0),
+		"spine": (-8.0 - 8.0 * push, 4.0, 0.0),
+		"chest": (-4.0 - 4.0 * push, 6.0, 0.0),
+		"head": (-8.0, -6.0, 0.0),
+		"upper_arm.R": (upper, 0.0, 4.0),
+		"forearm.R": (fore, 0.0, 0.0),
+		# La muñeca compensa el brazo: la herramienta sube y baja casi vertical.
+		"hand.R": (-(upper + fore) * 0.85 + 8.0 * push, 0.0, 0.0),
+		"upper_arm.L": (30.0 + 10.0 * lift, -24.0, -6.0),
+		"forearm.L": (40.0 + 16.0 * lift, 0.0, 0.0),
+		"thigh.R": (10.0 * lift, 0.0, 4.0),
+		"shin.R": (-14.0 * lift, 0.0, 0.0),
+		"thigh.L": (-4.0, 0.0, -2.0),
+		"shin.L": (-8.0 - 6.0 * push, 0.0, 0.0),
+		"foot.L": (6.0, 0.0, 0.0),
+	}
+
+
+# Nombre: (función, duración en segundos).
+ANIMATIONS = {
+	"idle": (_anim_idle, 4.0),
+	"walk": (_anim_walk, 1.1),
+	"run": (_anim_run, 0.7),
+	"talk": (_anim_talk, 2.4),
+	"tired": (_anim_tired, 1.4),
+	"weave": (_anim_weave, 2.8),
+	"work": (_anim_work, 2.6),
+}
+BASE_ANIMATIONS = ("idle", "walk", "run", "talk", "tired")
+
+
+def _world_rotation(pitch, yaw, roll):
+	return (Matrix.Rotation(math.radians(yaw), 3, "Z")
+		@ Matrix.Rotation(math.radians(pitch), 3, "X")
+		@ Matrix.Rotation(math.radians(roll), 3, "Y"))
+
+
+def _build_actions(armature, spec):
+	"""Hornea cada animación en una acción y la deja en su pista NLA, que el
+	exportador glTF convierte en una animación con el nombre de la pista."""
+	bpy.context.scene.render.fps = ANIM_FPS
+	armature.animation_data_create()
+	names = list(BASE_ANIMATIONS) + list(spec.get("animations", ()))
+	k = spec.get("scale", 1.0)
+	for pose_bone in armature.pose.bones:
+		pose_bone.rotation_mode = "QUATERNION"
+	for name in names:
+		fn, length = ANIMATIONS[name]
+		action = bpy.data.actions.new(name)
+		armature.animation_data.action = action
+		frames = int(round(length * ANIM_FPS))
+		for frame in range(frames + 1):
+			pose = fn(length * frame / frames, length)
+			for pose_bone in armature.pose.bones:
+				rest = pose_bone.bone.matrix_local.to_3x3()
+				angles = pose.get(pose_bone.name, (0.0, 0.0, 0.0))
+				local = rest.inverted() @ _world_rotation(*angles) @ rest
+				pose_bone.rotation_quaternion = local.to_quaternion()
+				pose_bone.keyframe_insert("rotation_quaternion", frame=frame + 1)
+				if pose_bone.name == "hips":
+					offset = Vector(pose.get("hips@", (0.0, 0.0, 0.0))) * k
+					pose_bone.location = rest.inverted() @ offset
+					pose_bone.keyframe_insert("location", frame=frame + 1)
+		track = armature.animation_data.nla_tracks.new()
+		track.name = name
+		track.strips.new(name, 1, action)
+		armature.animation_data.action = None
+	for pose_bone in armature.pose.bones:
+		pose_bone.rotation_quaternion = (1.0, 0.0, 0.0, 0.0)
+		pose_bone.location = (0.0, 0.0, 0.0)
 
 
 PEOPLE = {
 	# Habitantes comunes (PCH-018): fibra sin teñir y tintes de tierra.
 	"pch_npc_weaver": dict(garment="anacu", scale=0.94, body="wool_brown", band="wool_red",
-		lliclla="wool_cream", lliclla_stripe="wool_red", braids=True, arms=(0.18, 0.18)),
+		lliclla="wool_cream", lliclla_stripe="wool_red", braids=True, animations=("weave",)),
 	"pch_npc_farmer": dict(garment="unku", body="wool_cream", band="wool_brown", manto="wool_brown",
-		head_cloth="wool_red", chuspa="wool_ochre", tool="chaquitaclla", arms=(0.0, 0.1)),
+		head_cloth="wool_red", chuspa="wool_ochre", tool="chaquitaclla", animations=("work",)),
 	"pch_npc_villager": dict(garment="anacu", scale=0.94, body="wool_dark", band="wool_ochre", lliclla="wool_grey",
 		lliclla_stripe="wool_green", braids=True),
 	"pch_npc_commoner": dict(garment="unku", body="wool_grey", band="wool_dark", manto="wool_cream",
@@ -1050,9 +1398,10 @@ def scene_bounds():
 def join_visible(name):
 	"""Une en un solo objeto todas las mallas visibles del modelo (las de
 	colisión se quedan aparte) para que Godot las dibuje con una llamada."""
-	# Piernas y brazos de los personajes se quedan aparte: el juego los mueve.
+	# En los personajes, las piezas se unen con sus grupos de vértices y el
+	# modificador del esqueleto (ADR-0015).
 	visible = [o for o in bpy.context.scene.objects
-		if o.type == "MESH" and not o.name.endswith("-convcolonly") and not o.name.startswith(("Leg", "Arm"))]
+		if o.type == "MESH" and not o.name.endswith("-convcolonly")]
 	if len(visible) > 1:
 		for obj in bpy.context.scene.objects:
 			obj.select_set(obj in visible)
@@ -1066,12 +1415,16 @@ def join_visible(name):
 
 def export(name, out_dir):
 	path = os.path.join(out_dir, name + ".glb")
+	# Solo los personajes llevan esqueleto; cada pista NLA es una animación.
+	rigged = any(o.type == "ARMATURE" for o in bpy.context.scene.objects)
 	bpy.ops.export_scene.gltf(
 		filepath=path,
 		export_format="GLB",
 		export_yup=True,
 		export_apply=True,
-		export_animations=False,
+		export_animations=rigged,
+		export_animation_mode="NLA_TRACKS",
+		export_skins=rigged,
 		export_cameras=False,
 		export_lights=False,
 		export_extras=False,
@@ -1080,9 +1433,21 @@ def export(name, out_dir):
 	return path
 
 
-def render_preview(name, preview_dir):
-	"""Render de comprobación: vista de tres cuartos desde el frente (+Y)."""
+def render_preview(name, preview_dir, pose=""):
+	"""Render de comprobación: vista de tres cuartos desde el frente (+Y).
+	Con [pose] ("animación:segundo"), los personajes posan en ese instante."""
 	scene = bpy.context.scene
+	suffix = ""
+	for obj in scene.objects:
+		if pose and obj.type == "ARMATURE" and obj.animation_data:
+			anim_name, _, second = pose.partition(":")
+			track = obj.animation_data.nla_tracks.get(anim_name)
+			if track is None:
+				continue
+			for other in obj.animation_data.nla_tracks:
+				other.mute = other != track
+			scene.frame_set(1 + int(round(float(second or "0") * ANIM_FPS)))
+			suffix = "_" + anim_name
 	low, high = scene_bounds()
 	center = (low + high) * 0.5
 	extent = max((high - low).length, 0.1)
@@ -1117,7 +1482,7 @@ def render_preview(name, preview_dir):
 	scene.render.engine = "BLENDER_EEVEE"
 	scene.render.resolution_x = 900
 	scene.render.resolution_y = 700
-	scene.render.filepath = os.path.join(preview_dir, name + ".png")
+	scene.render.filepath = os.path.join(preview_dir, name + suffix + ".png")
 	bpy.ops.render.render(write_still=True)
 	for obj in (cam, sun):
 		bpy.data.objects.remove(obj)
@@ -1128,6 +1493,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Genera los modelos .glb de la campaña 01.")
 	parser.add_argument("--out", default=DEFAULT_OUT)
 	parser.add_argument("--preview", default="")
+	parser.add_argument("--pose", default="", help="animación:segundo para la vista previa de personajes")
 	parser.add_argument("names", nargs="*")
 	args = parser.parse_args(argv)
 	names = args.names if args.names else list(MODELS.keys())
@@ -1147,7 +1513,7 @@ def main():
 		print("MODELO %s -> %s | min %s max %s | triángulos %d | mallas %d" % (
 			name, path, tuple(round(c, 3) for c in low), tuple(round(c, 3) for c in high), tris, len(meshes)))
 		if args.preview:
-			render_preview(name, args.preview)
+			render_preview(name, args.preview, args.pose)
 
 
 main()

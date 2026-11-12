@@ -11,6 +11,9 @@
 //   generador de Blender (capa + 1; 0 = sin textura).
 // El terreno añade una capa de pendiente (steep_layer) y otra superpuesta en
 // rectángulos con borde irregular (overlay_layer: plaza y caminos).
+// La vegetación se mece con el viento (wind_bend > 0): el desplazamiento crece
+// con el cuadrado de la altura, así que la base de la mata o el tronco no se
+// mueve.
 shader_type spatial;
 
 uniform sampler2DArray detail_array : filter_linear_mipmap, repeat_enable;
@@ -45,6 +48,12 @@ uniform vec2 steep_normal_range = vec2(0.85, 0.65);
 // Altura donde empieza y donde es total, aunque no haya pendiente.
 uniform vec2 steep_height_range = vec2(1.0, 4.0);
 
+// Viento: flexión por metro² de altura, dirección en planta y ráfaga (0–1)
+// que el juego actualiza cada fotograma.
+uniform float wind_bend = 0.0;
+uniform vec2 wind_direction = vec2(0.8, -0.6);
+uniform float wind_gust = 0.0;
+
 uniform int overlay_layer = -1;
 uniform vec4 overlay_tint : source_color = vec4(1.0);
 // Rectángulos (centro x, centro z, medio ancho x, medio ancho z).
@@ -58,6 +67,18 @@ varying vec3 world_pos;
 varying flat int base_layer;
 
 void vertex() {
+	if (wind_bend > 0.0) {
+		vec3 origin = MODEL_MATRIX[3].xyz;
+		float height = max(VERTEX.y, 0.0);
+		// Cada planta oscila con su propia fase; la ráfaga la empuja a favor del
+		// viento y acelera el temblor.
+		float phase = dot(origin.xz, vec2(0.37, 0.61));
+		float sway = sin(TIME * (1.3 + wind_gust) + phase) * 0.55 + sin(TIME * 3.1 + phase * 1.7) * 0.15;
+		float bend = wind_bend * height * height * (0.35 + wind_gust * 0.9 + sway);
+		vec3 world_offset = vec3(wind_direction.x, 0.0, wind_direction.y) * bend;
+		// De mundo a objeto (las plantas solo giran y escalan).
+		VERTEX += (vec4(world_offset, 0.0) * MODEL_MATRIX).xyz / max(dot(MODEL_MATRIX[0].xyz, MODEL_MATRIX[0].xyz), 0.0001);
+	}
 	vec3 n = NORMAL;
 	// Base tangente aproximada para cada eje de proyección (como el modo
 	// triplanar de StandardMaterial3D).

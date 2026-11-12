@@ -2,7 +2,9 @@ extends RefCounted
 ## Comprueba los cambios del primer piloto (ADR-0012, ADR-0013): el rótulo de
 ## lugar al empezar, el vecino que recibe al jugador en el camino sur, «Hablar» con seis personajes solo antes de la noticia, la frase en
 ## el HUD con el personaje girado hacia el jugador, y el paseo de los vecinos,
-## que se detiene cuando llega el mensajero, con las piernas balanceándose.
+## que se detiene cuando llega el mensajero. Con el esqueleto (ADR-0015): la
+## tejedora teje arrodillada y solo gira la cabeza, el agricultor deja el
+## trabajo para hablar y los vecinos caminan con su animación y sus pasos.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 const TALKERS: Array[String] = ["Tejedora", "Agricultor", "Curaca", "Habitante1", "Habitante2", "Habitante3"]
@@ -53,29 +55,41 @@ func test_npc_talk_and_wander() -> bool:
 		world.free()
 		return false
 
-	# Hablar con la tejedora: su frase va al HUD y se gira hacia el jugador.
+	# Hablar con la tejedora: su frase va al HUD; sigue tejiendo arrodillada y
+	# solo gira la cabeza hacia el jugador, que está delante.
 	hud.clear_subtitle()
 	var weaver: NpcActor = world.get_node("Llacta/NPCs/Tejedora") as NpcActor
-	player.global_position = weaver.global_position + Vector3(2.0, 0.0, 0.0)
+	var weaver_forward: Vector3 = -weaver.global_transform.basis.z
+	player.global_position = weaver.global_position + weaver_forward * 2.0 + weaver_forward.cross(Vector3.UP)
 	talks[0].interact(player)
 	ok = ok and subtitle.visible and subtitle.text == tr("PCH_TALK_WEAVER")
-	var to_player: Vector3 = (player.global_position - weaver.global_position).normalized()
-	var forward: Vector3 = -weaver.global_transform.basis.z
-	ok = ok and forward.dot(to_player) > 0.9
+	ok = ok and weaver.is_animated() and weaver.current_animation() == &"weave"
+	ok = ok and (-weaver.global_transform.basis.z).is_equal_approx(weaver_forward)
+	ok = ok and weaver.wants_to_look() and weaver.look_modifier() != null
+
+	# Hablar con el agricultor: se gira hacia el jugador y deja la chaquitaclla.
+	var farmer: NpcActor = world.get_node("Llacta/NPCs/Agricultor") as NpcActor
+	ok = ok and farmer.current_animation() == &"work"
+	player.global_position = farmer.global_position + Vector3(2.0, 0.0, 0.0)
+	talks[1].interact(player)
+	var to_player: Vector3 = (player.global_position - farmer.global_position).normalized()
+	ok = ok and (-farmer.global_transform.basis.z).dot(to_player) > 0.9
+	ok = ok and farmer.current_animation() == &"idle"
 
 	# Paseo: los vecinos se mueven antes de la noticia.
 	var neighbor: NpcActor = world.get_node("Llacta/NPCs/Habitante1") as NpcActor
 	var start: Vector3 = neighbor.global_position
-	var max_swing: float = 0.0
-	var max_arm: float = 0.0
-	ok = ok and neighbor.has_legs()
+	var steps: Array[int] = [0]
+	var walked: bool = false
+	neighbor.stepped.connect(func() -> void: steps[0] += 1)
+	ok = ok and neighbor.is_animated()
 	for i: int in range(40):
 		event.step(0.25)
-		max_swing = maxf(max_swing, absf(neighbor.left_leg_angle()))
-		max_arm = maxf(max_arm, absf(neighbor.left_arm_angle()))
+		if neighbor.moving and neighbor.current_animation() == &"walk" and neighbor.animation_speed() > 0.9:
+			walked = true
 	ok = ok and neighbor.global_position.distance_to(start) > 1.0
-	# Al caminar balancea las piernas (ADR-0013).
-	ok = ok and max_swing > 10.0 and max_arm > 7.0
+	# Camina con la animación a la velocidad del paso, y da pasos (ADR-0015).
+	ok = ok and walked and steps[0] >= 3
 	ok = ok and event.phase == MessengerEvent.Phase.IDLE
 
 	# Hablar con un vecino lo detiene un rato.
@@ -84,7 +98,7 @@ func test_npc_talk_and_wander() -> bool:
 	var held_at: Vector3 = neighbor.global_position
 	event.step(2.0)
 	ok = ok and neighbor.global_position.distance_to(held_at) < 0.01
-	ok = ok and is_zero_approx(neighbor.left_leg_angle())
+	ok = ok and neighbor.current_animation() == &"talk"
 
 	# Al llegar el mensajero, nadie más habla y los vecinos dejan de pasear.
 	event.start()

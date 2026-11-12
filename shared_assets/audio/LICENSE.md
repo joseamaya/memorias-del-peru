@@ -11,6 +11,7 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `murmullo_plaza.wav` | Murmullo de la plaza durante el evento (bucle de 13,5 s) | craigsmith | Freesound n.º 480808, «R16-17-Men Murmuring.wav»: https://freesound.org/people/craigsmith/sounds/480808/ | CC0 1.0 | 2026-11-11 |
 | `quero_bebida.wav` | Interacción del quero | OwlStorm | Freesound n.º 320139, «Drink Sip and Swallow»: https://freesound.org/people/OwlStorm/sounds/320139/ | CC0 1.0 | 2026-11-11 |
 | `ofrenda_grano.wav` | Interacción de la ofrenda | lucasfuchs | Freesound n.º 556974, «Pouring grain or seeds»: https://freesound.org/people/lucasfuchs/sounds/556974/ | CC0 1.0 | 2026-11-11 |
+| `telar_golpe.wav` | Golpe del batán de la tejedora en el telar (3D, ADR-0015) | Autoría propia del proyecto | Síntesis con Python y NumPy: golpe sordo de 95–245 Hz con caída de tono, ruido filtrado en dos resonancias de madera (820 y 1450 Hz) y un segundo golpe más débil a 75 ms | Propia | 2026-11-12 |
 
 Los originales se descargaron con la cuenta del responsable del proyecto el 2026-11-11 y **no se versionan**: son WAV de 48–96 kHz que pesan hasta 66 MB. Lo que entra en el juego es una versión procesada con ffmpeg y Python:
 
@@ -19,6 +20,8 @@ Los originales se descargaron con la cuenta del responsable del proyecto el 2026
 - Ofrenda: tramo 2,0–3,7 s del grano vertido. Quero: sorbo y trago completos, con compresión suave.
 - Murmullo: sin el tintineo inicial; pasa-banda de 150 Hz a 3,5 kHz para alejarlo; bucle con fundido cruzado de 1,5 s.
 - Ambiente: estéreo a 44,1 kHz; bucle de 90 s con fundido cruzado de 4 s; −34 dB RMS por canal (unos −31 dB en mono, el nivel del ambiente anterior).
+
+`pasos_tierra_02.wav` sirve también, a 0,62 de velocidad, como la chaquitaclla que entra en la tierra en el trabajo del agricultor, y los tres pasos en tierra suenan además en 3D para los pasos de los personajes.
 
 Sustituyen a los placeholders sintéticos anteriores (`pututu_propio.wav`, `ofrenda_tierra.wav` y las versiones sintéticas de pasos, quero y murmullo) y al ambiente `ambience_wind_birds.ogg` (PDSounds n.º 129, dominio público), que tenía aves no identificadas como andinas.
 

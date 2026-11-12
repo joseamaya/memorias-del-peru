@@ -26,6 +26,14 @@ static func model_material() -> ShaderMaterial:
 	return _model_material
 
 
+## Material de la vegetación generada: como [method model_material], y además
+## se mece con el viento. [param bend] es la flexión por metro² de altura.
+static func vegetation_material(bend: float) -> ShaderMaterial:
+	var material: ShaderMaterial = _base_material()
+	material.set_shader_parameter("wind_bend", bend)
+	return material
+
+
 ## Material de capa fija [param layer] con [param tint] lineal. Con
 ## [param use_vertex_color], el tinte multiplica el color por vértice.
 static func layer_material(layer: Layer, tint: Color, use_vertex_color: bool = false) -> ShaderMaterial:

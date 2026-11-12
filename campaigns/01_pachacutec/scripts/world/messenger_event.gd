@@ -29,6 +29,8 @@ const OPENING_SECONDS: float = 6.0
 const NEWS_SECONDS: float = 6.0
 const NEWS_SECOND_DELAY: float = 6.0
 const MESSAGE_DURATION: float = 12.0
+## Segundos que el mensajero tarda en recobrar el aliento antes de hablar.
+const MESSENGER_BREATH_SECONDS: float = 2.5
 const CALL_SECONDS: float = 5.0
 const CLOSING_SECONDS: float = 6.0
 const CLOSING_SECOND_DELAY: float = 6.0
@@ -309,10 +311,19 @@ func _enter(next_phase: int) -> void:
 		Phase.MESSAGE:
 			_place_group()
 			_send_news()
+			# Llega agotado, recobra el aliento y cuenta la noticia con gestos
+			# (alcance §5, ADR-0015).
+			if _messenger != null:
+				_messenger.set_idle_animation(&"talk")
+				_messenger.perform(&"tired", MESSENGER_BREATH_SECONDS)
 		Phase.CALL:
 			if _pututu != null:
 				_pututu.set_armed(true)
 			subtitle_requested.emit(KEY_CALL, CALL_SECONDS)
+			if _messenger != null:
+				_messenger.set_idle_animation(&"idle")
+			if _curaca != null:
+				_curaca.perform(&"talk", CALL_SECONDS)
 		Phase.DEPARTURE:
 			if _pututu != null:
 				_pututu.set_armed(false)
