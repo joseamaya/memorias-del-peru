@@ -776,6 +776,63 @@ def _skirt_weights(body, point, hip_z, follow):
 	return weights
 
 
+def _sandal_width(t):
+	"""Media anchura de la suela a lo largo del pie (0 = talón, 1 = punta)."""
+	points = ((0.0, 0.030), (0.3, 0.034), (0.7, 0.046), (0.9, 0.041), (1.0, 0.030))
+	for (t0, w0), (t1, w1) in zip(points, points[1:]):
+		if t <= t1:
+			k = (t - t0) / (t1 - t0)
+			return w0 + (w1 - w0) * k
+	return points[-1][1]
+
+
+def build_sandal(g, body, heel, forward, lateral, length, weights, thickness=0.014, segments=24):
+	g.piece = 0
+	sole = _linear("sole")
+	strap = _linear("rope")
+	outline = []
+	for k in range(segments):
+		angle = 2.0 * math.pi * k / segments
+		t = 0.5 - 0.5 * math.cos(angle)
+		u = math.sin(angle) * _sandal_width(t)
+		outline.append(heel + forward * (t * length) + lateral * u)
+	bottom = [g.add_vertex(p + Vector((0.0, 0.0, 0.001)), weights) for p in outline]
+	top = [g.add_vertex(p + Vector((0.0, 0.0, thickness)), weights) for p in outline]
+	# La ropa se dibuja por las dos caras (shader de tela), así que la
+	# orientación de cada cara no importa.
+	g.add_face(list(reversed(bottom)), sole, [(0.0, 0.0)] * segments)
+	g.add_face(top, sole, [(0.0, 0.0)] * segments)
+	for k in range(segments):
+		a, b = k, (k + 1) % segments
+		g.add_face([bottom[a], bottom[b], top[b], top[a]], sole, [(0, 0), (0.01, 0), (0.01, 0.01), (0, 0.01)])
+
+	def strap_path(points, width=0.009):
+		"""Tira fina apoyada en el pie a lo largo de [points]."""
+		placed = [body.push_out(p, 0.004) for p in points]
+		ids = []
+		for k, point in enumerate(placed):
+			ahead = placed[min(k + 1, len(placed) - 1)] - placed[max(k - 1, 0)]
+			_location, normal, _index, _distance = body.bvh.find_nearest(point)
+			normal = normal if normal is not None else Vector((0.0, 0.0, 1.0))
+			across = ahead.cross(normal).normalized() * (width * 0.5)
+			ids.append((g.add_vertex(point - across, weights), g.add_vertex(point + across, weights)))
+		for k in range(len(ids) - 1):
+			quad = [ids[k][0], ids[k + 1][0], ids[k + 1][1], ids[k][1]]
+			g.add_face(quad, strap, [(0, 0), (0.01, 0), (0.01, 0.01), (0, 0.01)])
+
+	def on_foot(t, u, z):
+		return heel + forward * (t * length) + lateral * (u * _sandal_width(t)) + Vector((0.0, 0.0, z))
+
+	post = on_foot(0.84, 0.0, thickness + 0.004)
+	for edge in (1.0, -1.0):
+		strap_path([post] + [on_foot(0.84 - 0.32 * k / 5.0, edge * k / 5.0, thickness + 0.03 * math.sin(math.pi * k / 10.0) + 0.01)
+			for k in range(1, 6)])
+	# Tira del talón: de un lado de la suela, por detrás del tobillo, al otro.
+	around_heel = [heel + lateral * (math.cos(math.pi * k / 8.0) * _sandal_width(0.15))
+		- forward * (math.sin(math.pi * k / 8.0) * 0.012) + Vector((0.0, 0.0, 0.055)) for k in range(9)]
+	strap_path([on_foot(0.32, 1.0, thickness + 0.02)] + around_heel + [on_foot(0.32, -1.0, thickness + 0.02)])
+
+
 def build_clothes(spec, body, armature, rig_bones):
 	"""Prendas de [spec] sobre el cuerpo en reposo (MakeHuman mira a −Y, así
 	que la espalda es +Y). La parte alta de cada prenda es el propio cuerpo
@@ -844,7 +901,7 @@ def build_clothes(spec, body, armature, rig_bones):
 			center = Vector((0.0, hip_center.y, z))
 			legs = body.ring(z, segments, center, band=0.03, include=lambda i: body.part_weight(i, LEG_BONES) > 0.3)
 			# Vuelo: la tela sobrante es la que forma pliegues al caer.
-			flare = 1.0 + (0.22 if not female else 0.16) * (hip_z - z) / 0.4
+			flare = 1.0 + (0.22 if not female else 0.42) * (hip_z - z) / 0.4
 			radii = [max(hip_radii[s] * flare, legs[s] + 0.035) for s in range(segments)]
 		profile.append((z, center, radii))
 	# Por debajo de la cadera la tela cae: el radio nunca encoge hacia el bajo
@@ -887,7 +944,10 @@ def build_clothes(spec, body, armature, rig_bones):
 
 	def skirt_weights(point):
 		if point.z < hip_z - 0.03:
-			return _skirt_weights(body, point, hip_z, 0.75 if female else 0.4)
+			# Cuánto sigue el bajo a los muslos: poco, para que la falda se mezca
+			# entera y no se parta en dos perneras al andar. La tejedora, que
+			# pasa el rato arrodillada, la necesita más alta para cubrir rodillas.
+			return _skirt_weights(body, point, hip_z, spec.get("skirt_follow", 0.38 if female else 0.2))
 		return body.nearest_weights(point)
 
 	g.tube(rows, skirt_color, skirt_weights)
@@ -1021,20 +1081,20 @@ def build_clothes(spec, body, armature, rig_bones):
 		g.tube(rows, lambda s, r: color, lambda p: {"Spine1": 0.8, "Spine": 0.2})
 		g.resolve(body, ease + 0.04, first=first, iterations=1, smooth=0.2)
 
-	# 9. Ojotas: suela y tiras en cada pie.
+	# 9. Ojotas: suela con la silueta del pie (talón redondo, más ancha en el
+	# metatarso) y tiras finas: una en V desde entre los dedos y otra que
+	# rodea el talón.
 	for side in ("Left", "Right"):
 		foot = rig_bones[side + "Foot"]
 		toe = rig_bones[side + "ToeBase"]
-		heel = Vector((foot.head_local.x, foot.head_local.y + 0.05, 0.008))
-		tip = Vector((toe.tail_local.x, toe.tail_local.y - 0.02, 0.008))
-		mid = (heel + tip) * 0.5
-		direction = tip - heel
-		length = direction.length
-		frame = Matrix.Rotation(math.atan2(-direction.x, -direction.y), 3, "Z")
-		# Solo el pie: los dedos de la captura giran poco fiables.
+		heel = Vector((foot.head_local.x, foot.head_local.y + 0.055, 0.0))
+		tip = Vector((toe.tail_local.x, toe.tail_local.y - 0.022, 0.0))
+		along = tip - heel
+		length = along.length
+		forward = along.normalized()
+		lateral = forward.cross(Vector((0.0, 0.0, 1.0))).normalized()
 		weights = {side + "Foot": 1.0}
-		g.box(mid, (0.1, length + 0.02, 0.016), frame, _linear("sole"), weights)
-		g.box(body.push_out(mid + Vector((0.0, -length * 0.15, 0.045)), 0.006), (0.1, 0.014, 0.01), frame, _linear("sole"), weights)
+		build_sandal(g, body, heel, forward, lateral, length, weights)
 
 	# Espalda (MakeHuman mira a −Y): el punto más atrasado del tronco entre la
 	# cintura y los hombros, para colocar los huesos del manto detrás.
@@ -1169,7 +1229,9 @@ def build_tool(armature, beat_seconds):
 	posed = pose_bone.matrix.copy()
 	rest = pose_bone.bone.matrix_local.copy()
 	to_rest = rest @ posed.inverted()
-	hand = posed.translation
+	# El palo pasa por el puño cerrado: entre la palma y los dedos doblados.
+	fingers = armature.pose.bones["RightFingerBase"]
+	hand = (pose_bone.tail + fingers.tail) * 0.5
 	# MakeHuman mira a −Y: la punta va delante (−Y) y al suelo.
 	tip = Vector((hand.x, hand.y - 0.35, 0.0))
 	axis = (hand - tip).normalized()
@@ -1609,8 +1671,16 @@ FINGER_CURL = {"LeftFingerBase": 22.0, "RightFingerBase": 22.0, "LeftHandFinger1
 	"RightHandFinger1": 38.0, "LThumb": 12.0, "RThumb": 12.0}
 
 
+# Mano que sujeta una herramienta (la derecha del agricultor): dedos cerrados.
+GRIP_CURL = {"RightFingerBase": 55.0, "RightHandFinger1": 75.0, "RThumb": 35.0}
+# Mano o manos que agarran en el personaje que se está generando.
+GRIP_BONES = set()
+
+
 def relax_fingers(basis):
 	for bone, degrees in FINGER_CURL.items():
+		if bone in GRIP_BONES:
+			degrees = GRIP_CURL[bone]
 		basis[bone] = Quaternion((1.0, 0.0, 0.0), math.radians(degrees))
 	return basis
 
@@ -1667,6 +1737,9 @@ def build_animations(armature, spec, cmu_dir):
 	"""Hornea las animaciones del personaje y devuelve datos de ritmo."""
 	armature.animation_data_create()
 	info = {}
+	GRIP_BONES.clear()
+	if spec.get("tool"):
+		GRIP_BONES.update(GRIP_CURL.keys())
 
 	def take(subject, motion):
 		return Take(os.path.join(cmu_dir, "%s.asf" % subject), os.path.join(cmu_dir, "%s_%s.amc" % (subject, motion)))
@@ -1685,7 +1758,8 @@ def build_animations(armature, spec, cmu_dir):
 
 	def tired(world, t):
 		breath = math.sin(t * 2.0 * math.pi * 3.0)
-		add_rotation(world, "LowerBack", pitch=-(16.0 + 2.0 * breath), children=upper[1:])
+		# Cabeceo positivo = hacia delante (MakeHuman mira a −Y).
+		add_rotation(world, "LowerBack", pitch=16.0 + 2.0 * breath, children=upper[1:])
 		add_rotation(world, "Neck", pitch=12.0, children=("Neck1", "Head"))
 
 	# Segundo reposo (toma 77_02, «standing»): el juego alterna los dos para
@@ -1760,12 +1834,24 @@ def build_animations(armature, spec, cmu_dir):
 			legs[side + "Foot"] = Vector((0.0, 0.25, -1.0))
 			legs[side + "ToeBase"] = Vector((0.0, 0.2, -1.0))
 
+		weave_upper = ("Spine", "Spine1", "Neck", "Neck1", "Head", "LeftShoulder", "RightShoulder",
+			"LeftArm", "RightArm", "LeftForeArm", "RightForeArm", "LeftHand", "RightHand", "LThumb", "RThumb",
+			"LeftFingerBase", "RightFingerBase", "LeftHandFinger1", "RightHandFinger1")
+
 		def kneel(world, _t):
 			world["Hips"] = rt.rest["Hips"].copy()
 			for name, direction in legs.items():
 				rest_dir = bones[name].tail_local - bones[name].head_local
 				world[name] = _rotation_between(rest_dir, direction) @ rt.rest[name]
-			add_rotation(world, "LowerBack", pitch=-6.0)
+			# Algo inclinada sobre el telar, y los brazos hacia abajo y hacia
+			# delante, hasta el extremo del tejido (la toma era de coser
+			# sentado, con las manos a la altura del pecho).
+			add_rotation(world, "LowerBack", pitch=12.0, children=weave_upper)
+			for side in ("Left", "Right"):
+				hand_chain = (side + "ForeArm", side + "Hand", ("L" if side == "Left" else "R") + "Thumb",
+					side + "FingerBase", side + "HandFinger1")
+				add_rotation(world, side + "Arm", pitch=18.0, children=hand_chain)
+				add_rotation(world, side + "ForeArm", pitch=26.0, children=hand_chain[1:])
 
 		hips_offset = rt.rest["Hips"].inverted() @ Vector((0.0, 0.0, hip_height - hips_head.z))
 		frames, _ = cycle_frames(sew, rt, start, end, blend=12, extra=kneel, hips=lambda _k: hips_offset)
@@ -1797,7 +1883,7 @@ def _lowest_hand_time(take, retarget, start, end, bone_name):
 
 PEOPLE = {
 	# Habitantes comunes (PCH-018).
-	"pch_npc_weaver": dict(head="Medical_Female_01", garment="anacu", body="wool_brown", band="wool_red", belt="wool_red",
+	"pch_npc_weaver": dict(head="Medical_Female_01", skirt_follow=0.9, garment="anacu", body="wool_brown", band="wool_red", belt="wool_red",
 		lliclla="wool_cream", lliclla_stripe="wool_red", hair="long01", skin="young_asian_female",
 		macro={"gender": 0.0, "age": 0.45, "muscle": 0.5, "weight": 0.6, "height": 0.25, "proportions": 0.45},
 		animations=("weave",)),

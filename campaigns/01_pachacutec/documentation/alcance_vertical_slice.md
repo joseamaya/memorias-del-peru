@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.1)** — 2026-11-12; sustituye a la v4.0
+- Estado: **Aprobado (v4.2)** — 2026-11-12; sustituye a la v4.1
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -24,6 +24,14 @@
 | v3.9 | Aplica [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md): cabezas de la Microsoft Rocketbox Avatar Library (MIT) sobre los cuerpos de MakeHuman; tres vecinas distintas en lugar de tres copias (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.0 | Ropa más realista (§5): textiles con diseño propio (franjas, zigzag escalonado, rombos de gradas y t'oqapu en las autoridades) a la altura real de cada prenda, caída de la tela simulada en Blender y manto que se mece con huesos de muelle (`SpringBoneSimulator3D`). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.1 | Aplica [ADR-0019](../../../docs/adr/0019-movimiento-natural-de-personajes.md): pies sin patinar, arranque, frenada y giro progresivos, orientación corregida de las tomas, gestos con movimiento y reposo variado (§5). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.2 | Brazos y piernas revisados ([ADR-0018](../../../docs/adr/0018-ropa-textiles-caida-y-muelles.md) §4):
+- la falda del anacu se mece entera, sin partirse al andar;
+- el agricultor cierra la mano sobre la chaquitaclla;
+- la tejedora llega con las manos al telar, cuyo extremo sube a su regazo;
+- las ojotas tienen la forma del pie;
+- la ropa se dibuja por las dos caras.
+
+Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 

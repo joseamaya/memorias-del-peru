@@ -631,7 +631,9 @@ def build_loom(rng):
 	builder = MeshBuilder()
 	length = 1.5
 	width = 0.42
-	near = Vector((0.0, 0.0, 0.16))
+	# Extremo de la tejedora a la altura de su regazo, arrodillada (la cinta
+	# del telar de cintura le rodea la cadera).
+	near = Vector((0.0, 0.0, 0.3))
 	far = Vector((0.0, -length, 0.62))
 	direction = (far - near).normalized()
 	side = Vector((1.0, 0.0, 0.0))

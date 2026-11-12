@@ -38,6 +38,18 @@ El 2026-11-12, el responsable del proyecto pidió mejorarla y aprobó tres pasos
 - `NpcActor` crea un `SpringBoneSimulator3D` (API nativa de Godot 4.7) con esas cadenas y cápsulas de colisión en la cadera y el pecho. El manto se mece con la inercia del cuerpo.
 - **Faldas:** no llevan muelles. Siguen a los muslos como hasta ahora, porque con muelles atravesarían las piernas al caminar y al arrodillarse.
 
+### 4. Revisión de brazos y piernas (2026-11-12)
+
+- **Faldas:**
+  - El bajo del anacu ya no sigue a los muslos en un 75 %, lo que la partía en dos perneras al andar. Ahora es un 38 %, con más vuelo, para que se mezca entera sin que asomen las piernas.
+  - El unku sigue a los muslos en un 20 %.
+  - La tejedora, arrodillada, sigue a los muslos en un 90 %, para que la falda caiga sobre el regazo.
+- **Ojotas:** suela con la silueta del pie (talón redondo, más ancha en el metatarso) y tiras finas: una en V desde entre los dedos y otra alrededor del talón.
+- **Manos:** el agricultor cierra la mano derecha sobre la chaquitaclla, que pasa por el puño.
+- **Tejedora:** brazos hacia abajo y hacia delante, hasta el telar. El extremo del telar sube a la altura de su regazo (0,3 m) y queda más cerca de ella.
+- **Doble cara:** la ropa usa `superficie_tela.gdshader`, el mismo código de superficie (`superficie_comun.gdshaderinc`) dibujado por las dos caras, para que se vean el reverso de la tela y las tiras finas.
+- **Signo corregido:** el gesto de agotamiento y la postura de tejer inclinaban el tronco hacia atrás.
+
 ## Consecuencias
 
 - La ropa pasa de colores planos a textiles andinos con trama, con caída y con un manto que se mueve.

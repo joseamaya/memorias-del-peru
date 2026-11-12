@@ -9,6 +9,8 @@ extends RefCounted
 enum Layer { STONE, PLASTER, THATCH, WOOD, FABRIC, GRASS, DIRT, ROCK, SOIL }
 
 const SHADER_PATH: String = "res://shared_assets/materials/superficie_triplanar.gdshader"
+## La ropa usa la misma superficie dibujada por las dos caras.
+const CLOTH_SHADER_PATH: String = "res://shared_assets/materials/superficie_tela.gdshader"
 const DETAIL_PATH: String = "res://shared_assets/textures/superficies_detalle.webp"
 const NORMAL_PATH: String = "res://shared_assets/textures/superficies_normal.webp"
 ## Repeticiones por metro de cada capa, en el orden de [enum Layer].
@@ -44,6 +46,7 @@ static func model_material() -> ShaderMaterial:
 static func cloth_material() -> ShaderMaterial:
 	if _cloth_material == null:
 		_cloth_material = _base_material()
+		_cloth_material.shader = load(CLOTH_SHADER_PATH) as Shader
 		_cloth_material.set_shader_parameter("cloth_uv2", true)
 		_cloth_material.set_shader_parameter("detail_strength", CLOTH_DETAIL)
 		var scales: PackedFloat32Array = LAYER_SCALES.duplicate()

@@ -81,7 +81,7 @@ const PUTUTU_BASE: Vector3 = Vector3(0.0, -0.2, 0.0)
 const OFFERING_BASE: Vector3 = Vector3(0.0, -0.15, 0.0)
 const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
 ## Distancia entre la tejedora arrodillada y el extremo del telar.
-const WEAVER_LOOM_GAP: float = 0.38
+const WEAVER_LOOM_GAP: float = 0.22
 ## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
 const TERRACE_CAP_THICKNESS: float = 0.3
 const TERRACE_CAP_INSET: float = 0.05
