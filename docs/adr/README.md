@@ -50,4 +50,5 @@ Plantilla:
 | [0025](0025-imagenes-de-la-introduccion.md) | Imágenes de fondo en la introducción | Aceptado |
 | [0026](0026-cierre-corto-y-mensajero.md) | Cierre corto y partida del mensajero | Aceptado |
 | [0027](0027-musica-de-la-introduccion.md) | Música de la introducción | Reemplazado por ADR-0028 |
-| [0028](0028-musica-epica-de-la-introduccion.md) | Música épica de la introducción | Aceptado |
+| [0028](0028-musica-epica-de-la-introduccion.md) | Música épica de la introducción | Aceptado (pieza sustituida por ADR-0029) |
+| [0029](0029-tema-de-apertura.md) | Tema de apertura de la introducción | Aceptado |

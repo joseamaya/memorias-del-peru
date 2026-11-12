@@ -12,7 +12,7 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `quero_bebida.wav` | Interacción del quero | OwlStorm | Freesound n.º 320139, «Drink Sip and Swallow»: https://freesound.org/people/OwlStorm/sounds/320139/ | CC0 1.0 | 2026-11-11 |
 | `ofrenda_grano.wav` | Interacción de la ofrenda | lucasfuchs | Freesound n.º 556974, «Pouring grain or seeds»: https://freesound.org/people/lucasfuchs/sounds/556974/ | CC0 1.0 | 2026-11-11 |
 | `telar_golpe.wav` | Golpe del batán de la tejedora en el telar (3D, ADR-0015) | Autoría propia del proyecto | Síntesis con Python y NumPy: golpe sordo de 95–245 Hz con caída de tono, ruido filtrado en dos resonancias de madera (820 y 1450 Hz) y un segundo golpe más débil a 75 ms | Propia | 2026-11-12 |
-| `musica_intro_atlas_bolivia.ogg` | Música de la introducción (ADR-0028) | Vadim_Makes_Sound | Pixabay, «Atlas • Bolivia»: https://pixabay.com/music/orchestral-atlas-bolivia-602511/. **Generada con IA** según la propia página | Pixabay Content License (uso comercial, sin atribución obligatoria; prohíbe redistribuirla sola) | 2026-11-12 |
+| `musica_intro_over_the_andes.ogg` | Música de la introducción (ADR-0029) | u_98673jp944 | Pixabay, «Over The Andes»: https://pixabay.com/music/main-title-over-the-andes-339710/. **Generada con IA** según la propia página | Pixabay Content License (uso comercial, sin atribución obligatoria; prohíbe redistribuirla sola) | 2026-11-12 |
 
 Los originales se descargaron con la cuenta del responsable del proyecto el 2026-11-11 y **no se versionan**: son WAV de 48–96 kHz que pesan hasta 66 MB. Lo que entra en el juego es una versión procesada con ffmpeg y Python:
 
@@ -36,9 +36,10 @@ Sustituyen a los placeholders sintéticos anteriores (`pututu_propio.wav`, `ofre
 
 ## Música de la introducción
 
-`musica_intro_atlas_bolivia.ogg` son los primeros 44 s de «Atlas • Bolivia» (Vadim_Makes_Sound, Pixabay; música de sikuri con sikus, bombo y orquesta). La descargó el responsable del proyecto el 2026-11-12 desde su cuenta (MP3 de 3:07, 256 kb/s, SHA-256 `53891086…`), y el original **no se versiona**.
+`musica_intro_over_the_andes.ogg` (40,3 s) es un montaje de «Over The Andes» (u_98673jp944, Pixabay; zampoñas, cuerdas y percusión, etiquetada como tema principal). La descargó el responsable del proyecto el 2026-11-12 desde su cuenta (MP3 de 1:52, 256 kb/s, SHA-256 `f7a12e6e…`), y el original **no se versiona**.
 
-- Se recortó a 44 s, con un fundido de salida de 5 s; se igualó a −20 dB RMS (pico a −6,3 dBFS) y se guardó en Ogg Vorbis.
-- **Licencia:** Pixabay Content License (https://pixabay.com/service/license-summary/). Permite el uso comercial y la modificación sin atribución; no permite venderla ni distribuirla sola. Se acredita igualmente aquí: «Music by Vadim_Makes_Sound from Pixabay».
+- **Forma de la pieza:** secciones de 16 s, con compases fuertes en 16,01, 32,0, 48,03 y 104,01 s (medidos con su envolvente de ataques).
+- **Montaje:** de 0 a 32,0 s (entrada de zampoñas, crecimiento y primera sección completa), enlazado en el compás con el final real, de 104,0 a 112,3 s, mediante un fundido cruzado de 60 ms. Se añadió un fundido final de 1,5 s, se igualó a −20 dB RMS (pico a −4,5 dBFS) y se guardó en Ogg Vorbis.
+- **Licencia:** Pixabay Content License (https://pixabay.com/service/license-summary/). Permite el uso comercial y la modificación sin atribución; no permite venderla ni distribuirla sola. Se acredita igualmente: «Music by u_98673jp944 from Pixabay».
 - **Contenido generado con IA:** la página de Pixabay la marca así. Hay que declararla en las encuestas de las tiendas que lo pidan (por ejemplo, el apartado de IA de Steam).
-- Sustituye a `musica_intro_quena.ogg` (ADR-0027), una composición propia con notas de quena que al responsable del proyecto no le sonó andina.
+- Sustituye a `musica_intro_atlas_bolivia.ogg` (ADR-0028), una música de procesión sin forma de apertura, y esa a su vez a `musica_intro_quena.ogg` (ADR-0027).
