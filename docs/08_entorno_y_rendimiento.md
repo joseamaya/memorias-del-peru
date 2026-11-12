@@ -181,6 +181,20 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con cabezas de Rocketbox (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU. Diez personajes con cabeza de Rocketbox ([ADR-0017](adr/0017-cabezas-rocketbox.md)): entre 6900 y 8600 triángulos cada uno, con texturas de cara de 1K y mapa de normales. La carga del sistema rondaba 10 por procesos ajenos (navegador sin ventana, base de datos), así que el commit anterior (e05b752) se midió justo antes, en las mismas condiciones.
+
+| Medición | Bajo | Medio | Vídeo (Medio) |
+|---|---|---|---|
+| Ahora (3 ejecuciones) | 124,3–138,0 FPS | 29,6–49,6 FPS | 272 MB |
+| Commit anterior, misma carga | 137,6 FPS | 51,5 FPS | — |
+
+- Con esta carga, las diferencias entran en el ruido. El 29,6 de Medio es una ejecución aislada; las otras dos dieron 49,5 y 49,6.
+- La memoria de vídeo sube unos 16 MB por las texturas de cara.
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
+- Conviene repetir la medición con el equipo descargado.
+
 ### Medición con personajes de MakeHuman (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU. Los nueve personajes pasan a ser los de MakeHuman con ropa propia y captura de CMU ([ADR-0016](adr/0016-personajes-realistas-makehuman.md)): unos 8500–10 100 triángulos y 5–6 mallas cada uno.

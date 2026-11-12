@@ -38,4 +38,5 @@ Plantilla:
 | [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Aceptado (balanceo de piernas sustituido por ADR-0015) |
 | [0014](0014-texturas-de-detalle-triplanares.md) | Texturas de detalle triplanares | Aceptado |
 | [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016) |
-| [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Aceptado |
+| [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Aceptado (cabezas matizadas por ADR-0017) |
+| [0017](0017-cabezas-rocketbox.md) | Cabezas de la Microsoft Rocketbox Avatar Library | Aceptado |

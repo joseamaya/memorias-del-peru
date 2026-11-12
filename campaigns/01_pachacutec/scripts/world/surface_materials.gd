@@ -132,7 +132,7 @@ static func apply_to_model(root: Node) -> int:
 			if material != null and material.resource_name == CLOTH_MATERIAL_NAME:
 				mesh_instance.set_surface_override_material(surface, cloth_material())
 				touched = true
-			elif material is BaseMaterial3D and material.resource_name.ends_with(".body"):
+			elif material is BaseMaterial3D and (material.resource_name.ends_with(".body") or material.resource_name == "rb.head"):
 				# Piel: algo de brillo suave y luz de borde, que la aleja del
 				# aspecto de cera o de barro.
 				mesh_instance.set_surface_override_material(surface, _skin(material as BaseMaterial3D))

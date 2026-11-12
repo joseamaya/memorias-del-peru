@@ -13,6 +13,7 @@ Proceso descrito en [ADR-0016](../../../../docs/adr/0016-personajes-realistas-ma
 | Malla base y objetivos de boca, mallas *proxy* `male1591` y `female1605`, pieles (`young_/middleage_/old_asian_*`), ojos `low-poly` con material `brown`, cejas `eyebrow001`, pestañas `eyelashes01` y pelo `short02` y `long01` | MakeHuman system assets, `makehuman_system_assets_cc0.zip`: https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html. Cada archivo declara: «This asset was explicitly released as CC0 in september 2020». Copyright previo de Data Collection AB, Joel Palmius y Jonas Hauquier. | CC0 1.0 | 2026-11-12 |
 | Esqueleto `cmu_mb` y sus pesos | MPFB2 2.0.18, datos del complemento (https://extensions.blender.org/add-ons/mpfb/). El código del complemento es GPL v3 y no se distribuye; sus recursos son CC0. | CC0 1.0 | 2026-11-12 |
 | Movimientos: reposo (82_08, «stand still»), paseo (07_01), carrera (09_01), gestos (18_08), cavar (79_04) y coser (79_05) | CMU Graphics Lab Motion Capture Database, http://mocap.cs.cmu.edu/. Su portada dice: «This dataset of motions is free for all uses». Se usan los ASF/AMC originales. | Uso libre; se acredita la fuente | 2026-11-12 |
+| Cabezas y pelo de `Male_Adult_09`, `Male_Adult_10`, `Business_Male_02`, `Business_Male_06`, `Medical_Female_01`, `Female_Adult_11`, `Sports_Female_02` y `Business_Female_01` (ADR-0017) | Microsoft Rocketbox Avatar Library, https://github.com/microsoft/Microsoft-Rocketbox. «MIT License — Copyright (c) 2020 Microsoft». | MIT | 2026-11-12 |
 | Ropa, tocados, ojotas, chuspa, bulto y chaquitaclla | Autoría propia, generada por `pch_people.py`. | Propia | 2026-11-12 |
 
 ### Transformaciones aplicadas
@@ -24,4 +25,14 @@ Proceso descrito en [ADR-0016](../../../../docs/adr/0016-personajes-realistas-ma
 - La postura arrodillada de la tejedora se calcula a partir del esqueleto; sobre ella van los brazos de la toma de coser.
 - Los movimientos se trasladan al esqueleto alineando cada hueso, se recortan en ciclos cerrados y se hornean a 30 fps.
 
-Los recursos originales de MakeHuman y de CMU no se versionan: se descargan para regenerar (ver la cabecera de `pch_people.py`).
+### Aviso de licencia de Rocketbox (MIT)
+
+> Copyright (c) 2020 Microsoft
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Los recursos originales de MakeHuman, de CMU y de Rocketbox no se versionan: se descargan para regenerar (ver la cabecera de `pch_people.py`).

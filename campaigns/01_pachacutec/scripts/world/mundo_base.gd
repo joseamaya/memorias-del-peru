@@ -811,6 +811,11 @@ static func npc_model_files(node_name: String) -> Array[String]:
 		"Principal1", "Principal2":
 			role = "principal"
 			generic = MODEL_AUTHORITY
+		# Tres vecinas distintas, no tres copias (ADR-0017).
+		"Habitante2":
+			role = "villager_b"
+		"Habitante3":
+			role = "villager_c"
 	var files: Array[String] = ["pch_npc_%s.glb" % role, generic]
 	return files
 

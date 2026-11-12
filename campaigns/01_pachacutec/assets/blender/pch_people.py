@@ -14,13 +14,17 @@ Requisitos (no se versionan; ver ADR-0016):
 
 2. Los recursos CC0 de MakeHuman (`makehuman_system_assets_cc0.zip`)
    descomprimidos en `<dir>/extensions/.user/user_default/mpfb/data/`.
-3. Las tomas ASF/AMC de CMU de [MOCAP] en un directorio, indicado con `--cmu`.
+3. Las tomas ASF/AMC de CMU en un directorio, indicado con `--cmu`.
+4. Las cabezas de Rocketbox (ADR-0017): por cada avatar de `PEOPLE[...]["head"]`,
+   una carpeta con su FBX (`Export/<avatar>.fbx`) y sus texturas
+   `*_head_color.tga`, `*_head_normal.tga` y `*_opacity_color.tga`, todo bajo
+   el directorio indicado con `--rocketbox`.
 
 Uso (desde la raíz del repositorio):
 
     BLENDER_USER_RESOURCES=<dir> blender --background --factory-startup \\
         --python campaigns/01_pachacutec/assets/blender/pch_people.py -- \\
-        --cmu <dir_cmu> [--out DIR] [--preview DIR] [nombre ...]
+        --cmu <dir_cmu> --rocketbox <dir_rocketbox> [--out DIR] [--preview DIR] [nombre ...]
 
 Convenciones:
 - 1 unidad = 1 metro, pies en el suelo y frente hacia +Y de Blender (−Z de
@@ -709,11 +713,11 @@ def build_clothes(spec, body, armature, rig_bones):
 	# 6. Tocados sobre la cabeza: cinta (llautu) o paño que sigue el cráneo.
 	head = rig_bones["Head"]
 	forehead_z = head.head_local.z + (head.tail_local.z - head.head_local.z) * 0.55
-	if spec.get("headband"):
+	if spec.get("headband") and not spec.get("head"):
 		def band_face(verts):
 			return all(abs(body.points[i].z - (forehead_z + 0.01)) < 0.022 and body.part_weight(i, ("Head",)) > 0.8 for i in verts)
 		g.add_body_surface(body, band_face, 0.02, lambda i: _linear(spec["headband"]))
-	if spec.get("head_cloth"):
+	if spec.get("head_cloth") and not spec.get("head"):
 		def cloth_face(verts):
 			return all(body.points[i].z > forehead_z - 0.01 and body.part_weight(i, ("Head",)) > 0.8 for i in verts)
 		g.add_body_surface(body, cloth_face, 0.024, lambda i: _linear(spec["head_cloth"]))
@@ -1302,45 +1306,289 @@ def _lowest_hand_time(take, retarget, start, end, bone_name):
 
 PEOPLE = {
 	# Habitantes comunes (PCH-018).
-	"pch_npc_weaver": dict(garment="anacu", body="wool_brown", band="wool_red", belt="wool_red",
+	"pch_npc_weaver": dict(head="Medical_Female_01", garment="anacu", body="wool_brown", band="wool_red", belt="wool_red",
 		lliclla="wool_cream", lliclla_stripe="wool_red", hair="long01", skin="young_asian_female",
 		macro={"gender": 0.0, "age": 0.45, "muscle": 0.5, "weight": 0.6, "height": 0.25, "proportions": 0.45},
 		animations=("weave",)),
-	"pch_npc_farmer": dict(garment="unku", body="wool_cream", band="wool_brown", manto="wool_brown",
+	"pch_npc_farmer": dict(head="Business_Male_06", garment="unku", body="wool_cream", band="wool_brown", manto="wool_brown",
 		head_cloth="wool_red", chuspa="wool_ochre", tool="chaquitaclla", hair="short02", skin="middleage_asian_male",
 		macro={"gender": 1.0, "age": 0.6, "muscle": 0.65, "weight": 0.55, "height": 0.3, "proportions": 0.45},
 		animations=("work",)),
-	"pch_npc_villager": dict(garment="anacu", body="wool_dark", band="wool_ochre", belt="wool_green",
+	"pch_npc_villager": dict(head="Female_Adult_11", garment="anacu", body="wool_dark", band="wool_ochre", belt="wool_green",
 		lliclla="wool_grey", lliclla_stripe="wool_green", hair="long01", skin="middleage_asian_female",
 		macro={"gender": 0.0, "age": 0.6, "muscle": 0.5, "weight": 0.65, "height": 0.22, "proportions": 0.45}),
-	"pch_npc_commoner": dict(garment="unku", body="wool_grey", band="wool_dark", manto="wool_cream",
+	# Otras dos vecinas, para que los tres habitantes no sean clones.
+	"pch_npc_villager_b": dict(head="Sports_Female_02", garment="anacu", body="wool_brown", band="wool_red", belt="wool_ochre",
+		lliclla="wool_red", lliclla_stripe="wool_dark", hair="long01", skin="young_asian_female",
+		macro={"gender": 0.0, "age": 0.4, "muscle": 0.5, "weight": 0.55, "height": 0.28, "proportions": 0.45}),
+	"pch_npc_villager_c": dict(head="Business_Female_01", garment="anacu", body="wool_grey", band="wool_blue", belt="wool_red",
+		lliclla="wool_ochre", lliclla_stripe="wool_red", hair="long01", skin="middleage_asian_female",
+		macro={"gender": 0.0, "age": 0.55, "muscle": 0.5, "weight": 0.7, "height": 0.2, "proportions": 0.45}),
+	"pch_npc_commoner": dict(head="Business_Male_02", garment="unku", body="wool_grey", band="wool_dark", manto="wool_cream",
 		chuspa="wool_red", hair="short02", skin="young_asian_male",
 		macro={"gender": 1.0, "age": 0.45, "muscle": 0.6, "weight": 0.5, "height": 0.32, "proportions": 0.45}),
 	# Mensajero (PCH-011): ropa de viaje sin insignias, con su bulto.
-	"pch_npc_messenger": dict(garment="unku", body="wool_brown", band="wool_dark", bundle="wool_cream",
+	"pch_npc_messenger": dict(head="Male_Adult_10", garment="unku", body="wool_brown", band="wool_dark", bundle="wool_cream",
 		head_cloth="wool_grey", chuspa="wool_cream", hair="short02", skin="young_asian_male",
 		macro={"gender": 1.0, "age": 0.4, "muscle": 0.7, "weight": 0.4, "height": 0.35, "proportions": 0.5}),
 	# Autoridades (PCH-017): franja ajedrezada, cinta y manto teñido.
-	"pch_npc_curaca": dict(garment="unku", body="wool_cream", band="wool_red", band_style="tocapu",
+	"pch_npc_curaca": dict(head="Male_Adult_09", garment="unku", body="wool_cream", band="wool_red", band_style="tocapu",
 		band_alt="wool_dark", manto="wool_red", headband="wool_ochre", chuspa="wool_blue", hair="short02",
 		skin="old_asian_male",
 		macro={"gender": 1.0, "age": 0.75, "muscle": 0.5, "weight": 0.6, "height": 0.33, "proportions": 0.45}),
-	"pch_npc_principal": dict(garment="unku", body="wool_ochre", band="wool_dark", band_style="tocapu",
+	"pch_npc_principal": dict(head="Business_Male_02", garment="unku", body="wool_ochre", band="wool_dark", band_style="tocapu",
 		band_alt="wool_cream", manto="wool_blue", headband="wool_red", hair="short02", skin="middleage_asian_male",
 		macro={"gender": 1.0, "age": 0.55, "muscle": 0.6, "weight": 0.55, "height": 0.35, "proportions": 0.45}),
-	"pch_npc_authority": dict(garment="unku", body="wool_cream", band="wool_dark", band_style="tocapu",
+	"pch_npc_authority": dict(head="Business_Male_06", garment="unku", body="wool_cream", band="wool_dark", band_style="tocapu",
 		band_alt="wool_red", manto="wool_brown", headband="wool_red", hair="short02", skin="middleage_asian_male",
 		macro={"gender": 1.0, "age": 0.5, "muscle": 0.6, "weight": 0.5, "height": 0.3, "proportions": 0.5}),
 }
 
 
-def build_person(name, cmu_dir):
+# --- Cabezas de Rocketbox (ADR-0017) ---------------------------------------
+#
+# La cara de MakeHuman se sustituye por la cabeza de un avatar de la Microsoft
+# Rocketbox Avatar Library (MIT): piel, ojos y pelo hechos por artistas. Del
+# FBX se toman las caras de los materiales de cabeza y de pelo; se escalan
+# por la anchura de la cara a la altura de los ojos, se colocan sobre los ojos
+# de MakeHuman, se pegan al cuello del cuerpo y toman sus pesos.
+
+def _rocketbox_skin(image):
+	"""Piel de Rocketbox llevada al mismo moreno que el cuerpo. El alfa de la
+	textura no es transparencia y se descarta."""
+	import numpy as np
+	width, height = image.size
+	pixels = np.empty(width * height * 4, dtype=np.float32)
+	image.pixels.foreach_get(pixels)
+	pixels = pixels.reshape(height, width, 4)
+	rgb = pixels[..., :3]
+	bright = rgb.mean(axis=2)
+	mask = (bright > 0.15) & (bright < 0.9)
+	mean = rgb[mask].mean(axis=0)
+	gain = np.array(SKIN_TARGET, dtype=np.float32) / np.maximum(mean, 1e-3)
+	pixels[..., :3] = np.clip(rgb * gain, 0.0, 1.0)
+	pixels[..., 3] = 1.0
+	copy = bpy.data.images.new(image.name + "_pch", width, height, alpha=False)
+	copy.pixels.foreach_set(pixels.ravel())
+	if width > TEXTURE_SIZE:
+		copy.scale(TEXTURE_SIZE, TEXTURE_SIZE)
+	copy.pack()
+	return copy
+
+
+def _load_texture(folder, key, scale_to=TEXTURE_SIZE, non_color=False):
+	files = sorted(f for f in os.listdir(folder) if key in f)
+	if not files:
+		return None
+	image = bpy.data.images.load(os.path.join(folder, files[0]))
+	if non_color:
+		image.colorspace_settings.name = "Non-Color"
+	if image.size[0] > scale_to:
+		image.scale(scale_to, scale_to)
+	image.pack()
+	return image
+
+
+def _rocketbox_materials(head, folder):
+	"""Materiales propios para la cabeza («rb.head», con normales) y el pelo
+	(«rb.hair», con alfa)."""
+	for material in list(head.data.materials):
+		if material is None:
+			continue
+		material.use_nodes = True
+		tree = material.node_tree
+		for node in list(tree.nodes):
+			if node.type != "OUTPUT_MATERIAL":
+				tree.nodes.remove(node)
+		output = next(n for n in tree.nodes if n.type == "OUTPUT_MATERIAL")
+		bsdf = tree.nodes.new("ShaderNodeBsdfPrincipled")
+		tree.links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
+		if material.name.endswith("_head"):
+			color = _load_texture(folder, "head_color", 2048)
+			texture = tree.nodes.new("ShaderNodeTexImage")
+			texture.image = _rocketbox_skin(color)
+			tree.links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
+			normal_image = _load_texture(folder, "head_normal", TEXTURE_SIZE, non_color=True)
+			if normal_image is not None:
+				normal_texture = tree.nodes.new("ShaderNodeTexImage")
+				normal_texture.image = normal_image
+				normal_map = tree.nodes.new("ShaderNodeNormalMap")
+				tree.links.new(normal_texture.outputs["Color"], normal_map.inputs["Color"])
+				tree.links.new(normal_map.outputs["Normal"], bsdf.inputs["Normal"])
+			bsdf.inputs["Roughness"].default_value = 0.6
+			material.name = "rb.head"
+		else:
+			hair = _load_texture(folder, "opacity_color", TEXTURE_SIZE)
+			if hair is not None:
+				texture = tree.nodes.new("ShaderNodeTexImage")
+				texture.image = hair
+				tree.links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
+				tree.links.new(texture.outputs["Alpha"], bsdf.inputs["Alpha"])
+			material.name = "rb.hair"
+
+
+def _skin_width(points, z, band=0.012):
+	xs = [p.x for p in points if abs(p.z - z) < band]
+	return max(xs) - min(xs)
+
+
+def graft_rocketbox_head(spec, rocketbox_dir, armature, proxy, extras, body):
+	folder = os.path.join(rocketbox_dir, spec["head"])
+	fbx = os.path.join(folder, spec["head"] + ".fbx")
+	if not os.path.isfile(fbx):
+		raise SystemExit("Falta la cabeza de Rocketbox %s (ADR-0017)" % fbx)
+	before = set(bpy.data.objects)
+	bpy.ops.import_scene.fbx(filepath=fbx)
+	imported = [o for o in bpy.data.objects if o not in before]
+	source = next(o for o in imported if o.type == "MESH")
+	skeleton = next(o for o in imported if o.type == "ARMATURE")
+	bones = {b.name: skeleton.matrix_world @ b.head_local for b in skeleton.data.bones}
+	data = source.data.copy()
+	data.transform(source.matrix_world)
+	head = bpy.data.objects.new("head", data)
+	bpy.context.scene.collection.objects.link(head)
+	for obj in imported:
+		bpy.data.objects.remove(obj)
+	# Solo cabeza (material 1) y pelo (material 2); el cuerpo y la ropa
+	# modernos (material 0) se descartan.
+	mesh = bmesh.new()
+	mesh.from_mesh(head.data)
+	bmesh.ops.delete(mesh, geom=[f for f in mesh.faces if f.material_index == 0], context="FACES")
+	mesh.to_mesh(head.data)
+	mesh.free()
+	_rocketbox_materials(head, folder)
+	# Escala y posición: anchura de la cara y punto medio de los ojos.
+	eyes = next(o for o in extras if o.name.endswith("low-poly"))
+	mh_eye = sum((eyes.matrix_world @ v.co for v in eyes.data.vertices), Vector()) / len(eyes.data.vertices)
+	rb_eye = (bones["Bip01 LEye"] + bones["Bip01 REye"]) * 0.5
+	mh_skin = [body.points[i] for i in range(len(body.points)) if body.part_weight(i, ("Head",)) > 0.8]
+	rb_skin = [head.data.vertices[i].co for p in head.data.polygons
+		if head.data.materials[p.material_index].name == "rb.head" for i in p.vertices]
+	scale = _skin_width(mh_skin, mh_eye.z) / _skin_width(rb_skin, rb_eye.z)
+	head.data.transform(Matrix.Translation(mh_eye) @ Matrix.Scale(scale, 4) @ Matrix.Translation(-rb_eye))
+	# Fuera la cabeza de MakeHuman (ojos, cejas, pestañas, pelo) y la piel del
+	# cuerpo que la nueva cabeza tapa.
+	for obj in extras:
+		bpy.data.objects.remove(obj)
+	tree = bvhtree.BVHTree.FromObject(head, bpy.context.evaluated_depsgraph_get())
+	lowest = min(v.co.z for v in head.data.vertices)
+	mesh = bmesh.new()
+	mesh.from_mesh(proxy.data)
+	covered = []
+	for face in mesh.faces:
+		center = face.calc_center_median()
+		location, _normal, _index, distance = tree.find_nearest(center)
+		if center.z > lowest + 0.012 and location is not None and distance < 0.03:
+			covered.append(face)
+	bmesh.ops.delete(mesh, geom=covered, context="FACES")
+	mesh.to_mesh(proxy.data)
+	mesh.free()
+	# El borde inferior de la cabeza se pega a la superficie del cuerpo.
+	mesh = bmesh.new()
+	mesh.from_mesh(head.data)
+	for vertex in mesh.verts:
+		if vertex.is_boundary and vertex.co.z < lowest + 0.05:
+			location, normal, _index, _distance = body.bvh.find_nearest(vertex.co)
+			if location is not None:
+				vertex.co = location + normal * 0.001
+	mesh.to_mesh(head.data)
+	mesh.free()
+	# Pesos: la cabeza propiamente sigue al hueso «Head»; el cuello, al cuerpo.
+	head_z = armature.data.bones["Head"].head_local.z
+	groups = {}
+	for vertex in head.data.vertices:
+		weights = {"Head": 1.0} if vertex.co.z > head_z + 0.03 else body.nearest_weights(vertex.co)
+		for bone, weight in weights.items():
+			if weight < 0.01:
+				continue
+			if bone not in groups:
+				groups[bone] = head.vertex_groups.new(name=bone)
+			groups[bone].add([vertex.index], weight, "REPLACE")
+	for polygon in head.data.polygons:
+		polygon.use_smooth = True
+	head.parent = armature
+	modifier = head.modifiers.new("Armature", "ARMATURE")
+	modifier.object = armature
+	return head, tree, mh_eye.z
+
+
+def build_headwear(spec, head, eye_z, armature):
+	"""Cinta (llautu) o paño sobre la cabeza de Rocketbox: la propia superficie
+	del cráneo separada unos milímetros, como la ropa sobre el cuerpo, para
+	que se ajuste a esa cabeza y a su pelo pintado."""
+	if not spec.get("headband") and not spec.get("head_cloth"):
+		return None
+	data = head.data
+	data.calc_normals_split() if hasattr(data, "calc_normals_split") else None
+	normals = [v.normal.copy() for v in data.vertices]
+	scalp = [p for p in data.polygons if data.materials[p.material_index].name == "rb.head"]
+	g = Garment()
+
+	def cover(low, high, offset, color):
+		mapping = {}
+		for polygon in scalp:
+			zs = [data.vertices[i].co.z for i in polygon.vertices]
+			if min(zs) < low or (high is not None and max(zs) > high):
+				continue
+			# Solo la parte de arriba y de los lados: la cara queda libre.
+			center = polygon.center
+			if center.y < -0.02 and center.z < eye_z + 0.03:
+				continue
+			ids = []
+			for i in polygon.vertices:
+				if i not in mapping:
+					mapping[i] = g.add_vertex(data.vertices[i].co + normals[i] * offset, {"Head": 1.0})
+				ids.append(mapping[i])
+			g.add_face(ids, _linear(color), [(0.0, 0.0), (0.05, 0.0), (0.05, 0.05), (0.0, 0.05)][:len(ids)])
+		return mapping
+
+	tree = bvhtree.BVHTree.FromObject(head, bpy.context.evaluated_depsgraph_get())
+
+	def smooth_border(mapping, offset, passes=12):
+		"""El borde sale en escalera (caras enteras): se alisa a lo largo del
+		propio borde y se vuelve a apoyar sobre la cabeza."""
+		created = set(mapping.values())
+		edges = {}
+		for face in g.faces:
+			if not created.issuperset(face):
+				continue
+			for k, a in enumerate(face):
+				b = face[(k + 1) % len(face)]
+				key = (min(a, b), max(a, b))
+				edges[key] = edges.get(key, 0) + 1
+		border = {}
+		for (a, b), n in edges.items():
+			if n == 1:
+				border.setdefault(a, []).append(b)
+				border.setdefault(b, []).append(a)
+		for _ in range(passes):
+			moved = {}
+			for i, others in border.items():
+				if len(others) == 2:
+					moved[i] = g.verts[i].lerp((g.verts[others[0]] + g.verts[others[1]]) * 0.5, 0.6)
+			for i, point in moved.items():
+				location, normal, _index, _distance = tree.find_nearest(point)
+				g.verts[i] = location + normal * offset if location is not None else point
+
+	if spec.get("head_cloth"):
+		smooth_border(cover(eye_z + 0.02, None, 0.012, spec["head_cloth"]), 0.012)
+	if spec.get("headband"):
+		smooth_border(cover(eye_z + 0.028, eye_z + 0.065, 0.009, spec["headband"]), 0.009)
+	if not g.faces:
+		return None
+	return g.to_object("headwear", bpy.context.scene.collection, armature)
+
+
+def build_person(name, cmu_dir, rocketbox_dir):
 	spec = PEOPLE[name]
 	bpy.context.scene.render.fps = ANIM_FPS
 	armature, proxy, extras = build_body(spec)
 	tint_materials(proxy, extras)
 	body = BodyInfo(proxy)
-	build_clothes(spec, body, armature, armature.data.bones)
+	clothes = build_clothes(spec, body, armature, armature.data.bones)
+	if spec.get("head"):
+		head, _head_tree, eye_z = graft_rocketbox_head(spec, rocketbox_dir, armature, proxy, extras, body)
+		build_headwear(spec, head, eye_z, armature)
 	info = build_animations(armature, spec, cmu_dir)
 	if spec.get("tool") == "chaquitaclla":
 		build_tool(armature, info["work_beat"])
@@ -1442,6 +1690,7 @@ def main():
 	argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 	parser = argparse.ArgumentParser(description="Genera los personajes realistas de la campaña 01 (ADR-0016).")
 	parser.add_argument("--cmu", required=True, help="directorio con las tomas ASF/AMC de CMU")
+	parser.add_argument("--rocketbox", required=True, help="directorio con las carpetas de los avatares de Rocketbox")
 	parser.add_argument("--out", default=DEFAULT_OUT)
 	parser.add_argument("--preview", default="")
 	parser.add_argument("--pose", default="")
@@ -1454,7 +1703,7 @@ def main():
 		if name not in PEOPLE:
 			raise SystemExit("Personaje desconocido: %s" % name)
 		reset_scene()
-		info = build_person(name, args.cmu)
+		info = build_person(name, args.cmu, args.rocketbox)
 		meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 		tris = sum(sum(len(p.vertices) - 2 for p in o.data.polygons) for o in meshes)
 		print("PERSONAJE %s | triángulos %d | mallas %d | %s" % (
