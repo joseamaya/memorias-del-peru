@@ -194,6 +194,22 @@ Sin cambio apreciable respecto a la medición anterior.
 
 El movimiento se mide aparte con `tests/measure_motion.gd`: deslizamiento del pie de apoyo, giros por fotograma y aceleración. Los valores están en ADR-0019.
 
+### Medición con ropa cortada y cosida (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU, con la ropa de [ADR-0020](adr/0020-ropa-cortada-y-cosida.md):
+- prendas cortadas y caídas en la postura de reposo;
+- sin la piel que la ropa tapa;
+- tejido de lana Fabric031.
+
+Cada personaje tiene entre 8700 y 9900 triángulos (600–1300 más que antes): la ropa pasa de unos 2400–3600 triángulos a 3300–4300, y el cuerpo pierde unos 270–400.
+
+| Perfil | FPS medio (1 ejecución) | FPS p1 | Vídeo |
+|---|---|---|---|
+| Bajo | 151,2 | 125,0 | 208,8 MB |
+| Medio | 56,5 | 50,0 | 281,9 MB |
+
+Sin cambio apreciable respecto a la medición anterior. El movimiento medido con `tests/measure_motion.gd` tampoco cambia.
+
 ### Medición con textiles, caída y manto con muelles (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas ([ADR-0018](adr/0018-ropa-textiles-caida-y-muelles.md)). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.

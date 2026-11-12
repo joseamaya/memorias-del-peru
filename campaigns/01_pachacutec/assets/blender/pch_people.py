@@ -1,8 +1,10 @@
 """Generador de los personajes realistas de la campaña 01 (ADR-0016).
 
 Crea cada personaje con MPFB2 (MakeHuman para Blender), le pone ropa andina
-generada aquí mismo, traslada la captura de movimiento de CMU a su esqueleto y
-lo exporta a glTF binario en `assets/models/pch_npc_<papel>.glb`.
+generada aquí mismo (las prendas grandes, cortadas como paños de telar y caídas
+con la simulación de tela de Blender, ADR-0020), traslada la captura de
+movimiento de CMU a su esqueleto y lo exporta a glTF binario en
+`assets/models/pch_npc_<papel>.glb`.
 
 Requisitos (no se versionan; ver ADR-0016):
 
@@ -255,10 +257,11 @@ def _linear(name):
 
 
 class BodyInfo:
-	"""Vértices del cuerpo en reposo con sus pesos, para ajustar la ropa."""
+	"""Vértices del cuerpo con sus pesos, para ajustar la ropa. Por defecto,
+	en reposo; con [points] y [normals], en otra postura (la de caída)."""
 
-	def __init__(self, proxy):
-		self.points = [proxy.matrix_world @ v.co for v in proxy.data.vertices]
+	def __init__(self, proxy, points=None, normals=None):
+		self.points = points if points is not None else [proxy.matrix_world @ v.co for v in proxy.data.vertices]
 		names = {g.index: g.name for g in proxy.vertex_groups}
 		self.weights = []
 		for vertex in proxy.data.vertices:
@@ -269,7 +272,7 @@ class BodyInfo:
 		self.tree.balance()
 		polygons = [tuple(p.vertices) for p in proxy.data.polygons]
 		self.bvh = bvhtree.BVHTree.FromPolygons(self.points, polygons)
-		self.normals = [v.normal.copy() for v in proxy.data.vertices]
+		self.normals = normals if normals is not None else [v.normal.copy() for v in proxy.data.vertices]
 		uv_layer = proxy.data.uv_layers.active
 		self.polygons = []
 		for polygon in proxy.data.polygons:
@@ -292,28 +295,6 @@ class BodyInfo:
 
 	def is_trunk(self, index):
 		return self.part_weight(index, ARM_BONES) < 0.35 and self.part_weight(index, LEG_BONES) < 0.5
-
-	def ring(self, z, segments, center, band=0.02, include=None):
-		"""Radio del cuerpo en cada sector angular a la altura [z]."""
-		radii = [0.0] * segments
-		for index, point in enumerate(self.points):
-			if abs(point.z - z) > band:
-				continue
-			if include is not None and not include(index):
-				continue
-			offset = Vector((point.x - center.x, point.y - center.y))
-			if offset.length < 1e-4:
-				continue
-			angle = math.atan2(offset.y, offset.x) % (2.0 * math.pi)
-			sector = int(angle / (2.0 * math.pi) * segments) % segments
-			radii[sector] = max(radii[sector], offset.length)
-		# Sectores vacíos: los vecinos los rellenan.
-		for _ in range(segments):
-			for s in range(segments):
-				if radii[s] == 0.0:
-					radii[s] = max(radii[s - 1], radii[(s + 1) % segments]) * 0.98
-		smooth = [(radii[s - 1] + 2.0 * radii[s] + radii[(s + 1) % segments]) * 0.25 for s in range(segments)]
-		return smooth
 
 	def nearest_weights(self, point, count=4, exclude=()):
 		"""Pesos medios de los vértices más cercanos; sin los huesos que
@@ -346,6 +327,9 @@ class Garment:
 		# Prenda a la que pertenecen las caras que se añaden (columna del
 		# textil, ver TEXTILE_PIECES); 0 = color liso por vértice.
 		self.piece = 0
+		# Coordenadas del textil fijadas por vértice (paños cortados por
+		# patrón): la anchura del paño y su altura colgado recto, en metros.
+		self.pattern = {}
 
 	def add_vertex(self, point, weights):
 		self.verts.append(point)
@@ -426,44 +410,6 @@ class Garment:
 				self.verts[i] = body.push_out(point, offset)
 		return mapping
 
-	def ribbon(self, body, path, width, color):
-		"""Tira plana a lo largo de [path], tumbada sobre el cuerpo."""
-		ids = []
-		for k, point in enumerate(path):
-			tangent = (path[min(k + 1, len(path) - 1)] - path[max(k - 1, 0)]).normalized()
-			_location, normal, _i, _d = body.bvh.find_nearest(point)
-			side = tangent.cross(normal if normal is not None else Vector((0.0, 1.0, 0.0))).normalized() * (width * 0.5)
-			weights = body.nearest_weights(point, exclude=ARM_BONES + ("Shoulder",))
-			ids.append((self.add_vertex(point - side, weights), self.add_vertex(point + side, weights)))
-		for k in range(len(ids) - 1):
-			self.add_face([ids[k][0], ids[k + 1][0], ids[k + 1][1], ids[k][1]], color,
-				[(0.0, k * 0.05), (0.0, (k + 1) * 0.05), (width, (k + 1) * 0.05), (width, k * 0.05)])
-
-	def resolve(self, body, ease, first=0, iterations=3, smooth=0.5, keep=None):
-		"""Saca la prenda del cuerpo y la suaviza (vértices desde [first]).
-		[keep] marca vértices que no se mueven (el borde del cuello)."""
-		neighbours = {}
-		for face in self.faces:
-			for k, a in enumerate(face):
-				if a < first:
-					continue
-				b = face[(k + 1) % len(face)]
-				c = face[k - 1]
-				neighbours.setdefault(a, set()).update((b, c))
-		for _ in range(iterations):
-			for i in range(first, len(self.verts)):
-				self.verts[i] = body.push_out(self.verts[i], ease)
-			smoothed = {}
-			for i, others in neighbours.items():
-				if keep is not None and keep(i):
-					continue
-				average = sum((self.verts[j] for j in others), Vector()) / len(others)
-				smoothed[i] = self.verts[i].lerp(average, smooth)
-			for i, point in smoothed.items():
-				self.verts[i] = point
-		for i in range(first, len(self.verts)):
-			self.verts[i] = body.push_out(self.verts[i], ease)
-
 	def box(self, center, size, frame, color, weights):
 		"""Caja rígida (sandalias, bolsa, tupu) con pesos fijos."""
 		hx, hy, hz = size[0] * 0.5, size[1] * 0.5, size[2] * 0.5
@@ -485,11 +431,16 @@ class Garment:
 			piece = float(self.face_pieces[polygon.index])
 			# Coordenadas del textil en metros: alrededor del cuerpo y altura.
 			# Así el dibujo del textil cae a la altura real de cada prenda.
-			coords = [textile_coords(mesh.vertices[mesh.loops[li].vertex_index].co) for li in polygon.loop_indices]
+			indices = [mesh.loops[li].vertex_index for li in polygon.loop_indices]
+			cut = all(i in self.pattern for i in indices)
+			if cut:
+				coords = [self.pattern[i] for i in indices]
+			else:
+				coords = [textile_coords(mesh.vertices[i].co) for i in indices]
 			low = min(c[0] for c in coords)
 			for corner, loop_index in enumerate(polygon.loop_indices):
 				u, v = coords[corner]
-				if u - low > TEXTILE_AROUND * 0.5:
+				if not cut and u - low > TEXTILE_AROUND * 0.5:
 					u -= TEXTILE_AROUND
 				colors.data[loop_index].color = color
 				surface.data[loop_index].uv = (FABRIC_CLASS, piece)
@@ -642,15 +593,16 @@ class TextileCanvas:
 				cell[:, :max(1, w // 24)] = WOOL["wool_dark"]
 				cell[:max(1, h // 24), :] = WOOL["wool_dark"]
 
-	def weave(self, strength=0.07):
-		"""Hilo y trama: variación fina por columnas (urdimbre) y filas
-		(trama), como un tejido de cara de urdimbre."""
+	def weave(self, strength=0.035):
+		"""Variación suave de hilo por columnas (urdimbre) y filas (trama),
+		como un tejido de cara de urdimbre. La trama fina la pone el mapa de
+		tejido del juego; si aquí fuera marcada, la tela parecería un mantel
+		de cuadros."""
 		np = self.np
 		height, width = self.pixels.shape[:2]
 		warp = self.rng.normal(0.0, 1.0, width)
 		weft = self.rng.normal(0.0, 1.0, height)
-		ribs = (np.arange(width) % 3 == 0).astype(np.float32) * -0.5
-		shade = 1.0 + strength * (warp[None, :] * 0.6 + weft[:, None] * 0.4 + ribs[None, :])
+		shade = 1.0 + strength * (warp[None, :] * 0.7 + weft[:, None] * 0.3)
 		self.pixels *= shade[..., None]
 		np.clip(self.pixels, 0.0, 1.0, out=self.pixels)
 
@@ -756,13 +708,6 @@ def _ring_points(center, radii, z, segments, offset, noise=None):
 	return points
 
 
-def _trunk_center(body, z, band=0.03):
-	pts = [p for i, p in enumerate(body.points) if abs(p.z - z) < band and body.is_trunk(i)]
-	if not pts:
-		return Vector((0.0, 0.0, z))
-	return Vector((sum(p.x for p in pts) / len(pts), sum(p.y for p in pts) / len(pts), z))
-
-
 def _skirt_weights(body, point, hip_z, follow):
 	"""Pesos de falda: la cadera, más el muslo de su lado hacia el bajo."""
 	base = body.nearest_weights(Vector((point.x * 0.6, point.y, max(point.z, hip_z))))
@@ -834,207 +779,22 @@ def build_sandal(g, body, heel, forward, lateral, length, weights, thickness=0.0
 
 
 def build_clothes(spec, body, armature, rig_bones):
-	"""Prendas de [spec] sobre el cuerpo en reposo (MakeHuman mira a −Y, así
-	que la espalda es +Y). La parte alta de cada prenda es el propio cuerpo
-	separado unos centímetros: sigue hombros, escote y espalda y toma sus
-	pesos exactos. Faldas, manto y correas se construyen aparte y se sacan
-	del cuerpo con [BodyInfo.push_out]."""
+	"""Tocados y ojotas de [spec] sobre el cuerpo en reposo (MakeHuman mira a
+	−Y, así que la espalda es +Y), y las medidas del cuerpo que usan las
+	prendas cosidas (build_sewn_clothes) y el textil."""
 	collection = bpy.context.scene.collection
 	g = Garment()
-	segments = 48
 	female = spec["garment"] == "anacu"
 	hip_z = rig_bones["LeftUpLeg"].head_local.z
 	waist_z = rig_bones["Spine"].head_local.z
 	shoulder_z = rig_bones["LeftArm"].head_local.z
 	knee_z = rig_bones["LeftLeg"].head_local.z
 	ankle_z = rig_bones["LeftFoot"].head_local.z
-	body_color = _linear(spec["body"])
-	band = spec.get("band")
-	band_alt = spec.get("band_alt", "wool_cream")
-	ease = 0.012 if female else 0.018
-
-	def is_neck_or_head(i):
-		return body.part_weight(i, ("Neck", "Neck1", "Head")) > 0.35
-
-	g.piece = TEXTILE_PIECES["garment"]
-	# 1. Cuerpo de la prenda: del bajo de la cadera a los hombros, sin brazos
-	#    ni cuello.
-	# Sisa con corte limpio: un plano vertical poco más allá de la
-	# articulación del hombro, y por debajo de la axila, lo que pesa en el
-	# brazo. El cuello se abre por los pesos de cuello y cabeza.
-	armhole_x = abs(rig_bones["LeftArm"].head_local.x) + (0.07 if not female else 0.04)
-	armpit_z = shoulder_z - 0.09
-
-	def top_face(verts):
-		def ok(i):
-			p = body.points[i]
-			if p.z < hip_z - 0.03 or body.part_weight(i, LEG_BONES) >= 0.5 or body.part_weight(i, ("Neck", "Neck1", "Head")) > 0.5:
-				return False
-			if abs(p.x) > armhole_x:
-				return False
-			return p.z > armpit_z or body.part_weight(i, ARM_BONES) < 0.5
-		return all(ok(i) for i in verts)
-
-	g.add_body_surface(body, top_face, ease + 0.006, lambda i: body_color, border_passes=14)
-
-	# 2. Falda: de la cintura al bajo (rodilla en el unku, tobillo en el anacu),
-	#    encerrando las piernas y por encima del cuerpo de la prenda.
-	first = len(g.verts)
-	bottom_z = knee_z + 0.03 if not female else ankle_z + 0.035
-	top_skirt = waist_z - 0.02
-	z_levels = []
-	z = top_skirt
-	while z > bottom_z:
-		z_levels.append(z)
-		z -= 0.03
-	z_levels.append(bottom_z)
-	hip_center = _trunk_center(body, hip_z + 0.02)
-	hip_center.x = 0.0
-	hip_radii = body.ring(hip_z + 0.02, segments, hip_center, include=lambda i: body.is_trunk(i))
-	profile = []
-	for z in z_levels:
-		if z > hip_z:
-			center = _trunk_center(body, z)
-			center.x = 0.0
-			radii = body.ring(z, segments, center, include=lambda i: body.is_trunk(i))
-		else:
-			center = Vector((0.0, hip_center.y, z))
-			legs = body.ring(z, segments, center, band=0.03, include=lambda i: body.part_weight(i, LEG_BONES) > 0.3)
-			# Vuelo: la tela sobrante es la que forma pliegues al caer.
-			flare = 1.0 + (0.22 if not female else 0.42) * (hip_z - z) / 0.4
-			radii = [max(hip_radii[s] * flare, legs[s] + 0.035) for s in range(segments)]
-		profile.append((z, center, radii))
-	# Por debajo de la cadera la tela cae: el radio nunca encoge hacia el bajo
-	# y se suaviza en vertical para que no haga bultos.
-	for k in range(1, len(profile)):
-		z, center, radii = profile[k]
-		if z < hip_z:
-			previous = profile[k - 1][2]
-			profile[k] = (z, center, [max(radii[s], previous[s]) for s in range(segments)])
-	for _ in range(3):
-		smoothed = []
-		for k, (z, center, radii) in enumerate(profile):
-			if z >= hip_z or k == 0 or k == len(profile) - 1:
-				smoothed.append((z, center, radii))
-				continue
-			above, below = profile[k - 1][2], profile[k + 1][2]
-			smoothed.append((z, center, [(above[s] + 2.0 * radii[s] + below[s]) * 0.25 for s in range(segments)]))
-		profile = smoothed
-	rows = []
-	for z, center, radii in profile:
-		depth = min(1.0, max(0.0, (hip_z - z) / 0.4))
-		noise = lambda angle, d=depth: 0.007 * d * math.sin(angle * 9.0) + 0.003 * d * math.sin(angle * 4.0 + 1.3)
-		rows.append(_ring_points(center, radii, z, segments, ease + 0.01, noise))
-	rows.reverse()
-	n_rows = len(rows)
-
-	def skirt_color(s, r):
-		if band is None:
-			return body_color
-		from_top = n_rows - 1 - r
-		if female:
-			bands = {n_rows - 6, n_rows - 7}
-		else:
-			bands = {0, 1, n_rows - 4}
-		if r in bands or (from_top == 3 and not female and spec.get("band_style") == "tocapu"):
-			if spec.get("band_style") == "tocapu" and (s + r) % 2 == 0:
-				return _linear(band_alt)
-			return _linear(band)
-		return body_color
-
-	def skirt_weights(point):
-		if point.z < hip_z - 0.03:
-			# Cuánto sigue el bajo a los muslos: poco, para que la falda se mezca
-			# entera y no se parta en dos perneras al andar. La tejedora, que
-			# pasa el rato arrodillada, la necesita más alta para cubrir rodillas.
-			return _skirt_weights(body, point, hip_z, spec.get("skirt_follow", 0.38 if female else 0.2))
-		return body.nearest_weights(point)
-
-	g.tube(rows, skirt_color, skirt_weights)
-	g.resolve(body, ease + 0.008, first=first, iterations=1, smooth=0.15)
-
-	# 3. Faja (chumpi) del anacu.
-	g.piece = TEXTILE_PIECES["belt"]
-	if female:
-		first = len(g.verts)
-		center = _trunk_center(body, waist_z)
-		center.x = 0.0
-		radii = body.ring(waist_z, segments, center, include=lambda i: body.is_trunk(i))
-		belt = [_ring_points(center, radii, waist_z + dz, segments, ease + 0.022) for dz in (-0.04, 0.04)]
-		stripe = spec.get("belt", "wool_red")
-		g.tube(belt, lambda s, r: _linear(stripe) if s % 4 < 2 else _linear("wool_cream"), body.nearest_weights)
-		g.resolve(body, ease + 0.02, first=first, iterations=1, smooth=0.0)
-
-	# 4. Lliclla: manta sobre hombros, espalda alta y brazos, con su tupu.
-	g.piece = TEXTILE_PIECES["lliclla"]
-	if spec.get("lliclla"):
-		stripe = _linear(spec.get("lliclla_stripe", "wool_red"))
-		main = _linear(spec["lliclla"])
-		low = shoulder_z - 0.26
-
-		def shawl_face(verts):
-			return all(body.points[i].z > low and not is_neck_or_head(i)
-				and body.part_weight(i, ("ForeArm", "Hand", "Thumb", "FingerBase", "HandFinger1")) < 0.3 for i in verts)
-
-		def shawl_color(i):
-			# Una franja ancha cerca del borde inferior, como en el dibujo 80.
-			return stripe if body.points[i].z < low + 0.06 else main
-
-		g.add_body_surface(body, shawl_face, ease + 0.022, shawl_color)
-		chest = rig_bones["Spine1"].head_local
-		g.piece = 0
-		pin = body.push_out(Vector((0.0, chest.y - 0.2, shoulder_z - 0.08)), ease + 0.03)
-		g.box(pin, (0.035, 0.01, 0.035), Matrix.Identity(3), _linear("copper"), {"Spine1": 1.0})
-
-	# 5. Manto (yacolla): cae a la espalda desde los hombros hasta las rodillas.
-	g.piece = TEXTILE_PIECES["manto"]
-	if spec.get("manto"):
-		first = len(g.verts)
-		color = _linear(spec["manto"])
-		center = _trunk_center(body, shoulder_z - 0.04)
-		center.x = 0.0
-		radii = body.ring(shoulder_z - 0.04, segments, center, include=lambda i: body.part_weight(i, ARM_BONES) < 0.7)
-		half = segments // 2
-		cape = []
-		# Filas suficientes para que el manto se doble con los huesos de muelle.
-		cape_levels = [shoulder_z + 0.04, shoulder_z - 0.06]
-		cape_levels += [shoulder_z - 0.06 - (shoulder_z - 0.06 - (knee_z + 0.06)) * t / 8.0 for t in range(1, 9)]
-		for k, z in enumerate(cape_levels):
-			spread = 1.0 + 0.025 * k
-			ring = _ring_points(center, [r * spread for r in radii], z, segments, ease + 0.035,
-				lambda angle, kk=k: 0.006 * kk * math.sin(angle * 7.0))
-			# Espalda (+Y): 150° centrados en ella.
-			lo = int(round(segments * (90.0 - 75.0) / 360.0))
-			hi = int(round(segments * (90.0 + 75.0) / 360.0))
-			cape.append([ring[i % segments] for i in range(lo, hi + 1)])
-		def cape_weights(p):
-			# Arriba sigue a los hombros y la espalda; por debajo, a los huesos
-			# de muelle del manto (CAPE_CHAINS), que se mecen en el juego.
-			upper = body.nearest_weights(Vector((p.x * 0.6, p.y, max(p.z, shoulder_z - 0.06))), exclude=ARM_BONES)
-			hang = _smooth(shoulder_z - 0.06, shoulder_z - 0.2, p.z)
-			lower = _smooth(waist_z + 0.06, waist_z - 0.06, p.z)
-			weights = {bone: w * (1.0 - hang) for bone, w in upper.items()}
-			side = max(-1.0, min(1.0, p.x / CAPE_SPREAD))
-			shares = {"L": max(0.0, side), "R": max(0.0, -side)}
-			shares["C"] = 1.0 - shares["L"] - shares["R"]
-			for chain, share in shares.items():
-				if share <= 0.0:
-					continue
-				weights["Cape_%s_1" % chain] = weights.get("Cape_%s_1" % chain, 0.0) + hang * share * (1.0 - lower)
-				weights["Cape_%s_2" % chain] = weights.get("Cape_%s_2" % chain, 0.0) + hang * share * lower
-			return weights
-
-		ids = [[g.add_vertex(p, cape_weights(p)) for p in row] for row in cape]
-		for r in range(len(ids) - 1):
-			for s in range(len(ids[r]) - 1):
-				# Las filas van de arriba abajo: este orden deja la cara visible
-				# hacia fuera (el juego no dibuja el reverso de la tela).
-				g.add_face([ids[r][s], ids[r + 1][s], ids[r + 1][s + 1], ids[r][s + 1]], color,
-					[(s * 0.05, r * 0.2), ((s + 1) * 0.05, r * 0.2), ((s + 1) * 0.05, (r + 1) * 0.2), (s * 0.05, (r + 1) * 0.2)])
-		g.resolve(body, ease + 0.03, first=first, iterations=2, smooth=0.3)
+	# Bajo de la prenda: el unku, por encima de la rodilla; el anacu, al tobillo.
+	bottom_z = knee_z + 0.05 if not female else ankle_z + 0.035
 
 	g.piece = TEXTILE_PIECES["headwear"]
-	# 6. Tocados sobre la cabeza: cinta (llautu) o paño que sigue el cráneo.
+	# 1. Tocados sobre la cabeza: cinta (llautu) o paño que sigue el cráneo.
 	head = rig_bones["Head"]
 	forehead_z = head.head_local.z + (head.tail_local.z - head.head_local.z) * 0.55
 	if spec.get("headband") and not spec.get("head"):
@@ -1046,42 +806,7 @@ def build_clothes(spec, body, armature, rig_bones):
 			return all(body.points[i].z > forehead_z - 0.01 and body.part_weight(i, ("Head",)) > 0.8 for i in verts)
 		g.add_body_surface(body, cloth_face, 0.024, lambda i: _linear(spec["head_cloth"]))
 
-	# 7. Chuspa al costado izquierdo con la correa cruzada al hombro derecho.
-	g.piece = TEXTILE_PIECES["bag"]
-	if spec.get("chuspa"):
-		color = _linear(spec["chuspa"])
-		left_hip = rig_bones["LeftUpLeg"].head_local
-		bag = body.push_out(Vector((left_hip.x + 0.1, hip_center.y - 0.01, hip_z + 0.03)), ease + 0.04)
-		g.box(bag, (0.035, 0.15, 0.17), Matrix.Identity(3), color, {"Hips": 0.7, "LeftUpLeg": 0.3})
-		g.piece = 0
-		shoulder = rig_bones["RightArm"].head_local
-		for side in (-1.0, 1.0):
-			path = []
-			for k in range(12):
-				t = k / 11.0
-				p = Vector((bag.x + (shoulder.x * 0.6 - bag.x) * t,
-					hip_center.y + side * 0.25,
-					bag.z + 0.08 + (shoulder_z + 0.03 - bag.z - 0.08) * t))
-				path.append(body.push_out(p, ease + 0.03))
-			g.ribbon(body, path, 0.03, color)
-
-	g.piece = 0
-	# 8. Bulto de viaje (q'ipi) a la espalda.
-	if spec.get("bundle"):
-		first = len(g.verts)
-		color = _linear(spec["bundle"])
-		back_center = Vector((0.0, rig_bones["Spine1"].head_local.y + 0.22, waist_z + 0.12))
-		rows = []
-		for k in range(7):
-			phi = math.pi * k / 6.0
-			z = back_center.z - math.cos(phi) * 0.2
-			r = math.sin(phi) * 0.16 + 0.005
-			rows.append([Vector((back_center.x + math.cos(a) * r * 1.1, back_center.y + math.sin(a) * r * 0.7, z))
-				for a in (2.0 * math.pi * (s + 0.5) / 12 for s in range(12))])
-		g.tube(rows, lambda s, r: color, lambda p: {"Spine1": 0.8, "Spine": 0.2})
-		g.resolve(body, ease + 0.04, first=first, iterations=1, smooth=0.2)
-
-	# 9. Ojotas: suela con la silueta del pie (talón redondo, más ancha en el
+	# 2. Ojotas: suela con la silueta del pie (talón redondo, más ancha en el
 	# metatarso) y tiras finas: una en V desde entre los dedos y otra que
 	# rodea el talón.
 	for side in ("Left", "Right"):
@@ -1138,82 +863,716 @@ def add_cape_bones(armature, dims, back_y):
 			armature.pose.bones["Cape_%s_%d" % (chain, index)].rotation_mode = "QUATERNION"
 
 
-# --- Caída de la tela (alcance v4.0) ----------------------------------------
-#
-# Antes de exportar, la parte libre de las prendas (falda, manto y borde de la
-# lliclla) cae por su peso sobre el cuerpo en reposo con la simulación de tela
-# de Blender. La forma resultante queda en la malla: en el juego no cuesta
-# nada y la ropa sigue al esqueleto con los mismos pesos.
-
-DRAPE_FRAMES = 50
-
-
-def _pin_weights(clothes, dims):
-	"""Peso de sujeción por vértice: 1 = fijo (cuerpo de la prenda, faja,
-	tocados, correas); 0 = libre. La transición es gradual."""
-	surface = clothes.data.uv_layers["Surface"]
-	piece_of = {}
-	for polygon in clothes.data.polygons:
-		piece = int(round(surface.data[polygon.loop_indices[0]].uv[1]))
-		for index in polygon.vertices:
-			piece_of[index] = max(piece_of.get(index, 0), piece)
-	group = clothes.vertex_groups.new(name="pch_pin")
-	for vertex in clothes.data.vertices:
-		z = vertex.co.z
-		piece = piece_of.get(vertex.index, 0)
-		if piece == TEXTILE_PIECES["garment"]:
-			pin = _smooth(dims["hip"] - 0.12, dims["hip"] + 0.02, z)
-		elif piece == TEXTILE_PIECES["manto"]:
-			pin = _smooth(dims["shoulder"] - 0.16, dims["shoulder"] - 0.02, z)
-		elif piece == TEXTILE_PIECES["lliclla"]:
-			pin = _smooth(dims["shoulder"] - 0.2, dims["shoulder"] - 0.08, z)
-		else:
-			pin = 1.0
-		group.add([vertex.index], pin, "REPLACE")
-	return group
-
-
 def _smooth(edge0, edge1, x):
 	t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
 	return t * t * (3.0 - 2.0 * t)
 
 
-def drape_clothes(clothes, body_object, dims):
+# --- Ropa cortada y cosida (ADR-0020) ---------------------------------------
+#
+# Las prendas grandes se construyen como en el telar: paños que se doblan y se
+# cosen sobre el cuerpo (unku, anacu) o se echan sobre los hombros y se
+# prenden al pecho (lliclla, manto). Cada paño cae por su peso con la
+# simulación de tela de Blender en tres tramos: quieto con los brazos en A,
+# mientras los brazos bajan a la postura de reposo y quieto otra vez. La forma
+# final, con los brazos abajo, toma los pesos del cuerpo en esa postura y se
+# devuelve a la pose de reposo del esqueleto invirtiendo el skinning: en el
+# juego, con los brazos bajados, la tela queda como cayó.
+
+SEW_CELL = 0.025
+SHAWL_CELL = 0.03
+ARM_DROP = 36.0
+SETTLE_FRAMES = 12
+LOWER_FRAMES = 30
+REST_FRAMES = 30
+SIM_FRAMES = SETTLE_FRAMES + LOWER_FRAMES + REST_FRAMES
+WOOL_BENDING = 0.6
+# Masa por vértice de los paños echados sobre los hombros: con más, la tela
+# estira con su peso, el borde del cuello cede y el paño resbala.
+SHAWL_MASS = 0.15
+
+
+FOREARM_STRAIGHTEN = 0.8
+
+
+def keyframe_arm_drop(armature, straighten=False):
+	"""Los brazos bajan ARM_DROP grados desde la A, girando sobre el eje
+	delante-atrás que pasa por el hombro. Con [straighten], el antebrazo se
+	estira casi del todo: colgando rectos, las manos no atraviesan el manto
+	(para el unku y el anacu no, porque las manos barrerían el bajo)."""
+	armature.animation_data_create()
+	for side, sign in (("Left", 1.0), ("Right", -1.0)):
+		arm = armature.data.bones[side + "Arm"]
+		fore = armature.data.bones[side + "ForeArm"]
+		turn = Matrix.Rotation(math.radians(ARM_DROP) * sign, 3, "Y")
+		arm_rest = arm.matrix_local.to_3x3()
+		fore_rest = fore.matrix_local.to_3x3()
+		straight = _rotation_between(fore.tail_local - fore.head_local, arm.tail_local - arm.head_local)
+		straight = Quaternion().slerp(straight.to_quaternion(), FOREARM_STRAIGHTEN).to_matrix()
+		targets = {
+			side + "Arm": (arm_rest.inverted() @ turn @ arm_rest).to_quaternion(),
+			side + "ForeArm": (fore_rest.inverted() @ straight @ fore_rest).to_quaternion() if straighten else Quaternion(),
+		}
+		for name, target in targets.items():
+			pose_bone = armature.pose.bones[name]
+			pose_bone.rotation_mode = "QUATERNION"
+			for frame, quat in ((1, Quaternion()), (SETTLE_FRAMES, Quaternion()), (SETTLE_FRAMES + LOWER_FRAMES, target)):
+				pose_bone.rotation_quaternion = quat
+				pose_bone.keyframe_insert("rotation_quaternion", frame=frame)
+
+
+def clear_arm_drop(armature):
+	armature.animation_data_clear()
+	for pose_bone in armature.pose.bones:
+		pose_bone.rotation_quaternion = Quaternion()
+	bpy.context.scene.frame_set(1)
+
+
+def posed_body(proxy):
+	"""Cuerpo en la postura del fotograma actual (el de caída)."""
+	depsgraph = bpy.context.evaluated_depsgraph_get()
+	evaluated = proxy.evaluated_get(depsgraph)
+	mesh = evaluated.to_mesh()
+	points = [proxy.matrix_world @ v.co for v in mesh.vertices]
+	normals = [v.normal.copy() for v in mesh.vertices]
+	evaluated.to_mesh_clear()
+	return BodyInfo(proxy, points, normals)
+
+
+def skin_matrices(armature):
+	return {pb.name: pb.matrix @ pb.bone.matrix_local.inverted() for pb in armature.pose.bones}
+
+
+def unpose(point, weights, matrices):
+	"""Inversa del skinning lineal: la posición en reposo que, con [weights],
+	el esqueleto lleva a [point]."""
+	total = sum(weights.values()) or 1.0
+	blend = Matrix.Diagonal((0.0, 0.0, 0.0, 0.0))
+	for bone, weight in weights.items():
+		blend = blend + matrices[bone] * (weight / total)
+	return blend.inverted_safe() @ point
+
+
+def _smooth_weights(mesh, weights, passes=4, amount=0.5):
+	"""Suaviza los pesos sobre la malla para que la tela no se rasgue entre
+	vértices vecinos que siguen a huesos distintos."""
+	neighbours = [set() for _ in mesh.vertices]
+	for edge in mesh.edges:
+		a, b = edge.vertices
+		neighbours[a].add(b)
+		neighbours[b].add(a)
+	for _ in range(passes):
+		result = []
+		for index, own in enumerate(weights):
+			others = neighbours[index]
+			if not others:
+				result.append(own)
+				continue
+			mixed = {bone: w * (1.0 - amount) for bone, w in own.items()}
+			for other in others:
+				for bone, w in weights[other].items():
+					mixed[bone] = mixed.get(bone, 0.0) + w * amount / len(others)
+			result.append(mixed)
+		weights = result
+	return weights
+
+
+def _delete_loose(obj):
+	bm = bmesh.new()
+	bm.from_mesh(obj.data)
+	bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+	bm.to_mesh(obj.data)
+	bm.free()
+
+
+def _vertex_group(obj, name, values):
+	group = obj.vertex_groups.new(name=name)
+	for index, value in enumerate(values):
+		if value > 0.0:
+			group.add([index], min(1.0, value), "REPLACE")
+	return group
+
+
+def simulate_piece(obj, colliders, pin=None, shrink=None, shrink_amount=0.0, mass=0.4, bending=WOOL_BENDING,
+		self_collision=True, start=1, end=SIM_FRAMES, air=3.0, friction=20.0):
+	"""Caída de [obj] entre los fotogramas [start] y [end] de la bajada de
+	brazos (keyframe_arm_drop), con [colliders] deformados por el esqueleto.
+	[mass]: masa por vértice, que en Blender fija cuánto estira la tela con
+	su peso frente a la rigidez. [pin] y [shrink]: valores por vértice
+	(sujeción al sitio; encogido de la tela, como una faja)."""
 	scene = bpy.context.scene
-	armature_modifiers = [(m.name, m.object) for m in clothes.modifiers if m.type == "ARMATURE"]
-	for name, _target in armature_modifiers:
-		clothes.modifiers.remove(clothes.modifiers[name])
-	pin = _pin_weights(clothes, dims)
-	collision = body_object.modifiers.new("pch_collision", "COLLISION")
-	body_object.collision.thickness_outer = 0.006
-	body_object.collision.cloth_friction = 8.0
-	cloth = clothes.modifiers.new("pch_cloth", "CLOTH")
+	scene.frame_set(start)
+	added = []
+	for collider in colliders:
+		modifier = collider.modifiers.new("pch_collision", "COLLISION")
+		# Un centímetro de holgura: la tela no cae pegada a la piel.
+		collider.collision.thickness_outer = 0.01
+		collider.collision.cloth_friction = 10.0
+		added.append((collider, modifier))
+	cloth = obj.modifiers.new("pch_cloth", "CLOTH")
 	settings = cloth.settings
-	settings.quality = 8
-	settings.mass = 0.25
-	settings.tension_stiffness = 20.0
-	settings.compression_stiffness = 20.0
-	settings.shear_stiffness = 6.0
-	settings.bending_stiffness = 0.15
-	settings.air_damping = 2.0
-	settings.vertex_group_mass = pin.name
-	settings.pin_stiffness = 1.0
-	cloth.collision_settings.distance_min = 0.006
-	cloth.collision_settings.use_self_collision = False
-	cloth.point_cache.frame_start = 1
-	cloth.point_cache.frame_end = DRAPE_FRAMES
-	for frame in range(1, DRAPE_FRAMES + 1):
+	settings.quality = 10
+	settings.mass = mass
+	settings.tension_stiffness = 40.0
+	settings.compression_stiffness = 60.0
+	settings.shear_stiffness = 15.0
+	settings.bending_stiffness = bending
+	settings.air_damping = air
+	if pin is not None:
+		settings.vertex_group_mass = _vertex_group(obj, "pch_pin", pin).name
+		settings.pin_stiffness = 1.0
+	if shrink is not None:
+		settings.vertex_group_shrink = _vertex_group(obj, "pch_shrink", shrink).name
+		settings.shrink_min = 0.0
+		settings.shrink_max = shrink_amount
+	collision = cloth.collision_settings
+	collision.friction = friction
+	collision.distance_min = 0.006
+	collision.collision_quality = 4
+	collision.use_self_collision = self_collision
+	collision.self_distance_min = 0.004
+	cloth.point_cache.frame_start = start
+	cloth.point_cache.frame_end = end
+	for frame in range(start, end + 1):
 		scene.frame_set(frame)
-	bpy.context.view_layer.objects.active = clothes
+	bpy.context.view_layer.objects.active = obj
 	bpy.ops.object.modifier_apply(modifier=cloth.name)
-	scene.frame_set(1)
-	body_object.modifiers.remove(collision)
-	leftover = clothes.vertex_groups.get("pch_pin")
-	if leftover is not None:
-		clothes.vertex_groups.remove(leftover)
-	for name, target in armature_modifiers:
-		modifier = clothes.modifiers.new(name, "ARMATURE")
-		modifier.object = target
+	for collider, modifier in added:
+		collider.modifiers.remove(modifier)
+	for name in ("pch_pin", "pch_shrink"):
+		group = obj.vertex_groups.get(name)
+		if group is not None:
+			obj.vertex_groups.remove(group)
+
+
+def bind_piece(obj, armature, proxy, weight_rule, smooth_passes=4):
+	"""Tras caer (último fotograma, brazos abajo): pesos del cuerpo en esa
+	postura según [weight_rule](punto, cuerpo), y vuelta a la pose de reposo."""
+	body = posed_body(proxy)
+	matrices = skin_matrices(armature)
+	mesh = obj.data
+	weights = [weight_rule(obj.matrix_world @ v.co, body) for v in mesh.vertices]
+	weights = _smooth_weights(mesh, weights, passes=smooth_passes)
+	for vertex, w in zip(mesh.vertices, weights):
+		vertex.co = unpose(vertex.co.copy(), w, matrices)
+	for group in list(obj.vertex_groups):
+		obj.vertex_groups.remove(group)
+	groups = {}
+	for index, w in enumerate(weights):
+		total = sum(w.values()) or 1.0
+		for bone, value in w.items():
+			if value / total < 0.002:
+				continue
+			if bone not in groups:
+				groups[bone] = obj.vertex_groups.new(name=bone)
+			groups[bone].add([index], value / total, "REPLACE")
+	for modifier in [m for m in obj.modifiers if m.type == "ARMATURE"]:
+		obj.modifiers.remove(modifier)
+	modifier = obj.modifiers.new("Armature", "ARMATURE")
+	modifier.object = armature
+
+
+def _without(weights, suffixes, keep=0.0):
+	"""[weights] con los huesos que terminan en [suffixes] reducidos a [keep]."""
+	result = {}
+	for bone, w in weights.items():
+		result[bone] = w * keep if bone.endswith(suffixes) else w
+	if sum(result.values()) <= 0.0:
+		return weights
+	return result
+
+
+def hide_covered_skin(proxy, garment, dims, female):
+	"""Quita la piel que el unku o el anacu tapan siempre (tronco y muslos),
+	como se hace en los juegos: al andar no asoma a través de la tela y hay
+	menos triángulos. Una cara se quita si está en esa zona y un rayo desde
+	ella hacia fuera choca con la prenda."""
+	depsgraph = bpy.context.evaluated_depsgraph_get()
+	tree = bvhtree.BVHTree.FromObject(garment, depsgraph)
+	low = dims["bottom"] + 0.03
+	high = dims["seam"] - 0.04
+	groups = {g.index: g.name for g in proxy.vertex_groups}
+
+	def limb(vertex):
+		weight = sum(g.weight for g in vertex.groups if groups.get(g.group, "").endswith(ARM_BONES + ("Neck", "Neck1", "Head")))
+		return weight > 0.2
+
+	mesh = proxy.data
+	bm = bmesh.new()
+	bm.from_mesh(mesh)
+	bm.verts.ensure_lookup_table()
+	bm.normal_update()
+	dead = []
+	for face in bm.faces:
+		center = face.calc_center_median()
+		if not low < center.z < high or any(limb(mesh.vertices[v.index]) for v in face.verts):
+			continue
+		hit, _normal, _index, distance = tree.ray_cast(center + face.normal * 0.002, face.normal, 0.25)
+		if hit is not None:
+			dead.append(face)
+	bmesh.ops.delete(bm, geom=dead, context="FACES_ONLY")
+	bm.to_mesh(mesh)
+	bm.free()
+
+
+def tube_garment(spec, body, bones, dims, cell=SEW_CELL):
+	"""Unku o anacu: un paño doblado sobre los hombros, con abertura para la
+	cabeza, y cosido a los lados (el anacu, más ancho y hasta el tobillo).
+	Devuelve la prenda; deja en [dims] el centro del tronco y la costura."""
+	female = spec["garment"] == "anacu"
+	shoulder_z = bones["LeftArm"].head_local.z
+	arm_x = bones["LeftArm"].head_local.x
+	neck = bones["Neck"].head_local
+	trunk = body.is_trunk
+	chest = [p for i, p in enumerate(body.points) if abs(p.z - (shoulder_z - 0.12)) < 0.03 and trunk(i)]
+	hips = [p for i, p in enumerate(body.points) if abs(p.z - dims["hip"]) < 0.04 and trunk(i)]
+	if female:
+		half_w = max(abs(p.x) for p in hips) + 0.07
+	else:
+		half_w = max(max(abs(p.x) for p in chest) + 0.05, arm_x + 0.035)
+	ys = [p.y for i, p in enumerate(body.points) if dims["hip"] - 0.05 < p.z < shoulder_z and trunk(i)]
+	front_y, back_y = min(ys) - 0.03, max(ys) + 0.03
+	cy = (front_y + back_y) * 0.5
+	b = (back_y - front_y) * 0.5
+	high = [p for i, p in enumerate(body.points) if body.part_weight(i, ("Neck", "Neck1", "Head")) < 0.3
+		and front_y < p.y < back_y and p.z > shoulder_z - 0.15]
+
+	def shoulder_top(x):
+		zs = [p.z for p in high if abs(abs(p.x) - abs(x)) < 0.025]
+		return (max(zs) if zs else shoulder_z) + 0.025
+
+	top_z = shoulder_top(0.0)
+	hem_z = dims["bottom"]
+	if female:
+		# El anacu se cose bajo los brazos y su borde alto, doblado, se prende
+		# sobre los dos hombros: cubre el pecho hasta el cuello.
+		seam_top = shoulder_z - 0.11
+	else:
+		arm_dir = (bones["LeftArm"].tail_local - bones["LeftArm"].head_local).normalized()
+		reach = (half_w - arm_x) / max(arm_dir.x, 1e-3)
+		seam_top = bones["LeftArm"].head_local.z + arm_dir.z * max(reach, 0.0) - 0.075
+	flare_amount = 0.25 if female else 0.15
+	cols = max(8, int(round(2.0 * half_w / cell)))
+	front_rows = max(8, int(round((top_z - hem_z) / cell)))
+	bridge_rows = max(4, int(round(2.0 * b / cell)))
+
+	def depth(phi, z):
+		# Bajo la costura, sección cerrada; por encima, el borde de la sisa se
+		# separa para que el paso sobre el hombro tenga anchura.
+		opening = _smooth(seam_top - 0.02, seam_top + 0.08, z)
+		return max(math.sin(phi), 0.55 * opening)
+
+	tops = [shoulder_top(-half_w * math.cos(math.pi * c / cols)) for c in range(cols + 1)]
+	tops = [sum(tops[max(0, c - 1):c + 2]) / len(tops[max(0, c - 1):c + 2]) for c in range(cols + 1)]
+	rows = [("front", hem_z + (top_z - hem_z) * r / front_rows) for r in range(front_rows + 1)]
+	rows += [("over", r / bridge_rows) for r in range(1, bridge_rows)]
+	rows += [("back", hem_z + (top_z - hem_z) * r / front_rows) for r in range(front_rows, -1, -1)]
+	g = Garment()
+	g.piece = TEXTILE_PIECES["garment"]
+	grid = {}
+	for ri, (kind, value) in enumerate(rows):
+		for c in range(cols + 1):
+			phi = math.pi * c / cols
+			x = -half_w * math.cos(phi)
+			col_top = tops[c]
+			if kind == "over":
+				d = depth(phi, col_top)
+				y = cy - b * d + 2.0 * b * d * value
+				z = col_top + 0.01 * math.sin(math.pi * value)
+				height = col_top
+			else:
+				z = hem_z + (value - hem_z) / (top_z - hem_z) * (col_top - hem_z)
+				height = value
+				# Vuelo hacia el bajo, con una ondulación que siembra pliegues.
+				flare = flare_amount * max(0.0, 1.0 - (z - hem_z) / max(seam_top - hem_z, 0.1))
+				wave = 1.0 + flare * (1.0 + 0.5 * math.sin(phi * 7.0 + (0.0 if kind == "front" else 1.7)))
+				x *= 1.0 + flare * 0.6
+				y = cy + (-1.0 if kind == "front" else 1.0) * b * depth(phi, z) * wave
+			index = g.add_vertex(Vector((x, y, z)), {})
+			g.pattern[index] = (half_w * (1.0 - math.cos(phi)), height)
+			grid[(ri, c)] = index
+	count = len(rows)
+	merge = {}
+	for r in range(front_rows + 1):
+		for c in (0, cols):
+			if g.verts[grid[(r, c)]].z <= seam_top:
+				merge[grid[(count - 1 - r, c)]] = grid[(r, c)]
+	color = _linear(spec["body"])
+	for ri in range(count - 1):
+		for c in range(cols):
+			quad = [grid[(ri, c)], grid[(ri, c + 1)], grid[(ri + 1, c + 1)], grid[(ri + 1, c)]]
+			center = sum((g.verts[i] for i in quad), Vector()) * 0.25
+			over = rows[ri][0] == "over" or rows[ri + 1][0] == "over"
+			# Abertura para la cabeza, algo más ancha en el anacu.
+			neck_x, neck_y = (0.115, 0.09) if female else (0.105, 0.08)
+			if over and center.z > top_z - 0.03 and (center.x / neck_x) ** 2 + ((center.y - (neck.y + 0.005)) / neck_y) ** 2 < 1.0:
+				continue
+			g.add_face([merge.get(i, i) for i in quad], color, [(0.0, 0.0)] * 4)
+	dims.update({"cy": cy, "seam": seam_top})
+	return g
+
+
+def shawl(spec, body, surface, bones, dims, kind, cell=SHAWL_CELL):
+	"""Lliclla o manto: un paño echado sobre los hombros que rodea el cuello
+	por detrás y se prende (o se anuda) al pecho. Se construye ya con los
+	brazos abajo ([body] y [surface] en la postura de caída), colgando casi
+	recto. Devuelve la prenda, la sujeción por vértice y el prendedor."""
+	manto = kind == "manto"
+	shoulder_z = bones["LeftArm"].head_local.z
+	neck = bones["Neck"].head_local
+	length = (shoulder_z - dims["knee"] - 0.02) if manto else 0.46
+	ys = [p.y for i, p in enumerate(body.points) if abs(p.z - (shoulder_z - 0.1)) < 0.04 and body.is_trunk(i)]
+	# El prendedor (o el nudo) va alto, bajo las clavículas: más abajo, el paño
+	# gira sobre él y el borde resbala espalda abajo.
+	pin_point = surface.push_out(Vector((0.0, min(ys) - 0.02, shoulder_z + (0.0 if manto else -0.02))), 0.02)
+	# Borde alto: una curva suave que sale de una esquina junto al prendedor,
+	# sube por el pecho, pasa por los hombros, rodea el cuello por detrás y
+	# baja a la otra esquina.
+	shoulders = [p for i, p in enumerate(body.points) if p.z > shoulder_z - 0.2
+		and body.part_weight(i, ("Neck", "Neck1", "Head")) < 0.3]
+
+	def top_at(x, y):
+		near = [p.z for p in shoulders if (p.x - x) ** 2 + (p.y - y) ** 2 < 0.03 ** 2]
+		return surface.push_out(Vector((x, y, (max(near) if near else shoulder_z) + 0.02)), 0.02)
+
+	corner = pin_point + Vector((0.04, 0.0, 0.0))
+	chest_y = (corner.y + neck.y) * 0.5
+	controls = [corner, top_at(0.09, chest_y), top_at(0.13, neck.y + 0.01), top_at(0.08, neck.y + 0.08), top_at(0.0, neck.y + 0.1)]
+	controls = controls + [Vector((-p.x, p.y, p.z)) for p in reversed(controls[:-1])]
+	dense = []
+	for k in range(len(controls) - 1):
+		p0 = controls[max(k - 1, 0)]
+		p1, p2 = controls[k], controls[k + 1]
+		p3 = controls[min(k + 2, len(controls) - 1)]
+		for t in [i / 20.0 for i in range(20)]:
+			t2, t3 = t * t, t * t * t
+			dense.append(0.5 * (2.0 * p1 + (p2 - p0) * t + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2 + (3.0 * p1 - p0 - 3.0 * p2 + p3) * t3))
+	dense.append(controls[-1])
+	along = [0.0]
+	for k in range(1, len(dense)):
+		along.append(along[-1] + (dense[k] - dense[k - 1]).length)
+	cols = max(8, int(round(along[-1] / cell)))
+	rows = max(4, int(round(length / cell)))
+	path = []
+	for c in range(cols + 1):
+		target = along[-1] * c / cols
+		k = next(i for i in range(1, len(along)) if along[i] >= target - 1e-9) if c > 0 else 1
+		t = (target - along[k - 1]) / max(along[k] - along[k - 1], 1e-9)
+		path.append(dense[k - 1].lerp(dense[k], min(1.0, max(0.0, t))))
+	g = Garment()
+	g.piece = TEXTILE_PIECES[kind]
+	low = dims["knee"] if manto else shoulder_z - 0.26
+	color = _linear(spec[kind])
+	ids = []
+	pin = []
+	center = Vector((0.0, neck.y + 0.01, 0.0))
+	for c in range(cols + 1):
+		edge = path[c]
+		outward = Vector((edge.x - center.x, edge.y - center.y, 0.0))
+		outward = outward.normalized() if outward.length > 1e-6 else Vector((0.0, -1.0, 0.0))
+		# Sobre los brazos el paño se abre un poco (el manto, ancho, algo más);
+		# delante y detrás, recto.
+		tilt = math.radians(5.0 + (17.0 if manto else 7.0) * abs(outward.x) ** 2)
+		direction = (outward * math.sin(tilt) + Vector((0.0, 0.0, -1.0)) * math.cos(tilt)).normalized()
+		column = []
+		for r in range(rows + 1):
+			index = g.add_vertex(edge + direction * (length * r / rows), {})
+			g.pattern[index] = (along[-1] * c / cols, low + length * (1.0 - r / rows))
+			column.append(index)
+			# Prendido: los extremos del borde alto, junto al prendedor.
+			pin.append(1.0 if r == 0 and min(c, cols - c) <= 1 else 0.0)
+		ids.append(column)
+	# Fuera del cuerpo y de la ropa de debajo, y alisado para que las columnas
+	# vecinas no se crucen.
+	for _ in range(4):
+		for c in range(cols + 1):
+			for r in range(1, rows + 1):
+				i = ids[c][r]
+				g.verts[i] = surface.push_out(g.verts[i], 0.02)
+		smoothed = {}
+		for c in range(1, cols):
+			for r in range(1, rows + 1):
+				around = [ids[c - 1][r], ids[c + 1][r], ids[c][r - 1], ids[c][min(r + 1, rows)]]
+				smoothed[ids[c][r]] = g.verts[ids[c][r]].lerp(sum((g.verts[j] for j in around), Vector()) * 0.25, 0.5)
+		for i, point in smoothed.items():
+			g.verts[i] = point
+	for c in range(cols + 1):
+		for r in range(1, rows + 1):
+			g.verts[ids[c][r]] = surface.push_out(g.verts[ids[c][r]], 0.02)
+	for c in range(cols):
+		for r in range(rows):
+			g.add_face([ids[c][r], ids[c + 1][r], ids[c + 1][r + 1], ids[c][r + 1]], color, [(0.0, 0.0)] * 4)
+	return g, pin, pin_point
+
+
+def soft_bag(center, size, piece, color, segments=(6, 3, 6), sag=0.25, seed=0):
+	"""Bolsa o bulto de tela llena: caja de lados abombados, con la base
+	caída y arrugas en las esquinas donde la tela se junta."""
+	g = Garment()
+	g.piece = piece
+	hx, hy, hz = size[0] * 0.5, size[1] * 0.5, size[2] * 0.5
+	nx, ny, nz = segments
+	ids = {}
+
+	def point(i, j, k):
+		u, v, w = 2.0 * i / nx - 1.0, 2.0 * j / ny - 1.0, 2.0 * k / nz - 1.0
+		# Superelipsoide: caras planas que se redondean hacia las aristas.
+		p = Vector((u, v, w))
+		n = max(abs(u), abs(v), abs(w))
+		p = p / max(p.length, 1e-6) * n
+		q = Vector((math.copysign(abs(p.x) ** 0.6, p.x), math.copysign(abs(p.y) ** 0.6, p.y), math.copysign(abs(p.z) ** 0.6, p.z)))
+		wrinkle = 0.06 * math.sin(7.0 * u + seed) * math.sin(5.0 * w + 1.3 * seed) * (abs(u) * abs(w))
+		bulge = 1.0 + wrinkle
+		bottom = (1.0 - w) * 0.5
+		return center + Vector((q.x * hx * bulge * (1.0 + sag * bottom * 0.3), q.y * hy * bulge, q.z * hz - sag * hz * bottom * (1.0 - abs(u)) * 0.3))
+
+	def vid(i, j, k):
+		key = (i, j, k)
+		if key not in ids:
+			p = point(i, j, k)
+			ids[key] = g.add_vertex(p, {})
+			# Textil alrededor del eje vertical de la bolsa, como en la ropa.
+			angle = math.atan2(p.y - center.y, p.x - center.x) % (2.0 * math.pi)
+			g.pattern[ids[key]] = (angle / (2.0 * math.pi) * 2.0 * (size[0] + size[1]), p.z)
+		return ids[key]
+
+	faces = []
+	for i in range(nx):
+		for k in range(nz):
+			faces.append([vid(i, 0, k), vid(i + 1, 0, k), vid(i + 1, 0, k + 1), vid(i, 0, k + 1)])
+			faces.append([vid(i, ny, k), vid(i, ny, k + 1), vid(i + 1, ny, k + 1), vid(i + 1, ny, k)])
+	for j in range(ny):
+		for k in range(nz):
+			faces.append([vid(0, j, k), vid(0, j, k + 1), vid(0, j + 1, k + 1), vid(0, j + 1, k)])
+			faces.append([vid(nx, j, k), vid(nx, j + 1, k), vid(nx, j + 1, k + 1), vid(nx, j, k + 1)])
+	for i in range(nx):
+		for j in range(ny):
+			faces.append([vid(i, j, 0), vid(i, j + 1, 0), vid(i + 1, j + 1, 0), vid(i + 1, j, 0)])
+			faces.append([vid(i, j, nz), vid(i + 1, j, nz), vid(i + 1, j + 1, nz), vid(i, j + 1, nz)])
+	for face in faces:
+		g.add_face(face, color, [(0.0, 0.0)] * 4)
+	return g
+
+
+class ClothedSurface:
+	"""Superficie del cuerpo y de la ropa ya hecha, para tender encima
+	correas y cuerdas."""
+
+	def __init__(self, objects):
+		points, polygons = [], []
+		for obj in objects:
+			depsgraph = bpy.context.evaluated_depsgraph_get()
+			evaluated = obj.evaluated_get(depsgraph)
+			mesh = evaluated.to_mesh()
+			base = len(points)
+			points.extend(obj.matrix_world @ v.co for v in mesh.vertices)
+			polygons.extend(tuple(base + i for i in p.vertices) for p in mesh.polygons)
+			evaluated.to_mesh_clear()
+		self.bvh = bvhtree.BVHTree.FromPolygons(points, polygons)
+
+	def push_out(self, point, ease):
+		location, normal, _index, _distance = self.bvh.find_nearest(point)
+		if location is None:
+			return point
+		gap = (point - location).dot(normal)
+		if gap < ease:
+			return point + normal * (ease - gap)
+		return point
+
+
+def on_surface(surface, guides, thickness):
+	"""Puntos sobre [surface]: cada guía (punto, dirección) se proyecta con un
+	rayo en esa dirección (desde delante, desde detrás o desde arriba)."""
+	placed = []
+	for point, direction in guides:
+		direction = direction.normalized()
+		hit, _normal, _index, _distance = surface.bvh.ray_cast(point - direction * 1.0, direction)
+		placed.append(hit - direction * thickness if hit is not None else surface.push_out(point, thickness))
+	for _ in range(3):
+		placed = [placed[0]] + [surface.push_out((placed[k - 1] + placed[k] * 2.0 + placed[k + 1]) * 0.25, thickness)
+			for k in range(1, len(placed) - 1)] + [placed[-1]]
+	return placed
+
+
+def strap(g, surface, body, placed, width, color):
+	"""Correa plana por los puntos [placed] (ya sobre la superficie), con los
+	pesos del cuerpo más cercano (sin los brazos)."""
+	ids = []
+	for k, point in enumerate(placed):
+		ahead = (placed[min(k + 1, len(placed) - 1)] - placed[max(k - 1, 0)]).normalized()
+		_location, normal, _i, _d = surface.bvh.find_nearest(point)
+		normal = normal if normal is not None else Vector((0.0, -1.0, 0.0))
+		across = ahead.cross(normal).normalized() * (width * 0.5)
+		weights = body.nearest_weights(point, exclude=ARM_BONES)
+		ids.append((g.add_vertex(point - across, weights), g.add_vertex(point + across, weights)))
+	for k in range(len(ids) - 1):
+		g.add_face([ids[k][0], ids[k + 1][0], ids[k + 1][1], ids[k][1]], color, [(0.0, 0.0)] * 4)
+
+
+def _sewn_object(g, name, armature):
+	obj = g.to_object(name, bpy.context.scene.collection, armature)
+	for modifier in [m for m in obj.modifiers if m.type == "ARMATURE"]:
+		obj.modifiers.remove(modifier)
+	for group in list(obj.vertex_groups):
+		obj.vertex_groups.remove(group)
+	_delete_loose(obj)
+	return obj
+
+
+def build_sewn_clothes(spec, body, armature, proxy, dims):
+	"""Prendas cortadas y cosidas de [spec], caídas sobre el cuerpo y unidas
+	al esqueleto. Devuelve los objetos."""
+	bones = armature.data.bones
+	female = spec["garment"] == "anacu"
+	hip_z = dims["hip"]
+	waist_z = dims["waist"]
+	shoulder_z = dims["shoulder"]
+	keyframe_arm_drop(armature)
+	done = []
+
+	# 1. Unku o anacu.
+	g = tube_garment(spec, body, bones, dims)
+	garment = _sewn_object(g, "sewn_garment", armature)
+	seam = dims["seam"]
+	shrink = None
+	if female:
+		# La faja ciñe el anacu a la cintura: la tela de esa franja encoge.
+		shrink = [math.exp(-((v.co.z - waist_z) / 0.035) ** 2) for v in garment.data.vertices]
+	simulate_piece(garment, [proxy], shrink=shrink, shrink_amount=0.32)
+	# Cuánto sigue el bajo a los muslos al andar: lo bastante para que no los
+	# atraviesen, sin partir la falda en perneras. La tejedora, arrodillada,
+	# la necesita más alta para cubrir las rodillas.
+	follow = spec.get("skirt_follow", 0.6 if female else 0.65)
+
+	def garment_weights(p, posed):
+		if p.z < hip_z - 0.03:
+			return _skirt_weights(posed, p, hip_z, follow)
+		near = posed.nearest_weights(p)
+		if female:
+			return _without(near, ARM_BONES + ("Shoulder",))
+		# El unku sobre el hombro sigue al brazo; por debajo de la sisa, al tronco.
+		keep = _smooth(seam - 0.04, seam + 0.1, p.z)
+		return _without(near, ARM_BONES, keep)
+
+	bind_piece(garment, armature, proxy, garment_weights)
+	done.append(garment)
+
+	# 2. Lliclla o manto sobre los hombros.
+	pin_point = None
+	for kind in ("lliclla", "manto"):
+		if not spec.get(kind):
+			continue
+		# Se echa sobre los hombros con los brazos ya abajo y estirados.
+		armature.animation_data_clear()
+		keyframe_arm_drop(armature, straighten=True)
+		bpy.context.scene.frame_set(SIM_FRAMES)
+		g, pin, pin_point = shawl(spec, posed_body(proxy), ClothedSurface([proxy] + done), bones, dims, kind)
+		piece = _sewn_object(g, "sewn_" + kind, armature)
+		# El manto, grande y pesado, necesita chocar consigo mismo para plegarse
+		# sin atravesarse; la lliclla, corta, cae mejor sin ello.
+		manto = kind == "manto"
+		simulate_piece(piece, [proxy] + done, pin=pin, mass=SHAWL_MASS,
+			start=SETTLE_FRAMES + LOWER_FRAMES, end=SIM_FRAMES + 40, air=1.0,
+			friction=10.0 if manto else 5.0, self_collision=manto, bending=1.5 if manto else WOOL_BENDING)
+		cy = dims["cy"]
+
+		def shawl_weights(p, posed, manto=(kind == "manto")):
+			near = posed.nearest_weights(p)
+			if not manto:
+				return near
+			# Detrás, el manto cuelga de los huesos de muelle (CAPE_CHAINS).
+			behind = _smooth(cy - 0.02, cy + 0.06, p.y)
+			upper = _without(near, ARM_BONES, 0.5)
+			hang = _smooth(shoulder_z - 0.06, shoulder_z - 0.2, p.z) * behind
+			lower = _smooth(waist_z + 0.06, waist_z - 0.06, p.z)
+			weights = {bone: w * (1.0 - hang) for bone, w in upper.items()}
+			side = max(-1.0, min(1.0, p.x / CAPE_SPREAD))
+			shares = {"L": max(0.0, side), "R": max(0.0, -side)}
+			shares["C"] = 1.0 - shares["L"] - shares["R"]
+			for chain, share in shares.items():
+				if share > 0.0:
+					weights["Cape_%s_1" % chain] = weights.get("Cape_%s_1" % chain, 0.0) + hang * share * (1.0 - lower)
+					weights["Cape_%s_2" % chain] = weights.get("Cape_%s_2" % chain, 0.0) + hang * share * lower
+			return weights
+
+		bind_piece(piece, armature, proxy, shawl_weights)
+		done.append(piece)
+
+	# 3. Bulto de viaje (q'ipi) y chuspa, con sus correas sobre la ropa.
+	clear_arm_drop(armature)
+	hide_covered_skin(proxy, garment, dims, female)
+	extra = Garment()
+	surface = ClothedSurface([proxy] + done)
+	chest = bones["Spine1"].head_local
+	if spec.get("bundle"):
+		# Apoyado en la espalda: un rayo desde detrás encuentra la ropa.
+		height = waist_z + 0.14
+		hit, _normal, _index, _distance = surface.bvh.ray_cast(Vector((0.0, 1.0, height)), Vector((0.0, -1.0, 0.0)))
+		back = hit.y if hit is not None else max(p.y for i, p in enumerate(body.points) if waist_z < p.z < shoulder_z and body.is_trunk(i))
+		center = Vector((0.0, back + 0.1, height))
+		bag = soft_bag(center, (0.36, 0.2, 0.32), TEXTILE_PIECES["bag"], _linear(spec["bundle"]), segments=(8, 4, 7), seed=3)
+		for i in range(len(bag.verts)):
+			bag.weights[i] = {"Spine1": 0.75, "Spine": 0.25}
+		bag_obj = bag.to_object("sewn_bundle", bpy.context.scene.collection, armature)
+		done.append(bag_obj)
+		# Las correas, de color liso: con el textil de bolsa salían rayadas.
+		extra.piece = 0
+		knot = surface.push_out(Vector((0.0, chest.y - 0.15, shoulder_z - 0.1)), 0.012)
+		front_dir, back_dir, down = Vector((0.0, 1.0, 0.0)), Vector((0.0, -1.0, 0.0)), Vector((0.0, 0.0, -1.0))
+		for side in (-1.0, 1.0):
+			corner = center + Vector((side * 0.15, -0.06, 0.14))
+			over = Vector((side * 0.11, dims["cy"], shoulder_z + 0.1))
+			guides = [(corner.lerp(over, t / 6.0), back_dir) for t in range(6)]
+			guides += [(over, down)]
+			guides += [(over.lerp(knot + Vector((side * 0.02, 0.0, 0.0)), t / 8.0), front_dir) for t in range(1, 9)]
+			strap(extra, surface, body, on_surface(surface, guides, 0.006), 0.034, _linear(spec["bundle"]))
+		knot_bag = soft_bag(knot + Vector((0.0, -0.012, 0.0)), (0.045, 0.03, 0.035), 0, _linear(spec["bundle"]), segments=(4, 3, 4), sag=0.0, seed=1)
+		base = len(extra.verts)
+		for i, p in enumerate(knot_bag.verts):
+			extra.add_vertex(p, {"Spine1": 1.0})
+			extra.pattern[base + i] = knot_bag.pattern[i]
+		for face, color in zip(knot_bag.faces, knot_bag.face_colors):
+			extra.add_face([base + i for i in face], color, [(0.0, 0.0)] * 4)
+	if spec.get("chuspa"):
+		left_hip = bones["LeftUpLeg"].head_local
+		side_x = max(p.x for i, p in enumerate(body.points) if abs(p.z - (hip_z + 0.03)) < 0.03 and body.is_trunk(i))
+		center = surface.push_out(Vector((side_x + 0.03, dims["cy"] - 0.02, hip_z + 0.02)), 0.03)
+		bag = soft_bag(center, (0.05, 0.15, 0.17), TEXTILE_PIECES["bag"], _linear(spec["chuspa"]), segments=(2, 5, 6), seed=5)
+		extra.piece = TEXTILE_PIECES["bag"]
+		base = len(extra.verts)
+		for i, p in enumerate(bag.verts):
+			extra.add_vertex(p, {"Hips": 0.7, "LeftUpLeg": 0.3})
+			extra.pattern[base + i] = bag.pattern[i]
+		for face, color in zip(bag.faces, bag.face_colors):
+			extra.add_face([base + i for i in face], color, [(0.0, 0.0)] * 4)
+		extra.piece = 0
+		shoulder = bones["RightArm"].head_local
+		top = Vector((shoulder.x * 0.55, dims["cy"], shoulder_z + 0.1))
+		for direction in (Vector((0.0, 1.0, 0.0)), Vector((0.0, -1.0, 0.0))):
+			start = center + Vector((0.0, -direction.y * 0.065, 0.085))
+			guides = [(start.lerp(top, t / 14.0), direction) for t in range(14)] + [(top, Vector((0.0, 0.0, -1.0)))]
+			strap(extra, surface, body, on_surface(surface, guides, 0.004), 0.022, _linear(spec["chuspa"]))
+	# 4. Faja del anacu sobre la tela ceñida, y tupu de la lliclla.
+	if female:
+		extra.piece = TEXTILE_PIECES["belt"]
+		cloth_points = [garment.matrix_world @ v.co for v in garment.data.vertices if abs(v.co.z - waist_z) < 0.05]
+		center = Vector((0.0, sum(p.y for p in cloth_points) / len(cloth_points), waist_z))
+		ring = []
+		for s in range(48):
+			angle = 2.0 * math.pi * (s + 0.5) / 48
+			direction = Vector((math.cos(angle), math.sin(angle), 0.0))
+			reach = max([(p - center).dot(direction) for p in cloth_points if (p - center).normalized().dot(direction) > 0.97] or [0.15])
+			ring.append(reach + 0.006)
+		ring = [(ring[s - 1] + 2.0 * ring[s] + ring[(s + 1) % 48]) * 0.25 for s in range(48)]
+		stripe = spec.get("belt", "wool_red")
+		belt = [_ring_points(center, ring, waist_z + dz, 48, 0.0) for dz in (-0.045, 0.045)]
+		extra.tube(belt, lambda s, r: _linear(stripe), body.nearest_weights)
+	if spec.get("lliclla") and pin_point is not None:
+		extra.piece = 0
+		extra.box(surface.push_out(pin_point, 0.012), (0.03, 0.008, 0.04), Matrix.Identity(3), _linear("copper"), {"Spine1": 1.0})
+	if extra.faces:
+		done.append(extra.to_object("sewn_extra", bpy.context.scene.collection, armature))
+	return done
 
 
 def build_tool(armature, beat_seconds):
@@ -2166,7 +2525,13 @@ def build_person(name, cmu_dir, rocketbox_dir):
 	clothes, dims = build_clothes(spec, body, armature, armature.data.bones)
 	if spec.get("manto"):
 		add_cape_bones(armature, dims, dims["back"])
-	drape_clothes(clothes, proxy, dims)
+	sewn = build_sewn_clothes(spec, body, armature, proxy, dims)
+	# Una sola malla de ropa, como antes: mismo material y mismas capas.
+	bpy.ops.object.select_all(action="DESELECT")
+	for obj in [clothes] + sewn:
+		obj.select_set(True)
+	bpy.context.view_layer.objects.active = clothes
+	bpy.ops.object.join()
 	if spec.get("head"):
 		head, _head_tree, eye_z = graft_rocketbox_head(spec, rocketbox_dir, armature, proxy, extras, body)
 		build_headwear(spec, head, eye_z, armature)

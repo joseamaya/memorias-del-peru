@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.2)** — 2026-11-12; sustituye a la v4.1
+- Estado: **Aprobado (v4.3)** — 2026-11-12; sustituye a la v4.2
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -32,6 +32,7 @@
 - la ropa se dibuja por las dos caras.
 
 Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.3 | Aplica [ADR-0020](../../../docs/adr/0020-ropa-cortada-y-cosida.md): ropa cortada y cosida como paños de telar (unku, anacu, lliclla, manto, q'ipi y chuspa), caída simulada con los brazos bajados, sin piel que asome bajo la tela, y tejido de lana CC0 de ambientCG en lugar de arpillera (§5). Pedida por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -156,6 +157,11 @@ Reglas:
   - Al hablar gesticulan con los brazos.
   - Quietos, alternan dos reposos distintos.
 - **Caída y movimiento (v4.0):** la falda, el manto y el borde de la lliclla caen por su peso (simulación de tela en Blender, horneada en el modelo). El manto se mece al caminar con tres cadenas de muelle que chocan con la cadera y el pecho.
+- **Ropa cortada y cosida (v4.3, [ADR-0020](../../../docs/adr/0020-ropa-cortada-y-cosida.md)):**
+  - Cada prenda es un paño de telar que cae sobre el cuerpo con los brazos bajados: el unku y el anacu doblados sobre los hombros y cosidos a los lados, y la lliclla y el manto echados sobre los hombros, prendidos o anudados al pecho.
+  - El bulto del mensajero es un fardo de tela atado al pecho, y la chuspa, una bolsa llena.
+  - La piel que la ropa tapa se quita, para que no asome al andar.
+  - El tejido es lana (Fabric031, CC0) en lugar de arpillera.
 
 Lo que sigue de la v3.7 (ADR-0015) se mantiene, ahora con estos cuerpos y estos movimientos. Cada personaje tiene esqueleto y animaciones:
 

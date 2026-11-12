@@ -19,8 +19,9 @@ const MAX_OVERLAY_RECTS: int = 8
 ## Material que el generador de personajes pone a la ropa (ADR-0016).
 const CLOTH_MATERIAL_NAME: String = "pch_cloth"
 ## Repeticiones por metro del tejido de la ropa (las coordenadas UV2 van en
-## metros).
-const CLOTH_SCALE: float = 9.0
+## metros). La lana de la capa de tejido (Fabric031) tiene unas 180 puntadas
+## por repetición: cada 33 cm da unos 5 hilos por centímetro.
+const CLOTH_SCALE: float = 3.0
 ## La trama del tejido, más suave que en piedra o paja: de cerca, la ropa no
 ## debe parecer un saco.
 const CLOTH_DETAIL: float = 0.55

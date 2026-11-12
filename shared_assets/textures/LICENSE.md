@@ -13,7 +13,7 @@ Las dos imágenes del juego son tiras verticales de 9 capas de 1024 × 1024 que 
 | 1 Barro | Barro de las juntas y enlucidos | Clay Plaster | Amal Kumar | https://polyhaven.com/a/clay_plaster | CC0 1.0 | 2026-11-11 |
 | 2 Paja | Techos de ichu | Thatch Roof Angled | Rob Tuytel, Dimitrios Savva | https://polyhaven.com/a/thatch_roof_angled | CC0 1.0 | 2026-11-11 |
 | 3 Madera | Postes, telar, leña, corteza de queñua | Rough Wood | Rob Tuytel | https://polyhaven.com/a/rough_wood | CC0 1.0 | 2026-11-11 |
-| 4 Tejido | Ropa de lana y cuerdas | Hessian 230 | colormass, Rico Cilliers | https://polyhaven.com/a/hessian_230 | CC0 1.0 | 2026-11-11 |
+| 4 Tejido | Ropa de lana y cuerdas | Fabric 031 («large weave wool») | ambientCG | https://ambientcg.com/view?id=Fabric031 | CC0 1.0 | 2026-11-12 (sustituye a Hessian 230 de Poly Haven, que hacía parecer la ropa un saco) |
 | 5 Hierba | Pasto seco del terreno | Grass Ground | Charlotte Baglioni | https://polyhaven.com/a/grass_ground | CC0 1.0 | 2026-11-11 |
 | 6 Tierra | Plaza y caminos | Brown Mud Dry | Rob Tuytel | https://polyhaven.com/a/brown_mud_dry | CC0 1.0 | 2026-11-11 |
 | 7 Roca | Laderas, cresta y juntas de piedra seca | Rock Face 03 | Dario Barresi, Rico Cilliers | https://polyhaven.com/a/rock_face_03 | CC0 1.0 | 2026-11-11 |
@@ -24,6 +24,8 @@ Los originales (mapas *Diffuse*, *nor_gl* y *Rough* a 1K, JPG) se descargaron de
 1. Paso a lineal del mapa de color, división por su color medio y × 0,5, recortado a [0, 1].
 2. Rugosidad en el canal alfa.
 3. Unión de las 9 capas en una tira y guardado en WebP con calidad 92 (alfa 95), para que el repositorio no cargue 47 MB de PNG.
+
+La capa 4 se sustituyó el 2026-11-12 ([ADR-0020](../../docs/adr/0020-ropa-cortada-y-cosida.md)) por Fabric031 de ambientCG, descargada con permiso del responsable del proyecto (paquete *2K-JPG*, SHA-256 `64c3fb14…82f9`, no se versiona). Licencia CC0 1.0 según https://docs.ambientcg.com/license/. Se procesó con la misma receta, reduciendo los mapas *Color*, *Roughness* y *NormalGL* a 1024 × 1024.
 
 ## Criterios
 
