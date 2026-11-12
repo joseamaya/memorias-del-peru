@@ -228,6 +228,23 @@ Las casas pasan de 9000–10 300 triángulos a 11 300–21 300. La carga del sis
 - **Coste:** la pirca cuesta un 5–12 % en Bajo y un 1–6 % en Medio. El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
 - **Palanca si hiciera falta:** una versión simplificada de las piedras a distancia.
 
+### Medición tras la corrección del `smoothstep` de pendiente (Fase 4, provisional, 2026-11-12)
+
+Mismo comando y GPU, en el commit 2cbeb56. Se buscaba repetir con el equipo descargado, pero la carga del sistema varió entre 1,8 y 18 por procesos ajenos (navegador y aplicaciones de escritorio).
+
+| Medición | Bajo | Medio | Vídeo (Bajo / Medio) |
+|---|---|---|---|
+| Ahora, 3 ejecuciones seguidas con carga 2,1–2,6 | 124,7–126,4 FPS (p1 91–100) | 43,0–48,3 FPS (p1 31–43) | 213 / 286 MB |
+| Ahora, alternando con el commit anterior (97c4165), sin la de carga 14,8 | 122–132 FPS | 49–52 FPS | — |
+| Commit anterior, alternando | 118–131 FPS | 51–55 FPS | — |
+| Shader nuevo en la copia del commit anterior (3 ejecuciones alternas) | 124–130 FPS | 52–55 FPS | — |
+| Shader antiguo, misma copia | 122–132 FPS | 47–54 FPS | — |
+
+- La corrección del `smoothstep` no tiene coste medible: alternando las dos versiones del shader en la misma copia, los rangos se solapan.
+- Entre copias, el perfil Medio queda unos 3 FPS por debajo en el commit actual, pero el código del juego solo difiere en esa línea y la prueba en la misma copia no lo reproduce. Se atribuye al ruido.
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen. El perfil Medio sigue por debajo de 60 FPS en esta GPU integrada, como en las mediciones anteriores.
+- La medición con el equipo de verdad descargado sigue pendiente.
+
 ### Medición con textiles, caída y manto con muelles (Fase 4, provisional, 2026-11-12)
 
 Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas ([ADR-0018](adr/0018-ropa-textiles-caida-y-muelles.md)). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.
