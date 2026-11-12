@@ -1,10 +1,10 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v3.5)** — 2026-11-11; sustituye a la v3.4
+- Estado: **Aprobado (v3.6)** — 2026-11-11; sustituye a la v3.5
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) y [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md)
+- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) y [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md)
 
 ## 0. Historial de versiones
 
@@ -18,6 +18,7 @@
 | v3.3 | Personajes estáticos, sin rig ni animación, para el piloto y las sesiones (§5, §6.1 y §7.1). El rig queda para después del piloto si las sesiones muestran que el desplazamiento sin animación distrae. Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.4 | Aplica [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) tras el primer piloto: subtítulos con tiempo de lectura y en cola, rótulo de lugar, nueva apertura, mensajero a los 120 s con señal intermedia, «Hablar» con seis personajes y vecinos que pasean. Aprobada por el responsable del proyecto el 2026-11-11. |
 | v3.5 | Aplica [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md): mensajero a los 75 s que espera al jugador (como tarde a los 150 s, con aviso), vecino que recibe en el camino sur, tarjeta de fin con reinicio y balanceo de piernas. Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.6 | Aplica [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md): texturas de detalle CC0 en proyección triplanar para modelos, terreno, muros y campos; la plaza y los caminos se pintan en el terreno con borde irregular; *tonemap* AgX. Aprobada por el responsable del proyecto el 2026-11-11. |
 
 ## 1. Objetivo
 
@@ -151,6 +152,11 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 - Piedra andesita/caliza, adobe, madera, ichu, textiles con tintes naturales.
 - Texturas de 1K o 2K; sin imágenes de terceros sin licencia compatible.
 - Materiales compartidos en `shared_assets/materials/`.
+- **Hecho en v3.6** ([ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md)):
+  - Nueve texturas CC0 de Poly Haven a 1K (piedra, barro, paja, madera, tejido, hierba, tierra, roca y suelo de cultivo), registradas en [shared_assets/textures/LICENSE.md](../../../shared_assets/textures/LICENSE.md).
+  - Un shader triplanar las aplica como detalle sobre la paleta: el color sigue siendo el de las fichas.
+  - La plaza y los caminos se pintan en el terreno con borde irregular, en lugar de losas.
+  - El ichu, la cerámica, la piel y los objetos pequeños siguen con color plano.
 
 ### 6.3 Audio
 

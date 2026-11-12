@@ -38,7 +38,8 @@ from mathutils import Matrix, Vector
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OUT = os.path.normpath(os.path.join(SCRIPT_DIR, "..", "models"))
 
-# Paleta (color base sRGB, rugosidad). Colores planos: sin texturas.
+# Paleta (color base sRGB, rugosidad). El color va por vértice; el detalle lo
+# pone el juego con texturas según SURFACE_CLASS.
 PALETTE = {
 	"stone_a": ((0.50, 0.47, 0.42), 0.95),
 	"stone_b": ((0.42, 0.40, 0.36), 0.95),
@@ -84,6 +85,20 @@ PALETTE = {
 	"wool_brown": ((0.43, 0.30, 0.20), 0.9),
 	"wool_blue": ((0.20, 0.24, 0.36), 0.9),
 	"wool_grey": ((0.52, 0.48, 0.42), 0.9),
+}
+
+
+# Clase de superficie de cada entrada de la paleta: el juego elige con ella la
+# textura de detalle (capa del array de superficies + 1; 0 = sin textura). Se
+# guarda en la coordenada U del mapa UV «Surface»; el modelo no tiene UV de
+# textura porque el juego proyecta las texturas en triplanar.
+SURFACE_CLASS = {
+	"stone_a": 1, "stone_b": 1, "stone_c": 1, "stone_warm": 1,
+	"mud": 2, "mud_dark": 2,
+	"thatch_a": 3, "thatch_b": 3, "thatch_c": 3,
+	"wood": 4, "wood_light": 4, "quenua_bark": 4, "quenua_peel": 4,
+	"wool_red": 5, "wool_ochre": 5, "wool_dark": 5, "wool_cream": 5, "wool_green": 5,
+	"wool_warp": 5, "wool_brown": 5, "wool_blue": 5, "wool_grey": 5, "rope": 5,
 }
 
 
@@ -236,11 +251,15 @@ class MeshBuilder:
 		self.bm.to_mesh(mesh)
 		self.bm.free()
 		colors = mesh.color_attributes.new("Color", "FLOAT_COLOR", "CORNER")
+		surface = mesh.uv_layers.new(name="Surface")
 		palette = [linear_color(mat_name) for mat_name in self.materials]
+		classes = [float(SURFACE_CLASS.get(mat_name, 0)) for mat_name in self.materials]
 		for polygon in mesh.polygons:
 			rgba = palette[polygon.material_index] if palette else [1.0, 1.0, 1.0, 1.0]
+			surface_class = classes[polygon.material_index] if classes else 0.0
 			for loop_index in polygon.loop_indices:
 				colors.data[loop_index].color = rgba
+				surface.data[loop_index].uv = (surface_class, 0.0)
 			polygon.material_index = 0
 			polygon.use_smooth = False
 		mesh.color_attributes.active_color = colors

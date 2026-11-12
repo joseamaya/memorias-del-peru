@@ -271,6 +271,9 @@ func _build_quenua(meshes: Array[Mesh]) -> void:
 		var instance: MultiMeshInstance3D = MultiMeshInstance3D.new()
 		instance.name = "QuenuaTrees_%d" % variant
 		instance.multimesh = multimesh
+		# Corteza con textura de madera (clase de superficie del generador).
+		if SurfaceMaterials.has_surface_class(meshes[variant]):
+			instance.material_override = SurfaceMaterials.model_material()
 		quenua_root.add_child(instance)
 	# Colisión del tronco: el jugador no atraviesa los árboles.
 	for index: int in range(placements.size()):

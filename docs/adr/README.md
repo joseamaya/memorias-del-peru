@@ -32,7 +32,8 @@ Plantilla:
 | [0007](0007-evento-del-mensajero.md) | Evento del mensajero: máquina de estados y progreso garantizado | Aceptado |
 | [0008](0008-disponibilidad-de-interactuables.md) | Disponibilidad de interactuables | Aceptado |
 | [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Aceptado (reloj sustituido por ADR-0012) |
-| [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado |
+| [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado (texturas matizadas por ADR-0014) |
 | [0011](0011-fichas-fuera-del-slice.md) | Fichas de elementos que no están en el juego | Aceptado |
 | [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013) |
 | [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Aceptado |
+| [0014](0014-texturas-de-detalle-triplanares.md) | Texturas de detalle triplanares | Aceptado |

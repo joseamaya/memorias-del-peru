@@ -27,8 +27,11 @@ const TERRACE_ZONE: Rect2 = Rect2(26.0, -19.0, 32.0, 38.0)
 const RELIEF_EDGE: float = 8.0
 const PATH_CLEAR: float = 4.0
 const PATH_BLEND: float = 9.0
-const GRASS_COLOR: Color = Color(0.35, 0.4, 0.22, 1.0)
-const ROCK_COLOR: Color = Color(0.36, 0.33, 0.28, 1.0)
+const GRASS_COLOR: Color = Color(0.58, 0.55, 0.34, 1.0)
+const ROCK_COLOR: Color = Color(0.5, 0.47, 0.42, 1.0)
+## Tierra apisonada de la plaza y los caminos, que el terreno pinta con borde
+## irregular (SurfaceMaterials).
+const DIRT_COLOR: Color = Color(0.56, 0.46, 0.35, 1.0)
 const ROCK_FROM_HEIGHT: float = 1.0
 const ROCK_FULL_HEIGHT: float = 4.0
 const DEBUG_PROFILE_KEY: Key = KEY_F2
@@ -91,8 +94,8 @@ const RESTART_KEY: Key = KEY_R
 const NEIGHBOR_WALK_SPEED: float = 1.4
 ## Tierra de cultivo sobre cada terraza: surcos paralelos al muro de
 ## contención (siguen la curva de nivel), separados SPACING metros.
-const FIELD_SOIL_COLOR: Color = Color(0.25, 0.17, 0.1, 1.0)
-const FIELD_RIDGE_COLOR: Color = Color(0.4, 0.28, 0.16, 1.0)
+const FIELD_SOIL_COLOR: Color = Color(0.42, 0.32, 0.23, 1.0)
+const FIELD_RIDGE_COLOR: Color = Color(0.52, 0.4, 0.28, 1.0)
 const FIELD_FURROW_SPACING: float = 0.55
 const FIELD_RIDGE_HEIGHT: float = 0.09
 const FIELD_LIFT: float = 0.02
@@ -101,10 +104,10 @@ const FIELD_MARGIN: float = 0.25
 ## de colisión, que asoma entre las piedras de StoneWall. Oscuro, como las
 ## juntas de la piedra seca sin mortero que Cobo describe en los andenes del
 ## Cusco (PCH-008).
-const TERRACE_MORTAR_COLOR: Color = Color(0.2, 0.19, 0.17, 1.0)
+const TERRACE_MORTAR_COLOR: Color = Color(0.24, 0.22, 0.2, 1.0)
 ## Rampas de las terrazas: piedra clara de camino, para que se vea por dónde
 ## se sube.
-const RAMP_COLOR: Color = Color(0.6, 0.53, 0.42, 1.0)
+const RAMP_COLOR: Color = Color(0.62, 0.56, 0.47, 1.0)
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
@@ -195,17 +198,14 @@ func _build_terrain() -> void:
 			var p01: Vector3 = Vector3(x0, _height_at(x0, z1), z1)
 			var p11: Vector3 = Vector3(x1, _height_at(x1, z1), z1)
 			for vertex: Vector3 in [p00, p10, p11, p00, p11, p01]:
-				surface.set_color(_terrain_color(vertex.y))
 				surface.add_vertex(vertex)
 	surface.generate_normals()
 	var mesh: ArrayMesh = surface.commit()
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = Color.WHITE
-	material.vertex_color_use_as_albedo = true
-	material.roughness = 1.0
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "TerrainMesh"
 	mesh_instance.mesh = mesh
+	var material: ShaderMaterial = SurfaceMaterials.terrain_material(GRASS_COLOR, ROCK_COLOR, DIRT_COLOR)
+	material.set_shader_parameter("steep_height_range", Vector2(ROCK_FROM_HEIGHT, ROCK_FULL_HEIGHT))
 	mesh_instance.material_override = material
 	terrain.add_child(mesh_instance)
 	var body: StaticBody3D = StaticBody3D.new()
@@ -258,31 +258,28 @@ static func ridge_height_at(x: float, z: float) -> float:
 	return RIDGE_HEIGHT * rise * roughness * opening
 
 
-func _terrain_color(height: float) -> Color:
-	var rock: float = smoothstep(ROCK_FROM_HEIGHT, ROCK_FULL_HEIGHT, height)
-	return GRASS_COLOR.lerp(ROCK_COLOR, rock)
-
-
 func _build_llacta() -> void:
 	var llacta: Node3D = $Llacta
 	var boundary: Node3D = $Boundary
-	var stone: StandardMaterial3D = StandardMaterial3D.new()
-	stone.albedo_color = Color(0.55, 0.54, 0.51, 1.0)
-	stone.roughness = 1.0
-	var thatch: StandardMaterial3D = StandardMaterial3D.new()
-	thatch.albedo_color = Color(0.55, 0.42, 0.2, 1.0)
-	thatch.roughness = 1.0
-	var dirt: StandardMaterial3D = StandardMaterial3D.new()
-	dirt.albedo_color = Color(0.42, 0.34, 0.24, 1.0)
-	dirt.roughness = 1.0
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, Color(0.55, 0.54, 0.51, 1.0))
+	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.THATCH, Color(0.55, 0.42, 0.2, 1.0))
+	var dirt: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.DIRT, DIRT_COLOR)
 
-	_add_visual_box(llacta, "Plaza", Vector3(0.0, 0.03, 0.0), Vector3(26.0, 0.06, 26.0), dirt)
-	_add_visual_box(llacta, "PathSouth", Vector3(0.0, 0.035, 30.0), Vector3(4.0, 0.07, 30.0), dirt)
-	_add_visual_box(llacta, "PathNorth", Vector3(0.0, 0.035, -35.0), Vector3(4.0, 0.07, 30.0), dirt)
-	# Los caminos este y oeste empiezan en el borde de la plaza: si se solapan
-	# con ella, sus caras superiores casi coplanarias parpadean (z-fighting).
-	_add_visual_box(llacta, "PathEast", Vector3(24.0, 0.035, 0.0), Vector3(22.0, 0.07, 4.0), dirt)
-	_add_visual_box(llacta, "PathWest", Vector3(-24.0, 0.035, 0.0), Vector3(22.0, 0.07, 4.0), dirt)
+	# La plaza y los caminos marcan las zonas de tierra apisonada. Las pinta el
+	# terreno con borde irregular; las cajas quedan ocultas como referencia
+	# (una losa de bordes rectos delata el bloqueo).
+	var ground_areas: Array[MeshInstance3D] = [
+		_add_visual_box(llacta, "Plaza", Vector3(0.0, 0.03, 0.0), Vector3(26.0, 0.06, 26.0), dirt),
+		_add_visual_box(llacta, "PathSouth", Vector3(0.0, 0.035, 30.0), Vector3(4.0, 0.07, 30.0), dirt),
+		_add_visual_box(llacta, "PathNorth", Vector3(0.0, 0.035, -35.0), Vector3(4.0, 0.07, 30.0), dirt),
+		_add_visual_box(llacta, "PathEast", Vector3(24.0, 0.035, 0.0), Vector3(22.0, 0.07, 4.0), dirt),
+		_add_visual_box(llacta, "PathWest", Vector3(-24.0, 0.035, 0.0), Vector3(22.0, 0.07, 4.0), dirt),
+	]
+	for area: MeshInstance3D in ground_areas:
+		area.visible = false
+	var terrain_mesh: MeshInstance3D = terrain.get_node_or_null("TerrainMesh") as MeshInstance3D
+	if terrain_mesh != null and terrain_mesh.material_override is ShaderMaterial:
+		SurfaceMaterials.set_overlay_areas(terrain_mesh.material_override as ShaderMaterial, ground_areas)
 
 	var houses: Node3D = Node3D.new()
 	houses.name = "Houses"
@@ -569,16 +566,12 @@ func _add_box_body(parent: Node3D, node_name: String, at: Vector3, size: Vector3
 ## alto, para que no quede hueco por el que meterse bajo la rampa.
 func _add_terrace(parent: Node3D, node_name: String, center_x: float, bottom_y: float, top_y: float, material: Material, back_exposed: bool = false) -> void:
 	var bodies: Array[StaticBody3D] = []
-	var mortar: StandardMaterial3D = StandardMaterial3D.new()
-	mortar.albedo_color = TERRACE_MORTAR_COLOR
-	mortar.roughness = 1.0
+	var mortar: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.ROCK, TERRACE_MORTAR_COLOR)
 	var north: StaticBody3D = _add_box_body(parent, node_name + "North", Vector3(center_x, top_y * 0.5, -8.5), Vector3(8.0, top_y, 13.0), mortar, 1)
 	var south: StaticBody3D = _add_box_body(parent, node_name + "South", Vector3(center_x, top_y * 0.5, 8.5), Vector3(8.0, top_y, 13.0), mortar, 1)
 	bodies.append(north)
 	bodies.append(south)
-	var ramp_material: StandardMaterial3D = StandardMaterial3D.new()
-	ramp_material.albedo_color = RAMP_COLOR
-	ramp_material.roughness = 1.0
+	var ramp_material: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, RAMP_COLOR)
 	bodies.append(_add_ramp(parent, node_name + "Ramp", Vector3(center_x - 4.0, bottom_y, 0.0), 8.0, top_y - bottom_y, 4.0, ramp_material))
 	if bottom_y > 0.0:
 		bodies.append(_add_box_body(parent, node_name + "Fill", Vector3(center_x, bottom_y * 0.5, 0.0), Vector3(8.0, bottom_y, 4.0), material, 1))
@@ -611,13 +604,10 @@ static func terrace_walls_mesh(node_name: String, center_x: float, top_y: float,
 	if back_exposed:
 		faces.append(StoneWall.Face.new(Vector3(x1, 0.0, -15.0), Vector3.BACK, Vector3.RIGHT, 13.0, top_y))
 		faces.append(StoneWall.Face.new(Vector3(x1, 0.0, 2.0), Vector3.BACK, Vector3.RIGHT, 13.0, top_y))
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.roughness = 1.0
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = node_name
 	mesh_instance.mesh = StoneWall.build(faces, hash(node_name))
-	mesh_instance.material_override = material
+	mesh_instance.material_override = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, Color.WHITE, true)
 	return mesh_instance
 
 
@@ -634,7 +624,7 @@ static func field_mesh(node_name: String, top_center: Vector3, size: Vector2) ->
 	var z0: float = -half_z
 	var z1: float = half_z
 	# Suelo entre surcos.
-	surface.set_color(FIELD_SOIL_COLOR)
+	surface.set_color(FIELD_SOIL_COLOR.srgb_to_linear())
 	for vertex: Vector3 in [Vector3(-half_x, y0, z0), Vector3(half_x, y0, z0), Vector3(half_x, y0, z1),
 			Vector3(-half_x, y0, z0), Vector3(half_x, y0, z1), Vector3(-half_x, y0, z1)]:
 		surface.add_vertex(vertex)
@@ -647,20 +637,17 @@ static func field_mesh(node_name: String, top_center: Vector3, size: Vector2) ->
 		var left: float = x - half_width
 		var right: float = x + half_width
 		var top: float = y0 + FIELD_RIDGE_HEIGHT
-		surface.set_color(FIELD_RIDGE_COLOR)
+		surface.set_color(FIELD_RIDGE_COLOR.srgb_to_linear())
 		for vertex: Vector3 in [Vector3(left, y0, z1), Vector3(x, top, z1), Vector3(x, top, z0),
 				Vector3(left, y0, z1), Vector3(x, top, z0), Vector3(left, y0, z0),
 				Vector3(x, top, z1), Vector3(right, y0, z1), Vector3(right, y0, z0),
 				Vector3(x, top, z1), Vector3(right, y0, z0), Vector3(x, top, z0)]:
 			surface.add_vertex(vertex)
 	surface.generate_normals()
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.roughness = 1.0
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = node_name
 	mesh_instance.mesh = surface.commit()
-	mesh_instance.material_override = material
+	mesh_instance.material_override = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.SOIL, Color.WHITE, true)
 	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mesh_instance.position = top_center
 	return mesh_instance
@@ -783,6 +770,7 @@ func _attach_model(parent: Node3D, slot_name: String, at: Vector3, files: Array[
 	slot.blockout_nodes = blockout
 	slot.blockout_collisions = collisions
 	parent.add_child(slot)
+	SurfaceMaterials.apply_to_model(slot.model)
 	return slot
 
 

@@ -76,6 +76,9 @@ static func _fill_face(surface: SurfaceTool, rng: RandomNumberGenerator, face: F
 			if u1 - u0 < 0.1:
 				continue
 			color = Color(clampf(color.r + shade, 0.0, 1.0), clampf(color.g + shade, 0.0, 1.0), clampf(color.b + shade, 0.0, 1.0), 1.0)
+			# La paleta está en sRGB; el color por vértice va en lineal, como en los
+			# modelos de Blender.
+			color = color.srgb_to_linear()
 			var a: Vector3 = face.origin + face.along * (u0 + GAP * 0.5) + up * (v + GAP * 0.5)
 			var size_u: float = (u1 - u0) - GAP
 			var size_v: float = course - GAP

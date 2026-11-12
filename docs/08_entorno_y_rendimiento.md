@@ -181,6 +181,22 @@ Mismo comando y condiciones, con la carga del sistema entre 0,7 y 2,2. Cada mode
 
 Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a ~81 FPS y su p1 queda por encima de 60 en dos de las tres ejecuciones.
 
+### Medición con texturas de detalle (Fase 4, provisional, 2026-11-11)
+
+Mismo comando, en la GPU integrada de referencia (Intel Graphics RPL-S, Vulkan, Forward+). La escena añade el shader triplanar con texturas de detalle ([ADR-0014](adr/0014-texturas-de-detalle-triplanares.md)), el *tonemap* AgX y la plaza y los caminos pintados en el terreno. La carga del sistema estaba entre 3 y 6 por procesos ajenos (navegador sin ventana), así que el commit anterior se midió en las mismas condiciones para comparar. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+
+| Perfil | FPS medio | FPS p1 | Draw calls | Vídeo |
+|---|---|---|---|---|
+| Bajo | 146,4 (141,7–155,2) | 125,0 | 107 | 145,2 MB |
+| Medio | 54,1 (53,5–54,6) | 45,5 (45,5–47,6) | 130 | 218,0 MB |
+| Medio, commit anterior, misma carga | 76,5 | 66,7 | — | — |
+
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con margen.
+- El perfil Medio queda por debajo de 60 FPS en esta GPU integrada. Los 60 FPS recomendados se definen para la referencia con GPU dedicada (§ objetivos), que sigue sin existir; en esta GPU el perfil recomendado es Bajo.
+- Aislando el terreno (con un material plano), el perfil Medio sube a ~69 FPS: el shader del terreno cuesta unos 10 FPS y el de los modelos y muros unos 7.
+- Ya aplicado para recuperar margen: no se leen los planos de la proyección sin peso, ni las normales a más de 35 m, y el filtrado es trilineal (el anisotrópico costaba unos 4 FPS).
+- Si hiciera falta más, la siguiente medida sería bajar las texturas del terreno a 512 px en el perfil Bajo.
+
 ### Medición con terrazas de pirka, props y relieve (Fase 4, provisional, 2026-11-11)
 
 Mismo comando y condiciones, con la carga del sistema entre 1,2 y 2,5. La escena añade los muros de pirka de las terrazas, la tierra con surcos, cántaros y leña junto a las casas, el relieve del campo, más ichu en la cresta, la luz ambiental más alta y el balanceo de piernas y brazos. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.

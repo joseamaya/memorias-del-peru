@@ -39,6 +39,11 @@ fog_light_energy = 0.8
 fog_density = 0.004
 fog_height = 0.0
 fog_height_density = 0.05
+tonemap_mode = 4
+tonemap_exposure = 1.0
+adjustment_enabled = true
+adjustment_contrast = 1.08
+adjustment_saturation = 1.12
 
 [node name="MundoBase" type="Node3D"]
 script = ExtResource("3_world")
