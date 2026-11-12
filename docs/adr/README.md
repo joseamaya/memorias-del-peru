@@ -45,5 +45,6 @@ Plantilla:
 | [0020](0020-ropa-cortada-y-cosida.md) | Ropa cortada y cosida, con caída en la postura de reposo | Aceptado |
 | [0021](0021-construcciones-de-pirca.md) | Construcciones de pirca: casas, poyos, terrazas y corrales | Aceptado |
 | [0022](0022-skills-de-arte-y-shaders.md) | Skills de producción de arte y de técnica de shaders | Aceptado |
-| [0023](0023-introduccion-del-slice.md) | Introducción del vertical slice | Aceptado (ampliado por ADR-0024) |
-| [0024](0024-titulo-nota-historica-y-controles.md) | Pantalla de título, nota histórica y controles en pantalla | Aceptado |
+| [0023](0023-introduccion-del-slice.md) | Introducción del vertical slice | Aceptado (ampliado por ADR-0024 y ADR-0025) |
+| [0024](0024-titulo-nota-historica-y-controles.md) | Pantalla de título, nota histórica y controles en pantalla | Aceptado (ampliado por ADR-0025) |
+| [0025](0025-imagenes-de-la-introduccion.md) | Imágenes de fondo en la introducción | Aceptado |

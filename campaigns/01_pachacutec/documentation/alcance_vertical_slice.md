@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.6)** — 2026-11-12; sustituye a la v4.5
+- Estado: **Aprobado (v4.7)** — 2026-11-12; sustituye a la v4.6
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -36,6 +36,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.4 | Aplica [ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md): casas, terrazas y poyos de pirca de piedra tosca; casas con talud, enlucido desconchado, puerta baja con dintel de palos, techo de ichu con mechones, tierra pisada alrededor, tercera variante y giro respecto a la plaza; dos corrales de pirca seca (PCH-021) (§6.1 y §7). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.5 | Aplica [ADR-0023](../../../docs/adr/0023-introduccion-del-slice.md): introducción de tres tarjetas antes de tomar el control, que sitúa al jugador sin adelantar la noticia; sustituye al rótulo de lugar y época; el reloj del mensajero espera a que termine; ficha PCH-022 (§2.2, §6.4, §8, §9.2 y §10). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
 | v4.6 | Aplica [ADR-0024](../../../docs/adr/0024-titulo-nota-historica-y-controles.md): pantalla de título de `core/` («Memorias del Perú» · «Una mañana en la llacta», Comenzar y Salir) como escena principal; nota histórica como primera tarjeta de la introducción; controles en pantalla 8 s al tomar el control (§2.2, §6.4, §9.2 y §10). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.7 | Aplica [ADR-0025](../../../docs/adr/0025-imagenes-de-la-introduccion.md): imágenes de fondo en la introducción. La nota sigue sobre negro; los Andes y la llacta se ven con tomas del propio juego, y la última termina en los ojos del jugador; el valle del Cusco se explica con un mapa propio (PCH-023) (§2.2, §6.4 y §8). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
 
 ## 1. Objetivo
 
@@ -77,7 +78,7 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 | Fase | Entra cuando | Ocurre | Subtítulo |
 |---|---|---|---|
 | título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
-| introducción | se pulsa Comenzar | cuatro tarjetas sobre fondo negro (ADR-0023 y ADR-0024): la nota histórica y tres de contexto; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
+| introducción | se pulsa Comenzar | cuatro tarjetas (ADR-0023, ADR-0024 y ADR-0025): la nota histórica sobre negro; los Andes y la llacta sobre tomas del juego; el valle del Cusco sobre un mapa propio; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
 | `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero espera fuera del camino norte; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; a los 45 s, “El sol ya está alto…”; a los 75 s, si el jugador no está en la plaza, “Desde la plaza llaman a la gente…” |
 | `ARRIVAL` | pasan 75 s **y** el jugador está en la plaza, o 150 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
 | `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
@@ -245,6 +246,7 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 | `UI_GAME_TITLE` · `PCH_CAMPAIGN_SUBTITLE` | pantalla de título | Memorias del Perú · Una mañana en la llacta |
 | `PCH_INTRO_NOTE` | introducción, nota histórica (ADR-0024) | Esta historia se basa en crónicas coloniales y en la arqueología. Algunos elementos son reconstrucción o licencia narrativa. |
 | `PCH_INTRO_1` | introducción, tarjeta 1 | Los Andes, siglo XV. |
+| `PCH_MAP_CUSCO` · `PCH_MAP_LLACTA` · `PCH_MAP_NORTH` | mapa de la tarjeta 2 (ADR-0025) | Cusco · Tu llacta · N |
 | `PCH_INTRO_2` | introducción, tarjeta 2 | En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región. |
 | `PCH_INTRO_3` | introducción, tarjeta 3 | Tú vives en una llacta, una pequeña aldea de la sierra cerca del Cusco. Hoy se esperan noticias. |
 | `PCH_INTRO_HINT` | al pie de las tarjetas | E para continuar |
@@ -340,6 +342,7 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 | PCH-020 | Leña de queñua | R | verificado (R), 2026-11-11 (comprobación del agente) |
 | PCH-021 | Corral de pirca seca | R | verificado (R), 2026-11-12 |
 | PCH-022 | El Cusco antes de la expansión inca | A / R | verificado (A / R), 2026-11-12 |
+| PCH-023 | Mapa de la introducción | R / N | pendiente de firma (2026-11-12) |
 
 “Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las siete fichas marcadas «comprobación del agente» las firmó el responsable del proyecto el 2026-11-11 sobre la comprobación en línea del agente, sin consultar él mismo las ediciones ([hoja de verificación](hoja_verificacion_fichas.md) §5). Las páginas de la traducción de 2007 tomadas de su índice publicado no cuentan como cita.
 

@@ -109,6 +109,22 @@ const INTRO_KEYS: Array[StringName] = [&"PCH_INTRO_NOTE", &"PCH_INTRO_1", &"PCH_
 ## Controles en pantalla al tomar el control (ADR-0024).
 const CONTROLS_HINT_KEY: StringName = &"UI_CONTROLS_HINT"
 const CONTROLS_HINT_SECONDS: float = 8.0
+## Fondos de la introducción (ADR-0025), por tarjeta: la nota sobre negro, los
+## Andes y la llacta con tomas del mundo, y el valle del Cusco con el mapa.
+const INTRO_OPAQUE: Array[bool] = [true, false, false, false]
+const INTRO_SHOT_ANDES: int = 1
+const INTRO_MAP_CARD: int = 2
+const INTRO_SHOT_LLACTA: int = 3
+## Toma de los Andes: desde la cresta del suroeste, mirando al otro lado del
+## valle, con un giro lento.
+const ANDES_FROM: Vector3 = Vector3(-30.0, 26.0, 66.0)
+const ANDES_FROM_LOOK: Vector3 = Vector3(-10.0, 4.0, -70.0)
+const ANDES_TO: Vector3 = Vector3(-18.0, 24.0, 66.0)
+const ANDES_TO_LOOK: Vector3 = Vector3(20.0, 4.0, -70.0)
+## Toma de la llacta: baja desde lo alto del camino sur hasta los ojos del
+## jugador, que empieza ahí.
+const LLACTA_FROM: Vector3 = Vector3(9.0, 7.0, 64.0)
+const LLACTA_FROM_LOOK: Vector3 = Vector3(0.0, 2.0, 4.0)
 const INTRO_HINT_KEY: StringName = &"PCH_INTRO_HINT"
 ## «Hablar»: escena del cuerpo interactuable y pausa del vecino que habla.
 const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.tscn"
@@ -159,6 +175,7 @@ enum IntroMode { AUTO, ALWAYS, NEVER }
 @onready var environment_controller: EnvironmentQualityController = $EnvironmentQualityController
 
 var _intro: IntroCards = null
+var _director: IntroDirector = null
 var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
 
@@ -207,10 +224,30 @@ func _start_intro() -> void:
 	_intro.name = "IntroCards"
 	hud.add_child(_intro)
 	_intro.finished.connect(_on_intro_finished)
+	_intro.set_overlay(INTRO_MAP_CARD, IntroMap.new())
+	_director = IntroDirector.new()
+	_director.name = "IntroDirector"
+	add_child(_director)
+	var player_camera: Camera3D = player.get_node("Head/Camera3D") as Camera3D
+	_director.set_shot(INTRO_SHOT_ANDES, _shot(ANDES_FROM, ANDES_FROM_LOOK), _shot(ANDES_TO, ANDES_TO_LOOK))
+	_director.set_shot_to_player(INTRO_SHOT_LLACTA, _shot(LLACTA_FROM, LLACTA_FROM_LOOK))
+	_director.bind(_intro, player_camera)
 	var texts: Array[String] = []
 	for key: StringName in INTRO_KEYS:
 		texts.append(tr(String(key)))
-	_intro.play(texts, tr(String(INTRO_HINT_KEY)))
+	_intro.play(texts, tr(String(INTRO_HINT_KEY)), INTRO_OPAQUE)
+
+
+## Encuadre de cámara en [param at] (altura sobre el terreno) mirando a
+## [param target].
+func _shot(at: Vector3, target: Vector3) -> Transform3D:
+	var position_world: Vector3 = Vector3(at.x, _height_at(at.x, at.z) + at.y, at.z)
+	return Transform3D(Basis.looking_at(target - position_world, Vector3.UP), position_world)
+
+
+## Director de las tomas de la introducción, para las pruebas.
+func get_intro_director() -> IntroDirector:
+	return _director
 
 
 func _on_intro_finished() -> void:

@@ -25,3 +25,6 @@ PCH_TALK_CURACA,"Espero noticias del Cusco. Quédate cerca de la plaza."
 PCH_NARR_GATHER,"Desde la plaza llaman a la gente: el mensajero está por llegar."
 PCH_NARR_GREET,"¡Llegas a tiempo! Ven a la plaza: hoy esperamos noticias del Cusco."
 PCH_END_TITLE,Fin del fragmento
+PCH_MAP_CUSCO,Cusco
+PCH_MAP_LLACTA,Tu llacta
+PCH_MAP_NORTH,N

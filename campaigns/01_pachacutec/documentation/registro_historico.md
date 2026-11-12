@@ -290,6 +290,21 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - «Señorío» es un término castellano para una entidad política andina; se usa en lugar de «reino» o «estado» para no presuponer su forma de gobierno.
 - Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-12, con la conclusión de Covey y otros (2025) a la vista ([hoja de verificación](hoja_verificacion_fichas.md) §8). El agente había localizado y leído la fuente ese mismo día. Covey (2006) sigue sin consultar y no sostiene la clasificación.
 
+### PCH-023 — Mapa de la introducción
+- Tipo: lugar
+- Clasificación: R (posición de la llacta respecto al Cusco) / N (dibujo del relieve)
+- Uso en el juego: capa de la tarjeta `PCH_INTRO_2` de la introducción, `scripts/ui/intro_map.gd` ([ADR-0025](../../../docs/adr/0025-imagenes-de-la-introduccion.md)). Rótulos «Cusco», «Tu llacta» y «N».
+- Fuentes:
+  - Se apoya en PCH-006 (A / R): la llacta es una de las aldeas del Intermedio Tardío de la región del Cusco que registran las prospecciones (Covey y otros 2025), y no se identifica con ningún sitio real.
+  - Dentro del juego, el camino del norte es el que va al Cusco: frase del agricultor `PCH_TALK_FARMER` y llegada del mensajero por el camino norte (alcance §2.2).
+- Discrepancias entre fuentes: —
+- Notas de representación:
+  - El mapa es esquemático y no está a escala: no da distancias ni coordenadas.
+  - Que la llacta quede al sur del Cusco es una reconstrucción (R) coherente con el juego, no un dato.
+  - El relieve en «^» es un recurso gráfico (N): indica sierra, no montañas concretas.
+  - No se marcan ríos, territorios, fronteras ni pueblos vecinos, para no afirmar geografía sin fuente ni adelantar la noticia.
+- Estado de verificación: pendiente de firma. Falta que una persona compruebe que el mapa solo muestra lo descrito y firme ([hoja de verificación](hoja_verificacion_fichas.md) §9).
+
 ---
 
 ## Fuera del vertical slice

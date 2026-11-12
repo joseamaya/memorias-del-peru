@@ -73,3 +73,33 @@ func test_intro_cards_empty_finishes() -> bool:
 	var ok: bool = _finished_count == 1 and not cards.is_playing()
 	cards.free()
 	return ok
+
+
+func test_intro_cards_backdrops() -> bool:
+	# Fondos por tarjeta (ADR-0025): negra, transparente y con capa propia.
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return false
+	var cards: IntroCards = IntroCards.new()
+	tree.root.add_child(cards)
+	var overlay: Control = Control.new()
+	cards.set_overlay(2, overlay)
+	var shown: Array[int] = []
+	cards.card_shown.connect(func(index: int, _seconds: float) -> void: shown.append(index))
+	var texts: Array[String] = ["Negra.", "Transparente.", "Con capa."]
+	var opaque: Array[bool] = [true, false, false]
+	cards.play(texts, "", opaque)
+	var ok: bool = cards.is_card_opaque(0) and is_equal_approx(cards.background_alpha(), 1.0)
+	ok = ok and not overlay.visible and shown == [0]
+	# La transparente funde el fondo negro hasta dejar ver lo de detrás.
+	cards.advance(IntroCards.card_seconds(texts[0]) + 0.01)
+	ok = ok and cards.current_index() == 1 and not cards.is_card_opaque(1)
+	cards.advance(IntroCards.TEXT_FADE + 0.01)
+	ok = ok and cards.background_alpha() < 0.01
+	# La capa solo se ve durante su tarjeta.
+	cards.advance(IntroCards.card_seconds(texts[1]))
+	ok = ok and cards.current_index() == 2 and overlay.visible and shown == [0, 1, 2]
+	cards.advance(IntroCards.card_seconds(texts[2]) + 0.01)
+	ok = ok and not overlay.visible
+	cards.free()
+	return ok
