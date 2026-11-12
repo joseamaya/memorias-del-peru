@@ -288,7 +288,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - «Todavía no son un imperio»: se apoya en Covey y otros (2025). Antes de la expansión, los incas consolidan su dominio en la región del Cusco, entre muchos otros grupos.
   - «El señorío más fuerte de la región» es una inferencia (R): la fuente dice que se aliaron con unos grupos, vencieron a sus rivales y consolidaron su control, no que fueran ya el más fuerte en un año concreto.
   - «Señorío» es un término castellano para una entidad política andina; se usa en lugar de «reino» o «estado» para no presuponer su forma de gobierno.
-- Estado de verificación: pendiente de firma. Falta que una persona compruebe en Covey y otros (2025) la conclusión citada y firme ([hoja de verificación](hoja_verificacion_fichas.md) §8).
+- Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-12, con la conclusión de Covey y otros (2025) a la vista ([hoja de verificación](hoja_verificacion_fichas.md) §8). El agente había localizado y leído la fuente ese mismo día. Covey (2006) sigue sin consultar y no sostiene la clasificación.
 
 ---
 
