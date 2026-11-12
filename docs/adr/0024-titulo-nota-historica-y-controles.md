@@ -1,6 +1,6 @@
 # ADR-0024 — Pantalla de título, nota histórica y controles en pantalla
 
-- Estado: Aceptado (pedido por el responsable del proyecto el 2026-11-12; textos pendientes de su aprobación, ver Consecuencias)
+- Estado: Aceptado (pedido por el responsable del proyecto el 2026-11-12; textos aprobados por él ese mismo día)
 - Fecha: 2026-11-12
 - Amplía: [ADR-0023](0023-introduccion-del-slice.md) (introducción del slice)
 - Aplica: [docs/05](../05_plan_de_implementacion.md), «Escena principal»: la escena principal pasa a ser una escena de `core/`
@@ -71,4 +71,4 @@ El subtítulo no nombra a Pachacútec ni a los chancas, para no acercar al jugad
   - introducción con cuatro tarjetas, sin palabras que adelanten la noticia, y controles a la vista al terminar.
 - **Alcance v4.6** (§2.2, §6.4 y §10) y **guion del facilitador**: la sesión empieza en la pantalla de título. El facilitador explica los controles como hasta ahora, y la persona pulsa Comenzar.
 - **Duración:** la nota suma unos 10 s a la introducción.
-- **Textos:** el responsable del proyecto debe aprobar la nota histórica, el subtítulo y la línea de controles. Si cambian, basta con editar las tablas de localización.
+- **Textos:** la nota histórica, el subtítulo y la línea de controles los aprobó el responsable del proyecto el 2026-11-12. Si cambian, basta con editar las tablas de localización.
