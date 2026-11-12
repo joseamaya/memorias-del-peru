@@ -226,5 +226,5 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [ ] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR).
 - [ ] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo.
 - [ ] Sesiones de prueba con al menos 6 jugadores ajenos al desarrollo: duración mediana de 5–8 min (ADR-0009) y al menos 2/3 superan el cuestionario de comprensión (métrica 5).
-- [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
+- [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
 - [ ] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar.

@@ -132,3 +132,14 @@ Lo que cambió al comprobarlas:
 | PCH-017 Curaca | Sarmiento, cap. 27, no recoge la petición a los curacas | Se cita Betanzos, cap. VII, que sí la recoge (a «caciques y Señores» de los pueblos vecinos) |
 | PCH-007 Vivienda | Ninguna fuente documenta la puerta trapezoidal en casas rurales | La puerta queda como reconstrucción (R); Cobo solo dice que eran pequeñas y bajas |
 | PCH-006 Llacta | Los sitios del Intermedio Tardío del Cusco se conocen por prospección y también por excavación | Se corrige la nota de representación |
+
+## 6. PCH-021 — Corral de pirca seca (R)
+
+El agente localizó y leyó las fuentes el 2026-11-12; el responsable del proyecto las comprobó y firmó ese mismo día.
+
+- [x] **Bauer, Kellett y Aráoz Silva (2013), cap. 6, párrafo 11:** https://books.openedition.org/ifea/11659. Confirmar que dice que los sitios de la Fase Chanca cercanos a grandes pastizales «a menudo también contienen restos de corrales de piedra».
+- [x] **El mismo capítulo, párrafo 32.** Confirmar las concentraciones de corrales en y alrededor de los asentamientos de cumbre.
+- [ ] **Aguilar Meza (2018), resumen:** https://revistas.uni.edu.pe/index.php/devenir/article/view/205. Opcional; es solo apoyo, y no se abrió el PDF. Si se abre el PDF, anotar si describe las kanchas como de piedra.
+- [ ] Revisar la nota de representación de la ficha (opcional): el corral del juego es una analogía con Andahuaylas y con las kanchas pastoriles del Cusco, no un corral documentado de un sitio cusqueño de 1438.
+
+Verificado por: responsable del proyecto · Fecha: 2026-11-12
