@@ -30,16 +30,16 @@ background_mode = 2
 sky = SubResource("Sky_world")
 ambient_light_source = 3
 ambient_light_color = Color(0.62, 0.66, 0.74, 1)
-ambient_light_sky_contribution = 0.55
-ambient_light_energy = 1.2
+ambient_light_sky_contribution = 0.4
+ambient_light_energy = 0.85
 reflected_light_source = 2
 fog_enabled = true
 fog_light_color = Color(0.62, 0.72, 0.86, 1)
-fog_light_energy = 0.6
-fog_density = 0.0035
+fog_light_energy = 0.5
+fog_density = 0.0025
 fog_height = 0.0
 fog_height_density = 0.05
-volumetric_fog_density = 0.004
+volumetric_fog_density = 0.003
 volumetric_fog_albedo = Color(0.72, 0.78, 0.88, 1)
 volumetric_fog_emission = Color(0.04, 0.06, 0.09, 1)
 volumetric_fog_gi_inject = 0.0
@@ -69,7 +69,7 @@ directional_shadow_max_distance = 40.0
 [node name="Terrain" type="Node3D" parent="."]
 
 [node name="PlayerSpawn" type="Marker3D" parent="."]
-position = Vector3(0, 0.05, 45)
+position = Vector3(0, 0.05, 22)
 
 [node name="PlazaPoint" type="Marker3D" parent="."]
 position = Vector3(0, 0.05, 2)

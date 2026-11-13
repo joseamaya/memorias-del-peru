@@ -90,6 +90,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_world_scene_loads` | `mundo_base` contiene `WorldEnvironment`, `Inti`, `Terrain` con malla y colisión, `PlayerSpawn`, `EnvironmentAudio`, `PlayerFPS` y HUD |
 | `test_sky_material` | El `Environment` usa `PhysicalSkyMaterial` |
 | `test_graphics_profiles_load` | Los cuatro perfiles cargan; Bajo/Medio sin niebla volumétrica, Alto/Ultra con ella, y el atlas de sombras crece con el perfil |
+| `test_graphics_default_profile` | El juego arranca en Medio (SSAO activo y escala 1.0) y `--profile=N` elige otro perfil |
 | `test_graphics_settings_apply` | `set_profile` emite `profile_changed`, aplica escala, MSAA y antialiasing al Viewport, y deja constancia del atlas de sombras y de sus 16 bits |
 | `test_shadow_atlas_per_profile` | Los cuatro perfiles fijan su tamaño de atlas y todos usan 16 bits |
 | `test_environment_quality_controller` | El controlador aplica niebla, SSAO, SDFGI y distancia de sombras al cambiar de perfil |
@@ -113,6 +114,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_npcs_present` | Tejedora y agricultor existen con presencia |
 | `test_messenger_event_starts_on_clock` | El evento no arranca antes del reloj y arranca al cumplirse con el jugador en la plaza |
 | `test_messenger_event_waits_for_plaza` | Si el jugador no está en la plaza, el evento espera y arranca al agotarse la espera |
+| `test_messenger_event_hastens_by_action` | Completar las tareas cerca de la plaza adelanta la llegada; lejos, la petición espera a que el jugador se acerque; mientras espera, el mensajero se ve acercarse (ADR-0030) |
 | `test_messenger_event_finishes_without_pututu` | La máquina llega a `DONE` aunque el jugador nunca toque el pututu |
 | `test_pututu_convenes_meeting` | El pututu está disponible en `CALL` y al usarlo pasa a `DEPARTURE` con `pututu_by_player` |
 | `test_pututu_ignores_early_touch` | Un toque antes de `CALL` no gasta el pututu y el evento termina igual |
@@ -125,7 +127,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_quero_cooldown` | El quero respeta su espera entre usos y no está disponible mientras dura (ADR-0008) |
 | `test_offering_once` | La ofrenda solo se usa una vez y, ya usada, deja de estar disponible (ADR-0008) |
 | `test_offering_visual` | Al dejar la ofrenda aparece el atado de coca y maíz sobre el adoratorio, con su modelo cargado; antes estaba oculto |
-| `test_world_spawn_south` | El jugador aparece en el camino sur |
+| `test_world_spawn_south` | El jugador aparece en el camino sur, a menos de 25 m de la plaza y con el quero a la vista |
 | `test_mouse_capture_requires_focus` | El jugador solo pide capturar el ratón en juego y con la ventana enfocada |
 | `test_footsteps_follow_bob` | Un paso por ciclo de balanceo, más frecuentes al correr, ninguno quieto o en el aire, y siempre con la cámara en su punto bajo |
 | `test_meeting_keeps_objects_clear` | En la reunión, todos los personajes quedan en la mitad norte de la plaza y a ≥ 2,5 m del quero, el pututu y la ofrenda |
@@ -136,10 +138,12 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_model_validator` | El validador de modelos acepta casos correctos y rechaza nombre, escala, origen, tamaño, colisión de casa y altura de personaje incorrectos; incluye un `.glb` exportado e importado con `GLTFDocument` |
 | `test_model_files_valid` | Todo `.glb` de `campaigns/01_pachacutec/assets/models/` cumple las reglas de §7 del alcance y no hay `.blend` (sin modelos, pasa sin comprobar nada) |
 | `test_model_slot` | `ModelSlot` conserva el bloqueo sin archivo, carga el modelo y oculta el bloqueo con archivo, y solo sustituye la colisión si el modelo trae la suya; el mundo tiene hueco en 8 casas, 9 personajes (colgado del cuerpo, con los pies en el origen del personaje), 3 objetos y el telar; `enable_vertex_colors` activa el color por vértice solo en las superficies que lo traen; cada casa tiene sus props (cántaros, leña) en huecos aparte, al menos 8 |
-| `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale a los 75 s como mínimo y a los 150 s como máximo; el vecino del camino sur saluda solo cuando el jugador se acerca; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean balanceando las piernas, se detienen al hablarles y dejan el paseo para acercarse al mensajero cuando llega (ADR-0012, ADR-0013) |
+| `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale como tarde a los 65 s y se le ve acercarse antes; el vecino del camino sur saluda solo cuando el jugador se acerca; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean balanceando las piernas, se detienen al hablarles y dejan el paseo para acercarse al mensajero cuando llega (ADR-0012, ADR-0030) |
 | `test_vegetation` | El reparto de ichu y queñua es determinista y deja libres la plaza, los caminos, las casas, las terrazas, la tejedora, el inicio, la salida de la comitiva y el mirador; las matas se apoyan en el terreno; los bloques de ichu se ocultan a 50 m y no proyectan sombra; cada queñua tiene tronco con colisión y separación mínima |
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
 | `test_session_log` | El registro de sesión valida los códigos, escribe cabecera y marcas en orden con el tiempo transcurrido, no abre una segunda sesión y no escribe nada fuera de una sesión (alcance v4.16) |
+| `test_hud_objective` | La línea de objetivo aparece con texto traducido, cambia de texto y se retira sin dejar rastro |
+| `test_world_objective` | El mundo arranca con el objetivo del quero a la vista y beber del quero lo hace avanzar a la ofrenda |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 

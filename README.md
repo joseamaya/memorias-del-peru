@@ -32,6 +32,15 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Cambiar perfil gráfico (solo desarrollo) | F2 |
 | Mirar | Ratón |
 
+## Iteración rápida (desarrollo)
+
+```bash
+godot --path . -- --skip-intro --spawn=plaza
+godot --path . -- --profile=0      # Bajo, para medir rendimiento
+```
+
+`--skip-intro` entra directo al mundo, `--spawn=spawn|plaza|mirador` elige el punto de aparición y `--profile=0..3` el perfil gráfico (0 Bajo, 1 Medio, 2 Alto, 3 Ultra; por defecto Medio).
+
 ## Documentación
 
 | Documento | Contenido |

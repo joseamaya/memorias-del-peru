@@ -97,6 +97,9 @@ static func terrain_material(grass_tint: Color, rock_tint: Color, dirt_tint: Col
 	material.set_shader_parameter("steep_tint", rock_tint)
 	material.set_shader_parameter("overlay_layer", int(Layer.DIRT))
 	material.set_shader_parameter("overlay_tint", dirt_tint)
+	# El borde de la plaza y los caminos tenía un corte recto visible a poca
+	# distancia; un fundido más ancho lo disuelve sin emborronar el camino.
+	material.set_shader_parameter("overlay_fade", 2.6)
 	material.set_shader_parameter("macro_strength", 0.45)
 	return material
 
@@ -158,10 +161,11 @@ static func apply_to_model(root: Node) -> int:
 				mesh_instance.set_surface_override_material(surface, _skin(material as BaseMaterial3D))
 				touched = true
 			elif material is BaseMaterial3D and material.resource_name.ends_with(".low-poly"):
-				# Ojos: húmedos, con reflejo; sin él la mirada parece muerta.
+				# Ojos: húmedos, con reflejo; sin él la mirada parece muerta,
+				# pero demasiado brillo la vuelve de muñeca.
 				var eyes: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
-				eyes.roughness = 0.08
-				eyes.metallic_specular = 0.9
+				eyes.roughness = 0.22
+				eyes.metallic_specular = 0.45
 				mesh_instance.set_surface_override_material(surface, eyes)
 				touched = true
 			elif material is BaseMaterial3D and (material as BaseMaterial3D).transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
@@ -181,13 +185,14 @@ static func apply_to_model(root: Node) -> int:
 static func _skin(material: BaseMaterial3D) -> BaseMaterial3D:
 	var skin: BaseMaterial3D = material.duplicate() as BaseMaterial3D
 	skin.albedo_color = Color(1.0, 0.94, 0.88, 1.0)
-	skin.roughness = 0.62
-	skin.metallic_specular = 0.35
+	# Piel de museo: mate, sin el brillo de cera que delata a un maniquí.
+	skin.roughness = 0.78
+	skin.metallic_specular = 0.2
 	skin.rim_enabled = true
-	skin.rim = 0.16
-	skin.rim_tint = 0.55
+	skin.rim = 0.22
+	skin.rim_tint = 0.5
 	skin.subsurf_scatter_enabled = true
-	skin.subsurf_scatter_strength = 0.12
+	skin.subsurf_scatter_strength = 0.08
 	skin.subsurf_scatter_skin_mode = true
 	return skin
 

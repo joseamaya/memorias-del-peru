@@ -49,8 +49,8 @@ const DISTANT_NEAR_BASE: float = 28.0
 const DISTANT_NEAR_AMPLITUDE: float = 34.0
 const DISTANT_FAR_BASE: float = 46.0
 const DISTANT_FAR_AMPLITUDE: float = 48.0
-const DISTANT_NEAR_COLOR: Color = Color(0.30, 0.34, 0.40, 1.0)
-const DISTANT_FAR_COLOR: Color = Color(0.44, 0.49, 0.57, 1.0)
+const DISTANT_NEAR_COLOR: Color = Color(0.24, 0.28, 0.35, 1.0)
+const DISTANT_FAR_COLOR: Color = Color(0.33, 0.39, 0.49, 1.0)
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 ## Nombres de las fases del evento, en el orden del enum de [MessengerEvent];
 ## el registro de sesión los usa como marcas (§9.2).
@@ -159,8 +159,10 @@ const INTRO_HINT_KEY: StringName = &"PCH_INTRO_HINT"
 ## «Hablar»: escena del cuerpo interactuable y pausa del vecino que habla.
 const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_talk.tscn"
 const TALK_HOLD_SECONDS: float = 7.0
-## Vecino que recibe al jugador junto al camino sur (ADR-0013).
-const GREETER_POINT: Vector3 = Vector3(3.2, 0.0, 18.0)
+## Vecino que recibe al jugador junto al camino sur (ADR-0013). Se queda a unos
+## diez metros de la aparición: saluda antes de que el jugador pueda mirarle la
+## cara de cerca.
+const GREETER_POINT: Vector3 = Vector3(3.2, 0.0, 12.0)
 ## Tarjeta de fin (ADR-0026, sustituye el retraso de 50 s de ADR-0013): el
 ## evento ya termina unos 8 s después del último subtítulo, así que la tarjeta
 ## se funde casi enseguida, mientras la comitiva se aleja.
@@ -189,6 +191,37 @@ const RAMP_COLOR: Color = Color(0.62, 0.56, 0.47, 1.0)
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
+## Objetivo visible en el HUD: una línea, sin fondo. El índice solo avanza
+## hacia delante; si el evento arranca antes de completar las tareas, salta a la
+## fase del evento y no vuelve atrás.
+enum Objective { QUERO, OFFERING, TALK, WAIT, LISTEN, PUTUTU, LEAVE, NONE }
+
+const OBJECTIVE_KEYS: Array[StringName] = [
+	&"PCH_OBJ_QUERO",
+	&"PCH_OBJ_OFFERING",
+	&"PCH_OBJ_TALK",
+	&"PCH_OBJ_WAIT",
+	&"PCH_OBJ_LISTEN",
+	&"PCH_OBJ_PUTUTU",
+	&"PCH_OBJ_LEAVE",
+]
+
+## Argumentos de desarrollo (después de `--`): `--skip-intro` entra directo al
+## mundo y `--spawn=spawn|plaza|mirador` elige el punto de aparición.
+const SKIP_INTRO_ARG: String = "--skip-intro"
+const SPAWN_ARG: String = "--spawn="
+const SPAWN_POINTS: Dictionary[String, String] = {
+	"spawn": "PlayerSpawn",
+	"plaza": "PlazaPoint",
+	"mirador": "Mirador",
+}
+
+## Mancha de contacto bajo los personajes: sin ella, los pies parecen flotar y
+## la escena pierde realismo aunque la iluminación sea correcta.
+const CONTACT_SHADOW_SIZE: Vector2 = Vector2(1.4, 1.4)
+const CONTACT_SHADOW_ALPHA: float = 0.55
+const CONTACT_SHADOW_OFFSET: float = 0.02
+
 ## Cuándo se muestra la introducción: AUTO, solo si el mundo es la escena
 ## principal (partida real y reinicio con R), para que las pruebas que cargan
 ## el mundo directamente no esperen a las tarjetas; ALWAYS y NEVER la fuerzan.
@@ -210,12 +243,12 @@ var _intro_music: AudioStreamPlayer = null
 var _music_fade_remaining: float = -1.0
 var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
+var _objective: int = Objective.QUERO
+var _contact_shadow_material: StandardMaterial3D = null
 
 
 func _ready() -> void:
 	if SessionLog.is_active():
-		# Las sesiones se juegan en el perfil que exige el protocolo (§11).
-		GraphicsSettings.set_profile_by_index(0)
 		var session_profile: GraphicsProfile = GraphicsSettings.get_active_profile()
 		if session_profile != null:
 			SessionLog.mark(&"profile", session_profile.profile_name)
@@ -229,12 +262,29 @@ func _ready() -> void:
 	_build_llacta()
 	_build_distant_ranges()
 	_build_clouds()
-	player.global_position = player_spawn.global_position
+	player.global_position = _debug_spawn_position()
 	hud.bind(player, player.stamina)
 	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
 	if with_intro:
 		_start_intro()
+	else:
+		_show_objective(Objective.QUERO)
+
+
+## Punto de aparición: el de la escena, salvo que `--spawn=<punto>` pida otro.
+func _debug_spawn_position() -> Vector3:
+	for arg: String in OS.get_cmdline_user_args():
+		if not arg.begins_with(SPAWN_ARG):
+			continue
+		var requested: String = arg.substr(SPAWN_ARG.length())
+		var node_name: String = str(SPAWN_POINTS.get(requested, ""))
+		if node_name.is_empty():
+			continue
+		var marker: Marker3D = get_node_or_null(node_name) as Marker3D
+		if marker != null:
+			return marker.global_position
+	return player_spawn.global_position
 
 
 ## Indica si esta partida empieza con la introducción.
@@ -244,7 +294,48 @@ func should_play_intro() -> bool:
 			return true
 		IntroMode.NEVER:
 			return false
-	return is_inside_tree() and get_tree().current_scene == self
+	return is_inside_tree() and get_tree().current_scene == self and not _skips_intro()
+
+
+## Indica si `--skip-intro` pidió entrar directamente al mundo.
+static func _skips_intro() -> bool:
+	return OS.get_cmdline_user_args().has(SKIP_INTRO_ARG)
+
+
+## Objetivo a la vista, para las pruebas y la instrumentación.
+func get_objective() -> int:
+	return _objective
+
+
+## Texto del objetivo a la vista, o cadena vacía.
+func get_objective_text() -> String:
+	return hud.get_objective_text() if hud != null else ""
+
+
+## Cambia el objetivo si avanza. Nunca retrocede: las tareas son opcionales en
+## cuanto el evento narrativo toma el mando.
+func _advance_objective(step: int) -> void:
+	if step <= _objective:
+		return
+	_show_objective(step)
+
+
+func _show_objective(step: int) -> void:
+	_objective = step
+	if hud == null:
+		return
+	if step == Objective.NONE or step >= OBJECTIVE_KEYS.size():
+		hud.clear_objective()
+		return
+	var key: StringName = OBJECTIVE_KEYS[step]
+	hud.show_objective(tr(String(key)))
+	SessionLog.mark(&"objective", String(key))
+	if step == Objective.WAIT:
+		# Con las tareas hechas, el jugador ya no espera a ciegas: pide la
+		# llegada del mensajero (ADR-0030).
+		var event: MessengerEvent = $EventController as MessengerEvent
+		if event != null:
+			event.request_arrival()
 
 
 ## Indica si la introducción está a la vista.
@@ -297,6 +388,7 @@ func _on_intro_finished() -> void:
 	if _intro_music != null and _intro_music.playing:
 		_music_fade_remaining = INTRO_MUSIC_FADE
 	hud.show_hint(tr(String(CONTROLS_HINT_KEY)), CONTROLS_HINT_SECONDS)
+	_show_objective(_objective)
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
 		event.begin()
@@ -632,10 +724,17 @@ func _build_llacta() -> void:
 	# Junto a la rampa de la primera terraza, al alcance para hablarle.
 	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(36.5, 0.8, -3.0), Color(0.45, 0.35, 0.25, 1.0))
 	var messenger: NpcActor = _add_npc(npcs, "Mensajero", Vector3(0.0, 0.0, -60.0), Color(0.75, 0.65, 0.4, 1.0))
-	messenger.walk_speed = 5.2
+	messenger.walk_speed = MessengerEvent.MESSENGER_RUN_SPEED
 	var curaca: NpcActor = _add_npc(npcs, "Curaca", Vector3(-7.0, 0.0, -3.0), Color(0.72, 0.55, 0.45, 1.0))
 	var principal_one: NpcActor = _add_npc(npcs, "Principal1", Vector3(-8.5, 0.0, -1.0), Color(0.55, 0.42, 0.32, 1.0))
-	var principal_two: NpcActor = _add_npc(npcs, "Principal2", Vector3(-9.0, 0.0, 2.0), Color(0.5, 0.4, 0.3, 1.0))
+	var principal_two: NpcActor = _add_npc(npcs, "Principal2", Vector3(-8.6, 0.0, 0.7), Color(0.5, 0.4, 0.3, 1.0))
+	# Dos hombres principales conversan de perfil junto al curaca: el ojo lee
+	# una conversación en vez de examinar una cara de frente. El reposo
+	# alternativo evita el gesto amplio de «talk», que a corta distancia
+	# convierte la silueta en un espantapájaros.
+	principal_one.face(principal_two.global_position, true)
+	principal_two.face(principal_one.global_position, true)
+	principal_two.set_idle_animation(&"idle_b")
 	var neighbor_one: NpcActor = _add_npc(npcs, "Habitante1", Vector3(9.0, 0.0, 4.0), Color(0.48, 0.36, 0.28, 1.0))
 	var neighbor_two: NpcActor = _add_npc(npcs, "Habitante2", Vector3(11.0, 0.0, -1.0), Color(0.42, 0.33, 0.26, 1.0))
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
@@ -677,7 +776,34 @@ func _build_llacta() -> void:
 		for talk: NpcTalk in talks:
 			if talk != null:
 				talk.event = event
+	_connect_objectives()
 	_setup_ambience()
+
+
+## Conecta los objetos que marcan el avance del objetivo. El mundo conoce el
+## orden de la experiencia; los objetos solo avisan de que se usaron.
+func _connect_objectives() -> void:
+	var quero: QueroChicha = $QueroChicha as QueroChicha
+	if quero != null and not quero.drank.is_connected(_on_quero_drank):
+		quero.drank.connect(_on_quero_drank)
+	var ofrenda: OfrendaPachamama = $OfrendaPachamama as OfrendaPachamama
+	if ofrenda != null and not ofrenda.offered.is_connected(_on_offering_left):
+		ofrenda.offered.connect(_on_offering_left)
+	var pututu: Pututu = $Pututu as Pututu
+	if pututu != null and not pututu.played.is_connected(_on_pututu_played):
+		pututu.played.connect(_on_pututu_played)
+
+
+func _on_quero_drank() -> void:
+	_advance_objective(Objective.OFFERING)
+
+
+func _on_offering_left() -> void:
+	_advance_objective(Objective.TALK)
+
+
+func _on_pututu_played() -> void:
+	_advance_objective(Objective.LEAVE)
 
 
 ## Paseos de los tres vecinos antes de la noticia: cada uno vuelve a su punto
@@ -713,6 +839,8 @@ func _add_talk(actor: NpcActor, line_key: StringName) -> NpcTalk:
 func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
 	if hud != null:
 		hud.show_subtitle(tr(String(line_key)), 0.0)
+	if _objective == Objective.TALK:
+		_advance_objective(Objective.WAIT)
 	var npc: NpcActor = actor as NpcActor
 	if npc == null:
 		return
@@ -749,10 +877,25 @@ static func murmur_plays_in(phase: int) -> bool:
 func _on_event_phase_changed(phase: int) -> void:
 	if phase >= 0 and phase < EVENT_PHASE_NAMES.size():
 		SessionLog.mark(&"phase", EVENT_PHASE_NAMES[phase])
+	_sync_objective_with_phase(phase)
 	if murmur_plays_in(phase):
 		_start_murmur()
 	else:
 		_stop_murmur()
+
+
+## El evento manda sobre las tareas: al llegar el mensajero, el objetivo pasa a
+## escuchar y, en la llamada, a tocar el pututu.
+func _sync_objective_with_phase(phase: int) -> void:
+	match phase:
+		MessengerEvent.Phase.ARRIVAL, MessengerEvent.Phase.MESSAGE:
+			_advance_objective(Objective.LISTEN)
+		MessengerEvent.Phase.CALL:
+			_advance_objective(Objective.PUTUTU)
+		MessengerEvent.Phase.DEPARTURE:
+			_advance_objective(Objective.LEAVE)
+		MessengerEvent.Phase.DONE:
+			_show_objective(Objective.NONE)
 
 
 func _start_murmur() -> void:
@@ -1233,6 +1376,7 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	actor.body_color = color
 	parent.add_child(actor)
 	actor.add_to_group("npcs")
+	_add_contact_shadow(actor)
 	var body_mesh: MeshInstance3D = actor.get_node_or_null("Body") as MeshInstance3D
 	var blockout: Array[Node3D] = []
 	var slot_parent: Node3D = actor
@@ -1251,6 +1395,47 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	if slot.model != null:
 		actor.set_model(slot.model)
 	return actor
+
+
+## Añade la mancha de contacto bajo un personaje: un quad con degradado radial,
+## sin luz ni sombra propia. Cuesta un draw call por personaje y evita que los
+## pies parezcan flotar.
+func _add_contact_shadow(actor: Node3D) -> void:
+	var quad: MeshInstance3D = MeshInstance3D.new()
+	quad.name = "ContactShadow"
+	var mesh: QuadMesh = QuadMesh.new()
+	mesh.size = CONTACT_SHADOW_SIZE
+	quad.mesh = mesh
+	quad.material_override = _get_contact_shadow_material()
+	quad.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	quad.position = Vector3(0.0, CONTACT_SHADOW_OFFSET, 0.0)
+	quad.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	actor.add_child(quad)
+
+
+## Material compartido por todas las manchas de contacto.
+func _get_contact_shadow_material() -> StandardMaterial3D:
+	if _contact_shadow_material != null:
+		return _contact_shadow_material
+	var gradient: Gradient = Gradient.new()
+	gradient.set_color(0, Color(0.0, 0.0, 0.0, CONTACT_SHADOW_ALPHA))
+	gradient.set_color(1, Color(0.0, 0.0, 0.0, 0.0))
+	gradient.add_point(0.55, Color(0.0, 0.0, 0.0, CONTACT_SHADOW_ALPHA * 0.4))
+	var texture: GradientTexture2D = GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	texture.width = 64
+	texture.height = 64
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_texture = texture
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.disable_receive_shadows = true
+	_contact_shadow_material = material
+	return material
 
 
 ## Telar orientado con su extremo de trabajo en [constant LOOM_POSITION] y

@@ -14,6 +14,14 @@ const PROFILE_PATHS: Array[String] = [
 	"res://core/systems/graphics/profiles/ultra.tres",
 ]
 
+## Perfil con el que arranca el juego.
+##
+## Es el perfil Medio: el juego se percibe mucho mejor con oclusión ambiental y
+## sin reducción de escala, y el margen de rendimiento medido lo permite
+## (docs/08 §4). Bajo sigue disponible en el ciclo de desarrollo con F2 y en la
+## línea de comandos (`--profile`).
+const DEFAULT_PROFILE_INDEX: int = 1
+
 ## Los perfiles usan el atlas de sombras direccionales de 16 bits.
 ##
 ## El segundo parámetro de [method RenderingServer.directional_shadow_atlas_set_size]
@@ -21,6 +29,9 @@ const PROFILE_PATHS: Array[String] = [
 ## que duplica la memoria y el coste de sombreado sin mejorar la imagen de forma
 ## perceptible en la referencia con GPU integrada (docs/08 §2).
 const SHADOW_ATLAS_16_BITS: bool = true
+
+## Prefijo del argumento de línea de comandos que elige el perfil inicial.
+const PROFILE_ARG: String = "--profile="
 
 var _profiles: Array[GraphicsProfile] = []
 var _active_index: int = 0
@@ -40,7 +51,20 @@ func _ready() -> void:
 		if profile != null:
 			_profiles.append(profile)
 	if not _profiles.is_empty():
-		set_profile_by_index(0)
+		var requested: int = profile_index_from_args(OS.get_cmdline_user_args(), DEFAULT_PROFILE_INDEX)
+		set_profile_by_index(requested)
+
+
+## Lee el perfil pedido en la línea de comandos (`--profile=2`, después de `--`).
+## Devuelve [param fallback] si no hay argumento o no es un entero válido.
+static func profile_index_from_args(args: PackedStringArray, fallback: int) -> int:
+	for arg: String in args:
+		if not arg.begins_with(PROFILE_ARG):
+			continue
+		var value: String = arg.substr(PROFILE_ARG.length())
+		if value.is_valid_int():
+			return maxi(value.to_int(), 0)
+	return fallback
 
 
 ## Devuelve el perfil activo, o null si no hay perfiles cargados.

@@ -44,7 +44,7 @@ Plantilla:
 | [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado (texturas matizadas por ADR-0014; personajes, por ADR-0015 y ADR-0016) |
 | [0011](0011-fichas-fuera-del-slice.md) | Fichas de elementos que no están en el juego | Aceptado |
 | [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013; rótulo, por ADR-0023) |
-| [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Aceptado (balanceo de piernas sustituido por ADR-0015; retraso de la tarjeta de fin, por ADR-0026) |
+| [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Reemplazado por ADR-0030 |
 | [0014](0014-texturas-de-detalle-triplanares.md) | Texturas de detalle triplanares | Aceptado |
 | [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016) |
 | [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Aceptado (cabezas matizadas por ADR-0017) |
@@ -61,3 +61,4 @@ Plantilla:
 | [0027](0027-musica-de-la-introduccion.md) | Música de la introducción | Reemplazado por ADR-0028 |
 | [0028](0028-musica-epica-de-la-introduccion.md) | Música épica de la introducción | Aceptado (pieza sustituida por ADR-0029) |
 | [0029](0029-tema-de-apertura.md) | Tema de apertura de la introducción | Aceptado |
+| [0030](0030-ritmo-y-disparo-del-mensajero.md) | Ritmo y disparo del mensajero: por acción y con aproximación visible | Aceptado (reemplaza a ADR-0013) |

@@ -363,3 +363,16 @@ Mismo comando y recorrido circular. La escena incluye la cúpula de nubes proced
 | Medio | 46,0 | 38,5 | 21,8 ms | 26 ms | 115 | 266,5 MB |
 
 El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con más de cuatro veces el margen. El perfil Medio queda por debajo de 60 FPS en esta GPU integrada, como en las mediciones anteriores; el perfil recomendado en esta máquina sigue siendo Bajo.
+
+### Medición con el perfil Medio por defecto y oclusión ambiental (Fase 4, 2026-11-13)
+
+El juego pasa a arrancar en **Medio** ([bitácora](bitacora.md)): el perfil Bajo se reserva para equipos lentos y para la medición de referencia. Para que Medio llegue a 60 FPS en la GPU integrada se desactiva su MSAA 2× y se mantiene el FXAA: la oclusión ambiental (SSAO) se conserva porque es la que da profundidad a la escena. Mismo comando y recorrido circular que las mediciones anteriores.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 118,6 | 90,9 | 8,43 ms | 12 ms | 114–158 | 219,7 MB |
+| Medio | 61,8 | 52,6 | 16,2 ms | 19 ms | 155 | 265,1 MB |
+
+- El perfil Medio supera los 60 FPS de media en la GPU integrada de referencia: el objetivo recomendado de docs/01 §5 se cumple también ahí, sin esperar a la referencia con GPU dedicada. Es la mediana de tres ejecuciones; una de ellas, con el equipo cargado, dio 53,1 FPS y 299 draw calls, así que las cifras se leen como orden de magnitud.
+- El jugador termina apoyado en el terreno en ambos perfiles.
+- La medición se hizo con la carga del sistema habitual del equipo; las cifras se leen como orden de magnitud.

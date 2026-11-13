@@ -40,6 +40,8 @@ func test_intro_holds_event_clock() -> bool:
 	ok = ok and intro.current_text() == tr("PCH_INTRO_NOTE") and MundoBase.INTRO_KEYS.size() == 4
 	ok = ok and not hud.is_showing_hint()
 	ok = ok and not hud.is_showing_subtitle()
+	# El objetivo no compite con la introducción; aparece al tomar el control.
+	ok = ok and not hud.is_showing_objective()
 	# Tomas y mapa (ADR-0025): la cámara de la introducción es la activa, la
 	# primera tarjeta es negra y el mapa es la capa de la tarjeta del Cusco.
 	var director: IntroDirector = world.get_intro_director()
@@ -66,6 +68,7 @@ func test_intro_holds_event_clock() -> bool:
 	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
 	# Los controles aparecen al tomar el control (ADR-0024).
 	ok = ok and hud.is_showing_hint()
+	ok = ok and hud.is_showing_objective()
 	# La última toma termina en los ojos del jugador y su cámara vuelve a mandar.
 	ok = ok and player_camera.is_current() and not director.get_camera().is_current()
 	ok = ok and director.get_camera().global_transform.origin.distance_to(player_camera.global_transform.origin) < 0.01

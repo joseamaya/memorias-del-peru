@@ -175,7 +175,7 @@ func _hide_promo_hud() -> void:
 	var hud: Node = world.get_node_or_null("UILayer/HUD")
 	if hud == null:
 		return
-	for node_name: String in ["InteractionLabel", "StaminaBar", "HintLabel", "EndPanel/EndHint"]:
+	for node_name: String in ["InteractionLabel", "StaminaBar", "HintLabel", "ObjectiveLabel", "EndPanel/EndHint"]:
 		var item: CanvasItem = hud.get_node_or_null(node_name) as CanvasItem
 		if item != null:
 			item.visible = false

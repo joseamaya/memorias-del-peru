@@ -39,9 +39,12 @@ func test_messenger_event_waits_for_plaza() -> bool:
 	if world == null:
 		return false
 	var event: MessengerEvent = world.get_node_or_null("EventController") as MessengerEvent
-	if event == null:
+	var player: Node3D = world.get_node_or_null("PlayerFPS") as Node3D
+	if event == null or player == null:
 		world.free()
 		return false
+	# El jugador aparece cerca de la plaza; para probar la espera se le aleja.
+	player.global_position = Vector3(0.0, 0.05, 60.0)
 	event.step(event.arrival_delay + 1.0)
 	var waiting: bool = event.phase == MessengerEvent.Phase.IDLE
 	event.step(event.arrival_grace + 1.0)

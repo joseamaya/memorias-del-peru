@@ -27,15 +27,15 @@ func test_npc_talk_and_wander() -> bool:
 		world.free()
 		return false
 	ok = ok and not title.visible
-	ok = ok and event.arrival_delay <= 75.0 and event.arrival_delay + event.arrival_grace <= 150.0
+	ok = ok and event.arrival_delay <= 45.0 and event.arrival_delay + event.arrival_grace <= 65.0
 
 	# El vecino que recibe espera junto al camino sur y saluda al acercarse.
 	var greeter: NpcActor = world.get_node("Llacta/NPCs/Habitante3") as NpcActor
-	ok = ok and greeter.global_position.distance_to(Vector3(3.2, 0.0, 18.0)) < 0.01 and not event.has_greeted()
+	ok = ok and greeter.global_position.distance_to(Vector3(3.2, 0.0, 12.0)) < 0.01 and not event.has_greeted()
 	player.global_position = Vector3(0.0, 0.05, 40.0)
 	event.step(0.1)
 	ok = ok and not event.has_greeted()
-	player.global_position = Vector3(0.0, 0.05, 24.0)
+	player.global_position = Vector3(0.0, 0.05, 20.0)
 	event.step(0.1)
 	ok = ok and event.has_greeted()
 

@@ -41,9 +41,9 @@ const DEPARTURE_TIMEOUT: float = 45.0
 ## subtítulo de cierre, aunque la comitiva siga caminando, para que la tarjeta
 ## de fin llegue sin un vacío tras el pututu.
 const CLOSING_HOLD: float = 8.0
-## Señal intermedia de la espera (ADR-0012, ADR-0013): a mitad del reloj, un
-## texto recuerda que el mensajero aún no llega.
-const WAIT_CUE_TIME: float = 45.0
+## Señal intermedia de la espera (ADR-0030): antes de que llegue el mensajero,
+## un texto recuerda que aún viene y se le ve bajar por el camino del norte.
+const WAIT_CUE_TIME: float = 20.0
 const GATHER_SECONDS: float = 6.0
 ## Vecino que recibe al jugador en el camino sur (ADR-0013): habla cuando el
 ## jugador se acerca a esta distancia.
@@ -59,6 +59,16 @@ const WANDER_PAUSE_STAGGER: float = 1.5
 ## El mensajero se detiene algo al norte del centro de la plaza y el grupo forma
 ## un anillo a su alrededor, con un hueco al sur por donde llega el jugador.
 const MESSENGER_OFFSET: Vector3 = Vector3(0.0, 0.0, -1.5)
+## Aproximación visible (ADR-0030): antes de que arranque la llegada, el
+## mensajero baja por el camino del norte a paso de caminata. Así la espera
+## tiene algo que mirar en lugar de ser un reloj a ciegas.
+const APPROACH_START_TIME: float = 18.0
+const APPROACH_SPEED: float = 1.4
+## A esta distancia de la plaza deja de acercarse: la llegada la manda el
+## evento, no la aproximación.
+const APPROACH_STOP_DISTANCE: float = 24.0
+## Velocidad de la carrera final hasta la plaza.
+const MESSENGER_RUN_SPEED: float = 5.2
 const MEETING_RADIUS: float = 2.5
 const MEETING_RADIUS_STAGGER: float = 0.2
 const MEETING_ARC_SLOTS: int = 6
@@ -66,14 +76,20 @@ const MEETING_ARC_START_DEGREES: float = 150.0
 ## Recorrido del arco: deja 120° libres al sur (hacia el jugador).
 const MEETING_ARC_SWEEP_DEGREES: float = 240.0
 
-## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0013;
-## antes, 240 s en ADR-0009 y 120 s en ADR-0012).
-@export var arrival_delay: float = 75.0
+## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0030;
+## antes, 75 s en ADR-0013, 120 s en ADR-0012 y 240 s en ADR-0009).
+##
+## Es un respaldo: si el jugador completa las tres tareas de la llacta y está
+## cerca de la plaza, el mundo pide la llegada con [method request_arrival].
+@export var arrival_delay: float = 45.0
 ## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza:
-## el mensajero sale como tarde a los 150 s. Mientras tanto, un aviso llama a
+## el mensajero sale como tarde a los 65 s. Mientras tanto, un aviso llama a
 ## la plaza.
-@export var arrival_grace: float = 75.0
+@export var arrival_grace: float = 20.0
 @export var arrival_radius: float = 22.0
+## Radio más estrecho para adelantar la llegada por acción del jugador: pide la
+## llegada cuando está en la plaza, no cuando aún recorre el campo.
+@export var request_radius: float = 10.0
 @export var call_timeout: float = 60.0
 ## Si está activo, el reloj arranca al conectar el evento con el mundo. La
 ## escena lo desactiva cuando hay introducción y llama a [method begin] al
@@ -94,6 +110,7 @@ var _neighbors: Array[NpcActor] = []
 var _pututu: Pututu = null
 
 var _begun: bool = false
+var _arrival_requested: bool = false
 var _idle_time: float = 0.0
 var _phase_time: float = 0.0
 var _news_second_timer: float = 0.0
@@ -213,6 +230,36 @@ func start() -> void:
 	_enter(Phase.ARRIVAL)
 
 
+## Pide la llegada antes del reloj (ADR-0030). La llama el mundo cuando el
+## jugador completó las tareas de la llacta. Solo arranca si está cerca de la
+## plaza; si no, queda pendiente y arranca en cuanto llega.
+func request_arrival() -> void:
+	if phase != Phase.IDLE:
+		return
+	_arrival_requested = true
+	_try_start_requested_arrival()
+
+
+## Devuelve `true` si el jugador está lo bastante cerca de la plaza para
+## adelantar la llegada.
+func player_near_plaza() -> bool:
+	if _player == null or _plaza == null:
+		return false
+	return _player.global_position.distance_to(_plaza_center) <= request_radius
+
+
+## Devuelve `true` si la llegada pedida por el jugador acaba de empezar.
+func _try_start_requested_arrival() -> bool:
+	if not _arrival_requested or phase != Phase.IDLE:
+		return false
+	if not player_near_plaza():
+		return false
+	_arrival_requested = false
+	_arrival_by_grace = false
+	_enter(Phase.ARRIVAL)
+	return true
+
+
 ## Devuelve `true` si el jugador está dentro del radio de la plaza.
 func player_in_plaza() -> bool:
 	if _player == null or _plaza == null:
@@ -241,6 +288,9 @@ func _step_idle(delta: float) -> void:
 	_idle_time += delta
 	_step_greeter(delta)
 	_step_wander(delta)
+	_step_approach(delta)
+	if _try_start_requested_arrival():
+		return
 	if not _wait_cue_sent and WAIT_CUE_TIME < arrival_delay and _idle_time >= WAIT_CUE_TIME:
 		_wait_cue_sent = true
 		subtitle_requested.emit(KEY_WAIT, WAIT_SECONDS)
@@ -256,6 +306,23 @@ func _step_idle(delta: float) -> void:
 	if _idle_time >= arrival_delay + arrival_grace:
 		_arrival_by_grace = true
 		_enter(Phase.ARRIVAL)
+
+
+## Aproximación visible: el mensajero baja por el camino del norte a paso de
+## caminata y se detiene a las puertas de la plaza. La llegada la manda el
+## evento, no este método.
+func _step_approach(delta: float) -> void:
+	if _messenger == null or _idle_time < APPROACH_START_TIME:
+		return
+	var stop_point: Vector3 = _plaza_center + Vector3(0.0, 0.0, -APPROACH_STOP_DISTANCE)
+	if _messenger.moving:
+		_messenger.advance(delta)
+		return
+	if _messenger.flat_distance_to(stop_point) <= 0.6:
+		return
+	_messenger.walk_speed = APPROACH_SPEED
+	_messenger.walk_to(stop_point)
+	_messenger.advance(delta)
 
 
 func _step_greeter(_delta: float) -> void:
@@ -361,6 +428,8 @@ func _enter(next_phase: int) -> void:
 	match phase:
 		Phase.ARRIVAL:
 			started.emit()
+			if _messenger != null:
+				_messenger.walk_speed = MESSENGER_RUN_SPEED
 			# Los vecinos dejan su paseo y todo el grupo se acerca al punto
 			# donde se detendrá el mensajero, mientras él llega corriendo.
 			for actor: NpcActor in _wander_routes:

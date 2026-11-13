@@ -32,6 +32,7 @@ const TITLE_FADE_OUT: float = 1.2
 @onready var subtitle_label: Label = $SubtitleLabel
 @onready var title_label: Label = $TitleLabel
 @onready var hint_label: Label = $HintLabel
+@onready var objective_label: Label = $ObjectiveLabel
 @onready var pause_panel: Control = $PausePanel
 @onready var end_panel: ColorRect = $EndPanel
 @onready var end_title: Label = $EndPanel/EndTitle
@@ -53,6 +54,7 @@ func _ready() -> void:
 	subtitle_label.visible = false
 	title_label.visible = false
 	hint_label.visible = false
+	objective_label.visible = false
 	pause_panel.visible = false
 	end_panel.visible = false
 	# El aviso de pausa debe actualizarse con el árbol en pausa.
@@ -198,6 +200,29 @@ func advance_title(delta: float) -> void:
 	var fade_in: float = clampf(_title_elapsed / TITLE_FADE_IN, 0.0, 1.0)
 	var fade_out: float = clampf((_title_total - _title_elapsed) / TITLE_FADE_OUT, 0.0, 1.0)
 	title_label.modulate.a = minf(fade_in, fade_out)
+
+
+## Muestra el objetivo actual en una sola línea, sin fondo ni adornos. Es la
+## respuesta permanente a «¿qué hago ahora?»: se actualiza cuando cambia el
+## paso, no parpadea y no compite con los subtítulos.
+func show_objective(text: String) -> void:
+	objective_label.text = text
+	objective_label.visible = not text.is_empty()
+
+
+## Retira el objetivo (por ejemplo, al terminar la experiencia).
+func clear_objective() -> void:
+	show_objective("")
+
+
+## Texto del objetivo a la vista, o cadena vacía.
+func get_objective_text() -> String:
+	return objective_label.text
+
+
+## Indica si hay un objetivo a la vista.
+func is_showing_objective() -> bool:
+	return objective_label.visible
 
 
 ## Muestra una indicación breve (por ejemplo, los controles) con fundidos,

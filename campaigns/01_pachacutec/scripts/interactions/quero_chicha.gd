@@ -5,6 +5,10 @@ extends Interactable
 ## Restaura estamina sin conocer al jugador ni a la UI: recibe el interactor,
 ## busca su componente de estamina y solicita la recuperación.
 
+## Se emite cuando el jugador bebe. El mundo lo usa para avanzar el objetivo
+## sin que el quero conozca la UI ni el orden de la experiencia.
+signal drank
+
 @export var restore_amount: float = 35.0
 @export var cooldown_seconds: float = 10.0
 @export var interaction_text_key: StringName = &"PCH_QUERO_INTERACT"
@@ -52,6 +56,7 @@ func interact(interactor: Node3D) -> void:
 		AudioManager.play_sfx(audio_stream)
 	_cooldown_remaining = cooldown_seconds
 	_play_response()
+	drank.emit()
 
 
 func _play_response() -> void:

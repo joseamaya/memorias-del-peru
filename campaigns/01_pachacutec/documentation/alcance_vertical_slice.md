@@ -46,6 +46,8 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.14 | Pase de personajes y viviendas: manos en primera persona para beber, ofrecer y tocar el pututu; piel más cálida con subsuperficie y ropa con más detalle; puertas de tablones y escalón de piedra en las casas, con paja más envejecida (§4, §5 y §6.1). Pedida el 2026-11-13. |
 | v4.15 | Ajuste de mantos y llicllas: post-proceso de los GLB de personajes para reducir su apertura lateral y añadir un pliegue suave, sin tocar huesos, pesos, UV ni animaciones (§5 y §6.1). Pedido el 2026-11-13. |
 | v4.16 | Registro automático de las sesiones de prueba: argumento `--session <código>`, marcas de tiempo de los hitos de §9.2 y anexo de los errores del motor para §9.6, con el perfil Bajo fijado (§9.2 y §9.5). No altera el contenido jugable. Pedido el 2026-11-13. |
+| v4.17 | Corrección de la primera impresión tras la prueba del responsable del proyecto: el juego arranca en perfil Medio con oclusión ambiental, el jugador aparece a 22 m de la plaza, el HUD muestra una línea de objetivo que avanza con el quero, la ofrenda, la conversación y el evento, los textos narrativos se acortan, los personajes tienen mancha de contacto y las sesiones dejan de forzar el perfil Bajo y registran el activo (§2.2, §5, §6.1, §6.2 y §9.5). Pedida el 2026-11-13. |
+| v4.18 | Aplica [ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md): el mensajero sale cuando el jugador completa las tareas y está cerca de la plaza, con respaldo a los 45 s y 20 s de espera; desde los 18 s se le ve bajar por el camino del norte; el aviso de espera pasa a los 20 s y el vecino que recibe se coloca a 10 m de la aparición. Además, materiales de piel y ojos más mates y dos hombres principales conversando de perfil (§2.2, §5, §6.1, §6.2, §9.2 y §10). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -82,14 +84,14 @@ La noticia se presenta como lo que dice el mensajero. La tradición recoge versi
 
 ### 2.2 Secuencia y disparo
 
-La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md)) y un disparo por reloj ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). La noticia cierra la sesión: el jugador explora primero y el mensajero llega a media mañana.
+La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md)) y un disparo por acción con respaldo por reloj ([ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md), que reemplaza a [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md) y [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md)). La noticia cierra la sesión: el jugador explora primero y el mensajero llega a media mañana.
 
 | Fase | Entra cuando | Ocurre | Subtítulo |
 |---|---|---|---|
 | título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
 | introducción | se pulsa Comenzar | cuatro tarjetas (ADR-0023, ADR-0024 y ADR-0025): la nota histórica sobre negro; los Andes y la llacta sobre tomas del juego; el valle del Cusco sobre un mapa propio; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
-| `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero espera fuera del camino norte; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; a los 45 s, “El sol ya está alto…”; a los 75 s, si el jugador no está en la plaza, “Desde la plaza llaman a la gente…” |
-| `ARRIVAL` | pasan 75 s **y** el jugador está en la plaza, o 150 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
+| `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero baja por el camino norte desde los 18 s y se detiene a las puertas de la plaza; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; a los 20 s, “El sol sube…”; a los 45 s, si el jugador no está en la plaza, “Desde la plaza llaman…” |
+| `ARRIVAL` | el jugador completó las tres tareas y está a menos de 10 m de la plaza, o pasan 45 s **y** está en la plaza, o 65 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
 | `MESSAGE` | el mensajero llega | el mensajero se detiene y el grupo termina de formar un anillo a su alrededor; el curaca y los principales escuchan | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
 | `DEPARTURE` | suena el pututu | el mensajero, el curaca y los principales parten por el camino norte; los vecinos se quedan (v4.8) | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
@@ -264,15 +266,22 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 | `PCH_INTRO_2` | introducción, tarjeta 2 | En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región. |
 | `PCH_INTRO_3` | introducción, tarjeta 3 | Tú vives en una llacta, una pequeña aldea de la sierra cerca del Cusco. Hoy se esperan noticias. |
 | `PCH_INTRO_HINT` | al pie de las tarjetas | E para continuar |
-| `PCH_NARR_OPENING` | al empezar | Hoy se espera a un mensajero del Cusco. Mientras llega, recorre la llacta y habla con su gente. |
-| `PCH_NARR_GREET` | al acercarse al vecino del camino sur | ¡Llegas a tiempo! Ven a la plaza: hoy esperamos noticias del Cusco. |
-| `PCH_NARR_WAIT` | a los 45 s, si no ha llegado | El sol ya está alto. Por el camino del norte todavía no viene nadie. |
-| `PCH_NARR_GATHER` | a los 75 s, si el jugador no está en la plaza | Desde la plaza llaman a la gente: el mensajero está por llegar. |
-| `PCH_NARR_NEWS_1` | llega el mensajero | ¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido de la ciudad. |
+| `PCH_NARR_OPENING` | al empezar | Hoy llega un mensajero del Cusco. Mientras tanto, recorre la llacta. |
+| `PCH_NARR_GREET` | al acercarse al vecino del camino sur | ¡Llegas a tiempo! Ven a la plaza: hoy hay noticias del Cusco. |
+| `PCH_NARR_WAIT` | a los 20 s, si no ha llegado | El sol sube. Por el camino del norte aún no viene nadie. |
+| `PCH_NARR_GATHER` | a los 45 s, si el jugador no está en la plaza | Desde la plaza llaman: el mensajero está por llegar. |
+| `PCH_NARR_NEWS_1` | llega el mensajero | ¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido. |
 | `PCH_NARR_NEWS_2` | tras la anterior | Cusi Yupanqui llama a los ayllus. |
 | `PCH_NARR_CALL` | empieza la llamada | Los hombres esperan. El pututu puede convocar. |
-| `PCH_NARR_CLOSING_1` | parte el grupo | El curaca y los hombres principales parten hacia el Cusco. |
-| `PCH_NARR_CLOSING_2` | tras la anterior | La llacta queda en silencio. Solo queda el viento. |
+| `PCH_NARR_CLOSING_1` | parte el grupo | El curaca y los principales parten hacia el Cusco. |
+| `PCH_NARR_CLOSING_2` | tras la anterior | La llacta queda en silencio. |
+| `PCH_OBJ_QUERO` | objetivo inicial | Bebe del quero de chicha |
+| `PCH_OBJ_OFFERING` | tras beber | Deja una ofrenda a la Pachamama |
+| `PCH_OBJ_TALK` | tras la ofrenda | Habla con la gente de la llacta |
+| `PCH_OBJ_WAIT` | tras la primera conversación | Espera al mensajero en la plaza |
+| `PCH_OBJ_LISTEN` | llega el mensajero | Escucha al mensajero |
+| `PCH_OBJ_PUTUTU` | empieza la llamada | Toca el pututu para convocar |
+| `PCH_OBJ_LEAVE` | suena el pututu | Sigue al curaca hacia el Cusco |
 | `PCH_END_TITLE` | tarjeta de fin | Fin del fragmento |
 
 Frases de «Hablar» (licencia narrativa, N; la mención de Andahuaylas se apoya en PCH-003). Revisadas y aprobadas por el responsable del proyecto el 2026-11-11:
@@ -438,11 +447,11 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 | Viviendas oeste y telar | 0,5 | 2,0 |
 | Terrazas, rampas y mirador | 0,5 | 2,0 |
 | Quero y ofrenda | 0,5 | 1,0 |
-| Conversaciones y espera hasta la noticia (v3.5: mensajero a los 75 s, que espera al jugador) | 0,5 | 0,0 |
+| Conversaciones y espera hasta la noticia (v4.18: el mensajero sale al completar las tareas, con respaldo a los 45 s) | 0,2 | 0,2 |
 | Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
 | **Total** | **4,5** | **8,1** |
 
-Con el reloj de 75 s que espera al jugador (v3.5), la mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6, y unos 50 s menos con el cierre corto de la v4.8, que ya no espera 60 s tras el último subtítulo): quien explora ve el evento al llegar a la plaza, como tarde a los 150 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj.
+Con el disparo por acción de la v4.18, la espera deja de ser un tramo fijo: quien completa las tres tareas y vuelve a la plaza ve llegar al mensajero en ese momento, y el respaldo lo trae como tarde a los 65 s. La mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6, y unos 50 s menos con el cierre corto de la v4.8): la partida de demostración medida tras el cambio termina en 115 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj de respaldo.
 
 ## 11. Rendimiento
 
