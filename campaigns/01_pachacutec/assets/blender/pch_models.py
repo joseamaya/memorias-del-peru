@@ -302,42 +302,46 @@ MORTAR_DEPTH = 0.028
 
 def rough_stone(builder, rng, center, axis_u, axis_v, normal, size_u, size_v, proud, mat_name, sides=6):
 	"""Piedra de campo vista de frente, asentada en el barro: contorno
-	irregular en el plano del muro (centro [center], ejes [axis_u], [axis_v]),
-	bisel hasta la cara y cara abombada que sobresale [proud]."""
+	irregular en el plano del muro, bisel corto y cara plana que sobresale
+	[proud]. La cara plana es lo que la separa de un canto rodado."""
 	phase = rng.uniform(0.0, 2.0 * math.pi)
 	tilt = rng.uniform(-0.12, 0.12)
 	cos_t, sin_t = math.cos(tilt), math.sin(tilt)
+	inset = rng.uniform(0.94, 0.97)
+	depth = proud * rng.uniform(0.94, 1.0)
 	base, front = [], []
 	for k in range(sides):
 		angle = phase + 2.0 * math.pi * k / sides
 		c, s = math.cos(angle), math.sin(angle)
 		# Superelipse casi rectangular: piedra tosca de caras planas, no canto
 		# rodado.
-		r = 1.0 / ((abs(c) ** 5.0 + abs(s) ** 5.0) ** 0.2)
-		r *= rng.uniform(0.9, 1.03)
+		r = 1.0 / ((abs(c) ** 6.0 + abs(s) ** 6.0) ** (1.0 / 6.0))
+		r *= rng.uniform(0.96, 1.02)
 		u, v = c * r * size_u * 0.5, s * r * size_v * 0.5
 		u, v = u * cos_t - v * sin_t, u * sin_t + v * cos_t
 		edge = axis_u * u + axis_v * v
 		base.append(center + edge)
-		front.append(center + edge * rng.uniform(0.84, 0.93) + normal * (proud * rng.uniform(0.8, 0.98)))
-	peak = center + normal * (proud * rng.uniform(1.0, 1.08)) + (axis_u * rng.uniform(-0.1, 0.1) * size_u
-		+ axis_v * rng.uniform(-0.1, 0.1) * size_v)
+		front.append(center + edge * inset + normal * depth)
+	# Centro de la cara plana: apenas se desvía, para que se lea partida.
+	face_center = center + normal * depth + (axis_u * rng.uniform(-0.02, 0.02) * size_u
+		+ axis_v * rng.uniform(-0.02, 0.02) * size_v)
 	index = builder.mat_index(mat_name)
 	bm = builder.bm
 	ring_base = [bm.verts.new(p) for p in base]
 	ring_front = [bm.verts.new(p) for p in front]
-	top = bm.verts.new(peak)
+	face = bm.verts.new(face_center)
 	# Cada cara mira hacia fuera de la piedra (Godot no dibuja el reverso):
 	# lejos de un punto detrás de su centro.
 	behind = center - normal * 0.05
 	for k in range(sides):
 		j = (k + 1) % sides
-		for verts in ([ring_base[k], ring_base[j], ring_front[j], ring_front[k]], [ring_front[k], ring_front[j], top]):
+		for verts in ([ring_base[k], ring_base[j], ring_front[j], ring_front[k]], [ring_front[k], ring_front[j], face]):
 			new_face = bm.faces.new(verts)
 			new_face.material_index = index
 			new_face.normal_update()
 			if new_face.normal.dot(new_face.calc_center_median() - behind) < 0.0:
 				new_face.normal_flip()
+
 
 
 def stone_course(builder, rng, length, height, top_fn, outer_frame, skip_fn, stone_mats, plastered=None):
@@ -374,18 +378,18 @@ def stone_course(builder, rng, length, height, top_fn, outer_frame, skip_fn, sto
 			cu, cv = (u0 + u1) * 0.5, (v0 + v1) * 0.5
 			if plastered is not None and plastered(cu, cv):
 				continue
-			gap = rng.uniform(0.012, 0.026)
-			proud = rng.uniform(0.06, 0.1) if first else rng.uniform(0.035, 0.075)
+			gap = rng.uniform(0.008, 0.018)
+			proud = rng.uniform(0.04, 0.06) if first else rng.uniform(0.02, 0.045)
 			center = mortar + axis_u * cu + axis_v * cv
 			rough_stone(builder, rng, center, axis_u, axis_v, normal, (u1 - u0) - gap, stone_h - gap,
-				proud + MORTAR_DEPTH, rng.choice(stone_mats), sides=rng.choice((6, 6, 7)))
+				proud + MORTAR_DEPTH, rng.choice(stone_mats), sides=rng.choice((5, 6, 6)))
 			# Cuña en la junta con la siguiente piedra.
 			if rng.random() < 0.4 and u1 < length - 0.1:
 				size = rng.uniform(0.06, 0.11)
 				wedge = mortar + axis_u * u1 + axis_v * (v + rng.uniform(0.25, 0.75) * course)
 				if top_fn(u1) > v + course and not skip_fn(u1 - size, u1 + size, v, v + course) and (plastered is None or not plastered(u1, v + course * 0.5)):
 					rough_stone(builder, rng, wedge, axis_u, axis_v, normal, size, size * rng.uniform(0.7, 1.1),
-						rng.uniform(0.02, 0.04) + MORTAR_DEPTH, rng.choice(stone_mats), sides=5)
+						rng.uniform(0.015, 0.03) + MORTAR_DEPTH, rng.choice(stone_mats), sides=5)
 		v += course
 		first = False
 

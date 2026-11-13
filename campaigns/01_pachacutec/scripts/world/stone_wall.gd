@@ -18,12 +18,12 @@ const STONE_MIN: float = 0.28
 const STONE_MAX: float = 0.7
 const BASE_STONE_MIN: float = 0.55
 const BASE_STONE_MAX: float = 0.95
-const GAP_MIN: float = 0.012
-const GAP_MAX: float = 0.026
+const GAP_MIN: float = 0.008
+const GAP_MAX: float = 0.018
 ## Lados del contorno de cada piedra.
-const SIDES: int = 6
-const PROUD_MIN: float = 0.035
-const PROUD_MAX: float = 0.08
+const SIDES: int = 5
+const PROUD_MIN: float = 0.02
+const PROUD_MAX: float = 0.05
 const STONE_COLORS: Array[Color] = [
 	Color(0.45, 0.42, 0.37, 1.0),
 	Color(0.37, 0.35, 0.32, 1.0),
@@ -102,12 +102,14 @@ static func _fill_face(surface: SurfaceTool, rng: RandomNumberGenerator, face: F
 
 ## Piedra tosca vista de frente: contorno casi rectangular e irregular en el
 ## plano del muro (centro [param center], ejes [param axis_u] y
-## [param axis_v]), bisel hasta la cara y cara algo abombada que sobresale
-## [param proud] hacia [param normal]. La base queda en la cara del bloque,
-## que asoma entre las piedras como junta.
+## [param axis_v]), bisel corto y cara plana que sobresale [param proud] hacia
+## [param normal]. La base queda en la cara del bloque, que asoma entre las
+## piedras como junta.
 static func _add_stone(surface: SurfaceTool, rng: RandomNumberGenerator, center: Vector3, axis_u: Vector3, axis_v: Vector3, normal: Vector3, size_u: float, size_v: float, proud: float, color: Color) -> void:
 	var phase: float = rng.randf_range(0.0, TAU)
 	var tilt: float = rng.randf_range(-0.12, 0.12)
+	var inset: float = rng.randf_range(0.94, 0.97)
+	var depth: float = proud * rng.randf_range(0.94, 1.0)
 	var base: PackedVector3Array = PackedVector3Array()
 	var front: PackedVector3Array = PackedVector3Array()
 	for k: int in range(SIDES):
@@ -115,19 +117,20 @@ static func _add_stone(surface: SurfaceTool, rng: RandomNumberGenerator, center:
 		var c: float = cos(angle)
 		var s: float = sin(angle)
 		# Superelipse casi rectangular: piedra de caras planas, no canto rodado.
-		var r: float = 1.0 / pow(pow(absf(c), 5.0) + pow(absf(s), 5.0), 0.2) * rng.randf_range(0.9, 1.03)
+		var r: float = 1.0 / pow(pow(absf(c), 6.0) + pow(absf(s), 6.0), 1.0 / 6.0) * rng.randf_range(0.96, 1.02)
 		var u: float = c * r * size_u * 0.5
 		var w: float = s * r * size_v * 0.5
 		var edge: Vector3 = axis_u * (u * cos(tilt) - w * sin(tilt)) + axis_v * (u * sin(tilt) + w * cos(tilt))
 		base.append(center + edge)
-		front.append(center + edge * rng.randf_range(0.84, 0.93) + normal * (proud * rng.randf_range(0.8, 0.98)))
-	var peak: Vector3 = center + normal * (proud * rng.randf_range(1.0, 1.08))
+		front.append(center + edge * inset + normal * depth)
+	var face_center: Vector3 = center + normal * depth + (axis_u * rng.randf_range(-0.02, 0.02) * size_u
+		+ axis_v * rng.randf_range(-0.02, 0.02) * size_v)
 	surface.set_color(color)
 	for k: int in range(SIDES):
 		var j: int = (k + 1) % SIDES
 		_add_triangle(surface, base[k], base[j], front[j], normal)
 		_add_triangle(surface, base[k], front[j], front[k], normal)
-		_add_triangle(surface, front[k], front[j], peak, normal)
+		_add_triangle(surface, front[k], front[j], face_center, normal)
 
 
 ## Triángulo orientado hacia fuera del muro ([param normal]).
