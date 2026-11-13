@@ -2,6 +2,7 @@
 
 - Estado: **Aprobado (v1.0)** — 2026-11-13
 - Sustituye al modelo de museo ([ADR-0038](../../../docs/adr/0038-campana-rpg.md)) y fija los tres actos ([ADR-0039](../../../docs/adr/0039-tres-actos-y-gris.md))
+- Crónica rectora: **Betanzos** ([ADR-0040](../../../docs/adr/0040-cronica-rectora.md)); Garcilaso y Pachacuti Yamqui, contraste y leyenda
 - Documentos de apoyo: [registro histórico](registro_historico.md), [alcance del acto I](alcance_vertical_slice.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
 
 Este documento manda sobre el contenido de la campaña. El alcance del vertical
@@ -264,7 +265,7 @@ construye con los constructores de la llacta a mayor escala.
 |---|---|---|---|
 | 1 | La llegada | Ciudad llena de refugiados y hombres. Se entrega la respuesta; aparece Cusi Yupanqui | Reputación, diálogo |
 | 2 | La ciudad dividida | La élite ha huido. Hay que reclutar a tres grupos | Palabra, favores |
-| 3 | La víspera | Noche: hablar con los tuyos, ofrenda, dormir | Ritual, cierre emocional |
+| 3 | La víspera | Noche: hablar con los tuyos, la leyenda de los pururaucas, ofrenda, dormir | Ritual, diálogo, cierre emocional |
 | 4 | La defensa | Sostener la entrada, proteger el santuario, contraofensiva | Combate, aliados, moral |
 | 5 | El epílogo | Victoria; variantes personales | Banderas |
 
@@ -279,7 +280,23 @@ construye con los constructores de la llacta a mayor escala.
 Cada aliado reduce una oleada o acorta la batalla. Con 0 aliados, la defensa es
 posible pero dura más y el epílogo es más amargo.
 
-### 6.4 La defensa
+### 6.4 La víspera y la leyenda
+
+Antes de la defensa, una anciana o un veterano cuenta la historia de los
+**pururaucas**: las piedras que se volvieron guerreros para salvar al Cusco. Es
+una escena opcional de diálogo; el jugador puede escuchar y desbloquear
+`mem_pururaucas` en la «Memoria».
+
+- Fuente: Pachacuti Yamqui Salcamaygua, *Relación de antigüedades deste reyno del
+  Pirú* (c. 1613), cap. X; ficha PCH-031, **N / H (tradición)**. Queda pendiente
+  de verificar la edición antes de entrar.
+- Se presenta como **lo que se cuenta**, no como un hecho. Ninguna piedra se
+  transforma en pantalla ni cambia la batalla.
+- La arenga de Cusi Yupanqui se parafrasea; la «Memoria» advierte que es
+  elaboración literaria de las crónicas, no una transcripción.
+- Si PCH-031 no se verifica, la escena se retira; no se inventa una versión.
+
+### 6.5 La defensa
 
 - **Fase 1 — la entrada:** dos oleadas de exploradores y un guerrero. El
   jugador sostiene con honda y piedras; los aliados cubren los flancos.
@@ -289,7 +306,7 @@ posible pero dura más y el epílogo es más amargo.
 - **Contraofensiva:** scripted; Cusi Yupanqui dirige. El jugador no lo sustituye.
 - Sin aliados, las oleadas son más numerosas; con tres, la fase 1 termina antes.
 
-### 6.5 Epílogo
+### 6.6 Epílogo
 
 La victoria es fija. Varían tres cosas:
 
@@ -302,10 +319,11 @@ La victoria es fija. Varían tres cosas:
 La Memoria cierra con la versión de Garcilaso y la nota de que la escala del
 conflicto está debatida (PCH-002, PCH-003).
 
-### 6.6 Fichas
+### 6.7 Fichas
 
 PCH-001 (Cusi Yupanqui), PCH-002, PCH-003, PCH-022. Nuevas: Cusco de 1438,
-armas, armadura, batalla, coca, chancas guerreros.
+armas, armadura, batalla, coca, chancas guerreros y PCH-031 (pururaucas,
+leyenda N / H).
 
 ## 7. Elenco
 

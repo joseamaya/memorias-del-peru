@@ -303,7 +303,7 @@ aparte.
 ### Precondiciones
 
 - [ ] Fase 6 cerrada.
-- [ ] Fichas nuevas verificadas: armas andinas, armadura (si se usa), el paso y el refugio, el Cusco de 1438, la coca, la batalla y los chancas guerreros.
+- [ ] Fichas nuevas verificadas: armas andinas, armadura (si se usa), el paso y el refugio, el Cusco de 1438, la coca, la batalla, los chancas guerreros y PCH-031 (pururaucas, leyenda). Si PCH-031 no se verifica, la escena de la víspera se retira.
 
 ### Entregables
 
@@ -314,9 +314,10 @@ aparte.
 | 3 | Decisiones | Herido, carga de maíz, descanso y perdón del explorador, con banderas |
 | 4 | Cusco | Mapa de ~150 × 150 m en gris: plaza, casas, terrazas, santuario y muro |
 | 5 | Reclutamiento | Ayllus, curaca vecino y jóvenes; los aliados cambian la batalla |
-| 6 | Defensa y epílogo | Dos fases, contraofensiva y variantes personales |
-| 7 | Pruebas | Selector de acto, puntos de control y partida guionizada del arco |
-| 8 | Validación interna | Arco completo jugable, sin arte final |
+| 6 | Víspera y leyenda | Escena opcional de los pururaucas, contada como creencia (PCH-031, N / H) |
+| 7 | Defensa y epílogo | Dos fases, contraofensiva y variantes personales |
+| 8 | Pruebas | Selector de acto, puntos de control y partida guionizada del arco |
+| 9 | Validación interna | Arco completo jugable, sin arte final |
 
 ### Objetivo medible
 
@@ -335,6 +336,7 @@ aparte.
 - [ ] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo.
 - [ ] El herido, el maíz y el descanso cambian el acto III de forma comprobable.
 - [ ] Los aliados reclutados cambian la dificultad de la defensa.
+- [ ] La leyenda de los pururaucas se presenta como creencia, no como hecho, y no altera la batalla.
 - [ ] El selector de acto y los puntos de control funcionan.
 - [ ] Todas las fichas nuevas están verificadas.
 - [ ] Cero errores y advertencias; pruebas en verde.

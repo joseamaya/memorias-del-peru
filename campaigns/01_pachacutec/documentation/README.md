@@ -24,7 +24,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Protagonista de la victoria | El Inca Garcilaso de la Vega (*Comentarios reales*, 1609) atribuye la victoria sobre los chancas a Inca Viracocha, no a Pachacútec. | H (discrepancia) |
 | Fecha (c. 1438) | Procede de cronologías derivadas de crónicas (p. ej. la usada por John H. Rowe a partir de Cabello Valboa); su precisión es discutida. En el juego: “siglo XV”, sin año exacto en pantalla salvo nota explicativa. | R |
 | Escala y unidad política de los chancas | Investigaciones arqueológicas en Andahuaylas (Bauer, Kellett y Aráoz Silva, *The Chanka: Archaeological Research in Andahuaylas (Apurimac), Peru*, 2010) cuestionan que existiera un estado chanca centralizado de la magnitud descrita por las crónicas. | A |
-| Pururaucas (piedras que se convierten en guerreros) | Elemento mítico presente en las crónicas. Si aparece, se representa como creencia de los personajes o como recurso narrativo explícito. | N / H (tradición) |
+| Pururaucas (piedras que se convierten en guerreros) | Leyenda de la tradición recogida por Pachacuti Yamqui Salcamaygua (PCH-031). Se cuenta como creencia de los personajes, nunca como hecho ni como mecánica. | N / H (tradición) |
 | Síntesis moderna | María Rostworowski, *Pachacútec Inca Yupanqui* (1953) e *Historia del Tahuantinsuyu* (1988). | — |
 
 ## 4. Grafía

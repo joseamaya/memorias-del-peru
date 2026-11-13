@@ -9,7 +9,8 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-001 — Cusi Yupanqui / Pachacútec
 - Tipo: personaje
 - Clasificación: H (existencia y papel en la tradición); detalles de su vida: según fuente
-- Uso en el juego: por definir
+- Uso en el juego: Cusi Yupanqui dirige la defensa en el acto III; el jugador no lo sustituye
+- Crónica rectora: Betanzos (caps. VI–X); Sarmiento, contraste; Garcilaso, versión alternativa (príncipe Viracocha), no rectora
 - Fuentes:
   - Sarmiento de Gamboa, *Historia de los Incas* (1572), trad. Markham (Hakluyt Society, 1907; Project Gutenberg n.º 20218, sin paginación).
     - Cap. XXVI «The life of Inca Yupanqui or Pachacuti, the ninth Inca»: el tercer hijo legítimo de Viracocha, «named Cusi, and as surname Inca Yupanqui», es elevado a inca por los capitanes Apu Mayta y Vicaquirau, contra la voluntad de su padre.
@@ -25,6 +26,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: evento
 - Clasificación: H (tradición narrada) / A (debate sobre escala, ver PCH-003)
 - Uso en el juego: eje narrativo de la campaña
+- Crónica rectora: Betanzos (caps. VI–X); la escala, PCH-003; Garcilaso y Pachacuti Yamqui, contraste y leyenda (PCH-031)
 - Fuentes: las de PCH-001 (Sarmiento, caps. XXVI–XXVIII; Betanzos, caps. VI–X) y PCH-015. La parte A, sobre la escala del conflicto, está en PCH-003 (Bauer, Kellett y Aráoz Silva, IFEA 2013, cap. 8).
 - Discrepancias entre fuentes: protagonista (Inca Yupanqui en Sarmiento y Betanzos; el príncipe Viracocha en Garcilaso), desarrollo de batallas y fecha. La arqueología sugiere un conflicto entre confederaciones frágiles, menor de lo que cuentan los cronistas (PCH-003).
 - Notas de representación: presentar la versión elegida como versión de cronistas. Las versiones alternativas se mencionan dentro del relato (p. ej. personajes que cuentan la historia de forma distinta) o en material de apoyo fuera del juego; en el códice histórico solo si este se aprueba (docs/01 §6)
@@ -177,6 +179,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: evento
 - Clasificación: H (tradición) / N (puesta en escena)
 - Uso en el juego: `messenger_event.gd` y textos `PCH_NARR_*`
+- Crónica rectora: Betanzos (cap. VI); el evento sigue esa versión
 - Fuentes:
   - Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), trad. Markham (Hakluyt Society, 1907; Project Gutenberg n.º 20218, sin paginación).
     - Cap. XXV: Viracocha, ya viejo, nombra sucesor a su hijo Inca Urco, saltándose el orden de sucesión.
@@ -207,6 +210,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Tipo: personaje / organización social
 - Clasificación: H / R
 - Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`; modelos `pch_npc_curaca.glb`, `pch_npc_principal.glb` y `pch_npc_authority.glb` (R: unku con franja ajedrezada, manto teñido y cinta en la cabeza como distintivos discretos; sin vara ni orejeras, que serían coloniales o imperiales). Desde el alcance v4.0, el distintivo del unku es un cinturón de dos filas de t'oqapu con motivos geométricos sencillos a la altura de la cintura (R, ver notas). Desde el alcance v4.15, el manto de estos modelos se ajusta en los GLB para no abrirse como alas (R: post-proceso de geometría, sin tocar pesos ni animaciones).
+- Crónica rectora: Betanzos (cap. VII): la petición a los curacas de las tres leguas y su negativa inicial
 - Fuentes:
   - H: Juan de Betanzos, *Suma y narración de los Incas*, I parte, cap. VII, ed. Jiménez de la Espada (Madrid, 1880), Project Gutenberg n.º 25705 (p. 26 y ss.): ante el avance de Uscovilca, Inca Yupanqui decide «inviar sus mensajeros á los caciques de los pueblos comarcanos … que les rogaba que le favoresciesen con sus poderes y gente», y envía a sus cuatro compañeros «á los caciques y Señores que ansí eran en torno de la ciudad en espacio de tres leguas». Los caciques responden que solo ayudarán cuando él junte gente propia.
   - Definición de curaca (localizadas por búsqueda automática, sin contrastar directamente): María Rostworowski, «Las macroetnias en el ámbito andino», *Allpanchis* 35/36: 3–28 (1990), https://revistas.ucsp.edu.pe/index.php/Allpanchis/article/download/882/1280/6247: grupos étnicos «gobernados por sus Hatun Curaca», con «varios curacas subalternos» (p. 18). Ricardo Alva Mariñas, *Bulletin de l'IFEA* 37 (1) (2008), https://www.redalyc.org/pdf/126/12611728018.pdf: los curacas, «llamados también caciques», con autoridad política y religiosa basada en el linaje (p. 258).
@@ -390,4 +394,16 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Fuentes: PCH-003 y Bauer, Kellett y Aráoz Silva (2013).
 - Discrepancias entre fuentes: la imagen de los chancas procede de la versión inca; la arqueología muestra confederaciones frágiles, no un estado poderoso.
 - Notas de representación: sin caricatura de «bárbaros»; ropa de viaje y guerra propia, sin insignias incas. La apariencia concreta es R.
+- Estado de verificación: **pendiente**.
+
+
+### PCH-031 — Pururaucas (leyenda)
+- Tipo: mito / leyenda
+- Clasificación: N / H (tradición narrada)
+- Uso en el juego: escena opcional de la víspera del acto III y entrada `mem_pururaucas` de la «Memoria». No es una mecánica ni cambia la batalla.
+- Fuentes:
+  - Pachacuti Yamqui Salcamaygua, Juan de Santa Cruz, *Relación de antigüedades deste reyno del Pirú* (c. 1613), ed. Biblioteca de Autores Españoles / Ediciones Atlas, Madrid, 1968, pp. 297–298 (cap. X según la bibliografía de la batalla de Yahuarpampa). **Pendiente de consultar la edición**: la cita procede de una referencia secundaria.
+  - Contraste: Garcilaso, *Comentarios reales*, lib. V, caps. XVII–XX (ed. Urteaga, 1918), cuenta la victoria del príncipe Viracocha, no la de Cusi Yupanqui; es otra versión, no la fuente de los pururaucas.
+- Discrepancias entre fuentes: la leyenda engrandece la victoria y la atribuye a una intervención maravillosa; la arqueología (PCH-003) sugiere un conflicto menor y entre confederaciones frágiles. La fuente principal de los pururaucas es Pachacuti Yamqui; Garcilaso no se usa para esta escena.
+- Notas de representación: se cuenta como **creencia y relato**, nunca como un hecho. Sin piedras que se transformen en pantalla, sin ejército sobrenatural y sin cambiar el resultado. La arenga de Cusi Yupanqui se parafrasea y se marca como elaboración literaria.
 - Estado de verificación: **pendiente**.
