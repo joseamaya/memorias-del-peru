@@ -2,7 +2,7 @@
 
 ## 1. Visión
 
-Memorias del Perú es una experiencia histórica en 3D. La etapa actual se concentra en **una campaña** —*Pachacútec — La defensa del Cusco*— y en un modelo de **museo explorable**: un mundo que se recorre y se lee a través de estaciones históricas ([ADR-0034](adr/0034-una-campana-y-museo.md)). Las demás épocas de la historia peruana quedan como horizonte: cada campaña futura tendrá su propio documento de visión.
+Memorias del Perú es una experiencia histórica en 3D. La etapa actual se concentra en **una campaña** —*Pachacútec — La defensa del Cusco*—, un **RPG histórico en primera persona** de tres actos ([ADR-0038](adr/0038-campana-rpg.md), [ADR-0039](adr/0039-tres-actos-y-gris.md)): la vida en la llacta, el camino al Cusco y la defensa. Las demás épocas de la historia peruana quedan como horizonte: cada campaña futura tendrá su propio documento de visión.
 
 En la campaña 01 el jugador vive los acontecimientos asociados a Cusi Yupanqui y la amenaza chanca en el siglo XV: recorre entornos andinos, interactúa con habitantes, explora una llacta y participa en acontecimientos históricos.
 
@@ -15,7 +15,7 @@ En la campaña 01 el jugador vive los acontecimientos asociados a Cusi Yupanqui 
 | Exploración libre | El entorno invita a recorrer, no a seguir un pasillo | Varias rutas en el vertical slice |
 | Interacción contextualizada | Las acciones tienen sentido cultural (ofrendas, chicha, reciprocidad) | Cada interacción tiene justificación documental o narrativa declarada |
 | Narrativa ambiental | El espacio cuenta la historia | Objetos, arquitectura y sonido transmiten contexto sin texto explicativo |
-| Combate y progresión | Presentes, pero subordinados al relato | Fuera del vertical slice; ver horizonte posterior (§6) |
+| Combate y progresión | Combate a distancia con armas andinas y progresión por habilidades, reputación y objetos, subordinados al relato | El combate no sustituye la exploración ni la decisión; el resultado histórico no cambia |
 | Identidad visual andina | Paleta, materiales y luz propios de los Andes | Revisión de dirección artística por fase |
 
 **Regla de desempate:** cuando dos pilares entran en conflicto, la coherencia histórica prevalece sobre la espectacularidad.
@@ -28,30 +28,31 @@ En la campaña 01 el jugador vive los acontecimientos asociados a Cusi Yupanqui 
 
 ## 4. Alcance por versión
 
-### Incluido hasta el Vertical Slice (Fases 1–4)
+### Incluido en la campaña 01 (Fases 6–8)
 
 - Controlador FPS: caminar, correr, cámara, head bobbing.
 - Sistema de interacción genérico por `RayCast3D` y clase `Interactable`.
-- Estamina básica e indicaciones de interacción.
-- Primera interacción: quero de chicha de jora.
+- Núcleo RPG: estado, habilidades, reputación, inventario, diálogo con opciones, diario, combate a distancia y puntos de control ([biblia de la campaña](../campaigns/01_pachacutec/documentation/biblia_campana.md)).
+- Tres actos jugables: la llacta, el paso y el Cusco de 1438; 40–50 min en total.
 - Entorno base: cielo físico, niebla, sol, perfiles de calidad gráfica.
-- Una pequeña sección explorable de llacta con terreno, viviendas, caminos, vegetación, personajes, objetos interactuables y sonido ambiente.
+- Llacta, paso y Cusco construidos con terreno, viviendas, caminos, vegetación, personajes, objetos interactuables y sonido ambiente.
 
 ### Explícitamente fuera de alcance hasta nuevo acuerdo
 
-- Combate, inventario, diálogos ramificados y misiones (solo se documentan como puntos de extensión; no tienen fase en el plan y no se implementan sin un ADR que se la asigne, ver §6).
-- Salto (acción reservada en el Input Map, sin lógica).
+- Guardado completo, niveles y XP, loot aleatorio, magia y crafting profundo.
+- Salto como mecánica de combate (la acción sigue reservada en el Input Map).
 - Multijugador, consolas, móviles, VR.
 - Localización a otros idiomas (los textos de jugador sí se centralizan desde la Fase 2 en tablas de traducción, ver docs/02 §7, para facilitarla después).
-- Códice o enciclopedia histórica dentro del juego (ver §6).
+- Códice o enciclopedia histórica completa; la «Memoria» del diario no lo sustituye.
+- Cambiar el resultado histórico de la defensa.
 
 ## 5. Definición de éxito
 
-**Objetivo comprometido:** entregar un vertical slice jugable de 2–3 minutos de la campaña 01 ([ADR-0033](adr/0033-duracion-del-slice.md)), con todo su contenido histórico verificado y sin errores técnicos. La antología completa y las campañas de 10–15 minutos son la visión del proyecto, no un compromiso de esta etapa.
+**Objetivo comprometido:** entregar la campaña 01 jugable de **40–50 minutos**, en tres actos, con todo su contenido histórico verificado y sin errores técnicos ([ADR-0039](adr/0039-tres-actos-y-gris.md)). La antología completa y las demás campañas siguen siendo la visión del proyecto, no un compromiso de esta etapa.
 
 | # | Métrica | Umbral | Cómo se mide |
 |---|---|---|---|
-| 1 | Duración del vertical slice | **2–3 min** de mediana en ruta directa ([ADR-0033](adr/0033-duracion-del-slice.md)); la campaña completa mantiene el horizonte de 10–15 min | Pasadas cronometradas del registro de sesión |
+| 1 | Duración de la campaña | **40–50 min** en una partida completa de los tres actos ([ADR-0039](adr/0039-tres-actos-y-gris.md)) | Pasadas cronometradas del registro de sesión |
 | 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada (docs/08 §4). ≥ 60 FPS en perfil Medio es objetivo recomendado y se verifica cuando exista el equipo de referencia con GPU dedicada | Recorrido fijo medido con `Performance` |
 | 3 | Rigor histórico | 100 % del contenido histórico con ficha “verificado” | Registro histórico de la campaña |
 | 4 | Estabilidad técnica | 0 errores en consola, 0 bloqueos de progreso | Pruebas automatizadas + sesiones de prueba |
@@ -61,14 +62,11 @@ La métrica 5 es la única que mide el valor para el público (incluido el educa
 
 ## 6. Horizonte posterior (visión, no compromiso)
 
-Nada de esta sección tiene fase en el plan ni se implementa sin un ADR que la convierta en fase con entregables y criterios.
+Salvo la campaña 01, que ya tiene fases en [docs/05](05_plan_de_implementacion.md), nada de esta sección tiene fase ni se implementa sin un ADR que la convierta en fase con entregables y criterios.
 
 | Línea | Idea | Condición para planificarla |
 |---|---|---|
-| Combate y progresión | Combate cuerpo a cuerpo con armas andinas y progresión ligada al relato | Vertical slice cerrado y evaluado |
-| Diálogo, inventario, misiones | Sistemas de Core ya previstos como puntos de extensión (docs/02 §6) | Necesidad concreta de una campaña |
 | Códice histórico | Consulta en el juego de las fichas del registro histórico, con su clasificación H/A/R/N | Registro de la campaña 01 verificado |
-| Campaña 01 completa | De la vida en la llacta a la defensa del Cusco | Vertical slice aprobado |
 | Nuevas campañas | Otras épocas de la historia peruana | Campaña 01 publicada; cada campaña nueva tiene su propio documento de visión |
 
 ## 7. Glosario

@@ -1,8 +1,8 @@
 # Memorias del Perú
 
-Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental e interacción. Combate y progresión forman parte de la visión, pero quedan fuera de la etapa actual (ver [definición de éxito y horizonte](docs/01_vision_y_alcance.md#5-definición-de-éxito)).
+Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental, interacción y RPG. La campaña 01 es un **RPG histórico en primera persona de tres actos** ([ADR-0038](docs/adr/0038-campana-rpg.md), [ADR-0039](docs/adr/0039-tres-actos-y-gris.md)).
 
-**Objetivo de la etapa actual:** un vertical slice jugable de 2–3 minutos de la campaña 01 ([ADR-0033](docs/adr/0033-duracion-del-slice.md)); el horizonte de 10–15 minutos queda para la campaña completa.
+**Objetivo de la etapa actual:** la campaña 01 jugable de 40–50 minutos, en tres actos ([biblia de la campaña](campaigns/01_pachacutec/documentation/biblia_campana.md)).
 
 **Campaña 01:** *Pachacútec — La defensa del Cusco* (siglo XV).
 
@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 5 — Museo explorable (en curso).** Alcance v5.2 ([ADR-0034](docs/adr/0034-una-campana-y-museo.md), [ADR-0036](docs/adr/0036-leer-en-el-mundo.md)): nueve tarjetas se abren al recorrer la llacta o al hacer la acción, sin marcadores ni HUD de tour; el evento sale al llegar al mirador. Pendiente: validación de la duración, medición de rendimiento y prueba con jugadores ajenos (métrica 5 **no verificada**). |
+| Estado | **Fase 6 — Núcleo RPG y acto I (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. Se construyen estado, inventario, diálogo, diario y combate a distancia. Pendiente: el arco completo, el arte de los actos II–III y la validación de autor. |
 
 ## Requisitos
 

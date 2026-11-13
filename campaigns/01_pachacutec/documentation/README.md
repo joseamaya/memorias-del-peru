@@ -39,7 +39,8 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Documento | Estado |
 |---|---|
 | [registro_historico.md](registro_historico.md) | Completo para el slice: 19 fichas verificadas (7 sobre la comprobación del agente); PCH-014 fuera del slice |
-| [alcance_vertical_slice.md](alcance_vertical_slice.md) | **Aprobado (v3.3)** — precondición de la Fase 4 |
+| [alcance_vertical_slice.md](alcance_vertical_slice.md) | Referencia del acto I (mapa, assets y textos); el modelo de museo queda superado por ADR-0038 |
+| [biblia_campana.md](biblia_campana.md) | **Aprobada (v1.0)** — diseño de los tres actos y del núcleo RPG (ADR-0038, ADR-0039) |
 | Guion y personajes | En el alcance v2 §2, §5 y §6.4 |
 | [guion_facilitador.md](guion_facilitador.md) | Listo para el piloto — sesiones de prueba |
 | [plantilla_sesion.md](plantilla_sesion.md) | Plantilla de registro de cada sesión |

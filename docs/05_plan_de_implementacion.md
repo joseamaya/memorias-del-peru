@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 5 — Museo explorable del Cusco.
-**Siguiente:** —
+**Fase activa:** Fase 6 — Núcleo RPG y acto I.
+**Siguiente:** Fase 7 — Actos II y III en gris.
 
 Reglas:
 
@@ -18,7 +18,10 @@ Reglas:
 | 2 — Interacción | Cerrada | 2026-11-10 |
 | 3 — Entorno | Cerrada | 2026-11-10 |
 | 4 — Vertical Slice Pachacútec | Cerrada | 2026-11-13 |
-| 5 — Museo explorable del Cusco | En curso | — |
+| 5 — Museo explorable del Cusco | Superada | 2026-11-13 |
+| 6 — Núcleo RPG y acto I | En curso | — |
+| 7 — Actos II y III en gris | Pendiente | — |
+| 8 — Arte, audio y cierre | Pendiente | — |
 
 La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con [ADR-0033](adr/0033-duracion-del-slice.md) tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» ([ADR-0031](adr/0031-validacion-por-el-autor.md)). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
 
@@ -234,33 +237,124 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 ---
 
-## Fase 5 — Museo explorable del Cusco
+## Fase 5 — Museo explorable del Cusco (superada)
+
+Cerrada el 2026-11-13 como **modelo superado**, no como fase cumplida. El
+[ADR-0038](adr/0038-campana-rpg.md) sustituye el museo por un RPG en primera
+persona: la duración de 6–8 min, el HUD de tour y su validación dejan de
+aplicar. No se le exige la validación pendiente porque el modelo ya no existe.
+
+Se conservan el mundo, el evento del mensajero, la lectura en el mundo y los
+nueve textos, que pasan a diálogo y a la «Memoria» del diario
+([biblia de la campaña](../../campaigns/01_pachacutec/documentation/biblia_campana.md)).
+
+---
+
+## Fase 6 — Núcleo RPG y acto I
 
 ### Precondiciones
 
-- [x] Fase 4 cerrada y `v0.1` etiquetada.
-- [x] [ADR-0034](adr/0034-una-campana-y-museo.md) aceptado (una campaña y modelo de museo).
-- [x] Las nueve fichas de las estaciones están verificadas en el registro histórico.
+- [x] [ADR-0038](adr/0038-campana-rpg.md) y [ADR-0039](adr/0039-tres-actos-y-gris.md) aceptados.
+- [x] Biblia de la campaña aprobada.
+- [x] Fichas del acto I verificadas (PCH-004, 005, 007, 008, 010, 012, 016, 019 y 021).
 
 ### Entregables
 
 | # | Entregable | Descripción |
 |---|---|---|
-| 1 | `core/ui/tour_card` | Tarjeta genérica: título, cuerpo, sello H/A/R/N y fuente; se cierra con E o Esc y bloquea al jugador mientras está abierta |
-| 3 | Zonas y señales en el mundo | `Area3D` invisibles para los lugares y señales del quero y la ofrenda; sin objetos ni marcadores |
-| 4 | Nueve estaciones | Plaza, quero, chicha, ofrenda, telar, vivienda, terraza, corral y mirador, con textos de 60–80 palabras y fuente |
-| 5 | Estado del tour | Tarjetas leídas, una sola vez; sin contador, brújula ni objetivo antes del evento |
-| 6 | Integración del evento | Sale al llegar al mirador; respaldo por reloj de 360 s |
-| 7 | Pruebas y validación | Lugar visitado una sola vez, tarjeta, disparo del mirador, textos con clave y ficha; validación de autor |
+| 1 | Estado | `character_state.gd`: salud, ánimo, habilidades por uso y reputación por grupo |
+| 2 | Inventario | Ocho huecos, tres equipados, objetos como recursos y consumibles |
+| 3 | Diálogo | Nodos con opciones, condiciones y efectos; sin retratos |
+| 4 | Diario | «Encargos» y «Memoria» con sello H/A/R/N y fuente; tecla J |
+| 5 | Combate | Honda con carga y proyectil, porra y escudo, enemigos con moral; sandbox de prueba |
+| 6 | Acto I | Cuatro encargos (tres obligatorios), quero y ofrenda, mensajero y partida |
+| 7 | Interfaz | Panel de diálogo y diario; sin tarjetas automáticas ni HUD de tour |
+| 8 | Pruebas | Unitarias de los sistemas y partida del acto I |
+
+### Objetivo medible
+
+| Aspecto | Objetivo |
+|---|---|
+| Duración del acto I | 12–15 min |
+| Encargos | Cuatro, con tres necesarios para la llegada del mensajero |
+| Sistemas | Estado, inventario, diálogo, diario y combate probados |
+| Errores | Cero en consola; cero advertencias de GDScript desde `res://` |
 
 ### Criterios de aceptación
 
-- [x] Las nueve tarjetas se abren al estar en el sitio o al hacer la acción, una sola vez. *(2026-11-13: `test_world_tour`, con zonas y señales; la segunda visita no reabre.)*
-- [x] No hay contador, brújula ni objetivo antes del evento: el HUD no guía. *(2026-11-13: `test_world_tour` comprueba que el HUD no muestra objetivo al empezar.)*
-- [x] La tarjeta muestra título, cuerpo, sello y fuente; se cierra con E o Esc y el jugador recupera el control. *(2026-11-13: `test_tour_card` y `test_world_tour`; captura de la tarjeta del quero con fuente completa.)*
-- [x] El evento sale al llegar al mirador; si no se sube, el respaldo por reloj de 360 s lo trae igual. *(2026-11-13: `test_world_tour_mirador_opens_event`; las pruebas del mensajero cubren el respaldo.)*
-- [ ] Duración mediana de 6–8 min de exploración con lectura (ADR-0037 y ADR-0031).
-- [x] Ninguna tarjeta afirma algo sin ficha; las nueve tienen sello y fuente. *(2026-11-13: revisión de los nueve textos contra PCH-004/005/007/008/010/012/016/021/022; las fuentes citadas son las de las fichas.)*
-- [ ] Cero bloqueos y cero errores de consola.
-- [ ] ≥ 60 FPS en perfil Medio en la GPU integrada de referencia.
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 107 pruebas en verde, sin advertencias.)*
+- [ ] Los cinco sistemas tienen pruebas unitarias en verde.
+- [ ] El acto I se juega de principio a fin: despertar, tres encargos, mensajero y partida.
+- [ ] El diálogo presenta opciones con condiciones y efectos comprobables.
+- [ ] El diario guarda encargos y entradas de Memoria sin marcadores en el mundo.
+- [ ] El sandbox de combate permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo.
+- [ ] No quedan tarjetas automáticas ni zonas de lectura.
+- [ ] Todo texto visible pasa por `tr()`; ningún literal en código.
+- [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`.
+
+---
+
+## Fase 7 — Actos II y III en gris
+
+### Precondiciones
+
+- [ ] Fase 6 cerrada.
+- [ ] Fichas nuevas verificadas: armas andinas, armadura (si se usa), el paso y el refugio, el Cusco de 1438, la coca, la batalla y los chancas guerreros.
+
+### Entregables
+
+| # | Entregable | Descripción |
+|---|---|---|
+| 1 | Paso | Mapa de ~80 × 80 m en gris con sendero, roquedales, refugio y arroyo |
+| 2 | Emboscada | Cuatro exploradores chancas, combate con honda, sigilo y distracción |
+| 3 | Decisiones | Herido, carga de maíz, descanso y perdón del explorador, con banderas |
+| 4 | Cusco | Mapa de ~150 × 150 m en gris: plaza, casas, terrazas, santuario y muro |
+| 5 | Reclutamiento | Ayllus, curaca vecino y jóvenes; los aliados cambian la batalla |
+| 6 | Defensa y epílogo | Dos fases, contraofensiva y variantes personales |
+| 7 | Pruebas | Selector de acto, puntos de control y partida guionizada del arco |
+| 8 | Validación interna | Arco completo jugable, sin arte final |
+
+### Objetivo medible
+
+| Aspecto | Objetivo |
+|---|---|
+| Duración del arco | 40–50 min |
+| Acto II | 12–15 min |
+| Acto III | 16–18 min |
+| Consecuencias | Las decisiones del acto II cambian aliados y epílogo del III |
+| Estabilidad | Cero bloqueos en la partida guionizada del arco |
+
+### Criterios de aceptación
+
+- [ ] El arco completo se juega de principio a fin en gris.
+- [ ] La emboscada se puede resolver con honda, con sigilo o con distracción.
+- [ ] El herido, el maíz y el descanso cambian el acto III de forma comprobable.
+- [ ] Los aliados reclutados cambian la dificultad de la defensa.
+- [ ] El selector de acto y los puntos de control funcionan.
+- [ ] Todas las fichas nuevas están verificadas.
+- [ ] Cero errores y advertencias; pruebas en verde.
+
+---
+
+## Fase 8 — Arte, audio y cierre
+
+### Precondiciones
+
+- [ ] Fase 7 cerrada.
+- [ ] El arco completo funciona en gris y las decisiones se leen.
+
+### Entregables
+
+- Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
+- Equilibrio de combate, economía de objetos y duración.
+- Rendimiento del Cusco con multitud y batalla.
+- Validación de autor del arco completo (ADR-0031): tres pasadas, cuestionario y umbrales.
+- Documentación y bitácora al día.
+
+### Criterios de aceptación
+
+- [ ] El arco completo dura 40–50 min y no tiene bloqueos.
+- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante.
+- [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`.
+- [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
+- [ ] Todo el contenido histórico con ficha verificada.
+- [ ] La documentación refleja lo construido.

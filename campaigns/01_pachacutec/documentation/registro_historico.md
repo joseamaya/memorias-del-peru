@@ -320,3 +320,74 @@ Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean
 - Discrepancias entre fuentes: —
 - Notas de representación: si se incluye, sin aparejos de origen europeo.
 - Estado de verificación: pendiente (no bloquea el cierre mientras el elemento siga fuera del juego). Referencia identificada y sin consultar: J. C. Wheeler, «Evolution and present situation of the South American Camelidae», *Biological Journal of the Linnean Society* 54(3): 271–295 (1995), DOI 10.1016/0024-4066(95)90021-7.
+
+---
+
+## Pendientes de los actos II y III (Fase 7)
+
+Fichas de los elementos que el RPG introduce después del acto I. Ninguna entra
+al juego hasta estar **verificada**; se listan aquí para no inventar contenido
+ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
+
+### PCH-024 — Armas andinas: honda, porra y escudo
+- Tipo: objeto / armamento
+- Clasificación: A (existencia y uso) / R (forma y medidas del juego)
+- Uso en el juego: honda del jugador, porra y escudo de cuerpo a cuerpo; exploradores y guerreros chancas
+- Fuentes: por localizar. Candidatas: crónicas que describen la guerra chanca (PCH-001, PCH-002, PCH-015) y piezas de colección de armas andinas. No se usan páginas sin consultar.
+- Discrepancias entre fuentes: —
+- Notas de representación: la honda es el arma principal del juego; la porra y el escudo, último recurso. Sin armas de metal, sin ballestas ni pólvora. La forma concreta es reconstrucción.
+- Estado de verificación: **pendiente**.
+
+### PCH-025 — Armadura acolchada
+- Tipo: vestimenta / protección
+- Clasificación: A / R
+- Uso en el juego: solo si el acto III muestra guerreros protegidos; el jugador no la lleva
+- Fuentes: por localizar.
+- Discrepancias entre fuentes: —
+- Notas de representación: sin láminas metálicas ni corazas europeas. Si no se documenta con claridad para el siglo XV andino, se retira del juego.
+- Estado de verificación: **pendiente**.
+
+### PCH-026 — El paso y el refugio de piedra
+- Tipo: lugar
+- Clasificación: R
+- Uso en el juego: mapa del acto II
+- Fuentes: se apoya en PCH-013 (vegetación) y PCH-016 (caminos). No se identifica con ningún paso real.
+- Discrepancias entre fuentes: —
+- Notas de representación: **no es un tambo**: la institución de postas es imperial y posterior. Refugio abierto de piedra seca, sin techo de ichu ni insignias estatales. El sendero es de herradura, no una calzada imperial.
+- Estado de verificación: **pendiente**.
+
+### PCH-027 — El Cusco de 1438
+- Tipo: lugar
+- Clasificación: A / R
+- Uso en el juego: mapa del acto III
+- Fuentes: se apoya en PCH-022 (Covey y otros 2025) y PCH-002. Por localizar: bibliografía sobre el Cusco preimperial.
+- Discrepancias entre fuentes: la arqueología del Cusco anterior a la expansión es limitada; la ciudad monumental es posterior.
+- Notas de representación: centro de señorío con plaza grande, casas de piedra y ichu, terrazas y un santuario modesto al sol (R). Sin Coricancha monumental, sin muros ciclópeos ni piedra labrada imperial.
+- Estado de verificación: **pendiente**.
+
+### PCH-028 — La coca: masticar y compartir
+- Tipo: planta / práctica social
+- Clasificación: A / R
+- Uso en el juego: consumible que restaura aliento; gesto de compartir en el campamento
+- Fuentes: se apoya en PCH-012 (Molina y Polo). Por localizar: estudios sobre el uso de la coca en el mundo andino.
+- Discrepancias entre fuentes: —
+- Notas de representación: hoja masticada con cal; sin presentarla como droga recreativa ni como medicina moderna. El efecto sobre el aliento es una simplificación de juego (N).
+- Estado de verificación: **pendiente**.
+
+### PCH-029 — La batalla: representación
+- Tipo: evento
+- Clasificación: H (tradición narrada) / R (puesta en escena)
+- Uso en el juego: defensa del Cusco, acto III
+- Fuentes: PCH-001, PCH-002, PCH-003 y PCH-015.
+- Discrepancias entre fuentes: protagonista (Cusi Yupanqui o el príncipe Viracocha, según Garcilaso) y escala del conflicto (PCH-003).
+- Notas de representación: se muestra la versión de los cronistas, no un hecho comprobado. Sin cifras de ejército ni mapas tácticos. El jugador no decide el resultado.
+- Estado de verificación: **pendiente**.
+
+### PCH-030 — Los chancas como guerreros
+- Tipo: personaje / vestimenta
+- Clasificación: H / R
+- Uso en el juego: exploradores y guerreros del acto II y del acto III
+- Fuentes: PCH-003 y Bauer, Kellett y Aráoz Silva (2013).
+- Discrepancias entre fuentes: la imagen de los chancas procede de la versión inca; la arqueología muestra confederaciones frágiles, no un estado poderoso.
+- Notas de representación: sin caricatura de «bárbaros»; ropa de viaje y guerra propia, sin insignias incas. La apariencia concreta es R.
+- Estado de verificación: **pendiente**.

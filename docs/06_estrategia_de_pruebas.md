@@ -146,6 +146,20 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_tour_card` | La tarjeta de estación muestra título, cuerpo, sello y fuente, se cierra y emite `closed` |
 | `test_world_tour` | El mundo crea siete zonas de lugar, no hay objetivo ni contador al empezar, entrar en una zona o beber del quero abre la tarjeta y desactiva al jugador, las nueve tarjetas se abren en orden, la segunda visita no las reabre y llegar al mirador abre el evento (ADR-0036, ADR-0037) |
 
+### Pruebas de la Fase 6 (núcleo RPG)
+
+| Prueba | Qué comprueba |
+|---|---|
+| `test_character_state` | Salud, ánimo, habilidades por uso (umbrales 3/8/15/24/35) y reputación por grupo; señales y límites |
+| `test_inventory` | Ocho huecos, tres equipados, apilar, retirar, contar y usar consumibles; sin perder objetos al llenarse |
+| `test_dialogue` | Nodos con condiciones por bandera, objeto, habilidad y reputación; efectos y opciones bloqueadas |
+| `test_journal` | Encargos activos y cumplidos; entradas de Memoria con clave, sello y fuente; sin duplicados |
+| `test_combat_sling` | Carga, proyectil, daño según habilidad, munición y moral enemiga con huida |
+| `test_act_one_playthrough` | El acto I se juega de principio a fin: tres encargos, mensajero y partida, sin bloqueos |
+
+La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
+`demo_playthrough` del vertical slice como prueba de extremo a extremo.
+
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 
 ```bash

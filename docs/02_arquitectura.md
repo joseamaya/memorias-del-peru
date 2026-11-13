@@ -217,16 +217,31 @@ Reglas:
 - `ModelSlot` no conoce campañas: la escena del mundo decide qué archivo corresponde a cada bloqueo (en la campaña 01, tabla en el alcance del vertical slice, §7).
 - Las reglas de los `.glb` (nombre, metros, origen en la base, escalas aplicadas, colisión) se comprueban en `tests/asset_validation.gd`, que usan `test_model_validator` y `test_model_files_valid`.
 
-## 6. Puntos de extensión previstos (no implementar sin fase asignada)
+## 6. Sistemas RPG (Fase 6)
 
-| Sistema | Ubicación | Relación prevista |
+La campaña 01 es un RPG en primera persona ([ADR-0038](adr/0038-campana-rpg.md)).
+Estos módulos viven en `core/` y no conocen la campaña; la campaña los compone.
+
+| Sistema | Ubicación | Contrato público |
 |---|---|---|
-| Inventario | `core/systems/inventory/` | Interactuables de tipo “recoger” |
-| Diálogo | `core/systems/dialogue/` | Interactuables de tipo “hablar” |
-| Misiones | `core/systems/quest/` | Escuchan señales de interacción y eventos |
-| Guardado | `core/autoload/save_manager.gd` | Cada sistema expone su propio estado serializable |
-| Opciones gráficas | `core/systems/graphics/` (Fase 3) | Perfiles aplicados en ejecución a `Environment`, luces, `Viewport` y `RenderingServer`. **No** a `ProjectSettings`, que solo aporta valores de arranque. Detalle en [08_entorno_y_rendimiento.md](08_entorno_y_rendimiento.md) §2 |
-| Códice histórico | Por definir (posterior al vertical slice) | Consulta del registro histórico desde el juego; ver docs/01 §6 |
+| Estado | `core/systems/rpg/character_state.gd` | Salud, ánimo, habilidades (0–5 por uso) y reputación por grupo; señales `health_changed`, `morale_changed`, `skill_changed`, `reputation_changed`; `damage`, `heal`, `register_skill_use`, `change_reputation` |
+| Inventario | `core/systems/inventory/inventory.gd` y `item_definition.gd` | Ocho huecos y tres equipados; `add`, `remove`, `count`, `has`, `use`; señal `changed`. Sin peso ni loot aleatorio |
+| Diálogo | `core/systems/dialogue/dialogue_runner.gd` | Nodos con texto, opciones, condiciones y efectos; no conoce la UI: emite `line_shown` y `choices_shown`, recibe la opción elegida |
+| Diario | `core/systems/journal/journal.gd` | Encargos y «Memoria»; añade entradas con clave de texto, sello H/A/R/N y fuente; señal `changed` |
+| Combate | `core/systems/combat/` | Honda con carga y proyectil, porra y escudo, enemigos con moral; sin HUD. Se implementa en la Fase 6 y se prueba con la emboscada del acto II |
+| Puntos de control | `core/systems/checkpoint/` | Estado en memoria al empezar cada acto y a mitad del II y III; sin guardado completo |
+
+Reglas:
+
+- El estado del jugador es un nodo hijo; la UI se suscribe a señales y no consulta
+  el estado en cada fotograma.
+- Los objetos son recursos (`ItemDefinition`) con clave de nombre y descripción;
+  ningún texto literal en código.
+- El diario no muestra marcadores en el mundo: es la única superficie de lectura.
+- El combate no expone barras: salud por viñeta y respiración, ánimo por sonido,
+  munición por la mano. Las pruebas pueden leer los valores internos.
+- El guardado completo sigue fuera de alcance; `core/autoload/save_manager.gd`
+  se pospone.
 
 ## 7. Textos para el jugador
 

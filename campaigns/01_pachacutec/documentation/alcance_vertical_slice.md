@@ -4,6 +4,7 @@
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
+- **Nota (2026-11-13):** el modelo de museo de §12 queda superado por el giro a RPG ([ADR-0038](../../../docs/adr/0038-campana-rpg.md)). Este documento se conserva como referencia del **acto I**: mapa, assets y textos siguen vigentes; la estructura de los tres actos está en la [biblia de la campaña](biblia_campana.md).
 - Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md) [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md) [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md) y [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md)
 
 ## 0. Historial de versiones
