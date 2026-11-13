@@ -41,7 +41,8 @@ func test_world_tour_starts() -> bool:
 		and stations == 9
 		and hud.get_tour_progress_text() == "0/9"
 		and hud.is_showing_objective()
-		and hud.get_objective_text().begins_with("Observa:")
+		and hud.get_objective_text() == tr("PCH_OBJ_TOUR_FREE")
+		and not hud.is_tour_compass_visible()
 	)
 	world.free()
 	return ok
@@ -90,26 +91,21 @@ func test_world_tour_station_counts_once() -> bool:
 	return ok
 
 
-func test_world_tour_gate_opens_event() -> bool:
+func test_world_tour_mirador_opens_event() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:
 		return false
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
 	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
 	var event: MessengerEvent = world.get_node_or_null("EventController") as MessengerEvent
-	if hud == null or player == null or event == null:
+	var mirador: Station = _station(world, "mirador")
+	if hud == null or player == null or event == null or mirador == null:
 		world.free()
 		return false
-	# Cerca de la plaza: la petición de llegada puede arrancar.
+	# Cerca de la plaza: la petición del mirador arranca al volver.
 	player.global_position = Vector3(0.0, 0.05, 2.0)
-	var ids: Array[String] = ["plaza", "quero", "chicha", "ofrenda", "mirador"]
-	for id: String in ids:
-		var station: Station = _station(world, id)
-		if station == null:
-			world.free()
-			return false
-		station.interact(player)
-		hud.close_tour_card()
+	mirador.interact(player)
+	hud.close_tour_card()
 	var ok: bool = event.phase == MessengerEvent.Phase.ARRIVAL
 	world.free()
 	return ok

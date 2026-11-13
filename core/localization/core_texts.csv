@@ -6,5 +6,5 @@ UI_END_HINT,R para volver a empezar · Esc para salir
 UI_GAME_TITLE,Memorias del Perú
 UI_START,Comenzar
 UI_QUIT,Salir
-UI_CONTROLS_HINT,WASD moverse · Ratón mirar · Mayús correr · Espacio saltar · E interactuar · Esc pausa
+UI_CONTROLS_HINT,WASD moverse · Ratón mirar · Mayús correr · E interactuar · Q brújula · Esc pausa
 UI_TOUR_CLOSE,E para cerrar

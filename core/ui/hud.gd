@@ -271,6 +271,11 @@ func show_tour_compass(value: bool) -> void:
 	tour_compass.visible = value
 
 
+## Indica si la brújula está a la vista.
+func is_tour_compass_visible() -> bool:
+	return tour_compass.visible
+
+
 ## Gira la brújula; el ángulo es relativo a la vista del jugador.
 func set_tour_compass_angle(angle: float) -> void:
 	tour_compass.set_target_angle(angle)

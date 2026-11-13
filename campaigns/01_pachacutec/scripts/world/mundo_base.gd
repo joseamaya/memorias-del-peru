@@ -223,8 +223,8 @@ const STATION_POSITIONS: Array[Vector3] = [
 	Vector3(-31.0, 0.0, -7.5),
 	Vector3(52.0, 2.45, 0.0),
 ]
-## Estaciones necesarias, con el mirador entre ellas, para que salga el evento.
-const TOUR_REQUIRED: int = 5
+## Tiempo que la brújula sigue visible después de observar una estación.
+const COMPASS_AFTER_STATION_MS: int = 3000
 
 ## Argumentos de desarrollo (después de `--`): `--skip-intro` entra directo al
 ## mundo y `--spawn=spawn|plaza|mirador` elige el punto de aparición.
@@ -271,6 +271,8 @@ var _tour_target: Station = null
 var _tour_target_position: Vector3 = Vector3.ZERO
 var _tour_target_id: StringName = &""
 var _tour_active: bool = true
+var _guide_active: bool = false
+var _compass_until_ms: int = 0
 
 
 func _ready() -> void:
@@ -419,7 +421,7 @@ func _on_intro_finished() -> void:
 func _process(delta: float) -> void:
 	advance_end_card(delta)
 	advance_intro_music(delta)
-	_refresh_tour_target()
+	_update_tour_guide()
 	_update_tour_compass()
 
 
@@ -444,8 +446,11 @@ func _build_tour() -> void:
 
 
 ## Gira la brújula hacia la estación pendiente más cercana, relativa a la vista.
+## Solo se muestra mientras se mantiene Q o durante unos segundos después de
+## observar una estación: la guía se pide, no se impone.
 func _update_tour_compass() -> void:
-	if not _tour_active or _tour_target == null or hud == null:
+	var guide_visible: bool = _guide_active or Time.get_ticks_msec() < _compass_until_ms
+	if not _tour_active or _tour_target == null or not guide_visible or hud == null:
 		hud.show_tour_compass(false)
 		return
 	var to: Vector3 = _tour_target_position - player.global_position
@@ -455,19 +460,21 @@ func _update_tour_compass() -> void:
 	hud.set_tour_compass_angle(relative)
 
 
-## Recalcula la estación sugerida y la refleja en el HUD cuando cambia.
-func _refresh_tour_target() -> void:
-	if not _tour_active:
+## Actualiza la estación sugerida y el texto del objetivo. Con la guía pulsada
+## muestra el nombre; sin ella, una invitación neutra a explorar.
+func _update_tour_guide() -> void:
+	if not _tour_active or is_intro_playing():
 		return
 	_update_tour_target()
+	var guide: bool = Input.is_action_pressed("guide")
 	var current_id: StringName = &""
 	if _tour_target != null:
 		current_id = _tour_target.station_id
-	if current_id == _tour_target_id:
+	if guide == _guide_active and (not guide or current_id == _tour_target_id):
 		return
+	_guide_active = guide
 	_tour_target_id = current_id
-	if not is_intro_playing() and hud != null and not hud.is_tour_card_open():
-		_show_tour_hint()
+	_show_tour_hint()
 
 
 ## Fija la estación pendiente más cercana como objetivo de la brújula.
@@ -487,22 +494,24 @@ func _update_tour_target() -> void:
 			_tour_target_position = at
 
 
-## Muestra en el HUD la estación sugerida y el contador del tour.
+## Muestra en el HUD la estación sugerida (solo con la guía) y el contador.
 func _show_tour_hint() -> void:
 	if hud == null:
 		return
-	if _tour_target != null:
-		_tour_target_id = _tour_target.station_id
 	hud.set_tour_progress(_tour_visited.size(), _tour_stations.size())
-	if not _tour_active or _tour_target == null:
+	if not _tour_active:
 		hud.clear_objective()
 		return
-	var title_key: StringName = _station_key(_tour_target.station_id, "TITLE")
-	hud.show_objective(tr("PCH_OBJ_TOUR") % tr(String(title_key)))
+	if _guide_active and _tour_target != null:
+		_tour_target_id = _tour_target.station_id
+		var title_key: StringName = _station_key(_tour_target.station_id, "TITLE")
+		hud.show_objective(tr("PCH_OBJ_TOUR") % tr(String(title_key)))
+		return
+	hud.show_objective(tr("PCH_OBJ_TOUR_FREE"))
 
 
-## Una estación observada: abre su tarjeta, cuenta la primera vez y comprueba
-## si con esta visita el evento debe salir.
+## Una estación observada: abre su tarjeta, cuenta la primera vez y, si es el
+## mirador, pide la llegada del mensajero (ADR-0035).
 func _on_station_observed(station: Station) -> void:
 	if not _tour_active:
 		return
@@ -510,14 +519,16 @@ func _on_station_observed(station: Station) -> void:
 	if first_time:
 		_tour_visited[station.station_id] = true
 		_update_tour_target()
+		_compass_until_ms = Time.get_ticks_msec() + COMPASS_AFTER_STATION_MS
 	_show_tour_card(station)
 	if not first_time:
 		return
 	hud.set_tour_progress(_tour_visited.size(), _tour_stations.size())
-	var event: MessengerEvent = $EventController as MessengerEvent
-	if event != null and station.station_id == &"mirador":
-		event.announce_wait()
-	_check_tour_gate()
+	if station.station_id == &"mirador":
+		var event: MessengerEvent = $EventController as MessengerEvent
+		if event != null:
+			event.announce_wait()
+			event.request_arrival()
 
 
 ## Abre la tarjeta de la estación y detiene al jugador mientras lee.
@@ -535,18 +546,6 @@ func _show_tour_card(station: Station) -> void:
 func _on_tour_card_closed() -> void:
 	player.process_mode = Node.PROCESS_MODE_INHERIT
 	_show_tour_hint()
-
-
-## Con cinco estaciones y el mirador entre ellas, se pide la llegada del
-## mensajero; la petición espera a que el jugador vuelva a la plaza (ADR-0030).
-func _check_tour_gate() -> void:
-	if _tour_visited.size() < TOUR_REQUIRED:
-		return
-	if not _tour_visited.has(&"mirador"):
-		return
-	var event: MessengerEvent = $EventController as MessengerEvent
-	if event != null:
-		event.request_arrival()
 
 
 ## Clave de una parte de la estación (`TITLE`, `BODY`, `BADGE`, `SOURCE`).

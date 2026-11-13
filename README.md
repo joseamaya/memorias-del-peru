@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 5 — Museo explorable (en curso).** Alcance v5.0 ([ADR-0034](docs/adr/0034-una-campana-y-museo.md)): nueve estaciones con tarjeta, contador y brújula; el evento del mensajero como clímax. Pendiente: validación de la duración (6–8 min), medición de rendimiento y prueba con jugadores ajenos (métrica 5 **no verificada**). |
+| Estado | **Fase 5 — Museo explorable (en curso).** Alcance v5.1 ([ADR-0034](docs/adr/0034-una-campana-y-museo.md), [ADR-0035](docs/adr/0035-tour-libre.md)): nueve estelas con tarjeta, contador y brújula opcional (Q); el evento sale al mirar desde el mirador. Pendiente: validación de la duración (6–8 min), medición de rendimiento y prueba con jugadores ajenos (métrica 5 **no verificada**). |
 
 ## Requisitos
 
@@ -31,6 +31,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Pausa / liberar ratón | Escape |
 | Cambiar perfil gráfico (solo desarrollo) | F2 |
 | Mirar | Ratón |
+| Brújula del tour (mantener) | Q |
 
 ## Iteración rápida (desarrollo)
 

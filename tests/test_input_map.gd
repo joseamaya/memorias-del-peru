@@ -11,6 +11,7 @@ func test_input_map() -> bool:
 		&"run",
 		&"interact",
 		&"jump",
+		&"guide",
 		&"pause",
 	]
 	for action: StringName in actions:

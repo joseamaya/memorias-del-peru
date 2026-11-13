@@ -52,6 +52,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.20 | Aplica [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) tras la autovalidación del 2026-11-13 (mediana de 86 s): cuarto objetivo del mirador entre la conversación y la espera; el aviso de espera se emite al llegar allí y la llegada se pide desde el mirador, con respaldo a 80 s + 20 s; cierre sin fugas de audio (árbol en pausa y flujos liberados). Registro de la validación en [sesiones/](sesiones/autovalidacion-2026-11-13.md) (§2.2, §5, §6.4, §9 y §10). Pedida el 2026-11-13. |
 | v4.21 | Aplica [ADR-0033](../../../docs/adr/0033-duracion-del-slice.md): la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
 | v5.0 | Aplica [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md): la campaña se organiza como museo explorable, con nueve estaciones, tarjeta, contador y brújula; el evento sale tras cinco estaciones con el mirador y la cadena de objetivos anterior queda sustituida (§2.2, §5, §6.4 y §12). Pedida el 2026-11-13. |
+| v5.1 | Aplica [ADR-0035](../../../docs/adr/0035-tour-libre.md): la estación pasa a ser una estela legible a la altura del pecho; se quita el umbral de cinco estaciones, el evento sale al observar el mirador (o a los 360 s) y la brújula se muestra solo con Q o tres segundos tras observar, con objetivo neutro (§2.2, §5, §9 y §12). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -492,15 +493,18 @@ brújula, y el evento del mensajero como clímax.
 | 8 | El corral de pirca | PCH-021 | R |
 | 9 | El camino al Cusco (mirador) | PCH-022 | A / R |
 
-- **Activación:** «Observar» (E) sobre un marcador de piedra. Cada estación
-  cuenta una sola vez; volver a observarla abre la tarjeta sin sumar.
+- **Activación:** «Observar» (E) sobre una **estela de piedra** a la altura del
+  pecho. Cada estación cuenta una sola vez; volver a observarla abre la tarjeta
+  sin sumar.
 - **Tarjeta:** título, 60–80 palabras, sello de clasificación y fuente. Se cierra
   con E o Esc; mientras está abierta, el jugador no se mueve.
-- **HUD:** contador `n/9` y brújula al hito pendiente más cercano. El texto del
-  objetivo sigue al mismo hito.
-- **Cierre:** el evento sale al visitar cinco estaciones con el mirador entre
-  ellas. El respaldo por reloj de [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md)
-  se amplía a 360 s + 20 s para no cortar el recorrido si el jugador ignora el tour.
+- **HUD:** contador `n/9`; la brújula se oculta por defecto y aparece al mantener
+  **Q** (o tres segundos tras observar). El objetivo es neutro: «Explora la
+  llacta y observa las estelas»; con Q muestra el nombre del hito más cercano.
+- **Cierre:** el evento sale al **observar la estela del mirador** (mirar el
+  camino del norte); la petición arranca al volver a la plaza. El respaldo por
+  reloj de [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) es de 360 s
+  + 20 s. No hay umbral de estaciones: el tour es opcional.
 - **Sustitución:** la cadena de objetivos de v4.18 (quero → ofrenda →
   conversación → mirador) queda sustituida por el puntero de estación. Las
   claves `PCH_OBJ_QUERO`, `PCH_OBJ_OFFERING`, `PCH_OBJ_TALK` y `PCH_OBJ_MIRADOR`
