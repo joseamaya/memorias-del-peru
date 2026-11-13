@@ -68,3 +68,4 @@ Plantilla:
 | [0034](0034-una-campana-y-museo.md) | Una campaña y modelo de museo explorable | Aceptado (ampliado por ADR-0035) |
 | [0035](0035-tour-libre.md) | Tour libre: estelas legibles, sin umbral y con guía opcional | Reemplazado por ADR-0036 |
 | [0036](0036-leer-en-el-mundo.md) | Leer en el mundo: sin estelas, contador ni brújula | Aceptado (reemplaza a ADR-0035) |
+| [0037](0037-duracion-del-museo.md) | La duración del museo: 6–8 minutos de exploración con lectura | Aceptado (aclara ADR-0033 y ADR-0036) |

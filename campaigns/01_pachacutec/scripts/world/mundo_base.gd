@@ -265,6 +265,8 @@ var _objective: int = -1
 var _contact_shadow_material: StandardMaterial3D = null
 var _tour_visited: Dictionary[StringName, bool] = {}
 var _tour_active: bool = true
+## Lugar de la tarjeta abierta, para dejar constancia en el registro de sesión.
+var _reading_spot: StringName = &""
 
 
 func _ready() -> void:
@@ -466,6 +468,8 @@ func visit_spot(spot_id: StringName) -> void:
 	if hud.is_tour_card_open():
 		return
 	_tour_visited[spot_id] = true
+	_reading_spot = spot_id
+	SessionLog.mark(&"spot", String(spot_id))
 	_show_tour_card(spot_id)
 	if spot_id != &"mirador":
 		return
@@ -487,6 +491,9 @@ func _show_tour_card(spot_id: StringName) -> void:
 
 func _on_tour_card_closed() -> void:
 	player.process_mode = Node.PROCESS_MODE_INHERIT
+	if _reading_spot != &"":
+		SessionLog.mark(&"spot_closed", String(_reading_spot))
+		_reading_spot = &""
 
 
 ## Clave de una parte de la tarjeta (`TITLE`, `BODY`, `BADGE`, `SOURCE`).

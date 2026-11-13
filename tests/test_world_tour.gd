@@ -55,6 +55,40 @@ func test_world_tour_zone_opens_card() -> bool:
 	return ok
 
 
+func test_world_tour_all_spots() -> bool:
+	var world: Node = _spawn_world()
+	if world == null:
+		return false
+	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
+	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
+	if hud == null or player == null:
+		world.free()
+		return false
+	# Cerca de la plaza: el mirador, al final, pide la llegada del mensajero.
+	player.global_position = Vector3(0.0, 0.05, 2.0)
+	var ids: Array[StringName] = [
+		&"plaza", &"quero", &"chicha", &"ofrenda", &"telar",
+		&"vivienda", &"terraza", &"corral", &"mirador",
+	]
+	var ok: bool = true
+	for id: StringName in ids:
+		world.call("visit_spot", id)
+		if not hud.is_tour_card_open():
+			ok = false
+			break
+		var expected: String = tr("PCH_ST_%s_TITLE" % String(id).to_upper())
+		ok = hud.get_tour_card().get_title_text() == expected
+		hud.close_tour_card()
+		ok = ok and not hud.is_tour_card_open()
+		if not ok:
+			break
+	# Ninguna tarjeta se reabre al volver.
+	world.call("visit_spot", &"plaza")
+	ok = ok and not hud.is_tour_card_open()
+	world.free()
+	return ok
+
+
 func test_world_tour_action_opens_card() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:

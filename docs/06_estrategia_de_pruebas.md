@@ -144,7 +144,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_session_log` | El registro de sesión valida los códigos, escribe cabecera y marcas en orden con el tiempo transcurrido, no abre una segunda sesión y no escribe nada fuera de una sesión (alcance v4.16) |
 | `test_hud_objective` | La línea de objetivo aparece con texto traducido, cambia de texto y se retira sin dejar rastro |
 | `test_tour_card` | La tarjeta de estación muestra título, cuerpo, sello y fuente, se cierra y emite `closed` |
-| `test_world_tour` | El mundo crea siete zonas de lugar, no hay objetivo ni contador al empezar, entrar en una zona o beber del quero abre la tarjeta y desactiva al jugador, la segunda visita no la reabre y llegar al mirador abre el evento (ADR-0036) |
+| `test_world_tour` | El mundo crea siete zonas de lugar, no hay objetivo ni contador al empezar, entrar en una zona o beber del quero abre la tarjeta y desactiva al jugador, las nueve tarjetas se abren en orden, la segunda visita no las reabre y llegar al mirador abre el evento (ADR-0036, ADR-0037) |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 

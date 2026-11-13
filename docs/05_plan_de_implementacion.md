@@ -250,8 +250,8 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 | 3 | Zonas y señales en el mundo | `Area3D` invisibles para los lugares y señales del quero y la ofrenda; sin objetos ni marcadores |
 | 4 | Nueve estaciones | Plaza, quero, chicha, ofrenda, telar, vivienda, terraza, corral y mirador, con textos de 60–80 palabras y fuente |
 | 5 | Estado del tour | Tarjetas leídas, una sola vez; sin contador, brújula ni objetivo antes del evento |
-| 6 | Integración del evento | Sale al observar la estela del mirador; respaldo por reloj de 360 s |
-| 7 | Pruebas y validación | Estación visitada una sola vez, tarjeta, contador, gating, textos con clave y ficha; validación de autor |
+| 6 | Integración del evento | Sale al llegar al mirador; respaldo por reloj de 360 s |
+| 7 | Pruebas y validación | Lugar visitado una sola vez, tarjeta, disparo del mirador, textos con clave y ficha; validación de autor |
 
 ### Criterios de aceptación
 
@@ -259,8 +259,8 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [x] No hay contador, brújula ni objetivo antes del evento: el HUD no guía. *(2026-11-13: `test_world_tour` comprueba que el HUD no muestra objetivo al empezar.)*
 - [x] La tarjeta muestra título, cuerpo, sello y fuente; se cierra con E o Esc y el jugador recupera el control. *(2026-11-13: `test_tour_card` y `test_world_tour`; captura de la tarjeta del quero con fuente completa.)*
 - [x] El evento sale al llegar al mirador; si no se sube, el respaldo por reloj de 360 s lo trae igual. *(2026-11-13: `test_world_tour_mirador_opens_event`; las pruebas del mensajero cubren el respaldo.)*
-- [ ] Duración mediana de 6–8 min en ruta guiada (validación de autor, ADR-0031).
+- [ ] Duración mediana de 6–8 min de exploración con lectura (ADR-0037 y ADR-0031).
 - [x] Ninguna tarjeta afirma algo sin ficha; las nueve tienen sello y fuente. *(2026-11-13: revisión de los nueve textos contra PCH-004/005/007/008/010/012/016/021/022; las fuentes citadas son las de las fichas.)*
 - [ ] Cero bloqueos y cero errores de consola.
 - [ ] ≥ 60 FPS en perfil Medio en la GPU integrada de referencia.
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 105 pruebas en verde, sin advertencias.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 107 pruebas en verde, sin advertencias.)*

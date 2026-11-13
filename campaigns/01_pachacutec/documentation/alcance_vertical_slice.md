@@ -53,7 +53,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.21 | Aplica [ADR-0033](../../../docs/adr/0033-duracion-del-slice.md): la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
 | v5.0 | Aplica [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md): la campaña se organiza como museo explorable, con nueve estaciones, tarjeta, contador y brújula; el evento sale tras cinco estaciones con el mirador y la cadena de objetivos anterior queda sustituida (§2.2, §5, §6.4 y §12). Pedida el 2026-11-13. |
 | v5.1 | Aplica [ADR-0035](../../../docs/adr/0035-tour-libre.md): la estación pasa a ser una estela legible a la altura del pecho; se quita el umbral de cinco estaciones, el evento sale al observar el mirador (o a los 360 s) y la brújula se muestra solo con Q o tres segundos tras observar, con objetivo neutro (§2.2, §5, §9 y §12). Pedida el 2026-11-13. |
-| v5.2 | Aplica [ADR-0036](../../../docs/adr/0036-leer-en-el-mundo.md): se eliminan las estelas, el contador, la brújula y la tecla Q; las nueve tarjetas se abren al entrar en el lugar o al hacer la acción, y el mirador dispara el evento. La prioridad pasa a la sensación de lugar: sol más bajo, polvo en suspensión y rutas más largas de los vecinos (§2.2, §5, §6.4, §9 y §12). Pedida el 2026-11-13. |
+| v5.2 | Aplica [ADR-0036](../../../docs/adr/0036-leer-en-el-mundo.md) y [ADR-0037](../../../docs/adr/0037-duracion-del-museo.md): se eliminan las estelas, el contador, la brújula y la tecla Q; las nueve tarjetas se abren al entrar en el lugar o al hacer la acción, y el mirador dispara el evento. La prioridad pasa a la sensación de lugar: sol más bajo, polvo en suspensión y rutas más largas de los vecinos (§2.2, §5, §6.4, §9 y §12). Pedida el 2026-11-13. La duración del museo se fija en 6–8 min de exploración con lectura (ADR-0037). |
 
 ## 1. Objetivo
 
@@ -97,7 +97,7 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 | título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
 | introducción | se pulsa Comenzar | cuatro tarjetas (ADR-0023, ADR-0024 y ADR-0025): la nota histórica sobre negro; los Andes y la llacta sobre tomas del juego; el valle del Cusco sobre un mapa propio; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
 | `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero baja por el camino norte desde los 18 s y se detiene a las puertas de la plaza; los vecinos pasean; se puede hablar con seis personajes; el tour propone las nueve estaciones | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; al llegar al mirador, “El sol sube…”; a los 360 s, si el jugador no está en la plaza, “Desde la plaza llaman…” |
-| `ARRIVAL` | el jugador visitó cinco estaciones con el mirador entre ellas y vuelve a menos de 10 m de la plaza; o pasan 360 s **y** está en la plaza; o 380 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
+| `ARRIVAL` | el jugador llegó al mirador y vuelve a menos de 10 m de la plaza; o pasan 360 s **y** está en la plaza; o 380 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
 | `MESSAGE` | el mensajero llega | el mensajero se detiene y el grupo termina de formar un anillo a su alrededor; el curaca y los principales escuchan | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
 | `DEPARTURE` | suena el pututu | el mensajero, el curaca y los principales parten por el camino norte; los vecinos se quedan (v4.8) | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
@@ -474,7 +474,7 @@ Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05]
 ## 12. Museo explorable (v5.0)
 
 Desde [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md), la campaña se
-organiza como un museo explorable: nueve estaciones con tarjeta, contador y
+organiza como un museo explorable: nueve lugares con tarjeta, sin contador ni
 brújula, y el evento del mensajero como clímax.
 
 | # | Estación | Ficha | Clasificación |
@@ -503,5 +503,6 @@ brújula, y el evento del mensajero como clímax.
   No hay umbral de estaciones.
 - **Sustitución:** la cadena de objetivos de v4.18 queda eliminada. Solo quedan
   los objetivos del evento (`PCH_OBJ_LISTEN`, `PCH_OBJ_PUTUTU`, `PCH_OBJ_LEAVE`).
-- **Duración objetivo:** 6–8 min explorando; el horizonte de 10–15 min sigue
+- **Duración objetivo:** 6–8 min explorando y leyendo ([ADR-0037](../../../docs/adr/0037-duracion-del-museo.md));
+  el horizonte de 10–15 min sigue
   reservado a la campaña completa.
