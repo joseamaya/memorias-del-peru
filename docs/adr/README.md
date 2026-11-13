@@ -61,5 +61,6 @@ Plantilla:
 | [0027](0027-musica-de-la-introduccion.md) | Música de la introducción | Reemplazado por ADR-0028 |
 | [0028](0028-musica-epica-de-la-introduccion.md) | Música épica de la introducción | Aceptado (pieza sustituida por ADR-0029) |
 | [0029](0029-tema-de-apertura.md) | Tema de apertura de la introducción | Aceptado |
-| [0030](0030-ritmo-y-disparo-del-mensajero.md) | Ritmo y disparo del mensajero: por acción y con aproximación visible | Aceptado (reemplaza a ADR-0013) |
+| [0030](0030-ritmo-y-disparo-del-mensajero.md) | Ritmo y disparo del mensajero: por acción y con aproximación visible | Aceptado (reemplaza a ADR-0013; ampliado por ADR-0032) |
 | [0031](0031-validacion-por-el-autor.md) | Validación del vertical slice por el autor | Aceptado |
+| [0032](0032-objetivo-del-mirador.md) | Objetivo del mirador y anuncio de la espera | Aceptado (amplía ADR-0030) |

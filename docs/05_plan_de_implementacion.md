@@ -19,7 +19,7 @@ Reglas:
 | 3 — Entorno | Cerrada | 2026-11-10 |
 | 4 — Vertical Slice Pachacútec | En curso | — |
 
-La Fase 4 tiene la implementación completa y las validaciones técnicas en verde. Falta la **validación de autor** de [ADR-0031](adr/0031-validacion-por-el-autor.md) para cerrarla; la métrica 5 de audiencia queda declarada «no verificada».
+La Fase 4 tiene la implementación completa y las validaciones técnicas en verde. La autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)) superó comprensión, primera interacción y bloqueos, pero **no duración ni cierre sin errores**. Aplicados el objetivo del mirador ([ADR-0032](adr/0032-objetivo-del-mirador.md)) y el cierre sin fugas de audio, falta la re-medición `AUTO-4` y el cierre de la fase; la métrica 5 de audiencia queda declarada «no verificada».
 
 ---
 
@@ -213,7 +213,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 5–8 minutos de mediana para un jugador que explora sin prisa (ajustado por [ADR-0009](adr/0009-duracion-y-disparo-del-slice.md); los 10–15 min de la métrica 1 quedan para la campaña completa) |
+| Duración | 5–8 minutos de mediana para un jugador que explora sin prisa (ajustado por [ADR-0009](adr/0009-duracion-y-disparo-del-slice.md); los 10–15 min de la métrica 1 quedan para la campaña completa). La autovalidación midió ~2 min en ruta directa; el objetivo sigue abierto ([alcance](../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md) §10) |
 | Espacio | Una llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Caminos | Al menos 2 rutas distintas entre el inicio y el punto narrativo final |

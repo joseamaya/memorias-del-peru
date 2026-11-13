@@ -194,17 +194,21 @@ const SURFACE_STONE: StringName = &"stone"
 ## Objetivo visible en el HUD: una línea, sin fondo. El índice solo avanza
 ## hacia delante; si el evento arranca antes de completar las tareas, salta a la
 ## fase del evento y no vuelve atrás.
-enum Objective { QUERO, OFFERING, TALK, WAIT, LISTEN, PUTUTU, LEAVE, NONE }
+enum Objective { QUERO, OFFERING, TALK, MIRADOR, WAIT, LISTEN, PUTUTU, LEAVE, NONE }
 
 const OBJECTIVE_KEYS: Array[StringName] = [
 	&"PCH_OBJ_QUERO",
 	&"PCH_OBJ_OFFERING",
 	&"PCH_OBJ_TALK",
+	&"PCH_OBJ_MIRADOR",
 	&"PCH_OBJ_WAIT",
 	&"PCH_OBJ_LISTEN",
 	&"PCH_OBJ_PUTUTU",
 	&"PCH_OBJ_LEAVE",
 ]
+
+## Distancia al mirador que da por cumplido el cuarto objetivo.
+const MIRADOR_RADIUS: float = 6.0
 
 ## Argumentos de desarrollo (después de `--`): `--skip-intro` entra directo al
 ## mundo y `--spawn=spawn|plaza|mirador` elige el punto de aparición.
@@ -397,6 +401,24 @@ func _on_intro_finished() -> void:
 func _process(delta: float) -> void:
 	advance_end_card(delta)
 	advance_intro_music(delta)
+	check_mirador()
+
+
+## Cuarto objetivo: llegar al mirador. Desde allí se ve el camino del norte y
+## el evento anuncia la espera. Devuelve `true` si acaba de cumplirse.
+func check_mirador() -> bool:
+	if _objective != Objective.MIRADOR:
+		return false
+	var mirador: Marker3D = get_node_or_null("Mirador") as Marker3D
+	if mirador == null:
+		return false
+	if player.global_position.distance_to(mirador.global_position) > MIRADOR_RADIUS:
+		return false
+	_advance_objective(Objective.WAIT)
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null:
+		event.announce_wait()
+	return true
 
 
 ## Música de la introducción, para las pruebas.
@@ -840,7 +862,7 @@ func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
 	if hud != null:
 		hud.show_subtitle(tr(String(line_key)), 0.0)
 	if _objective == Objective.TALK:
-		_advance_objective(Objective.WAIT)
+		_advance_objective(Objective.MIRADOR)
 	var npc: NpcActor = actor as NpcActor
 	if npc == null:
 		return

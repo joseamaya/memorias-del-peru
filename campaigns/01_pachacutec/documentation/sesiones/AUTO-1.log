@@ -1,0 +1,37 @@
+# Sesión de prueba — Memorias del Perú
+# Código: AUTO-1
+# Inicio: 2026-11-13 13:16:42
+# Godot: 4.7.2-stable (official)
+# Carpeta: user://sesiones
+# Formato: +MM:SS.mmm<TAB>marca<TAB>detalle
++00:00.000	session_start
++00:01.508	campaign_start
++00:01.515	profile	Medio
++00:02.303	intro_card	1
++00:06.270	intro_card	2
++00:07.221	intro_card	3
++00:08.038	intro_card	4
++00:10.526	control_taken
++00:10.527	objective	PCH_OBJ_QUERO
++00:10.527	subtitle	PCH_NARR_OPENING
++00:14.825	subtitle	PCH_NARR_GREET
++00:23.359	objective	PCH_OBJ_OFFERING
++00:30.526	subtitle	PCH_NARR_WAIT
++00:35.488	objective	PCH_OBJ_TALK
++00:43.656	objective	PCH_OBJ_WAIT
++00:51.072	phase	arrival
++00:51.072	objective	PCH_OBJ_LISTEN
++00:57.486	phase	message
++00:57.487	subtitle	PCH_NARR_NEWS_1
++01:03.505	subtitle	PCH_NARR_NEWS_2
++01:09.499	phase	call
++01:09.499	objective	PCH_OBJ_PUTUTU
++01:09.499	subtitle	PCH_NARR_CALL
++01:20.622	pututu	jugador
++01:20.622	phase	departure
++01:20.622	objective	PCH_OBJ_LEAVE
++01:20.623	subtitle	PCH_NARR_CLOSING_1
++01:26.621	subtitle	PCH_NARR_CLOSING_2
++01:34.595	phase	done
++01:35.114	end_card
++01:37.914	session_end	salida

@@ -32,7 +32,10 @@ func test_quit_stops_audio() -> bool:
 	ok = ok and stopped == playing_before
 	ok = ok and not flat.playing
 	ok = ok and not spatial.playing
+	# El flujo se suelta para no dejarlo vivo al salir (Godot 4.7.2).
+	ok = ok and flat.stream == null and spatial.stream == null
 	# El propio nodo raíz también se detiene si es un reproductor.
+	flat.stream = AudioStreamGenerator.new()
 	flat.play()
 	GameManagerService.stop_audio_in(flat)
 	ok = ok and not flat.playing

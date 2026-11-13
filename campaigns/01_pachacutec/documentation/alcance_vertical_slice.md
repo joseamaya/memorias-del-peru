@@ -49,6 +49,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.17 | Corrección de la primera impresión tras la prueba del responsable del proyecto: el juego arranca en perfil Medio con oclusión ambiental, el jugador aparece a 22 m de la plaza, el HUD muestra una línea de objetivo que avanza con el quero, la ofrenda, la conversación y el evento, los textos narrativos se acortan, los personajes tienen mancha de contacto y las sesiones dejan de forzar el perfil Bajo y registran el activo (§2.2, §5, §6.1, §6.2 y §9.5). Pedida el 2026-11-13. |
 | v4.18 | Aplica [ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md): el mensajero sale cuando el jugador completa las tareas y está cerca de la plaza, con respaldo a los 45 s y 20 s de espera; desde los 18 s se le ve bajar por el camino del norte; el aviso de espera pasa a los 20 s y el vecino que recibe se coloca a 10 m de la aparición. Además, materiales de piel y ojos más mates y dos hombres principales conversando de perfil (§2.2, §5, §6.1, §6.2, §9.2 y §10). Pedida el 2026-11-13. |
 | v4.19 | Aplica [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la validación pasa a ser del autor, con tres pasadas registradas y umbrales medibles; la métrica 5 de audiencia queda declarada «no verificada» y recuperable con una demo pública (§9.1–§9.5 y §10). Pedida el 2026-11-13. |
+| v4.20 | Aplica [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) tras la autovalidación del 2026-11-13 (mediana de 86 s): cuarto objetivo del mirador entre la conversación y la espera; el aviso de espera se emite al llegar allí y la llegada se pide desde el mirador, con respaldo a 80 s + 20 s; cierre sin fugas de audio (árbol en pausa y flujos liberados). Registro de la validación en [sesiones/](sesiones/autovalidacion-2026-11-13.md) (§2.2, §5, §6.4, §9 y §10). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -58,7 +59,7 @@ Objetivos medibles tomados de [docs/05](../../../docs/05_plan_de_implementacion.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 5–8 min de mediana para un jugador que explora sin prisa (ADR-0009) |
+| Duración | 5–8 min de mediana para un jugador que explora sin prisa (ADR-0009). La ruta directa medida el 2026-11-13 es de ~2 min; el objetivo sigue abierto (§10) |
 | Espacio | Llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Rutas | Al menos 2 entre el inicio y el punto narrativo final |
@@ -91,8 +92,8 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 |---|---|---|---|
 | título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
 | introducción | se pulsa Comenzar | cuatro tarjetas (ADR-0023, ADR-0024 y ADR-0025): la nota histórica sobre negro; los Andes y la llacta sobre tomas del juego; el valle del Cusco sobre un mapa propio; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
-| `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero baja por el camino norte desde los 18 s y se detiene a las puertas de la plaza; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; a los 20 s, “El sol sube…”; a los 45 s, si el jugador no está en la plaza, “Desde la plaza llaman…” |
-| `ARRIVAL` | el jugador completó las tres tareas y está a menos de 10 m de la plaza, o pasan 45 s **y** está en la plaza, o 65 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
+| `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero baja por el camino norte desde los 18 s y se detiene a las puertas de la plaza; los vecinos pasean; se puede hablar con seis personajes; el cuarto objetivo lleva al mirador | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; al llegar al mirador, “El sol sube…”; a los 80 s, si el jugador no está en la plaza, “Desde la plaza llaman…” |
+| `ARRIVAL` | el jugador completó quero, ofrenda, conversación y mirador, y vuelve a menos de 10 m de la plaza; o pasan 80 s **y** está en la plaza; o 100 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
 | `MESSAGE` | el mensajero llega | el mensajero se detiene y el grupo termina de formar un anillo a su alrededor; el curaca y los principales escuchan | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
 | `DEPARTURE` | suena el pututu | el mensajero, el curaca y los principales parten por el camino norte; los vecinos se quedan (v4.8) | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
@@ -269,7 +270,7 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 | `PCH_INTRO_HINT` | al pie de las tarjetas | E para continuar |
 | `PCH_NARR_OPENING` | al empezar | Hoy llega un mensajero del Cusco. Mientras tanto, recorre la llacta. |
 | `PCH_NARR_GREET` | al acercarse al vecino del camino sur | ¡Llegas a tiempo! Ven a la plaza: hoy hay noticias del Cusco. |
-| `PCH_NARR_WAIT` | a los 20 s, si no ha llegado | El sol sube. Por el camino del norte aún no viene nadie. |
+| `PCH_NARR_WAIT` | al llegar al mirador | El sol sube. Por el camino del norte aún no viene nadie. |
 | `PCH_NARR_GATHER` | a los 45 s, si el jugador no está en la plaza | Desde la plaza llaman: el mensajero está por llegar. |
 | `PCH_NARR_NEWS_1` | llega el mensajero | ¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido. |
 | `PCH_NARR_NEWS_2` | tras la anterior | Cusi Yupanqui llama a los ayllus. |
@@ -279,7 +280,8 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 | `PCH_OBJ_QUERO` | objetivo inicial | Bebe del quero de chicha |
 | `PCH_OBJ_OFFERING` | tras beber | Deja una ofrenda a la Pachamama |
 | `PCH_OBJ_TALK` | tras la ofrenda | Habla con la gente de la llacta |
-| `PCH_OBJ_WAIT` | tras la primera conversación | Espera al mensajero en la plaza |
+| `PCH_OBJ_MIRADOR` | tras la primera conversación | Sube al mirador a mirar el camino del norte |
+| `PCH_OBJ_WAIT` | al llegar al mirador | Espera al mensajero en la plaza |
 | `PCH_OBJ_LISTEN` | llega el mensajero | Escucha al mensajero |
 | `PCH_OBJ_PUTUTU` | empieza la llamada | Toca el pututu para convocar |
 | `PCH_OBJ_LEAVE` | suena el pututu | Sigue al curaca hacia el Cusco |
@@ -430,18 +432,16 @@ La corrección la hace el propio responsable sobre su respuesta escrita. Se supe
 
 La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duración depende de cuánto explore el jugador antes de la noticia. Dos escenarios medidos sobre el mapa actual:
 
-| Momento | Directo (min) | Explorador (min) |
+| Momento | Ruta directa (min) | Ruta de exploración (estimada) |
 |---|---|---|
-| Título e introducción (cuatro tarjetas, v4.6) | 0,5 | 0,6 |
-| Apertura y entrada por el camino sur | 0,5 | 1,0 |
-| Viviendas oeste y telar | 0,5 | 2,0 |
-| Terrazas, rampas y mirador | 0,5 | 2,0 |
-| Quero y ofrenda | 0,5 | 1,0 |
-| Conversaciones y espera hasta la noticia (v4.18: el mensajero sale al completar las tareas, con respaldo a los 45 s) | 0,2 | 0,2 |
-| Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
-| **Total** | **4,5** | **8,1** |
+| Título e introducción (cuatro tarjetas, v4.6) | 0,15 | 0,2 |
+| Quero, ofrenda, conversación y caminata entre ellos | 0,4 | 0,8 |
+| Subida al mirador, pausa y vuelta a la plaza | 0,8 | 1,5 |
+| Evento: llegada, noticia, llamada y partida | 0,75 | 0,75 |
+| Tarjeta de fin y salida | 0,1 | 0,1 |
+| **Total** | **~2,2** | **~3,3** |
 
-Con el disparo por acción de la v4.18, la espera deja de ser un tramo fijo: quien completa las tres tareas y vuelve a la plaza ve llegar al mensajero en ese momento, y el respaldo lo trae como tarde a los 65 s. La mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6, y unos 50 s menos con el cierre corto de la v4.8): la partida de demostración medida tras el cambio termina en 115 s. Si la validación de autor queda por debajo de 4 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 10, se acorta el reloj de respaldo.
+La autovalidación del 2026-11-13 midió **77,7–97,9 s** (mediana 86 s) sin el mirador; con el cuarto objetivo la estimación sube a **2,2–2,6 min** en ruta directa. Sigue por debajo de los 4 min del umbral: la decisión entre añadir un tercer hito (casas del oeste o corral) o rebasear el objetivo se toma con la re-medición `AUTO-4`, no antes. El respaldo por reloj es de 80 s + 20 s.
 
 ## 11. Rendimiento
 

@@ -41,9 +41,9 @@ const DEPARTURE_TIMEOUT: float = 45.0
 ## subtítulo de cierre, aunque la comitiva siga caminando, para que la tarjeta
 ## de fin llegue sin un vacío tras el pututu.
 const CLOSING_HOLD: float = 8.0
-## Señal intermedia de la espera (ADR-0030): antes de que llegue el mensajero,
-## un texto recuerda que aún viene y se le ve bajar por el camino del norte.
-const WAIT_CUE_TIME: float = 20.0
+## Señal intermedia de la espera (ADR-0032): la emite el mundo cuando el
+## jugador llega al mirador, para que el aviso coincida con la mirada al camino
+## del norte y no con un reloj a ciegas.
 const GATHER_SECONDS: float = 6.0
 ## Vecino que recibe al jugador en el camino sur (ADR-0013): habla cuando el
 ## jugador se acerca a esta distancia.
@@ -76,14 +76,15 @@ const MEETING_ARC_START_DEGREES: float = 150.0
 ## Recorrido del arco: deja 120° libres al sur (hacia el jugador).
 const MEETING_ARC_SWEEP_DEGREES: float = 240.0
 
-## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0030;
+## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0032;
 ## antes, 75 s en ADR-0013, 120 s en ADR-0012 y 240 s en ADR-0009).
 ##
-## Es un respaldo: si el jugador completa las tres tareas de la llacta y está
-## cerca de la plaza, el mundo pide la llegada con [method request_arrival].
-@export var arrival_delay: float = 45.0
+## Es un respaldo: si el jugador completa las tareas de la llacta, sube al
+## mirador y vuelve a la plaza, el mundo pide la llegada con
+## [method request_arrival].
+@export var arrival_delay: float = 80.0
 ## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza:
-## el mensajero sale como tarde a los 65 s. Mientras tanto, un aviso llama a
+## el mensajero sale como tarde a los 100 s. Mientras tanto, un aviso llama a
 ## la plaza.
 @export var arrival_grace: float = 20.0
 @export var arrival_radius: float = 22.0
@@ -230,6 +231,16 @@ func start() -> void:
 	_enter(Phase.ARRIVAL)
 
 
+## Anuncia que se espera al mensajero. Lo llama el mundo al llegar al mirador
+## (ADR-0032), para que el aviso coincida con la mirada al camino del norte.
+## Solo se emite una vez.
+func announce_wait() -> void:
+	if _wait_cue_sent:
+		return
+	_wait_cue_sent = true
+	subtitle_requested.emit(KEY_WAIT, WAIT_SECONDS)
+
+
 ## Pide la llegada antes del reloj (ADR-0030). La llama el mundo cuando el
 ## jugador completó las tareas de la llacta. Solo arranca si está cerca de la
 ## plaza; si no, queda pendiente y arranca en cuanto llega.
@@ -291,9 +302,6 @@ func _step_idle(delta: float) -> void:
 	_step_approach(delta)
 	if _try_start_requested_arrival():
 		return
-	if not _wait_cue_sent and WAIT_CUE_TIME < arrival_delay and _idle_time >= WAIT_CUE_TIME:
-		_wait_cue_sent = true
-		subtitle_requested.emit(KEY_WAIT, WAIT_SECONDS)
 	if _idle_time < arrival_delay:
 		return
 	if player_in_plaza():

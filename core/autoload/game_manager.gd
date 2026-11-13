@@ -16,7 +16,7 @@ const AUDIO_PLAYER_TYPES: Array[String] = [
 ]
 
 ## Milisegundos de tiempo real entre detener el audio y salir.
-const QUIT_AUDIO_DRAIN_MS: int = 100
+const QUIT_AUDIO_DRAIN_MS: int = 250
 
 var _paused: bool = false
 var _quitting: bool = false
@@ -63,6 +63,10 @@ func request_quit(exit_code: int = 0) -> void:
 		return
 	_quitting = true
 	var tree: SceneTree = get_tree()
+	# Se pausa el árbol antes de barrer el audio: si los personajes siguen
+	# procesando durante el drenaje, un paso o un golpe de trabajo puede
+	# arrancar una reproducción nueva después del barrido y quedar viva al salir.
+	tree.paused = true
 	stop_audio_in(tree.root)
 	# Se espera tiempo real, no fotogramas: sin vsync un fotograma puede durar
 	# menos de un milisegundo y el hilo de audio aún no habría soltado nada.
@@ -90,20 +94,26 @@ static func stop_audio_in(root: Node) -> int:
 	return stopped
 
 
-## Detiene un reproductor de cualquiera de los tres tipos. Devuelve `true` si
-## estaba sonando.
+## Detiene un reproductor de cualquiera de los tres tipos y suelta su flujo.
+## Devuelve `true` si estaba sonando.
+##
+## Soltar el flujo es lo que evita el «resources still in use at exit» de Godot
+## 4.7.2: parar la reproducción no basta si el nodo conserva la referencia.
 static func _stop_player(node: Node) -> bool:
 	var was_playing: bool = false
 	if node is AudioStreamPlayer:
 		var player: AudioStreamPlayer = node as AudioStreamPlayer
 		was_playing = player.playing
 		player.stop()
+		player.stream = null
 	elif node is AudioStreamPlayer2D:
 		var player_2d: AudioStreamPlayer2D = node as AudioStreamPlayer2D
 		was_playing = player_2d.playing
 		player_2d.stop()
+		player_2d.stream = null
 	elif node is AudioStreamPlayer3D:
 		var player_3d: AudioStreamPlayer3D = node as AudioStreamPlayer3D
 		was_playing = player_3d.playing
 		player_3d.stop()
+		player_3d.stream = null
 	return was_playing

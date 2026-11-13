@@ -27,6 +27,9 @@ func test_narrative_beats_order() -> bool:
 		return false
 	event.subtitle_requested.connect(_on_subtitle)
 	tree.root.add_child(world)
+	# La espera la anuncia el mundo al llegar al mirador (ADR-0032); aquí se
+	# emite directamente para comprobar el orden de los hitos narrativos.
+	event.announce_wait()
 	var player: Node3D = world.get_node_or_null("PlayerFPS") as Node3D
 	var pututu: Pututu = world.get_node_or_null("Pututu") as Pututu
 	if player == null or pututu == null:
