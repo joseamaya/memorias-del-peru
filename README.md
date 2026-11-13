@@ -2,7 +2,7 @@
 
 Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental e interacción. Combate y progresión forman parte de la visión, pero quedan fuera de la etapa actual (ver [definición de éxito y horizonte](docs/01_vision_y_alcance.md#5-definición-de-éxito)).
 
-**Objetivo de la etapa actual:** un vertical slice jugable de 10–15 minutos de la campaña 01.
+**Objetivo de la etapa actual:** un vertical slice jugable de 2–3 minutos de la campaña 01 ([ADR-0033](docs/adr/0033-duracion-del-slice.md)); el horizonte de 10–15 minutos queda para la campaña completa.
 
 **Campaña 01:** *Pachacútec — La defensa del Cusco* (siglo XV).
 
@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 4 — Vertical Slice Pachacútec (implementación completa, pendiente de re-medición).** Alcance v4.20 aprobado; llacta, evento narrativo, subtítulos, audio, objetivos con mirador y protecciones contra bloqueos implementados. Pendiente: re-medición de autor (`AUTO-4`), pasada de materiales y prueba con jugadores ajenos (métrica 5 **no verificada**). |
+| Estado | **Fase 4 cerrada (2026-11-13). v0.1.** Alcance v4.21; llacta, evento narrativo, subtítulos, audio, objetivos con mirador y cierre sin fugas implementados y validados por el autor. Pendiente: pasada de materiales, prueba con jugadores ajenos (métrica 5 **no verificada**) y decisión de la siguiente fase. |
 
 ## Requisitos
 

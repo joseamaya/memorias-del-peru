@@ -47,11 +47,11 @@ Primera campaña: **Pachacútec — La defensa del Cusco.** El jugador vive los 
 
 ## 5. Definición de éxito
 
-**Objetivo comprometido:** entregar un vertical slice jugable de 10–15 minutos de la campaña 01, con todo su contenido histórico verificado y sin errores técnicos. La antología completa es la visión del proyecto, no un compromiso de esta etapa.
+**Objetivo comprometido:** entregar un vertical slice jugable de 2–3 minutos de la campaña 01 ([ADR-0033](adr/0033-duracion-del-slice.md)), con todo su contenido histórico verificado y sin errores técnicos. La antología completa y las campañas de 10–15 minutos son la visión del proyecto, no un compromiso de esta etapa.
 
 | # | Métrica | Umbral | Cómo se mide |
 |---|---|---|---|
-| 1 | Duración del vertical slice | 10–15 min de mediana para un jugador que explora sin prisa | Sesiones de prueba cronometradas (las mismas personas de la métrica 5) |
+| 1 | Duración del vertical slice | **2–3 min** de mediana en ruta directa ([ADR-0033](adr/0033-duracion-del-slice.md)); la campaña completa mantiene el horizonte de 10–15 min | Pasadas cronometradas del registro de sesión |
 | 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada (docs/08 §4). ≥ 60 FPS en perfil Medio es objetivo recomendado y se verifica cuando exista el equipo de referencia con GPU dedicada | Recorrido fijo medido con `Performance` |
 | 3 | Rigor histórico | 100 % del contenido histórico con ficha “verificado” | Registro histórico de la campaña |
 | 4 | Estabilidad técnica | 0 errores en consola, 0 bloqueos de progreso | Pruebas automatizadas + sesiones de prueba |

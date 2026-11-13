@@ -50,6 +50,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.18 | Aplica [ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md): el mensajero sale cuando el jugador completa las tareas y está cerca de la plaza, con respaldo a los 45 s y 20 s de espera; desde los 18 s se le ve bajar por el camino del norte; el aviso de espera pasa a los 20 s y el vecino que recibe se coloca a 10 m de la aparición. Además, materiales de piel y ojos más mates y dos hombres principales conversando de perfil (§2.2, §5, §6.1, §6.2, §9.2 y §10). Pedida el 2026-11-13. |
 | v4.19 | Aplica [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la validación pasa a ser del autor, con tres pasadas registradas y umbrales medibles; la métrica 5 de audiencia queda declarada «no verificada» y recuperable con una demo pública (§9.1–§9.5 y §10). Pedida el 2026-11-13. |
 | v4.20 | Aplica [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) tras la autovalidación del 2026-11-13 (mediana de 86 s): cuarto objetivo del mirador entre la conversación y la espera; el aviso de espera se emite al llegar allí y la llegada se pide desde el mirador, con respaldo a 80 s + 20 s; cierre sin fugas de audio (árbol en pausa y flujos liberados). Registro de la validación en [sesiones/](sesiones/autovalidacion-2026-11-13.md) (§2.2, §5, §6.4, §9 y §10). Pedida el 2026-11-13. |
+| v4.21 | Aplica [ADR-0033](../../../docs/adr/0033-duracion-del-slice.md): la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -59,7 +60,7 @@ Objetivos medibles tomados de [docs/05](../../../docs/05_plan_de_implementacion.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 5–8 min de mediana para un jugador que explora sin prisa (ADR-0009). La ruta directa medida el 2026-11-13 es de ~2 min; el objetivo sigue abierto (§10) |
+| Duración | 2–3 min de mediana en ruta directa ([ADR-0033](../../../docs/adr/0033-duracion-del-slice.md)); medido en 121,2 s. El horizonte de 10–15 min queda para la campaña completa |
 | Espacio | Llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Rutas | Al menos 2 entre el inicio y el punto narrativo final |
@@ -441,7 +442,7 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 | Tarjeta de fin y salida | 0,1 | 0,1 |
 | **Total** | **~2,2** | **~3,3** |
 
-La autovalidación del 2026-11-13 midió **77,7–97,9 s** (mediana 86 s) sin el mirador; con el cuarto objetivo la estimación sube a **2,2–2,6 min** en ruta directa. Sigue por debajo de los 4 min del umbral: la decisión entre añadir un tercer hito (casas del oeste o corral) o rebasear el objetivo se toma con la re-medición `AUTO-4`, no antes. El respaldo por reloj es de 80 s + 20 s.
+La autovalidación del 2026-11-13 midió **77,7–97,9 s** (mediana 86 s) sin el mirador y **121,2 s** con él. Esa cifra cumple el objetivo rebaseado a **2–3 min** ([ADR-0033](../../../docs/adr/0033-duracion-del-slice.md)): el slice es un fragmento, y la duración de la campaña completa la resolverá el modelo de estaciones. El respaldo por reloj es de 80 s + 20 s.
 
 ## 11. Rendimiento
 

@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 4 — Vertical Slice Pachacútec.
-**Siguiente:** —
+**Fase activa:** ninguna. La Fase 4 se cerró el 2026-11-13.
+**Siguiente:** — (abrir una Fase 5 requiere un ADR).
 
 Reglas:
 
@@ -17,9 +17,9 @@ Reglas:
 | 1 — Fundación técnica | Cerrada | 2026-11-10 |
 | 2 — Interacción | Cerrada | 2026-11-10 |
 | 3 — Entorno | Cerrada | 2026-11-10 |
-| 4 — Vertical Slice Pachacútec | En curso | — |
+| 4 — Vertical Slice Pachacútec | Cerrada | 2026-11-13 |
 
-La Fase 4 tiene la implementación completa y las validaciones técnicas en verde. La autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)) superó comprensión, primera interacción y bloqueos, pero **no duración ni cierre sin errores**. Aplicados el objetivo del mirador ([ADR-0032](adr/0032-objetivo-del-mirador.md)) y el cierre sin fugas de audio, falta la re-medición `AUTO-4` y el cierre de la fase; la métrica 5 de audiencia queda declarada «no verificada».
+La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con [ADR-0033](adr/0033-duracion-del-slice.md) tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» ([ADR-0031](adr/0031-validacion-por-el-autor.md)). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
 
 ---
 
@@ -213,7 +213,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 5–8 minutos de mediana para un jugador que explora sin prisa (ajustado por [ADR-0009](adr/0009-duracion-y-disparo-del-slice.md); los 10–15 min de la métrica 1 quedan para la campaña completa). La autovalidación midió ~2 min en ruta directa; el objetivo sigue abierto ([alcance](../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md) §10) |
+| Duración | 2–3 minutos de mediana en ruta directa ([ADR-0033](adr/0033-duracion-del-slice.md)); medido en 121,2 s (AUTO-4). El horizonte de 10–15 min queda para la campaña completa |
 | Espacio | Una llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Caminos | Al menos 2 rutas distintas entre el inicio y el punto narrativo final |
@@ -224,9 +224,9 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 ### Criterios de aceptación
 
-- [ ] La experiencia puede jugarse de principio a fin sin bloqueos ni errores.
-- [x] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR). *(2026-11-12, inspección de `mundo_base.tscn` cargada y `demo_playthrough.gd` con `DEMO_OK`: espacio de 140 × 140 m dentro de los límites a ±70 m; 8 viviendas; 4 caminos y dos rutas, la baja por las viviendas del oeste y la alta por las terrazas, las rampas y el mirador; 3 interactuables de tipos distintos (quero, ofrenda y pututu) más «Hablar» en 6 personajes; 9 NPC, con la tejedora y el agricultor en su animación de trabajo; el evento del mensajero llega de principio a fin; ambiente de viento y sonido en las tres interacciones. La duración solo se mide en las sesiones de prueba, y queda en el criterio de las sesiones.)*
-- [x] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo. *(2026-11-12, commit 2cbeb56, con todo el contenido del slice: 122–132 FPS de media en perfil Bajo en la GPU integrada de referencia, frente a ≥ 30 exigidos; [docs/08](08_entorno_y_rendimiento.md) §4. La carga del equipo varió entre 1,8 y 18; la medición con el equipo descargado sigue pendiente y no bloquea, porque el margen es de más de cuatro veces.)*
-- [ ] Validación de autor ([ADR-0031](adr/0031-validacion-por-el-autor.md); sustituye a la muestra de 6 jugadores de la métrica 5, que queda declarada «no verificada»): tres pasadas registradas, primera interacción en ≤ 20 s, duración mediana de 4–10 min, cero bloqueos y las preguntas 1 y 2 del cuestionario correctas sin consultar el registro.
+- [x] La experiencia puede jugarse de principio a fin sin bloqueos ni errores. *(2026-11-13: `DEMO_OK` en la partida de demostración y cuatro pasadas AUTO-1 a AUTO-4 sin bloqueos; el cierre sin fugas se corrigió y AUTO-4 terminó sin errores.)*
+- [x] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR). *(2026-11-12, inspección de `mundo_base.tscn` cargada y `demo_playthrough.gd` con `DEMO_OK`: espacio de 140 × 140 m dentro de los límites a ±70 m; 8 viviendas; 4 caminos y dos rutas, la baja por las viviendas del oeste y la alta por las terrazas, las rampas y el mirador; 3 interactuables de tipos distintos (quero, ofrenda y pututu) más «Hablar» en 6 personajes; 9 NPC, con la tejedora y el agricultor en su animación de trabajo; el evento del mensajero llega de principio a fin; ambiente de viento y sonido en las tres interacciones. 2026-11-13: la duración se midió en 121,2 s con el objetivo del mirador, dentro del objetivo de 2–3 min de ADR-0033.)*
+- [x] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo. *(2026-11-12, commit 2cbeb56, con todo el contenido del slice: 122–132 FPS de media en perfil Bajo en la GPU integrada de referencia, frente a ≥ 30 exigidos; [docs/08](08_entorno_y_rendimiento.md) §4. La carga del equipo varió entre 1,8 y 18; la medición con el equipo descargado sigue pendiente y no bloquea, porque el margen es de más de cuatro veces. 2026-11-13: el perfil Medio por defecto mide 61,8 FPS de media en la misma GPU.)*
+- [x] Validación de autor ([ADR-0031](adr/0031-validacion-por-el-autor.md), con el umbral de duración de [ADR-0033](adr/0033-duracion-del-slice.md); sustituye a la muestra de 6 jugadores de la métrica 5, que queda declarada «no verificada»). *(2026-11-13: AUTO-1 a AUTO-4; primera interacción en 10,9–13,8 s, duración de 121,2 s en la última pasada, cero bloqueos, cierre sin errores y preguntas 1 y 2 correctas sin consultar el registro. Registro en [sesiones/](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md).)*
 - [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-022, la ficha de la introducción de ADR-0023, se verificó el mismo día. PCH-023, el mapa de ADR-0025, también se verificó ese día. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
 - [x] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar. *(2026-11-12: revisión de las diez categorías en la [hoja de verificación](../campaigns/01_pachacutec/documentation/hoja_verificacion_fichas.md) §7; peinados de Rocketbox y pasos con botas declarados como limitación, y murmullo comprobado sin palabras inteligibles.)*

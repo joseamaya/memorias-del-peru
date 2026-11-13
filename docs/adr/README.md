@@ -40,7 +40,7 @@ Plantilla:
 | [0006](0006-secuencia-narrativa-por-subtitulos.md) | Secuencia narrativa por subtítulos | Aceptado (duración y reemplazo sustituidos por ADR-0012) |
 | [0007](0007-evento-del-mensajero.md) | Evento del mensajero: máquina de estados y progreso garantizado | Aceptado |
 | [0008](0008-disponibilidad-de-interactuables.md) | Disponibilidad de interactuables | Aceptado |
-| [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Aceptado (reloj sustituido por ADR-0012) |
+| [0009](0009-duracion-y-disparo-del-slice.md) | Duración y disparo del vertical slice | Reemplazado por ADR-0033 (reloj sustituido por ADR-0012) |
 | [0010](0010-modelos-generados-con-blender.md) | Modelos generados por script con Blender 5.x | Aceptado (texturas matizadas por ADR-0014; personajes, por ADR-0015 y ADR-0016) |
 | [0011](0011-fichas-fuera-del-slice.md) | Fichas de elementos que no están en el juego | Aceptado |
 | [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013; rótulo, por ADR-0023) |
@@ -62,5 +62,6 @@ Plantilla:
 | [0028](0028-musica-epica-de-la-introduccion.md) | Música épica de la introducción | Aceptado (pieza sustituida por ADR-0029) |
 | [0029](0029-tema-de-apertura.md) | Tema de apertura de la introducción | Aceptado |
 | [0030](0030-ritmo-y-disparo-del-mensajero.md) | Ritmo y disparo del mensajero: por acción y con aproximación visible | Aceptado (reemplaza a ADR-0013; ampliado por ADR-0032) |
-| [0031](0031-validacion-por-el-autor.md) | Validación del vertical slice por el autor | Aceptado |
+| [0031](0031-validacion-por-el-autor.md) | Validación del vertical slice por el autor | Aceptado (umbral de duración ajustado por ADR-0033) |
 | [0032](0032-objetivo-del-mirador.md) | Objetivo del mirador y anuncio de la espera | Aceptado (amplía ADR-0030) |
+| [0033](0033-duracion-del-slice.md) | Duración del vertical slice: fragmento de 2–3 minutos | Aceptado (reemplaza a ADR-0009) |
