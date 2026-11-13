@@ -1,6 +1,7 @@
 # Guion del facilitador — sesiones de prueba del vertical slice
 
 - Estado: **Listo para el piloto** (2026-11-11)
+- **Sustituido para la validación actual** por [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la Fase 4 se valida con el protocolo de autor de alcance §9.1–§9.5. Este guion se conserva para una futura prueba con terceros o para la demo pública.
 - Aplica: [alcance_vertical_slice.md](alcance_vertical_slice.md) §9 (protocolo aprobado). Si este guion y el alcance difieren, prevalece el alcance.
 - Registro de cada sesión: [plantilla_sesion.md](plantilla_sesion.md)
 

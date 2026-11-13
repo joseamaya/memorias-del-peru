@@ -15,9 +15,10 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 | Medición y vídeos | Rendimiento final con los personajes procesados y vídeos regenerados | `66bef8c` |
 | Registro de sesiones de prueba (alcance v4.16) | Argumento `--session`, marcas de tiempo e incidencias de consola | `aadc58a` |
 | Política de ADR y bitácora | Umbral de ADR, límite de extensión y este registro | — |
-| Primera impresión (alcance v4.17) | Perfil Medio por defecto con SSAO y sin MSAA 2× (63 FPS en la GPU integrada), luz ambiental más baja, niebla más tenue, borde de la plaza fundido y cordillera lejana más contrastada; argumentos `--profile=N`, `--skip-intro` y `--spawn` (spawn, plaza o mirador) para iterar; aparición a 22 m de la plaza | `81ab4e5` |
-| Objetivo en pantalla (alcance v4.17) | Línea de objetivo en el HUD que avanza con el quero, la ofrenda, la conversación, la llegada del mensajero, la llamada y la partida; `QueroChicha.drank`; textos narrativos acortados | `81ab4e5` |
-| Suelo bajo los personajes (alcance v4.17) | Mancha de contacto radial bajo los nueve NPC, sin luz ni sombra propia | `81ab4e5` |
-| Sesiones sin perfil forzado (alcance v4.17) | El registro de sesión anota el perfil activo en vez de imponer Bajo | `81ab4e5` |
-| Mensajero por acción (ADR-0030, alcance v4.18) | Sale al completar las tareas cerca de la plaza, con respaldo a los 45 s y 20 s de espera; se le ve bajar por el camino del norte desde los 18 s; aviso de espera a los 20 s | `81ab4e5` |
-| Museo a distancia (alcance v4.18) | Piel y ojos más mates; el vecino que recibe pasa a 10 m de la aparición; dos hombres principales conversan de perfil | `81ab4e5` |
+| Primera impresión (alcance v4.17) | Perfil Medio por defecto con SSAO y sin MSAA 2× (63 FPS en la GPU integrada), luz ambiental más baja, niebla más tenue, borde de la plaza fundido y cordillera lejana más contrastada; argumentos `--profile=N`, `--skip-intro` y `--spawn` (spawn, plaza o mirador) para iterar; aparición a 22 m de la plaza | `0b2fe00` |
+| Objetivo en pantalla (alcance v4.17) | Línea de objetivo en el HUD que avanza con el quero, la ofrenda, la conversación, la llegada del mensajero, la llamada y la partida; `QueroChicha.drank`; textos narrativos acortados | `0b2fe00` |
+| Suelo bajo los personajes (alcance v4.17) | Mancha de contacto radial bajo los nueve NPC, sin luz ni sombra propia | `0b2fe00` |
+| Sesiones sin perfil forzado (alcance v4.17) | El registro de sesión anota el perfil activo en vez de imponer Bajo | `0b2fe00` |
+| Mensajero por acción (ADR-0030, alcance v4.18) | Sale al completar las tareas cerca de la plaza, con respaldo a los 45 s y 20 s de espera; se le ve bajar por el camino del norte desde los 18 s; aviso de espera a los 20 s | `0b2fe00` |
+| Museo a distancia (alcance v4.18) | Piel y ojos más mates; el vecino que recibe pasa a 10 m de la aparición; dos hombres principales conversan de perfil | `0b2fe00` |
+| Validación por el autor (ADR-0031, alcance v4.19) | La métrica 5 de audiencia queda declarada «no verificada»; la Fase 4 se valida con tres pasadas registradas, cuestionario escrito y umbrales medibles; se conserva el registro de sesión para una futura demo pública | — |

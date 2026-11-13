@@ -19,6 +19,8 @@ Reglas:
 | 3 — Entorno | Cerrada | 2026-11-10 |
 | 4 — Vertical Slice Pachacútec | En curso | — |
 
+La Fase 4 tiene la implementación completa y las validaciones técnicas en verde. Falta la **validación de autor** de [ADR-0031](adr/0031-validacion-por-el-autor.md) para cerrarla; la métrica 5 de audiencia queda declarada «no verificada».
+
 ---
 
 ## Fase 0 — Documentación
@@ -203,7 +205,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ### Precondiciones
 
 - [x] Fase 3 cerrada.
-- [x] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de prueba: cuestionario de comprensión, criterio de corrección y reclutamiento de jugadores ajenos al desarrollo). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
+- [x] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de validación de autor de [ADR-0031](adr/0031-validacion-por-el-autor.md): tres pasadas, cuestionario de comprensión, criterio de corrección y umbrales). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
 
 > **Corrección de proceso (2026-11-10).** La revisión de la primera versión del alcance encontró que la precondición se había marcado como cumplida sin estarlo: faltaban el cuestionario, el criterio de corrección y el reclutamiento. La Fase 4 quedó bloqueada hasta aprobar la revisión 2, que ya incluye el protocolo completo y la secuencia con disparo garantizado. El bloqueo de la llacta construido mientras tanto se conserva como trabajo provisional y se ajusta ahora a la revisión 2.
 
@@ -225,6 +227,6 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [ ] La experiencia puede jugarse de principio a fin sin bloqueos ni errores.
 - [x] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR). *(2026-11-12, inspección de `mundo_base.tscn` cargada y `demo_playthrough.gd` con `DEMO_OK`: espacio de 140 × 140 m dentro de los límites a ±70 m; 8 viviendas; 4 caminos y dos rutas, la baja por las viviendas del oeste y la alta por las terrazas, las rampas y el mirador; 3 interactuables de tipos distintos (quero, ofrenda y pututu) más «Hablar» en 6 personajes; 9 NPC, con la tejedora y el agricultor en su animación de trabajo; el evento del mensajero llega de principio a fin; ambiente de viento y sonido en las tres interacciones. La duración solo se mide en las sesiones de prueba, y queda en el criterio de las sesiones.)*
 - [x] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo. *(2026-11-12, commit 2cbeb56, con todo el contenido del slice: 122–132 FPS de media en perfil Bajo en la GPU integrada de referencia, frente a ≥ 30 exigidos; [docs/08](08_entorno_y_rendimiento.md) §4. La carga del equipo varió entre 1,8 y 18; la medición con el equipo descargado sigue pendiente y no bloquea, porque el margen es de más de cuatro veces.)*
-- [ ] Sesiones de prueba con al menos 6 jugadores ajenos al desarrollo: duración mediana de 5–8 min (ADR-0009) y al menos 2/3 superan el cuestionario de comprensión (métrica 5).
+- [ ] Validación de autor ([ADR-0031](adr/0031-validacion-por-el-autor.md); sustituye a la muestra de 6 jugadores de la métrica 5, que queda declarada «no verificada»): tres pasadas registradas, primera interacción en ≤ 20 s, duración mediana de 4–10 min, cero bloqueos y las preguntas 1 y 2 del cuestionario correctas sin consultar el registro.
 - [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-022, la ficha de la introducción de ADR-0023, se verificó el mismo día. PCH-023, el mapa de ADR-0025, también se verificó ese día. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
 - [x] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar. *(2026-11-12: revisión de las diez categorías en la [hoja de verificación](../campaigns/01_pachacutec/documentation/hoja_verificacion_fichas.md) §7; peinados de Rocketbox y pasos con botas declarados como limitación, y murmullo comprobado sin palabras inteligibles.)*

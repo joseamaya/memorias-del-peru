@@ -1,5 +1,7 @@
 # Sesión <CÓDIGO> — hoja de registro
 
+> **Para la validación actual no se usa esta plantilla** ([ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md)): basta el registro de `--session` y el resumen de alcance §9.5. Se conserva para una futura prueba con terceros.
+
 > Plantilla. Para cada sesión, copiar este archivo a `documentation/sesiones/<CÓDIGO>.md` y rellenarlo. Sin nombres ni datos personales, sin vídeo ni audio ([alcance §9.5](alcance_vertical_slice.md)). Procedimiento: [guion_facilitador.md](guion_facilitador.md).
 
 ## Datos de la sesión

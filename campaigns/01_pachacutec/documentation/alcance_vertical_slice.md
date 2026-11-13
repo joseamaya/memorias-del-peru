@@ -48,6 +48,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.16 | Registro automático de las sesiones de prueba: argumento `--session <código>`, marcas de tiempo de los hitos de §9.2 y anexo de los errores del motor para §9.6, con el perfil Bajo fijado (§9.2 y §9.5). No altera el contenido jugable. Pedido el 2026-11-13. |
 | v4.17 | Corrección de la primera impresión tras la prueba del responsable del proyecto: el juego arranca en perfil Medio con oclusión ambiental, el jugador aparece a 22 m de la plaza, el HUD muestra una línea de objetivo que avanza con el quero, la ofrenda, la conversación y el evento, los textos narrativos se acortan, los personajes tienen mancha de contacto y las sesiones dejan de forzar el perfil Bajo y registran el activo (§2.2, §5, §6.1, §6.2 y §9.5). Pedida el 2026-11-13. |
 | v4.18 | Aplica [ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md): el mensajero sale cuando el jugador completa las tareas y está cerca de la plaza, con respaldo a los 45 s y 20 s de espera; desde los 18 s se le ve bajar por el camino del norte; el aviso de espera pasa a los 20 s y el vecino que recibe se coloca a 10 m de la aparición. Además, materiales de piel y ojos más mates y dos hombres principales conversando de perfil (§2.2, §5, §6.1, §6.2, §9.2 y §10). Pedida el 2026-11-13. |
+| v4.19 | Aplica [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la validación pasa a ser del autor, con tres pasadas registradas y umbrales medibles; la métrica 5 de audiencia queda declarada «no verificada» y recuperable con una demo pública (§9.1–§9.5 y §10). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -65,7 +66,7 @@ Objetivos medibles tomados de [docs/05](../../../docs/05_plan_de_implementacion.
 | Personajes | Mínimo 2 NPC con presencia |
 | Narrativa | 1 evento con inicio y cierre |
 | Sonido | Ambiente de exteriores y efectos de interacción |
-| Comprensión | ≥ 4 de 6 jugadores explican quién amenaza el Cusco y qué hace la élite |
+| Comprensión | Validación de autor ([ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md)): las preguntas 1 y 2 correctas sin consultar el registro; la muestra de 6 jugadores queda como objetivo recuperable |
 
 ## 2. Premisa y secuencia narrativa
 
@@ -369,37 +370,31 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 
 “Verificado” exige la cita completa del requisito de su clasificación y la firma de una persona con la edición a la vista. Las siete fichas marcadas «comprobación del agente» las firmó el responsable del proyecto el 2026-11-11 sobre la comprobación en línea del agente, sin consultar él mismo las ediciones ([hoja de verificación](hoja_verificacion_fichas.md) §5). Las páginas de la traducción de 2007 tomadas de su índice publicado no cuentan como cita.
 
-## 9. Protocolo de prueba
+## 9. Protocolo de validación
 
-### 9.1 Muestra y reclutamiento
+### 9.1 Alcance y límite
 
-- **Mínimo 6 personas**, mayores de edad, **ajenas al desarrollo**: no han visto el juego ni participado en su diseño.
-- Al menos **2 sin interés previo** en historia andina, para no medir solo a un público motivado.
-- Reclutamiento por invitación directa fuera del círculo del equipo (conocidos de terceros, estudiantes, familiares no implicados). Se registran como **P1–P6**, sin nombres.
-- Se excluye a quien haya leído este documento.
+- La validación la hace el **responsable del proyecto** ([ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md)). No es una prueba de audiencia: mide si el contenido es legible y si el ritmo funciona, no si un jugador nuevo lo comprende.
+- La métrica 5 de docs/01 §5 (6 jugadores ajenos) queda **no verificada**. Su definición se conserva como objetivo recuperable con una demo pública y el registro de sesión.
+- No hay consentimiento, facilitador ni evaluadores externos: no se recogen datos personales, ni vídeo, ni audio.
 
-### 9.2 Sesión
+### 9.2 Pasadas
 
-| Paso | Duración | Qué ocurre |
+Tres pasadas, cada una con su registro (`--session AUTO-1`, `AUTO-2`, `AUTO-3`):
+
+| Pasada | Cuándo | Condición |
 |---|---|---|
-| Consentimiento | 2 min | Se explica que se cronometra y se toman notas anónimas; puede abandonar en cualquier momento |
-| Controles | 2 min | Solo movimiento, cámara e interacción; **no se explica la historia** |
-| Juego | 5–8 min | El facilitador observa en silencio |
-| Cuestionario | 5 min | Cinco preguntas abiertas, sin opciones |
+| AUTO-1 | En frío, al menos 48 h después de la última modificación de contenido | Sin mirar el código ni el registro; cronometrada |
+| AUTO-2 | Otro día | Por una ruta distinta (oeste y terrazas primero) |
+| AUTO-3 | Otro día | Perfil Bajo (`--profile=0`) |
 
-El facilitador solo responde dudas de **controles**. Si hay un bloqueo técnico, lo anota y no ayuda con el contenido.
+En cada pasada se anota: momento de la primera interacción, momento en que arranca el evento, duración total, bloqueos, errores de consola y cualquier momento en que no se sepa qué hacer.
 
-**Medición de la duración.** El juego no tiene pantalla final, así que la duración de una sesión se mide así:
-
-- **Inicio:** aparece la primera tarjeta de la introducción, cuando la persona pulsa Comenzar en la pantalla de título tras la explicación de controles (v4.6; antes, el primer movimiento). Se anota también el momento en que termina la introducción.
-- **Fin:** lo primero que ocurra de lo siguiente: la persona dice que ha terminado; aparece la tarjeta «Fin del fragmento» (v4.8; antes, 60 s tras el subtítulo de cierre); se llega a 12 min.
-- Se anota también el momento del subtítulo de cierre, para separar el tiempo de la historia del de exploración libre.
-
-El procedimiento completo está en [guion_facilitador.md](guion_facilitador.md).
+**Medición de la duración.** Inicio: al pulsar Comenzar en la pantalla de título. Fin: lo primero que ocurra de lo siguiente: aparece la tarjeta «Fin del fragmento», se vuelve al título o se llega a 12 minutos.
 
 ### 9.3 Cuestionario
 
-Se lee en voz alta y se anota la respuesta literal:
+Se responde **por escrito y antes de releer el registro histórico**, para no contaminar la respuesta:
 
 1. ¿Quién amenaza al Cusco en la historia que has visto?
 2. ¿Qué han hecho el inca y su heredero?
@@ -416,19 +411,14 @@ Solo puntúan las preguntas **1 y 2**; las demás son diagnóstico.
 | 1 | Nombra a los chancas (o “chanka”) como quienes amenazan el Cusco | Dice solo “un pueblo enemigo”, “los malos” o no lo sabe |
 | 2 | Dice que el inca y su heredero abandonaron, salieron o huyeron de la ciudad | Confunde a la élite con el curaca, o dice que el curaca huye |
 
-Se supera el cuestionario si **ambas** respuestas son correctas.
-
-- Dos evaluadores puntúan por separado sobre la transcripción literal.
-- Si discrepan, una tercera persona decide.
-- Si la discrepancia persiste, la sesión cuenta como **no superada**.
-- Éxito de la métrica 5: **≥ 4 de 6** sesiones superadas.
+La corrección la hace el propio responsable sobre su respuesta escrita. Se supera si **ambas** son correctas. Si falla, se corrige el guion o la señalización, no el criterio.
 
 ### 9.5 Registro
 
-- Tabla anónima con: código, duración, respuestas literales, puntuación de cada evaluador, incidencias técnicas y observaciones.
-- Se guarda en `documentation/sesiones/` cuando exista la primera sesión.
-- Los tiempos y las incidencias se toman del registro de sesión (`--session <código>`, v4.16), que se guarda en `user://sesiones/<código>.log`; el cronómetro y la consola visible quedan como respaldo.
+- Un archivo por pasada en `user://sesiones/AUTO-N.log`, generado por `--session`.
+- Resumen en `documentation/sesiones/` con: código, duración, primera interacción, momento del evento, respuestas literales y observaciones.
 - Sin datos personales, sin grabaciones de vídeo, sin audio.
+- La tabla de resultados y las correcciones se anotan en la bitácora y en el informe de cierre.
 
 ### 9.6 Criterios de estabilidad
 
@@ -451,7 +441,7 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 | Evento: llegada, noticia, llamada y partida | 1,5 | 1,5 |
 | **Total** | **4,5** | **8,1** |
 
-Con el disparo por acción de la v4.18, la espera deja de ser un tramo fijo: quien completa las tres tareas y vuelve a la plaza ve llegar al mensajero en ese momento, y el respaldo lo trae como tarde a los 65 s. La mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6, y unos 50 s menos con el cierre corto de la v4.8): la partida de demostración medida tras el cambio termina en 115 s. Si la prueba con seis personas queda por debajo de 5 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 8, se acorta el reloj de respaldo.
+Con el disparo por acción de la v4.18, la espera deja de ser un tramo fijo: quien completa las tres tareas y vuelve a la plaza ve llegar al mensajero en ese momento, y el respaldo lo trae como tarde a los 65 s. La mediana esperada queda en **4–6 minutos** (unos 30 s más con la introducción de la v4.6, y unos 50 s menos con el cierre corto de la v4.8): la partida de demostración medida tras el cambio termina en 115 s. Si la validación de autor queda por debajo de 4 min, la corrección es añadir contenido (dos hitos opcionales con texto breve), no alargar la espera. Si supera los 10, se acorta el reloj de respaldo.
 
 ## 11. Rendimiento
 

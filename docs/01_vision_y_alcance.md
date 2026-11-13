@@ -55,9 +55,9 @@ Primera campaña: **Pachacútec — La defensa del Cusco.** El jugador vive los 
 | 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, 1080p, en el equipo de referencia con GPU integrada (docs/08 §4). ≥ 60 FPS en perfil Medio es objetivo recomendado y se verifica cuando exista el equipo de referencia con GPU dedicada | Recorrido fijo medido con `Performance` |
 | 3 | Rigor histórico | 100 % del contenido histórico con ficha “verificado” | Registro histórico de la campaña |
 | 4 | Estabilidad técnica | 0 errores en consola, 0 bloqueos de progreso | Pruebas automatizadas + sesiones de prueba |
-| 5 | Comprensión del contexto | Muestra mínima de **6** jugadores de prueba ajenos al desarrollo; al menos **2/3** (4 de 6) explican después, con sus palabras, quién amenaza el Cusco y qué hace la élite | Cuestionario breve tras la sesión |
+| 5 | Comprensión del contexto | **No verificada** ([ADR-0031](adr/0031-validacion-por-el-autor.md)): se conserva la definición —6 jugadores ajenos al desarrollo, al menos 2/3— como objetivo recuperable; la validación actual es la del autor | Protocolo de autor de ADR-0031; datos reales de una demo pública con el registro de sesión |
 
-La métrica 5 es la única que mide el valor para el público (incluido el educativo); los detalles del cuestionario se definen en el documento de alcance de la Fase 4.
+La métrica 5 es la única que mide el valor para el público (incluido el educativo) y la única que queda **no verificada**: el proyecto no dispone de jugadores ajenos a quienes convocar, así que se sustituye por una validación de autor declarada y se deja la puerta abierta a recuperarla con una demo pública ([ADR-0031](adr/0031-validacion-por-el-autor.md)).
 
 ## 6. Horizonte posterior (visión, no compromiso)
 
