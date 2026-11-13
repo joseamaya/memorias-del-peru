@@ -139,6 +139,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale a los 75 s como mínimo y a los 150 s como máximo; el vecino del camino sur saluda solo cuando el jugador se acerca; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean balanceando las piernas, se detienen al hablarles y dejan el paseo para acercarse al mensajero cuando llega (ADR-0012, ADR-0013) |
 | `test_vegetation` | El reparto de ichu y queñua es determinista y deja libres la plaza, los caminos, las casas, las terrazas, la tejedora, el inicio, la salida de la comitiva y el mirador; las matas se apoyan en el terreno; los bloques de ichu se ocultan a 50 m y no proyectan sombra; cada queñua tiene tronco con colisión y separación mínima |
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
+| `test_session_log` | El registro de sesión valida los códigos, escribe cabecera y marcas en orden con el tiempo transcurrido, no abre una segunda sesión y no escribe nada fuera de una sesión (alcance v4.16) |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 
@@ -155,6 +156,8 @@ godot --headless --path . --fixed-fps 30 --script res://tests/demo_playthrough.g
 ```
 
 El jugador recorre la plaza, el oeste, las terrazas y el mirador, bebe del quero, deja la ofrenda, habla con la tejedora, espera al mensajero y toca el pututu en la llamada. Exige `DEMO_OK`: el evento llega a `DONE`, el quero, la ofrenda y la tejedora responden y el pututu lo toca el jugador. Es la prueba de extremo a extremo del vertical slice: entrada, interacción, evento y cierre ordenado.
+
+La misma partida con `--session PIL-TEST` comprueba el registro de las sesiones de prueba (alcance v4.16): deja `user://sesiones/PIL-TEST.log` con las marcas de introducción, llegada, pututu, cierre y tarjeta final.
 
 La misma partida sirve para grabar un vídeo de demostración con Movie Maker (AVI MJPEG con sonido):
 

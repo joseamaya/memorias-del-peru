@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 GameManager="*res://core/autoload/game_manager.gd"
 AudioManager="*res://core/autoload/audio_manager.gd"
 GraphicsSettings="*res://core/systems/graphics/graphics_settings.gd"
+SessionLog="*res://core/autoload/session_log.gd"
 
 [debug]
 

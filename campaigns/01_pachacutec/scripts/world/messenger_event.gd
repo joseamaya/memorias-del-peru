@@ -541,4 +541,5 @@ func _on_pututu_played() -> void:
 	if phase != Phase.CALL:
 		return
 	pututu_by_player = not _curaca_is_calling
+	SessionLog.mark(&"pututu", "jugador" if pututu_by_player else "curaca")
 	_enter(Phase.DEPARTURE)

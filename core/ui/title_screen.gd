@@ -69,7 +69,10 @@ func start_campaign() -> bool:
 	var manager: Node = get_node_or_null("/root/GameManager")
 	if manager != null:
 		manager.call("set_paused", false)
-	return get_tree().change_scene_to_file(_campaign.entry_scene) == OK
+	var changed: bool = get_tree().change_scene_to_file(_campaign.entry_scene) == OK
+	if changed:
+		SessionLog.mark(&"campaign_start")
+	return changed
 
 
 func _on_quit_pressed() -> void:

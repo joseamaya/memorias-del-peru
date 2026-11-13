@@ -14,10 +14,13 @@
 | Facilitador (iniciales) | |
 | ¿Interés previo en historia andina? | Sí / No |
 | Consentimiento leído y aceptado | Sí |
+| Registro de sesión (`--session <código>`) | `user://sesiones/<código>.log` |
 
 ## Tiempos
 
-| Momento | Cronómetro (mm:ss) |
+Los tiempos se copian del registro de sesión; el cronómetro queda como respaldo si el registro falla.
+
+| Momento | Tiempo (mm:ss) |
 |---|---|
 | Inicio (pulsa Comenzar y aparece la primera tarjeta, alcance v4.6) | 00:00 |
 | Fin de la introducción (la persona toma el control) | |
@@ -92,6 +95,8 @@ Rutas recorridas: viviendas oeste ☐ terrazas ☐ mirador ☐ camino norte ☐
 | mm:ss | Descripción | Línea de consola | Reproducida / corregida en |
 |---|---|---|---|
 | | | | |
+
+¿El registro contiene líneas `console`? Sí ☐ No ☐
 
 ## Tres prioridades de la sesión
 

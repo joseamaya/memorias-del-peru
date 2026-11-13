@@ -236,6 +236,7 @@ func _show_card(index: int) -> void:
 	for key: int in _overlays:
 		_overlays[key].visible = key == index
 	card_shown.emit(index, _card_seconds)
+	SessionLog.mark(&"intro_card", str(index + 1))
 
 
 func _next_card() -> void:

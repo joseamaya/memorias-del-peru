@@ -9,7 +9,7 @@
 | | Piloto | Oficial |
 |---|---|---|
 | Personas | 1–2 | 6 (P1–P6) |
-| Versión del juego | Slice con los modelos generados (estáticos, reconstrucción R; alcance v3.3) | La misma versión, con los cambios que salgan del piloto |
+| Versión del juego | El slice en el commit anotado (alcance v4.15: personajes con esqueleto y animación, reconstrucción R) | La misma versión, con los cambios que salgan del piloto |
 | ¿Cuenta para la métrica 5 y la duración? | **No** | Sí |
 | Código | PIL-1, PIL-2 | P1–P6 |
 
@@ -31,13 +31,15 @@ Definida en el alcance §9.2 (v3.1, aprobada el 2026-11-11). Resumen:
   - Se llega a 12 min.
 - Se anota también el momento del cierre, para separar el tiempo de la historia del tiempo de exploración libre.
 
+Con el registro de sesión (§3.2), estos momentos quedan además con hora en el archivo del registro. Si el cronómetro y el registro difieren, prevalece el registro y se anota la diferencia.
+
 ## 3. Preparación (10 min antes)
 
 - [ ] Equipo de referencia con auriculares. Volumen al 50 % antes de empezar; la persona puede ajustarlo.
 - [ ] Repositorio en un commit conocido; anotar su hash en la hoja.
 - [ ] Validación limpia: `godot --headless --path . --import` y `godot --headless --path . --script res://tests/run_tests.gd` sin fallos.
-- [ ] Cerrar el resto de ventanas. Abrir el juego desde un terminal visible al facilitador (no a la persona) para ver la consola: `godot --path .`
-- [ ] Partida recién abierta: el reloj del mensajero empieza al cargar el mundo. Si la persona tarda en empezar, cerrar y volver a abrir justo antes.
+- [ ] Cerrar el resto de ventanas. Abrir el juego desde un terminal visible al facilitador (no a la persona) para ver la consola, con el registro de la sesión: `godot --path . -- --session <código>`.
+- [ ] Anotar la ruta del registro que imprime el arranque (`[SESION]`). El reloj del mensajero espera a que termine la introducción (v4.5), así que no hay que reiniciar si la persona tarda en pulsar Comenzar.
 - [ ] Cronómetro y la hoja de [plantilla_sesion.md](plantilla_sesion.md), impresa o en otra pantalla.
 
 ## 3.1 Invitación
@@ -47,6 +49,25 @@ Por invitación directa y fuera del círculo del equipo (alcance §9.1). El mens
 > «Hola, estoy probando un videojuego corto en desarrollo y busco personas que no lo hayan visto para jugarlo unos 10 minutos y responder cinco preguntas. Son unos 20 minutos en total, en [lugar], el [día] a la [hora]. No hace falta experiencia con videojuegos. ¿Te animas?»
 
 Para el piloto basta con 1–2 personas. Anotar aparte, fuera del repositorio, quién es cada código; en el repositorio solo figura el código (PIL-1, PIL-2).
+
+## 3.2 Registro de sesión
+
+El argumento `--session <código>` escribe `user://sesiones/<código>.log` (en Linux, `~/.local/share/godot/app_userdata/Memorias del Perú/sesiones/<código>.log`) con una línea por marca y el tiempo transcurrido desde el arranque:
+
+| Marca | Significado |
+|---|---|
+| `campaign_start` | Se pulsó Comenzar en el título |
+| `intro_card` | Aparece una tarjeta de la introducción |
+| `control_taken` | Termina la introducción y la persona toma el control |
+| `profile` | Perfil gráfico fijado (Bajo) |
+| `subtitle` | Subtítulo mostrado, por su clave (`PCH_NARR_NEWS_1`, `PCH_NARR_CLOSING_1`, etc.) |
+| `phase` | Fase del evento: `arrival`, `message`, `call`, `departure`, `done` |
+| `pututu` | Suena el pututu, con `jugador` o `curaca` como detalle |
+| `end_card` | Aparece la tarjeta «Fin del fragmento» |
+| `console` | Error, advertencia o error de script del motor |
+| `session_end` | Se cierra el juego |
+
+El registro fija el perfil Bajo y desactiva F2 durante la sesión. Al terminar, la hoja se rellena con estos tiempos y se comprueba que no haya ninguna línea `console` (§9.6).
 
 ## 4. Texto para leer
 
@@ -78,6 +99,8 @@ Si la persona no acepta, la sesión no se hace y no se registra.
 | Cierre | ¿Mira partir al grupo? ¿Qué hace después? |
 | Consola | Cualquier línea `ERROR` o `SCRIPT ERROR` (§9.6 exige cero) |
 
+El registro anexa esas líneas con la marca `console`; la consola visible sigue siendo la referencia principal.
+
 ## 6. Cuestionario (5 min)
 
 Leer las preguntas de §9.3 **en ese orden**, sin reformularlas ni dar pistas, y anotar la respuesta **literal**. Si la persona pide aclaración, repetir la pregunta tal cual. Las preguntas están en la hoja de registro; si cambian en el alcance, se actualiza la hoja.
@@ -86,7 +109,7 @@ Al terminar, agradecer y pedir que no comente la historia con otras personas que
 
 ## 7. Después de la sesión
 
-1. Pasar las notas a una copia de [plantilla_sesion.md](plantilla_sesion.md) en `documentation/sesiones/` con el nombre `<código>.md` (por ejemplo `PIL-1.md`).
+1. Pasar las notas a una copia de [plantilla_sesion.md](plantilla_sesion.md) en `documentation/sesiones/` con el nombre `<código>.md` (por ejemplo `PIL-1.md`) y copiar en ella los tiempos del registro `user://sesiones/<código>.log`.
 2. Dos evaluadores puntúan las preguntas 1 y 2 por separado, sin verse, con el criterio de §9.4. Si discrepan, decide una tercera persona; si sigue sin acuerdo, la sesión no se supera.
 3. Toda incidencia técnica se reproduce y se corrige antes de la siguiente sesión (§9.6).
 

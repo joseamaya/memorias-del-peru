@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.15)** — 2026-11-13; sustituye a la v4.14
+- Estado: **Aprobado (v4.16)** — 2026-11-13; sustituye a la v4.15
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -45,6 +45,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.13 | Pase de realismo visual y de promoción: captura en perfil Alto con HUD limpio, nubes altas procedurales, cordillera lejana de dos capas, niebla volumétrica corregida y luz más cálida; el perfil Bajo sigue por encima de 30 FPS (§3, §6.2 y §8). Pedida el 2026-11-13. |
 | v4.14 | Pase de personajes y viviendas: manos en primera persona para beber, ofrecer y tocar el pututu; piel más cálida con subsuperficie y ropa con más detalle; puertas de tablones y escalón de piedra en las casas, con paja más envejecida (§4, §5 y §6.1). Pedida el 2026-11-13. |
 | v4.15 | Ajuste de mantos y llicllas: post-proceso de los GLB de personajes para reducir su apertura lateral y añadir un pliegue suave, sin tocar huesos, pesos, UV ni animaciones (§5 y §6.1). Pedido el 2026-11-13. |
+| v4.16 | Registro automático de las sesiones de prueba: argumento `--session <código>`, marcas de tiempo de los hitos de §9.2 y anexo de los errores del motor para §9.6, con el perfil Bajo fijado (§9.2 y §9.5). No altera el contenido jugable. Pedido el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -417,6 +418,7 @@ Se supera el cuestionario si **ambas** respuestas son correctas.
 
 - Tabla anónima con: código, duración, respuestas literales, puntuación de cada evaluador, incidencias técnicas y observaciones.
 - Se guarda en `documentation/sesiones/` cuando exista la primera sesión.
+- Los tiempos y las incidencias se toman del registro de sesión (`--session <código>`, v4.16), que se guarda en `user://sesiones/<código>.log`; el cronómetro y la consola visible quedan como respaldo.
 - Sin datos personales, sin grabaciones de vídeo, sin audio.
 
 ### 9.6 Criterios de estabilidad
@@ -465,7 +467,7 @@ Con el reloj de 75 s que espera al jugador (v3.5), la mediana esperada queda en 
 - [x] Se confirma el reparto de textos, incluido el aviso de la llamada.
 - [x] Se confirman la salida por el camino norte y la permanencia de los vecinos.
 - [x] Se confirma la medición de la duración de §9.2 (v3.1, 2026-11-11).
-- [x] Se confirman los personajes estáticos para el piloto y las sesiones (v3.3, 2026-11-11).
+- [x] Se confirman los personajes estáticos para el piloto y las sesiones (v3.3, 2026-11-11). **Sustituido por la v3.7** (esqueleto y animaciones) y la v3.8 (personajes realistas): las sesiones usan ya los personajes con rig.
 - [x] Se confirman los ajustes del primer piloto (v3.4, ADR-0012, 2026-11-11).
 - [x] Se confirman el ritmo, el primer paso, la tarjeta de fin y el balanceo de piernas (v3.5, ADR-0013, 2026-11-11).
 

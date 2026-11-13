@@ -52,6 +52,11 @@ const DISTANT_FAR_AMPLITUDE: float = 48.0
 const DISTANT_NEAR_COLOR: Color = Color(0.30, 0.34, 0.40, 1.0)
 const DISTANT_FAR_COLOR: Color = Color(0.44, 0.49, 0.57, 1.0)
 const DEBUG_PROFILE_KEY: Key = KEY_F2
+## Nombres de las fases del evento, en el orden del enum de [MessengerEvent];
+## el registro de sesión los usa como marcas (§9.2).
+const EVENT_PHASE_NAMES: Array[String] = [
+	"idle", "arrival", "message", "call", "departure", "done"
+]
 const AMBIENCE_PATH: String = "res://shared_assets/audio/ambiente_viento_andes.ogg"
 const FOOTSTEP_PATHS: Array[String] = [
 	"res://shared_assets/audio/pasos_tierra_01.wav",
@@ -208,6 +213,12 @@ var _end_card_shown: bool = false
 
 
 func _ready() -> void:
+	if SessionLog.is_active():
+		# Las sesiones se juegan en el perfil que exige el protocolo (§11).
+		GraphicsSettings.set_profile_by_index(0)
+		var session_profile: GraphicsProfile = GraphicsSettings.get_active_profile()
+		if session_profile != null:
+			SessionLog.mark(&"profile", session_profile.profile_name)
 	var with_intro: bool = should_play_intro()
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null and with_intro:
@@ -281,6 +292,7 @@ func get_intro_director() -> IntroDirector:
 
 
 func _on_intro_finished() -> void:
+	SessionLog.mark(&"control_taken")
 	player.process_mode = Node.PROCESS_MODE_INHERIT
 	if _intro_music != null and _intro_music.playing:
 		_music_fade_remaining = INTRO_MUSIC_FADE
@@ -336,6 +348,7 @@ func advance_end_card(delta: float) -> void:
 	_end_card_shown = true
 	if hud != null:
 		hud.show_end_card(tr(String(END_TITLE_KEY)), tr(String(END_HINT_KEY)))
+	SessionLog.mark(&"end_card")
 
 
 ## Indica si la tarjeta de fin está a la vista.
@@ -362,6 +375,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_tree().reload_current_scene()
 			return
 	if not OS.is_debug_build():
+		return
+	if SessionLog.is_active():
+		# En una sesión de prueba el perfil gráfico no cambia (alcance §11).
 		return
 	if not (event is InputEventKey):
 		return
@@ -718,6 +734,7 @@ func _plaza_center_flat() -> Vector3:
 
 
 func _on_subtitle_requested(text_key: StringName, seconds: float) -> void:
+	SessionLog.mark(&"subtitle", String(text_key))
 	if hud == null:
 		return
 	hud.show_subtitle(tr(String(text_key)), seconds)
@@ -730,6 +747,8 @@ static func murmur_plays_in(phase: int) -> bool:
 
 
 func _on_event_phase_changed(phase: int) -> void:
+	if phase >= 0 and phase < EVENT_PHASE_NAMES.size():
+		SessionLog.mark(&"phase", EVENT_PHASE_NAMES[phase])
 	if murmur_plays_in(phase):
 		_start_murmur()
 	else:
