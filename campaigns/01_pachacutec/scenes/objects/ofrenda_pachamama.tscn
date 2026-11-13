@@ -15,10 +15,15 @@ albedo_color = Color(0.42, 0.4, 0.36, 1)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_ofrenda")
+hand_action = &"offer"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_ofrenda")
 surface_material_override/0 = SubResource("StandardMaterial3D_ofrenda")
+
+[node name="Gift" type="Node3D" parent="."]
+position = Vector3(0.2, 0.15, -0.05)
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape_ofrenda")

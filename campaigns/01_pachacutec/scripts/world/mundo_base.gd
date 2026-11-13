@@ -34,6 +34,23 @@ const ROCK_COLOR: Color = Color(0.5, 0.47, 0.42, 1.0)
 const DIRT_COLOR: Color = Color(0.56, 0.46, 0.35, 1.0)
 const ROCK_FROM_HEIGHT: float = 1.0
 const ROCK_FULL_HEIGHT: float = 4.0
+## Cúpula de nubes procedurales (shared_assets/materials/nubes.gdshader).
+const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
+const CLOUD_DOME_RADIUS: float = 420.0
+const CLOUD_DOME_SEGMENTS: int = 64
+const CLOUD_DOME_RINGS: int = 32
+## Cordillera lejana: dos anillos de siluetas fuera del límite jugable. No
+## tienen colisión ni sombra; solo dan profundidad al horizonte.
+const DISTANT_NEAR_RADIUS: float = 210.0
+const DISTANT_FAR_RADIUS: float = 330.0
+const DISTANT_SEGMENTS: int = 160
+const DISTANT_BOTTOM: float = -10.0
+const DISTANT_NEAR_BASE: float = 28.0
+const DISTANT_NEAR_AMPLITUDE: float = 34.0
+const DISTANT_FAR_BASE: float = 46.0
+const DISTANT_FAR_AMPLITUDE: float = 48.0
+const DISTANT_NEAR_COLOR: Color = Color(0.30, 0.34, 0.40, 1.0)
+const DISTANT_FAR_COLOR: Color = Color(0.44, 0.49, 0.57, 1.0)
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 const AMBIENCE_PATH: String = "res://shared_assets/audio/ambiente_viento_andes.ogg"
 const FOOTSTEP_PATHS: Array[String] = [
@@ -66,6 +83,8 @@ const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_
 const MODEL_QUERO: String = "pch_quero.glb"
 const MODEL_PUTUTU: String = "pch_pututu.glb"
 const MODEL_OFFERING: String = "pch_offering_shrine.glb"
+## Atado de coca y maíz que aparece al dejar la ofrenda (PCH-012).
+const MODEL_OFFERING_GIFT: String = "pch_offering_gift.glb"
 const MODEL_LOOM: String = "pch_loom.glb"
 ## Props junto a la puerta de las viviendas (PCH-019 y PCH-020).
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
@@ -197,6 +216,8 @@ func _ready() -> void:
 		event.set_process(false)
 	_build_terrain()
 	_build_llacta()
+	_build_distant_ranges()
+	_build_clouds()
 	player.global_position = player_spawn.global_position
 	hud.bind(player, player.stamina)
 	_setup_footsteps()
@@ -392,6 +413,86 @@ func _height_at(x: float, z: float) -> float:
 	var blend: float = clampf((distance - PLATEAU_RADIUS) / 15.0, 0.0, 1.0)
 	var height: float = 0.7 * sin(x * 0.06) * cos(z * 0.07) + 0.3 * sin((x + z) * 0.11)
 	return height * blend + relief_height_at(x, z) + ridge_height_at(x, z)
+
+
+## Cúpula de nubes procedurales. Es una esfera grande vista por dentro: el
+## cielo físico sigue siendo el fondo y la cúpula solo añade las nubes altas.
+func _build_clouds() -> void:
+	if not ResourceLoader.exists(CLOUD_SHADER_PATH):
+		return
+	var shader: Shader = load(CLOUD_SHADER_PATH) as Shader
+	if shader == null:
+		return
+	var material: ShaderMaterial = ShaderMaterial.new()
+	material.shader = shader
+	var sphere: SphereMesh = SphereMesh.new()
+	sphere.radius = CLOUD_DOME_RADIUS
+	sphere.height = CLOUD_DOME_RADIUS * 2.0
+	sphere.radial_segments = CLOUD_DOME_SEGMENTS
+	sphere.rings = CLOUD_DOME_RINGS
+	var dome: MeshInstance3D = MeshInstance3D.new()
+	dome.name = "CloudDome"
+	dome.mesh = sphere
+	dome.material_override = material
+	dome.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	dome.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	add_child(dome)
+
+
+## Dos anillos de montañas lejanas, uno delante del otro. Son solo siluetas:
+## no tienen colisión ni sombra y quedan fuera del límite jugable.
+func _build_distant_ranges() -> void:
+	_build_range("DistantRangeNear", DISTANT_NEAR_RADIUS, DISTANT_NEAR_BASE,
+		DISTANT_NEAR_AMPLITUDE, DISTANT_NEAR_COLOR)
+	_build_range("DistantRangeFar", DISTANT_FAR_RADIUS, DISTANT_FAR_BASE,
+		DISTANT_FAR_AMPLITUDE, DISTANT_FAR_COLOR)
+
+
+func _build_range(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
+	var surface: SurfaceTool = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var bottom_color: Color = color.darkened(0.22)
+	var top_color: Color = color.lightened(0.08)
+	for index: int in range(DISTANT_SEGMENTS):
+		var angle0: float = TAU * float(index) / float(DISTANT_SEGMENTS)
+		var angle1: float = TAU * float(index + 1) / float(DISTANT_SEGMENTS)
+		var height0: float = _distant_height(angle0, base_height, amplitude)
+		var height1: float = _distant_height(angle1, base_height, amplitude)
+		var bottom0: Vector3 = Vector3(cos(angle0) * radius, DISTANT_BOTTOM, sin(angle0) * radius)
+		var bottom1: Vector3 = Vector3(cos(angle1) * radius, DISTANT_BOTTOM, sin(angle1) * radius)
+		var top0: Vector3 = Vector3(cos(angle0) * radius, height0, sin(angle0) * radius)
+		var top1: Vector3 = Vector3(cos(angle1) * radius, height1, sin(angle1) * radius)
+		_range_vertex(surface, bottom0, bottom_color)
+		_range_vertex(surface, bottom1, bottom_color)
+		_range_vertex(surface, top1, top_color)
+		_range_vertex(surface, bottom0, bottom_color)
+		_range_vertex(surface, top1, top_color)
+		_range_vertex(surface, top0, top_color)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.vertex_color_use_as_albedo = true
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var range_node: MeshInstance3D = MeshInstance3D.new()
+	range_node.name = node_name
+	range_node.mesh = surface.commit()
+	range_node.material_override = material
+	range_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	range_node.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	add_child(range_node)
+
+
+func _range_vertex(surface: SurfaceTool, point: Vector3, color: Color) -> void:
+	surface.set_color(color)
+	surface.add_vertex(point)
+
+
+## Altura de la silueta de la cordillera para un ángulo; suma de senos para
+## que tenga picos y no un borde liso.
+static func _distant_height(angle: float, base_height: float, amplitude: float) -> float:
+	var ridge: float = 0.5 + 0.5 * sin(angle * 5.0 + 0.4) * sin(angle * 9.0 - 0.9)
+	ridge = pow(maxf(ridge, 0.0), 0.65)
+	var detail: float = 0.16 * sin(angle * 31.0 + 1.7) + 0.09 * sin(angle * 53.0 - 0.3)
+	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
 
 
 ## Lomas suaves del campo, cero en la plaza, las casas, las terrazas y los
@@ -1086,6 +1187,14 @@ func _attach_object_models(llacta: Node3D) -> void:
 		var blockout: Array[Node3D] = [mesh]
 		var no_collisions: Array[Node] = []
 		_attach_model(mesh, "ModelSlot", base, files, blockout, no_collisions)
+	# La ofrenda que deja el jugador va aparte del adoratorio: oculta hasta la
+	# interacción, para que se vea el gesto (PCH-012).
+	var offering_gift: Node3D = $OfrendaPachamama.get_node_or_null("Gift") as Node3D
+	if offering_gift != null:
+		var gift_files: Array[String] = [MODEL_OFFERING_GIFT]
+		var gift_blockout: Array[Node3D] = []
+		var gift_collisions: Array[Node] = []
+		_attach_model(offering_gift, "ModelSlot", Vector3.ZERO, gift_files, gift_blockout, gift_collisions)
 	var loom_files: Array[String] = [MODEL_LOOM]
 	var nothing: Array[Node3D] = []
 	var no_loom_collisions: Array[Node] = []

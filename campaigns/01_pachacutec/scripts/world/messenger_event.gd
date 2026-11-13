@@ -56,10 +56,15 @@ const WANDER_PAUSE: float = 4.0
 const WANDER_PAUSE_STAGGER: float = 1.5
 
 ## Disposición de la reunión (ver _meeting_point()).
-const MESSENGER_OFFSET: Vector3 = Vector3(0.0, 0.0, -1.0)
-const MEETING_RADIUS: float = 5.5
-const MEETING_RADIUS_STAGGER: float = 1.0
+## El mensajero se detiene algo al norte del centro de la plaza y el grupo forma
+## un anillo a su alrededor, con un hueco al sur por donde llega el jugador.
+const MESSENGER_OFFSET: Vector3 = Vector3(0.0, 0.0, -1.5)
+const MEETING_RADIUS: float = 2.5
+const MEETING_RADIUS_STAGGER: float = 0.2
 const MEETING_ARC_SLOTS: int = 6
+const MEETING_ARC_START_DEGREES: float = 150.0
+## Recorrido del arco: deja 120° libres al sur (hacia el jugador).
+const MEETING_ARC_SWEEP_DEGREES: float = 240.0
 
 ## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0013;
 ## antes, 240 s en ADR-0009 y 120 s en ADR-0012).
@@ -289,10 +294,8 @@ func _step_wander(delta: float) -> void:
 
 func _step_arrival(delta: float) -> void:
 	_phase_time += delta
-	if _messenger == null:
-		_enter(Phase.MESSAGE)
-		return
-	if _messenger.advance(delta):
+	_advance_group(delta)
+	if _messenger == null or not _messenger.moving:
 		_enter(Phase.MESSAGE)
 
 
@@ -358,14 +361,17 @@ func _enter(next_phase: int) -> void:
 	match phase:
 		Phase.ARRIVAL:
 			started.emit()
-			# Los vecinos dejan su paseo y se vuelven hacia el recién llegado.
+			# Los vecinos dejan su paseo y todo el grupo se acerca al punto
+			# donde se detendrá el mensajero, mientras él llega corriendo.
 			for actor: NpcActor in _wander_routes:
 				actor.stop()
-			if _messenger != null:
-				_messenger.walk_to(_meeting_point(0))
+			_gather_group()
 			_face_all()
 		Phase.MESSAGE:
-			_place_group()
+			if _messenger != null:
+				_messenger.stop()
+				_messenger.face(_plaza_center + Vector3(0.0, 0.0, 6.0))
+			_face_all()
 			_send_news()
 			# Llega agotado, recobra el aliento y cuenta la noticia con gestos
 			# (alcance §5, ADR-0015).
@@ -416,9 +422,9 @@ func _maybe_repeat_news() -> void:
 
 
 func _face_all() -> void:
-	var point: Vector3 = _plaza_center
-	if _messenger != null:
-		point = _messenger.global_position
+	# El grupo mira al sitio donde se detiene el mensajero, no a su posición
+	# durante la carrera: así llega al centro del anillo ya encarado.
+	var point: Vector3 = _meeting_point(0)
 	if _curaca != null:
 		_curaca.face(point)
 	for actor: NpcActor in _principals:
@@ -427,10 +433,11 @@ func _face_all() -> void:
 		actor.face(point)
 
 
-func _place_group() -> void:
+## Envía a cada personaje a su hueco del anillo. Se hace al empezar la
+## llegada, para que el grupo esté formado cuando el mensajero se detiene.
+func _gather_group() -> void:
 	if _messenger != null:
-		_messenger.stop()
-		_messenger.face(_plaza_center + Vector3(0.0, 0.0, 6.0))
+		_messenger.walk_to(_meeting_point(0))
 	if _curaca != null:
 		_curaca.walk_to(_meeting_point(1))
 	var index: int = 2
@@ -440,20 +447,22 @@ func _place_group() -> void:
 	for actor: NpcActor in _neighbors:
 		actor.walk_to(_meeting_point(index))
 		index += 1
-	_face_all()
 
 
-## Punto de reunión de cada personaje. El hueco 0 es el mensajero, en el centro;
-## el resto forma un arco en la mitad norte de la plaza. El quero, el pututu y
-## la ofrenda están en la mitad sur, así que la reunión nunca los tapa y el
-## jugador, que llega desde el sur, ve al grupo de frente.
+## Punto de reunión de cada personaje. El hueco 0 es el mensajero, en el
+## centro; los demás forman un anillo apretado a su alrededor, con el hueco
+## hacia el sur por donde llega el jugador. El quero, el pututu y la ofrenda
+## quedan fuera del anillo, así que la reunión no los tapa.
 func _meeting_point(slot: int) -> Vector3:
+	var center: Vector3 = _plaza_center + MESSENGER_OFFSET
 	if slot <= 0:
-		return _plaza_center + MESSENGER_OFFSET
-	var t: float = float(slot - 1) / float(MEETING_ARC_SLOTS - 1)
-	var angle: float = PI + PI * clampf(t, 0.0, 1.0)
+		return center
+	var last_slot: int = maxi(MEETING_ARC_SLOTS - 1, 1)
+	var t: float = float(slot - 1) / float(last_slot)
+	var degrees: float = MEETING_ARC_START_DEGREES + MEETING_ARC_SWEEP_DEGREES * clampf(t, 0.0, 1.0)
+	var angle: float = deg_to_rad(degrees)
 	var radius: float = MEETING_RADIUS + MEETING_RADIUS_STAGGER * float(slot % 2)
-	return _plaza_center + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
+	return center + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
 
 
 func _advance_group(delta: float) -> void:
@@ -507,11 +516,11 @@ func _party() -> Array[NpcActor]:
 
 
 func _all_actors() -> Array[NpcActor]:
+	# `_party()` ya incluye al mensajero: no se añade dos veces, o avanzaría
+	# al doble de velocidad al caminar.
 	var actors: Array[NpcActor] = _party()
 	for actor: NpcActor in _neighbors:
 		actors.append(actor)
-	if _messenger != null:
-		actors.append(_messenger)
 	return actors
 
 

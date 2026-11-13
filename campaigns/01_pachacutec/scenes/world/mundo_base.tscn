@@ -30,20 +30,27 @@ background_mode = 2
 sky = SubResource("Sky_world")
 ambient_light_source = 3
 ambient_light_color = Color(0.62, 0.66, 0.74, 1)
-ambient_light_sky_contribution = 0.6
-ambient_light_energy = 1.5
+ambient_light_sky_contribution = 0.55
+ambient_light_energy = 1.2
 reflected_light_source = 2
 fog_enabled = true
 fog_light_color = Color(0.62, 0.72, 0.86, 1)
-fog_light_energy = 0.8
-fog_density = 0.004
+fog_light_energy = 0.6
+fog_density = 0.0035
 fog_height = 0.0
 fog_height_density = 0.05
+volumetric_fog_density = 0.004
+volumetric_fog_albedo = Color(0.72, 0.78, 0.88, 1)
+volumetric_fog_emission = Color(0.04, 0.06, 0.09, 1)
+volumetric_fog_gi_inject = 0.0
+volumetric_fog_length = 100.0
+volumetric_fog_ambient_inject = 0.2
+volumetric_fog_sky_affect = 0.15
 tonemap_mode = 4
-tonemap_exposure = 1.0
+tonemap_exposure = 1.05
 adjustment_enabled = true
-adjustment_contrast = 1.08
-adjustment_saturation = 1.12
+adjustment_contrast = 1.15
+adjustment_saturation = 1.06
 
 [node name="MundoBase" type="Node3D"]
 script = ExtResource("3_world")
@@ -53,8 +60,8 @@ environment = SubResource("Environment_world")
 
 [node name="Inti" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-26, -35, 0)
-light_color = Color(1, 0.86, 0.7, 1)
-light_energy = 1.2
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 1.35
 shadow_enabled = true
 directional_shadow_mode = 2
 directional_shadow_max_distance = 40.0

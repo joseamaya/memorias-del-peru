@@ -312,6 +312,8 @@ func _process(delta: float) -> void:
 ## Quieto en el reposo general, cambia de cuando en cuando entre sus
 ## variantes con una mezcla lenta.
 func _vary_idle(delta: float) -> void:
+	if IDLE_VARIANTS.size() < 2:
+		return
 	if _animation_player == null or moving or _perform_left > 0.0 or idle_animation != &"idle":
 		return
 	var current: StringName = StringName(_animation_player.current_animation)

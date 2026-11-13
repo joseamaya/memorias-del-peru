@@ -102,13 +102,14 @@ func test_npc_talk_and_wander() -> bool:
 	ok = ok and neighbor.global_position.distance_to(held_at) < 0.01
 	ok = ok and neighbor.current_animation() == &"talk"
 
-	# Al llegar el mensajero, nadie más habla y los vecinos dejan de pasear.
+	# Al llegar el mensajero, nadie más habla; los vecinos dejan el paseo y se
+	# acercan al punto donde se forma el grupo.
 	event.start()
 	ok = ok and event.phase == MessengerEvent.Phase.ARRIVAL
 	for talk: NpcTalk in talks:
 		ok = ok and not talk.is_available()
 	for actor_name: String in ["Habitante1", "Habitante2", "Habitante3"]:
 		var actor: NpcActor = world.get_node("Llacta/NPCs/%s" % actor_name) as NpcActor
-		ok = ok and not actor.moving
+		ok = ok and actor.moving
 	world.free()
 	return ok

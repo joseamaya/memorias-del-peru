@@ -102,12 +102,14 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | Prueba | Comprueba |
 |---|---|
 | `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas, los cuatro caminos y el mirador |
+| `test_world_sky_layers` | La cúpula de nubes tiene `SphereMesh` y shader propio, y las dos siluetas de cordillera lejana tienen malla, material sin sombreado y ninguna colisión |
 | `test_houses_clear_paths` | Ninguna vivienda ocupa el eje de un camino |
 | `test_terraces_have_ramps` | Cada nivel de terraza tiene una rampa inclinada con colisión |
 | `test_terraces_solid` | Los bloques de cada terraza llegan al suelo, bajo cada rampa elevada hay relleno y una tapa cierra el extremo alto; cada nivel tiene su malla de piedras (`TerraceNNWalls`) y `StoneWall.build()` da el mismo resultado con la misma semilla |
 | `test_terrain_relief` | Las lomas del campo valen 0 en la plaza, las casas, las terrazas, los caminos, el inicio, el mensajero y el vecino que recibe, y tienen relieve en el campo abierto sin pasar de su amplitud |
 | `test_world_bounds` | El límite del mundo tiene colisión a ~70 m del centro |
 | `test_llacta_interactables` | Quero, ofrenda y pututu existen, son `Interactable` y de tipos distintos |
+| `test_first_person_hands` | El jugador tiene manos ocultas por defecto; la ofrenda, el quero y el pututu declaran sus gestos y «Hablar» no muestra mano |
 | `test_npcs_present` | Tejedora y agricultor existen con presencia |
 | `test_messenger_event_starts_on_clock` | El evento no arranca antes del reloj y arranca al cumplirse con el jugador en la plaza |
 | `test_messenger_event_waits_for_plaza` | Si el jugador no está en la plaza, el evento espera y arranca al agotarse la espera |
@@ -122,17 +124,19 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_hud_feedback` | El HUD muestra y oculta el aviso de pausa y etiqueta la barra de aliento; la tarjeta de fin aparece 50 s después de terminar el evento, con fundido y texto traducido; `InteractionHighlight` resalta las mallas del interactuable, o las de su padre si no tiene, y restaura la superposición anterior al cambiar o perder el foco |
 | `test_quero_cooldown` | El quero respeta su espera entre usos y no está disponible mientras dura (ADR-0008) |
 | `test_offering_once` | La ofrenda solo se usa una vez y, ya usada, deja de estar disponible (ADR-0008) |
+| `test_offering_visual` | Al dejar la ofrenda aparece el atado de coca y maíz sobre el adoratorio, con su modelo cargado; antes estaba oculto |
 | `test_world_spawn_south` | El jugador aparece en el camino sur |
 | `test_mouse_capture_requires_focus` | El jugador solo pide capturar el ratón en juego y con la ventana enfocada |
 | `test_footsteps_follow_bob` | Un paso por ciclo de balanceo, más frecuentes al correr, ninguno quieto o en el aire, y siempre con la cámara en su punto bajo |
 | `test_meeting_keeps_objects_clear` | En la reunión, todos los personajes quedan en la mitad norte de la plaza y a ≥ 2,5 m del quero, el pututu y la ofrenda |
+| `test_meeting_gathers_around_messenger` | Durante `ARRIVAL` el grupo sale hacia el mensajero y, en `CALL`, forma un anillo apretado a su alrededor con gente en los flancos |
 | `test_footstep_surfaces` | El paso usa el conjunto de la superficie pisada y, sin conjunto, el de por defecto. En el mundo, las rampas de las terrazas son de piedra, encima de los bloques se pisa tierra de cultivo (con su malla de surcos) y el terreno no declara superficie |
 | `test_plaza_murmur_phases` | El murmullo de la plaza suena en `MESSAGE` y `CALL` y calla en el resto; su recurso existe |
 | `test_boundary_ridge` | La cresta deja a nivel el interior, el inicio y el paso norte, sube más de 8 m en el borde y su ladera supera los 45° |
 | `test_model_validator` | El validador de modelos acepta casos correctos y rechaza nombre, escala, origen, tamaño, colisión de casa y altura de personaje incorrectos; incluye un `.glb` exportado e importado con `GLTFDocument` |
 | `test_model_files_valid` | Todo `.glb` de `campaigns/01_pachacutec/assets/models/` cumple las reglas de §7 del alcance y no hay `.blend` (sin modelos, pasa sin comprobar nada) |
 | `test_model_slot` | `ModelSlot` conserva el bloqueo sin archivo, carga el modelo y oculta el bloqueo con archivo, y solo sustituye la colisión si el modelo trae la suya; el mundo tiene hueco en 8 casas, 9 personajes (colgado del cuerpo, con los pies en el origen del personaje), 3 objetos y el telar; `enable_vertex_colors` activa el color por vértice solo en las superficies que lo traen; cada casa tiene sus props (cántaros, leña) en huecos aparte, al menos 8 |
-| `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale a los 75 s como mínimo y a los 150 s como máximo; el vecino del camino sur saluda solo cuando el jugador se acerca; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean balanceando las piernas, se detienen al hablarles y dejan de pasear cuando llega el mensajero (ADR-0012, ADR-0013) |
+| `test_npc_talk_and_wander` | El mundo muestra el rótulo de lugar; el mensajero sale a los 75 s como mínimo y a los 150 s como máximo; el vecino del camino sur saluda solo cuando el jugador se acerca; seis personajes tienen «Hablar» en la capa de interactuables solo antes de la noticia; la frase llega al HUD y el personaje se gira hacia el jugador; los vecinos pasean balanceando las piernas, se detienen al hablarles y dejan el paseo para acercarse al mensajero cuando llega (ADR-0012, ADR-0013) |
 | `test_vegetation` | El reparto de ichu y queñua es determinista y deja libres la plaza, los caminos, las casas, las terrazas, la tejedora, el inicio, la salida de la comitiva y el mirador; las matas se apoyan en el terreno; los bloques de ichu se ocultan a 50 m y no proyectan sombra; cada queñua tiene tronco con colisión y separación mínima |
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit` y `stop_audio_in()` detiene los reproductores sonando bajo un nodo, incluido el propio nodo |
 

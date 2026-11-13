@@ -8,6 +8,7 @@ extends CharacterBody3D
 
 signal interactable_focused(interactable: Interactable)
 signal interactable_unfocused()
+signal interacted(interactable: Interactable)
 signal footstep_taken()
 
 const MAX_INTERACTABLE_SEARCH_DEPTH: int = 8
@@ -165,6 +166,7 @@ func try_interact() -> void:
 	if not _focused_interactable.is_available():
 		return
 	_focused_interactable.interact(self)
+	interacted.emit(_focused_interactable)
 
 
 ## Decide si el jugador corre y aplica el consumo de estamina.

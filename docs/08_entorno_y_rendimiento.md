@@ -18,8 +18,9 @@ MundoBase (Node3D)
 - `Environment.background_mode = BG_SKY` con `Sky` + `PhysicalSkyMaterial`.
 - Objetivo: azul profundo de altura, horizonte atmosférico natural, gradientes suaves, sin saturación artificial.
 - Parámetros a ajustar (existentes en `PhysicalSkyMaterial`): `rayleigh_coefficient`, `rayleigh_color`, `mie_coefficient`, `mie_eccentricity`, `mie_color`, `turbidity`, `sun_disk_scale`, `ground_color`, `energy_multiplier`. La altitud se simula con baja turbidez y Mie reducido (aire más limpio y seco).
+- Sobre el cielo físico, una **cúpula de nubes procedurales** (`shared_assets/materials/nubes.gdshader`): esfera grande vista por dentro, sin texturas externas, que solo dibuja nubes altas y se desvanece cerca del horizonte. Es visual: no tiene colisión ni sombra.
 - La posición del sol en el cielo físico la determina la `DirectionalLight3D`, por lo que cielo y luz se mantienen coherentes automáticamente.
-- Iluminación ambiental y reflejos tomados del cielo (`ambient_light_source = SKY`, `reflected_light_source = SKY`). La luz ambiental mezcla el cielo (60 %) con un relleno azul grisáceo y tiene energía 1,5, para que las sombras no queden negras.
+- Iluminación ambiental y reflejos tomados del cielo (`ambient_light_source = SKY`, `reflected_light_source = SKY`). La luz ambiental mezcla el cielo (55 %) con un relleno azul grisáceo y tiene energía 1,2, para que las sombras no queden negras sin lavar la escena.
 
 ### 1.2 Niebla
 
@@ -32,9 +33,11 @@ Dos capas, ambas en `Environment`:
 
 Para niebla localizada en valles: `FogVolume` (solo perfiles con volumétrica). Regla: la niebla nunca debe ocultar elementos de juego necesarios (caminos, objetos interactuables cercanos).
 
+La niebla volumétrica de Alto/Ultra se ajusta en el `Environment` a densidad 0,004, longitud 100 m, albedo azul grisáceo, emisión oscura y `sky_affect` 0,15. Con los valores por defecto (densidad 0,05 y cielo afectado al 100 %) la escena quedaba cubierta por una niebla marrón; los valores actuales son los que se ven en el vídeo de promoción.
+
 ### 1.3 Sol (Inti)
 
-- Color cálido de amanecer (temperatura objetivo ~3000–4000 K; si la versión soporta unidades físicas de luz, documentar la configuración usada).
+- Color cálido de media mañana, coherente con el guion; energía 1,35. El color actual del `DirectionalLight3D` es `(1, 0,84, 0,66)`.
 - Sol de media mañana, a unos 26° sobre el horizonte, coherente con el cielo y con el guion: el mensajero llega «a media mañana» y la señal de espera dice que el sol ya está alto. Hasta el 2026-11-11 estaba a 12°, al amanecer: dejaba la plaza en sombras largas casi negras.
 - Sombras: `shadow_enabled = true`, modo `SHADOW_PARALLEL_4_SPLITS`; distancia y resolución dependen del perfil.
 
@@ -349,3 +352,14 @@ Condiciones: mismo comando, perfil Bajo y Medio, recorrido circular de ~10 m den
 El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculante se sigue cumpliendo con margen y el perfil Medio supera los 60 FPS. La variación entre ejecuciones es apreciable: una primera ejecución en frío dio 216 / 76 FPS y las siguientes 259–262 / 86 FPS, así que las cifras se leen como orden de magnitud.
 
 > La medición anterior de esta misma escena (262,8 / 70,2 FPS y 84,9 / 163,7 MB) queda invalidada: se hizo con el atlas de sombras en 32 bits por el parámetro mal pasado. Los valores actuales usan 16 bits.
+
+### Medición con nubes, cordillera y luz cálida (Fase 4, provisional, 2026-11-13)
+
+Mismo comando y recorrido circular. La escena añade la cúpula de nubes procedurales, la cordillera lejana de dos capas, la niebla volumétrica corregida, la iluminación más cálida, las manos en primera persona y las puertas de las viviendas. Se da la mediana de tres ejecuciones; el equipo tenía una carga del sistema de 8–14 por procesos ajenos, así que son valores conservadores.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
+|---|---|---|---|---|---|---|
+| Bajo | 103,6 | 71,4 | 9,65 ms | 14 ms | 148 | 193,7 MB |
+| Medio | 39,4 | 28,6 | 25,4 ms | 35 ms | 139 | 266,5 MB |
+
+El objetivo vinculante (≥ 30 FPS en Bajo) se cumple incluso con esa carga. El perfil Medio queda por debajo de 60 FPS en esta GPU integrada, como en las mediciones anteriores; el perfil recomendado en esta máquina sigue siendo Bajo.

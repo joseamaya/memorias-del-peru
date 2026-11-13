@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.11)** — 2026-11-12; sustituye a la v4.10
+- Estado: **Aprobado (v4.14)** — 2026-11-13; sustituye a la v4.13
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -41,6 +41,9 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.9 | Aplica [ADR-0027](../../../docs/adr/0027-musica-de-la-introduccion.md): música de la introducción, compuesta con notas de quena CC0, un bordón y una tinya sintetizados; se funde al tomar el control (§6.3). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.10 | Aplica [ADR-0028](../../../docs/adr/0028-musica-epica-de-la-introduccion.md): la música de la introducción pasa a ser los primeros 44 s de «Atlas • Bolivia» (Pixabay, sikuri épico generado con IA), anacronismo declarado; sustituye a la pieza de quena de la v4.9 (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
 | v4.11 | Aplica [ADR-0029](../../../docs/adr/0029-tema-de-apertura.md): la música de la introducción pasa a ser un montaje de 40 s de «Over The Andes» (Pixabay, tema principal andino generado con IA), con entrada suave, clímax y final real; sustituye a «Atlas • Bolivia» (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
+| v4.12 | Corrección tras la prueba del responsable del proyecto: al dejar la ofrenda aparece un atado visible de coca y maíz sobre la losa, y el grupo se reúne en un anillo apretado alrededor del mensajero desde que llega, en lugar de quedar disperso por la plaza (§2.2, §4, §5 y §6.1). Pedida el 2026-11-12. |
+| v4.13 | Pase de realismo visual y de promoción: captura en perfil Alto con HUD limpio, nubes altas procedurales, cordillera lejana de dos capas, niebla volumétrica corregida y luz más cálida; el perfil Bajo sigue por encima de 30 FPS (§3, §6.2 y §8). Pedida el 2026-11-13. |
+| v4.14 | Pase de personajes y viviendas: manos en primera persona para beber, ofrecer y tocar el pututu; piel más cálida con subsuperficie y ropa con más detalle; puertas de tablones y escalón de piedra en las casas, con paja más envejecida (§4, §5 y §6.1). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -84,8 +87,8 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 | título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
 | introducción | se pulsa Comenzar | cuatro tarjetas (ADR-0023, ADR-0024 y ADR-0025): la nota histórica sobre negro; los Andes y la llacta sobre tomas del juego; el valle del Cusco sobre un mapa propio; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
 | `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero espera fuera del camino norte; los vecinos pasean; se puede hablar con seis personajes | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; a los 45 s, “El sol ya está alto…”; a los 75 s, si el jugador no está en la plaza, “Desde la plaza llaman a la gente…” |
-| `ARRIVAL` | pasan 75 s **y** el jugador está en la plaza, o 150 s en total | el mensajero corre hasta la plaza; los demás giran hacia él | — |
-| `MESSAGE` | el mensajero llega | el curaca y dos hombres principales convergen | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
+| `ARRIVAL` | pasan 75 s **y** el jugador está en la plaza, o 150 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
+| `MESSAGE` | el mensajero llega | el mensajero se detiene y el grupo termina de formar un anillo a su alrededor; el curaca y los principales escuchan | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
 | `DEPARTURE` | suena el pututu | el mensajero, el curaca y los principales parten por el camino norte; los vecinos se quedan (v4.8) | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
 | `DONE` | 8 s después de «La llacta queda en silencio…» (v4.8) | la tarjeta de fin se funde mientras la comitiva se aleja; al llegar al camino norte desaparece | «Fin del fragmento» · «R para volver a empezar · Esc para salir» |
@@ -114,6 +117,7 @@ Reglas:
 - **Punto final:** plaza; la comitiva sale por el camino norte.
 - **Campo:** lomas suaves de hasta 1,3 m fuera del núcleo de la llacta, a partir de unos 30 m del centro, que no tocan la plaza, las casas, las terrazas ni los caminos.
 - **Bordes:** cresta rocosa con colisión a ~70 m del centro, sin caída al vacío. En el bloqueo, el terreno sube ~11 m entre 61 y 73 m con una pendiente no transitable y deja un paso abierto en el camino norte; los muros a 70 m quedan como respaldo.
+- **Horizonte (v4.13):** sobre la cresta, una cordillera lejana de dos capas de siluetas y una cúpula de nubes altas procedurales. Son visuales, sin colisión, y dan profundidad y escala al valle.
 - **Viviendas:** 8 módulos rectangulares de piedra con mortero de barro y techumbre de ichu, en dos variantes como mínimo, agrupados al oeste (3), al este (3) y al norte (2). **Ninguna casa ocupa el eje de un camino**: los cuatro caminos quedan libres.
 - **Corrales (v4.4):** dos corrales bajos de pirca seca en las afueras del oeste y el noroeste, fuera de los caminos (PCH-021).
 - **Plaza:** tierra apisonada, con el pututu, el quero y el adoratorio de ofrenda.
@@ -125,9 +129,9 @@ Reglas:
 
 | Objeto | Tipo | Comportamiento | Efecto |
 |---|---|---|---|
-| Quero de chicha | Consumible | Inclinación, sonido, restauración de estamina | +35 de estamina; sin límite de usos; 10 s de espera entre usos |
-| Ofrenda a la Pachamama | Ofrenda | El jugador deja una ofrenda en el adoratorio | Respuesta visual y sonora; un solo uso por partida |
-| Pututu | Instrumento | El jugador lo hace sonar | Convoca la reunión y abre el cierre; un solo uso por partida |
+| Quero de chicha | Consumible | Inclinación, sonido, restauración de estamina | +35 de estamina; sin límite de usos; 10 s de espera entre usos; mano en primera persona |
+| Ofrenda a la Pachamama | Ofrenda | El jugador deja una ofrenda en el adoratorio | Aparece el atado de coca y maíz sobre la losa; respuesta sonora; un solo uso por partida; mano en primera persona |
+| Pututu | Instrumento | El jugador lo hace sonar | Convoca la reunión y abre el cierre; un solo uso por partida; mano en primera persona |
 
 Reglas:
 
@@ -144,7 +148,9 @@ Reglas:
 | Curaca | Autoridad local que recibe la noticia y convoca | Sale de su casa, se acerca al mensajero; toca el pututu si el jugador no lo hace | PCH-017 |
 | Hombre principal 1 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
 | Hombre principal 2 | Acompaña al curaca | Converge, escucha y parte con el grupo | PCH-017, PCH-018 |
-| Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor de la plaza durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
+| Habitantes (3) | Vecinos que interrumpen sus tareas | Se reúnen alrededor del mensajero durante el evento y **se quedan** cuando la comitiva parte | PCH-018 |
+
+**Manos del jugador (v4.14).** El jugador ve una mano y un antebrazo en primera persona con manga de unku y piel cálida; entra en cuadro al beber, dejar la ofrenda o tocar el pututu y se retira. Es una reconstrucción (R): un recurso genérico, sin retrato ni joyas, coherente con PCH-018.
 
 **Personajes realistas (v3.8, [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md)).**
 
@@ -197,7 +203,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 | Kit modular de vivienda (2 variantes) | `.glb` | Blender, autoría propia | Propia | PCH-007 |
 | Plaza y caminos | Malla procedural / `.glb` | Godot o Blender | Propia | PCH-016 |
 | Terrazas y muros de contención | Malla procedural / `.glb` | Godot o Blender | Propia | PCH-008 |
-| Adoratorio de ofrenda | `.glb` | Blender | Propia | PCH-012 |
+| Adoratorio de ofrenda y atado de coca y maíz | `.glb` | Blender | Propia | PCH-012 |
 | Pututu | `.glb` | Blender | Propia | PCH-009 |
 | Telar | `.glb` | Blender | Propia | PCH-010 |
 | Quero | `.glb` | Blender | Propia | PCH-004 |
@@ -213,6 +219,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 ### 6.2 Materiales y texturas
 
 - Piedra andesita/caliza, adobe, madera, ichu, textiles con tintes naturales.
+- Nubes altas procedurales (shader propio, sin texturas externas) y cordillera lejana de siluetas (malla procedural).
 - Texturas de 1K o 2K; sin imágenes de terceros sin licencia compatible.
 - Materiales compartidos en `shared_assets/materials/`.
 - **Hecho en v3.6** ([ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md)):

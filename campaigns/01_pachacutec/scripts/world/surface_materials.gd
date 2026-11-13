@@ -24,7 +24,7 @@ const CLOTH_MATERIAL_NAME: String = "pch_cloth"
 const CLOTH_SCALE: float = 3.0
 ## La trama del tejido, más suave que en piedra o paja: de cerca, la ropa no
 ## debe parecer un saco.
-const CLOTH_DETAIL: float = 0.55
+const CLOTH_DETAIL: float = 0.72
 ## Umbral de recorte del pelo y las cejas.
 const HAIR_ALPHA_SCISSOR: float = 0.4
 
@@ -180,11 +180,15 @@ static func apply_to_model(root: Node) -> int:
 
 static func _skin(material: BaseMaterial3D) -> BaseMaterial3D:
 	var skin: BaseMaterial3D = material.duplicate() as BaseMaterial3D
-	skin.roughness = 0.58
-	skin.metallic_specular = 0.45
+	skin.albedo_color = Color(1.0, 0.94, 0.88, 1.0)
+	skin.roughness = 0.62
+	skin.metallic_specular = 0.35
 	skin.rim_enabled = true
-	skin.rim = 0.22
-	skin.rim_tint = 0.65
+	skin.rim = 0.16
+	skin.rim_tint = 0.55
+	skin.subsurf_scatter_enabled = true
+	skin.subsurf_scatter_strength = 0.12
+	skin.subsurf_scatter_skin_mode = true
 	return skin
 
 

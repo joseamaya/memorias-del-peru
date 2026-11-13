@@ -51,9 +51,9 @@ PALETTE = {
 	"mud_dark": ((0.30, 0.23, 0.17), 1.0),
 	"mud_plaster": ((0.55, 0.43, 0.31), 1.0),
 	"earth_trodden": ((0.42, 0.33, 0.24), 1.0),
-	"thatch_a": ((0.74, 0.63, 0.38), 1.0),
-	"thatch_b": ((0.64, 0.53, 0.30), 1.0),
-	"thatch_c": ((0.54, 0.44, 0.24), 1.0),
+	"thatch_a": ((0.68, 0.59, 0.38), 1.0),
+	"thatch_b": ((0.58, 0.50, 0.32), 1.0),
+	"thatch_c": ((0.49, 0.42, 0.27), 1.0),
 	"wood": ((0.42, 0.26, 0.14), 0.8),
 	"wood_light": ((0.60, 0.43, 0.26), 0.8),
 	"incision": ((0.17, 0.10, 0.06), 0.9),
@@ -522,6 +522,18 @@ def build_house(name, rng, width, depth, wall_height, ridge_height, door_center,
 		stones.tube([Vector((door_center - door_top * 0.5 - 0.28, y, door_height + 0.06 + 0.012 * k)),
 			Vector((door_center + door_top * 0.5 + 0.28, y, door_height + 0.06 - 0.01 * k))],
 			[0.055, 0.05], 7, lambda r: "wood")
+	# Puerta de tablones cerrada, retirada del plano de la fachada para que el
+	# vano no quede como un agujero negro. Un escalón de piedra la remata.
+	door_width = door_top * 0.94
+	door_panel_y = hd - 0.2
+	planks = 4
+	plank_width = door_width / float(planks)
+	for k in range(planks):
+		plank_x = door_center - door_width * 0.5 + plank_width * (float(k) + 0.5)
+		plank_mat = "wood_light" if k % 2 == 0 else "wood"
+		stones.box((plank_x, door_panel_y, 0.76), (plank_width - 0.008, 0.06, 1.5), plank_mat)
+	stones.box((door_center + door_width * 0.32, door_panel_y + 0.045, 1.0), (0.09, 0.025, 0.045), "rope")
+	stones.box((door_center, hd + 0.16, 0.035), (door_bottom + 0.3, 0.34, 0.07), "stone_c")
 	# Suelo interior de tierra apisonada.
 	core.box((0.0, 0.0, 0.01), (width - 2 * thickness, depth - 2 * thickness, 0.02), "mud_dark")
 
@@ -841,6 +853,52 @@ def build_offering_shrine(rng):
 	stones.to_object("pch_offering_shrine", collection)
 
 
+def build_offering_gift(rng):
+	"""Atado de coca y mazorca que el jugador deja en el adoratorio (PCH-012).
+
+	Va aparte del adoratorio para que la interacción tenga una respuesta
+	visible: el adoratorio conserva su plato y el jugador añade su propia
+	ofrenda, un paño doblado con hojas de coca, granos de maíz, una mazorca y
+	un cordel. Es reconstrucción (R), como la ofrenda concreta de PCH-012.
+	"""
+	collection = bpy.context.scene.collection
+	gift = MeshBuilder(double_sided=True)
+	# Paño doblado, con un segundo pliegue encima y el cordel que lo ata.
+	gift.box((0.0, 0.0, 0.009), (0.26, 0.20, 0.018), "wool_ochre", rot_z(0.12))
+	gift.box((0.0, 0.0, 0.025), (0.22, 0.16, 0.014), "wool_cream", rot_z(-0.2))
+	gift.box((0.0, 0.0, 0.034), (0.21, 0.012, 0.006), "rope", rot_z(0.5))
+	gift.box((0.0, 0.0, 0.034), (0.012, 0.17, 0.006), "rope", rot_z(0.5))
+	# Hojas de coca extendidas sobre el paño, en dos capas.
+	leaf = [(0.0, 0.0), (0.02, 0.008), (0.045, 0.0), (0.02, -0.008)]
+	for i in range(16):
+		angle = rng.uniform(0.0, 2.0 * math.pi)
+		radius = rng.uniform(0.0, 0.085)
+		heading = rng.uniform(0.0, 2.0 * math.pi)
+		axis_u = Vector((math.cos(heading), math.sin(heading), 0.0))
+		axis_v = Vector((-math.sin(heading), math.cos(heading), 0.0))
+		origin = Vector((math.cos(angle) * radius, math.sin(angle) * radius,
+			0.041 + float(i % 3) * 0.002))
+		gift.prism(leaf, 0.002, "coca", (origin, axis_u, axis_v, Vector((0.0, 0.0, 1.0))))
+	# Unas hojas alzadas para que el atado se lea desde lejos.
+	for i in range(6):
+		angle = 2.0 * math.pi * float(i) / 6.0 + rng.uniform(-0.25, 0.25)
+		origin = Vector((math.cos(angle) * 0.055, math.sin(angle) * 0.055, 0.04))
+		axis_u = Vector((math.cos(angle), math.sin(angle), 0.0))
+		axis_v = Vector((0.0, 0.0, 1.0))
+		gift.prism(leaf, 0.002, "coca", (origin, axis_u, axis_v,
+			Vector((-math.sin(angle), math.cos(angle), 0.0))))
+	# Granos de maíz y una mazorca sobre el paño.
+	for i in range(10):
+		angle = rng.uniform(0.0, 2.0 * math.pi)
+		radius = rng.uniform(0.02, 0.075)
+		gift.box((math.cos(angle) * radius, math.sin(angle) * radius, 0.041 + rng.uniform(0.0, 0.006)),
+			(0.012, 0.01, 0.009), "maize", rot_z(angle))
+	gift.lathe([(0.0, 0.0), (0.018, 0.018), (0.022, 0.07), (0.0, 0.1)], 8, lambda s, r: "maize",
+		axis_frame=Matrix.Translation((0.05, -0.035, 0.047)) @ Matrix.Rotation(-0.4, 4, "Z")
+		@ Matrix.Rotation(math.pi * 0.5, 4, "Y"), cap_bottom=False)
+	gift.to_object("pch_offering_gift", collection)
+
+
 def build_loom(rng):
 	"""Telar de cintura tendido desde una estaca, con tejido a medio hacer
 	(PCH-010). El extremo de la tejedora está en el origen y el telar se
@@ -1085,6 +1143,7 @@ MODELS = {
 	"pch_quero": build_quero,
 	"pch_pututu": build_pututu,
 	"pch_offering_shrine": build_offering_shrine,
+	"pch_offering_gift": build_offering_gift,
 	"pch_loom": build_loom,
 	"pch_prop_jar": build_jar,
 	"pch_prop_firewood": build_firewood,

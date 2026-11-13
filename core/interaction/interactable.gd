@@ -6,6 +6,11 @@ extends Node
 ## concretos heredan de esta clase y colocan el script en la raíz de su escena.
 
 
+## Acción de mano que representa la interacción (para las manos en primera
+## persona). `none` la desactiva, como en «Hablar».
+@export var hand_action: StringName = &"reach"
+
+
 ## Devuelve si el objeto puede usarse ahora. Los objetos que dependen de un
 ## estado externo (p. ej. el pututu, que solo convoca durante la reunión) lo
 ## sobrescriben. Un objeto no disponible no se enfoca ni responde.

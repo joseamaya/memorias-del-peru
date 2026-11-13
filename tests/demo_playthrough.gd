@@ -5,6 +5,9 @@ extends SceneTree
 ##   godot --headless --path . --fixed-fps 30 --script res://tests/demo_playthrough.gd
 ## Vídeo con Movie Maker (AVI MJPEG con sonido; luego se puede pasar a MP4):
 ##   godot --path . --write-movie demo.avi --fixed-fps 30 --script res://tests/demo_playthrough.gd
+## Vídeo de promoción, con el perfil gráfico Alto y el HUD limpio:
+##   godot --path . --disable-vsync --write-movie build/demo.avi --fixed-fps 30 \
+##       --script res://tests/demo_playthrough.gd -- --promo
 ##
 ## Tras la introducción, el jugador recorre la plaza, bebe del quero, deja la ofrenda, habla con la
 ## tejedora, visita las casas del oeste, sube al mirador, vuelve a la plaza, mira al
@@ -20,6 +23,14 @@ const PHASE_CALL: int = 3
 const PHASE_DEPARTURE: int = 4
 const PHASE_DONE: int = 5
 const TURN_RATE: float = 2.2
+## En promoción se reduce el balanceo para un vídeo más limpio. El giro se
+## mantiene igual que en la partida normal: bajar su velocidad desincroniza
+## los pasos de interacción del guion.
+const PROMO_TURN_RATE: float = 2.2
+const PROMO_BOB_WALK: float = 0.024
+const PROMO_BOB_RUN: float = 0.045
+## GraphicsSettings: Bajo = 0, Medio = 1, Alto = 2, Ultra = 3.
+const PROMO_PROFILE_INDEX: int = 2
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 ## Límite de tiempo de juego: la partida dura unos 5 min.
 const MAX_GAME_SECONDS: float = 600.0
@@ -61,9 +72,14 @@ var closing: bool = false
 var quero_responded: bool = false
 var talked: bool = false
 var saw_intro: bool = false
+var promo: bool = false
+var _turn_rate: float = TURN_RATE
 
 
 func _initialize() -> void:
+	promo = OS.get_cmdline_user_args().has("--promo")
+	if promo:
+		_turn_rate = PROMO_TURN_RATE
 	world = (load(WORLD_PATH) as PackedScene).instantiate()
 	# La partida real empieza con la introducción (ADR-0023): se fuerza, porque
 	# aquí el mundo no es la escena principal.
@@ -125,10 +141,10 @@ func _phase() -> int:
 func _turn_towards(target: Vector3, delta: float) -> void:
 	var to: Vector3 = target - player.global_position
 	var desired_yaw: float = atan2(-to.x, -to.z)
-	player.rotation.y = lerp_angle(player.rotation.y, desired_yaw, minf(1.0, TURN_RATE * delta))
+	player.rotation.y = lerp_angle(player.rotation.y, desired_yaw, minf(1.0, _turn_rate * delta))
 	var eye: Vector3 = head.global_position
 	var desired_pitch: float = atan2(target.y - eye.y, Vector2(target.x - eye.x, target.z - eye.z).length())
-	head.rotation.x = lerpf(head.rotation.x, desired_pitch, minf(1.0, TURN_RATE * delta))
+	head.rotation.x = lerpf(head.rotation.x, desired_pitch, minf(1.0, _turn_rate * delta))
 
 
 func _press_interact() -> void:
@@ -142,6 +158,29 @@ func _press_interact() -> void:
 	Input.parse_input_event(release)
 
 
+## Perfil gráfico de la captura de promoción. No cambia el perfil por defecto
+## del juego: solo se aplica mientras dura este guion.
+func _apply_promo_profile() -> void:
+	var settings: Node = root.get_node_or_null("GraphicsSettings")
+	if settings == null:
+		print("DEMO promo: GraphicsSettings no disponible")
+		return
+	settings.call("set_profile_by_index", PROMO_PROFILE_INDEX)
+	print("DEMO promo: perfil gráfico ", PROMO_PROFILE_INDEX, " (Alto) y HUD limpio")
+
+
+## Quita del encuadre la barra de estamina, el aviso de interacción y la
+## indicación de controles. Los subtítulos y la tarjeta de fin se mantienen.
+func _hide_promo_hud() -> void:
+	var hud: Node = world.get_node_or_null("UILayer/HUD")
+	if hud == null:
+		return
+	for node_name: String in ["InteractionLabel", "StaminaBar", "HintLabel", "EndPanel/EndHint"]:
+		var item: CanvasItem = hud.get_node_or_null(node_name) as CanvasItem
+		if item != null:
+			item.visible = false
+
+
 func _process(delta: float) -> bool:
 	frames += 1
 	if frames == 3:
@@ -151,8 +190,14 @@ func _process(delta: float) -> bool:
 		var talk: Node = world.get_node_or_null("Llacta/NPCs/Tejedora/Talk")
 		if talk != null:
 			talk.connect("spoke", _on_spoke)
+		if promo:
+			player.set("bob_walk_amplitude", PROMO_BOB_WALK)
+			player.set("bob_run_amplitude", PROMO_BOB_RUN)
+			_apply_promo_profile()
 	if frames < 3 or closing:
 		return false
+	if promo:
+		_hide_promo_hud()
 	# Se espera a que terminen las tarjetas, sin pulsar nada, como quien lee.
 	if world.call("is_intro_playing"):
 		saw_intro = true

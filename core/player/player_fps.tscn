@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://core/player/player_fps.gd" id="1_player"]
 [ext_resource type="Script" path="res://core/systems/stamina/stamina_component.gd" id="2_stamina"]
 [ext_resource type="Script" path="res://core/interaction/interaction_highlight.gd" id="3_highlight"]
+[ext_resource type="Script" path="res://core/player/first_person_hands.gd" id="4_hands"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.35
@@ -32,3 +33,6 @@ current = true
 [node name="InteractionRay" type="RayCast3D" parent="Head/Camera3D"]
 target_position = Vector3(0, 0, -2.5)
 collision_mask = 5
+
+[node name="FirstPersonHands" type="Node3D" parent="Head/Camera3D"]
+script = ExtResource("4_hands")
