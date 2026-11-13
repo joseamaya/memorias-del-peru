@@ -355,11 +355,11 @@ El jugador termina apoyado en el terreno en ambos perfiles. El objetivo vinculan
 
 ### Medición con nubes, cordillera y luz cálida (Fase 4, provisional, 2026-11-13)
 
-Mismo comando y recorrido circular. La escena añade la cúpula de nubes procedurales, la cordillera lejana de dos capas, la niebla volumétrica corregida, la iluminación más cálida, las manos en primera persona y las puertas de las viviendas. Se da la mediana de tres ejecuciones; el equipo tenía una carga del sistema de 8–14 por procesos ajenos, así que son valores conservadores.
+Mismo comando y recorrido circular. La escena incluye la cúpula de nubes procedurales, la cordillera lejana de dos capas, la niebla volumétrica corregida, la iluminación más cálida, las manos en primera persona, las puertas de las viviendas y los mantos ajustados. Se da la mediana de tres ejecuciones con una carga del sistema de 2–3.
 
 | Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
 |---|---|---|---|---|---|---|
-| Bajo | 103,6 | 71,4 | 9,65 ms | 14 ms | 148 | 193,7 MB |
-| Medio | 39,4 | 28,6 | 25,4 ms | 35 ms | 139 | 266,5 MB |
+| Bajo | 127,1 | 100,0 | 7,87 ms | 10 ms | 141 | 193,7 MB |
+| Medio | 46,0 | 38,5 | 21,8 ms | 26 ms | 115 | 266,5 MB |
 
-El objetivo vinculante (≥ 30 FPS en Bajo) se cumple incluso con esa carga. El perfil Medio queda por debajo de 60 FPS en esta GPU integrada, como en las mediciones anteriores; el perfil recomendado en esta máquina sigue siendo Bajo.
+El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con más de cuatro veces el margen. El perfil Medio queda por debajo de 60 FPS en esta GPU integrada, como en las mediciones anteriores; el perfil recomendado en esta máquina sigue siendo Bajo.
