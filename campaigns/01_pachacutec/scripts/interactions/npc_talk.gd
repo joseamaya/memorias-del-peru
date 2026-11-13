@@ -8,15 +8,19 @@ extends Interactable
 ## evento no ha empezado: después, la noticia tiene la palabra.
 
 signal spoke(actor: Node3D, line_key: StringName)
+## Se emite cuando el personaje tiene una conversación con opciones.
+signal dialogue_requested(actor: Node3D, graph: DialogueGraph)
 
 @export var line_key: StringName = &""
+## Conversación con opciones; si existe, sustituye a la frase suelta.
+@export var dialogue: DialogueGraph = null
 @export var prompt_key: StringName = &"PCH_TALK"
 
 var event: MessengerEvent = null
 
 
 func is_available() -> bool:
-	if line_key.is_empty():
+	if dialogue == null and line_key.is_empty():
 		return false
 	return event == null or event.phase == MessengerEvent.Phase.IDLE
 
@@ -28,4 +32,8 @@ func get_interaction_text() -> String:
 func interact(_interactor: Node3D) -> void:
 	if not is_available():
 		return
-	spoke.emit(get_parent() as Node3D, line_key)
+	var actor: Node3D = get_parent() as Node3D
+	if dialogue != null:
+		dialogue_requested.emit(actor, dialogue)
+		return
+	spoke.emit(actor, line_key)

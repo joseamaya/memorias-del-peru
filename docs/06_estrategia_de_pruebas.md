@@ -156,6 +156,9 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_journal` | Encargos activos y cumplidos; entradas de Memoria con clave, sello y fuente; sin duplicados |
 | `test_combat_sling` | Carga, proyectil, daño según habilidad, munición y moral enemiga con huida |
 | `test_act_one_playthrough` | El acto I se juega de principio a fin: tres encargos, mensajero y partida, sin bloqueos |
+| `test_dialogue_panel` | El panel muestra hablante, línea y opciones; elegir emite el índice; E avanza sin opciones |
+| `test_journal_panel` | El diario lista encargos y Memoria, muestra detalle con sello y fuente, y se cierra |
+| `test_world_dialogue` | Hablar con la tejedora abre el diálogo, la opción deja una entrada de Memoria y J abre y cierra el diario |
 
 La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 `demo_playthrough` del vertical slice como prueba de extremo a extremo.

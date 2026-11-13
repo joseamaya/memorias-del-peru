@@ -238,6 +238,8 @@ Reglas:
 - Los objetos son recursos (`ItemDefinition`) con clave de nombre y descripción;
   ningún texto literal en código.
 - El diario no muestra marcadores en el mundo: es la única superficie de lectura.
+- La UI de Core (`core/ui/dialogue_panel`, `core/ui/journal_panel`) se suscribe a
+  las señales; la campaña no escribe texto en el código.
 - El combate no expone barras: salud por viñeta y respiración, ánimo por sonido,
   munición por la mano. Las pruebas pueden leer los valores internos.
 - El guardado completo sigue fuera de alcance; `core/autoload/save_manager.gd`

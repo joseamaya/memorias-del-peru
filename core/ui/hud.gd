@@ -27,6 +27,12 @@ const TITLE_FADE_OUT: float = 1.2
 ## Se emite al cerrar la tarjeta de estación; la escena que la abrió recupera
 ## el control del jugador.
 signal tour_card_closed
+## Se emite al avanzar una línea de diálogo sin opciones.
+signal dialogue_advanced
+## Se emite al elegir una opción de diálogo, por su índice visible.
+signal dialogue_choice(index: int)
+## Se emite al cerrar el diario.
+signal journal_closed
 
 @export var player: PlayerFPS
 @export var stamina: StaminaComponent
@@ -38,6 +44,8 @@ signal tour_card_closed
 @onready var hint_label: Label = $HintLabel
 @onready var objective_label: Label = $ObjectiveLabel
 @onready var tour_card: TourCard = $TourCard
+@onready var dialogue_panel: DialoguePanel = $DialoguePanel
+@onready var journal_panel: JournalPanel = $JournalPanel
 @onready var pause_panel: Control = $PausePanel
 @onready var end_panel: ColorRect = $EndPanel
 @onready var end_title: Label = $EndPanel/EndTitle
@@ -63,6 +71,9 @@ func _ready() -> void:
 	pause_panel.visible = false
 	end_panel.visible = false
 	tour_card.closed.connect(_on_tour_card_closed)
+	dialogue_panel.advanced.connect(_on_dialogue_advanced)
+	dialogue_panel.choice_selected.connect(_on_dialogue_choice)
+	journal_panel.closed.connect(_on_journal_closed)
 	# El aviso de pausa debe actualizarse con el árbol en pausa.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	var manager: Node = get_node_or_null("/root/GameManager")
@@ -249,6 +260,63 @@ func close_tour_card() -> void:
 ## Tarjeta de estación, para las pruebas.
 func get_tour_card() -> TourCard:
 	return tour_card
+
+
+## Abre el panel de diálogo con textos ya traducidos.
+func show_dialogue(speaker: String, text: String, choices: Array[String]) -> void:
+	dialogue_panel.open(speaker, text, choices)
+
+
+## Sustituye la línea de diálogo sin cerrar el panel.
+func update_dialogue(speaker: String, text: String, choices: Array[String]) -> void:
+	dialogue_panel.set_line(speaker, text, choices)
+
+
+## Cierra el panel de diálogo.
+func hide_dialogue() -> void:
+	dialogue_panel.close()
+
+
+## Indica si el diálogo está abierto.
+func is_dialogue_open() -> bool:
+	return dialogue_panel.is_open()
+
+
+## Abre el diario con las entradas del jugador.
+func show_journal(journal: Journal) -> void:
+	journal_panel.open(journal)
+
+
+## Cierra el diario.
+func hide_journal() -> void:
+	journal_panel.close()
+
+
+## Indica si el diario está abierto.
+func is_journal_open() -> bool:
+	return journal_panel.is_open()
+
+
+## Panel de diálogo, para las pruebas.
+func get_dialogue_panel() -> DialoguePanel:
+	return dialogue_panel
+
+
+## Panel del diario, para las pruebas.
+func get_journal_panel() -> JournalPanel:
+	return journal_panel
+
+
+func _on_dialogue_advanced() -> void:
+	dialogue_advanced.emit()
+
+
+func _on_dialogue_choice(index: int) -> void:
+	dialogue_choice.emit(index)
+
+
+func _on_journal_closed() -> void:
+	journal_closed.emit()
 
 
 func _on_tour_card_closed() -> void:

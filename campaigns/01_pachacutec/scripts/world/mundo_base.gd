@@ -268,6 +268,16 @@ var _tour_active: bool = true
 ## Lugar de la tarjeta abierta, para dejar constancia en el registro de sesión.
 var _reading_spot: StringName = &""
 
+## Núcleo RPG de la partida. Vive en el jugador y no conoce la campaña.
+var character: CharacterState = null
+var inventory: Inventory = null
+var journal: Journal = null
+var dialogue: DialogueRunner = null
+
+var _dialogue_speaker: StringName = &""
+var _dialogue_text: StringName = &""
+var _dialogue_choices: Array[StringName] = []
+
 
 func _ready() -> void:
 	if SessionLog.is_active():
@@ -287,6 +297,7 @@ func _ready() -> void:
 	_build_dust()
 	player.global_position = _debug_spawn_position()
 	hud.bind(player, player.stamina)
+	_setup_rpg()
 	_build_tour()
 	_connect_tour_actions()
 	_setup_footsteps()
@@ -573,6 +584,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			get_tree().reload_current_scene()
 			return
+	if event.is_action_pressed("journal"):
+		if hud == null or journal == null or _end_card_shown or is_intro_playing():
+			return
+		if hud.is_dialogue_open() or hud.is_tour_card_open():
+			return
+		if hud.is_journal_open():
+			hud.hide_journal()
+			player.process_mode = Node.PROCESS_MODE_INHERIT
+		else:
+			hud.show_journal(journal)
+			player.process_mode = Node.PROCESS_MODE_DISABLED
+		get_viewport().set_input_as_handled()
+		return
 	if not OS.is_debug_build():
 		return
 	if SessionLog.is_active():
@@ -905,7 +929,7 @@ func _build_llacta() -> void:
 	_setup_npc_sounds(npcs, weaver, farmer)
 	_attach_object_models(llacta)
 	var talks: Array[NpcTalk] = [
-		_add_talk(weaver, &"PCH_TALK_WEAVER"),
+		_add_talk(weaver, &"PCH_TALK_WEAVER", _build_weaver_dialogue()),
 		_add_talk(farmer, &"PCH_TALK_FARMER"),
 		_add_talk(curaca, &"PCH_TALK_CURACA"),
 		_add_talk(neighbor_one, &"PCH_TALK_VILLAGER_1"),
@@ -953,8 +977,8 @@ static func neighbor_routes(one: NpcActor, two: NpcActor, three: NpcActor) -> Di
 	return routes
 
 
-## Añade «Hablar» a un personaje con su frase.
-func _add_talk(actor: NpcActor, line_key: StringName) -> NpcTalk:
+## Añade «Hablar» a un personaje con su frase o su conversación.
+func _add_talk(actor: NpcActor, line_key: StringName, graph: DialogueGraph = null) -> NpcTalk:
 	if actor == null:
 		return null
 	var packed: PackedScene = load(TALK_SCENE) as PackedScene
@@ -964,9 +988,131 @@ func _add_talk(actor: NpcActor, line_key: StringName) -> NpcTalk:
 	if talk == null:
 		return null
 	talk.line_key = line_key
+	talk.dialogue = graph
 	actor.add_child(talk)
 	talk.spoke.connect(_on_npc_spoke)
+	talk.dialogue_requested.connect(_on_npc_dialogue_requested)
 	return talk
+
+
+## Crea el estado, el inventario, el diario y el diálogo del jugador.
+func _setup_rpg() -> void:
+	character = CharacterState.new()
+	character.name = "CharacterState"
+	player.add_child(character)
+	inventory = Inventory.new()
+	inventory.name = "Inventory"
+	player.add_child(inventory)
+	journal = Journal.new()
+	journal.name = "Journal"
+	player.add_child(journal)
+	dialogue = DialogueRunner.new()
+	dialogue.name = "DialogueRunner"
+	dialogue.character = character
+	dialogue.inventory = inventory
+	player.add_child(dialogue)
+	dialogue.line_shown.connect(_on_dialogue_line)
+	dialogue.choices_shown.connect(_on_dialogue_choices)
+	dialogue.finished.connect(_on_dialogue_finished)
+	dialogue.flag_changed.connect(_on_dialogue_flag)
+	hud.dialogue_advanced.connect(_on_dialogue_advanced)
+	hud.dialogue_choice.connect(_on_dialogue_choice)
+	hud.journal_closed.connect(_on_journal_closed)
+
+
+## Conversación de la tejedora: una pregunta y una entrada de Memoria.
+func _build_weaver_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_WEAVER"
+	start.text_key = &"PCH_TALK_WEAVER"
+	start.next_id = &"end"
+	var ask: DialogueChoice = DialogueChoice.new()
+	ask.text_key = &"PCH_DLG_WEAVER_ASK"
+	ask.next_id = &"dye"
+	var leave: DialogueChoice = DialogueChoice.new()
+	leave.text_key = &"PCH_DLG_WEAVER_LEAVE"
+	leave.next_id = &"end"
+	var start_choices: Array[DialogueChoice] = [ask, leave]
+	start.choices = start_choices
+	var dye: DialogueNode = DialogueNode.new()
+	dye.id = &"dye"
+	dye.speaker_key = &"PCH_NPC_WEAVER"
+	dye.text_key = &"PCH_DLG_WEAVER_DYE"
+	dye.next_id = &"end"
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.SET_FLAG
+	effect.key = &"sabio_telar"
+	effect.amount = 1
+	var effects: Array[DialogueEffect] = [effect]
+	dye.effects = effects
+	var nodes: Array[DialogueNode] = [start, dye]
+	graph.nodes = nodes
+	return graph
+
+
+func _on_npc_dialogue_requested(actor: Node3D, graph: DialogueGraph) -> void:
+	if hud == null or dialogue == null or graph == null:
+		return
+	if hud.is_tour_card_open() or hud.is_dialogue_open():
+		return
+	if not dialogue.start(graph):
+		return
+	var npc: NpcActor = actor as NpcActor
+	if npc != null and npc.turn_body_to_talk:
+		npc.face(player.global_position)
+		npc.perform(&"talk" if npc.idle_animation == &"idle" else &"idle", TALK_HOLD_SECONDS)
+	player.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
+	_dialogue_speaker = speaker_key
+	_dialogue_text = text_key
+	_dialogue_choices.clear()
+	if hud == null:
+		return
+	var empty: Array[String] = []
+	hud.show_dialogue(tr(String(speaker_key)), tr(String(text_key)), empty)
+
+
+func _on_dialogue_choices(text_keys: Array[StringName]) -> void:
+	_dialogue_choices = text_keys
+	if hud == null:
+		return
+	var texts: Array[String] = []
+	for key: StringName in text_keys:
+		texts.append(tr(String(key)))
+	hud.update_dialogue(tr(String(_dialogue_speaker)), tr(String(_dialogue_text)), texts)
+
+
+func _on_dialogue_advanced() -> void:
+	if dialogue != null:
+		dialogue.advance()
+
+
+func _on_dialogue_choice(index: int) -> void:
+	if dialogue != null:
+		dialogue.choose(index)
+
+
+func _on_dialogue_finished() -> void:
+	if hud != null:
+		hud.hide_dialogue()
+	player.process_mode = Node.PROCESS_MODE_INHERIT
+
+
+func _on_dialogue_flag(key: StringName, value: int) -> void:
+	if key != &"sabio_telar" or value == 0 or journal == null:
+		return
+	if journal.add_memory(&"mem_telar", &"PCH_ST_TELAR_TITLE", &"PCH_ST_TELAR_BODY", &"A", &"PCH-010"):
+		if hud != null:
+			hud.show_hint(tr("UI_JOURNAL_UPDATED"), 3.0)
+
+
+func _on_journal_closed() -> void:
+	player.process_mode = Node.PROCESS_MODE_INHERIT
 
 
 func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:

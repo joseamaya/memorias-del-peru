@@ -68,3 +68,7 @@ PCH_ST_MIRADOR_TITLE,El camino al Cusco
 PCH_ST_MIRADOR_BADGE,A / R · arqueología e inferencia
 PCH_ST_MIRADOR_BODY,"Antes de la expansión, los incas consolidaron su dominio en la región del Cusco entre muchos otros grupos. Llamarlos «el señorío más fuerte» es una inferencia: las fuentes hablan de alianzas, rivales vencidos y control consolidado, no de un año concreto."
 PCH_ST_MIRADOR_SOURCE,"Covey, Quave et al., Antiquity 99 (2025)"
+PCH_NPC_WEAVER,Tejedora
+PCH_DLG_WEAVER_ASK,¿Cómo se tiñe?
+PCH_DLG_WEAVER_DYE,"Mira la faja: cada franja se piensa antes de empezar. El color viene de plantas y de la cochinilla; no es adorno, dice de dónde viene la persona."
+PCH_DLG_WEAVER_LEAVE,Otro día será.

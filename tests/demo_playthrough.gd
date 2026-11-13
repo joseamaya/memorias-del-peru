@@ -190,6 +190,7 @@ func _process(delta: float) -> bool:
 		var talk: Node = world.get_node_or_null("Llacta/NPCs/Tejedora/Talk")
 		if talk != null:
 			talk.connect("spoke", _on_spoke)
+			talk.connect("dialogue_requested", _on_dialogue_requested)
 		if promo:
 			player.set("bob_walk_amplitude", PROMO_BOB_WALK)
 			player.set("bob_run_amplitude", PROMO_BOB_RUN)
@@ -201,6 +202,13 @@ func _process(delta: float) -> bool:
 	var hud: Node = world.get_node_or_null("UILayer/HUD")
 	if hud != null:
 		hud.call("close_tour_card")
+		var panel: DialoguePanel = hud.get_node_or_null("DialoguePanel") as DialoguePanel
+		if panel != null and panel.is_open():
+			var count: int = panel.get_choice_count()
+			if count > 0:
+				panel.choice_selected.emit(count - 1)
+			else:
+				panel.advanced.emit()
 	if promo:
 		_hide_promo_hud()
 	# Se espera a que terminen las tarjetas, sin pulsar nada, como quien lee.
@@ -277,6 +285,10 @@ func _next() -> void:
 
 
 func _on_spoke(_actor: Node3D, _line_key: StringName) -> void:
+	talked = true
+
+
+func _on_dialogue_requested(_actor: Node3D, _graph: DialogueGraph) -> void:
 	talked = true
 
 

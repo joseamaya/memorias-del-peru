@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://core/ui/hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://core/ui/tour_card.tscn" id="5_tour_card"]
+[ext_resource type="PackedScene" path="res://core/ui/dialogue_panel.tscn" id="6_dialogue"]
+[ext_resource type="PackedScene" path="res://core/ui/journal_panel.tscn" id="7_journal"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stamina_bg"]
 bg_color = Color(0, 0, 0, 0.55)
@@ -228,4 +230,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TourCard" parent="." instance=ExtResource("5_tour_card")]
+visible = false
+
+[node name="DialoguePanel" parent="." instance=ExtResource("6_dialogue")]
+visible = false
+
+[node name="JournalPanel" parent="." instance=ExtResource("7_journal")]
 visible = false

@@ -26,7 +26,8 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Avanzar / Retroceder | W / S |
 | Izquierda / Derecha | A / D |
 | Correr | Shift izquierdo (mantener) |
-| Interactuar | E |
+| Interactuar / avanzar diálogo | E |
+| Diario | J |
 | Saltar | Espacio (reservado, sin implementar) |
 | Pausa / liberar ratón | Escape |
 | Cambiar perfil gráfico (solo desarrollo) | F2 |

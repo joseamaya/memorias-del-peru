@@ -6,5 +6,12 @@ UI_END_HINT,R para volver a empezar · Esc para salir
 UI_GAME_TITLE,Memorias del Perú
 UI_START,Comenzar
 UI_QUIT,Salir
-UI_CONTROLS_HINT,WASD moverse · Ratón mirar · Mayús correr · E interactuar · Esc pausa
+UI_CONTROLS_HINT,WASD moverse · Ratón mirar · Mayús correr · E interactuar · J diario · Esc pausa
 UI_TOUR_CLOSE,E para cerrar
+UI_DIALOGUE_ADVANCE,E para continuar
+UI_DIALOGUE_CHOOSE,1–4 para elegir
+UI_JOURNAL_TITLE,Memoria
+UI_JOURNAL_HINT,J para cerrar
+UI_JOURNAL_EMPTY,Aún no hay nada escrito.
+UI_JOURNAL_SOURCE,Fuente: %s
+UI_JOURNAL_UPDATED,Memoria actualizada · J
