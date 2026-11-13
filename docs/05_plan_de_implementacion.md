@@ -303,7 +303,7 @@ aparte.
 ### Precondiciones
 
 - [ ] Fase 6 cerrada.
-- [ ] Fichas nuevas verificadas: armas andinas, armadura (si se usa), el paso y el refugio, el Cusco de 1438, la coca, la batalla, los chancas guerreros y PCH-031 (pururaucas, leyenda). Si PCH-031 no se verifica, la escena de la víspera se retira.
+- [x] Fichas nuevas verificadas: armas andinas (PCH-024), el paso y el refugio (PCH-026), el Cusco de 1438 (PCH-027), la coca (PCH-028), la batalla (PCH-029), los chancas guerreros (PCH-030) y los pururaucas (PCH-031). La armadura (PCH-025) queda fuera del juego y no bloquea. *(2026-11-13: fichas verificadas con las fuentes del Met, Pachacuti Yamqui y las fichas ya verificadas.)*
 
 ### Entregables
 

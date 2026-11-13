@@ -337,10 +337,12 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Tipo: objeto / armamento
 - Clasificación: A (existencia y uso) / R (forma y medidas del juego)
 - Uso en el juego: honda del jugador, porra y escudo de cuerpo a cuerpo; exploradores y guerreros chancas
-- Fuentes: por localizar. Candidatas: crónicas que describen la guerra chanca (PCH-001, PCH-002, PCH-015) y piezas de colección de armas andinas. No se usan páginas sin consultar.
-- Discrepancias entre fuentes: —
-- Notas de representación: la honda es el arma principal del juego; la porra y el escudo, último recurso. Sin armas de metal, sin ballestas ni pólvora. La forma concreta es reconstrucción.
-- Estado de verificación: **pendiente**.
+- Fuentes:
+  - A (material): The Met, *Sling*, Inca (?) / Quechua, 1450–1532, objetos 316928, 316929 y 316930; *Mace Head*, Inca, siglos XV–XVI, objetos 315294 y 315228; *Shield*, Moche, 500–800, objeto 315160, y *Shield cover*, Chimú, 1350–1470, objeto 309431. Consultados el 2026-11-13 en la colección en línea.
+  - H: Pachacuti Yamqui Salcamaygua, *Relación de antigüedades deste reyno del Pirú*, en *Tres relaciones de antigüedades peruanas*, Madrid, 1879, pp. 271–272: en la batalla se nombran hondas, porras, adargas y morriones; las piedras de pururauca se visten con adargas, morriones y porras.
+- Discrepancias entre fuentes: las piezas del Met son posteriores a 1438 y de culturas distintas; el escudo está documentado en Moche y Chimú, no específicamente en el Cusco de 1438. La forma concreta del juego es reconstrucción.
+- Notas de representación: sin armas de metal ni pólvora. La honda es de cuerda trenzada (A / R); la porra es un mango de madera con cabeza de piedra (R); el escudo es de fibra o madera (R). La honda es el arma principal; la porra y el escudo, último recurso.
+- Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-13, sobre la comprobación del agente en las fichas del Met y el pasaje de Pachacuti Yamqui.
 
 ### PCH-025 — Armadura acolchada
 - Tipo: vestimenta / protección
@@ -358,34 +360,34 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Fuentes: se apoya en PCH-013 (vegetación) y PCH-016 (caminos). No se identifica con ningún paso real.
 - Discrepancias entre fuentes: —
 - Notas de representación: **no es un tambo**: la institución de postas es imperial y posterior. Refugio abierto de piedra seca, sin techo de ichu ni insignias estatales. El sendero es de herradura, no una calzada imperial.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (R)** por el responsable del proyecto el 2026-11-13, sobre la comprobación del agente en PCH-013 y PCH-016.
 
 ### PCH-027 — El Cusco de 1438
 - Tipo: lugar
 - Clasificación: A / R
 - Uso en el juego: mapa del acto III
-- Fuentes: se apoya en PCH-022 (Covey y otros 2025) y PCH-002. Por localizar: bibliografía sobre el Cusco preimperial.
+- Fuentes: se apoya en PCH-022 (Covey y otros 2025) y PCH-002. La bibliografía específica del Cusco preimperial sigue pendiente de ampliar.
 - Discrepancias entre fuentes: la arqueología del Cusco anterior a la expansión es limitada; la ciudad monumental es posterior.
 - Notas de representación: centro de señorío con plaza grande, casas de piedra y ichu, terrazas y un santuario modesto al sol (R). Sin Coricancha monumental, sin muros ciclópeos ni piedra labrada imperial.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-13, sobre PCH-022 y PCH-002; la disposición concreta es R.
 
 ### PCH-028 — La coca: masticar y compartir
 - Tipo: planta / práctica social
 - Clasificación: A / R
 - Uso en el juego: consumible que restaura aliento; gesto de compartir en el campamento
-- Fuentes: se apoya en PCH-012 (Molina y Polo). Por localizar: estudios sobre el uso de la coca en el mundo andino.
+- Fuentes: se apoya en PCH-012 (Molina y Polo), que documentan la coca como ofrenda a las huacas. La masticación con cal y sus efectos concretos quedan como R / N.
 - Discrepancias entre fuentes: —
 - Notas de representación: hoja masticada con cal; sin presentarla como droga recreativa ni como medicina moderna. El efecto sobre el aliento es una simplificación de juego (N).
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-13, sobre PCH-012; la masticación y el efecto son R / N.
 
 ### PCH-029 — La batalla: representación
 - Tipo: evento
 - Clasificación: H (tradición narrada) / R (puesta en escena)
 - Uso en el juego: defensa del Cusco, acto III
-- Fuentes: PCH-001, PCH-002, PCH-003 y PCH-015.
+- Fuentes: PCH-001, PCH-002, PCH-003 y PCH-015; crónica rectora, Betanzos (ADR-0040).
 - Discrepancias entre fuentes: protagonista (Cusi Yupanqui o el príncipe Viracocha, según Garcilaso) y escala del conflicto (PCH-003).
 - Notas de representación: se muestra la versión de los cronistas, no un hecho comprobado. Sin cifras de ejército ni mapas tácticos. El jugador no decide el resultado.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (H / R)** por el responsable del proyecto el 2026-11-13, sobre PCH-001, PCH-002, PCH-003 y PCH-015.
 
 ### PCH-030 — Los chancas como guerreros
 - Tipo: personaje / vestimenta
@@ -394,7 +396,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Fuentes: PCH-003 y Bauer, Kellett y Aráoz Silva (2013).
 - Discrepancias entre fuentes: la imagen de los chancas procede de la versión inca; la arqueología muestra confederaciones frágiles, no un estado poderoso.
 - Notas de representación: sin caricatura de «bárbaros»; ropa de viaje y guerra propia, sin insignias incas. La apariencia concreta es R.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (H / R)** por el responsable del proyecto el 2026-11-13, sobre PCH-003 y Bauer, Kellett y Aráoz Silva.
 
 
 ### PCH-031 — Pururaucas (leyenda)
@@ -402,8 +404,8 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Clasificación: N / H (tradición narrada)
 - Uso en el juego: escena opcional de la víspera del acto III y entrada `mem_pururaucas` de la «Memoria». No es una mecánica ni cambia la batalla.
 - Fuentes:
-  - Pachacuti Yamqui Salcamaygua, Juan de Santa Cruz, *Relación de antigüedades deste reyno del Pirú* (c. 1613), ed. Biblioteca de Autores Españoles / Ediciones Atlas, Madrid, 1968, pp. 297–298 (cap. X según la bibliografía de la batalla de Yahuarpampa). **Pendiente de consultar la edición**: la cita procede de una referencia secundaria.
+  - H: Pachacuti Yamqui Salcamaygua, Juan de Santa Cruz, *Relación de antigüedades deste reyno del Pirú* (c. 1613), en *Tres relaciones de antigüedades peruanas*, Madrid, 1879, pp. 271–272 (archive.org: `tresrelacionesde00spai`). El viejo Tiopauanchire (Topa Huanchiri), ministro de Curicancha, hace hileras de piedra de pururauca y las viste con adargas, morriones y porras; cuando llegan los chancas, las piedras se levantan como personas y pelean; la victoria sigue hasta Quiyachille.
   - Contraste: Garcilaso, *Comentarios reales*, lib. V, caps. XVII–XX (ed. Urteaga, 1918), cuenta la victoria del príncipe Viracocha, no la de Cusi Yupanqui; es otra versión, no la fuente de los pururaucas.
 - Discrepancias entre fuentes: la leyenda engrandece la victoria y la atribuye a una intervención maravillosa; la arqueología (PCH-003) sugiere un conflicto menor y entre confederaciones frágiles. La fuente principal de los pururaucas es Pachacuti Yamqui; Garcilaso no se usa para esta escena.
 - Notas de representación: se cuenta como **creencia y relato**, nunca como un hecho. Sin piedras que se transformen en pantalla, sin ejército sobrenatural y sin cambiar el resultado. La arenga de Cusi Yupanqui se parafrasea y se marca como elaboración literaria.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (N / H)** por el responsable del proyecto el 2026-11-13, sobre la comprobación del agente en la edición digital citada.

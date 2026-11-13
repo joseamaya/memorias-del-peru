@@ -288,8 +288,8 @@ una escena opcional de diálogo; el jugador puede escuchar y desbloquear
 `mem_pururaucas` en la «Memoria».
 
 - Fuente: Pachacuti Yamqui Salcamaygua, *Relación de antigüedades deste reyno del
-  Pirú* (c. 1613), cap. X; ficha PCH-031, **N / H (tradición)**. Queda pendiente
-  de verificar la edición antes de entrar.
+  Pirú* (c. 1613), en *Tres relaciones de antigüedades peruanas*, Madrid, 1879,
+  pp. 271–272; ficha PCH-031, **N / H (tradición)**, verificada.
 - Se presenta como **lo que se cuenta**, no como un hecho. Ninguna piedra se
   transforma en pantalla ni cambia la batalla.
 - La arenga de Cusi Yupanqui se parafrasea; la «Memoria» advierte que es

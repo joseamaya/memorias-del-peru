@@ -66,3 +66,9 @@ Reglas de escritura:
 - El título y el arco de la campaña no cambian: sigue siendo Pachacútec.
 - Si la ficha de los pururaucas no se verifica, la escena se retira; no se
   sustituye por una invención.
+
+## Actualización (2026-11-13)
+
+PCH-031 quedó verificada en *Tres relaciones de antigüedades peruanas* (Madrid,
+1879), pp. 271–272, con el pasaje de las piedras de pururauca. La escena de la
+víspera puede entrar como leyenda contada, no como mecánica.
