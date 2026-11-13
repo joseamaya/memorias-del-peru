@@ -27,11 +27,11 @@ const TERRACE_ZONE: Rect2 = Rect2(26.0, -19.0, 32.0, 38.0)
 const RELIEF_EDGE: float = 8.0
 const PATH_CLEAR: float = 4.0
 const PATH_BLEND: float = 9.0
-const GRASS_COLOR: Color = Color(0.58, 0.55, 0.34, 1.0)
-const ROCK_COLOR: Color = Color(0.5, 0.47, 0.42, 1.0)
+const GRASS_COLOR: Color = Color(0.50, 0.49, 0.34, 1.0)
+const ROCK_COLOR: Color = Color(0.46, 0.44, 0.42, 1.0)
 ## Tierra apisonada de la plaza y los caminos, que el terreno pinta con borde
 ## irregular (SurfaceMaterials).
-const DIRT_COLOR: Color = Color(0.56, 0.46, 0.35, 1.0)
+const DIRT_COLOR: Color = Color(0.49, 0.43, 0.36, 1.0)
 const ROCK_FROM_HEIGHT: float = 1.0
 const ROCK_FULL_HEIGHT: float = 4.0
 ## Cúpula de nubes procedurales (shared_assets/materials/nubes.gdshader).
@@ -42,15 +42,19 @@ const CLOUD_DOME_RINGS: int = 32
 ## Cordillera lejana: dos anillos de siluetas fuera del límite jugable. No
 ## tienen colisión ni sombra; solo dan profundidad al horizonte.
 const DISTANT_NEAR_RADIUS: float = 210.0
+const DISTANT_MID_RADIUS: float = 270.0
 const DISTANT_FAR_RADIUS: float = 330.0
 const DISTANT_SEGMENTS: int = 160
 const DISTANT_BOTTOM: float = -10.0
 const DISTANT_NEAR_BASE: float = 28.0
 const DISTANT_NEAR_AMPLITUDE: float = 34.0
+const DISTANT_MID_BASE: float = 36.0
+const DISTANT_MID_AMPLITUDE: float = 42.0
 const DISTANT_FAR_BASE: float = 46.0
 const DISTANT_FAR_AMPLITUDE: float = 48.0
 const DISTANT_NEAR_COLOR: Color = Color(0.24, 0.28, 0.35, 1.0)
-const DISTANT_FAR_COLOR: Color = Color(0.33, 0.39, 0.49, 1.0)
+const DISTANT_MID_COLOR: Color = Color(0.27, 0.32, 0.41, 1.0)
+const DISTANT_FAR_COLOR: Color = Color(0.30, 0.36, 0.46, 1.0)
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 ## Nombres de las fases del evento, en el orden del enum de [MessengerEvent];
 ## el registro de sesión los usa como marcas (§9.2).
@@ -574,6 +578,8 @@ func _build_clouds() -> void:
 func _build_distant_ranges() -> void:
 	_build_range("DistantRangeNear", DISTANT_NEAR_RADIUS, DISTANT_NEAR_BASE,
 		DISTANT_NEAR_AMPLITUDE, DISTANT_NEAR_COLOR)
+	_build_range("DistantRangeMid", DISTANT_MID_RADIUS, DISTANT_MID_BASE,
+		DISTANT_MID_AMPLITUDE, DISTANT_MID_COLOR)
 	_build_range("DistantRangeFar", DISTANT_FAR_RADIUS, DISTANT_FAR_BASE,
 		DISTANT_FAR_AMPLITUDE, DISTANT_FAR_COLOR)
 
@@ -581,8 +587,8 @@ func _build_distant_ranges() -> void:
 func _build_range(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
 	var surface: SurfaceTool = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var bottom_color: Color = color.darkened(0.22)
-	var top_color: Color = color.lightened(0.08)
+	var bottom_color: Color = color.darkened(0.34)
+	var top_color: Color = color.lightened(0.04)
 	for index: int in range(DISTANT_SEGMENTS):
 		var angle0: float = TAU * float(index) / float(DISTANT_SEGMENTS)
 		var angle1: float = TAU * float(index + 1) / float(DISTANT_SEGMENTS)
@@ -621,7 +627,7 @@ func _range_vertex(surface: SurfaceTool, point: Vector3, color: Color) -> void:
 static func _distant_height(angle: float, base_height: float, amplitude: float) -> float:
 	var ridge: float = 0.5 + 0.5 * sin(angle * 5.0 + 0.4) * sin(angle * 9.0 - 0.9)
 	ridge = pow(maxf(ridge, 0.0), 0.65)
-	var detail: float = 0.16 * sin(angle * 31.0 + 1.7) + 0.09 * sin(angle * 53.0 - 0.3)
+	var detail: float = 0.16 * sin(angle * 31.0 + 1.7) + 0.09 * sin(angle * 53.0 - 0.3) + 0.05 * sin(angle * 89.0 + 0.5)
 	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
 
 
@@ -660,8 +666,8 @@ static func ridge_height_at(x: float, z: float) -> float:
 func _build_llacta() -> void:
 	var llacta: Node3D = $Llacta
 	var boundary: Node3D = $Boundary
-	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, Color(0.55, 0.54, 0.51, 1.0))
-	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.THATCH, Color(0.55, 0.42, 0.2, 1.0))
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, Color(0.56, 0.54, 0.50, 1.0))
+	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.THATCH, Color(0.50, 0.40, 0.22, 1.0))
 	var dirt: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.DIRT, DIRT_COLOR)
 
 	# La plaza y los caminos marcan las zonas de tierra apisonada. Las pinta el

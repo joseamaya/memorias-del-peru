@@ -103,7 +103,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | Prueba | Comprueba |
 |---|---|
 | `test_llacta_layout` | Existen plaza, entre 6 y 8 viviendas, terrazas, los cuatro caminos y el mirador |
-| `test_world_sky_layers` | La cúpula de nubes tiene `SphereMesh` y shader propio, y las dos siluetas de cordillera lejana tienen malla, material sin sombreado y ninguna colisión |
+| `test_world_sky_layers` | La cúpula de nubes tiene `SphereMesh` y shader propio, y las tres siluetas de cordillera lejana tienen malla, material sin sombreado y ninguna colisión |
 | `test_houses_clear_paths` | Ninguna vivienda ocupa el eje de un camino |
 | `test_terraces_have_ramps` | Cada nivel de terraza tiene una rampa inclinada con colisión |
 | `test_terraces_solid` | Los bloques de cada terraza llegan al suelo, bajo cada rampa elevada hay relleno y una tapa cierra el extremo alto; cada nivel tiene su malla de piedras (`TerraceNNWalls`) y `StoneWall.build()` da el mismo resultado con la misma semilla |
@@ -168,6 +168,14 @@ La misma partida sirve para grabar un vídeo de demostración con Movie Maker (A
 ```bash
 godot --path . --write-movie demo.avi --fixed-fps 30 --script res://tests/demo_playthrough.gd
 ```
+
+Capturas fijas para comparar materiales (tampoco forma parte del ejecutor):
+
+```bash
+godot --path . --resolution 1280x720 --script res://tests/capture_views.gd
+```
+
+Carga el mundo sin HUD, congela el evento y guarda cinco vistas en `user://capturas/`: aparición, suelo a media distancia, muro de pirca a 1,5 m, casa a 6 m y horizonte desde el mirador. Sirve para evaluar un cambio de materiales contra el mismo encuadre, no para probar lógica.
 
 ## 4. Verificación manual — Fase 1
 

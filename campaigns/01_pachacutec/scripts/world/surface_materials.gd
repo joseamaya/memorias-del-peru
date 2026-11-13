@@ -14,7 +14,20 @@ const CLOTH_SHADER_PATH: String = "res://shared_assets/materials/superficie_tela
 const DETAIL_PATH: String = "res://shared_assets/textures/superficies_detalle.webp"
 const NORMAL_PATH: String = "res://shared_assets/textures/superficies_normal.webp"
 ## Repeticiones por metro de cada capa, en el orden de [enum Layer].
-const LAYER_SCALES: PackedFloat32Array = [0.7, 0.5, 0.7, 1.0, 3.0, 0.25, 0.35, 0.15, 0.3]
+const LAYER_SCALES: PackedFloat32Array = [0.75, 0.6, 0.85, 1.0, 3.0, 0.24, 0.32, 0.15, 0.3]
+## Corrección de color por clase (alfa = intensidad), en el orden de [enum Layer].
+## Atenúa los tintes de los modelos generados sin volver a exportarlos.
+const LAYER_TINTS: Array[Color] = [
+	Color(0.62, 0.60, 0.56, 0.35),
+	Color(0.58, 0.54, 0.48, 0.5),
+	Color(0.55, 0.44, 0.24, 0.3),
+	Color(1.0, 1.0, 1.0, 0.0),
+	Color(1.0, 1.0, 1.0, 0.0),
+	Color(1.0, 1.0, 1.0, 0.0),
+	Color(1.0, 1.0, 1.0, 0.0),
+	Color(1.0, 1.0, 1.0, 0.0),
+	Color(1.0, 1.0, 1.0, 0.0),
+]
 const MAX_OVERLAY_RECTS: int = 8
 ## Material que el generador de personajes pone a la ropa (ADR-0016).
 const CLOTH_MATERIAL_NAME: String = "pch_cloth"
@@ -216,4 +229,9 @@ static func _base_material() -> ShaderMaterial:
 	material.set_shader_parameter("detail_array", load(DETAIL_PATH) as TextureLayered)
 	material.set_shader_parameter("normal_array", load(NORMAL_PATH) as TextureLayered)
 	material.set_shader_parameter("layer_scale", LAYER_SCALES)
+	material.set_shader_parameter("layer_tint", PackedColorArray(LAYER_TINTS))
+	# Relieve sin exagerar: a media distancia separa una pared de una calcomanía;
+	# de cerca, un exceso convierte la tierra apisonada en grava.
+	material.set_shader_parameter("normal_strength", 1.0)
+	material.set_shader_parameter("roughness_floor", 0.85)
 	return material

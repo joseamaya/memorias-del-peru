@@ -27,6 +27,10 @@ uniform bool world_projection = false;
 uniform vec4 tint : source_color = vec4(1.0);
 uniform float detail_strength : hint_range(0.0, 1.0) = 1.0;
 uniform float normal_strength : hint_range(0.0, 2.0) = 1.0;
+// Corrección de color por clase de superficie (alfa = intensidad). Permite
+// atenuar tintes de los modelos generados sin volver a exportarlos: la cal
+// anaranjada y la piedra azulada se acercan a la paleta de la sierra.
+uniform vec4 layer_tint[9];
 // Distancia a la cámara a partir de la cual no se leen los mapas de normales
 // (su relieve ya no se distingue y ahorra la mitad de las lecturas).
 uniform float normal_distance = 35.0;
@@ -118,6 +122,10 @@ float rect_mask(vec2 p, vec4 rect, float fade) {
 
 void fragment() {
 	vec3 base_color = use_vertex_color ? COLOR.rgb * tint.rgb : tint.rgb;
+	if (base_layer >= 0) {
+		vec4 grade = layer_tint[base_layer];
+		base_color = mix(base_color, grade.rgb, grade.a);
+	}
 	if (base_layer < 0 && steep_layer < 0 && overlay_layer < 0) {
 		ALBEDO = base_color;
 		ROUGHNESS = plain_roughness;
@@ -185,11 +193,18 @@ void fragment() {
 			if (cover > 0.001) {
 				vec3 p = tri_pos * layer_scale[overlay_layer];
 				vec4 detail = triplanar(detail_array, p, tri_weights, float(overlay_layer));
-				vec3 dirt = overlay_tint.rgb * mix(vec3(1.0), detail.rgb * 2.0, detail_strength);
+				vec3 dirt = overlay_tint.rgb * mix(vec3(1.0), detail.rgb * 2.0, detail_strength * 0.55);
+				if (macro_strength > 0.0) {
+					// Manchas grandes de tierra apisonada: sin esto, la plaza es
+					// un color plano con ruido fino.
+					vec3 dirt_macro_detail = triplanar(detail_array, tri_pos * macro_scale * 0.7, tri_weights, float(overlay_layer)).rgb * 2.0;
+					float dirt_macro = dot(dirt_macro_detail, vec3(0.333));
+					dirt *= mix(1.0, dirt_macro, macro_strength * 0.6);
+				}
 				albedo = mix(albedo, dirt, cover);
 				roughness = mix(roughness, detail.a, cover);
 				if (near) {
-					normal_map = mix(normal_map, triplanar(normal_array, p, tri_weights, float(overlay_layer)).rgb, cover);
+					normal_map = mix(normal_map, triplanar(normal_array, p, tri_weights, float(overlay_layer)).rgb, cover * 0.55);
 				}
 			}
 		}

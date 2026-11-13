@@ -4,7 +4,7 @@ extends RefCounted
 ## colisión ni afectar al límite jugable.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
-const RANGE_NAMES: Array[String] = ["DistantRangeNear", "DistantRangeFar"]
+const RANGE_NAMES: Array[String] = ["DistantRangeNear", "DistantRangeMid", "DistantRangeFar"]
 
 
 func test_world_sky_layers() -> bool:

@@ -11,9 +11,9 @@ extends Node
 ## Ajuste de la oclusión ambiental. Sin ella, las juntas de pirca, los poyos y
 ## los objetos apoyados se leen como calcomanías planas: es la diferencia más
 ## grande entre una escena que parece modelada y una que parece fotografiada.
-const SSAO_RADIUS: float = 1.4
-const SSAO_INTENSITY: float = 2.2
-const SSAO_POWER: float = 1.6
+const SSAO_RADIUS: float = 1.2
+const SSAO_INTENSITY: float = 1.8
+const SSAO_POWER: float = 1.5
 const SSAO_DETAIL: float = 0.6
 const SSAO_LIGHT_AFFECT: float = 0.25
 

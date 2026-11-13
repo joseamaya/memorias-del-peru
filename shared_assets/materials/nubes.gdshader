@@ -6,11 +6,11 @@ render_mode unshaded, cull_front, depth_draw_never, blend_mix, fog_disabled, sha
 
 uniform vec4 cloud_light : source_color = vec4(1.0, 0.97, 0.92, 1.0);
 uniform vec4 cloud_shadow : source_color = vec4(0.52, 0.58, 0.66, 1.0);
-uniform float coverage : hint_range(0.0, 1.0) = 0.46;
-uniform float edge_softness : hint_range(0.01, 0.5) = 0.30;
-uniform float cloud_scale : hint_range(0.5, 12.0) = 1.7;
+uniform float coverage : hint_range(0.0, 1.0) = 0.38;
+uniform float edge_softness : hint_range(0.01, 0.5) = 0.24;
+uniform float cloud_scale : hint_range(0.5, 12.0) = 2.4;
 uniform float wind_speed : hint_range(0.0, 0.1) = 0.004;
-uniform float opacity : hint_range(0.0, 1.0) = 0.74;
+uniform float opacity : hint_range(0.0, 1.0) = 0.62;
 // La UV de la esfera puede venir con el polo norte en 0 o en 1; este valor
 // deja elegir la mitad superior sin tocar el resto del shader.
 uniform bool flip_horizon = false;

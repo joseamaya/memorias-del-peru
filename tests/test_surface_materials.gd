@@ -18,6 +18,7 @@ func test_texture_arrays_load() -> bool:
 		detail.get_layers() == LAYER_COUNT
 		and normal.get_layers() == LAYER_COUNT
 		and SurfaceMaterials.LAYER_SCALES.size() == LAYER_COUNT
+		and SurfaceMaterials.LAYER_TINTS.size() == LAYER_COUNT
 		and SurfaceMaterials.Layer.size() == LAYER_COUNT
 	)
 
