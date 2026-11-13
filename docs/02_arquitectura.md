@@ -228,7 +228,7 @@ Estos módulos viven en `core/` y no conocen la campaña; la campaña los compon
 | Inventario | `core/systems/inventory/inventory.gd` y `item_definition.gd` | Ocho huecos y tres equipados; `add`, `remove`, `count`, `has`, `use`; señal `changed`. Sin peso ni loot aleatorio |
 | Diálogo | `core/systems/dialogue/dialogue_runner.gd` | Nodos con texto, opciones, condiciones y efectos; no conoce la UI: emite `line_shown` y `choices_shown`, recibe la opción elegida |
 | Diario | `core/systems/journal/journal.gd` | Encargos y «Memoria»; añade entradas con clave de texto, sello H/A/R/N y fuente; señal `changed` |
-| Combate | `core/systems/combat/` | Honda con carga y proyectil, porra y escudo, enemigos con moral; sin HUD. Se implementa en la Fase 6 y se prueba con la emboscada del acto II |
+| Combate | `core/systems/combat/` | Honda con carga y proyectil, porra y escudo, enemigos con moral; sin HUD. Se implementa en la Fase 6 con un sandbox y se usa en la emboscada del acto II (Fase 7) |
 | Puntos de control | `core/systems/checkpoint/` | Estado en memoria al empezar cada acto y a mitad del II y III; sin guardado completo |
 
 Reglas:
