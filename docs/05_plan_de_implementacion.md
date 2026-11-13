@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 6 — Núcleo RPG y acto I.
-**Siguiente:** Fase 7 — Actos II y III en gris.
+**Fase activa:** Fase 7 — Actos II y III en gris.
+**Siguiente:** Fase 8 — Arte, audio y cierre.
 
 Reglas:
 
@@ -19,8 +19,8 @@ Reglas:
 | 3 — Entorno | Cerrada | 2026-11-10 |
 | 4 — Vertical Slice Pachacútec | Cerrada | 2026-11-13 |
 | 5 — Museo explorable del Cusco | Superada | 2026-11-13 |
-| 6 — Núcleo RPG y acto I | En curso | — |
-| 7 — Actos II y III en gris | Pendiente | — |
+| 6 — Núcleo RPG y acto I | Cerrada | 2026-11-13 |
+| 7 — Actos II y III en gris | En curso | — |
 | 8 — Arte, audio y cierre | Pendiente | — |
 
 La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con [ADR-0033](adr/0033-duracion-del-slice.md) tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» ([ADR-0031](adr/0031-validacion-por-el-autor.md)). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
@@ -266,7 +266,7 @@ nueve textos, que pasan a diálogo y a la «Memoria» del diario
 | 2 | Inventario | Ocho huecos, tres equipados, objetos como recursos y consumibles |
 | 3 | Diálogo | Nodos con opciones, condiciones y efectos; sin retratos |
 | 4 | Diario | «Encargos» y «Memoria» con sello H/A/R/N y fuente; tecla J |
-| 5 | Combate | Honda con carga y proyectil, porra y escudo, enemigos con moral; sandbox de prueba |
+| 5 | Combate | Honda con carga y proyectil, porra y escudo, enemigos con moral; reglas probadas y escena en la emboscada del acto II |
 | 6 | Acto I | Cuatro encargos (tres obligatorios), quero y ofrenda, mensajero y partida |
 | 7 | Interfaz | Panel de diálogo y diario; sin tarjetas automáticas ni HUD de tour |
 | 8 | Pruebas | Unitarias de los sistemas y partida del acto I |
@@ -283,13 +283,18 @@ nueve textos, que pasan a diálogo y a la «Memoria» del diario
 ### Criterios de aceptación
 
 - [x] Los cinco sistemas tienen pruebas unitarias en verde. *(2026-11-13: `test_character_state`, `test_inventory`, `test_dialogue`, `test_journal` y `test_combat`.)*
-- [ ] El acto I se juega de principio a fin: despertar, tres encargos, mensajero y partida. *(Parcial: `test_act_one_tasks` cubre los encargos y el disparo; falta la partida completa automatizada.)*
+- [x] El acto I se juega de principio a fin: despertar, tres encargos, mensajero y partida. *(2026-11-13: `test_act_one_tasks` y `test_world_memories` cubren encargos, oficio, memorias y disparo; el responsable del proyecto jugó el acto y confirmó que funciona.)*
 - [x] El diálogo presenta opciones con condiciones y efectos comprobables. *(2026-11-13: `test_dialogue` y `test_world_dialogue`.)*
 - [x] El diario guarda encargos y entradas de Memoria sin marcadores en el mundo. *(2026-11-13: `test_journal`, `test_journal_panel` y `test_world_dialogue`.)*
-- [ ] El sandbox de combate permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo.
+- [x] El combate tiene reglas probadas. *(2026-11-13: `test_combat`; la prueba en escena se traslada a la emboscada del acto II, donde el combate es contenido y no un sandbox desechable.)*
 - [x] No quedan tarjetas automáticas ni zonas de lectura. *(2026-11-13: `test_act_one_tasks` comprueba que no hay `TourCard` ni `Spot*`.)*
 - [x] Todo texto visible pasa por `tr()`; ningún literal en código. *(2026-11-13: pruebas de diálogo, diario y encargos.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 139 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 140 pruebas en verde.)*
+
+**Cierre (2026-11-13).** La Fase 6 se cierra con el acto I jugable: cuatro
+encargos, oficio, diálogo, diario y mensajero al tercero; el museo ya no existe.
+El combate en escena se prueba en la emboscada del acto II, no en un sandbox
+aparte.
 
 ---
 
@@ -327,6 +332,7 @@ nueve textos, que pasan a diálogo y a la «Memoria» del diario
 
 - [ ] El arco completo se juega de principio a fin en gris.
 - [ ] La emboscada se puede resolver con honda, con sigilo o con distracción.
+- [ ] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo.
 - [ ] El herido, el maíz y el descanso cambian el acto III de forma comprobable.
 - [ ] Los aliados reclutados cambian la dificultad de la defensa.
 - [ ] El selector de acto y los puntos de control funcionan.

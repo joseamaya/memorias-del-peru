@@ -154,6 +154,7 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_journal` | Encargos activos y cumplidos; entradas de Memoria con clave, sello y fuente; sin duplicados |
 | `test_combat` | Carga, daño según habilidad, bloqueo, aliento, aturdimiento y moral enemiga con huida |
 | `test_act_one_tasks` | Cuatro encargos, oficio, diario, memoria del quero y la ofrenda, y mensajero al tercero; sin tarjetas ni zonas de museo |
+| `test_world_memories` | Los nueve textos del museo quedan en la «Memoria»: encargos, agricultor, curaca, quero, ofrenda y llegada del mensajero |
 | `test_dialogue_panel` | El panel muestra hablante, línea y opciones; elegir emite el índice; E avanza sin opciones |
 | `test_journal_panel` | El diario lista encargos y Memoria, muestra detalle con sello y fuente, y se cierra |
 | `test_world_dialogue` | Hablar con la tejedora abre el diálogo, la opción deja una entrada de Memoria y J abre y cierra el diario |

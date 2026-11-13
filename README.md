@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 6 — Núcleo RPG y acto I (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. El museo queda retirado: el acto I tiene cuatro encargos, diálogo, diario y mensajero al tercero; el núcleo RPG está probado. Pendiente: el sandbox de combate, la partida completa del acto, el arco II–III y el arte. |
+| Estado | **Fase 7 — Actos II y III en gris (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. La Fase 6 cerró con el acto I jugable: cuatro encargos, diálogo, diario y mensajero al tercero; los nueve textos viven en la «Memoria». Pendiente: los actos II y III en gris, el combate en escena y el arte. |
 
 ## Requisitos
 

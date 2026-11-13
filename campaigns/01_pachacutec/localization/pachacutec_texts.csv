@@ -89,3 +89,10 @@ PCH_Q_TELAR_TITLE,El telar de la tejedora
 PCH_Q_TELAR_BODY,Sostén el telar de la tejedora mientras cruza la trama.
 PCH_Q_PIRCA_TITLE,La pirca del corral
 PCH_Q_PIRCA_BODY,Cierra el hueco del corral del noroeste.
+PCH_NPC_FARMER,Agricultor
+PCH_NPC_CURACA,Curaca
+PCH_DLG_LEAVE,Otro día será.
+PCH_DLG_FARMER_ASK,¿Qué se cultiva aquí?
+PCH_DLG_FARMER_TERRACE,"Maíz, papas y quinua en los andenes. La tierra se cuida: si el muro cede, se pierde la cosecha."
+PCH_DLG_CURACA_ASK,¿Qué es este lugar?
+PCH_DLG_CURACA_PLAZA,"Una llacta del valle. Aquí se trabaja, se reparte y se recuerda a los que vinieron antes."

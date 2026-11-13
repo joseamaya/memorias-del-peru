@@ -836,8 +836,8 @@ func _build_llacta() -> void:
 	_attach_object_models(llacta)
 	var talks: Array[NpcTalk] = [
 		_add_talk(weaver, &"PCH_TALK_WEAVER", _build_weaver_dialogue()),
-		_add_talk(farmer, &"PCH_TALK_FARMER"),
-		_add_talk(curaca, &"PCH_TALK_CURACA"),
+		_add_talk(farmer, &"PCH_TALK_FARMER", _build_farmer_dialogue()),
+		_add_talk(curaca, &"PCH_TALK_CURACA", _build_curaca_dialogue()),
 		_add_talk(neighbor_one, &"PCH_TALK_VILLAGER_1"),
 		_add_talk(neighbor_two, &"PCH_TALK_VILLAGER_2"),
 		_add_talk(neighbor_three, &"PCH_TALK_VILLAGER_3"),
@@ -977,6 +977,7 @@ func _on_task_completed(task_id: StringName) -> void:
 	_tasks_done[task_id] = true
 	if journal != null:
 		journal.complete_quest(StringName("q_" + String(task_id)))
+	_unlock_task_memory(task_id)
 	if _oficio == &"":
 		_oficio = task_id
 		if character != null:
@@ -990,6 +991,19 @@ func _on_task_completed(task_id: StringName) -> void:
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null and event.phase == MessengerEvent.Phase.IDLE:
 		event.start()
+
+
+## Memoria que deja cada encargo al completarse.
+func _unlock_task_memory(task_id: StringName) -> void:
+	match task_id:
+		&"agua":
+			_unlock_memory(&"mem_vivienda", &"PCH_ST_VIVIENDA_TITLE", &"PCH_ST_VIVIENDA_BODY", &"A", &"PCH-007")
+		&"maiz":
+			_unlock_memory(&"mem_chicha", &"PCH_ST_CHICHA_TITLE", &"PCH_ST_CHICHA_BODY", &"H", &"PCH-005")
+		&"telar":
+			_unlock_memory(&"mem_telar", &"PCH_ST_TELAR_TITLE", &"PCH_ST_TELAR_BODY", &"A", &"PCH-010")
+		&"pirca":
+			_unlock_memory(&"mem_corral", &"PCH_ST_CORRAL_TITLE", &"PCH_ST_CORRAL_BODY", &"R", &"PCH-021")
 
 
 ## Habilidad que entrena cada encargo.
@@ -1044,6 +1058,59 @@ func _build_weaver_dialogue() -> DialogueGraph:
 	return graph
 
 
+## Conversación de pregunta y respuesta con una entrada de Memoria.
+func _build_question_dialogue(
+	speaker_key: StringName,
+	opening_key: StringName,
+	ask_key: StringName,
+	answer_key: StringName,
+	flag_key: StringName
+) -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = speaker_key
+	start.text_key = opening_key
+	start.next_id = &"end"
+	var ask: DialogueChoice = DialogueChoice.new()
+	ask.text_key = ask_key
+	ask.next_id = &"answer"
+	var leave: DialogueChoice = DialogueChoice.new()
+	leave.text_key = &"PCH_DLG_LEAVE"
+	leave.next_id = &"end"
+	var start_choices: Array[DialogueChoice] = [ask, leave]
+	start.choices = start_choices
+	var answer: DialogueNode = DialogueNode.new()
+	answer.id = &"answer"
+	answer.speaker_key = speaker_key
+	answer.text_key = answer_key
+	answer.next_id = &"end"
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.SET_FLAG
+	effect.key = flag_key
+	effect.amount = 1
+	var effects: Array[DialogueEffect] = [effect]
+	answer.effects = effects
+	var nodes: Array[DialogueNode] = [start, answer]
+	graph.nodes = nodes
+	return graph
+
+
+func _build_farmer_dialogue() -> DialogueGraph:
+	return _build_question_dialogue(
+		&"PCH_NPC_FARMER", &"PCH_TALK_FARMER", &"PCH_DLG_FARMER_ASK",
+		&"PCH_DLG_FARMER_TERRACE", &"sabio_terraza"
+	)
+
+
+func _build_curaca_dialogue() -> DialogueGraph:
+	return _build_question_dialogue(
+		&"PCH_NPC_CURACA", &"PCH_TALK_CURACA", &"PCH_DLG_CURACA_ASK",
+		&"PCH_DLG_CURACA_PLAZA", &"sabio_plaza"
+	)
+
+
 func _on_npc_dialogue_requested(actor: Node3D, graph: DialogueGraph) -> void:
 	if hud == null or dialogue == null or graph == null:
 		return
@@ -1095,11 +1162,15 @@ func _on_dialogue_finished() -> void:
 
 
 func _on_dialogue_flag(key: StringName, value: int) -> void:
-	if key != &"sabio_telar" or value == 0 or journal == null:
+	if value == 0:
 		return
-	if journal.add_memory(&"mem_telar", &"PCH_ST_TELAR_TITLE", &"PCH_ST_TELAR_BODY", &"A", &"PCH-010"):
-		if hud != null:
-			hud.show_hint(tr("UI_JOURNAL_UPDATED"), 3.0)
+	match key:
+		&"sabio_telar":
+			_unlock_memory(&"mem_telar", &"PCH_ST_TELAR_TITLE", &"PCH_ST_TELAR_BODY", &"A", &"PCH-010")
+		&"sabio_terraza":
+			_unlock_memory(&"mem_terraza", &"PCH_ST_TERRAZA_TITLE", &"PCH_ST_TERRAZA_BODY", &"A", &"PCH-008")
+		&"sabio_plaza":
+			_unlock_memory(&"mem_plaza", &"PCH_ST_PLAZA_TITLE", &"PCH_ST_PLAZA_BODY", &"A", &"PCH-016")
 
 
 func _on_journal_closed() -> void:
@@ -1167,6 +1238,8 @@ static func murmur_plays_in(phase: int) -> bool:
 func _on_event_phase_changed(phase: int) -> void:
 	if phase >= 0 and phase < EVENT_PHASE_NAMES.size():
 		SessionLog.mark(&"phase", EVENT_PHASE_NAMES[phase])
+	if phase == MessengerEvent.Phase.ARRIVAL:
+		_unlock_memory(&"mem_mirador", &"PCH_ST_MIRADOR_TITLE", &"PCH_ST_MIRADOR_BODY", &"A", &"PCH-022")
 	_sync_objective_with_phase(phase)
 	if murmur_plays_in(phase):
 		_start_murmur()

@@ -79,6 +79,11 @@ func test_npc_talk_and_wander() -> bool:
 	ok = ok and farmer.current_animation() == &"work"
 	player.global_position = farmer.global_position + Vector3(2.0, 0.0, 0.0)
 	talks[1].interact(player)
+	# El agricultor también tiene conversación (Fase 6).
+	ok = ok and hud.is_dialogue_open()
+	ok = ok and hud.get_dialogue_panel().get_text() == tr("PCH_TALK_FARMER")
+	hud.get_dialogue_panel().choice_selected.emit(1)
+	ok = ok and not hud.is_dialogue_open()
 	# Se vuelve poco a poco, como una persona (no de golpe).
 	farmer._process(1.0)
 	var to_player: Vector3 = (player.global_position - farmer.global_position).normalized()
