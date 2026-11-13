@@ -28,17 +28,10 @@ PCH_END_TITLE,Fin del fragmento
 PCH_MAP_CUSCO,Cusco
 PCH_MAP_LLACTA,Tu llacta
 PCH_MAP_NORTH,N
-PCH_OBJ_QUERO,Bebe del quero de chicha
-PCH_OBJ_OFFERING,Deja una ofrenda a la Pachamama
-PCH_OBJ_TALK,Habla con la gente de la llacta
-PCH_OBJ_MIRADOR,Sube al mirador a mirar el camino del norte
-PCH_OBJ_WAIT,Espera al mensajero en la plaza
 PCH_OBJ_LISTEN,Escucha al mensajero
 PCH_OBJ_PUTUTU,Toca el pututu para convocar
 PCH_OBJ_LEAVE,Sigue al curaca hacia el Cusco
 PCH_STATION_OBSERVE,Observar
-PCH_OBJ_TOUR,Observa: %s
-PCH_OBJ_TOUR_FREE,Explora la llacta y observa las estelas
 PCH_ST_PLAZA_TITLE,La plaza y los caminos
 PCH_ST_PLAZA_BADGE,"A / R / N · evidencia, reconstrucción y licencia"
 PCH_ST_PLAZA_BODY,"La plaza de tierra apisonada es una licencia de diseño: Cobo dice que las aldeas pequeñas no solían tener calles ni plazas, pero las prospecciones del Intermedio Tardío registran espacios públicos. Los caminos de tierra unen la llacta con el valle y con el Cusco."

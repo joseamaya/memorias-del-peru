@@ -53,6 +53,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.21 | Aplica [ADR-0033](../../../docs/adr/0033-duracion-del-slice.md): la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
 | v5.0 | Aplica [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md): la campaña se organiza como museo explorable, con nueve estaciones, tarjeta, contador y brújula; el evento sale tras cinco estaciones con el mirador y la cadena de objetivos anterior queda sustituida (§2.2, §5, §6.4 y §12). Pedida el 2026-11-13. |
 | v5.1 | Aplica [ADR-0035](../../../docs/adr/0035-tour-libre.md): la estación pasa a ser una estela legible a la altura del pecho; se quita el umbral de cinco estaciones, el evento sale al observar el mirador (o a los 360 s) y la brújula se muestra solo con Q o tres segundos tras observar, con objetivo neutro (§2.2, §5, §9 y §12). Pedida el 2026-11-13. |
+| v5.2 | Aplica [ADR-0036](../../../docs/adr/0036-leer-en-el-mundo.md): se eliminan las estelas, el contador, la brújula y la tecla Q; las nueve tarjetas se abren al entrar en el lugar o al hacer la acción, y el mirador dispara el evento. La prioridad pasa a la sensación de lugar: sol más bajo, polvo en suspensión y rutas más largas de los vecinos (§2.2, §5, §6.4, §9 y §12). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -280,11 +281,6 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 | `PCH_NARR_CALL` | empieza la llamada | Los hombres esperan. El pututu puede convocar. |
 | `PCH_NARR_CLOSING_1` | parte el grupo | El curaca y los principales parten hacia el Cusco. |
 | `PCH_NARR_CLOSING_2` | tras la anterior | La llacta queda en silencio. |
-| `PCH_OBJ_TOUR` | antes del evento | Observa: <nombre de la estación sugerida> |
-| `PCH_OBJ_QUERO` (no usado desde v5.0) | — | Bebe del quero de chicha |
-| `PCH_OBJ_OFFERING` (no usado desde v5.0) | — | Deja una ofrenda a la Pachamama |
-| `PCH_OBJ_TALK` (no usado desde v5.0) | — | Habla con la gente de la llacta |
-| `PCH_OBJ_MIRADOR` (no usado desde v5.0) | — | Sube al mirador a mirar el camino del norte |
 | `PCH_OBJ_LISTEN` | llega el mensajero | Escucha al mensajero |
 | `PCH_OBJ_PUTUTU` | empieza la llamada | Toca el pututu para convocar |
 | `PCH_OBJ_LEAVE` | suena el pututu | Sigue al curaca hacia el Cusco |
@@ -493,21 +489,19 @@ brújula, y el evento del mensajero como clímax.
 | 8 | El corral de pirca | PCH-021 | R |
 | 9 | El camino al Cusco (mirador) | PCH-022 | A / R |
 
-- **Activación:** «Observar» (E) sobre una **estela de piedra** a la altura del
-  pecho. Cada estación cuenta una sola vez; volver a observarla abre la tarjeta
-  sin sumar.
+- **Activación:** sin objetos visibles ni marcadores. Las tarjetas de los
+  lugares se abren al entrar en una zona invisible (plaza, telar, chicha,
+  vivienda, terraza, corral y mirador); las del quero y la ofrenda, al beber y
+  al dejarla. Cada tarjeta se abre una sola vez.
 - **Tarjeta:** título, 60–80 palabras, sello de clasificación y fuente. Se cierra
   con E o Esc; mientras está abierta, el jugador no se mueve.
-- **HUD:** contador `n/9`; la brújula se oculta por defecto y aparece al mantener
-  **Q** (o tres segundos tras observar). El objetivo es neutro: «Explora la
-  llacta y observa las estelas»; con Q muestra el nombre del hito más cercano.
-- **Cierre:** el evento sale al **observar la estela del mirador** (mirar el
-  camino del norte); la petición arranca al volver a la plaza. El respaldo por
-  reloj de [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) es de 360 s
-  + 20 s. No hay umbral de estaciones: el tour es opcional.
-- **Sustitución:** la cadena de objetivos de v4.18 (quero → ofrenda →
-  conversación → mirador) queda sustituida por el puntero de estación. Las
-  claves `PCH_OBJ_QUERO`, `PCH_OBJ_OFFERING`, `PCH_OBJ_TALK` y `PCH_OBJ_MIRADOR`
-  dejan de usarse; el quero y la ofrenda conservan su interacción.
-- **Duración objetivo:** 6–8 min en ruta guiada; el horizonte de 10–15 min sigue
+- **HUD:** no hay contador, brújula ni objetivo antes del evento. El mundo no
+  señala las tarjetas; se descubren recorriendo.
+- **Cierre:** el evento sale al **llegar al mirador** (mirar el camino del
+  norte); la petición arranca al volver a la plaza. El respaldo por reloj de
+  [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) es de 360 s + 20 s.
+  No hay umbral de estaciones.
+- **Sustitución:** la cadena de objetivos de v4.18 queda eliminada. Solo quedan
+  los objetivos del evento (`PCH_OBJ_LISTEN`, `PCH_OBJ_PUTUTU`, `PCH_OBJ_LEAVE`).
+- **Duración objetivo:** 6–8 min explorando; el horizonte de 10–15 min sigue
   reservado a la campaña completa.

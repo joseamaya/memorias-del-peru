@@ -1,5 +1,6 @@
 extends RefCounted
-## Comprueba el tour de estaciones del museo explorable (ADR-0034).
+## Comprueba la lectura en el mundo (ADR-0036): zonas invisibles, tarjetas al
+## estar en el sitio o al hacer la acción, y cierre por el mirador.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 
@@ -16,77 +17,61 @@ func _spawn_world() -> Node:
 	return world
 
 
-func _station(world: Node, id: String) -> Station:
-	var llacta: Node = world.get_node_or_null("Llacta")
-	if llacta == null:
-		return null
-	for node: Node in llacta.get_children():
-		var station: Station = node as Station
-		if station != null and station.station_id == StringName(id):
-			return station
-	return null
-
-
 func test_world_tour_starts() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:
 		return false
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
-	var stations: int = 0
-	for node: Node in world.get_node("Llacta").get_children():
-		if node is Station:
-			stations += 1
-	var ok: bool = (
-		hud != null
-		and stations == 9
-		and hud.get_tour_progress_text() == "0/9"
-		and hud.is_showing_objective()
-		and hud.get_objective_text() == tr("PCH_OBJ_TOUR_FREE")
-		and not hud.is_tour_compass_visible()
-	)
+	var spots: int = 0
+	for node: Node in world.get_children():
+		if node is Area3D and str(node.name).begins_with("Spot"):
+			spots += 1
+	var ok: bool = hud != null and spots == 7 and not hud.is_showing_objective()
 	world.free()
 	return ok
 
 
-func test_world_tour_station_opens_card() -> bool:
+func test_world_tour_zone_opens_card() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:
 		return false
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
 	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
-	var station: Station = _station(world, "plaza")
-	if hud == null or player == null or station == null:
+	if hud == null or player == null:
 		world.free()
 		return false
-	station.interact(player)
+	world.call("visit_spot", &"plaza")
 	var ok: bool = (
 		hud.is_tour_card_open()
-		and hud.get_tour_progress_text() == "1/9"
 		and hud.get_tour_card().get_title_text() == tr("PCH_ST_PLAZA_TITLE")
 		and player.process_mode == Node.PROCESS_MODE_DISABLED
 	)
 	hud.close_tour_card()
 	ok = ok and not hud.is_tour_card_open()
 	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
+	world.call("visit_spot", &"plaza")
+	ok = ok and not hud.is_tour_card_open()
 	world.free()
 	return ok
 
 
-func test_world_tour_station_counts_once() -> bool:
+func test_world_tour_action_opens_card() -> bool:
 	var world: Node = _spawn_world()
 	if world == null:
 		return false
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
 	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
-	var station: Station = _station(world, "quero")
-	if hud == null or player == null or station == null:
+	var quero: QueroChicha = world.get_node_or_null("QueroChicha") as QueroChicha
+	if hud == null or player == null or quero == null:
 		world.free()
 		return false
-	station.interact(player)
+	quero.audio_stream = null
+	quero.interact(player)
+	var ok: bool = (
+		hud.is_tour_card_open()
+		and hud.get_tour_card().get_title_text() == tr("PCH_ST_QUERO_TITLE")
+	)
 	hud.close_tour_card()
-	station.interact(player)
-	hud.close_tour_card()
-	var ok: bool = hud.get_tour_progress_text() == "1/9"
 	world.free()
 	return ok
 
@@ -98,13 +83,12 @@ func test_world_tour_mirador_opens_event() -> bool:
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
 	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
 	var event: MessengerEvent = world.get_node_or_null("EventController") as MessengerEvent
-	var mirador: Station = _station(world, "mirador")
-	if hud == null or player == null or event == null or mirador == null:
+	if hud == null or player == null or event == null:
 		world.free()
 		return false
 	# Cerca de la plaza: la petición del mirador arranca al volver.
 	player.global_position = Vector3(0.0, 0.05, 2.0)
-	mirador.interact(player)
+	world.call("visit_spot", &"mirador")
 	hud.close_tour_card()
 	var ok: bool = event.phase == MessengerEvent.Phase.ARRIVAL
 	world.free()
@@ -112,7 +96,7 @@ func test_world_tour_mirador_opens_event() -> bool:
 
 
 func test_world_tour_texts() -> bool:
-	for id: StringName in MundoBase.STATION_IDS:
+	for id: StringName in [&"plaza", &"quero", &"chicha", &"ofrenda", &"telar", &"vivienda", &"terraza", &"corral", &"mirador"]:
 		for part: String in ["TITLE", "BODY", "BADGE", "SOURCE"]:
 			var key: String = "PCH_ST_%s_%s" % [String(id).to_upper(), part]
 			var text: String = tr(key)

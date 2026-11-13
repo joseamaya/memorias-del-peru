@@ -59,9 +59,9 @@ script = ExtResource("3_world")
 environment = SubResource("Environment_world")
 
 [node name="Inti" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-26, -35, 0)
-light_color = Color(1, 0.84, 0.66, 1)
-light_energy = 1.35
+rotation_degrees = Vector3(-22, -40, 0)
+light_color = Color(1, 0.83, 0.64, 1)
+light_energy = 1.32
 shadow_enabled = true
 directional_shadow_mode = 2
 directional_shadow_max_distance = 40.0

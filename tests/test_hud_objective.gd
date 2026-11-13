@@ -20,13 +20,13 @@ func test_hud_objective() -> bool:
 		and not hud.is_showing_objective()
 		and hud.get_objective_text().is_empty()
 	)
-	var text: String = tr("PCH_OBJ_QUERO")
+	var text: String = tr("PCH_OBJ_LISTEN")
 	ok = ok and not text.begins_with("PCH_") and not text.is_empty()
 	hud.show_objective(text)
 	ok = ok and hud.is_showing_objective() and label.visible
 	ok = ok and hud.get_objective_text() == text
-	hud.show_objective(tr("PCH_OBJ_OFFERING"))
-	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_OFFERING")
+	hud.show_objective(tr("PCH_OBJ_PUTUTU"))
+	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_PUTUTU")
 	hud.clear_objective()
 	ok = ok and not hud.is_showing_objective()
 	ok = ok and hud.get_objective_text().is_empty() and not label.visible

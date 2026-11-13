@@ -197,34 +197,32 @@ const SURFACE_STONE: StringName = &"stone"
 
 ## Objetivo visible del evento narrativo. El tour de estaciones tiene su propio
 ## puntero en el HUD; este enum solo cubre las fases del mensajero.
-enum Objective { WAIT, LISTEN, PUTUTU, LEAVE, NONE }
+enum Objective { LISTEN, PUTUTU, LEAVE, NONE }
 
 const OBJECTIVE_KEYS: Array[StringName] = [
-	&"PCH_OBJ_WAIT",
 	&"PCH_OBJ_LISTEN",
 	&"PCH_OBJ_PUTUTU",
 	&"PCH_OBJ_LEAVE",
 ]
 
-## Museo explorable (ADR-0034): escena de estación y reparto por la llacta.
-const STATION_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/station.tscn"
-const STATION_IDS: Array[StringName] = [
-	&"plaza", &"quero", &"chicha", &"ofrenda", &"telar",
-	&"vivienda", &"terraza", &"corral", &"mirador",
+## Museo explorable (ADR-0036): zonas invisibles para leer en el mundo. No hay
+## marcadores, contador ni brújula; la tarjeta se abre al estar en el sitio o al
+## hacer la acción.
+const SPOT_IDS: Array[StringName] = [
+	&"plaza", &"telar", &"chicha", &"vivienda", &"terraza", &"corral", &"mirador",
 ]
-const STATION_POSITIONS: Array[Vector3] = [
-	Vector3(0.0, 0.0, -6.0),
-	Vector3(6.5, 0.0, 3.5),
-	Vector3(-15.0, 0.0, 14.0),
-	Vector3(-10.5, 0.0, 9.0),
-	Vector3(-12.0, 0.0, 8.5),
-	Vector3(-24.5, 0.0, 9.0),
-	Vector3(32.0, 0.0, 5.0),
-	Vector3(-31.0, 0.0, -7.5),
+const SPOT_CENTERS: Array[Vector3] = [
+	Vector3(0.0, 0.0, 0.0),
+	Vector3(-11.0, 0.0, 8.0),
+	Vector3(19.0, 0.0, 7.5),
+	Vector3(-19.0, 0.0, 7.5),
+	Vector3(36.0, 0.8, 0.0),
+	Vector3(-31.0, 0.0, -9.0),
 	Vector3(52.0, 2.45, 0.0),
 ]
-## Tiempo que la brújula sigue visible después de observar una estación.
-const COMPASS_AFTER_STATION_MS: int = 3000
+const SPOT_RADII: Array[float] = [9.0, 3.0, 3.2, 3.2, 6.0, 4.5, 5.0]
+## Capa del cuerpo del jugador, para que las zonas lo detecten.
+const PLAYER_LAYER: int = 2
 
 ## Argumentos de desarrollo (después de `--`): `--skip-intro` entra directo al
 ## mundo y `--spawn=spawn|plaza|mirador` elige el punto de aparición.
@@ -265,14 +263,8 @@ var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
 var _objective: int = -1
 var _contact_shadow_material: StandardMaterial3D = null
-var _tour_stations: Array[Station] = []
 var _tour_visited: Dictionary[StringName, bool] = {}
-var _tour_target: Station = null
-var _tour_target_position: Vector3 = Vector3.ZERO
-var _tour_target_id: StringName = &""
 var _tour_active: bool = true
-var _guide_active: bool = false
-var _compass_until_ms: int = 0
 
 
 func _ready() -> void:
@@ -290,16 +282,16 @@ func _ready() -> void:
 	_build_llacta()
 	_build_distant_ranges()
 	_build_clouds()
+	_build_dust()
 	player.global_position = _debug_spawn_position()
 	hud.bind(player, player.stamina)
 	_build_tour()
+	_connect_tour_actions()
 	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
 	hud.tour_card_closed.connect(_on_tour_card_closed)
 	if with_intro:
 		_start_intro()
-	else:
-		_show_tour_hint()
 
 
 ## Punto de aparición: el de la escena, salvo que `--spawn=<punto>` pida otro.
@@ -412,7 +404,6 @@ func _on_intro_finished() -> void:
 	if _intro_music != null and _intro_music.playing:
 		_music_fade_remaining = INTRO_MUSIC_FADE
 	hud.show_hint(tr(String(CONTROLS_HINT_KEY)), CONTROLS_HINT_SECONDS)
-	_show_tour_hint()
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
 		event.begin()
@@ -421,145 +412,91 @@ func _on_intro_finished() -> void:
 func _process(delta: float) -> void:
 	advance_end_card(delta)
 	advance_intro_music(delta)
-	_update_tour_guide()
-	_update_tour_compass()
 
 
-## Crea las nueve estaciones del museo y las conecta al estado del tour.
+## Crea una zona invisible por lugar de lectura. No hay objetos visibles: la
+## tarjeta se abre al entrar, como si el propio sitio llamara la atención.
 func _build_tour() -> void:
-	var packed: PackedScene = load(STATION_SCENE) as PackedScene
-	if packed == null:
+	for index: int in range(SPOT_IDS.size()):
+		var area: Area3D = Area3D.new()
+		area.name = "Spot" + String(SPOT_IDS[index]).capitalize()
+		area.collision_layer = 0
+		area.collision_mask = PLAYER_LAYER
+		area.monitoring = true
+		area.monitorable = false
+		var collider: CollisionShape3D = CollisionShape3D.new()
+		var sphere: SphereShape3D = SphereShape3D.new()
+		sphere.radius = SPOT_RADII[index]
+		collider.shape = sphere
+		area.add_child(collider)
+		area.position = SPOT_CENTERS[index]
+		add_child(area)
+		area.body_entered.connect(_on_spot_entered.bind(SPOT_IDS[index]))
+
+
+## Conecta las acciones que abren tarjeta sin zona: beber y dejar la ofrenda.
+func _connect_tour_actions() -> void:
+	var quero: QueroChicha = $QueroChicha as QueroChicha
+	if quero != null and not quero.drank.is_connected(_on_quero_drank):
+		quero.drank.connect(_on_quero_drank)
+	var ofrenda: OfrendaPachamama = $OfrendaPachamama as OfrendaPachamama
+	if ofrenda != null and not ofrenda.offered.is_connected(_on_offering_left):
+		ofrenda.offered.connect(_on_offering_left)
+
+
+func _on_spot_entered(body: Node3D, spot_id: StringName) -> void:
+	if body != player:
 		return
-	var llacta: Node3D = $Llacta
-	for index: int in range(STATION_IDS.size()):
-		var instance: Node = packed.instantiate()
-		var body: Node3D = instance as Node3D
-		var station: Station = instance as Station
-		if body == null or station == null:
-			continue
-		station.station_id = STATION_IDS[index]
-		body.position = STATION_POSITIONS[index]
-		llacta.add_child(body)
-		station.observed.connect(_on_station_observed)
-		_tour_stations.append(station)
-	_update_tour_target()
+	visit_spot(spot_id)
 
 
-## Gira la brújula hacia la estación pendiente más cercana, relativa a la vista.
-## Solo se muestra mientras se mantiene Q o durante unos segundos después de
-## observar una estación: la guía se pide, no se impone.
-func _update_tour_compass() -> void:
-	var guide_visible: bool = _guide_active or Time.get_ticks_msec() < _compass_until_ms
-	if not _tour_active or _tour_target == null or not guide_visible or hud == null:
-		hud.show_tour_compass(false)
+func _on_quero_drank() -> void:
+	visit_spot(&"quero")
+
+
+func _on_offering_left() -> void:
+	visit_spot(&"ofrenda")
+
+
+## Abre la tarjeta de un lugar o acción, una sola vez. El mirador pide además
+## la llegada del mensajero (ADR-0036).
+func visit_spot(spot_id: StringName) -> void:
+	if not _tour_active or _tour_visited.has(spot_id) or hud == null:
 		return
-	var to: Vector3 = _tour_target_position - player.global_position
-	var desired_yaw: float = atan2(-to.x, -to.z)
-	var relative: float = wrapf(desired_yaw - player.rotation.y, -PI, PI)
-	hud.show_tour_compass(true)
-	hud.set_tour_compass_angle(relative)
-
-
-## Actualiza la estación sugerida y el texto del objetivo. Con la guía pulsada
-## muestra el nombre; sin ella, una invitación neutra a explorar.
-func _update_tour_guide() -> void:
-	if not _tour_active or is_intro_playing():
+	if hud.is_tour_card_open():
 		return
-	_update_tour_target()
-	var guide: bool = Input.is_action_pressed("guide")
-	var current_id: StringName = &""
-	if _tour_target != null:
-		current_id = _tour_target.station_id
-	if guide == _guide_active and (not guide or current_id == _tour_target_id):
+	_tour_visited[spot_id] = true
+	_show_tour_card(spot_id)
+	if spot_id != &"mirador":
 		return
-	_guide_active = guide
-	_tour_target_id = current_id
-	_show_tour_hint()
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null:
+		event.announce_wait()
+		event.request_arrival()
 
 
-## Fija la estación pendiente más cercana como objetivo de la brújula.
-func _update_tour_target() -> void:
-	_tour_target = null
-	_tour_target_position = Vector3.ZERO
-	var best: float = INF
-	for index: int in range(_tour_stations.size()):
-		var station: Station = _tour_stations[index]
-		if _tour_visited.has(station.station_id):
-			continue
-		var at: Vector3 = STATION_POSITIONS[index]
-		var distance: float = player.global_position.distance_to(at)
-		if distance < best:
-			best = distance
-			_tour_target = station
-			_tour_target_position = at
-
-
-## Muestra en el HUD la estación sugerida (solo con la guía) y el contador.
-func _show_tour_hint() -> void:
-	if hud == null:
-		return
-	hud.set_tour_progress(_tour_visited.size(), _tour_stations.size())
-	if not _tour_active:
-		hud.clear_objective()
-		return
-	if _guide_active and _tour_target != null:
-		_tour_target_id = _tour_target.station_id
-		var title_key: StringName = _station_key(_tour_target.station_id, "TITLE")
-		hud.show_objective(tr("PCH_OBJ_TOUR") % tr(String(title_key)))
-		return
-	hud.show_objective(tr("PCH_OBJ_TOUR_FREE"))
-
-
-## Una estación observada: abre su tarjeta, cuenta la primera vez y, si es el
-## mirador, pide la llegada del mensajero (ADR-0035).
-func _on_station_observed(station: Station) -> void:
-	if not _tour_active:
-		return
-	var first_time: bool = not _tour_visited.has(station.station_id)
-	if first_time:
-		_tour_visited[station.station_id] = true
-		_update_tour_target()
-		_compass_until_ms = Time.get_ticks_msec() + COMPASS_AFTER_STATION_MS
-	_show_tour_card(station)
-	if not first_time:
-		return
-	hud.set_tour_progress(_tour_visited.size(), _tour_stations.size())
-	if station.station_id == &"mirador":
-		var event: MessengerEvent = $EventController as MessengerEvent
-		if event != null:
-			event.announce_wait()
-			event.request_arrival()
-
-
-## Abre la tarjeta de la estación y detiene al jugador mientras lee.
-func _show_tour_card(station: Station) -> void:
-	if hud == null:
-		return
-	var title_key: StringName = _station_key(station.station_id, "TITLE")
-	var body_key: StringName = _station_key(station.station_id, "BODY")
-	var badge_key: StringName = _station_key(station.station_id, "BADGE")
-	var source_key: StringName = _station_key(station.station_id, "SOURCE")
+## Abre la tarjeta del lugar y detiene al jugador mientras lee.
+func _show_tour_card(spot_id: StringName) -> void:
+	var title_key: StringName = _spot_key(spot_id, "TITLE")
+	var body_key: StringName = _spot_key(spot_id, "BODY")
+	var badge_key: StringName = _spot_key(spot_id, "BADGE")
+	var source_key: StringName = _spot_key(spot_id, "SOURCE")
 	hud.show_tour_card(tr(String(title_key)), tr(String(body_key)), tr(String(badge_key)), tr(String(source_key)))
 	player.process_mode = Node.PROCESS_MODE_DISABLED
 
 
 func _on_tour_card_closed() -> void:
 	player.process_mode = Node.PROCESS_MODE_INHERIT
-	_show_tour_hint()
 
 
-## Clave de una parte de la estación (`TITLE`, `BODY`, `BADGE`, `SOURCE`).
-static func _station_key(id: StringName, part: String) -> StringName:
+## Clave de una parte de la tarjeta (`TITLE`, `BODY`, `BADGE`, `SOURCE`).
+static func _spot_key(id: StringName, part: String) -> StringName:
 	return StringName("PCH_ST_%s_%s" % [String(id).to_upper(), part])
 
 
 ## Desactiva el tour cuando el evento toma el mando.
 func _set_tour_active(value: bool) -> void:
 	_tour_active = value
-	for station: Station in _tour_stations:
-		station.set_enabled(value)
-	if hud != null and not value:
-		hud.show_tour_compass(false)
 
 
 ## Música de la introducción, para las pruebas.
@@ -708,6 +645,54 @@ func _build_clouds() -> void:
 	dome.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	dome.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	add_child(dome)
+
+
+## Polvo en suspensión sobre la plaza: motas pequeñas y lentas que dan aire de
+## lugar habitado y seco. Sin textura externa ni luz propia.
+func _build_dust() -> void:
+	var particles: GPUParticles3D = GPUParticles3D.new()
+	particles.name = "Dust"
+	particles.amount = 160
+	particles.lifetime = 10.0
+	particles.preprocess = 5.0
+	particles.local_coords = false
+	particles.visibility_aabb = AABB(Vector3(-34.0, -2.0, -34.0), Vector3(68.0, 18.0, 68.0))
+	var process: ParticleProcessMaterial = ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	process.emission_box_extents = Vector3(24.0, 3.0, 24.0)
+	process.direction = Vector3(0.25, 0.05, -0.1)
+	process.spread = 40.0
+	process.initial_velocity_min = 0.03
+	process.initial_velocity_max = 0.14
+	process.gravity = Vector3(0.0, -0.01, 0.0)
+	process.scale_min = 0.5
+	process.scale_max = 1.2
+	process.color = Color(1.0, 0.94, 0.82, 1.0)
+	var gradient: Gradient = Gradient.new()
+	gradient.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
+	gradient.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
+	var texture: GradientTexture2D = GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	texture.width = 32
+	texture.height = 32
+	var mesh: QuadMesh = QuadMesh.new()
+	mesh.size = Vector2(0.06, 0.06)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.albedo_texture = texture
+	material.albedo_color = Color(1.0, 0.96, 0.88, 0.16)
+	material.disable_receive_shadows = true
+	mesh.material = material
+	particles.draw_pass_1 = mesh
+	particles.process_material = process
+	particles.position = Vector3(0.0, 4.0, 0.0)
+	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(particles)
 
 
 ## Dos anillos de montañas lejanas, uno delante del otro. Son solo siluetas:
@@ -950,11 +935,14 @@ func _build_llacta() -> void:
 static func neighbor_routes(one: NpcActor, two: NpcActor, three: NpcActor) -> Dictionary[NpcActor, PackedVector3Array]:
 	var routes: Dictionary[NpcActor, PackedVector3Array] = {}
 	if one != null:
-		routes[one] = PackedVector3Array([one.position, Vector3(16.0, 0.0, 1.0), Vector3(16.0, 0.0, -5.0), Vector3(9.0, 0.0, -2.0)])
+		routes[one] = PackedVector3Array([one.position, Vector3(14.0, 0.0, 5.0), Vector3(14.0, 0.0, 13.0),
+			Vector3(7.0, 0.0, 14.0), Vector3(5.0, 0.0, 8.0)])
 	if two != null:
-		routes[two] = PackedVector3Array([two.position, Vector3(6.0, 0.0, -9.0), Vector3(-5.0, 0.0, -9.0), Vector3(2.0, 0.0, -3.0)])
+		routes[two] = PackedVector3Array([two.position, Vector3(14.0, 0.0, -8.0), Vector3(6.0, 0.0, -12.0),
+			Vector3(-4.0, 0.0, -12.0), Vector3(-6.0, 0.0, -5.0), Vector3(2.0, 0.0, -3.0)])
 	if three != null:
-		routes[three] = PackedVector3Array([three.position, Vector3(12.0, 0.0, 12.0), Vector3(4.0, 0.0, 12.0)])
+		routes[three] = PackedVector3Array([three.position, Vector3(10.0, 0.0, 15.0), Vector3(12.0, 0.0, 18.0),
+			Vector3(4.0, 0.0, 19.0), Vector3(2.0, 0.0, 14.0)])
 	return routes
 
 

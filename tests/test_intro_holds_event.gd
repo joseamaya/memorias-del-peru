@@ -66,9 +66,10 @@ func test_intro_holds_event_clock() -> bool:
 	ok = ok and event.has_begun() and event.is_processing() and event.phase == MessengerEvent.Phase.IDLE
 	ok = ok and hud.is_showing_subtitle()
 	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
-	# Los controles aparecen al tomar el control (ADR-0024).
+	# Los controles aparecen al tomar el control (ADR-0024). El tour es libre:
+	# no hay objetivo de estación; el del evento llega con la llegada.
 	ok = ok and hud.is_showing_hint()
-	ok = ok and hud.is_showing_objective()
+	ok = ok and not hud.is_showing_objective()
 	# La última toma termina en los ojos del jugador y su cámara vuelve a mandar.
 	ok = ok and player_camera.is_current() and not director.get_camera().is_current()
 	ok = ok and director.get_camera().global_transform.origin.distance_to(player_camera.global_transform.origin) < 0.01

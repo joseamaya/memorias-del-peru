@@ -66,4 +66,5 @@ Plantilla:
 | [0032](0032-objetivo-del-mirador.md) | Objetivo del mirador y anuncio de la espera | Aceptado (amplía ADR-0030) |
 | [0033](0033-duracion-del-slice.md) | Duración del vertical slice: fragmento de 2–3 minutos | Aceptado (reemplaza a ADR-0009) |
 | [0034](0034-una-campana-y-museo.md) | Una campaña y modelo de museo explorable | Aceptado (ampliado por ADR-0035) |
-| [0035](0035-tour-libre.md) | Tour libre: estelas legibles, sin umbral y con guía opcional | Aceptado (amplía ADR-0034) |
+| [0035](0035-tour-libre.md) | Tour libre: estelas legibles, sin umbral y con guía opcional | Reemplazado por ADR-0036 |
+| [0036](0036-leer-en-el-mundo.md) | Leer en el mundo: sin estelas, contador ni brújula | Aceptado (reemplaza a ADR-0035) |

@@ -196,6 +196,11 @@ func _process(delta: float) -> bool:
 			_apply_promo_profile()
 	if frames < 3 or closing:
 		return false
+	# Las tarjetas de lugar se abren solas: el guion las cierra para seguir.
+	# Cerrar una tarjeta que no está abierta no hace nada.
+	var hud: Node = world.get_node_or_null("UILayer/HUD")
+	if hud != null:
+		hud.call("close_tour_card")
 	if promo:
 		_hide_promo_hud()
 	# Se espera a que terminen las tarjetas, sin pulsar nada, como quien lee.
