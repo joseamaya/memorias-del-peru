@@ -47,6 +47,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | [docs/07_convenciones_historicas.md](docs/07_convenciones_historicas.md) | Clasificación de contenido histórico y fuentes |
 | [docs/08_entorno_y_rendimiento.md](docs/08_entorno_y_rendimiento.md) | Entorno atmosférico, perfiles gráficos y métricas |
 | [docs/adr/](docs/adr/) | Registro de decisiones arquitectónicas |
+| [docs/bitacora.md](docs/bitacora.md) | Cambios que no llegan al umbral de un ADR |
 | [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Documentación de la campaña Pachacútec |
 
 ## Validación rápida

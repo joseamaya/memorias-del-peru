@@ -1,11 +1,20 @@
 # Registro de decisiones arquitectónicas (ADR)
 
-Un ADR documenta una decisión significativa: contexto, opciones, decisión y consecuencias. Se crea cuando:
+Un ADR documenta una decisión significativa: contexto, opciones, decisión y consecuencias. Se crea solo cuando se cumple **al menos uno** de estos criterios:
 
-- Se cambia un contrato de Core o una regla de dependencia.
-- Se añade una dependencia externa (addon, herramienta).
-- Se desvía de la especificación o de estos documentos.
-- Se elige entre alternativas técnicas con impacto duradero.
+- Se añade o cambia una dependencia externa o una licencia.
+- Se cambia un contrato de Core, una regla de dependencia entre capas o un formato de datos.
+- Es caro de revertir (más de una hora de trabajo) o afecta a varios sistemas a la vez.
+- Se desvía de `docs/00`–`08`, de este archivo o de `AGENTS.md`.
+- Dentro de seis meses alguien preguntaría «¿por qué se hizo así?» y la respuesta no estaría en el código ni en el historial del alcance.
+
+No se crea un ADR para:
+
+- Elecciones reversibles de contenido o presentación: música, textos, disposición, ritmo.
+- Ajustes que se deshacen en menos de una hora.
+- Iteraciones de una decisión todavía abierta: se escribe uno al final, con las alternativas consideradas.
+
+Límites: una página (unas 60 líneas) y **un ADR por decisión**, no por iteración. Lo que no llega a ese umbral se anota en la [bitácora](../bitacora.md).
 
 Estados: **Propuesto** → **Aceptado** → (opcionalmente) **Reemplazado por ADR-XXXX**. Un ADR aceptado no se edita en su fondo; se reemplaza con uno nuevo.
 
