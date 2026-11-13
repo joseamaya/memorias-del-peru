@@ -282,14 +282,14 @@ nueve textos, que pasan a diálogo y a la «Memoria» del diario
 
 ### Criterios de aceptación
 
-- [ ] Los cinco sistemas tienen pruebas unitarias en verde.
-- [ ] El acto I se juega de principio a fin: despertar, tres encargos, mensajero y partida.
-- [ ] El diálogo presenta opciones con condiciones y efectos comprobables.
-- [ ] El diario guarda encargos y entradas de Memoria sin marcadores en el mundo.
+- [x] Los cinco sistemas tienen pruebas unitarias en verde. *(2026-11-13: `test_character_state`, `test_inventory`, `test_dialogue`, `test_journal` y `test_combat`.)*
+- [ ] El acto I se juega de principio a fin: despertar, tres encargos, mensajero y partida. *(Parcial: `test_act_one_tasks` cubre los encargos y el disparo; falta la partida completa automatizada.)*
+- [x] El diálogo presenta opciones con condiciones y efectos comprobables. *(2026-11-13: `test_dialogue` y `test_world_dialogue`.)*
+- [x] El diario guarda encargos y entradas de Memoria sin marcadores en el mundo. *(2026-11-13: `test_journal`, `test_journal_panel` y `test_world_dialogue`.)*
 - [ ] El sandbox de combate permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo.
-- [ ] No quedan tarjetas automáticas ni zonas de lectura.
-- [ ] Todo texto visible pasa por `tr()`; ningún literal en código.
-- [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`.
+- [x] No quedan tarjetas automáticas ni zonas de lectura. *(2026-11-13: `test_act_one_tasks` comprueba que no hay `TourCard` ni `Spot*`.)*
+- [x] Todo texto visible pasa por `tr()`; ningún literal en código. *(2026-11-13: pruebas de diálogo, diario y encargos.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 139 pruebas en verde.)*
 
 ---
 
@@ -354,7 +354,7 @@ nueve textos, que pasan a diálogo y a la «Memoria» del diario
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante.
-- [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`.
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 139 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.

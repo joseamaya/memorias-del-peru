@@ -195,8 +195,7 @@ const RAMP_COLOR: Color = Color(0.62, 0.56, 0.47, 1.0)
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
-## Objetivo visible del evento narrativo. El tour de estaciones tiene su propio
-## puntero en el HUD; este enum solo cubre las fases del mensajero.
+## Objetivo visible del evento narrativo. Solo cubre las fases del mensajero.
 enum Objective { LISTEN, PUTUTU, LEAVE, NONE }
 
 const OBJECTIVE_KEYS: Array[StringName] = [
@@ -205,24 +204,25 @@ const OBJECTIVE_KEYS: Array[StringName] = [
 	&"PCH_OBJ_LEAVE",
 ]
 
-## Museo explorable (ADR-0036): zonas invisibles para leer en el mundo. No hay
-## marcadores, contador ni brújula; la tarjeta se abre al estar en el sitio o al
-## hacer la acción.
-const SPOT_IDS: Array[StringName] = [
-	&"plaza", &"telar", &"chicha", &"vivienda", &"terraza", &"corral", &"mirador",
+## Encargos del acto I. El tercero dispara la llegada del mensajero.
+const TASK_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/task_point.tscn"
+const TASK_IDS: Array[StringName] = [&"agua", &"maiz", &"telar", &"pirca"]
+const TASK_PROMPTS: Array[StringName] = [
+	&"PCH_TASK_AGUA", &"PCH_TASK_MAIZ", &"PCH_TASK_TELAR", &"PCH_TASK_PIRCA",
 ]
-const SPOT_CENTERS: Array[Vector3] = [
-	Vector3(0.0, 0.0, 0.0),
-	Vector3(-11.0, 0.0, 8.0),
-	Vector3(19.0, 0.0, 7.5),
-	Vector3(-19.0, 0.0, 7.5),
-	Vector3(36.0, 0.8, 0.0),
-	Vector3(-31.0, 0.0, -9.0),
-	Vector3(52.0, 2.45, 0.0),
+const TASK_DONE_KEYS: Array[StringName] = [
+	&"PCH_TASK_AGUA_DONE", &"PCH_TASK_MAIZ_DONE", &"PCH_TASK_TELAR_DONE", &"PCH_TASK_PIRCA_DONE",
 ]
-const SPOT_RADII: Array[float] = [9.0, 3.0, 3.2, 3.2, 6.0, 4.5, 5.0]
-## Capa del cuerpo del jugador, para que las zonas lo detecten.
-const PLAYER_LAYER: int = 2
+const TASK_POSITIONS: Array[Vector3] = [
+	Vector3(14.0, 0.0, 8.0),
+	Vector3(-16.0, 0.0, 8.0),
+	Vector3(-12.0, 0.0, 9.0),
+	Vector3(-27.5, 0.0, -12.0),
+]
+## Modelo visible de cada encargo; vacío si el objeto ya está en el mundo.
+const TASK_MODELS: Array[String] = [MODEL_PROP_JAR, MODEL_PEDESTAL, "", ""]
+## Encargos necesarios para que llegue el mensajero.
+const TASKS_REQUIRED: int = 3
 
 ## Argumentos de desarrollo (después de `--`): `--skip-intro` entra directo al
 ## mundo y `--spawn=spawn|plaza|mirador` elige el punto de aparición.
@@ -263,11 +263,6 @@ var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
 var _objective: int = -1
 var _contact_shadow_material: StandardMaterial3D = null
-var _tour_visited: Dictionary[StringName, bool] = {}
-var _tour_active: bool = true
-## Lugar de la tarjeta abierta, para dejar constancia en el registro de sesión.
-var _reading_spot: StringName = &""
-
 ## Núcleo RPG de la partida. Vive en el jugador y no conoce la campaña.
 var character: CharacterState = null
 var inventory: Inventory = null
@@ -277,6 +272,9 @@ var dialogue: DialogueRunner = null
 var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 var _dialogue_choices: Array[StringName] = []
+
+var _tasks_done: Dictionary[StringName, bool] = {}
+var _oficio: StringName = &""
 
 
 func _ready() -> void:
@@ -298,11 +296,9 @@ func _ready() -> void:
 	player.global_position = _debug_spawn_position()
 	hud.bind(player, player.stamina)
 	_setup_rpg()
-	_build_tour()
-	_connect_tour_actions()
+	_setup_act_one()
 	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
-	hud.tour_card_closed.connect(_on_tour_card_closed)
 	if with_intro:
 		_start_intro()
 
@@ -427,96 +423,6 @@ func _process(delta: float) -> void:
 	advance_intro_music(delta)
 
 
-## Crea una zona invisible por lugar de lectura. No hay objetos visibles: la
-## tarjeta se abre al entrar, como si el propio sitio llamara la atención.
-func _build_tour() -> void:
-	for index: int in range(SPOT_IDS.size()):
-		var area: Area3D = Area3D.new()
-		area.name = "Spot" + String(SPOT_IDS[index]).capitalize()
-		area.collision_layer = 0
-		area.collision_mask = PLAYER_LAYER
-		area.monitoring = true
-		area.monitorable = false
-		var collider: CollisionShape3D = CollisionShape3D.new()
-		var sphere: SphereShape3D = SphereShape3D.new()
-		sphere.radius = SPOT_RADII[index]
-		collider.shape = sphere
-		area.add_child(collider)
-		area.position = SPOT_CENTERS[index]
-		add_child(area)
-		area.body_entered.connect(_on_spot_entered.bind(SPOT_IDS[index]))
-
-
-## Conecta las acciones que abren tarjeta sin zona: beber y dejar la ofrenda.
-func _connect_tour_actions() -> void:
-	var quero: QueroChicha = $QueroChicha as QueroChicha
-	if quero != null and not quero.drank.is_connected(_on_quero_drank):
-		quero.drank.connect(_on_quero_drank)
-	var ofrenda: OfrendaPachamama = $OfrendaPachamama as OfrendaPachamama
-	if ofrenda != null and not ofrenda.offered.is_connected(_on_offering_left):
-		ofrenda.offered.connect(_on_offering_left)
-
-
-func _on_spot_entered(body: Node3D, spot_id: StringName) -> void:
-	if body != player:
-		return
-	visit_spot(spot_id)
-
-
-func _on_quero_drank() -> void:
-	visit_spot(&"quero")
-
-
-func _on_offering_left() -> void:
-	visit_spot(&"ofrenda")
-
-
-## Abre la tarjeta de un lugar o acción, una sola vez. El mirador pide además
-## la llegada del mensajero (ADR-0036).
-func visit_spot(spot_id: StringName) -> void:
-	if not _tour_active or _tour_visited.has(spot_id) or hud == null:
-		return
-	if hud.is_tour_card_open():
-		return
-	_tour_visited[spot_id] = true
-	_reading_spot = spot_id
-	SessionLog.mark(&"spot", String(spot_id))
-	_show_tour_card(spot_id)
-	if spot_id != &"mirador":
-		return
-	var event: MessengerEvent = $EventController as MessengerEvent
-	if event != null:
-		event.announce_wait()
-		event.request_arrival()
-
-
-## Abre la tarjeta del lugar y detiene al jugador mientras lee.
-func _show_tour_card(spot_id: StringName) -> void:
-	var title_key: StringName = _spot_key(spot_id, "TITLE")
-	var body_key: StringName = _spot_key(spot_id, "BODY")
-	var badge_key: StringName = _spot_key(spot_id, "BADGE")
-	var source_key: StringName = _spot_key(spot_id, "SOURCE")
-	hud.show_tour_card(tr(String(title_key)), tr(String(body_key)), tr(String(badge_key)), tr(String(source_key)))
-	player.process_mode = Node.PROCESS_MODE_DISABLED
-
-
-func _on_tour_card_closed() -> void:
-	player.process_mode = Node.PROCESS_MODE_INHERIT
-	if _reading_spot != &"":
-		SessionLog.mark(&"spot_closed", String(_reading_spot))
-		_reading_spot = &""
-
-
-## Clave de una parte de la tarjeta (`TITLE`, `BODY`, `BADGE`, `SOURCE`).
-static func _spot_key(id: StringName, part: String) -> StringName:
-	return StringName("PCH_ST_%s_%s" % [String(id).to_upper(), part])
-
-
-## Desactiva el tour cuando el evento toma el mando.
-func _set_tour_active(value: bool) -> void:
-	_tour_active = value
-
-
 ## Música de la introducción, para las pruebas.
 func get_intro_music() -> AudioStreamPlayer:
 	return _intro_music
@@ -587,7 +493,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("journal"):
 		if hud == null or journal == null or _end_card_shown or is_intro_playing():
 			return
-		if hud.is_dialogue_open() or hud.is_tour_card_open():
+		if hud.is_dialogue_open():
 			return
 		if hud.is_journal_open():
 			hud.hide_journal()
@@ -1018,6 +924,91 @@ func _setup_rpg() -> void:
 	hud.dialogue_advanced.connect(_on_dialogue_advanced)
 	hud.dialogue_choice.connect(_on_dialogue_choice)
 	hud.journal_closed.connect(_on_journal_closed)
+	var quero: QueroChicha = $QueroChicha as QueroChicha
+	if quero != null and not quero.drank.is_connected(_on_quero_memory):
+		quero.drank.connect(_on_quero_memory)
+	var ofrenda: OfrendaPachamama = $OfrendaPachamama as OfrendaPachamama
+	if ofrenda != null and not ofrenda.offered.is_connected(_on_offering_memory):
+		ofrenda.offered.connect(_on_offering_memory)
+
+
+## Crea los cuatro puntos de encargo y los apunta en el diario.
+func _setup_act_one() -> void:
+	if journal == null:
+		return
+	for index: int in range(TASK_IDS.size()):
+		journal.add_quest(
+			StringName("q_" + String(TASK_IDS[index])),
+			StringName("PCH_Q_%s_TITLE" % String(TASK_IDS[index]).to_upper()),
+			StringName("PCH_Q_%s_BODY" % String(TASK_IDS[index]).to_upper())
+		)
+	var packed: PackedScene = load(TASK_SCENE) as PackedScene
+	if packed == null:
+		return
+	for index: int in range(TASK_IDS.size()):
+		var instance: Node = packed.instantiate()
+		var task: TaskPoint = instance as TaskPoint
+		var body: Node3D = instance as Node3D
+		if task == null or body == null:
+			instance.free()
+			continue
+		task.name = "Task" + String(TASK_IDS[index]).capitalize()
+		task.task_id = TASK_IDS[index]
+		task.prompt_key = TASK_PROMPTS[index]
+		var point: Vector3 = TASK_POSITIONS[index]
+		body.position = Vector3(point.x, _height_at(point.x, point.z) + 0.9, point.z)
+		if not TASK_MODELS[index].is_empty():
+			var model_scene: PackedScene = load(MODEL_DIR + TASK_MODELS[index]) as PackedScene
+			if model_scene != null:
+				var model: Node3D = model_scene.instantiate() as Node3D
+				if model != null:
+					model.position = Vector3(0.0, -0.9, 0.0)
+					SurfaceMaterials.apply_to_model(model)
+					task.add_child(model)
+		add_child(task)
+		task.completed.connect(_on_task_completed)
+
+
+## Registra un encargo cumplido. El primero fija el oficio; el tercero llama al
+## mensajero (biblia de la campaña §4).
+func _on_task_completed(task_id: StringName) -> void:
+	if _tasks_done.has(task_id):
+		return
+	_tasks_done[task_id] = true
+	if journal != null:
+		journal.complete_quest(StringName("q_" + String(task_id)))
+	if _oficio == &"":
+		_oficio = task_id
+		if character != null:
+			character.register_skill_use(_skill_for_task(task_id), 3)
+	if hud != null:
+		hud.show_hint(tr("PCH_TASK_DONE") % _tasks_done.size(), 3.0)
+		hud.show_subtitle(tr(String(_task_done_key(task_id))), 0.0)
+	SessionLog.mark(&"task", String(task_id))
+	if _tasks_done.size() < TASKS_REQUIRED:
+		return
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null and event.phase == MessengerEvent.Phase.IDLE:
+		event.start()
+
+
+## Habilidad que entrena cada encargo.
+static func _skill_for_task(task_id: StringName) -> StringName:
+	match task_id:
+		&"agua":
+			return &"monte"
+		&"maiz":
+			return &"oficio"
+		&"telar":
+			return &"palabra"
+		&"pirca":
+			return &"monte"
+	return &"oficio"
+
+
+static func _task_done_key(task_id: StringName) -> StringName:
+	var index: int = TASK_IDS.find(task_id)
+	return TASK_DONE_KEYS[index] if index >= 0 else &""
 
 
 ## Conversación de la tejedora: una pregunta y una entrada de Memoria.
@@ -1056,7 +1047,7 @@ func _build_weaver_dialogue() -> DialogueGraph:
 func _on_npc_dialogue_requested(actor: Node3D, graph: DialogueGraph) -> void:
 	if hud == null or dialogue == null or graph == null:
 		return
-	if hud.is_tour_card_open() or hud.is_dialogue_open():
+	if hud.is_dialogue_open():
 		return
 	if not dialogue.start(graph):
 		return
@@ -1115,6 +1106,28 @@ func _on_journal_closed() -> void:
 	player.process_mode = Node.PROCESS_MODE_INHERIT
 
 
+func _on_quero_memory() -> void:
+	_unlock_memory(&"mem_quero", &"PCH_ST_QUERO_TITLE", &"PCH_ST_QUERO_BODY", &"A", &"PCH-004")
+
+
+func _on_offering_memory() -> void:
+	_unlock_memory(&"mem_ofrenda", &"PCH_ST_OFRENDA_TITLE", &"PCH_ST_OFRENDA_BODY", &"H", &"PCH-012")
+
+
+func _unlock_memory(
+	entry_id: StringName,
+	title_key: StringName,
+	body_key: StringName,
+	badge: StringName,
+	source_key: StringName
+) -> void:
+	if journal == null:
+		return
+	if journal.add_memory(entry_id, title_key, body_key, badge, source_key):
+		if hud != null:
+			hud.show_hint(tr("UI_JOURNAL_UPDATED"), 3.0)
+
+
 func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
 	if hud != null:
 		hud.show_subtitle(tr(String(line_key)), 0.0)
@@ -1154,8 +1167,6 @@ static func murmur_plays_in(phase: int) -> bool:
 func _on_event_phase_changed(phase: int) -> void:
 	if phase >= 0 and phase < EVENT_PHASE_NAMES.size():
 		SessionLog.mark(&"phase", EVENT_PHASE_NAMES[phase])
-	if phase == MessengerEvent.Phase.ARRIVAL:
-		_set_tour_active(false)
 	_sync_objective_with_phase(phase)
 	if murmur_plays_in(phase):
 		_start_murmur()

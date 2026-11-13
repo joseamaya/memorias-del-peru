@@ -72,3 +72,20 @@ PCH_NPC_WEAVER,Tejedora
 PCH_DLG_WEAVER_ASK,¿Cómo se tiñe?
 PCH_DLG_WEAVER_DYE,"Mira la faja: cada franja se piensa antes de empezar. El color viene de plantas y de la cochinilla; no es adorno, dice de dónde viene la persona."
 PCH_DLG_WEAVER_LEAVE,Otro día será.
+PCH_TASK_AGUA,Acarrear agua
+PCH_TASK_MAIZ,Moler maíz
+PCH_TASK_TELAR,Sostener el telar
+PCH_TASK_PIRCA,Cerrar la pirca
+PCH_TASK_AGUA_DONE,"Llevas el agua a la casa. El cántaro pesa menos de lo que parecía."
+PCH_TASK_MAIZ_DONE,El maíz queda molido para la chicha de mediodía.
+PCH_TASK_TELAR_DONE,Sostienes el telar mientras la trama se cruza.
+PCH_TASK_PIRCA_DONE,"La piedra encaja. El corral queda cerrado."
+PCH_TASK_DONE,Encargo cumplido · %d de 3
+PCH_Q_AGUA_TITLE,El agua de la mañana
+PCH_Q_AGUA_BODY,Lleva agua del cántaro del este a la casa antes de que suba el sol.
+PCH_Q_MAIZ_TITLE,El maíz de la chicha
+PCH_Q_MAIZ_BODY,Muele el maíz en la piedra junto a la casa del oeste.
+PCH_Q_TELAR_TITLE,El telar de la tejedora
+PCH_Q_TELAR_BODY,Sostén el telar de la tejedora mientras cruza la trama.
+PCH_Q_PIRCA_TITLE,La pirca del corral
+PCH_Q_PIRCA_BODY,Cierra el hueco del corral del noroeste.

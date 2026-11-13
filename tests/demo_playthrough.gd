@@ -197,11 +197,9 @@ func _process(delta: float) -> bool:
 			_apply_promo_profile()
 	if frames < 3 or closing:
 		return false
-	# Las tarjetas de lugar se abren solas: el guion las cierra para seguir.
-	# Cerrar una tarjeta que no está abierta no hace nada.
+	# Las conversaciones se cierran solas para que el guion siga.
 	var hud: Node = world.get_node_or_null("UILayer/HUD")
 	if hud != null:
-		hud.call("close_tour_card")
 		var panel: DialoguePanel = hud.get_node_or_null("DialoguePanel") as DialoguePanel
 		if panel != null and panel.is_open():
 			var count: int = panel.get_choice_count()
@@ -211,7 +209,7 @@ func _process(delta: float) -> bool:
 				panel.advanced.emit()
 	if promo:
 		_hide_promo_hud()
-	# Se espera a que terminen las tarjetas, sin pulsar nada, como quien lee.
+	# Se espera a que termine la introducción, sin pulsar nada.
 	if world.call("is_intro_playing"):
 		saw_intro = true
 		return false

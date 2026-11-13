@@ -24,9 +24,6 @@ const END_ALPHA: float = 0.85
 const TITLE_FADE_IN: float = 0.8
 const TITLE_FADE_OUT: float = 1.2
 
-## Se emite al cerrar la tarjeta de estación; la escena que la abrió recupera
-## el control del jugador.
-signal tour_card_closed
 ## Se emite al avanzar una línea de diálogo sin opciones.
 signal dialogue_advanced
 ## Se emite al elegir una opción de diálogo, por su índice visible.
@@ -43,7 +40,6 @@ signal journal_closed
 @onready var title_label: Label = $TitleLabel
 @onready var hint_label: Label = $HintLabel
 @onready var objective_label: Label = $ObjectiveLabel
-@onready var tour_card: TourCard = $TourCard
 @onready var dialogue_panel: DialoguePanel = $DialoguePanel
 @onready var journal_panel: JournalPanel = $JournalPanel
 @onready var pause_panel: Control = $PausePanel
@@ -70,7 +66,6 @@ func _ready() -> void:
 	objective_label.visible = false
 	pause_panel.visible = false
 	end_panel.visible = false
-	tour_card.closed.connect(_on_tour_card_closed)
 	dialogue_panel.advanced.connect(_on_dialogue_advanced)
 	dialogue_panel.choice_selected.connect(_on_dialogue_choice)
 	journal_panel.closed.connect(_on_journal_closed)
@@ -242,26 +237,6 @@ func is_showing_objective() -> bool:
 	return objective_label.visible
 
 
-## Abre la tarjeta de una estación.
-func show_tour_card(title: String, body: String, badge: String, source: String) -> void:
-	tour_card.open(title, body, badge, source)
-
-
-## Indica si la tarjeta de estación está abierta.
-func is_tour_card_open() -> bool:
-	return tour_card.is_open()
-
-
-## Cierra la tarjeta de estación si estaba abierta.
-func close_tour_card() -> void:
-	tour_card.close()
-
-
-## Tarjeta de estación, para las pruebas.
-func get_tour_card() -> TourCard:
-	return tour_card
-
-
 ## Abre el panel de diálogo con textos ya traducidos.
 func show_dialogue(speaker: String, text: String, choices: Array[String]) -> void:
 	dialogue_panel.open(speaker, text, choices)
@@ -319,12 +294,6 @@ func _on_journal_closed() -> void:
 	journal_closed.emit()
 
 
-func _on_tour_card_closed() -> void:
-	tour_card_closed.emit()
-
-
-## Muestra una indicación breve (por ejemplo, los controles) con fundidos,
-## durante [param seconds] en total.
 func show_hint(text: String, seconds: float) -> void:
 	if text.is_empty() or seconds <= 0.0:
 		return

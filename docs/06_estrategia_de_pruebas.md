@@ -143,8 +143,6 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_quit_stops_audio` | `GameManager` desactiva `auto_accept_quit`, pausa el árbol antes de cerrar y `stop_audio_in()` detiene los reproductores bajo un nodo, incluido el propio nodo, y suelta sus flujos |
 | `test_session_log` | El registro de sesión valida los códigos, escribe cabecera y marcas en orden con el tiempo transcurrido, no abre una segunda sesión y no escribe nada fuera de una sesión (alcance v4.16) |
 | `test_hud_objective` | La línea de objetivo aparece con texto traducido, cambia de texto y se retira sin dejar rastro |
-| `test_tour_card` | La tarjeta de estación muestra título, cuerpo, sello y fuente, se cierra y emite `closed` |
-| `test_world_tour` | El mundo crea siete zonas de lugar, no hay objetivo ni contador al empezar, entrar en una zona o beber del quero abre la tarjeta y desactiva al jugador, las nueve tarjetas se abren en orden, la segunda visita no las reabre y llegar al mirador abre el evento (ADR-0036, ADR-0037) |
 
 ### Pruebas de la Fase 6 (núcleo RPG)
 
@@ -154,8 +152,8 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_inventory` | Ocho huecos, tres equipados, apilar, retirar, contar y usar consumibles; sin perder objetos al llenarse |
 | `test_dialogue` | Nodos con condiciones por bandera, objeto, habilidad y reputación; efectos y opciones bloqueadas |
 | `test_journal` | Encargos activos y cumplidos; entradas de Memoria con clave, sello y fuente; sin duplicados |
-| `test_combat_sling` | Carga, proyectil, daño según habilidad, munición y moral enemiga con huida |
-| `test_act_one_playthrough` | El acto I se juega de principio a fin: tres encargos, mensajero y partida, sin bloqueos |
+| `test_combat` | Carga, daño según habilidad, bloqueo, aliento, aturdimiento y moral enemiga con huida |
+| `test_act_one_tasks` | Cuatro encargos, oficio, diario, memoria del quero y la ofrenda, y mensajero al tercero; sin tarjetas ni zonas de museo |
 | `test_dialogue_panel` | El panel muestra hablante, línea y opciones; elegir emite el índice; E avanza sin opciones |
 | `test_journal_panel` | El diario lista encargos y Memoria, muestra detalle con sello y fuente, y se cierra |
 | `test_world_dialogue` | Hablar con la tejedora abre el diálogo, la opción deja una entrada de Memoria y J abre y cierra el diario |
