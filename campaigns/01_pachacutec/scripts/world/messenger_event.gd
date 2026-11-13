@@ -76,16 +76,12 @@ const MEETING_ARC_START_DEGREES: float = 150.0
 ## Recorrido del arco: deja 120° libres al sur (hacia el jugador).
 const MEETING_ARC_SWEEP_DEGREES: float = 240.0
 
-## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0032;
-## antes, 75 s en ADR-0013, 120 s en ADR-0012 y 240 s en ADR-0009).
-##
-## Es un respaldo: si el jugador completa las tareas de la llacta, sube al
-## mirador y vuelve a la plaza, el mundo pide la llegada con
-## [method request_arrival].
-@export var arrival_delay: float = 80.0
+## Tiempo de partida antes de que el mensajero se ponga en camino (ADR-0034;
+## en el museo es un respaldo tardío: quien recorre las estaciones lo adelanta
+## con [method request_arrival]).
+@export var arrival_delay: float = 360.0
 ## Espera máxima, una vez cumplido el reloj, a que el jugador esté en la plaza:
-## el mensajero sale como tarde a los 100 s. Mientras tanto, un aviso llama a
-## la plaza.
+## el mensajero sale como tarde a los 380 s (6,3 min).
 @export var arrival_grace: float = 20.0
 @export var arrival_radius: float = 22.0
 ## Radio más estrecho para adelantar la llegada por acción del jugador: pide la

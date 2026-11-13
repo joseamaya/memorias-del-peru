@@ -51,6 +51,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.19 | Aplica [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la validación pasa a ser del autor, con tres pasadas registradas y umbrales medibles; la métrica 5 de audiencia queda declarada «no verificada» y recuperable con una demo pública (§9.1–§9.5 y §10). Pedida el 2026-11-13. |
 | v4.20 | Aplica [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) tras la autovalidación del 2026-11-13 (mediana de 86 s): cuarto objetivo del mirador entre la conversación y la espera; el aviso de espera se emite al llegar allí y la llegada se pide desde el mirador, con respaldo a 80 s + 20 s; cierre sin fugas de audio (árbol en pausa y flujos liberados). Registro de la validación en [sesiones/](sesiones/autovalidacion-2026-11-13.md) (§2.2, §5, §6.4, §9 y §10). Pedida el 2026-11-13. |
 | v4.21 | Aplica [ADR-0033](../../../docs/adr/0033-duracion-del-slice.md): la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
+| v5.0 | Aplica [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md): la campaña se organiza como museo explorable, con nueve estaciones, tarjeta, contador y brújula; el evento sale tras cinco estaciones con el mirador y la cadena de objetivos anterior queda sustituida (§2.2, §5, §6.4 y §12). Pedida el 2026-11-13. |
 
 ## 1. Objetivo
 
@@ -93,8 +94,8 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 |---|---|---|---|
 | título | se lanza el juego | pantalla de título de `core/` con Comenzar y Salir (ADR-0024) | — |
 | introducción | se pulsa Comenzar | cuatro tarjetas (ADR-0023, ADR-0024 y ADR-0025): la nota histórica sobre negro; los Andes y la llacta sobre tomas del juego; el valle del Cusco sobre un mapa propio; el jugador no se mueve y el reloj del mensajero no corre; `E` pasa a la siguiente | «Esta historia se basa en crónicas coloniales…» / «Los Andes, siglo XV.» / «En el valle del Cusco gobiernan los incas…» / «Tú vives en una llacta…» |
-| `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero baja por el camino norte desde los 18 s y se detiene a las puertas de la plaza; los vecinos pasean; se puede hablar con seis personajes; el cuarto objetivo lleva al mirador | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; al llegar al mirador, “El sol sube…”; a los 80 s, si el jugador no está en la plaza, “Desde la plaza llaman…” |
-| `ARRIVAL` | el jugador completó quero, ofrenda, conversación y mirador, y vuelve a menos de 10 m de la plaza; o pasan 80 s **y** está en la plaza; o 100 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
+| `IDLE` | termina la introducción | un vecino recibe al jugador en el camino sur; el mensajero baja por el camino norte desde los 18 s y se detiene a las puertas de la plaza; los vecinos pasean; se puede hablar con seis personajes; el tour propone las nueve estaciones | “Hoy se espera a un mensajero del Cusco…”; al acercarse al vecino, “¡Llegas a tiempo!…”; al llegar al mirador, “El sol sube…”; a los 360 s, si el jugador no está en la plaza, “Desde la plaza llaman…” |
+| `ARRIVAL` | el jugador visitó cinco estaciones con el mirador entre ellas y vuelve a menos de 10 m de la plaza; o pasan 360 s **y** está en la plaza; o 380 s en total | el mensajero corre hasta la plaza; los vecinos dejan el paseo y el grupo se acerca al punto de reunión | — |
 | `MESSAGE` | el mensajero llega | el mensajero se detiene y el grupo termina de formar un anillo a su alrededor; el curaca y los principales escuchan | “¡Los chancas marchan sobre el Cusco!…” / “Cusi Yupanqui llama a los ayllus.” |
 | `CALL` | termina `MESSAGE` | **el pututu se arma**; si el jugador no lo toca en 60 s, lo toca el curaca | “Los hombres esperan. El pututu puede convocar.” |
 | `DEPARTURE` | suena el pututu | el mensajero, el curaca y los principales parten por el camino norte; los vecinos se quedan (v4.8) | “El curaca y los hombres principales parten hacia el Cusco.” / “La llacta queda en silencio…” |
@@ -278,11 +279,11 @@ Todas son sustitutos declarados (2026-11-11). La versión definitiva prefiere gr
 | `PCH_NARR_CALL` | empieza la llamada | Los hombres esperan. El pututu puede convocar. |
 | `PCH_NARR_CLOSING_1` | parte el grupo | El curaca y los principales parten hacia el Cusco. |
 | `PCH_NARR_CLOSING_2` | tras la anterior | La llacta queda en silencio. |
-| `PCH_OBJ_QUERO` | objetivo inicial | Bebe del quero de chicha |
-| `PCH_OBJ_OFFERING` | tras beber | Deja una ofrenda a la Pachamama |
-| `PCH_OBJ_TALK` | tras la ofrenda | Habla con la gente de la llacta |
-| `PCH_OBJ_MIRADOR` | tras la primera conversación | Sube al mirador a mirar el camino del norte |
-| `PCH_OBJ_WAIT` | al llegar al mirador | Espera al mensajero en la plaza |
+| `PCH_OBJ_TOUR` | antes del evento | Observa: <nombre de la estación sugerida> |
+| `PCH_OBJ_QUERO` (no usado desde v5.0) | — | Bebe del quero de chicha |
+| `PCH_OBJ_OFFERING` (no usado desde v5.0) | — | Deja una ofrenda a la Pachamama |
+| `PCH_OBJ_TALK` (no usado desde v5.0) | — | Habla con la gente de la llacta |
+| `PCH_OBJ_MIRADOR` (no usado desde v5.0) | — | Sube al mirador a mirar el camino del norte |
 | `PCH_OBJ_LISTEN` | llega el mensajero | Escucha al mensajero |
 | `PCH_OBJ_PUTUTU` | empieza la llamada | Toca el pututu para convocar |
 | `PCH_OBJ_LEAVE` | suena el pututu | Sigue al curaca hacia el Cusco |
@@ -472,3 +473,37 @@ La autovalidación del 2026-11-13 midió **77,7–97,9 s** (mediana 86 s) sin el
 - [x] Se confirman el ritmo, el primer paso, la tarjeta de fin y el balanceo de piernas (v3.5, ADR-0013, 2026-11-11).
 
 Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05](../../../docs/05_plan_de_implementacion.md) y la fase sigue en curso.
+
+## 12. Museo explorable (v5.0)
+
+Desde [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md), la campaña se
+organiza como un museo explorable: nueve estaciones con tarjeta, contador y
+brújula, y el evento del mensajero como clímax.
+
+| # | Estación | Ficha | Clasificación |
+|---|---|---|---|
+| 1 | Plaza y caminos | PCH-016 | A / R / N |
+| 2 | El quero | PCH-004 | A / R |
+| 3 | La chicha de jora | PCH-005 | H / A |
+| 4 | La ofrenda a la Pachamama | PCH-012 | H / R |
+| 5 | El telar y el textil | PCH-010 | A / R |
+| 6 | La casa de piedra y barro | PCH-007 | A / R |
+| 7 | La terraza agrícola | PCH-008 | A |
+| 8 | El corral de pirca | PCH-021 | R |
+| 9 | El camino al Cusco (mirador) | PCH-022 | A / R |
+
+- **Activación:** «Observar» (E) sobre un marcador de piedra. Cada estación
+  cuenta una sola vez; volver a observarla abre la tarjeta sin sumar.
+- **Tarjeta:** título, 60–80 palabras, sello de clasificación y fuente. Se cierra
+  con E o Esc; mientras está abierta, el jugador no se mueve.
+- **HUD:** contador `n/9` y brújula al hito pendiente más cercano. El texto del
+  objetivo sigue al mismo hito.
+- **Cierre:** el evento sale al visitar cinco estaciones con el mirador entre
+  ellas. El respaldo por reloj de [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md)
+  se amplía a 360 s + 20 s para no cortar el recorrido si el jugador ignora el tour.
+- **Sustitución:** la cadena de objetivos de v4.18 (quero → ofrenda →
+  conversación → mirador) queda sustituida por el puntero de estación. Las
+  claves `PCH_OBJ_QUERO`, `PCH_OBJ_OFFERING`, `PCH_OBJ_TALK` y `PCH_OBJ_MIRADOR`
+  dejan de usarse; el quero y la ofrenda conservan su interacción.
+- **Duración objetivo:** 6–8 min en ruta guiada; el horizonte de 10–15 min sigue
+  reservado a la campaña completa.

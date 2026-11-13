@@ -195,24 +195,36 @@ const RAMP_COLOR: Color = Color(0.62, 0.56, 0.47, 1.0)
 ## Superficie de los muros y rampas de las terrazas.
 const SURFACE_STONE: StringName = &"stone"
 
-## Objetivo visible en el HUD: una línea, sin fondo. El índice solo avanza
-## hacia delante; si el evento arranca antes de completar las tareas, salta a la
-## fase del evento y no vuelve atrás.
-enum Objective { QUERO, OFFERING, TALK, MIRADOR, WAIT, LISTEN, PUTUTU, LEAVE, NONE }
+## Objetivo visible del evento narrativo. El tour de estaciones tiene su propio
+## puntero en el HUD; este enum solo cubre las fases del mensajero.
+enum Objective { WAIT, LISTEN, PUTUTU, LEAVE, NONE }
 
 const OBJECTIVE_KEYS: Array[StringName] = [
-	&"PCH_OBJ_QUERO",
-	&"PCH_OBJ_OFFERING",
-	&"PCH_OBJ_TALK",
-	&"PCH_OBJ_MIRADOR",
 	&"PCH_OBJ_WAIT",
 	&"PCH_OBJ_LISTEN",
 	&"PCH_OBJ_PUTUTU",
 	&"PCH_OBJ_LEAVE",
 ]
 
-## Distancia al mirador que da por cumplido el cuarto objetivo.
-const MIRADOR_RADIUS: float = 6.0
+## Museo explorable (ADR-0034): escena de estación y reparto por la llacta.
+const STATION_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/station.tscn"
+const STATION_IDS: Array[StringName] = [
+	&"plaza", &"quero", &"chicha", &"ofrenda", &"telar",
+	&"vivienda", &"terraza", &"corral", &"mirador",
+]
+const STATION_POSITIONS: Array[Vector3] = [
+	Vector3(0.0, 0.0, -6.0),
+	Vector3(6.5, 0.0, 3.5),
+	Vector3(-15.0, 0.0, 14.0),
+	Vector3(-10.5, 0.0, 9.0),
+	Vector3(-12.0, 0.0, 8.5),
+	Vector3(-24.5, 0.0, 9.0),
+	Vector3(32.0, 0.0, 5.0),
+	Vector3(-31.0, 0.0, -7.5),
+	Vector3(52.0, 2.45, 0.0),
+]
+## Estaciones necesarias, con el mirador entre ellas, para que salga el evento.
+const TOUR_REQUIRED: int = 5
 
 ## Argumentos de desarrollo (después de `--`): `--skip-intro` entra directo al
 ## mundo y `--spawn=spawn|plaza|mirador` elige el punto de aparición.
@@ -251,8 +263,14 @@ var _intro_music: AudioStreamPlayer = null
 var _music_fade_remaining: float = -1.0
 var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
-var _objective: int = Objective.QUERO
+var _objective: int = -1
 var _contact_shadow_material: StandardMaterial3D = null
+var _tour_stations: Array[Station] = []
+var _tour_visited: Dictionary[StringName, bool] = {}
+var _tour_target: Station = null
+var _tour_target_position: Vector3 = Vector3.ZERO
+var _tour_target_id: StringName = &""
+var _tour_active: bool = true
 
 
 func _ready() -> void:
@@ -272,12 +290,14 @@ func _ready() -> void:
 	_build_clouds()
 	player.global_position = _debug_spawn_position()
 	hud.bind(player, player.stamina)
+	_build_tour()
 	_setup_footsteps()
 	environment_controller.bind(world_environment, sun)
+	hud.tour_card_closed.connect(_on_tour_card_closed)
 	if with_intro:
 		_start_intro()
 	else:
-		_show_objective(Objective.QUERO)
+		_show_tour_hint()
 
 
 ## Punto de aparición: el de la escena, salvo que `--spawn=<punto>` pida otro.
@@ -338,12 +358,6 @@ func _show_objective(step: int) -> void:
 	var key: StringName = OBJECTIVE_KEYS[step]
 	hud.show_objective(tr(String(key)))
 	SessionLog.mark(&"objective", String(key))
-	if step == Objective.WAIT:
-		# Con las tareas hechas, el jugador ya no espera a ciegas: pide la
-		# llegada del mensajero (ADR-0030).
-		var event: MessengerEvent = $EventController as MessengerEvent
-		if event != null:
-			event.request_arrival()
 
 
 ## Indica si la introducción está a la vista.
@@ -396,7 +410,7 @@ func _on_intro_finished() -> void:
 	if _intro_music != null and _intro_music.playing:
 		_music_fade_remaining = INTRO_MUSIC_FADE
 	hud.show_hint(tr(String(CONTROLS_HINT_KEY)), CONTROLS_HINT_SECONDS)
-	_show_objective(_objective)
+	_show_tour_hint()
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
 		event.begin()
@@ -405,24 +419,148 @@ func _on_intro_finished() -> void:
 func _process(delta: float) -> void:
 	advance_end_card(delta)
 	advance_intro_music(delta)
-	check_mirador()
+	_refresh_tour_target()
+	_update_tour_compass()
 
 
-## Cuarto objetivo: llegar al mirador. Desde allí se ve el camino del norte y
-## el evento anuncia la espera. Devuelve `true` si acaba de cumplirse.
-func check_mirador() -> bool:
-	if _objective != Objective.MIRADOR:
-		return false
-	var mirador: Marker3D = get_node_or_null("Mirador") as Marker3D
-	if mirador == null:
-		return false
-	if player.global_position.distance_to(mirador.global_position) > MIRADOR_RADIUS:
-		return false
-	_advance_objective(Objective.WAIT)
+## Crea las nueve estaciones del museo y las conecta al estado del tour.
+func _build_tour() -> void:
+	var packed: PackedScene = load(STATION_SCENE) as PackedScene
+	if packed == null:
+		return
+	var llacta: Node3D = $Llacta
+	for index: int in range(STATION_IDS.size()):
+		var instance: Node = packed.instantiate()
+		var body: Node3D = instance as Node3D
+		var station: Station = instance as Station
+		if body == null or station == null:
+			continue
+		station.station_id = STATION_IDS[index]
+		body.position = STATION_POSITIONS[index]
+		llacta.add_child(body)
+		station.observed.connect(_on_station_observed)
+		_tour_stations.append(station)
+	_update_tour_target()
+
+
+## Gira la brújula hacia la estación pendiente más cercana, relativa a la vista.
+func _update_tour_compass() -> void:
+	if not _tour_active or _tour_target == null or hud == null:
+		hud.show_tour_compass(false)
+		return
+	var to: Vector3 = _tour_target_position - player.global_position
+	var desired_yaw: float = atan2(-to.x, -to.z)
+	var relative: float = wrapf(desired_yaw - player.rotation.y, -PI, PI)
+	hud.show_tour_compass(true)
+	hud.set_tour_compass_angle(relative)
+
+
+## Recalcula la estación sugerida y la refleja en el HUD cuando cambia.
+func _refresh_tour_target() -> void:
+	if not _tour_active:
+		return
+	_update_tour_target()
+	var current_id: StringName = &""
+	if _tour_target != null:
+		current_id = _tour_target.station_id
+	if current_id == _tour_target_id:
+		return
+	_tour_target_id = current_id
+	if not is_intro_playing() and hud != null and not hud.is_tour_card_open():
+		_show_tour_hint()
+
+
+## Fija la estación pendiente más cercana como objetivo de la brújula.
+func _update_tour_target() -> void:
+	_tour_target = null
+	_tour_target_position = Vector3.ZERO
+	var best: float = INF
+	for index: int in range(_tour_stations.size()):
+		var station: Station = _tour_stations[index]
+		if _tour_visited.has(station.station_id):
+			continue
+		var at: Vector3 = STATION_POSITIONS[index]
+		var distance: float = player.global_position.distance_to(at)
+		if distance < best:
+			best = distance
+			_tour_target = station
+			_tour_target_position = at
+
+
+## Muestra en el HUD la estación sugerida y el contador del tour.
+func _show_tour_hint() -> void:
+	if hud == null:
+		return
+	if _tour_target != null:
+		_tour_target_id = _tour_target.station_id
+	hud.set_tour_progress(_tour_visited.size(), _tour_stations.size())
+	if not _tour_active or _tour_target == null:
+		hud.clear_objective()
+		return
+	var title_key: StringName = _station_key(_tour_target.station_id, "TITLE")
+	hud.show_objective(tr("PCH_OBJ_TOUR") % tr(String(title_key)))
+
+
+## Una estación observada: abre su tarjeta, cuenta la primera vez y comprueba
+## si con esta visita el evento debe salir.
+func _on_station_observed(station: Station) -> void:
+	if not _tour_active:
+		return
+	var first_time: bool = not _tour_visited.has(station.station_id)
+	if first_time:
+		_tour_visited[station.station_id] = true
+		_update_tour_target()
+	_show_tour_card(station)
+	if not first_time:
+		return
+	hud.set_tour_progress(_tour_visited.size(), _tour_stations.size())
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null and station.station_id == &"mirador":
+		event.announce_wait()
+	_check_tour_gate()
+
+
+## Abre la tarjeta de la estación y detiene al jugador mientras lee.
+func _show_tour_card(station: Station) -> void:
+	if hud == null:
+		return
+	var title_key: StringName = _station_key(station.station_id, "TITLE")
+	var body_key: StringName = _station_key(station.station_id, "BODY")
+	var badge_key: StringName = _station_key(station.station_id, "BADGE")
+	var source_key: StringName = _station_key(station.station_id, "SOURCE")
+	hud.show_tour_card(tr(String(title_key)), tr(String(body_key)), tr(String(badge_key)), tr(String(source_key)))
+	player.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _on_tour_card_closed() -> void:
+	player.process_mode = Node.PROCESS_MODE_INHERIT
+	_show_tour_hint()
+
+
+## Con cinco estaciones y el mirador entre ellas, se pide la llegada del
+## mensajero; la petición espera a que el jugador vuelva a la plaza (ADR-0030).
+func _check_tour_gate() -> void:
+	if _tour_visited.size() < TOUR_REQUIRED:
+		return
+	if not _tour_visited.has(&"mirador"):
+		return
 	var event: MessengerEvent = $EventController as MessengerEvent
 	if event != null:
-		event.announce_wait()
-	return true
+		event.request_arrival()
+
+
+## Clave de una parte de la estación (`TITLE`, `BODY`, `BADGE`, `SOURCE`).
+static func _station_key(id: StringName, part: String) -> StringName:
+	return StringName("PCH_ST_%s_%s" % [String(id).to_upper(), part])
+
+
+## Desactiva el tour cuando el evento toma el mando.
+func _set_tour_active(value: bool) -> void:
+	_tour_active = value
+	for station: Station in _tour_stations:
+		station.set_enabled(value)
+	if hud != null and not value:
+		hud.show_tour_compass(false)
 
 
 ## Música de la introducción, para las pruebas.
@@ -804,34 +942,7 @@ func _build_llacta() -> void:
 		for talk: NpcTalk in talks:
 			if talk != null:
 				talk.event = event
-	_connect_objectives()
 	_setup_ambience()
-
-
-## Conecta los objetos que marcan el avance del objetivo. El mundo conoce el
-## orden de la experiencia; los objetos solo avisan de que se usaron.
-func _connect_objectives() -> void:
-	var quero: QueroChicha = $QueroChicha as QueroChicha
-	if quero != null and not quero.drank.is_connected(_on_quero_drank):
-		quero.drank.connect(_on_quero_drank)
-	var ofrenda: OfrendaPachamama = $OfrendaPachamama as OfrendaPachamama
-	if ofrenda != null and not ofrenda.offered.is_connected(_on_offering_left):
-		ofrenda.offered.connect(_on_offering_left)
-	var pututu: Pututu = $Pututu as Pututu
-	if pututu != null and not pututu.played.is_connected(_on_pututu_played):
-		pututu.played.connect(_on_pututu_played)
-
-
-func _on_quero_drank() -> void:
-	_advance_objective(Objective.OFFERING)
-
-
-func _on_offering_left() -> void:
-	_advance_objective(Objective.TALK)
-
-
-func _on_pututu_played() -> void:
-	_advance_objective(Objective.LEAVE)
 
 
 ## Paseos de los tres vecinos antes de la noticia: cada uno vuelve a su punto
@@ -867,8 +978,6 @@ func _add_talk(actor: NpcActor, line_key: StringName) -> NpcTalk:
 func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
 	if hud != null:
 		hud.show_subtitle(tr(String(line_key)), 0.0)
-	if _objective == Objective.TALK:
-		_advance_objective(Objective.MIRADOR)
 	var npc: NpcActor = actor as NpcActor
 	if npc == null:
 		return
@@ -905,6 +1014,8 @@ static func murmur_plays_in(phase: int) -> bool:
 func _on_event_phase_changed(phase: int) -> void:
 	if phase >= 0 and phase < EVENT_PHASE_NAMES.size():
 		SessionLog.mark(&"phase", EVENT_PHASE_NAMES[phase])
+	if phase == MessengerEvent.Phase.ARRIVAL:
+		_set_tour_active(false)
 	_sync_objective_with_phase(phase)
 	if murmur_plays_in(phase):
 		_start_murmur()

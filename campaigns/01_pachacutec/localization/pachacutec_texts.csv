@@ -36,3 +36,41 @@ PCH_OBJ_WAIT,Espera al mensajero en la plaza
 PCH_OBJ_LISTEN,Escucha al mensajero
 PCH_OBJ_PUTUTU,Toca el pututu para convocar
 PCH_OBJ_LEAVE,Sigue al curaca hacia el Cusco
+PCH_STATION_OBSERVE,Observar
+PCH_OBJ_TOUR,Observa: %s
+PCH_ST_PLAZA_TITLE,La plaza y los caminos
+PCH_ST_PLAZA_BADGE,"A / R / N · evidencia, reconstrucción y licencia"
+PCH_ST_PLAZA_BODY,"La plaza de tierra apisonada es una licencia de diseño: Cobo dice que las aldeas pequeñas no solían tener calles ni plazas, pero las prospecciones del Intermedio Tardío registran espacios públicos. Los caminos de tierra unen la llacta con el valle y con el Cusco."
+PCH_ST_PLAZA_SOURCE,"Cobo, Historia del Nuevo Mundo XIV, III · Covey et al., Antiquity 99 (2025)"
+PCH_ST_QUERO_TITLE,El quero
+PCH_ST_QUERO_BADGE,A / R · pieza de colección y decoración reconstruida
+PCH_ST_QUERO_BODY,"Vaso de madera con bandas incisas de zigzag. En época inca se hacían y usaban en pares: dos personas bebían juntas, y el Estado regalaba pares a los líderes provinciales para afianzar alianzas. El perfil y la decoración de este ejemplar son reconstrucción."
+PCH_ST_QUERO_SOURCE,"The Met, Kero 1994.35.11"
+PCH_ST_CHICHA_TITLE,La chicha de jora
+PCH_ST_CHICHA_BADGE,H / A · crónica y arqueología
+PCH_ST_CHICHA_BODY,"Bebida de maíz fermentado. Cieza la llama «vino hecho de maíz» y cuenta que se preparaba para las fiestas y se bebía en grandes vasos, tenida por sagrada. Que se haga con maíz germinado es reconstrucción; su efecto sobre el aliento es una licencia del juego."
+PCH_ST_CHICHA_SOURCE,"Cieza de León, El señorío de los Incas, VII y XXX"
+PCH_ST_OFRENDA_TITLE,La ofrenda a la Pachamama
+PCH_ST_OFRENDA_BADGE,H / R · rito documentado y gesto reconstruido
+PCH_ST_OFRENDA_BODY,"La Pachamama tenía tierras y rebaños propios, y a las huacas se ofrecían cestos de coca, maíz tostado y conchas. Ninguna fuente describe esta ofrenda concreta sobre un adoratorio bajo: el gesto y la forma son reconstrucción. Se representa como reciprocidad, no como pago."
+PCH_ST_OFRENDA_SOURCE,"Markham, Narratives of the rites and laws of the Yncas (1873)"
+PCH_ST_TELAR_TITLE,El telar y el textil
+PCH_ST_TELAR_BADGE,A / R · piezas de colección y telar reconstruido
+PCH_ST_TELAR_BODY,"Fibras de camélido y algodón, tejidas en un solo rectángulo que se dobla y se cose. El telar de cintura atado a una estaca se infiere del dibujo de una tejedora de Guamán Poma; los colores teñidos están documentados y el motivo geométrico concreto es reconstrucción."
+PCH_ST_TELAR_SOURCE,"Dumbarton Oaks PC.B.518 · The Met 63.97 · Guamán Poma, dibujo 80"
+PCH_ST_VIVIENDA_TITLE,La casa de piedra y barro
+PCH_ST_VIVIENDA_BADGE,A / R · crónica y reconstrucción
+PCH_ST_VIVIENDA_BODY,"Cobo describe las casas de la sierra: piedra tosca asentada con pelladas de barro, cubiertas de paja, y puertas «pequeñas y llanas, y las más tan bajas y estrechas». La planta rectangular, el enlucido desconchado y el dintel de palos son reconstrucción."
+PCH_ST_VIVIENDA_SOURCE,"Cobo, Historia del Nuevo Mundo XIV, III"
+PCH_ST_TERRAZA_TITLE,La terraza agrícola
+PCH_ST_TERRAZA_BADGE,A · evidencia arqueológica
+PCH_ST_TERRAZA_BODY,"Cobo cuenta que allanaban las laderas con paredes de piedra seca que sostenían la tierra a nivel, «como son muchos de los andenes que todavía permanecen en la comarca del Cuzco». Aquí no hay cultivo sembrado: los surcos y los escalones de acceso son reconstrucción."
+PCH_ST_TERRAZA_SOURCE,"Cobo, Historia del Nuevo Mundo XIV, VIII"
+PCH_ST_CORRAL_TITLE,El corral de pirca
+PCH_ST_CORRAL_BADGE,R · inferencia regional
+PCH_ST_CORRAL_BODY,"Corrales de piedra aparecen asociados a asentamientos del Intermedio Tardío en Andahuaylas, y las kanchas pastoriles se documentan en la sierra del Cusco. Que esta llacta tuviera uno es una inferencia regional: el tamaño, la altura y la entrada son reconstrucción."
+PCH_ST_CORRAL_SOURCE,"Bauer, Kellett y Aráoz, Los chancas (2013), cap. 6"
+PCH_ST_MIRADOR_TITLE,El camino al Cusco
+PCH_ST_MIRADOR_BADGE,A / R · arqueología e inferencia
+PCH_ST_MIRADOR_BODY,"Antes de la expansión, los incas consolidaron su dominio en la región del Cusco entre muchos otros grupos. Llamarlos «el señorío más fuerte» es una inferencia: las fuentes hablan de alianzas, rivales vencidos y control consolidado, no de un año concreto."
+PCH_ST_MIRADOR_SOURCE,"Covey, Quave et al., Antiquity 99 (2025)"

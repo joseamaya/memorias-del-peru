@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** ninguna. La Fase 4 se cerró el 2026-11-13.
-**Siguiente:** — (abrir una Fase 5 requiere un ADR).
+**Fase activa:** Fase 5 — Museo explorable del Cusco.
+**Siguiente:** —
 
 Reglas:
 
@@ -18,6 +18,7 @@ Reglas:
 | 2 — Interacción | Cerrada | 2026-11-10 |
 | 3 — Entorno | Cerrada | 2026-11-10 |
 | 4 — Vertical Slice Pachacútec | Cerrada | 2026-11-13 |
+| 5 — Museo explorable del Cusco | En curso | — |
 
 La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con [ADR-0033](adr/0033-duracion-del-slice.md) tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» ([ADR-0031](adr/0031-validacion-por-el-autor.md)). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
 
@@ -230,3 +231,37 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [x] Validación de autor ([ADR-0031](adr/0031-validacion-por-el-autor.md), con el umbral de duración de [ADR-0033](adr/0033-duracion-del-slice.md); sustituye a la muestra de 6 jugadores de la métrica 5, que queda declarada «no verificada»). *(2026-11-13: AUTO-1 a AUTO-4; primera interacción en 10,9–13,8 s, duración de 121,2 s en la última pasada, cero bloqueos, cierre sin errores y preguntas 1 y 2 correctas sin consultar el registro. Registro en [sesiones/](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md).)*
 - [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-022, la ficha de la introducción de ADR-0023, se verificó el mismo día. PCH-023, el mapa de ADR-0025, también se verificó ese día. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
 - [x] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar. *(2026-11-12: revisión de las diez categorías en la [hoja de verificación](../campaigns/01_pachacutec/documentation/hoja_verificacion_fichas.md) §7; peinados de Rocketbox y pasos con botas declarados como limitación, y murmullo comprobado sin palabras inteligibles.)*
+
+---
+
+## Fase 5 — Museo explorable del Cusco
+
+### Precondiciones
+
+- [x] Fase 4 cerrada y `v0.1` etiquetada.
+- [x] [ADR-0034](adr/0034-una-campana-y-museo.md) aceptado (una campaña y modelo de museo).
+- [x] Las nueve fichas de las estaciones están verificadas en el registro histórico.
+
+### Entregables
+
+| # | Entregable | Descripción |
+|---|---|---|
+| 1 | `core/ui/tour_card` | Tarjeta genérica: título, cuerpo, sello H/A/R/N y fuente; se cierra con E o Esc y bloquea al jugador mientras está abierta |
+| 2 | `core/ui/` (contador y brújula) | Contador `n/9` y flecha al hito no visitado más cercano |
+| 3 | `campaigns/01_pachacutec/scenes/objects/station.tscn` + `scripts/interactions/station.gd` | Interactuable «Observar» con marcador de piedra |
+| 4 | Nueve estaciones | Plaza, quero, chicha, ofrenda, telar, vivienda, terraza, corral y mirador, con textos de 60–80 palabras y fuente |
+| 5 | Estado del tour | Visitadas, contador, objetivo sugerido y brújula; se sustituye la cadena de objetivos anterior |
+| 6 | Integración del evento | Sale al visitar 5 estaciones incluido el mirador; respaldo por reloj de ADR-0032 |
+| 7 | Pruebas y validación | Estación visitada una sola vez, tarjeta, contador, gating, textos con clave y ficha; validación de autor |
+
+### Criterios de aceptación
+
+- [x] Las nueve estaciones se pueden observar y cada una abre su tarjeta una vez; volver a observarla no suma. *(2026-11-13: `test_world_tour`, con las nueve estaciones creadas y el contador.)*
+- [x] El contador y la brújula coinciden con lo visitado y apuntan al hito no visitado más cercano. *(2026-11-13: contador en `test_world_tour`; brújula y sugerencia verificadas en captura con el juego en ejecución.)*
+- [x] La tarjeta muestra título, cuerpo, sello y fuente; se cierra con E o Esc y el jugador recupera el control. *(2026-11-13: `test_tour_card` y `test_world_tour`; captura de la tarjeta del quero con fuente completa.)*
+- [x] El evento sale al visitar 5 estaciones incluido el mirador; si se ignoran, el respaldo por reloj lo trae igual. *(2026-11-13: `test_world_tour_gate_opens_event`; el respaldo de 80 s + 20 s sigue en `test_messenger_event_*`.)*
+- [ ] Duración mediana de 6–8 min en ruta guiada (validación de autor, ADR-0031).
+- [x] Ninguna tarjeta afirma algo sin ficha; las nueve tienen sello y fuente. *(2026-11-13: revisión de los nueve textos contra PCH-004/005/007/008/010/012/016/021/022; las fuentes citadas son las de las fichas.)*
+- [ ] Cero bloqueos y cero errores de consola.
+- [ ] ≥ 60 FPS en perfil Medio en la GPU integrada de referencia.
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 105 pruebas en verde, sin advertencias.)*

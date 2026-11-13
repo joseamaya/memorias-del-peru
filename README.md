@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 4 cerrada (2026-11-13). v0.1.** Alcance v4.21; llacta, evento narrativo, subtítulos, audio, objetivos con mirador y cierre sin fugas implementados y validados por el autor. Pendiente: pasada de materiales, prueba con jugadores ajenos (métrica 5 **no verificada**) y decisión de la siguiente fase. |
+| Estado | **Fase 5 — Museo explorable (en curso).** Alcance v5.0 ([ADR-0034](docs/adr/0034-una-campana-y-museo.md)): nueve estaciones con tarjeta, contador y brújula; el evento del mensajero como clímax. Pendiente: validación de la duración (6–8 min), medición de rendimiento y prueba con jugadores ajenos (métrica 5 **no verificada**). |
 
 ## Requisitos
 

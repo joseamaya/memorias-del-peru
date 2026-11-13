@@ -24,6 +24,10 @@ const END_ALPHA: float = 0.85
 const TITLE_FADE_IN: float = 0.8
 const TITLE_FADE_OUT: float = 1.2
 
+## Se emite al cerrar la tarjeta de estación; la escena que la abrió recupera
+## el control del jugador.
+signal tour_card_closed
+
 @export var player: PlayerFPS
 @export var stamina: StaminaComponent
 
@@ -33,6 +37,9 @@ const TITLE_FADE_OUT: float = 1.2
 @onready var title_label: Label = $TitleLabel
 @onready var hint_label: Label = $HintLabel
 @onready var objective_label: Label = $ObjectiveLabel
+@onready var tour_label: Label = $TourLabel
+@onready var tour_compass: TourCompass = $TourCompass
+@onready var tour_card: TourCard = $TourCard
 @onready var pause_panel: Control = $PausePanel
 @onready var end_panel: ColorRect = $EndPanel
 @onready var end_title: Label = $EndPanel/EndTitle
@@ -55,8 +62,11 @@ func _ready() -> void:
 	title_label.visible = false
 	hint_label.visible = false
 	objective_label.visible = false
+	tour_label.visible = false
+	tour_compass.visible = false
 	pause_panel.visible = false
 	end_panel.visible = false
+	tour_card.closed.connect(_on_tour_card_closed)
 	# El aviso de pausa debe actualizarse con el árbol en pausa.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	var manager: Node = get_node_or_null("/root/GameManager")
@@ -223,6 +233,51 @@ func get_objective_text() -> String:
 ## Indica si hay un objetivo a la vista.
 func is_showing_objective() -> bool:
 	return objective_label.visible
+
+
+## Abre la tarjeta de una estación.
+func show_tour_card(title: String, body: String, badge: String, source: String) -> void:
+	tour_card.open(title, body, badge, source)
+
+
+## Indica si la tarjeta de estación está abierta.
+func is_tour_card_open() -> bool:
+	return tour_card.is_open()
+
+
+## Cierra la tarjeta de estación si estaba abierta.
+func close_tour_card() -> void:
+	tour_card.close()
+
+
+## Tarjeta de estación, para las pruebas.
+func get_tour_card() -> TourCard:
+	return tour_card
+
+
+## Actualiza el contador del tour. Con [param total] cero se oculta.
+func set_tour_progress(visited: int, total: int) -> void:
+	tour_label.text = "%d/%d" % [visited, total]
+	tour_label.visible = total > 0
+
+
+## Texto del contador, para las pruebas.
+func get_tour_progress_text() -> String:
+	return tour_label.text
+
+
+## Muestra u oculta la brújula de hitos.
+func show_tour_compass(value: bool) -> void:
+	tour_compass.visible = value
+
+
+## Gira la brújula; el ángulo es relativo a la vista del jugador.
+func set_tour_compass_angle(angle: float) -> void:
+	tour_compass.set_target_angle(angle)
+
+
+func _on_tour_card_closed() -> void:
+	tour_card_closed.emit()
 
 
 ## Muestra una indicación breve (por ejemplo, los controles) con fundidos,

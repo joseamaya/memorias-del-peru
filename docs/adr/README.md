@@ -65,3 +65,4 @@ Plantilla:
 | [0031](0031-validacion-por-el-autor.md) | Validación del vertical slice por el autor | Aceptado (umbral de duración ajustado por ADR-0033) |
 | [0032](0032-objetivo-del-mirador.md) | Objetivo del mirador y anuncio de la espera | Aceptado (amplía ADR-0030) |
 | [0033](0033-duracion-del-slice.md) | Duración del vertical slice: fragmento de 2–3 minutos | Aceptado (reemplaza a ADR-0009) |
+| [0034](0034-una-campana-y-museo.md) | Una campaña y modelo de museo explorable | Aceptado |

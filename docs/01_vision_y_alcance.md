@@ -2,9 +2,9 @@
 
 ## 1. Visión
 
-Memorias del Perú es una antología de experiencias históricas en 3D. Cada **campaña** representa una época independiente de la historia peruana y comparte con las demás los sistemas fundamentales del juego (Core).
+Memorias del Perú es una experiencia histórica en 3D. La etapa actual se concentra en **una campaña** —*Pachacútec — La defensa del Cusco*— y en un modelo de **museo explorable**: un mundo que se recorre y se lee a través de estaciones históricas ([ADR-0034](adr/0034-una-campana-y-museo.md)). Las demás épocas de la historia peruana quedan como horizonte: cada campaña futura tendrá su propio documento de visión.
 
-Primera campaña: **Pachacútec — La defensa del Cusco.** El jugador vive los acontecimientos asociados a Cusi Yupanqui y la amenaza chanca en el siglo XV: recorre entornos andinos, interactúa con habitantes, explora una llacta y participa en acontecimientos históricos.
+En la campaña 01 el jugador vive los acontecimientos asociados a Cusi Yupanqui y la amenaza chanca en el siglo XV: recorre entornos andinos, interactúa con habitantes, explora una llacta y participa en acontecimientos históricos.
 
 ## 2. Pilares de diseño
 

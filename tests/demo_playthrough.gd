@@ -227,6 +227,10 @@ func _process(delta: float) -> bool:
 		"walk":
 			_walk(step, delta)
 		"wait_phase":
+			# El guion no recorre las estaciones del museo: fuerza el evento para
+			# seguir comprobando la secuencia narrativa completa.
+			if _phase() < step.phase:
+				event.call("start")
 			# Paneo lento mientras espera la llegada del mensajero.
 			var sweep: float = sin(clock * 0.15) * 25.0
 			_turn_towards(Vector3(sweep, 1.6, -30.0), delta)
