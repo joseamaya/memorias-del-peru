@@ -33,6 +33,9 @@ Convenciones:
   Godot), como el resto de modelos. MakeHuman mira hacia −Y, así que el
   esqueleto se gira 180° al exportar.
 - Las animaciones se llaman como en ADR-0015 y se exportan como pistas NLA.
+- Tras exportar, ejecutar `postprocess_capes.py` sobre cada `pch_npc_*.glb`
+  para ajustar la apertura de mantos y llicllas (alcance v4.15). Ese paso no
+  toca huesos, pesos, UV ni animaciones.
 - La ropa lleva la clase de superficie en UV0 (tejido) y coordenadas de tejido
   en UV1, con el material «pch_cloth» que el juego sustituye por el suyo.
 

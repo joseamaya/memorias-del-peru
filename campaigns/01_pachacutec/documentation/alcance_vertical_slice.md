@@ -1,6 +1,6 @@
 # Alcance del Vertical Slice — Campaña 01: Pachacútec
 
-- Estado: **Aprobado (v4.14)** — 2026-11-13; sustituye a la v4.13
+- Estado: **Aprobado (v4.15)** — 2026-11-13; sustituye a la v4.14
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
@@ -44,6 +44,7 @@ Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.12 | Corrección tras la prueba del responsable del proyecto: al dejar la ofrenda aparece un atado visible de coca y maíz sobre la losa, y el grupo se reúne en un anillo apretado alrededor del mensajero desde que llega, en lugar de quedar disperso por la plaza (§2.2, §4, §5 y §6.1). Pedida el 2026-11-12. |
 | v4.13 | Pase de realismo visual y de promoción: captura en perfil Alto con HUD limpio, nubes altas procedurales, cordillera lejana de dos capas, niebla volumétrica corregida y luz más cálida; el perfil Bajo sigue por encima de 30 FPS (§3, §6.2 y §8). Pedida el 2026-11-13. |
 | v4.14 | Pase de personajes y viviendas: manos en primera persona para beber, ofrecer y tocar el pututu; piel más cálida con subsuperficie y ropa con más detalle; puertas de tablones y escalón de piedra en las casas, con paja más envejecida (§4, §5 y §6.1). Pedida el 2026-11-13. |
+| v4.15 | Ajuste de mantos y llicllas: post-proceso de los GLB de personajes para reducir su apertura lateral y añadir un pliegue suave, sin tocar huesos, pesos, UV ni animaciones (§5 y §6.1). Pedido el 2026-11-13. |
 
 ## 1. Objetivo
 
