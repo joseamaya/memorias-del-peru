@@ -168,6 +168,7 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 |---|---|
 | `test_paso` | La escena del paso carga, tiene cuatro exploradores y el disparador; la emboscada arranca, la honda consume aliento, el escudo reduce el daño, la moral hace huir y el acto termina al resolverse todos |
 | `paso_smoke` | Herramienta de humo: en un fotograma real, la honda acierta y los enemigos bajan la salud del jugador |
+| `test_campaign_state` | Banderas entre escenas: fijar, leer, borrar y limpiar; el valor 0 elimina la bandera (ADR-0041) |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 

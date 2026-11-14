@@ -101,3 +101,23 @@ PCH_PASO_CLEAR,"El paso queda libre. El Cusco se ve al fondo."
 PCH_PASO_STATUS,Salud: %d · Enemigos: %d
 PCH_PASO_DEAD,Has caído. R para reintentar.
 PCH_PASO_END,Fin del acto II (gris) · R para repetir
+PCH_CAMP_TALK,Hablar en el campamento
+PCH_CAMP_INTRO,El paso está arriba. Podemos descansar junto al fuego o seguir de noche.
+PCH_CAMP_REST,Descansar junto al fuego
+PCH_CAMP_PUSH,Seguir de noche
+PCH_CAMP_COCA,Compartir coca
+PCH_CAMP_REST_DONE,"El fuego templa el cuerpo. El aliento vuelve."
+PCH_CAMP_PUSH_DONE,La columna se pone en marcha a oscuras.
+PCH_CAMP_COCA_DONE,"Pasas la hoja. La columna respira mejor."
+PCH_AFTER_INTRO,"El paso está despejado. Uno de los nuestros no puede caminar."
+PCH_AFTER_CARRY,Cargar al herido
+PCH_AFTER_LEAVE,Dejarlo con agua y coca
+PCH_AFTER_WOUNDED_CARRY,"Lo cargas entre dos. La columna irá más lenta."
+PCH_AFTER_WOUNDED_LEAVE,"Lo dejas al resguardo. No miras atrás."
+PCH_AFTER_MAIZE,Queda la carga de maíz. ¿La llevamos?
+PCH_AFTER_KEEP,Conservar el maíz
+PCH_AFTER_ABANDON,Abandonar la carga
+PCH_AFTER_MAIZE_KEEP,"El maíz pesa, pero en el Cusco hará falta."
+PCH_AFTER_MAIZE_ABANDON,"La carga queda junto al sendero."
+PCH_ITEM_COCA,Coca
+PCH_ITEM_COCA_DESC,Hoja para el aliento.

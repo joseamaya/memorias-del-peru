@@ -37,9 +37,10 @@ func test_paso_ambush_and_combat() -> bool:
 	if paso == null:
 		return false
 	var player: PlayerFPS = paso.get_node_or_null("PlayerFPS") as PlayerFPS
+	var hud: PlayerHud = paso.get_node_or_null("UILayer/HUD") as PlayerHud
 	var enemy: AmbushEnemy = paso.get_node_or_null("Ambusher1") as AmbushEnemy
 	var character: CharacterState = paso.get_node_or_null("PlayerFPS/CharacterState") as CharacterState
-	if player == null or enemy == null or character == null:
+	if player == null or hud == null or enemy == null or character == null:
 		paso.free()
 		return false
 	paso.call("_start_ambush")
@@ -77,12 +78,49 @@ func test_paso_ambush_and_combat() -> bool:
 		second.brain.character.change_morale(-80.0)
 		second.brain.think(0.0, 5.0, true)
 		ok = ok and second.is_resolved()
-	# Al resolverse todos, el acto termina.
+	# Al resolverse todos se abre la decisión del herido y el maíz.
+	var state: CampaignStateService = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("CampaignState") as CampaignStateService
+	if state != null:
+		state.clear()
 	for index: int in range(1, 5):
 		var each: AmbushEnemy = paso.get_node_or_null("Ambusher%d" % index) as AmbushEnemy
 		if each != null:
 			each.take_hit(200.0)
 	paso.call("_physics_process", 0.1)
+	ok = ok and hud.is_dialogue_open()
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	paso.call("_on_dialogue_advanced")
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	paso.call("_on_dialogue_advanced")
 	ok = ok and paso.call("is_completed") == true
+	if state != null:
+		ok = ok and state.get_flag(&"herido_salvado") == 1
+		ok = ok and state.get_flag(&"maiz_guardado") == 1
+		state.clear()
+	paso.free()
+	return ok
+
+
+func test_paso_camp_rest() -> bool:
+	var paso: Node = _spawn()
+	if paso == null:
+		return false
+	var player: PlayerFPS = paso.get_node_or_null("PlayerFPS") as PlayerFPS
+	var hud: PlayerHud = paso.get_node_or_null("UILayer/HUD") as PlayerHud
+	var camp: CampPoint = paso.get_node_or_null("CampPoint") as CampPoint
+	var state: CampaignStateService = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("CampaignState") as CampaignStateService
+	if player == null or hud == null or camp == null or state == null:
+		paso.free()
+		return false
+	state.clear()
+	camp.interact(player)
+	var ok: bool = hud.is_dialogue_open()
+	ok = ok and hud.get_dialogue_panel().get_choice_count() == 4
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	paso.call("_on_dialogue_advanced")
+	ok = ok and state.get_flag(&"descanso") == 1
+	ok = ok and not hud.is_dialogue_open()
+	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
+	state.clear()
 	paso.free()
 	return ok

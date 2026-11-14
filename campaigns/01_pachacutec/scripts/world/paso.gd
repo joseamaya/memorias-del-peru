@@ -18,6 +18,8 @@ const ENEMY_POSITIONS: Array[Vector3] = [
 	Vector3(-8.0, 0.0, -12.0),
 ]
 const PLAYER_DAMAGE_BLOCKED: float = 0.3
+const CAMP_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/camp_point.tscn"
+const CAMP_POSITION: Vector3 = Vector3(-4.0, 0.9, 18.0)
 
 @onready var player: PlayerFPS = $PlayerFPS
 @onready var hud: PlayerHud = $UILayer/HUD
@@ -27,6 +29,14 @@ const PLAYER_DAMAGE_BLOCKED: float = 0.3
 
 var character: CharacterState = null
 var player_combatant: Combatant = null
+var inventory: Inventory = null
+var dialogue: DialogueRunner = null
+
+var _camp_graph: DialogueGraph = null
+var _aftermath_graph: DialogueGraph = null
+var _aftermath_pending: bool = false
+var _dialogue_speaker: StringName = &""
+var _dialogue_text: StringName = &""
 
 var _enemies: Array[AmbushEnemy] = []
 var _attack_ray: RayCast3D = null
@@ -42,6 +52,8 @@ func _ready() -> void:
 	hud.bind(player, player.stamina)
 	_build_greybox()
 	_setup_player_combat()
+	_setup_inventory_and_dialogue()
+	_setup_camp()
 	_setup_enemies()
 	_setup_trigger()
 	hint_label.text = ""
@@ -145,11 +157,16 @@ func _start_ambush() -> void:
 
 
 func _finish_ambush() -> void:
-	if _completed:
+	if _completed or _aftermath_pending:
 		return
-	_completed = true
+	_aftermath_pending = true
 	hud.show_subtitle(tr("PCH_PASO_CLEAR"), 0.0)
-	hint_label.text = tr("PCH_PASO_END")
+	if dialogue != null and _aftermath_graph != null and dialogue.start(_aftermath_graph):
+		player.process_mode = Node.PROCESS_MODE_DISABLED
+	else:
+		_aftermath_pending = false
+		_completed = true
+		hint_label.text = tr("PCH_PASO_END")
 
 
 func _update_status() -> void:
@@ -185,6 +202,229 @@ func _setup_player_combat() -> void:
 		_attack_ray.collision_mask = 9
 		_attack_ray.enabled = true
 		camera.add_child(_attack_ray)
+
+
+func _setup_inventory_and_dialogue() -> void:
+	inventory = Inventory.new()
+	inventory.name = "Inventory"
+	player.add_child(inventory)
+	var coca: ItemDefinition = ItemDefinition.new()
+	coca.id = &"coca"
+	coca.category = ItemDefinition.Category.CONSUMABLE
+	coca.max_stack = 5
+	coca.name_key = &"PCH_ITEM_COCA"
+	coca.description_key = &"PCH_ITEM_COCA_DESC"
+	coca.stamina_restore = 25.0
+	coca.morale_change = -5.0
+	inventory.add(coca, 2)
+	dialogue = DialogueRunner.new()
+	dialogue.name = "DialogueRunner"
+	dialogue.character = character
+	dialogue.inventory = inventory
+	player.add_child(dialogue)
+	dialogue.line_shown.connect(_on_dialogue_line)
+	dialogue.choices_shown.connect(_on_dialogue_choices)
+	dialogue.finished.connect(_on_dialogue_finished)
+	dialogue.flag_changed.connect(_on_dialogue_flag)
+	hud.dialogue_advanced.connect(_on_dialogue_advanced)
+	hud.dialogue_choice.connect(_on_dialogue_choice)
+	_camp_graph = _build_camp_dialogue()
+	_aftermath_graph = _build_aftermath_dialogue()
+
+
+func _setup_camp() -> void:
+	var fire: MeshInstance3D = MeshInstance3D.new()
+	var cylinder: CylinderMesh = CylinderMesh.new()
+	cylinder.top_radius = 0.25
+	cylinder.bottom_radius = 0.5
+	cylinder.height = 0.4
+	fire.mesh = cylinder
+	fire.position = Vector3(CAMP_POSITION.x, 0.2, CAMP_POSITION.z)
+	var fire_material: StandardMaterial3D = StandardMaterial3D.new()
+	fire_material.albedo_color = Color(0.95, 0.45, 0.15, 1.0)
+	fire_material.emission_enabled = true
+	fire_material.emission = Color(1.0, 0.4, 0.1, 1.0)
+	fire_material.emission_energy_multiplier = 2.0
+	fire.material_override = fire_material
+	add_child(fire)
+	var light: OmniLight3D = OmniLight3D.new()
+	light.position = Vector3(CAMP_POSITION.x, 1.4, CAMP_POSITION.z)
+	light.light_color = Color(1.0, 0.62, 0.32, 1.0)
+	light.light_energy = 1.4
+	light.omni_range = 7.0
+	add_child(light)
+	_add_camp_npc(Vector3(-5.4, 0.0, 17.2), Color(0.7, 0.55, 0.42, 1.0))
+	_add_camp_npc(Vector3(-2.6, 0.0, 17.4), Color(0.48, 0.36, 0.28, 1.0))
+	_add_camp_npc(Vector3(-4.2, 0.0, 19.4), Color(0.55, 0.42, 0.32, 1.0))
+	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+	var camp: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if camp == null or body == null:
+		instance.free()
+		return
+	body.position = CAMP_POSITION
+	add_child(camp)
+	camp.requested.connect(_on_camp_requested)
+
+
+func _add_camp_npc(at: Vector3, color: Color) -> void:
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	var capsule: CapsuleMesh = CapsuleMesh.new()
+	capsule.radius = 0.35
+	capsule.height = 1.75
+	mesh_instance.mesh = capsule
+	mesh_instance.position = at + Vector3(0.0, 0.875, 0.0)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = color
+	material.roughness = 1.0
+	mesh_instance.material_override = material
+	add_child(mesh_instance)
+
+
+func _on_camp_requested() -> void:
+	if dialogue == null or _camp_graph == null or _completed or _dead:
+		return
+	if dialogue.is_active():
+		return
+	if dialogue.start(_camp_graph):
+		player.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _build_camp_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_CURACA"
+	start.text_key = &"PCH_CAMP_INTRO"
+	start.next_id = &"end"
+	var rest: DialogueChoice = DialogueChoice.new()
+	rest.text_key = &"PCH_CAMP_REST"
+	rest.next_id = &"rest"
+	var push: DialogueChoice = DialogueChoice.new()
+	push.text_key = &"PCH_CAMP_PUSH"
+	push.next_id = &"push"
+	var share: DialogueChoice = DialogueChoice.new()
+	share.text_key = &"PCH_CAMP_COCA"
+	share.next_id = &"coca"
+	var coca_condition: DialogueCondition = DialogueCondition.new()
+	coca_condition.kind = DialogueCondition.Kind.ITEM
+	coca_condition.key = &"coca"
+	coca_condition.minimum = 1
+	var coca_conditions: Array[DialogueCondition] = [coca_condition]
+	share.conditions = coca_conditions
+	var leave: DialogueChoice = DialogueChoice.new()
+	leave.text_key = &"PCH_DLG_LEAVE"
+	leave.next_id = &"end"
+	var choices: Array[DialogueChoice] = [rest, push, share, leave]
+	start.choices = choices
+	var rest_node: DialogueNode = _dialogue_answer(&"rest", &"PCH_CAMP_REST_DONE", &"descanso")
+	var push_node: DialogueNode = _dialogue_answer(&"push", &"PCH_CAMP_PUSH_DONE", &"marcha_nocturna")
+	var coca_node: DialogueNode = _dialogue_answer(&"coca", &"PCH_CAMP_COCA_DONE", &"coca_compartida")
+	var coca_effect: DialogueEffect = DialogueEffect.new()
+	coca_effect.kind = DialogueEffect.Kind.ITEM_REMOVE
+	coca_effect.key = &"coca"
+	coca_effect.amount = 1
+	var coca_effects: Array[DialogueEffect] = coca_node.effects
+	coca_effects.append(coca_effect)
+	coca_node.effects = coca_effects
+	var nodes: Array[DialogueNode] = [start, rest_node, push_node, coca_node]
+	graph.nodes = nodes
+	return graph
+
+
+func _build_aftermath_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_CURACA"
+	start.text_key = &"PCH_AFTER_INTRO"
+	start.next_id = &"end"
+	var carry: DialogueChoice = DialogueChoice.new()
+	carry.text_key = &"PCH_AFTER_CARRY"
+	carry.next_id = &"wounded_carry"
+	var leave: DialogueChoice = DialogueChoice.new()
+	leave.text_key = &"PCH_AFTER_LEAVE"
+	leave.next_id = &"wounded_leave"
+	var choices: Array[DialogueChoice] = [carry, leave]
+	start.choices = choices
+	var carry_node: DialogueNode = _dialogue_answer(&"wounded_carry", &"PCH_AFTER_WOUNDED_CARRY", &"herido_salvado")
+	carry_node.next_id = &"maize"
+	var leave_node: DialogueNode = _dialogue_answer(&"wounded_leave", &"PCH_AFTER_WOUNDED_LEAVE", &"herido_dejado")
+	leave_node.next_id = &"maize"
+	var maize: DialogueNode = DialogueNode.new()
+	maize.id = &"maize"
+	maize.speaker_key = &"PCH_NPC_CURACA"
+	maize.text_key = &"PCH_AFTER_MAIZE"
+	maize.next_id = &"end"
+	var keep: DialogueChoice = DialogueChoice.new()
+	keep.text_key = &"PCH_AFTER_KEEP"
+	keep.next_id = &"maize_keep"
+	var abandon: DialogueChoice = DialogueChoice.new()
+	abandon.text_key = &"PCH_AFTER_ABANDON"
+	abandon.next_id = &"maize_abandon"
+	var maize_choices: Array[DialogueChoice] = [keep, abandon]
+	maize.choices = maize_choices
+	var keep_node: DialogueNode = _dialogue_answer(&"maize_keep", &"PCH_AFTER_MAIZE_KEEP", &"maiz_guardado")
+	var abandon_node: DialogueNode = _dialogue_answer(&"maize_abandon", &"PCH_AFTER_MAIZE_ABANDON", &"maiz_abandonado")
+	var nodes: Array[DialogueNode] = [start, carry_node, leave_node, maize, keep_node, abandon_node]
+	graph.nodes = nodes
+	return graph
+
+
+func _dialogue_answer(node_id: StringName, text_key: StringName, flag_key: StringName) -> DialogueNode:
+	var node: DialogueNode = DialogueNode.new()
+	node.id = node_id
+	node.speaker_key = &"PCH_NPC_CURACA"
+	node.text_key = text_key
+	node.next_id = &"end"
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.SET_FLAG
+	effect.key = flag_key
+	effect.amount = 1
+	var effects: Array[DialogueEffect] = [effect]
+	node.effects = effects
+	return node
+
+
+func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
+	_dialogue_speaker = speaker_key
+	_dialogue_text = text_key
+	var empty: Array[String] = []
+	hud.show_dialogue(tr(String(speaker_key)), tr(String(text_key)), empty)
+
+
+func _on_dialogue_choices(text_keys: Array[StringName]) -> void:
+	var texts: Array[String] = []
+	for key: StringName in text_keys:
+		texts.append(tr(String(key)))
+	hud.update_dialogue(tr(String(_dialogue_speaker)), tr(String(_dialogue_text)), texts)
+
+
+func _on_dialogue_advanced() -> void:
+	if dialogue != null:
+		dialogue.advance()
+
+
+func _on_dialogue_choice(index: int) -> void:
+	if dialogue != null:
+		dialogue.choose(index)
+
+
+func _on_dialogue_finished() -> void:
+	hud.hide_dialogue()
+	player.process_mode = Node.PROCESS_MODE_INHERIT
+	if _aftermath_pending:
+		_aftermath_pending = false
+		_completed = true
+		hint_label.text = tr("PCH_PASO_END")
+
+
+func _on_dialogue_flag(key: StringName, value: int) -> void:
+	CampaignState.set_flag(key, value)
+	if key == &"descanso" and value != 0 and character != null:
+		character.heal(25.0)
 
 
 func _setup_enemies() -> void:

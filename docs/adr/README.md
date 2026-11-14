@@ -72,3 +72,4 @@ Plantilla:
 | [0038](0038-campana-rpg.md) | La campaña 01 pasa a RPG en primera persona | Aceptado (supera ADR-0034, ADR-0036 y ADR-0037) |
 | [0039](0039-tres-actos-y-gris.md) | Tres actos y construcción en gris | Aceptado (amplía ADR-0038) |
 | [0040](0040-cronica-rectora.md) | Crónica rectora: Betanzos, con Garcilaso y Pachacuti Yamqui como contraste y leyenda | Aceptado |
+| [0041](0041-estado-de-campana.md) | Estado de campaña para las banderas entre actos | Aceptado |
