@@ -36,13 +36,13 @@ func test_ciudad_scene_starts() -> bool:
 	ok = ok and ciudad.get_node_or_null("Recruit2") != null
 	ok = ok and ciudad.get_node_or_null("CusiPoint") != null
 	ok = ok and ciudad.call("ally_count") == 0
-	# Reclutas, Cusi y el viejo de la víspera van vestidos sobre el maniquí.
+	# Reclutas, Cusi y el viejo de la víspera usan los modelos propios.
 	var visuals: int = 0
 	for child: Node in ciudad.get_children():
-		if child is MannequinVisual:
+		if child is CharacterModelVisual:
 			visuals += 1
-			var outfit: DressedMannequin = (child as MannequinVisual).get_node_or_null("Outfit") as DressedMannequin
-			ok = ok and outfit != null and outfit.is_built()
+			var model: Node3D = (child as CharacterModelVisual).model()
+			ok = ok and model != null
 	ok = ok and visuals == 5
 	ciudad.free()
 	return ok

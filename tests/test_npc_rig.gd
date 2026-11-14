@@ -1,13 +1,11 @@
 extends RefCounted
-## Comprueba los personajes con el maniquí UAL1 (CC0): todos comparten el
-## esqueleto humanoide, las animaciones base, la mirada y el ritmo de trabajo.
-## Los modelos propios vuelven en la fase de realismo.
+## Comprueba los personajes del acto I con los modelos MakeHuman/Rocketbox:
+## esqueleto humanoide, animaciones base, mirada y ritmo de trabajo. UAL1
+## queda para los actos II y III y como respaldo.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 const ACTORS: Array[String] = ["Tejedora", "Agricultor", "Mensajero", "Curaca", "Principal1", "Principal2", "Habitante1", "Habitante2", "Habitante3"]
-const MANNEQUIN_CLIPS: Array[StringName] = [
-	&"Idle", &"Walk", &"Jog_Fwd", &"Idle_Talking", &"Crouch_Idle", &"Fixing_Kneeling",
-]
+const COMMON_CLIPS: Array[StringName] = [&"idle", &"walk", &"run", &"talk"]
 
 
 func test_npc_rig() -> bool:
@@ -23,12 +21,12 @@ func test_npc_rig() -> bool:
 		if actor == null or not actor.is_animated():
 			continue
 		var player: AnimationPlayer = actor.animation_player()
-		for clip: StringName in MANNEQUIN_CLIPS:
+		for clip: StringName in COMMON_CLIPS:
 			ok = ok and player.has_animation(clip)
 		var skeletons: Array[Node] = actor.find_children("*", "Skeleton3D", true, false)
 		var bones: int = (skeletons[0] as Skeleton3D).get_bone_count() if skeletons.size() == 1 else 0
 		ok = ok and skeletons.size() == 1 and bones > 20
-		ok = ok and actor.look_modifier().bone_name == "Head"
+		ok = ok and (actor.look_modifier().bone_name == "Head" or actor.look_modifier().bone_name == "head")
 		ok = ok and actor.cycle_speed(false) > 0.8 and actor.cycle_speed(false) < 1.6
 		ok = ok and actor.cycle_speed(true) > 1.5 and actor.cycle_speed(true) < 4.0
 
@@ -36,7 +34,7 @@ func test_npc_rig() -> bool:
 	# golpe de trabajo, aunque el maniquí no traiga el ritmo del modelo propio.
 	var weaver: NpcActor = world.get_node("Llacta/NPCs/Tejedora") as NpcActor
 	var loom: Node3D = world.get_node_or_null("Llacta/LoomSlot") as Node3D
-	ok = ok and weaver.current_animation() == &"idle"
+	ok = ok and weaver.current_animation() == &"weave"
 	if loom != null:
 		ok = ok and weaver.flat_distance_to(loom.global_position) < 0.6
 		var along: Vector3 = loom.global_transform.basis.z

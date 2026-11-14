@@ -8,6 +8,7 @@ extends CharacterBody3D
 
 const SPEED: float = 2.4
 const MORALE_LOSS: float = 15.0
+const MODEL_PATH: String = "res://campaigns/01_pachacutec/assets/models/pch_npc_commoner.glb"
 
 var player: Node3D = null
 var paso: Node = null
@@ -15,22 +16,20 @@ var character: CharacterState = null
 var brain: EnemyCombatant = null
 
 var _resolved: bool = false
-var _visual: MannequinVisual = null
+var _visual: CharacterModelVisual = null
 var _current_clip: StringName = &""
 
 
 func _ready() -> void:
 	collision_layer = 8
 	collision_mask = 1
-	_visual = MannequinVisual.new()
+	_visual = CharacterModelVisual.new()
 	_visual.name = "Visual"
-	_visual.skin = true
-	_visual.tint = DressedMannequin.SKIN_COLOR
+	_visual.model_path = MODEL_PATH
+	_visual.dark_clothes = true
+	_visual.porra = true
+
 	add_child(_visual)
-	var outfit: DressedMannequin = DressedMannequin.new()
-	outfit.name = "Outfit"
-	outfit.role = &"chanca"
-	_visual.add_child(outfit)
 	var shape: CollisionShape3D = CollisionShape3D.new()
 	var capsule_shape: CapsuleShape3D = CapsuleShape3D.new()
 	capsule_shape.radius = 0.35
@@ -127,7 +126,7 @@ func _face(target: Vector3) -> void:
 
 
 ## Visual del enemigo, para las pruebas.
-func visual() -> MannequinVisual:
+func visual() -> CharacterModelVisual:
 	return _visual
 
 

@@ -634,35 +634,46 @@ func _restore_allies() -> void:
 			_add_ally_visual(index)
 
 
+## Modelo MakeHuman/Rocketbox para un rol y una variante de color.
+func _character_model_for(role: StringName, variant: int) -> String:
+	match role:
+		&"curaca":
+			return "pch_npc_curaca.glb"
+		&"principal":
+			return "pch_npc_principal.glb"
+		&"farmer":
+			return "pch_npc_farmer.glb"
+		&"messenger":
+			return "pch_npc_messenger.glb"
+		&"weaver":
+			return "pch_npc_weaver.glb"
+	match variant % 3:
+		1:
+			return "pch_npc_villager_b.glb"
+		2:
+			return "pch_npc_villager_c.glb"
+	return "pch_npc_villager.glb"
+
+
 func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> void:
-	var visual: MannequinVisual = MannequinVisual.new()
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Visual"
-	visual.skin = true
-	visual.tint = DressedMannequin.SKIN_COLOR
+	visual.model_path = MODEL_DIR + _character_model_for(role, variant)
 	visual.position = at
 	add_child(visual)
-	var outfit: DressedMannequin = DressedMannequin.new()
-	outfit.name = "Outfit"
-	outfit.role = role
-	outfit.variant = variant
-	visual.add_child(outfit)
+	visual.look_at(Vector3(0.0, at.y, 28.0), Vector3.UP)
 
 
 func _add_ally_visual(index: int) -> void:
 	if _ally_visuals.has(index):
 		return
 	_ally_visuals[index] = true
-	var visual: MannequinVisual = MannequinVisual.new()
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Ally%d" % index
-	visual.skin = true
-	visual.tint = DressedMannequin.SKIN_COLOR
+	visual.model_path = MODEL_DIR + _character_model_for(&"villager", index)
 	visual.position = ALLY_POSITIONS[index]
 	add_child(visual)
-	var outfit: DressedMannequin = DressedMannequin.new()
-	outfit.name = "Outfit"
-	outfit.role = &"villager"
-	outfit.variant = index
-	visual.add_child(outfit)
+	visual.look_at(Vector3(0.0, ALLY_POSITIONS[index].y, 28.0), Vector3.UP)
 
 
 func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:

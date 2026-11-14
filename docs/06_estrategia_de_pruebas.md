@@ -170,15 +170,15 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_paso_alternatives` | La distracción deja dos exploradores; el sigilo cruza sin combate, lleva directo a la decisión del maíz y también permite perdonar al explorador |
 | `paso_smoke` | Herramienta de humo: en un fotograma real, la honda acierta y los enemigos bajan la salud del jugador |
 | `test_campaign_state` | Banderas entre escenas: fijar, leer, borrar y limpiar; el valor 0 elimina la bandera (ADR-0041) |
-| `test_npc_rig` | Los nueve personajes del acto I usan el maniquí UAL1: esqueleto humanoide, clips base, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
-| `test_ciudad` | El Cusco carga con reclutas, Cusi y el viejo de la víspera vestidos sobre el maniquí; recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
+| `test_npc_rig` | Los nueve personajes del acto I usan los modelos MakeHuman/Rocketbox: esqueleto humanoide, clips base, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
+| `test_ciudad` | El Cusco carga con reclutas, Cusi y el viejo de la víspera con modelos propios; recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
 | `test_ciudad_art` | La ciudad tiene terreno con material, santuario, catorce casas con modelo cargado, muro de pirca, terrazas, portón, remate de muralla, bancos, altar, ichu y diez figuras de multitud vestidas; las casas están en el grupo `houses` |
 | `test_ciudad_crowd_retreats` | Al empezar la defensa, la multitud camina a su refugio y se detiene; su cuerpo de colisión usa la capa 16, que solo consulta el jugador |
 | `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
 | `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
 | `test_campaign_audio` | Los recursos de audio de los actos II y III existen; los bucles WAV y OGG se configuran al cargar y los pasos de tierra y piedra están completos |
-| `test_dressed_mannequin` | La tejedora usa el GLB vestido de Blender (cuerpo y esqueleto UAL1, cabeza y ropa propias, tres mallas, nueve animaciones y shader de tejido); los otros ocho llevan vestuario y rostro anclados a `pelvis`, `spine_02` y `Head`, con su rol, manto, q'ipi, lliclla y sandalias; el maniquí sigue animado y gira 180°; ningún personaje carga los modelos viejos |
-| `test_paso_actors_use_mannequins` | Los cuatro exploradores usan el maniquí UAL1 animado, orientado hacia delante y vestido como chanca con porra; el campamento tiene tres maniquíes vestidos con roles distintos y todos quedan sobre el terreno |
+| `test_character_models` | Los nueve personajes del acto I usan los GLB MakeHuman/Rocketbox ya versionados, con su esqueleto, animaciones (`idle`, `walk`, `run`, `talk`), ropa textil y cara; la tejedora teje y el agricultor trabaja; no queda ninguna capa procedural ni el prototipo de Blender en escena |
+| `test_paso_actors_use_models` | Los cuatro exploradores usan el modelo común oscuro con porra y animaciones propias; el campamento tiene tres modelos propios con roles distintos y todos quedan sobre el terreno |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
@@ -247,7 +247,7 @@ Capturas fijas del paso para comparar el paisaje del acto II:
 godot --path . --resolution 1280x720 --script res://tests/capture_paso_art.gd
 ```
 
-Capturas del prototipo de maniquí vestido (la tejedora), sin el resto de NPC:
+Capturas del modelo de la tejedora, sin el resto de NPC:
 
 ```bash
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_weaver.gd

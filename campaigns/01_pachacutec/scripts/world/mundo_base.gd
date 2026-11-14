@@ -89,8 +89,20 @@ const MURMUR_FADE_OUT: float = 5.0
 ## carga el primer archivo existente de su lista; sin archivo, sigue el bloqueo.
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
-## Personaje completo vestido en Blender (cuerpo UAL1 + capas nuevas).
-const DRESSED_WEAVER_MODEL: String = "pch_weaver_dressed.glb"
+## Elenco del acto I: modelos MakeHuman/Rocketbox ya versionados (CC0/MIT),
+## con esqueleto, animaciones y ropa propios. UAL1 queda para los actos II y
+## III y como respaldo.
+const CHARACTER_MODELS: Dictionary[String, String] = {
+	"Tejedora": "pch_npc_weaver.glb",
+	"Agricultor": "pch_npc_farmer.glb",
+	"Mensajero": "pch_npc_messenger.glb",
+	"Curaca": "pch_npc_curaca.glb",
+	"Principal1": "pch_npc_principal.glb",
+	"Principal2": "pch_npc_principal.glb",
+	"Habitante1": "pch_npc_villager.glb",
+	"Habitante2": "pch_npc_villager_b.glb",
+	"Habitante3": "pch_npc_villager_c.glb",
+}
 const MODEL_QUERO: String = "pch_quero.glb"
 const MODEL_PUTUTU: String = "pch_pututu.glb"
 const MODEL_OFFERING: String = "pch_offering_shrine.glb"
@@ -829,9 +841,10 @@ func _build_llacta() -> void:
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
 	weaver.face(_plaza_center_flat(), true)
 	weaver.turn_body_to_talk = false
-	# El modelo vestido de Blender se sostiene mejor de pie junto al telar;
-	# la capa procedural antigua conserva la postura arrodillada de tejer.
-	weaver.set_idle_animation(&"idle" if weaver.preserve_materials else &"weave")
+	# La tejedora MakeHuman conserva su postura arrodillada de tejer; si en el
+	# futuro se usa un modelo sin ese clip, vuelve al reposo de pie.
+	var weaver_player: AnimationPlayer = weaver.animation_player()
+	weaver.set_idle_animation(&"weave" if weaver_player != null and weaver_player.has_animation(&"weave") else &"idle")
 	farmer.face(_plaza_center_flat(), true)
 	farmer.set_idle_animation(&"work")
 	for actor: Node in npcs.get_children():
@@ -1766,18 +1779,19 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	# La cápsula de colisión del bloqueo se conserva (alcance §7).
 	var no_collisions: Array[Node] = []
 	var files: Array[String] = npc_model_files(node_name)
-	var dressed_model: bool = node_name == "Tejedora"
-	if dressed_model:
-		files = [DRESSED_WEAVER_MODEL]
+	var character_model: bool = CHARACTER_MODELS.has(node_name)
+	if character_model:
+		files = [CHARACTER_MODELS[node_name]]
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, files, blockout, no_collisions)
 	slot.use_model_collision = false
-	# Maniquí vestido (ADR-0042): todos los personajes del acto I.
-	actor.mannequin_skin = not dressed_model
-	actor.preserve_materials = dressed_model
+	# Los modelos MakeHuman/Rocketbox traen sus materiales y animaciones; el
+	# maniquí UAL1 sigue disponible para el resto de actos.
+	actor.mannequin_skin = not character_model
+	actor.preserve_materials = character_model
 	actor.body_color = DressedMannequin.SKIN_COLOR
 	if slot.model != null:
 		actor.set_model(slot.model)
-	if not dressed_model:
+	if not character_model:
 		var outfit: DressedMannequin = DressedMannequin.new()
 		outfit.name = "Outfit"
 		outfit.role = dressed_role(node_name)

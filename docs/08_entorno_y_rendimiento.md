@@ -504,3 +504,47 @@ fecha.
   como criterio; se incluyen como orden de magnitud. La GPU dedicada sigue sin
   definirse (docs/08 §4), así que el objetivo recomendado para ella no se ha
   verificado.
+
+
+### Acto I con los modelos MakeHuman/Rocketbox (2026-11-14)
+
+Comando: `godot --path . --script res://tests/measure_performance.gd`.
+Condiciones: 1920 × 1080, Intel UHD Graphics 770, Vulkan, Forward+, carga del
+sistema 1,1–6,9, tres ejecuciones, sin vsync y con `Engine.max_fps = 0`.
+
+| Escena | Perfil | FPS medio | FPS p1 | Draw calls |
+|---|---|---|---|---|
+| Llacta (acto I) | Bajo | 128,4 (118,2–130,5) | 83,3–100,0 | 109–182 |
+| Llacta (acto I) | Medio | 61,1 (58,7–65,3) | 50,0–58,8 | 109–182 |
+
+- El acto I vuelve a los modelos MakeHuman/Rocketbox, con cara, ropa y
+  animaciones propias. El coste sube respecto a UAL1 (70,5 → 61,1 FPS en
+  Medio), pero el objetivo de 60 se cumple por mediana.
+- El margen es estrecho: una pasada dio 58,7 FPS en Medio. Si hace falta más
+  holgura, las palancas son LODs, fusión de mallas/materiales, sombras de
+  personaje o reducir el número de figuras visibles. No se aplicaron para no
+  perder calidad en esta pasada.
+- El paso y el Cusco no cambian: sus mediciones siguen en la sección anterior.
+
+
+### Actos II y III con los modelos MakeHuman/Rocketbox (2026-11-14)
+
+Comandos: `measure_paso_performance` y `measure_ciudad_performance`.
+Condiciones: 1920 × 1080, Intel UHD 770, Vulkan, Forward+, carga 3,8–8,3,
+tres ejecuciones, sin vsync y con `Engine.max_fps = 0`.
+
+| Escena | Perfil | FPS medio | FPS p1 | Draw calls |
+|---|---|---|---|---|
+| Paso (acto II) | Bajo | 130,4 (128,5–131,8) | 100,0–111,1 | 44–54 |
+| Paso (acto II) | Medio | 57,5 (57,2–57,6) | 50,0–52,6 | 44–54 |
+| Cusco (acto III) | Bajo | 116,7 (114,2–117,4) | 83,3–90,9 | 714–715 |
+| Cusco (acto III) | Medio | 59,0 (58,5–60,2) | 41,7–50,0 | 714–715 |
+
+- Los modelos propios (campamento, chancas, reclutas, Cusi, aliados y
+  defensores) mejoran mucho el aspecto, pero cuestan ~3–8 FPS frente a UAL1.
+  Con carga alta, el paso y el Cusco quedan justo por debajo de 60 en Medio.
+- El acto I, medido con carga 1,1, sí supera 60 (61,1 de mediana). Falta
+  repetir el paso y el Cusco en reposo para saber si el objetivo se cumple.
+- Palancas si no se cumple: reducir la multitud del Cusco (10 → 8), LODs,
+  materiales de tela más simples, o dejar UAL1 para figuras de fondo. No se
+  aplicaron para no perder el salto visual en esta pasada.

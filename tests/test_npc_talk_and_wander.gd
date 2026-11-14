@@ -55,7 +55,7 @@ func test_npc_talk_and_wander() -> bool:
 		world.free()
 		return false
 
-	# Hablar con la tejedora: su frase va al HUD; sigue de pie junto al telar y
+	# Hablar con la tejedora: su frase va al HUD; sigue tejiendo arrodillada y
 	# solo gira la cabeza hacia el jugador, que está delante.
 	hud.clear_subtitle()
 	var weaver: NpcActor = world.get_node("Llacta/NPCs/Tejedora") as NpcActor
@@ -66,7 +66,7 @@ func test_npc_talk_and_wander() -> bool:
 	ok = ok and hud.is_dialogue_open()
 	ok = ok and hud.get_dialogue_panel().get_text() == tr("PCH_TALK_WEAVER")
 	ok = ok and player.process_mode == Node.PROCESS_MODE_DISABLED
-	ok = ok and weaver.is_animated() and weaver.current_animation() == &"idle"
+	ok = ok and weaver.is_animated() and weaver.current_animation() == &"weave"
 	ok = ok and (-weaver.global_transform.basis.z).is_equal_approx(weaver_forward)
 	ok = ok and weaver.wants_to_look() and weaver.look_modifier() != null
 	# Salir de la conversación por la segunda opción.

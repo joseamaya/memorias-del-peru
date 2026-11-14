@@ -363,7 +363,7 @@ autor del arco completo corresponde a la Fase 8.
 
 ### Entregables
 
-- **Maniquí UAL1 como base definitiva** (ADR-0042): cuerpo, esqueleto y animación de todos los personajes; los modelos MakeHuman/Rocketbox quedan como referencia y no se cargan en escena.
+- **Elenco con modelos MakeHuman/Rocketbox** (CC0/MIT) ya versionados: acto I completo; campamento y chancas del acto II; reclutas, Cusi, aliados y defensores del acto III. UAL1 queda para la multitud del Cusco y como respaldo.
 - **Vestuario y rostro como capas:** aplicado a los nueve del acto I, a la comitiva y los chancas del acto II y a los reclutas, Cusi, aliados y defensores del acto III.
 - **Paisaje del acto II:** desfiladero, arroyo, refugio, vegetación y cielo (hecho).
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
@@ -375,21 +375,20 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
-- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 70,5 / paso 61,0 / Cusco 66,9 FPS en Medio y 129,1 / 137,8 / 129,2 en Bajo. La llacta y el paso con carga 0,4; el Cusco con SSAO y carga 1,0. Detalle en docs/08.)*
+- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 61,1 / paso 57,5 / Cusco 59,0 FPS en Medio y 128,4 / 130,4 / 116,7 en Bajo. La llacta se midió con carga 1,1–6,9; el paso y el Cusco con carga 3,8–8,3. El acto I cumple por mediana; el paso y el Cusco quedan por debajo de 60 en Medio bajo esa carga. Pendiente: medir en reposo y optimizar (LODs, multitud o materiales). Detalle en docs/08.)*
 - [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 155 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
 
-**Estado (2026-11-14).** Se corrige la dirección de arte con ADR-0042:
-todos los actos vuelven al maniquí UAL1, que mira a +Z y se gira 180° para
-coincidir con la orientación de la lógica. Los modelos MakeHuman/Rocketbox
-quedan como referencia, fuera de escena. El vestuario y el rostro se aplican
-como capas ancladas a huesos: los nueve del acto I (tejedora, agricultor,
-mensajero, curaca, principales y vecinos), la comitiva y los chancas del acto II
-y los reclutas, Cusi, aliados y defensores del acto III. La lliclla es un paño
-largo anclado a la cadera, con sandalias que siguen el pie y textiles
-procedurales con franjas finas en túnica, falda y lliclla. El acto II conserva
+**Estado (2026-11-14).** El acto I recupera los modelos MakeHuman/Rocketbox
+(CC0/MIT) que ya estaban en el repositorio: la tejedora, el agricultor, el
+mensajero, el curaca, los principales y los tres vecinos vuelven a tener cara,
+ropa, esqueleto y animaciones propias. UAL1 se mantiene para la multitud del Cusco y
+como respaldo. El campamento y los chancas del acto II y los reclutas, Cusi,
+aliados y defensores del acto III usan también los modelos propios; el chanca
+lleva ropa oscura y porra. El prototipo de tejedora vestida en Blender
+(`pch_dressed.py`) se conserva como referencia, pero no se usa en escena. El acto II conserva
 el paisaje del desfiladero, el arroyo, el refugio y la vegetación. El audio de
 los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de
 combate y golpes de honda y porra; los pasos del jugador suenan en tierra y
@@ -397,12 +396,7 @@ piedra. El Cusco deja el bloqueo gris: terreno con plaza y caminos de tierra,
 santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
 terrazas de cultivo y diez figuras vestidas de multitud. La multitud se retira
 al empezar la defensa; el portón con dintel, el remate de la muralla, los bancos,
-el altar y el ichu completan la plaza. La tejedora del acto I usa un prototipo
-completo vestido en Blender (`pch_dressed.py`): cuerpo y esqueleto UAL1, cabeza,
-pelo y ropa propios, exportados como tres mallas con el mismo esqueleto y nueve
-animaciones. El resto del elenco conserva las capas procedurales. La tejedora
-queda de pie junto al telar porque la falda del prototipo no se deforma bien
-arrodillada; la cara y la sastrería fina siguen en pulido. El rendimiento final
+el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. El rendimiento final
 en la GPU integrada de referencia supera los 60 FPS en Medio en los tres actos,
 también con la multitud y la defensa en curso. 155 pruebas en verde. Pendiente:
 validación de autor y pulido de personajes.

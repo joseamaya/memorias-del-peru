@@ -363,20 +363,28 @@ func _setup_camp() -> void:
 
 
 func _add_camp_npc(at: Vector3, role: StringName, variant: int) -> void:
-	var visual: MannequinVisual = MannequinVisual.new()
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "CampVisual"
-	visual.skin = true
-	visual.tint = DressedMannequin.SKIN_COLOR
+	visual.model_path = "res://campaigns/01_pachacutec/assets/models/" + _camp_model_for(role, variant)
 	visual.position = Vector3(at.x, _height_at(at.x, at.z), at.z)
 	add_child(visual)
-	var outfit: DressedMannequin = DressedMannequin.new()
-	outfit.name = "Outfit"
-	outfit.role = role
-	outfit.variant = variant
-	visual.add_child(outfit)
 	var target: Vector3 = Vector3(CAMP_POSITION.x, visual.position.y, CAMP_POSITION.z)
 	if visual.position.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)
+
+
+static func _camp_model_for(role: StringName, variant: int) -> String:
+	match role:
+		&"farmer":
+			return "pch_npc_farmer.glb"
+		&"messenger":
+			return "pch_npc_messenger.glb"
+	match variant % 3:
+		1:
+			return "pch_npc_villager_b.glb"
+		2:
+			return "pch_npc_villager_c.glb"
+	return "pch_npc_villager.glb"
 
 func _on_camp_requested() -> void:
 	if dialogue == null or _camp_graph == null or _completed or _dead:
