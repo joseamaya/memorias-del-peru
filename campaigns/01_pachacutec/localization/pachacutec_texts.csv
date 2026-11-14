@@ -24,7 +24,7 @@ PCH_TALK_VILLAGER_3,"El curaca no se mueve de la plaza. Él será el primero en 
 PCH_TALK_CURACA,"Espero noticias del Cusco. Quédate cerca de la plaza."
 PCH_NARR_GATHER,"Desde la plaza llaman: el mensajero está por llegar."
 PCH_NARR_GREET,"¡Llegas a tiempo! Ven a la plaza: hoy hay noticias del Cusco."
-PCH_END_TITLE,Fin del fragmento
+PCH_END_TITLE,Fin del acto I
 PCH_MAP_CUSCO,Cusco
 PCH_MAP_LLACTA,Tu llacta
 PCH_MAP_NORTH,N
@@ -100,7 +100,7 @@ PCH_PASO_AMBUSH,El paso está cerrado. ¡Chancas!
 PCH_PASO_CLEAR,"El paso queda libre. El Cusco se ve al fondo."
 PCH_PASO_STATUS,Salud: %d · Enemigos: %d
 PCH_PASO_DEAD,Has caído. R para reintentar.
-PCH_PASO_END,Fin del acto II (gris) · R para repetir
+PCH_PASO_END,Fin del acto II · R para ir al Cusco
 PCH_CAMP_TALK,Hablar en el campamento
 PCH_CAMP_INTRO,El paso está arriba. Podemos descansar junto al fuego o seguir de noche.
 PCH_CAMP_REST,Descansar junto al fuego
@@ -121,3 +121,33 @@ PCH_AFTER_MAIZE_KEEP,"El maíz pesa, pero en el Cusco hará falta."
 PCH_AFTER_MAIZE_ABANDON,"La carga queda junto al sendero."
 PCH_ITEM_COCA,Coca
 PCH_ITEM_COCA_DESC,Hoja para el aliento.
+PCH_NPC_AYLLUS,Ayllus
+PCH_NPC_CURACA_VECINO,Curaca vecino
+PCH_NPC_YOUTH,Jóvenes
+PCH_NPC_CUSI,Cusi Yupanqui
+PCH_CIUDAD_TALK_AYLLUS,Hablar con los ayllus
+PCH_CIUDAD_TALK_CURACA,Hablar con el curaca vecino
+PCH_CIUDAD_TALK_YOUTH,Hablar con los jóvenes
+PCH_CIUDAD_TALK_CUSI,Hablar con Cusi Yupanqui
+PCH_CIUDAD_AYLLUS_INTRO,"Los ayllus de la ciudad dudan. Si hay maíz, hay voluntad."
+PCH_CIUDAD_CURACA_INTRO,"El curaca vecino escucha. No olvida a los que ayudaron en el paso."
+PCH_CIUDAD_YOUTH_INTRO,"Los jóvenes esperan una señal. Los que compartieron en el camino tienen su confianza."
+PCH_CIUDAD_RECRUIT_ASK,Pedir ayuda
+PCH_CIUDAD_RECRUIT_JOIN,"Cuentan con nosotros. Se suman a la defensa."
+PCH_CIUDAD_RECRUIT_REFUSE,"No es suficiente. Se quedan al margen."
+PCH_CIUDAD_CUSI_INTRO,"Cusi Yupanqui mira la plaza. «¿Cuántos han respondido?»"
+PCH_CIUDAD_CUSI_READY,Estamos listos
+PCH_CIUDAD_CUSI_WAIT,Todavía no
+PCH_CIUDAD_DEFENSE,"Los chancas entran en la plaza. ¡Sostened la línea!"
+PCH_CIUDAD_COUNTER,"Cusi Yupanqui dirige la contraofensiva. La plaza resiste."
+PCH_CIUDAD_EPILOGUE,"La defensa se sostiene. La tradición dice que Cusi Yupanqui tomó el nombre de Pachacútec."
+PCH_CIUDAD_EPILOGUE_WOUNDED,"El herido del paso vuelve a la llacta contigo."
+PCH_CIUDAD_EPILOGUE_MAIZE,"El maíz guardado alcanzó para la defensa."
+PCH_CIUDAD_END_TITLE,Fin de la campaña (gris)
+PCH_CIUDAD_END_HINT,R para volver al título · Esc para salir
+PCH_CIUDAD_STATUS,Salud: %d · Aliados: %d · Enemigos: %d
+PCH_CIUDAD_DEAD,Has caído. R para reintentar.
+PCH_CIUDAD_ALREADY,Ya están con nosotros.
+PCH_CIUDAD_CUSI_ACCEPT,Que vengan.
+PCH_CIUDAD_ARRIVAL,El Cusco. La ciudad espera.
+PCH_END_HINT,R para seguir al paso · Esc para salir

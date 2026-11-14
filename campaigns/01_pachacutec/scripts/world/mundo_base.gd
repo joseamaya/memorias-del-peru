@@ -172,7 +172,7 @@ const GREETER_POINT: Vector3 = Vector3(3.2, 0.0, 12.0)
 ## se funde casi enseguida, mientras la comitiva se aleja.
 const END_CARD_DELAY: float = 0.5
 const END_TITLE_KEY: StringName = &"PCH_END_TITLE"
-const END_HINT_KEY: StringName = &"UI_END_HINT"
+const END_HINT_KEY: StringName = &"PCH_END_HINT"
 const RESTART_KEY: Key = KEY_R
 ## Velocidad de paseo de los vecinos antes de la noticia.
 const NEIGHBOR_WALK_SPEED: float = 1.4
@@ -488,7 +488,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var restart: InputEventKey = event as InputEventKey
 		if restart != null and restart.pressed and not restart.echo and restart.keycode == RESTART_KEY:
 			get_viewport().set_input_as_handled()
-			get_tree().reload_current_scene()
+			get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/paso.tscn")
 			return
 	if event.is_action_pressed("journal"):
 		if hud == null or journal == null or _end_card_shown or is_intro_playing():

@@ -331,21 +331,21 @@ aparte.
 
 ### Criterios de aceptación
 
-- [ ] El arco completo se juega de principio a fin en gris.
+- [ ] El arco completo se juega de principio a fin en gris. *(Parcial: los tres actos están conectados —acto I → paso → Cusco → título— y cada uno tiene prueba; falta la partida completa automatizada.)*
 - [ ] La emboscada se puede resolver con honda, con sigilo o con distracción.
 - [x] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo. *(2026-11-13: `test_paso` y `paso_smoke`; la escena del paso en gris.)*
-- [ ] El herido, el maíz y el descanso cambian el acto III de forma comprobable. *(Parcial: las banderas ya viven en `CampaignState`; el acto III aún no las lee.)*
-- [ ] Los aliados reclutados cambian la dificultad de la defensa.
+- [x] El herido, el maíz y el descanso cambian el acto III de forma comprobable. *(2026-11-13: `test_ciudad` recluta según `maiz_guardado`, `herido_salvado` y `coca_compartida`; el epílogo cambia con las banderas.)*
+- [x] Los aliados reclutados cambian la dificultad de la defensa. *(2026-11-13: la defensa lanza `4 − aliados` enemigos; `test_ciudad` con tres aliados deja uno.)*
 - [ ] La leyenda de los pururaucas se presenta como creencia, no como hecho, y no altera la batalla.
 - [ ] El selector de acto y los puntos de control funcionan.
 - [ ] Todas las fichas nuevas están verificadas.
 - [ ] Cero errores y advertencias; pruebas en verde.
 
-**Estado (2026-11-13).** El paso en gris, la emboscada, el campamento y las
-decisiones están construidos y probados: sendero, arroyo, roquedales y refugio;
-cuatro exploradores con moral y huida; honda y escudo; descanso o marcha
-nocturna; herido y maíz guardados en `CampaignState`. Faltan el sigilo, la
-distracción, el Cusco y el arco completo.
+**Estado (2026-11-13).** Los tres actos están construidos en gris y conectados:
+llacta → paso → Cusco → título. El acto II tiene campamento, emboscada y
+decisiones; el acto III, reclutamiento según las banderas, defensa y epílogo.
+Faltan el sigilo, la distracción, el selector de acto, la partida completa
+automatizada y el arte.
 
 ---
 

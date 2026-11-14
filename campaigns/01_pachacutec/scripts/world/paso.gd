@@ -127,7 +127,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var key: InputEventKey = event as InputEventKey
 		if key.pressed and not key.echo and key.keycode == KEY_R and (_dead or _completed):
-			get_tree().reload_current_scene()
+			if _completed:
+				get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/ciudad.tscn")
+			else:
+				get_tree().reload_current_scene()
 
 
 func _attack() -> void:

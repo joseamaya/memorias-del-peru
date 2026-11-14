@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/ciudad.gd" id="1_ciudad"]
+[ext_resource type="PackedScene" path="res://core/player/player_fps.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://core/ui/hud.tscn" id="3_hud"]
+
+[sub_resource type="Environment" id="Environment_ciudad"]
+background_mode = 1
+background_color = Color(0.62, 0.68, 0.76, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.78, 0.78, 0.82, 1)
+ambient_light_energy = 0.75
+fog_enabled = true
+fog_light_color = Color(0.7, 0.72, 0.78, 1)
+fog_density = 0.009
+
+[node name="Ciudad" type="Node3D"]
+script = ExtResource("1_ciudad")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ciudad")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-32, -38, 0)
+light_color = Color(1, 0.9, 0.78, 1)
+light_energy = 1.15
+shadow_enabled = true
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+position = Vector3(0, 0, 28)
+
+[node name="PlayerFPS" parent="." instance=ExtResource("2_player")]
+position = Vector3(0, 0, 28)
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UILayer" instance=ExtResource("3_hud")]
+
+[node name="StatusLabel" type="Label" parent="UILayer"]
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 520.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+
+[node name="HintLabel" type="Label" parent="UILayer"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -64.0
+offset_right = 400.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+vertical_alignment = 1
