@@ -2,11 +2,11 @@ class_name DressedMannequin
 extends Node3D
 ## Ropa y rostro estilizados sobre el maniquí UAL1 (ADR-0042).
 ##
-## Primera pasada: piezas rígidas ancladas a huesos con [BoneAttachment3D], sin
-## skinning. Cada rol del acto I tiene su conjunto: túnica, falda o faldón,
-## cinturón, chuspa, manto, pelo y vincha. La cara es una cáscara estilizada con
-## ojos, cejas, nariz y boca. El textil fino y la caída de la tela llegan en una
-## pasada posterior.
+## Piezas ancladas a huesos con [BoneAttachment3D]. La ropa principal usa un
+## textil procedural con franjas; la lliclla son dos paños curvos (espalda y
+## cadera) que se solapan y siguen el cuerpo sin verse como una tabla; las
+## sandalias siguen la posición del pie. El textil fino y la simulación de tela
+## completa quedan para una pasada posterior.
 
 const SKIN_COLOR: Color = Color(0.72, 0.52, 0.40, 1.0)
 const HAIR_COLOR: Color = Color(0.12, 0.08, 0.06, 1.0)
@@ -16,6 +16,19 @@ const MOUTH_COLOR: Color = Color(0.35, 0.12, 0.10, 1.0)
 const BELT_COLOR: Color = Color(0.25, 0.18, 0.12, 1.0)
 const CHUSPA_COLOR: Color = Color(0.36, 0.26, 0.18, 1.0)
 const STRIPE_COLOR: Color = Color(0.82, 0.78, 0.68, 1.0)
+const SANDAL_COLOR: Color = Color(0.30, 0.20, 0.13, 1.0)
+
+## Sandalia: huesos del pie y pivote que sigue la planta.
+class Sandal:
+	var foot: int
+	var ball: int
+	var pivot: Node3D
+
+	func _init(foot_idx: int, ball_idx: int, pivot_node: Node3D) -> void:
+		foot = foot_idx
+		ball = ball_idx
+		pivot = pivot_node
+
 
 ## Rol del vestuario; se fija antes de añadir el nodo al árbol.
 var role: StringName = &"villager"
@@ -28,6 +41,8 @@ var _hair: StandardMaterial3D = null
 var _eye: StandardMaterial3D = null
 var _sclera: StandardMaterial3D = null
 var _mouth: StandardMaterial3D = null
+var _sandals: Array[Sandal] = []
+static var _textiles: Dictionary[String, StandardMaterial3D] = {}
 
 
 func _ready() -> void:
@@ -55,6 +70,28 @@ func _ready() -> void:
 			_build_chanca()
 		_:
 			_build_villager()
+	_build_sandals()
+
+
+func _process(_delta: float) -> void:
+	if _skeleton == null or _sandals.is_empty():
+		return
+	for sandal: Sandal in _sandals:
+		var foot_pose: Transform3D = _skeleton.get_bone_global_pose(sandal.foot)
+		var ball_pose: Transform3D = _skeleton.get_bone_global_pose(sandal.ball)
+		var foot_world: Transform3D = _skeleton.global_transform * foot_pose
+		var ball_world: Transform3D = _skeleton.global_transform * ball_pose
+		var heel: Vector3 = foot_world.origin
+		var toe: Vector3 = ball_world.origin
+		var forward: Vector3 = toe - heel
+		forward.y = 0.0
+		if forward.length() < 0.01:
+			continue
+		forward = forward.normalized()
+		var center: Vector3 = (heel + toe) * 0.5
+		center.y = toe.y - 0.005
+		var yaw: float = atan2(forward.x, forward.z)
+		sandal.pivot.global_transform = Transform3D(Basis(Vector3.UP, yaw), center)
 
 
 ## Indica si la capa encontró el esqueleto del maniquí.
@@ -152,19 +189,20 @@ func _build_face() -> void:
 
 
 func _build_weaver() -> void:
-	var pelvis: BoneAttachment3D = _lower(Color(0.45, 0.16, 0.12, 1.0), 0.24, 0.44, 0.68, -0.37)
+	var pelvis: BoneAttachment3D = _lower(Color(0.45, 0.16, 0.12, 1.0), Color(0.28, 0.09, 0.07, 1.0), 0.24, 0.44, 0.68, -0.37)
 	_chuspa(pelvis, CHUSPA_COLOR)
 	_torso(Color(0.72, 0.66, 0.55, 1.0), Color(0.55, 0.18, 0.14, 1.0), 0.55)
+	_lliclla(Color(0.55, 0.18, 0.14, 1.0), STRIPE_COLOR)
 
 
 func _build_farmer() -> void:
-	var pelvis: BoneAttachment3D = _lower(Color(0.36, 0.28, 0.20, 1.0), 0.22, 0.30, 0.35, -0.20)
+	var pelvis: BoneAttachment3D = _lower(Color(0.36, 0.28, 0.20, 1.0), Color(0.24, 0.18, 0.12, 1.0), 0.22, 0.30, 0.35, -0.20)
 	_chuspa(pelvis, Color(0.32, 0.24, 0.16, 1.0))
 	_torso(Color(0.52, 0.42, 0.30, 1.0), Color(0.72, 0.62, 0.45, 1.0), 0.55)
 
 
 func _build_messenger() -> void:
-	var pelvis: BoneAttachment3D = _lower(Color(0.55, 0.40, 0.22, 1.0), 0.22, 0.30, 0.35, -0.20)
+	var pelvis: BoneAttachment3D = _lower(Color(0.55, 0.40, 0.22, 1.0), Color(0.36, 0.25, 0.14, 1.0), 0.22, 0.30, 0.35, -0.20)
 	_chuspa(pelvis, Color(0.40, 0.30, 0.20, 1.0))
 	_torso(Color(0.70, 0.58, 0.40, 1.0), Color(0.55, 0.20, 0.14, 1.0), 0.55)
 	_qipi()
@@ -175,14 +213,14 @@ func _build_authority(long_tunic: bool) -> void:
 	var cape_color: Color = Color(0.55, 0.18, 0.14, 1.0) if long_tunic else Color(0.52, 0.36, 0.18, 1.0)
 	var height: float = 0.90 if long_tunic else 0.75
 	var center: float = -0.45 if long_tunic else -0.38
-	var pelvis: BoneAttachment3D = _lower(lower_color, 0.24, 0.34, height, center)
+	var pelvis: BoneAttachment3D = _lower(lower_color, Color(0.55, 0.18, 0.14, 1.0), 0.24, 0.34, height, center)
 	_chuspa(pelvis, Color(0.40, 0.30, 0.20, 1.0))
 	_torso(Color(0.78, 0.72, 0.60, 1.0), Color(0.55, 0.20, 0.14, 1.0), 0.55)
-	_cape(cape_color)
+	_cape(cape_color, STRIPE_COLOR)
 
 
 func _build_chanca() -> void:
-	var pelvis: BoneAttachment3D = _lower(Color(0.30, 0.22, 0.16, 1.0), 0.22, 0.30, 0.35, -0.20)
+	var pelvis: BoneAttachment3D = _lower(Color(0.30, 0.22, 0.16, 1.0), Color(0.20, 0.12, 0.09, 1.0), 0.22, 0.30, 0.35, -0.20)
 	_chuspa(pelvis, Color(0.28, 0.20, 0.14, 1.0))
 	_torso(Color(0.34, 0.26, 0.18, 1.0), Color(0.48, 0.16, 0.12, 1.0), 0.55)
 	_porra()
@@ -200,12 +238,13 @@ func _build_villager() -> void:
 		Color(0.30, 0.24, 0.18, 1.0),
 	]
 	var index: int = clampi(variant, 0, 2)
-	_lower(lowers[index], 0.22, 0.30, 0.35, -0.20)
+	_lower(lowers[index], lowers[index].darkened(0.2), 0.22, 0.30, 0.35, -0.20)
 	_torso(tunics[index], lowers[index], 0.55)
+	_lliclla(tunics[index].darkened(0.12), lowers[index].lightened(0.25))
 
 
 ## Falda o faldón con cinturón; devuelve el anclaje de la cadera.
-func _lower(color: Color, top_radius: float, bottom_radius: float, height: float, center_y: float) -> BoneAttachment3D:
+func _lower(color: Color, stripe: Color, top_radius: float, bottom_radius: float, height: float, center_y: float) -> BoneAttachment3D:
 	var pelvis: BoneAttachment3D = _attach("pelvis", "OutfitPelvis")
 	var skirt: CylinderMesh = CylinderMesh.new()
 	skirt.top_radius = top_radius
@@ -213,7 +252,7 @@ func _lower(color: Color, top_radius: float, bottom_radius: float, height: float
 	skirt.height = height
 	skirt.radial_segments = 12
 	skirt.rings = 1
-	_add_mesh(pelvis, skirt, _fabric(color), Vector3(0.0, center_y, 0.0))
+	_add_mesh(pelvis, skirt, _textile(color, stripe), Vector3(0.0, center_y, 0.0))
 	var belt: TorusMesh = TorusMesh.new()
 	belt.inner_radius = top_radius - 0.015
 	belt.outer_radius = top_radius + 0.025
@@ -232,7 +271,7 @@ func _torso(tunic_color: Color, stripe_color: Color, height: float) -> void:
 	tunic.height = height
 	tunic.radial_segments = 12
 	tunic.rings = 1
-	_add_mesh(chest, tunic, _fabric(tunic_color), Vector3(0.0, 0.0, 0.0), Vector3.ZERO, Vector3(1.0, 1.0, 0.8))
+	_add_mesh(chest, tunic, _textile(tunic_color, stripe_color), Vector3(0.0, 0.0, 0.0), Vector3.ZERO, Vector3(1.0, 1.0, 0.8))
 	var stripe: BoxMesh = BoxMesh.new()
 	stripe.size = Vector3(0.05, height * 0.8, 0.012)
 	_add_mesh(chest, stripe, _fabric(stripe_color), Vector3(0.0, 0.0, 0.17))
@@ -244,8 +283,16 @@ func _chuspa(pelvis: BoneAttachment3D, color: Color) -> void:
 	_add_mesh(pelvis, bag, _fabric(color), Vector3(0.18, -0.06, 0.12))
 
 
+## Lliclla: un solo paño largo colgado de la cadera, de los hombros a los
+## muslos. Al no seguir el pecho, no se convierte en una tabla cuando la
+## tejedora se inclina; la tela se abre y se separa del cuerpo en el borde.
+func _lliclla(color: Color, stripe: Color) -> void:
+	var pelvis: BoneAttachment3D = _attach("pelvis", "OutfitLliclla")
+	_add_cloth_mesh(pelvis, _cloth_panel(0.50, 0.85, 0.20, 0.06, 0.18, 0.12), _textile_double(color, stripe), Vector3(0.0, 0.43, 0.0))
+
+
 ## Manto corto de autoridad: cono alrededor de los hombros, no una tabla.
-func _cape(color: Color) -> void:
+func _cape(color: Color, stripe: Color) -> void:
 	var shoulders: BoneAttachment3D = _attach("spine_03", "OutfitCape")
 	var cape: CylinderMesh = CylinderMesh.new()
 	cape.top_radius = 0.24
@@ -253,7 +300,7 @@ func _cape(color: Color) -> void:
 	cape.height = 0.28
 	cape.radial_segments = 12
 	cape.rings = 1
-	_add_mesh(shoulders, cape, _fabric(color), Vector3(0.0, -0.05, 0.0), Vector3.ZERO, Vector3(1.0, 1.0, 0.85))
+	_add_mesh(shoulders, cape, _textile(color, stripe), Vector3(0.0, -0.05, 0.0), Vector3.ZERO, Vector3(1.0, 1.0, 0.85))
 	var trim: CylinderMesh = CylinderMesh.new()
 	trim.top_radius = 0.405
 	trim.bottom_radius = 0.405
@@ -293,6 +340,59 @@ func _porra() -> void:
 	_add_mesh(hand, head, stone, Vector3(0.0, 0.0, 0.56), Vector3.ZERO, Vector3(1.0, 1.0, 0.8))
 
 
+## Sandalias: la suela sigue la posición del pie y mantiene la planta plana.
+func _build_sandals() -> void:
+	for side: String in ["l", "r"]:
+		var foot_idx: int = _skeleton.find_bone("foot_%s" % side)
+		var ball_idx: int = _skeleton.find_bone("ball_%s" % side)
+		if foot_idx < 0 or ball_idx < 0:
+			continue
+		var pivot: Node3D = Node3D.new()
+		pivot.name = "OutfitSandal%s" % side.to_upper()
+		pivot.top_level = true
+		add_child(pivot)
+		var leather: StandardMaterial3D = _plain_material(SANDAL_COLOR, 1.0)
+		var sole: BoxMesh = BoxMesh.new()
+		sole.size = Vector3(0.11, 0.025, 0.28)
+		_add_mesh(pivot, sole, leather, Vector3.ZERO)
+		var strap: BoxMesh = BoxMesh.new()
+		strap.size = Vector3(0.10, 0.018, 0.03)
+		_add_mesh(pivot, strap, leather, Vector3(0.0, 0.035, 0.04))
+		var thong: BoxMesh = BoxMesh.new()
+		thong.size = Vector3(0.018, 0.018, 0.10)
+		_add_mesh(pivot, thong, leather, Vector3(0.0, 0.035, 0.09))
+		_sandals.append(Sandal.new(foot_idx, ball_idx, pivot))
+
+
+## Paño curvo con UV para el textil; el borde inferior se abre y se separa del
+## cuerpo. Devuelve una malla triangular.
+func _cloth_panel(width: float, height: float, back_offset: float, depth: float, flare_z: float, flare_x: float) -> ArrayMesh:
+	var surface: SurfaceTool = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var cols: int = 8
+	var rows: int = 6
+	for row: int in range(rows + 1):
+		for col: int in range(cols + 1):
+			var u: float = float(col) / float(cols)
+			var v: float = float(row) / float(rows)
+			var x: float = (u - 0.5) * width * (1.0 + flare_x * v)
+			var y: float = -v * height
+			var z: float = -back_offset - depth * (0.5 + 0.5 * cos((u - 0.5) * PI)) - flare_z * v
+			surface.set_uv(Vector2(u, v))
+			surface.add_vertex(Vector3(x, y, z))
+	for row: int in range(rows):
+		for col: int in range(cols):
+			var index: int = row * (cols + 1) + col
+			surface.add_index(index)
+			surface.add_index(index + 1)
+			surface.add_index(index + cols + 2)
+			surface.add_index(index)
+			surface.add_index(index + cols + 2)
+			surface.add_index(index + cols + 1)
+	surface.generate_normals()
+	return surface.commit()
+
+
 func _band_color() -> Color:
 	match role:
 		&"weaver":
@@ -323,6 +423,16 @@ func _attach(bone_name: String, node_name: String) -> BoneAttachment3D:
 	return attachment
 
 
+## Malla de tela con el material en la superficie y con nombre de ropa: así el
+## validador de materiales la distingue de los modelos generados.
+func _add_cloth_mesh(parent: Node3D, mesh: Mesh, material: StandardMaterial3D, at: Vector3) -> MeshInstance3D:
+	var array_mesh: ArrayMesh = mesh as ArrayMesh
+	if array_mesh != null:
+		material.resource_name = &"pch_cloth"
+		array_mesh.surface_set_material(0, material)
+	return _add_mesh(parent, mesh, material, at)
+
+
 func _add_mesh(
 	parent: Node3D,
 	mesh: Mesh,
@@ -339,6 +449,40 @@ func _add_mesh(
 	instance.scale = scale_value
 	parent.add_child(instance)
 	return instance
+
+
+## Textil procedural con franjas verticales y trama fina; una textura por par
+## de colores, compartida entre personajes.
+func _textile(base: Color, stripe: Color) -> StandardMaterial3D:
+	var key: String = "%s|%s" % [base.to_html(), stripe.to_html()]
+	if _textiles.has(key):
+		return _textiles[key]
+	var image: Image = Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	for y: int in range(64):
+		for x: int in range(64):
+			# Franja fina cada 16 px: una línea, no una bandera.
+			var band: int = x % 16
+			var color: Color = base
+			if band < 2:
+				color = stripe
+			elif band < 3:
+				color = base.darkened(0.15)
+			if y % 8 == 0:
+				color = color.darkened(0.05)
+			image.set_pixel(x, y, color)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_texture = ImageTexture.create_from_image(image)
+	material.albedo_color = Color.WHITE
+	material.roughness = 1.0
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	_textiles[key] = material
+	return material
+
+
+func _textile_double(base: Color, stripe: Color) -> StandardMaterial3D:
+	var material: StandardMaterial3D = _textile(base, stripe).duplicate() as StandardMaterial3D
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	return material
 
 
 func _fabric(color: Color) -> ShaderMaterial:

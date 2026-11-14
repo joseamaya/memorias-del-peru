@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** pasada de tela (lliclla y caída), sandalias y textiles; después, audio y validación.
+**Siguiente:** audio, rendimiento en reposo y validación de autor.
 
 Reglas:
 
@@ -385,9 +385,9 @@ coincidir con la orientación de la lógica. Los modelos MakeHuman/Rocketbox
 quedan como referencia, fuera de escena. El vestuario y el rostro se aplican
 como capas ancladas a huesos: los nueve del acto I (tejedora, agricultor,
 mensajero, curaca, principales y vecinos), la comitiva y los chancas del acto II
-y los reclutas, Cusi, aliados y defensores del acto III. La lliclla rígida se
-retira a la espera de una pasada de tela; faltan sandalias y textiles con
-franjas. El acto II conserva el paisaje del desfiladero, el arroyo, el refugio y
-la vegetación. 152 pruebas en verde; la medición del paso debe repetirse con los
-maniquíes vestidos. Pendiente: tela, sandalias, textiles, audio y validación de
-autor.
+y los reclutas, Cusi, aliados y defensores del acto III. La lliclla es un paño
+largo anclado a la cadera, con sandalias que siguen el pie y textiles
+procedurales con franjas finas en túnica, falda y lliclla. El acto II conserva
+el paisaje del desfiladero, el arroyo, el refugio y la vegetación. 152 pruebas en
+verde; la medición con tela y sandalias es provisional por la carga del equipo.
+Pendiente: audio, rendimiento en reposo y validación de autor.

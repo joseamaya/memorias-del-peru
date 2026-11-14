@@ -49,16 +49,25 @@ func test_dressed_weaver() -> bool:
 		return false
 	var bones: Array[StringName] = outfit.attached_bones()
 	ok = ok and bones.has(&"pelvis") and bones.has(&"spine_02") and bones.has(&"Head")
-	# Ropa (shader de tejido) y rostro/pelo (materiales planos).
+	# Ropa (shader de tejido o textil con franjas) y rostro/pelo.
 	var fabric: int = 0
+	var textile: int = 0
 	var skin: int = 0
 	for node: Node in weaver.find_children("*", "MeshInstance3D", true, false):
 		var mesh_instance: MeshInstance3D = node as MeshInstance3D
 		if mesh_instance.material_override is ShaderMaterial:
 			fabric += 1
 		elif mesh_instance.material_override is StandardMaterial3D:
-			skin += 1
-	ok = ok and fabric >= 5 and skin >= 3
+			var standard: StandardMaterial3D = mesh_instance.material_override as StandardMaterial3D
+			if standard.albedo_texture != null:
+				textile += 1
+			else:
+				skin += 1
+	ok = ok and fabric >= 5 and textile >= 4 and skin >= 3
+	# Lliclla en dos paños y sandalias.
+	ok = ok and weaver.find_child("OutfitLliclla", true, false) != null
+	ok = ok and weaver.find_child("OutfitSandalL", true, false) != null
+	ok = ok and weaver.find_child("OutfitSandalR", true, false) != null
 	# El maniquí conserva su animación de tejer y su piel.
 	ok = ok and weaver.current_animation() == &"weave"
 	ok = ok and weaver.mannequin_skin
@@ -90,6 +99,10 @@ func test_dressed_roles() -> bool:
 			ok = ok and bones.has(&"spine_03")
 		# Todos siguen sobre el maniquí UAL1 y miran hacia delante.
 		ok = ok and npc.mannequin_skin
+		ok = ok and npc.find_child("OutfitSandalL", true, false) != null
+		ok = ok and npc.find_child("OutfitSandalR", true, false) != null
+		if outfit.role == &"weaver" or outfit.role == &"villager":
+			ok = ok and npc.find_child("OutfitLliclla", true, false) != null
 		var slot: ModelSlot = npc.get_node_or_null("Body/ModelSlot") as ModelSlot
 		ok = ok and slot != null and slot.loaded_path == MANNEQUIN_PATH
 		if slot != null:

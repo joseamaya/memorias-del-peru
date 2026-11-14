@@ -426,3 +426,27 @@ huesos ([ADR-0042](adr/0042-maniqui-vestido.md)); el Cusco queda pendiente.
   con las mallas extra de la ropa y las caras.
 - Las cifras siguen siendo un orden de magnitud: la carga del equipo y las
   draw calls varían entre ejecuciones. Falta el Cusco con multitud y batalla.
+
+
+### Medición con tela, sandalias y textiles (Fase 8, provisional, 2026-11-14)
+
+Mismos comandos y condiciones, con una carga del sistema de 5,6: la lliclla de
+paño largo, las sandalias y los textiles con franjas añaden mallas y draw calls.
+La cifra no es comparable con la medición anterior (carga 1,04); se repite en
+reposo antes de darla por buena.
+
+| Escena | Perfil | FPS medio | FPS p1 |
+|---|---|---|---|
+| Llacta (acto I) | Bajo | 106,3 | 76,9 |
+| Llacta (acto I) | Medio | 52,6 | 41,7 |
+| Paso (acto II) | Bajo | 131,3 | 100,0 |
+| Paso (acto II) | Medio | 59,1 | 50,0 |
+
+- El objetivo vinculante (≥ 30 FPS en Bajo) se sigue cumpliendo, aun con la
+  carga alta.
+- El perfil Medio baja respecto a la medición sin tela; no se puede dar por
+  bueno hasta repetir con el equipo descargado. La llacta midió ~400 draw calls
+  en esa vista: la ropa y las caras añaden muchas mallas pequeñas.
+- Si el Medio no llega a 60 en reposo, las palancas son fusionar mallas por
+  material (caras y sandalias) y compartir los materiales de la ropa.
+- Falta el Cusco con multitud y batalla.
