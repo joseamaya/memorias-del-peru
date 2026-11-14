@@ -114,11 +114,11 @@ const ALLY_POSITIONS: Array[Vector3] = [
 
 ## Figura de multitud con su destino de retirada.
 class CrowdMember:
-	var visual: MannequinVisual
+	var visual: CharacterModelVisual
 	var safe_position: Vector3
 	var retreating: bool = false
 
-	func _init(figure: MannequinVisual, safe: Vector3) -> void:
+	func _init(figure: CharacterModelVisual, safe: Vector3) -> void:
 		visual = figure
 		safe_position = safe
 
@@ -1136,17 +1136,15 @@ func _build_crowd() -> void:
 
 
 func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName, variant: int) -> void:
-	var visual: MannequinVisual = MannequinVisual.new()
+	# La multitud usa los mismos modelos que el elenco: seis GLB distintos
+	# repartidos en diez puestos, con variación de talla para romper la
+	# repetición. Ya no queda ninguna figura procedural en escena.
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Crowd%02d" % index
-	visual.skin = true
-	visual.tint = DressedMannequin.SKIN_COLOR
+	visual.model_path = MODEL_DIR + _character_model_for(role, variant)
 	visual.position = at
+	visual.scale = Vector3.ONE * (0.96 + 0.02 * float(index % 5))
 	parent.add_child(visual)
-	var outfit: DressedMannequin = DressedMannequin.new()
-	outfit.name = "Outfit"
-	outfit.role = role
-	outfit.variant = variant
-	visual.add_child(outfit)
 	var body: StaticBody3D = StaticBody3D.new()
 	body.name = "CrowdBody"
 	body.collision_layer = CROWD_COLLISION_LAYER

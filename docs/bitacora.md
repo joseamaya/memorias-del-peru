@@ -2,14 +2,15 @@
 
 Registro cronológico de los cambios que **no** llegan al umbral de un ADR: contenido, presentación, textos, instrumentación y correcciones menores. Una fila por entrega, con la fecha y el commit.
 
-El criterio para decidir entre bitácora y ADR está en [adr/README.md](adr/README.md): si revertir cuesta menos de una hora y no cambia contratos de Core, dependencias, licencias ni arquitectura, va aquí.
+El criterio es simple: si revertir cuesta menos de una hora y no cambia contratos de Core, dependencias, licencias ni arquitectura, va aquí. Los ADR se retiraron el 2026-11-14.
 
-La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`08`, los ADR o `AGENTS.md` ([AGENTS.md](../AGENTS.md) §1). El historial anterior a su creación sigue en la tabla de versiones de [alcance_vertical_slice.md](../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md).
+La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`08` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §1). El historial anterior a su creación sigue en la tabla de versiones de [alcance_vertical_slice.md](../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md).
 
 ## 2026-11-14
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Multitud del Cusco con modelos propios | Las diez figuras de la plaza dejan el maniquí procedural y usan los GLB MakeHuman/Rocketbox, con seis modelos distintos y variación de talla. El Cusco baja de 714 a 299 draw calls y sube de 59,0 a 61,3 FPS en Medio. La ropa oscura del chanca se tiñe con `cloth_tint` sobre el tejido, no con un material plano. 155 pruebas en verde | — |
 | Actos II y III con modelos propios | El campamento y los chancas del acto II y los reclutas, Cusi, aliados y defensores del acto III usan los GLB MakeHuman/Rocketbox; el chanca lleva ropa oscura y porra. La multitud del Cusco sigue con UAL1. 155 pruebas en verde | — |
 | Acto I con los modelos MakeHuman/Rocketbox | Se restauran los nueve modelos propios ya versionados (CC0/MIT) para la tejedora, el agricultor, el mensajero, el curaca, los principales y los tres vecinos; recuperan cara, ropa, esqueleto y animaciones propias. UAL1 queda para los actos II y III y como respaldo; el prototipo de Blender se conserva como referencia. 155 pruebas en verde | — |
 | Directiva de producto: fin de los ADR | Se retiran los ADR y se adopta «resultado primero»: recursos gratuitos, MCP de Blender, assets externos y referencias con IA permitidos con licencia registrada; pruebas y rendimiento se mantienen. El historial de decisiones queda en esta bitácora | — |

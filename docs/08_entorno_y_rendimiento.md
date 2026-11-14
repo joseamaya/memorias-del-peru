@@ -548,3 +548,28 @@ tres ejecuciones, sin vsync y con `Engine.max_fps = 0`.
 - Palancas si no se cumple: reducir la multitud del Cusco (10 → 8), LODs,
   materiales de tela más simples, o dejar UAL1 para figuras de fondo. No se
   aplicaron para no perder el salto visual en esta pasada.
+
+
+### Multitud del Cusco con modelos propios (2026-11-14)
+
+Comando: `godot --path . --script res://tests/measure_ciudad_performance.gd`.
+Condiciones: 1920 × 1080, Intel UHD 770, Vulkan, Forward+, carga 15,5–22,5
+(medición conservadora), tres ejecuciones, sin vsync y con `Engine.max_fps = 0`.
+
+| Cusco (acto III) | Perfil | FPS medio | FPS p1 | Draw calls |
+|---|---|---|---|---|
+| Antes (multitud procedural) | Medio | 59,0 | 41,7–50,0 | 714–715 |
+| Después (multitud con modelos) | Medio | 61,3 (61,1–61,9) | 52,6 | 299–301 |
+| Después (multitud con modelos) | Bajo | 115,4 (115,3–117,0) | 83,3–90,9 | 299–301 |
+
+- La hipótesis se cumplió: el vestuario procedural montaba muchas piezas con
+  materiales propios por figura. Diez GLB con cuatro o cinco mallas bajan el
+  Cusco de **714 a 299 draw calls** (−58 %) y suben el perfil Medio de 59,0 a
+  **61,3 FPS**, medido además con más carga que la pasada anterior.
+- No hizo falta recortar la multitud ni apagar sombras: las palancas de la
+  sección anterior quedan sin usar.
+- La ropa oscura del chanca se tiñe con el uniforme `cloth_tint` del shader de
+  tela, que multiplica el tejido; antes era un material plano que borraba el
+  dibujo.
+- El paso (acto II) no cambia con este trabajo. Su medición de 57,5 FPS sigue
+  pendiente de repetir en una máquina en reposo.

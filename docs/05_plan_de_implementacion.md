@@ -363,7 +363,7 @@ autor del arco completo corresponde a la Fase 8.
 
 ### Entregables
 
-- **Elenco con modelos MakeHuman/Rocketbox** (CC0/MIT) ya versionados: acto I completo; campamento y chancas del acto II; reclutas, Cusi, aliados y defensores del acto III. UAL1 queda para la multitud del Cusco y como respaldo.
+- **Elenco con modelos MakeHuman/Rocketbox** (CC0/MIT) ya versionados: acto I completo; campamento y chancas del acto II; reclutas, Cusi, aliados y defensores del acto III, y la multitud del Cusco. UAL1 queda como respaldo.
 - **Vestuario y rostro como capas:** aplicado a los nueve del acto I, a la comitiva y los chancas del acto II y a los reclutas, Cusi, aliados y defensores del acto III.
 - **Paisaje del acto II:** desfiladero, arroyo, refugio, vegetación y cielo (hecho).
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
@@ -375,7 +375,7 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
-- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 61,1 / paso 57,5 / Cusco 59,0 FPS en Medio y 128,4 / 130,4 / 116,7 en Bajo. La llacta se midió con carga 1,1–6,9; el paso y el Cusco con carga 3,8–8,3. El acto I cumple por mediana; el paso y el Cusco quedan por debajo de 60 en Medio bajo esa carga. Pendiente: medir en reposo y optimizar (LODs, multitud o materiales). Detalle en docs/08.)*
+- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 61,1 / paso 57,5 / Cusco 61,3 FPS en Medio y 128,4 / 130,4 / 115,4 en Bajo. La llacta se midió con carga 1,1–6,9; el paso con carga 3,8–8,3; el Cusco con carga 15,5–22,5. El acto I y el Cusco cumplen por mediana; el paso queda por debajo de 60 en Medio bajo esa carga y su medición se repetirá en reposo. Detalle en docs/08.)*
 - [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 155 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
@@ -384,19 +384,19 @@ autor del arco completo corresponde a la Fase 8.
 **Estado (2026-11-14).** El acto I recupera los modelos MakeHuman/Rocketbox
 (CC0/MIT) que ya estaban en el repositorio: la tejedora, el agricultor, el
 mensajero, el curaca, los principales y los tres vecinos vuelven a tener cara,
-ropa, esqueleto y animaciones propias. UAL1 se mantiene para la multitud del Cusco y
-como respaldo. El campamento y los chancas del acto II y los reclutas, Cusi,
-aliados y defensores del acto III usan también los modelos propios; el chanca
-lleva ropa oscura y porra. El prototipo de tejedora vestida en Blender
+ropa, esqueleto y animaciones propias. UAL1 queda como respaldo. La multitud del Cusco,
+el campamento y los chancas del acto II y los reclutas, Cusi, aliados y
+defensores del acto III usan los modelos propios; el chanca lleva ropa oscura
+teñida sobre el mismo tejido y una porra que sigue la mano. El prototipo de tejedora vestida en Blender
 (`pch_dressed.py`) se conserva como referencia, pero no se usa en escena. El acto II conserva
 el paisaje del desfiladero, el arroyo, el refugio y la vegetación. El audio de
 los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de
 combate y golpes de honda y porra; los pasos del jugador suenan en tierra y
 piedra. El Cusco deja el bloqueo gris: terreno con plaza y caminos de tierra,
 santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
-terrazas de cultivo y diez figuras vestidas de multitud. La multitud se retira
+terrazas de cultivo y diez figuras de multitud con modelos propios. La multitud se retira
 al empezar la defensa; el portón con dintel, el remate de la muralla, los bancos,
-el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. El rendimiento final
-en la GPU integrada de referencia supera los 60 FPS en Medio en los tres actos,
-también con la multitud y la defensa en curso. 155 pruebas en verde. Pendiente:
-validación de autor y pulido de personajes.
+el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. La multitud del Cusco dejó el maniquí
+procedural: con los modelos propios, el Cusco baja de 714 a 299 draw calls y
+sube a 61,3 FPS en Medio. 155 pruebas en verde. Pendiente: medir el paso en
+reposo, validación de autor y pulido de personajes.

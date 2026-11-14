@@ -7,14 +7,13 @@ extends Node3D
 ## chancas. No conoce la lógica: los puntos de interacción y la colisión viven
 ## fuera. El modelo mira hacia -Z, como el actor, así que no se gira.
 
+## Tinte de la ropa oscura de los chancas; multiplica el tejido original.
+const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
+
 @export var model_path: String = ""
 @export var idle_clip: StringName = &"idle"
 @export var dark_clothes: bool = false
 @export var porra: bool = false
-## Usa la textura de tela original del GLB en lugar del shader completo.
-@export var simple_cloth: bool = false
-## Si es `false`, el personaje no proyecta sombra (solo recibe luz).
-@export var cast_shadows: bool = true
 
 var _slot: ModelSlot = null
 var _model: Node3D = null
@@ -41,11 +40,6 @@ func _ready() -> void:
 	_player = _model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if _player != null and _player.has_animation(idle_clip):
 		_player.play(idle_clip)
-	if not cast_shadows:
-		for node: Node in _model.find_children("*", "MeshInstance3D", true, false):
-			(node as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	if simple_cloth:
-		_simplify_cloth()
 	if dark_clothes:
 		_darken_clothes()
 	if porra:
@@ -93,22 +87,23 @@ func current_animation() -> StringName:
 	return StringName(_player.current_animation)
 
 
-func _simplify_cloth() -> void:
+func _darken_clothes() -> void:
 	var clothes: MeshInstance3D = _model.find_child("clothes", true, false) as MeshInstance3D
 	if clothes == null or clothes.mesh == null:
 		return
-	for index: int in range(clothes.mesh.get_surface_count()):
-		clothes.set_surface_override_material(index, null)
-
-
-func _darken_clothes() -> void:
-	var clothes: MeshInstance3D = _model.find_child("clothes", true, false) as MeshInstance3D
-	if clothes == null:
-		return
-	var dark: StandardMaterial3D = StandardMaterial3D.new()
-	dark.albedo_color = Color(0.14, 0.10, 0.08, 1.0)
-	dark.roughness = 0.95
-	clothes.material_override = dark
+	# Oscurece con el tinte del shader de tela en lugar de un material plano:
+	# el chanca conserva el tejido y las franjas, y deja de verse como un saco.
+	for surface: int in range(clothes.mesh.get_surface_count()):
+		var material: Material = clothes.get_active_material(surface)
+		if material is ShaderMaterial:
+			var cloth: ShaderMaterial = (material as ShaderMaterial).duplicate() as ShaderMaterial
+			cloth.set_shader_parameter("cloth_tint", DARK_CLOTH_TINT)
+			cloth.set_shader_parameter("tint", DARK_CLOTH_TINT)
+			clothes.set_surface_override_material(surface, cloth)
+		elif material is BaseMaterial3D:
+			var plain: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
+			plain.albedo_color = DARK_CLOTH_TINT
+			clothes.set_surface_override_material(surface, plain)
 
 
 func _process(_delta: float) -> void:

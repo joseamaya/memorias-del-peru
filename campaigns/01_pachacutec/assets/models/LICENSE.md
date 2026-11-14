@@ -20,8 +20,8 @@ el juego sustituye por su shader de tejido; el color va por vértice.
 ## Personajes (`pch_npc_*.glb`), de `pch_people.py`
 
 Estos modelos se usan en los tres actos: el acto I completo, el campamento y
-los chancas del acto II y los NPC con nombre y los defensores del acto III.
-La multitud del Cusco sigue con UAL1.
+los chancas del acto II, los NPC con nombre y los defensores del acto III y la
+multitud del Cusco. UAL1 queda como respaldo, fuera de escena.
 
 Proceso descrito en [ADR-0016](../../../../docs/adr/0016-personajes-realistas-makehuman.md).
 

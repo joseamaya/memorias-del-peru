@@ -172,12 +172,12 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_campaign_state` | Banderas entre escenas: fijar, leer, borrar y limpiar; el valor 0 elimina la bandera (ADR-0041) |
 | `test_npc_rig` | Los nueve personajes del acto I usan los modelos MakeHuman/Rocketbox: esqueleto humanoide, clips base, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
 | `test_ciudad` | El Cusco carga con reclutas, Cusi y el viejo de la víspera con modelos propios; recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
-| `test_ciudad_art` | La ciudad tiene terreno con material, santuario, catorce casas con modelo cargado, muro de pirca, terrazas, portón, remate de muralla, bancos, altar, ichu y diez figuras de multitud vestidas; las casas están en el grupo `houses` |
-| `test_ciudad_crowd_retreats` | Al empezar la defensa, la multitud camina a su refugio y se detiene; su cuerpo de colisión usa la capa 16, que solo consulta el jugador |
+| `test_ciudad_art` | La ciudad tiene terreno con material, santuario, catorce casas con modelo cargado, muro de pirca, terrazas, portón, remate de muralla, bancos, altar, ichu y diez figuras de multitud con modelos propios y su clip `idle`; las casas están en el grupo `houses` |
+| `test_ciudad_crowd_retreats` | Al empezar la defensa, la multitud cambia a `walk`, camina a su refugio, vuelve a `idle` y se detiene; su cuerpo de colisión usa la capa 16, que solo consulta el jugador |
 | `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
 | `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
 | `test_campaign_audio` | Los recursos de audio de los actos II y III existen; los bucles WAV y OGG se configuran al cargar y los pasos de tierra y piedra están completos |
-| `test_character_models` | Los nueve personajes del acto I usan los GLB MakeHuman/Rocketbox ya versionados, con su esqueleto, animaciones (`idle`, `walk`, `run`, `talk`), ropa textil y cara; la tejedora teje y el agricultor trabaja; no queda ninguna capa procedural ni el prototipo de Blender en escena |
+| `test_character_models` | Los nueve personajes del acto I usan los GLB MakeHuman/Rocketbox ya versionados, con su esqueleto, animaciones (`idle`, `walk`, `run`, `talk`), ropa textil y cara; la tejedora teje y el agricultor trabaja; no queda ninguna capa procedural ni el prototipo de Blender en escena. La multitud del Cusco usa los mismos GLB |
 | `test_paso_actors_use_models` | Los cuatro exploradores usan el modelo común oscuro con porra y animaciones propias; el campamento tiene tres modelos propios con roles distintos y todos quedan sobre el terreno |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
@@ -259,11 +259,12 @@ Comprobación de audio con driver real (no forma parte del ejecutor):
 godot --path . --script res://tests/inspect_audio.gd
 ```
 
-Capturas del vestuario del acto I y del Cusco:
+Capturas del vestuario del acto I y del Cusco, y de cerca de la multitud:
 
 ```bash
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_act_one.gd
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_ciudad.gd
+godot --path . --resolution 1280x720 --script res://tests/capture_crowd.gd
 ```
 
 Carga el mundo sin HUD, congela el evento y guarda cinco vistas en `user://capturas/`: aparición, suelo a media distancia, muro de pirca a 1,5 m, casa a 6 m y horizonte desde el mirador. Sirve para evaluar un cambio de materiales contra el mismo encuadre, no para probar lógica.

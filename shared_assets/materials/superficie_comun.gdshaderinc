@@ -20,6 +20,9 @@ uniform bool use_textile = false;
 uniform float textile_period = 0.3;
 uniform float textile_columns = 6.0;
 uniform float textile_height = 2.0;
+// Atenúa el textil sin perder el dibujo: la ropa oscura de los chancas sale
+// del mismo tejido que la del resto del elenco. Blanco = sin cambio.
+uniform vec4 cloth_tint : source_color = vec4(1.0);
 // Proyección en coordenadas del mundo (piezas fijas sin girar: terreno, muros)
 // en lugar de las del objeto (modelos que se mueven o giran).
 uniform bool world_projection = false;
@@ -143,7 +146,7 @@ void fragment() {
 				vec2 smooth_uv = vec2(UV2.x / textile_period / textile_columns, -height / textile_height);
 				float column = (float(cloth_piece - 1) + 0.004 + fract(UV2.x / textile_period) * 0.992) / textile_columns;
 				vec2 tuv = vec2(column, 1.0 - clamp(height / textile_height, 0.001, 0.999));
-				base_color = textureGrad(textile, tuv, dFdx(smooth_uv), dFdy(smooth_uv)).rgb;
+				base_color = textureGrad(textile, tuv, dFdx(smooth_uv), dFdy(smooth_uv)).rgb * cloth_tint.rgb;
 			}
 			vec3 uv = vec3(UV2 * layer_scale[base_layer], float(base_layer));
 			vec4 detail = texture(detail_array, uv);

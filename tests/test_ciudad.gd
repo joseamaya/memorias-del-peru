@@ -49,7 +49,7 @@ func test_ciudad_scene_starts() -> bool:
 
 
 ## La ciudad de 1438 tiene terreno, santuario, catorce casas con modelo,
-## muro de pirca, terrazas y una multitud vestida que no interactúa.
+## muro de pirca, terrazas y una multitud con modelos propios que no interactúa.
 func test_ciudad_art() -> bool:
 	var ciudad: Node = _spawn()
 	if ciudad == null:
@@ -72,11 +72,12 @@ func test_ciudad_art() -> bool:
 	ok = ok and crowd != null and crowd.get_child_count() == 10
 	if crowd != null:
 		for figure: Node in crowd.get_children():
-			var visual: MannequinVisual = figure as MannequinVisual
+			var visual: CharacterModelVisual = figure as CharacterModelVisual
 			ok = ok and visual != null
 			if visual != null:
-				var outfit: DressedMannequin = visual.get_node_or_null("Outfit") as DressedMannequin
-				ok = ok and outfit != null and outfit.is_built()
+				ok = ok and visual.model() != null
+				ok = ok and visual.model_path.contains("pch_npc_")
+				ok = ok and visual.current_animation() == &"idle"
 	ok = ok and ciudad.get_node_or_null("Gate/Lintel") != null
 	ok = ok and ciudad.get_node_or_null("WallCaps/NorthCap") != null
 	ok = ok and ciudad.get_node_or_null("PlazaFurniture/Bench0") != null
@@ -98,9 +99,9 @@ func test_ciudad_crowd_retreats() -> bool:
 		state.clear()
 		return false
 	var crowd: Node = ciudad.get_node_or_null("Crowd")
-	var first: MannequinVisual = null
+	var first: CharacterModelVisual = null
 	if crowd != null:
-		first = crowd.get_child(0) as MannequinVisual
+		first = crowd.get_child(0) as CharacterModelVisual
 	if first == null:
 		ciudad.free()
 		state.clear()
@@ -111,11 +112,13 @@ func test_ciudad_crowd_retreats() -> bool:
 	var start: Vector3 = first.global_position
 	ciudad.call("_start_defense")
 	ok = ok and ciudad.get("_crowd_retreating") == true
+	ok = ok and first.current_animation() == &"walk"
 	ciudad.call("_process", 1.0)
 	ok = ok and first.global_position.distance_to(start) > 0.5
 	for _i: int in range(20):
 		ciudad.call("_process", 1.0)
 	ok = ok and ciudad.get("_crowd_retreating") == false
+	ok = ok and first.current_animation() == &"idle"
 	ok = ok and ciudad.call("is_ambush_active") == true
 	ciudad.free()
 	state.clear()
