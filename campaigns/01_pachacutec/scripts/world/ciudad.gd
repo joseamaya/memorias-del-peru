@@ -6,11 +6,57 @@ extends Node3D
 ## habla con Cusi Yupanqui y sostiene la defensa. La victoria es fija; el
 ## epílogo cambia con las decisiones anteriores.
 
-const CIUDAD_SIZE: float = 120.0
-const GROUND_COLOR: Color = Color(0.36, 0.38, 0.30, 1.0)
-const PLAZA_COLOR: Color = Color(0.46, 0.36, 0.23, 1.0)
-const STONE_COLOR: Color = Color(0.48, 0.46, 0.42, 1.0)
-const HOUSE_COLOR: Color = Color(0.55, 0.47, 0.36, 1.0)
+const CITY_SIZE: float = 150.0
+const WALL_RADIUS: float = 30.0
+const BOUNDARY_RADIUS: float = 70.0
+const GRASS_COLOR: Color = Color(0.33, 0.36, 0.24, 1.0)
+const ROCK_COLOR: Color = Color(0.46, 0.44, 0.40, 1.0)
+const DIRT_COLOR: Color = Color(0.47, 0.38, 0.26, 1.0)
+const STONE_TINT: Color = Color(0.52, 0.50, 0.46, 1.0)
+const THATCH_TINT: Color = Color(0.50, 0.40, 0.22, 1.0)
+const SOIL_TINT: Color = Color(0.34, 0.27, 0.19, 1.0)
+const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
+const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
+const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
+const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
+const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0]
+const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7]
+const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
+## Catorce viviendas alrededor de la plaza, fuera de los caminos y del santuario.
+const HOUSE_POSITIONS: Array[Vector3] = [
+	Vector3(-24.0, 0.0, -18.0),
+	Vector3(-26.0, 0.0, -8.0),
+	Vector3(-24.0, 0.0, 4.0),
+	Vector3(-25.0, 0.0, 14.0),
+	Vector3(-18.0, 0.0, 22.0),
+	Vector3(24.0, 0.0, -18.0),
+	Vector3(26.0, 0.0, -8.0),
+	Vector3(24.0, 0.0, 4.0),
+	Vector3(25.0, 0.0, 14.0),
+	Vector3(18.0, 0.0, 22.0),
+	Vector3(-12.0, 0.0, -24.0),
+	Vector3(12.0, 0.0, -24.0),
+	Vector3(-10.0, 0.0, 26.0),
+	Vector3(10.0, 0.0, 26.0),
+]
+## Refugiados y vecinos que llenan la plaza; no interactúan, solo dan escala.
+const CROWD_POSITIONS: Array[Vector3] = [
+	Vector3(-18.0, 0.0, 10.0),
+	Vector3(-19.0, 0.0, 4.0),
+	Vector3(-18.0, 0.0, -4.0),
+	Vector3(18.0, 0.0, 10.0),
+	Vector3(19.0, 0.0, 4.0),
+	Vector3(18.0, 0.0, -4.0),
+	Vector3(-9.0, 0.0, 16.0),
+	Vector3(9.0, 0.0, 16.0),
+	Vector3(-13.0, 0.0, -15.0),
+	Vector3(13.0, 0.0, -15.0),
+]
+const CROWD_ROLES: Array[StringName] = [
+	&"villager", &"weaver", &"farmer", &"villager", &"messenger",
+	&"villager", &"farmer", &"weaver", &"villager", &"messenger",
+]
+const CROWD_VARIANTS: Array[int] = [0, 0, 0, 1, 0, 2, 1, 1, 2, 2]
 const CAMP_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/camp_point.tscn"
 const RECRUIT_POSITIONS: Array[Vector3] = [
 	Vector3(-15.0, 0.9, 0.0),
@@ -76,7 +122,7 @@ var _ally_visuals: Dictionary[int, bool] = {}
 func _ready() -> void:
 	player.global_position = spawn.global_position
 	hud.bind(player, player.stamina)
-	_build_greybox()
+	_build_city()
 	_setup_player_combat()
 	_setup_inventory_and_dialogue()
 	_setup_journal()
@@ -85,6 +131,7 @@ func _ready() -> void:
 	_setup_vespera()
 	_restore_allies()
 	_setup_audio()
+	_bind_environment()
 	hint_label.text = ""
 	hud.show_subtitle(tr("PCH_CIUDAD_ARRIVAL"), 0.0)
 	_update_status()
@@ -471,6 +518,14 @@ func _finish_defense() -> void:
 	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"))
 
 
+## Aplica el perfil gráfico al cielo y al sol del Cusco, como en la llacta y el
+## paso: SSAO en Medio, niebla volumétrica en Alto/Ultra y distancia de sombra.
+func _bind_environment() -> void:
+	var controller: EnvironmentQualityController = get_node_or_null("EnvironmentQualityController") as EnvironmentQualityController
+	if controller != null:
+		controller.bind($WorldEnvironment as WorldEnvironment, $Sun as DirectionalLight3D)
+
+
 func _setup_audio() -> void:
 	CampaignAudio.setup_footsteps(player)
 	CampaignAudio.add_wind(self, -20.0)
@@ -626,56 +681,315 @@ func _setup_inventory_and_dialogue() -> void:
 	hud.dialogue_choice.connect(_on_dialogue_choice)
 
 
-func _build_greybox() -> void:
-	_add_box("Ground", Vector3(0.0, -0.5, 0.0), Vector3(CIUDAD_SIZE, 1.0, CIUDAD_SIZE), GROUND_COLOR, true)
-	_add_box("Plaza", Vector3(0.0, 0.02, 0.0), Vector3(40.0, 0.04, 40.0), PLAZA_COLOR, false)
-	_add_box("Shrine", Vector3(0.0, 1.5, -18.0), Vector3(6.0, 3.0, 6.0), STONE_COLOR, true)
-	_add_box("ShrineStep", Vector3(0.0, 0.2, -14.5), Vector3(8.0, 0.4, 2.0), STONE_COLOR, true)
-	var houses: Array[Vector3] = [
-		Vector3(-20.0, 1.5, -5.0), Vector3(-22.0, 1.5, 10.0),
-		Vector3(20.0, 1.5, -5.0), Vector3(22.0, 1.5, 10.0),
-		Vector3(-15.0, 1.5, 22.0), Vector3(15.0, 1.5, 22.0),
+## Ciudad del Cusco de 1438: terreno, plaza de tierra, santuario, viviendas,
+## muro de pirca, terrazas y multitud. Sustituye el bloqueo gris de la Fase 7
+## sin cambiar la lógica de reclutamiento ni de defensa.
+func _build_city() -> void:
+	_build_terrain()
+	_build_plaza_areas()
+	_build_sanctuary()
+	_build_houses()
+	_build_walls()
+	_build_terraces()
+	_build_crowd()
+
+
+func _build_terrain() -> void:
+	var terrain: Node3D = Node3D.new()
+	terrain.name = "Terrain"
+	add_child(terrain)
+	var plane: PlaneMesh = PlaneMesh.new()
+	plane.size = Vector2(CITY_SIZE, CITY_SIZE)
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = "TerrainMesh"
+	mesh_instance.mesh = plane
+	mesh_instance.material_override = SurfaceMaterials.terrain_material(GRASS_COLOR, ROCK_COLOR, DIRT_COLOR)
+	# El suelo es plano: recibe las sombras de casas y figuras, pero no necesita
+	# proyectar la suya sobre sí mismo.
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	terrain.add_child(mesh_instance)
+	_add_collision_box(terrain, "TerrainBody", Vector3(0.0, -0.5, 0.0), Vector3(CITY_SIZE, 1.0, CITY_SIZE))
+
+
+## La plaza y los caminos se pintan como tierra apisonada sobre el terreno; las
+## cajas quedan ocultas y solo aportan el rectángulo.
+func _build_plaza_areas() -> void:
+	var areas: Array[MeshInstance3D] = [
+		_add_overlay_box("PlazaArea", Vector3(0.0, 0.05, 0.0), Vector3(40.0, 0.1, 40.0)),
+		_add_overlay_box("PathSouth", Vector3(0.0, 0.05, 20.0), Vector3(8.0, 0.1, 20.0)),
+		_add_overlay_box("PathNorth", Vector3(0.0, 0.05, -20.0), Vector3(8.0, 0.1, 20.0)),
+		_add_overlay_box("PathEast", Vector3(20.0, 0.05, 0.0), Vector3(20.0, 0.1, 8.0)),
+		_add_overlay_box("PathWest", Vector3(-20.0, 0.05, 0.0), Vector3(20.0, 0.1, 8.0)),
 	]
-	for index: int in range(houses.size()):
-		_add_box("House%d" % (index + 1), houses[index], Vector3(6.0, 3.0, 5.0), HOUSE_COLOR, true)
-	_add_box("WallNorth", Vector3(0.0, 1.0, -28.0), Vector3(50.0, 2.0, 1.0), STONE_COLOR, true)
-	_add_box("WallWest", Vector3(-28.0, 1.0, 0.0), Vector3(1.0, 2.0, 56.0), STONE_COLOR, true)
-	_add_box("WallEast", Vector3(28.0, 1.0, 0.0), Vector3(1.0, 2.0, 56.0), STONE_COLOR, true)
+	var terrain_mesh: MeshInstance3D = get_node_or_null("Terrain/TerrainMesh") as MeshInstance3D
+	if terrain_mesh != null and terrain_mesh.material_override is ShaderMaterial:
+		SurfaceMaterials.set_overlay_areas(terrain_mesh.material_override as ShaderMaterial, areas)
 
 
-func _add_box(
-	box_name: String,
-	box_position: Vector3,
-	box_size: Vector3,
-	color: Color,
+func _add_overlay_box(box_name: String, at: Vector3, size: Vector3) -> MeshInstance3D:
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = box_name
+	var box: BoxMesh = BoxMesh.new()
+	box.size = size
+	mesh_instance.mesh = box
+	mesh_instance.position = at
+	mesh_instance.visible = false
+	add_child(mesh_instance)
+	return mesh_instance
+
+
+## Santuario modesto al sol: tres gradas de piedra y una capilla de ichu. No es
+## la ciudad monumental posterior a Pachacútec (PCH-022).
+func _build_sanctuary() -> void:
+	var sanctuary: Node3D = Node3D.new()
+	sanctuary.name = "Sanctuary"
+	add_child(sanctuary)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.THATCH, THATCH_TINT)
+	_add_block(sanctuary, "Base", Vector3(0.0, 0.3, -18.0), Vector3(9.0, 0.6, 9.0), stone, true)
+	_add_block(sanctuary, "StepMiddle", Vector3(0.0, 0.9, -18.0), Vector3(7.0, 0.6, 7.0), stone, true)
+	_add_block(sanctuary, "StepTop", Vector3(0.0, 1.5, -18.0), Vector3(5.0, 0.6, 5.0), stone, true)
+	_add_block(sanctuary, "Shrine", Vector3(0.0, 2.4, -18.0), Vector3(3.0, 1.2, 3.0), stone, true)
+	for side: float in [-1.0, 1.0]:
+		_add_block(sanctuary, "Pillar%s" % ("West" if side < 0.0 else "East"),
+			Vector3(2.2 * side, 2.4, -18.0), Vector3(0.45, 2.0, 0.45), stone, true)
+	var roof: MeshInstance3D = MeshInstance3D.new()
+	roof.name = "Roof"
+	roof.position = Vector3(0.0, 3.6, -18.0)
+	var prism: PrismMesh = PrismMesh.new()
+	prism.size = Vector3(4.6, 1.4, 4.6)
+	roof.mesh = prism
+	roof.material_override = thatch
+	sanctuary.add_child(roof)
+	# Puerta oscura en la cara sur: el santuario se lee como recinto, no como
+	# un pedestal macizo.
+	var shadow: StandardMaterial3D = StandardMaterial3D.new()
+	shadow.albedo_color = Color(0.05, 0.04, 0.03, 1.0)
+	shadow.roughness = 1.0
+	_add_block(sanctuary, "Doorway", Vector3(0.0, 2.5, -16.46), Vector3(1.2, 1.6, 0.06), shadow, false)
+
+
+## Catorce viviendas de piedra y ichu con los modelos definitivos, sus props y
+## colisión. El modelo oculta el bloqueo y conserva la colisión si la trae.
+func _build_houses() -> void:
+	var houses: Node3D = Node3D.new()
+	houses.name = "Houses"
+	add_child(houses)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.THATCH, THATCH_TINT)
+	for index: int in range(HOUSE_POSITIONS.size()):
+		_add_house(houses, index, HOUSE_POSITIONS[index], stone, thatch)
+
+
+func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch: Material) -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "House%02d" % (index + 1)
+	root.position = at
+	parent.add_child(root)
+	root.look_at(Vector3(0.0, at.y, 0.0), Vector3.UP)
+	root.rotate_y(deg_to_rad(HOUSE_YAW_JITTER[index % HOUSE_YAW_JITTER.size()]))
+	var base: Node3D = _add_block(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, true)
+	var roof: MeshInstance3D = MeshInstance3D.new()
+	roof.name = "Roof"
+	roof.position = Vector3(0.0, 3.25, 0.0)
+	var prism: PrismMesh = PrismMesh.new()
+	prism.size = Vector3(6.6, 1.5, 5.6)
+	roof.mesh = prism
+	roof.material_override = thatch
+	root.add_child(roof)
+	root.add_to_group("houses")
+	var blockout: Array[Node3D] = [roof]
+	var collisions: Array[Node] = []
+	for child: Node in base.get_children():
+		if child is MeshInstance3D:
+			blockout.append(child as MeshInstance3D)
+		elif child is CollisionShape3D:
+			collisions.append(child)
+	var slot: ModelSlot = ModelSlot.new()
+	slot.name = "ModelSlot"
+	slot.position = Vector3.ZERO
+	slot.model_paths = [MODEL_DIR + MODEL_HOUSES[index % MODEL_HOUSES.size()]]
+	slot.blockout_nodes = blockout
+	slot.blockout_collisions = collisions
+	root.add_child(slot)
+	SurfaceMaterials.apply_to_model(slot.model)
+	_add_house_props(root, index)
+
+
+## Cántaros y leña delante de la vivienda. El frente mira a −Z local.
+func _add_house_props(root: Node3D, index: int) -> void:
+	var variant: int = index % MODEL_HOUSES.size()
+	var front: float = -HOUSE_DEPTHS[variant] * 0.5 - 0.45
+	var left_x: float = HOUSE_LEFT_PROP_X[variant]
+	var props: Array[Array] = []
+	match index % 3:
+		0:
+			props = [
+				[MODEL_PROP_JAR, Vector3(1.8, 0.0, front)],
+				[MODEL_PROP_JAR, Vector3(2.3, 0.0, front - 0.25)],
+				[MODEL_PROP_FIREWOOD, Vector3(left_x, 0.0, front)],
+			]
+		1:
+			props = [
+				[MODEL_PROP_FIREWOOD, Vector3(2.0, 0.0, front)],
+				[MODEL_PROP_JAR, Vector3(left_x - 0.2, 0.0, front)],
+			]
+		_:
+			props = [[MODEL_PROP_JAR, Vector3(2.0, 0.0, front)]]
+	for prop_index: int in range(props.size()):
+		var entry: Array = props[prop_index]
+		var file: String = entry[0]
+		var at: Vector3 = entry[1]
+		var slot: ModelSlot = ModelSlot.new()
+		slot.name = "Prop%d" % prop_index
+		slot.position = at
+		slot.model_paths = [MODEL_DIR + file]
+		root.add_child(slot)
+		SurfaceMaterials.apply_to_model(slot.model)
+		slot.rotation.y = 0.35 * float((index + prop_index) % 3 - 1)
+
+
+## Muro de pirca seca con portón al sur. La malla de piedras es una sola llamada
+## de dibujo; la colisión va en bloques separados.
+func _build_walls() -> void:
+	var walls: Node3D = Node3D.new()
+	walls.name = "Walls"
+	add_child(walls)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT, true)
+	# Dos caras por muro: la de dentro y la de fuera. El jugador puede salir por
+	# el portón y mirar atrás; una pirca de una sola cara desaparecería.
+	var faces: Array[StoneWall.Face] = [
+		StoneWall.Face.new(Vector3(-WALL_RADIUS, 0.0, -WALL_RADIUS), Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, 1.0), WALL_RADIUS * 2.0, 2.2),
+		StoneWall.Face.new(Vector3(-WALL_RADIUS, 0.0, -WALL_RADIUS), Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), WALL_RADIUS * 2.0, 2.2),
+		StoneWall.Face.new(Vector3(-WALL_RADIUS, 0.0, -WALL_RADIUS), Vector3(0.0, 0.0, 1.0), Vector3(1.0, 0.0, 0.0), WALL_RADIUS * 2.0, 2.2),
+		StoneWall.Face.new(Vector3(-WALL_RADIUS, 0.0, -WALL_RADIUS), Vector3(0.0, 0.0, 1.0), Vector3(-1.0, 0.0, 0.0), WALL_RADIUS * 2.0, 2.2),
+		StoneWall.Face.new(Vector3(WALL_RADIUS, 0.0, WALL_RADIUS), Vector3(0.0, 0.0, -1.0), Vector3(-1.0, 0.0, 0.0), WALL_RADIUS * 2.0, 2.2),
+		StoneWall.Face.new(Vector3(WALL_RADIUS, 0.0, WALL_RADIUS), Vector3(0.0, 0.0, -1.0), Vector3(1.0, 0.0, 0.0), WALL_RADIUS * 2.0, 2.2),
+		StoneWall.Face.new(Vector3(-WALL_RADIUS, 0.0, WALL_RADIUS), Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), WALL_RADIUS - 6.0, 2.2),
+		StoneWall.Face.new(Vector3(-WALL_RADIUS, 0.0, WALL_RADIUS), Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, 1.0), WALL_RADIUS - 6.0, 2.2),
+		StoneWall.Face.new(Vector3(6.0, 0.0, WALL_RADIUS), Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), WALL_RADIUS - 6.0, 2.2),
+		StoneWall.Face.new(Vector3(6.0, 0.0, WALL_RADIUS), Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, 1.0), WALL_RADIUS - 6.0, 2.2),
+	]
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = "WallMesh"
+	mesh_instance.mesh = StoneWall.build(faces, 1438)
+	mesh_instance.material_override = stone
+	walls.add_child(mesh_instance)
+	_add_collision_box(walls, "North", Vector3(0.0, 1.1, -WALL_RADIUS), Vector3(WALL_RADIUS * 2.0, 2.2, 0.6))
+	_add_collision_box(walls, "West", Vector3(-WALL_RADIUS, 1.1, 0.0), Vector3(0.6, 2.2, WALL_RADIUS * 2.0))
+	_add_collision_box(walls, "East", Vector3(WALL_RADIUS, 1.1, 0.0), Vector3(0.6, 2.2, WALL_RADIUS * 2.0))
+	_add_collision_box(walls, "SouthWest", Vector3(-18.0, 1.1, WALL_RADIUS), Vector3(24.0, 2.2, 0.6))
+	_add_collision_box(walls, "SouthEast", Vector3(18.0, 1.1, WALL_RADIUS), Vector3(24.0, 2.2, 0.6))
+	for side: String in ["North", "South", "West", "East"]:
+		var at: Vector3 = Vector3.ZERO
+		var size: Vector3 = Vector3.ONE
+		match side:
+			"North":
+				at = Vector3(0.0, 2.0, -BOUNDARY_RADIUS)
+				size = Vector3(BOUNDARY_RADIUS * 2.0, 4.0, 1.0)
+			"South":
+				at = Vector3(0.0, 2.0, BOUNDARY_RADIUS)
+				size = Vector3(BOUNDARY_RADIUS * 2.0, 4.0, 1.0)
+			"West":
+				at = Vector3(-BOUNDARY_RADIUS, 2.0, 0.0)
+				size = Vector3(1.0, 4.0, BOUNDARY_RADIUS * 2.0)
+			"East":
+				at = Vector3(BOUNDARY_RADIUS, 2.0, 0.0)
+				size = Vector3(1.0, 4.0, BOUNDARY_RADIUS * 2.0)
+		_add_collision_box(walls, "Boundary" + side, at, size)
+
+
+## Terrazas de cultivo al este del muro: tres fajas de tierra sostenidas por
+## pirca, visibles por encima de la muralla.
+func _build_terraces() -> void:
+	var terraces: Node3D = Node3D.new()
+	terraces.name = "Terraces"
+	add_child(terraces)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT, true)
+	var soil: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.SOIL, SOIL_TINT)
+	for index: int in range(3):
+		var x: float = 36.0 + 8.0 * float(index)
+		var top: float = 0.8 * float(index + 1)
+		_add_block(terraces, "Field%d" % index, Vector3(x, top * 0.5, 0.0), Vector3(8.0, top, 30.0), soil, true)
+		_add_block(terraces, "FieldTop%d" % index, Vector3(x, top + 0.01, 0.0), Vector3(8.0, 0.02, 30.0), soil, false)
+		var faces: Array[StoneWall.Face] = [
+			StoneWall.Face.new(Vector3(x - 4.0, 0.0, -15.0), Vector3(0.0, 0.0, 1.0), Vector3(-1.0, 0.0, 0.0), 30.0, top),
+		]
+		var wall: MeshInstance3D = MeshInstance3D.new()
+		wall.name = "Wall%d" % index
+		wall.mesh = StoneWall.build(faces, 700 + index)
+		wall.material_override = stone
+		terraces.add_child(wall)
+
+
+## Multitud de refugiados y vecinos: figuras vestidas que no interactúan. Se
+## colocan en el borde de la plaza y miran al centro; dan escala y vida.
+func _build_crowd() -> void:
+	var crowd: Node3D = Node3D.new()
+	crowd.name = "Crowd"
+	add_child(crowd)
+	for index: int in range(CROWD_POSITIONS.size()):
+		_add_crowd_figure(crowd, index, CROWD_POSITIONS[index], CROWD_ROLES[index], CROWD_VARIANTS[index])
+
+
+func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName, variant: int) -> void:
+	var visual: MannequinVisual = MannequinVisual.new()
+	visual.name = "Crowd%02d" % index
+	visual.skin = true
+	visual.tint = DressedMannequin.SKIN_COLOR
+	visual.position = at
+	parent.add_child(visual)
+	var outfit: DressedMannequin = DressedMannequin.new()
+	outfit.name = "Outfit"
+	outfit.role = role
+	outfit.variant = variant
+	visual.add_child(outfit)
+	var target: Vector3 = Vector3(0.0, at.y, 0.0)
+	if at.distance_to(target) > 0.1:
+		visual.look_at(target, Vector3.UP)
+	visual.play(&"Idle", 0.85 + 0.1 * float(index % 3))
+
+
+## Bloque con material del proyecto; si [param collision] es verdadero, el
+## bloque es un cuerpo estático con su malla y su caja de colisión.
+func _add_block(
+	parent: Node3D,
+	node_name: String,
+	at: Vector3,
+	size: Vector3,
+	material: Material,
 	collision: bool
 ) -> Node3D:
 	var root: Node3D = null
 	if collision:
-		var body: StaticBody3D = StaticBody3D.new()
-		body.collision_layer = 1
-		body.collision_mask = 0
-		var shape: CollisionShape3D = CollisionShape3D.new()
-		var box_shape: BoxShape3D = BoxShape3D.new()
-		box_shape.size = box_size
-		shape.shape = box_shape
-		body.add_child(shape)
-		root = body
+		root = _add_collision_box(parent, node_name, at, size)
 	else:
 		root = Node3D.new()
-	root.name = box_name
-	root.position = box_position
+		root.name = node_name
+		root.position = at
+		parent.add_child(root)
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	var mesh: BoxMesh = BoxMesh.new()
-	mesh.size = box_size
-	mesh_instance.mesh = mesh
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = color
-	material.roughness = 1.0
+	var box: BoxMesh = BoxMesh.new()
+	box.size = size
+	mesh_instance.mesh = box
 	mesh_instance.material_override = material
 	root.add_child(mesh_instance)
-	add_child(root)
 	return root
+
+
+func _add_collision_box(parent: Node3D, node_name: String, at: Vector3, size: Vector3) -> StaticBody3D:
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = node_name
+	body.position = at
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var box_shape: BoxShape3D = BoxShape3D.new()
+	box_shape.size = size
+	shape.shape = box_shape
+	body.add_child(shape)
+	parent.add_child(body)
+	return body
 
 
 static func _ally_key(index: int) -> StringName:

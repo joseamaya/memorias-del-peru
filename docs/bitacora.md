@@ -10,6 +10,8 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Cusco de 1438 construido | Terreno con plaza y caminos de tierra, santuario de gradas con puerta, catorce casas con los modelos definitivos y sus props, muro de pirca con portón, terrazas de cultivo y diez figuras vestidas de multitud. 154 pruebas en verde; `test_ciudad_art` | — |
+| Rendimiento final de la Fase 8 | Mediana de tres pasadas en la Intel UHD 770 a 1920 × 1080: llacta 70,5 / paso 61,0 / Cusco 62,9 FPS en Medio; 129,1 / 137,8 / 123,9 en Bajo. Los terrenos del paso y el Cusco no proyectan sombra y el `fbm` de las nubes baja a tres octavas para que el paso supere los 60 | — |
 | Audio de los actos II y III | Viento en el paso y el Cusco, agua del arroyo, fuego del campamento, murmullo de la plaza, tambor de combate, zumbido e impacto de honda y golpe de porra; pasos del jugador en tierra y piedra. Sonidos sintetizados con `tools/synthesize_audio.py`; 153 pruebas en verde | — |
 | Tela, sandalias y textiles (ADR-0042) | Lliclla de un paño largo anclada a la cadera, con franjas finas; sandalias que siguen la posición del pie; textiles procedurales en túnica, falda y lliclla. 152 pruebas en verde; medición provisional con carga 5,6 | — |
 | Vestuario del acto I completo (ADR-0042) | Los nueve personajes del acto I llevan túnica, falda o faldón, cinturón, chuspa, pelo, vincha y cara anclados al maniquí; el curaca lleva manto y el mensajero q'ipi. 152 pruebas en verde | — |

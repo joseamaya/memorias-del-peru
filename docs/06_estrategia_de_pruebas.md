@@ -172,6 +172,7 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_campaign_state` | Banderas entre escenas: fijar, leer, borrar y limpiar; el valor 0 elimina la bandera (ADR-0041) |
 | `test_npc_rig` | Los nueve personajes del acto I usan el maniquí UAL1: esqueleto humanoide, clips base, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
 | `test_ciudad` | El Cusco carga con reclutas, Cusi y el viejo de la víspera vestidos sobre el maniquí; recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
+| `test_ciudad_art` | La ciudad tiene terreno con material, santuario, catorce casas con modelo cargado, muro de pirca, terrazas y diez figuras de multitud vestidas; las casas están en el grupo `houses` |
 | `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
 | `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
 | `test_campaign_audio` | Los recursos de audio de los actos II y III existen; los bucles WAV y OGG se configuran al cargar y los pasos de tierra y piedra están completos |
@@ -212,6 +213,16 @@ godot --path . --script res://tests/measure_paso_performance.gd
 Gira la vista sobre el paso durante 8 s por perfil, sin vsync y con
 `Engine.max_fps = 0`; imprime FPS medio, p1, frame medio y p99, draw calls y
 memoria de vídeo para Bajo y Medio.
+
+Medición del Cusco con multitud y defensa (tampoco forma parte del ejecutor):
+
+```bash
+godot --path . --script res://tests/measure_ciudad_performance.gd
+```
+
+Arranca la defensa, mantiene al jugador con vida y gira la vista sobre la plaza
+con las diez figuras de multitud y los chancas acercándose; mismas métricas
+que la medición del paso.
 
 El jugador recorre la plaza, el oeste, las terrazas y el mirador, bebe del quero, deja la ofrenda, habla con la tejedora, espera al mensajero y toca el pututu en la llamada. Exige `DEMO_OK`: el evento llega a `DONE`, el quero, la ofrenda y la tejedora responden y el pututu lo toca el jugador. Es la prueba de extremo a extremo del vertical slice: entrada, interacción, evento y cierre ordenado.
 

@@ -48,6 +48,39 @@ func test_ciudad_scene_starts() -> bool:
 	return ok
 
 
+## La ciudad de 1438 tiene terreno, santuario, catorce casas con modelo,
+## muro de pirca, terrazas y una multitud vestida que no interactúa.
+func test_ciudad_art() -> bool:
+	var ciudad: Node = _spawn()
+	if ciudad == null:
+		return false
+	var terrain: MeshInstance3D = ciudad.get_node_or_null("Terrain/TerrainMesh") as MeshInstance3D
+	var houses: Node = ciudad.get_node_or_null("Houses")
+	var crowd: Node = ciudad.get_node_or_null("Crowd")
+	var walls: Node = ciudad.get_node_or_null("Walls")
+	var sanctuary: Node = ciudad.get_node_or_null("Sanctuary")
+	var terraces: Node = ciudad.get_node_or_null("Terraces")
+	var ok: bool = terrain != null and terrain.material_override is ShaderMaterial
+	ok = ok and sanctuary != null and walls != null and terraces != null
+	ok = ok and walls.get_node_or_null("WallMesh") != null
+	ok = ok and houses != null and houses.get_child_count() == 14
+	if houses != null:
+		for house: Node in houses.get_children():
+			var slot: ModelSlot = house.get_node_or_null("ModelSlot") as ModelSlot
+			ok = ok and house.is_in_group("houses")
+			ok = ok and slot != null and slot.model != null
+	ok = ok and crowd != null and crowd.get_child_count() == 10
+	if crowd != null:
+		for figure: Node in crowd.get_children():
+			var visual: MannequinVisual = figure as MannequinVisual
+			ok = ok and visual != null
+			if visual != null:
+				var outfit: DressedMannequin = visual.get_node_or_null("Outfit") as DressedMannequin
+				ok = ok and outfit != null and outfit.is_built()
+	ciudad.free()
+	return ok
+
+
 func test_ciudad_recruits_and_defense() -> bool:
 	var state: CampaignStateService = _state()
 	if state == null:

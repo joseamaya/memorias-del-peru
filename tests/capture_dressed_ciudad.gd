@@ -24,6 +24,7 @@ func _go() -> void:
 	for _i: int in range(6):
 		await process_frame
 	await _shot(player, "04_defensa", Vector3(0.0, 0.15, 6.0), Vector3(0.0, 1.0, -4.0))
+	await _shot(player, "05_muralla", Vector3(0.0, 0.15, 40.0), Vector3(0.0, 1.2, 30.0))
 	print("CIUDAD_VESTIDA_OK")
 	quit(0)
 

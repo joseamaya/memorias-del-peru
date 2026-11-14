@@ -672,6 +672,9 @@ func _build_terrain() -> void:
 	var material: ShaderMaterial = SurfaceMaterials.terrain_material(GRASS_COLOR, ROCK_COLOR, DIRT_COLOR)
 	material.set_shader_parameter("steep_height_range", Vector2(2.5, 6.0))
 	mesh_instance.material_override = material
+	# El terreno recibe sombra pero no la proyecta: es la malla más grande del
+	# mapa y su sombra no aporta volumen frente a rocas, vegetación y refugio.
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	terrain.add_child(mesh_instance)
 	var body: StaticBody3D = StaticBody3D.new()
 	body.name = "TerrainBody"

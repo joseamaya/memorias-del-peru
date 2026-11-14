@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** rendimiento en reposo y validación de autor.
+**Siguiente:** validación de autor del arco completo.
 
 Reglas:
 
@@ -373,8 +373,8 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
-- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(Parcial: el acto II mide 60,5 FPS de media en Medio y 128,6 en Bajo con carga 1,3; con el equipo cargado baja a ~58 en Medio. El objetivo vinculante de Bajo se cumple; el de Medio queda en el límite y debe repetirse en reposo. Falta el Cusco con multitud.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 153 pruebas en verde.)*
+- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 70,5 / paso 61,0 / Cusco 62,9 FPS en Medio y 129,1 / 137,8 / 123,9 en Bajo. La llacta y el paso con carga 0,4; el Cusco con SSAO y carga 10,6, la condición más conservadora. Detalle en docs/08.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 154 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
@@ -391,5 +391,9 @@ procedurales con franjas finas en túnica, falda y lliclla. El acto II conserva
 el paisaje del desfiladero, el arroyo, el refugio y la vegetación. El audio de
 los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de
 combate y golpes de honda y porra; los pasos del jugador suenan en tierra y
-piedra. 153 pruebas en verde; la medición con tela y sandalias es provisional
-por la carga del equipo. Pendiente: rendimiento en reposo y validación de autor.
+piedra. El Cusco deja el bloqueo gris: terreno con plaza y caminos de tierra,
+santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
+terrazas de cultivo y diez figuras vestidas de multitud. El rendimiento final
+en la GPU integrada de referencia supera los 60 FPS en Medio en los tres actos,
+también con la multitud y la defensa en curso. 154 pruebas en verde. Pendiente:
+validación de autor.

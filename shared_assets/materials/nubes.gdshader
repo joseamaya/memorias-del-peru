@@ -31,9 +31,11 @@ float value_noise(vec2 p) {
 }
 
 float fbm(vec2 p) {
+	// Tres octavas bastan para nubes altas: la quinta solo añadía grano que se
+	// pierde a la distancia de la cúpula y encarecía todo el cielo.
 	float value = 0.0;
 	float amplitude = 0.5;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 3; i++) {
 		value += amplitude * value_noise(p);
 		p *= 2.03;
 		amplitude *= 0.5;
