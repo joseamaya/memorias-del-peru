@@ -77,6 +77,10 @@ var _turn_rate: float = TURN_RATE
 
 
 func _initialize() -> void:
+	if OS.get_cmdline_user_args().has("--video"):
+		# Lienzo fijo a 1080p para que el vídeo no recorte el HUD.
+		root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+		root.content_scale_size = Vector2i(1920, 1080)
 	promo = OS.get_cmdline_user_args().has("--promo")
 	if promo:
 		_turn_rate = PROMO_TURN_RATE

@@ -12,7 +12,7 @@ func test_hud_pause_and_stamina_label() -> bool:
 	tree.root.add_child(hud)
 	var panel: Control = hud.get_node_or_null("PausePanel") as Control
 	var label: Label = hud.get_node_or_null("PausePanel/PauseLabel") as Label
-	var stamina_label: Label = hud.get_node_or_null("StaminaBar/StaminaLabel") as Label
+	var stamina_label: Label = hud.get_node_or_null("StaminaLabel") as Label
 	var ok: bool = panel != null and label != null and stamina_label != null
 	if ok:
 		ok = ok and not panel.visible and label.visible

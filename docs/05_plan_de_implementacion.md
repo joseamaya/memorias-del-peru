@@ -379,7 +379,7 @@ autor del arco completo corresponde a la Fase 8.
 - [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 158 pruebas en verde; las capturas y mediciones lanzadas con `--script` ya no fallan por los autoloads.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
-- [ ] La documentación refleja lo construido.
+- [x] La documentación refleja lo construido. *(2026-11-14: docs/05 con las cifras finales de rendimiento y pruebas; docs/06 con las herramientas de vídeo; índice de campaña al día; protocolo de validación del arco en `documentation/validacion_arco.md`.)*
 
 **Estado (2026-11-14).** El acto I recupera los modelos MakeHuman/Rocketbox
 (CC0/MIT) que ya estaban en el repositorio: la tejedora, el agricultor, el

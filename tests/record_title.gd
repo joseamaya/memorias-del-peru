@@ -17,6 +17,10 @@ func _initialize() -> void:
 
 
 func _start() -> void:
+	# Lienzo fijo a 1080p: con el aspecto "expand" del proyecto, una ventana
+	# más ancha ensancha el lienzo y el vídeo recorta el HUD por la izquierda.
+	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	root.content_scale_size = Vector2i(1920, 1080)
 	change_scene_to_file(TITLE)
 	await process_frame
 	await process_frame
