@@ -252,7 +252,9 @@ La misma partida sirve para grabar un vídeo de demostración con Movie Maker (A
 godot --path . --write-movie demo.avi --fixed-fps 30 --script res://tests/demo_playthrough.gd
 ```
 
-Vídeo del arco completo, un clip por acto y luego concatenados:
+Vídeo del arco completo, un clip por acto y luego concatenados. La resolución
+se elige con `--resolution`; a 1080p la grabación va a velocidad real, y con la
+máquina cargada conviene bajarla a 1280 × 720:
 
 ```bash
 godot --path . --write-movie build/titulo.avi --fixed-fps 30 --script res://tests/record_title.gd
