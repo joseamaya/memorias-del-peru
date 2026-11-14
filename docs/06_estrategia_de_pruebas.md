@@ -252,6 +252,22 @@ La misma partida sirve para grabar un vídeo de demostración con Movie Maker (A
 godot --path . --write-movie demo.avi --fixed-fps 30 --script res://tests/demo_playthrough.gd
 ```
 
+Vídeo del arco completo, un clip por acto y luego concatenados:
+
+```bash
+godot --path . --write-movie build/titulo.avi --fixed-fps 30 --script res://tests/record_title.gd
+godot --path . --write-movie build/acto1.avi --fixed-fps 30 --script res://tests/demo_playthrough.gd
+godot --path . --write-movie build/acto2.avi --fixed-fps 30 --script res://tests/record_paso.gd
+godot --path . --write-movie build/acto3.avi --fixed-fps 30 --script res://tests/record_ciudad.gd
+ffmpeg -f concat -safe 0 -i lista.txt -c:v libx264 -crf 22 -pix_fmt yuv420p \
+    -c:a aac -b:a 192k -movflags +faststart build/pachacutec-demo.mp4
+```
+
+`record_paso` y `record_ciudad` conducen al jugador con las mismas acciones de
+entrada que la partida real (caminar, interactuar, atacar) y cierran los
+diálogos solos. Para el vídeo mantienen la salud llena y, en el Cusco, eligen
+la opción que suma aliados; el resto del guion no cambia.
+
 Capturas fijas para comparar materiales (tampoco forma parte del ejecutor):
 
 ```bash

@@ -57,8 +57,7 @@ func _start() -> void:
 	# queda sin atacar.
 	var pc: CharacterState = _world.get_node_or_null("PlayerFPS/CharacterState") as CharacterState
 	if pc != null:
-		pc.max_health = 5000.0
-		pc.health = 5000.0
+		pc.health = pc.max_health
 	var stamina: StaminaComponent = _player.get_node_or_null("StaminaComponent") as StaminaComponent
 	if stamina != null:
 		stamina.max_stamina = 1000.0
@@ -71,6 +70,7 @@ func _process(delta: float) -> bool:
 		return false
 	_clock += delta
 	_step_time += delta
+	_keep_health()
 	_close_dialogue()
 	if _step >= 12 or _clock > MAX_GAME_SECONDS:
 		return _finish()
@@ -81,6 +81,7 @@ func _process(delta: float) -> bool:
 			var index: int = _step / 2
 			_turn_towards(RECRUITS[index] + Vector3(0.0, 1.1, 0.0), delta)
 			if _step_time > 0.9:
+				_prefer_first = true
 				_interact()
 				print("CIUDAD habla con el grupo ", index)
 				_advance()
@@ -106,6 +107,14 @@ func _process(delta: float) -> bool:
 			if _step_time > 4.0:
 				_advance()
 	return false
+
+
+## Solo para el vídeo: la salud vuelve al máximo para no morir ni mostrar un
+## número inflado en el HUD.
+func _keep_health() -> void:
+	var pc: CharacterState = _world.get_node_or_null("PlayerFPS/CharacterState") as CharacterState
+	if pc != null and pc.health < pc.max_health:
+		pc.health = pc.max_health
 
 
 func _combat(delta: float) -> void:

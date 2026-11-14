@@ -44,8 +44,7 @@ func _start() -> void:
 	# grabación no acabe en la pantalla de derrota.
 	var pc: CharacterState = _world.get_node_or_null("PlayerFPS/CharacterState") as CharacterState
 	if pc != null:
-		pc.max_health = 5000.0
-		pc.health = 5000.0
+		pc.health = pc.max_health
 
 
 func _process(delta: float) -> bool:
@@ -54,6 +53,7 @@ func _process(delta: float) -> bool:
 		return false
 	_clock += delta
 	_step_time += delta
+	_keep_health()
 	_close_dialogue()
 	if _step >= 8 or _clock > MAX_GAME_SECONDS:
 		return _finish()
@@ -88,6 +88,13 @@ func _process(delta: float) -> bool:
 			if _step_time > 3.0:
 				_advance()
 	return false
+
+
+## Solo para el vídeo: la salud vuelve al máximo para no morir.
+func _keep_health() -> void:
+	var pc: CharacterState = _world.get_node_or_null("PlayerFPS/CharacterState") as CharacterState
+	if pc != null and pc.health < pc.max_health:
+		pc.health = pc.max_health
 
 
 func _combat(delta: float) -> void:

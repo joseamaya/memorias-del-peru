@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Vídeo del arco y HUD del aliento | La etiqueta del aliento salía cortada por la izquierda: pasa a colgar del HUD con anclaje abajo-izquierda. Se añaden `record_title.gd`, `record_paso.gd` y `record_ciudad.gd` para grabar los tres actos por separado y concatenarlos. 158 pruebas en verde | — |
 | Pendientes de pulido y validación | Clip `death` real (34 fotogramas) que sustituye el tween de caída; la multitud gira la cara al jugador cuando pasa cerca; techo de los puestos con cumbrera; piel con más dispersión y menos borde; los autoloads se resuelven por el árbol (`AudioManagerService.instance()`, `GameManagerService.instance()`) para que las capturas con `--script` no fallen al compilar; protocolo de validación del arco en `documentation/validacion_arco.md`. 158 pruebas en verde | — |
 | Caída del enemigo derribado | El chanca reproduce `hit` y el modelo gira sobre sus pies hasta quedar en el suelo (0,85 s) antes de ocultarse, en lugar de desaparecer de golpe. Sin clip nuevo: es un tween sobre el nodo del modelo. 158 pruebas en verde, con `test_paso_defeated_enemy_falls`; `ARCO_OK`, `DEMO_OK` y `PASO_SMOKE` | — |
 | Cielo y polvo en el Cusco | La ciudad gana la cúpula de nubes procedural que ya tenían la llacta y el paso, con cobertura y escala ajustadas para verla de cerca, y polvo en suspensión sobre la plaza. El Cusco se queda en 73,0 FPS en Medio con 329–332 draw calls. 157 pruebas en verde | — |
