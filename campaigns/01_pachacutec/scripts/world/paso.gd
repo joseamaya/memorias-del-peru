@@ -342,9 +342,9 @@ func _setup_camp() -> void:
 		fire_log.position = Vector3(CAMP_POSITION.x + offset.x, ground + 0.12, CAMP_POSITION.z + offset.z)
 		fire_log.rotation_degrees = Vector3(0.0, 0.0, 90.0)
 		add_child(fire_log)
-	_add_camp_npc(Vector3(-5.4, 0.0, 17.2), Color(0.7, 0.55, 0.42, 1.0))
-	_add_camp_npc(Vector3(-2.6, 0.0, 17.4), Color(0.48, 0.36, 0.28, 1.0))
-	_add_camp_npc(Vector3(-4.2, 0.0, 19.4), Color(0.55, 0.42, 0.32, 1.0))
+	_add_camp_npc(Vector3(-5.4, 0.0, 17.2), &"villager", 0)
+	_add_camp_npc(Vector3(-2.6, 0.0, 17.4), &"farmer", 0)
+	_add_camp_npc(Vector3(-4.2, 0.0, 19.4), &"messenger", 0)
 	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
 	var camp: CampPoint = instance as CampPoint
 	var body: Node3D = instance as Node3D
@@ -356,12 +356,18 @@ func _setup_camp() -> void:
 	camp.requested.connect(_on_camp_requested)
 
 
-func _add_camp_npc(at: Vector3, tint: Color) -> void:
+func _add_camp_npc(at: Vector3, role: StringName, variant: int) -> void:
 	var visual: MannequinVisual = MannequinVisual.new()
 	visual.name = "CampVisual"
-	visual.tint = tint
+	visual.skin = true
+	visual.tint = DressedMannequin.SKIN_COLOR
 	visual.position = Vector3(at.x, _height_at(at.x, at.z), at.z)
 	add_child(visual)
+	var outfit: DressedMannequin = DressedMannequin.new()
+	outfit.name = "Outfit"
+	outfit.role = role
+	outfit.variant = variant
+	visual.add_child(outfit)
 	var target: Vector3 = Vector3(CAMP_POSITION.x, visual.position.y, CAMP_POSITION.z)
 	if visual.position.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)

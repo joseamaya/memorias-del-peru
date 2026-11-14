@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** aprobar el prototipo de maniquí vestido y extenderlo al acto I.
+**Siguiente:** pasada de tela (lliclla y caída), sandalias y textiles; después, audio y validación.
 
 Reglas:
 
@@ -362,7 +362,7 @@ autor del arco completo corresponde a la Fase 8.
 ### Entregables
 
 - **Maniquí UAL1 como base definitiva** (ADR-0042): cuerpo, esqueleto y animación de todos los personajes; los modelos MakeHuman/Rocketbox quedan como referencia y no se cargan en escena.
-- **Vestuario y rostro como capas:** prototipo en la tejedora (túnica, falda, chuspa, pelo, vincha, ojos y boca) antes de extenderlo a los nueve del acto I y a los actos II–III.
+- **Vestuario y rostro como capas:** aplicado a los nueve del acto I, a la comitiva y los chancas del acto II y a los reclutas, Cusi, aliados y defensores del acto III.
 - **Paisaje del acto II:** desfiladero, arroyo, refugio, vegetación y cielo (hecho).
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
 - Equilibrio de combate, economía de objetos y duración.
@@ -374,18 +374,20 @@ autor del arco completo corresponde a la Fase 8.
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(Parcial: el acto II mide 60,5 FPS de media en Medio y 128,6 en Bajo con carga 1,3; con el equipo cargado baja a ~58 en Medio. El objetivo vinculante de Bajo se cumple; el de Medio queda en el límite y debe repetirse en reposo. Falta el Cusco con multitud.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 151 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 152 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
 
-**Estado (2026-11-13).** Se corrige la dirección de arte con [ADR-0042](adr/0042-maniqui-vestido.md):
+**Estado (2026-11-14).** Se corrige la dirección de arte con [ADR-0042](adr/0042-maniqui-vestido.md):
 todos los actos vuelven al maniquí UAL1, que mira a +Z y se gira 180° para
 coincidir con la orientación de la lógica. Los modelos MakeHuman/Rocketbox
-quedan como referencia, fuera de escena. La tejedora lleva el primer prototipo
-de maniquí vestido: túnica, falda, chuspa, pelo, vincha, ojos y boca anclados a
-huesos; la lliclla rígida se retira a la espera de una pasada de tela. El acto
-II conserva el paisaje del desfiladero, el arroyo, el refugio y la vegetación.
-151 pruebas en verde; la medición del paso debe repetirse con los maniquíes.
-Pendiente: aprobar el prototipo, extender el vestuario al acto I y a los actos
-II–III, audio y validación de autor.
+quedan como referencia, fuera de escena. El vestuario y el rostro se aplican
+como capas ancladas a huesos: los nueve del acto I (tejedora, agricultor,
+mensajero, curaca, principales y vecinos), la comitiva y los chancas del acto II
+y los reclutas, Cusi, aliados y defensores del acto III. La lliclla rígida se
+retira a la espera de una pasada de tela; faltan sandalias y textiles con
+franjas. El acto II conserva el paisaje del desfiladero, el arroyo, el refugio y
+la vegetación. 152 pruebas en verde; la medición del paso debe repetirse con los
+maniquíes vestidos. Pendiente: tela, sandalias, textiles, audio y validación de
+autor.

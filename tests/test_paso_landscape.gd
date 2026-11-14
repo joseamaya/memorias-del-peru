@@ -86,11 +86,16 @@ func test_paso_actors_use_mannequins() -> bool:
 		ok = ok and visual != null and visual.model() != null
 		ok = ok and visual != null and visual.model().find_child("AnimationPlayer", true, false) != null
 		ok = ok and visual != null and absf(absf(visual.model().rotation.y) - PI) < 0.01
+		if visual != null:
+			var outfit: DressedMannequin = visual.get_node_or_null("Outfit") as DressedMannequin
+			ok = ok and outfit != null and outfit.role == &"chanca" and outfit.is_built()
 		ok = ok and absf(enemy.global_position.y - paso.height_at(enemy.global_position.x, enemy.global_position.z)) < 0.05
 	var camp: int = 0
 	for child: Node in paso.get_children():
 		if child is MannequinVisual:
 			camp += 1
+			var camp_outfit: DressedMannequin = (child as MannequinVisual).get_node_or_null("Outfit") as DressedMannequin
+			ok = ok and camp_outfit != null and camp_outfit.is_built()
 	ok = ok and camp == 3
 	paso.free()
 	return ok

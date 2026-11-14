@@ -41,11 +41,7 @@ const DEFENSE_POSITIONS: Array[Vector3] = [
 	Vector3(-6.0, 0.0, -2.0),
 	Vector3(0.0, 0.0, 4.0),
 ]
-const RECRUIT_COLORS: Array[Color] = [
-	Color(0.52, 0.4, 0.3, 1.0),
-	Color(0.68, 0.53, 0.4, 1.0),
-	Color(0.46, 0.35, 0.27, 1.0),
-]
+const RECRUIT_ROLES: Array[StringName] = [&"villager", &"curaca", &"villager"]
 const ALLY_POSITIONS: Array[Vector3] = [
 	Vector3(-4.0, 0.0, 2.0),
 	Vector3(4.0, 0.0, 2.0),
@@ -223,7 +219,7 @@ func _setup_recruitment() -> void:
 		body.position = RECRUIT_POSITIONS[index]
 		add_child(point)
 		point.requested.connect(_on_recruit_requested.bind(index))
-		_add_visual_npc(Vector3(RECRUIT_POSITIONS[index].x, 0.0, RECRUIT_POSITIONS[index].z), RECRUIT_COLORS[index])
+		_add_visual_npc(Vector3(RECRUIT_POSITIONS[index].x, 0.0, RECRUIT_POSITIONS[index].z), RECRUIT_ROLES[index], index)
 
 
 func _setup_cusi() -> void:
@@ -238,7 +234,7 @@ func _setup_cusi() -> void:
 	body.position = CUSI_POSITION
 	add_child(point)
 	point.requested.connect(_on_cusi_requested)
-	_add_visual_npc(Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z), Color(0.72, 0.55, 0.42, 1.0))
+	_add_visual_npc(Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z), &"curaca", 0)
 
 
 ## Diario del acto III: guarda la leyenda de los pururaucas como Memoria.
@@ -262,7 +258,7 @@ func _setup_vespera() -> void:
 	body.position = VESPERA_POSITION
 	add_child(point)
 	point.requested.connect(_on_vespera_requested)
-	_add_visual_npc(Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), Color(0.58, 0.55, 0.48, 1.0))
+	_add_visual_npc(Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), &"villager", 2)
 
 
 func _on_vespera_requested() -> void:
@@ -481,12 +477,18 @@ func _restore_allies() -> void:
 			_add_ally_visual(index)
 
 
-func _add_visual_npc(at: Vector3, color: Color) -> void:
+func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> void:
 	var visual: MannequinVisual = MannequinVisual.new()
 	visual.name = "Visual"
-	visual.tint = color
+	visual.skin = true
+	visual.tint = DressedMannequin.SKIN_COLOR
 	visual.position = at
 	add_child(visual)
+	var outfit: DressedMannequin = DressedMannequin.new()
+	outfit.name = "Outfit"
+	outfit.role = role
+	outfit.variant = variant
+	visual.add_child(outfit)
 
 
 func _add_ally_visual(index: int) -> void:
@@ -495,9 +497,15 @@ func _add_ally_visual(index: int) -> void:
 	_ally_visuals[index] = true
 	var visual: MannequinVisual = MannequinVisual.new()
 	visual.name = "Ally%d" % index
-	visual.tint = Color(0.35, 0.45, 0.55, 1.0)
+	visual.skin = true
+	visual.tint = DressedMannequin.SKIN_COLOR
 	visual.position = ALLY_POSITIONS[index]
 	add_child(visual)
+	var outfit: DressedMannequin = DressedMannequin.new()
+	outfit.name = "Outfit"
+	outfit.role = &"villager"
+	outfit.variant = index
+	visual.add_child(outfit)
 
 
 func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:

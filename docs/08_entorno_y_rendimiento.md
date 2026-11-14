@@ -401,7 +401,28 @@ propio. El jugador está quieto en la aparición y la vista gira 0,35 rad/s.
   en reposo antes de dar la cifra por buena.
 - Las draw calls variaron entre 14 y 272 por la misma carga y no se usan como
   referencia. La medición es un orden de magnitud, como las anteriores.
-- La medición se hizo con los actores de modelo propio; tras la reversión a
-  maniquíes ([ADR-0042](adr/0042-maniqui-vestido.md)) hay menos mallas y debe
-  repetirse para dar la cifra por buena.
+- La medición se hizo con los actores de modelo propio; después cambiaron a
+  maniquíes con vestuario ([ADR-0042](adr/0042-maniqui-vestido.md)), que añaden
+  mallas y draw calls, así que debe repetirse para dar la cifra por buena.
 - Falta la medición del Cusco con multitud y batalla (Fase 8).
+
+
+### Medición con maniquíes vestidos (Fase 8, 2026-11-14)
+
+Mismos comandos y condiciones que las mediciones del acto I y del paso, con
+carga del sistema 1,04, 1920 × 1080, sin vsync y con `Engine.max_fps = 0`. La
+llacta y el paso usan ahora maniquíes UAL1 con vestuario y rostro anclados a
+huesos ([ADR-0042](adr/0042-maniqui-vestido.md)); el Cusco queda pendiente.
+
+| Escena | Perfil | FPS medio | FPS p1 |
+|---|---|---|---|
+| Llacta (acto I) | Bajo | 139,6 | 111,1 |
+| Llacta (acto I) | Medio | 70,6 | 62,5 |
+| Paso (acto II) | Bajo | 144,1 | 125,0 |
+| Paso (acto II) | Medio | 63,2 | 58,8 |
+
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con amplio margen.
+- El perfil Medio supera los 60 FPS de media en las dos escenas medidas, aun
+  con las mallas extra de la ropa y las caras.
+- Las cifras siguen siendo un orden de magnitud: la carga del equipo y las
+  draw calls varían entre ejecuciones. Falta el Cusco con multitud y batalla.

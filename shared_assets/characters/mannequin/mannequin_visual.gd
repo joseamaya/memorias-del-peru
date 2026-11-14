@@ -10,6 +10,8 @@ const MODEL_PATH: String = "res://shared_assets/characters/mannequin/ual1_standa
 
 ## Color del cuerpo; se aplica al cargar o al cambiarlo.
 var tint: Color = Color(0.62, 0.48, 0.36, 1.0)
+## Si es `true`, el tinte es piel en lugar de arcilla (maniquí vestido).
+var skin: bool = false
 
 var _model: Node3D = null
 var _player: AnimationPlayer = null
@@ -45,6 +47,7 @@ func model() -> Node3D:
 	return _model
 
 
+
 ## Cambia el color del cuerpo.
 func set_tint(color: Color) -> void:
 	tint = color
@@ -62,7 +65,7 @@ func _apply_tint() -> void:
 		if mesh_instance == null:
 			continue
 		var material: StandardMaterial3D = StandardMaterial3D.new()
-		# Arcilla teñida: el maniquí es un prototipo, no un cuerpo desnudo.
-		material.albedo_color = tint.lerp(Color(0.62, 0.60, 0.55, 1.0), 0.5)
+		# Arcilla teñida para el maniquí liso; piel cuando lleva vestuario.
+		material.albedo_color = tint if skin else tint.lerp(Color(0.62, 0.60, 0.55, 1.0), 0.5)
 		material.roughness = 1.0
 		mesh_instance.material_override = material

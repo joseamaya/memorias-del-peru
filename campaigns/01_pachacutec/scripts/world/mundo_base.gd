@@ -1600,6 +1600,32 @@ static func npc_model_files(_node_name: String) -> Array[String]:
 	return ["res://shared_assets/characters/mannequin/ual1_standard.glb"]
 
 
+## Conjunto de vestuario del maniquí para cada personaje del acto I.
+static func dressed_role(node_name: String) -> StringName:
+	match node_name:
+		"Tejedora":
+			return &"weaver"
+		"Agricultor":
+			return &"farmer"
+		"Mensajero":
+			return &"messenger"
+		"Curaca":
+			return &"curaca"
+		"Principal1", "Principal2":
+			return &"principal"
+	return &"villager"
+
+
+## Variante de color de los vecinos.
+static func dressed_variant(node_name: String) -> int:
+	match node_name:
+		"Habitante2":
+			return 1
+		"Habitante3":
+			return 2
+	return 0
+
+
 ## Crea un hueco de modelo bajo [param parent]. Las listas se fijan antes de
 ## añadirlo al árbol para que cargue en su _ready().
 ## Corral de pirca seca baja: cuatro muros con una entrada en el lado
@@ -1737,16 +1763,16 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	var no_collisions: Array[Node] = []
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, npc_model_files(node_name), blockout, no_collisions)
 	slot.use_model_collision = false
-	# Prototipo de maniquí vestido (ADR-0042): solo la tejedora por ahora.
-	if node_name == "Tejedora":
-		actor.mannequin_skin = true
-		actor.body_color = DressedMannequin.SKIN_COLOR
+	# Maniquí vestido (ADR-0042): todos los personajes del acto I.
+	actor.mannequin_skin = true
+	actor.body_color = DressedMannequin.SKIN_COLOR
 	if slot.model != null:
 		actor.set_model(slot.model)
-	if node_name == "Tejedora":
-		var outfit: DressedMannequin = DressedMannequin.new()
-		outfit.name = "Outfit"
-		actor.add_child(outfit)
+	var outfit: DressedMannequin = DressedMannequin.new()
+	outfit.name = "Outfit"
+	outfit.role = dressed_role(node_name)
+	outfit.variant = dressed_variant(node_name)
+	actor.add_child(outfit)
 	return actor
 
 

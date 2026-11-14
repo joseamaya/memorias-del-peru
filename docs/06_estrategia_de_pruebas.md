@@ -171,11 +171,11 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `paso_smoke` | Herramienta de humo: en un fotograma real, la honda acierta y los enemigos bajan la salud del jugador |
 | `test_campaign_state` | Banderas entre escenas: fijar, leer, borrar y limpiar; el valor 0 elimina la bandera (ADR-0041) |
 | `test_npc_rig` | Los nueve personajes del acto I usan el maniquí UAL1: esqueleto humanoide, clips base, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
-| `test_ciudad` | El Cusco carga, recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
+| `test_ciudad` | El Cusco carga con reclutas, Cusi y el viejo de la víspera vestidos sobre el maniquí; recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
 | `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
 | `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
-| `test_dressed_mannequin` | La tejedora lleva el prototipo de vestuario y rostro anclado a `pelvis`, `spine_02` y `Head`; el maniquí sigue tejiendo, usa piel y gira 180° para mirar hacia delante; ningún personaje del acto I carga los modelos viejos y solo la tejedora lleva el vestuario |
-| `test_paso_actors_use_mannequins` | Los cuatro exploradores usan el maniquí UAL1 animado y orientado hacia delante, y quedan sobre el terreno; el campamento tiene tres maniquíes distintos |
+| `test_dressed_mannequin` | Los nueve personajes del acto I llevan vestuario y rostro anclados a `pelvis`, `spine_02` y `Head`; cada uno tiene su rol, el curaca lleva manto, el mensajero q'ipi y los vecinos varían de color; el maniquí sigue animado, usa piel y gira 180° para mirar hacia delante; ningún personaje carga los modelos viejos |
+| `test_paso_actors_use_mannequins` | Los cuatro exploradores usan el maniquí UAL1 animado, orientado hacia delante y vestido como chanca con porra; el campamento tiene tres maniquíes vestidos con roles distintos y todos quedan sobre el terreno |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
@@ -238,6 +238,13 @@ Capturas del prototipo de maniquí vestido (la tejedora), sin el resto de NPC:
 
 ```bash
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_weaver.gd
+```
+
+Capturas del vestuario del acto I y del Cusco:
+
+```bash
+godot --path . --resolution 1280x720 --script res://tests/capture_dressed_act_one.gd
+godot --path . --resolution 1280x720 --script res://tests/capture_dressed_ciudad.gd
 ```
 
 Carga el mundo sin HUD, congela el evento y guarda cinco vistas en `user://capturas/`: aparición, suelo a media distancia, muro de pirca a 1,5 m, casa a 6 m y horizonte desde el mirador. Sirve para evaluar un cambio de materiales contra el mismo encuadre, no para probar lógica.

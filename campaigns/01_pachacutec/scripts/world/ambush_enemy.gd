@@ -24,8 +24,13 @@ func _ready() -> void:
 	collision_mask = 1
 	_visual = MannequinVisual.new()
 	_visual.name = "Visual"
-	_visual.tint = Color(0.55, 0.28, 0.22, 1.0)
+	_visual.skin = true
+	_visual.tint = DressedMannequin.SKIN_COLOR
 	add_child(_visual)
+	var outfit: DressedMannequin = DressedMannequin.new()
+	outfit.name = "Outfit"
+	outfit.role = &"chanca"
+	_visual.add_child(outfit)
 	var shape: CollisionShape3D = CollisionShape3D.new()
 	var capsule_shape: CapsuleShape3D = CapsuleShape3D.new()
 	capsule_shape.radius = 0.35

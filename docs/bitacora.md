@@ -6,6 +6,13 @@ El criterio para decidir entre bitácora y ADR está en [adr/README.md](adr/READ
 
 La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`08`, los ADR o `AGENTS.md` ([AGENTS.md](../AGENTS.md) §1). El historial anterior a su creación sigue en la tabla de versiones de [alcance_vertical_slice.md](../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md).
 
+## 2026-11-14
+
+| Cambio | Detalle | Commit |
+|---|---|---|
+| Vestuario del acto I completo (ADR-0042) | Los nueve personajes del acto I llevan túnica, falda o faldón, cinturón, chuspa, pelo, vincha y cara anclados al maniquí; el curaca lleva manto y el mensajero q'ipi. 152 pruebas en verde | — |
+| Vestuario de los actos II y III (ADR-0042) | La comitiva del paso y los exploradores chancas usan el maniquí vestido; los chancas llevan túnica oscura, vincha y porra. Reclutas, Cusi, aliados y defensores del Cusco también van vestidos. 152 pruebas en verde | — |
+
 ## 2026-11-13
 
 | Cambio | Detalle | Commit |
