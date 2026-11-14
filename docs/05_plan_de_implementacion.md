@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** arte del acto III, audio y validación de autor.
+**Siguiente:** aprobar el prototipo de maniquí vestido y extenderlo al acto I.
 
 Reglas:
 
@@ -361,9 +361,9 @@ autor del arco completo corresponde a la Fase 8.
 
 ### Entregables
 
-- **Realismo del acto I:** los nueve personajes recuperan sus modelos propios (MakeHuman/Rocketbox) con ropa, cabezas y mantos.
-- **Paisaje y actores del acto II:** desfiladero, arroyo, refugio, vegetación y cielo; exploradores chancas y comitiva con modelos propios.
-- **Pase de maniquí** (UAL1, CC0): queda solo para el acto III hasta su pase de arte.
+- **Maniquí UAL1 como base definitiva** (ADR-0042): cuerpo, esqueleto y animación de todos los personajes; los modelos MakeHuman/Rocketbox quedan como referencia y no se cargan en escena.
+- **Vestuario y rostro como capas:** prototipo en la tejedora (túnica, falda, chuspa, pelo, vincha, ojos y boca) antes de extenderlo a los nueve del acto I y a los actos II–III.
+- **Paisaje del acto II:** desfiladero, arroyo, refugio, vegetación y cielo (hecho).
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
 - Equilibrio de combate, economía de objetos y duración.
 - Rendimiento del Cusco con multitud y batalla.
@@ -374,17 +374,18 @@ autor del arco completo corresponde a la Fase 8.
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(Parcial: el acto II mide 60,5 FPS de media en Medio y 128,6 en Bajo con carga 1,3; con el equipo cargado baja a ~58 en Medio. El objetivo vinculante de Bajo se cumple; el de Medio queda en el límite y debe repetirse en reposo. Falta el Cusco con multitud.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 150 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 151 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
 
-**Estado (2026-11-13).** El acto I recupera sus modelos propios. El acto II deja
-el gris: terreno con desfiladero y cresta, sendero y campamento pintados sobre
-el terreno, arroyo encajado con agua, roquedales, refugio de pirca seca con
-techo de lajas, ichu y queñua con viento, cielo físico con nubes y control de
-calidad gráfica. Los exploradores chancas usan un modelo propio teñido y una
-porra; la comitiva del campamento usa tres modelos propios distintos. La
-medición provisional del paso da 60,5 FPS de media en Medio y 128,6 en Bajo con
-carga 1,3; falta repetirla en reposo y medir el Cusco. Pendiente: arte del acto
-III, audio de ambos actos y validación de autor del arco completo.
+**Estado (2026-11-13).** Se corrige la dirección de arte con [ADR-0042](adr/0042-maniqui-vestido.md):
+todos los actos vuelven al maniquí UAL1, que mira a +Z y se gira 180° para
+coincidir con la orientación de la lógica. Los modelos MakeHuman/Rocketbox
+quedan como referencia, fuera de escena. La tejedora lleva el primer prototipo
+de maniquí vestido: túnica, falda, chuspa, pelo, vincha, ojos y boca anclados a
+huesos; la lliclla rígida se retira a la espera de una pasada de tela. El acto
+II conserva el paisaje del desfiladero, el arroyo, el refugio y la vegetación.
+151 pruebas en verde; la medición del paso debe repetirse con los maniquíes.
+Pendiente: aprobar el prototipo, extender el vestuario al acto I y a los actos
+II–III, audio y validación de autor.

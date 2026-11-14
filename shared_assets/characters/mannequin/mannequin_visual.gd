@@ -24,6 +24,8 @@ func _ready() -> void:
 	if _model == null:
 		return
 	add_child(_model)
+	# UAL1 mira hacia +Z; los actores orientan su -Z hacia el objetivo.
+	_model.rotation.y = PI
 	_player = _model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	_apply_tint()
 	play(_pending_clip)
@@ -36,6 +38,11 @@ func play(clip: StringName, speed: float = 1.0) -> void:
 		return
 	_player.speed_scale = speed
 	_player.play(clip, 0.2)
+
+
+## Nodo del modelo cargado, para las pruebas.
+func model() -> Node3D:
+	return _model
 
 
 ## Cambia el color del cuerpo.

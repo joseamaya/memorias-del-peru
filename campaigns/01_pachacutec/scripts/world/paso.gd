@@ -342,9 +342,9 @@ func _setup_camp() -> void:
 		fire_log.position = Vector3(CAMP_POSITION.x + offset.x, ground + 0.12, CAMP_POSITION.z + offset.z)
 		fire_log.rotation_degrees = Vector3(0.0, 0.0, 90.0)
 		add_child(fire_log)
-	_add_camp_npc(Vector3(-5.4, 0.0, 17.2), "pch_npc_villager.glb", Color(1.0, 0.94, 0.86, 1.0), &"Tired")
-	_add_camp_npc(Vector3(-2.6, 0.0, 17.4), "pch_npc_villager_b.glb", Color(0.9, 0.84, 0.76, 1.0), &"Idle")
-	_add_camp_npc(Vector3(-4.2, 0.0, 19.4), "pch_npc_villager_c.glb", Color(0.96, 0.88, 0.8, 1.0), &"Idle")
+	_add_camp_npc(Vector3(-5.4, 0.0, 17.2), Color(0.7, 0.55, 0.42, 1.0))
+	_add_camp_npc(Vector3(-2.6, 0.0, 17.4), Color(0.48, 0.36, 0.28, 1.0))
+	_add_camp_npc(Vector3(-4.2, 0.0, 19.4), Color(0.55, 0.42, 0.32, 1.0))
 	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
 	var camp: CampPoint = instance as CampPoint
 	var body: Node3D = instance as Node3D
@@ -356,14 +356,12 @@ func _setup_camp() -> void:
 	camp.requested.connect(_on_camp_requested)
 
 
-func _add_camp_npc(at: Vector3, model_file: String, tint: Color, clip: StringName) -> void:
-	var visual: RealisticCharacterVisual = RealisticCharacterVisual.new()
+func _add_camp_npc(at: Vector3, tint: Color) -> void:
+	var visual: MannequinVisual = MannequinVisual.new()
 	visual.name = "CampVisual"
-	visual.model_file = model_file
 	visual.tint = tint
 	visual.position = Vector3(at.x, _height_at(at.x, at.z), at.z)
 	add_child(visual)
-	visual.play(clip)
 	var target: Vector3 = Vector3(CAMP_POSITION.x, visual.position.y, CAMP_POSITION.z)
 	if visual.position.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)

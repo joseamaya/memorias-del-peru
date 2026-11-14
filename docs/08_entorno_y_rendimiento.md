@@ -401,4 +401,7 @@ propio. El jugador está quieto en la aparición y la vista gira 0,35 rad/s.
   en reposo antes de dar la cifra por buena.
 - Las draw calls variaron entre 14 y 272 por la misma carga y no se usan como
   referencia. La medición es un orden de magnitud, como las anteriores.
+- La medición se hizo con los actores de modelo propio; tras la reversión a
+  maniquíes ([ADR-0042](adr/0042-maniqui-vestido.md)) hay menos mallas y debe
+  repetirse para dar la cifra por buena.
 - Falta la medición del Cusco con multitud y batalla (Fase 8).

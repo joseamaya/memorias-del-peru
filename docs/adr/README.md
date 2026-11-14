@@ -46,9 +46,9 @@ Plantilla:
 | [0012](0012-ajustes-tras-el-primer-piloto.md) | Ajustes tras el primer piloto | Aceptado (reloj sustituido por ADR-0013; rótulo, por ADR-0023) |
 | [0013](0013-ritmo-orientacion-y-cierre.md) | Ritmo, orientación y cierre del slice | Reemplazado por ADR-0030 |
 | [0014](0014-texturas-de-detalle-triplanares.md) | Texturas de detalle triplanares | Aceptado |
-| [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016) |
-| [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Aceptado (cabezas matizadas por ADR-0017) |
-| [0017](0017-cabezas-rocketbox.md) | Cabezas de la Microsoft Rocketbox Avatar Library | Aceptado |
+| [0015](0015-personajes-con-esqueleto.md) | Personajes con esqueleto y animaciones generadas | Aceptado (cuerpo y animaciones sustituidos por ADR-0016 y ADR-0042) |
+| [0016](0016-personajes-realistas-makehuman.md) | Personajes realistas con MakeHuman (MPFB2) y captura de CMU | Reemplazado por ADR-0042 |
+| [0017](0017-cabezas-rocketbox.md) | Cabezas de la Microsoft Rocketbox Avatar Library | Reemplazado por ADR-0042 |
 | [0018](0018-ropa-textiles-caida-y-muelles.md) | Ropa: textiles con diseño, caída simulada y manto con muelles | Aceptado (caída matizada por ADR-0020) |
 | [0019](0019-movimiento-natural-de-personajes.md) | Movimiento natural de los personajes | Aceptado |
 | [0020](0020-ropa-cortada-y-cosida.md) | Ropa cortada y cosida, con caída en la postura de reposo | Aceptado |
@@ -73,3 +73,4 @@ Plantilla:
 | [0039](0039-tres-actos-y-gris.md) | Tres actos y construcción en gris | Aceptado (amplía ADR-0038) |
 | [0040](0040-cronica-rectora.md) | Crónica rectora: Betanzos, con Garcilaso y Pachacuti Yamqui como contraste y leyenda | Aceptado |
 | [0041](0041-estado-de-campana.md) | Estado de campaña para las banderas entre actos | Aceptado |
+| [0042](0042-maniqui-vestido.md) | Maniquí UAL1 como base, con ropa y rostro como capas | Aceptado (reemplaza a ADR-0016 y ADR-0017) |

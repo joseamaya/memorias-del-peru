@@ -1,6 +1,6 @@
 # ADR-0016 — Personajes realistas con MakeHuman (MPFB2) y captura de movimiento de CMU
 
-- Estado: Aceptado
+- Estado: Reemplazado por ADR-0042
 - Fecha: 2026-11-12
 - Sustituye: en [ADR-0015](0015-personajes-con-esqueleto.md), el cuerpo construido con primitivas y las animaciones procedurales. Se mantiene el contrato de `NpcActor` (animaciones por nombre y mirada).
 - Matiza: [ADR-0010](0010-modelos-generados-con-blender.md). Los personajes siguen generándose por script en Blender, pero con el complemento MPFB2 y sus recursos.

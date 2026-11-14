@@ -72,7 +72,7 @@ func test_paso_landscape() -> bool:
 	return ok
 
 
-func test_paso_actors_use_models() -> bool:
+func test_paso_actors_use_mannequins() -> bool:
 	var paso: PasoWorld = _spawn()
 	if paso == null:
 		return false
@@ -82,14 +82,14 @@ func test_paso_actors_use_models() -> bool:
 		ok = ok and enemy != null
 		if enemy == null:
 			continue
-		var visual: RealisticCharacterVisual = enemy.visual()
-		ok = ok and visual != null and visual.is_animated()
+		var visual: MannequinVisual = enemy.visual()
 		ok = ok and visual != null and visual.model() != null
-		ok = ok and visual != null and visual.get_node_or_null("Porra") != null
+		ok = ok and visual != null and visual.model().find_child("AnimationPlayer", true, false) != null
+		ok = ok and visual != null and absf(absf(visual.model().rotation.y) - PI) < 0.01
 		ok = ok and absf(enemy.global_position.y - paso.height_at(enemy.global_position.x, enemy.global_position.z)) < 0.05
 	var camp: int = 0
 	for child: Node in paso.get_children():
-		if child is RealisticCharacterVisual:
+		if child is MannequinVisual:
 			camp += 1
 	ok = ok and camp == 3
 	paso.free()

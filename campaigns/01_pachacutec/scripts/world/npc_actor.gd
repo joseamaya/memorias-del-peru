@@ -17,6 +17,8 @@ signal stepped
 signal beat(animation: StringName)
 
 @export var body_color: Color = Color(0.6, 0.45, 0.35, 1.0)
+## Si es `true`, el maniquí se tiñe como piel (para el maniquí vestido).
+@export var mannequin_skin: bool = false
 @export var walk_speed: float = 1.8
 ## Animación de reposo: `idle`, `weave`, `work`, `talk`, `tired`…
 @export var idle_animation: StringName = &"idle"
@@ -149,7 +151,10 @@ func set_model(model: Node3D) -> void:
 	_prepare_loops(_animation_player, _mannequin)
 	_read_rhythm(model)
 	if _mannequin:
-		_tint_model(model)
+		# UAL1 mira hacia +Z; el actor orienta su -Z hacia el objetivo. El giro
+		# deja la cara del maniquí hacia delante sin tocar los clips.
+		model.rotation.y = PI
+		_tint_model(model, mannequin_skin)
 		_set_mannequin_beats()
 	_idle_rng.seed = hash(String(name))
 	_idle_switch_left = _idle_rng.randf_range(IDLE_SWITCH_MIN, IDLE_SWITCH_MAX)
@@ -366,7 +371,7 @@ func set_footsteps(streams: Array[AudioStream]) -> void:
 		stepped.connect(_play_step)
 
 
-func _tint_model(model: Node3D) -> void:
+func _tint_model(model: Node3D, skin: bool = false) -> void:
 	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
 	if model is MeshInstance3D:
 		meshes.append(model)
@@ -375,9 +380,9 @@ func _tint_model(model: Node3D) -> void:
 		if mesh_instance == null:
 			continue
 		var material: StandardMaterial3D = StandardMaterial3D.new()
-		# El maniquí no lleva ropa: se tiñe de arcilla neutra para que se lea
-		# como prototipo y no como un cuerpo desnudo.
-		material.albedo_color = body_color.lerp(Color(0.62, 0.60, 0.55, 1.0), 0.7)
+		# El maniquí desnudo se tiñe de arcilla neutra; el vestido usa el color
+		# de piel para que brazos y manos combinen con la cabeza.
+		material.albedo_color = body_color if skin else body_color.lerp(Color(0.62, 0.60, 0.55, 1.0), 0.7)
 		material.roughness = 1.0
 		mesh_instance.material_override = material
 

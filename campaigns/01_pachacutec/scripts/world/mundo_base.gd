@@ -1593,28 +1593,11 @@ func _add_house_props(root: Node3D, index: int) -> void:
 
 ## Archivos candidatos para un personaje: primero el de su papel
 ## (`pch_npc_<papel>.glb`), luego la variante común o de autoridad.
-static func npc_model_files(node_name: String) -> Array[String]:
-	var role: String = "villager"
-	var generic: String = MODEL_COMMONER
-	match node_name:
-		"Tejedora":
-			role = "weaver"
-		"Agricultor":
-			role = "farmer"
-		"Mensajero":
-			role = "messenger"
-		"Curaca":
-			role = "curaca"
-			generic = MODEL_AUTHORITY
-		"Principal1", "Principal2":
-			role = "principal"
-			generic = MODEL_AUTHORITY
-		"Habitante2":
-			role = "villager_b"
-		"Habitante3":
-			role = "villager_c"
-	var files: Array[String] = ["pch_npc_%s.glb" % role, generic]
-	return files
+static func npc_model_files(_node_name: String) -> Array[String]:
+	# Base del juego: maniquí UAL1 (CC0). La ropa y la cara se añaden como
+	# capas encima (ADR-0042); los modelos MakeHuman/Rocketbox quedan solo como
+	# referencia y no se cargan en escena.
+	return ["res://shared_assets/characters/mannequin/ual1_standard.glb"]
 
 
 ## Crea un hueco de modelo bajo [param parent]. Las listas se fijan antes de
@@ -1754,8 +1737,16 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	var no_collisions: Array[Node] = []
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, npc_model_files(node_name), blockout, no_collisions)
 	slot.use_model_collision = false
+	# Prototipo de maniquí vestido (ADR-0042): solo la tejedora por ahora.
+	if node_name == "Tejedora":
+		actor.mannequin_skin = true
+		actor.body_color = DressedMannequin.SKIN_COLOR
 	if slot.model != null:
 		actor.set_model(slot.model)
+	if node_name == "Tejedora":
+		var outfit: DressedMannequin = DressedMannequin.new()
+		outfit.name = "Outfit"
+		actor.add_child(outfit)
 	return actor
 
 

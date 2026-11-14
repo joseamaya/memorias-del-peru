@@ -1,6 +1,6 @@
 # ADR-0017 — Cabezas de la Microsoft Rocketbox Avatar Library
 
-- Estado: Aceptado
+- Estado: Reemplazado por ADR-0042
 - Fecha: 2026-11-12
 - Matiza: [ADR-0016](0016-personajes-realistas-makehuman.md) (la cabeza y el pelo de MakeHuman se sustituyen; cuerpo, ropa, esqueleto y animaciones siguen igual)
 

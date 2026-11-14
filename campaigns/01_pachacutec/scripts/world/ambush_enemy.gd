@@ -2,9 +2,9 @@ class_name AmbushEnemy
 extends CharacterBody3D
 ## Explorador chanca del acto II.
 ##
-## Usa un modelo propio del proyecto teñido como chanca y una porra simple. La
-## lógica de combate vive en [EnemyCombatant]; este nodo la mueve, orienta al
-## enemigo hacia el jugador y aplica el daño.
+## Maniquí UAL1 teñido como chanca; la ropa y la cara llegan como capas encima
+## (ADR-0042). La lógica de combate vive en [EnemyCombatant]; este nodo la mueve,
+## orienta al enemigo hacia el jugador y aplica el daño.
 
 const SPEED: float = 2.4
 const MORALE_LOSS: float = 15.0
@@ -15,18 +15,16 @@ var character: CharacterState = null
 var brain: EnemyCombatant = null
 
 var _resolved: bool = false
-var _visual: RealisticCharacterVisual = null
+var _visual: MannequinVisual = null
 var _current_clip: StringName = &""
 
 
 func _ready() -> void:
 	collision_layer = 8
 	collision_mask = 1
-	_visual = RealisticCharacterVisual.new()
+	_visual = MannequinVisual.new()
 	_visual.name = "Visual"
-	_visual.model_file = "pch_npc_commoner.glb"
-	_visual.tint = Color(0.64, 0.44, 0.34, 1.0)
-	_visual.with_porra = true
+	_visual.tint = Color(0.55, 0.28, 0.22, 1.0)
 	add_child(_visual)
 	var shape: CollisionShape3D = CollisionShape3D.new()
 	var capsule_shape: CapsuleShape3D = CapsuleShape3D.new()
@@ -123,7 +121,7 @@ func _face(target: Vector3) -> void:
 
 
 ## Visual del enemigo, para las pruebas.
-func visual() -> RealisticCharacterVisual:
+func visual() -> MannequinVisual:
 	return _visual
 
 
