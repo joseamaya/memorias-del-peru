@@ -468,11 +468,12 @@ Condiciones: 1920 × 1080, Intel UHD Graphics 770 (RPL-S), Vulkan, Forward+,
 3 s de calentamiento y 8 s de medida por perfil, sin vsync y con
 `Engine.max_fps = 0`. Tres ejecuciones por escena; se da la mediana y, entre
 paréntesis, el rango. La llacta y el paso se midieron con carga 0,4; el Cusco,
-con el controlador de calidad activo (SSAO en Medio) y carga 10,6, la condición
-más conservadora de la serie; una pasada posterior con carga 13,9 dio 62,0 en
-Medio. El Cusco se mide con las diez figuras de multitud y la defensa en curso
-(cuatro chancas), con el jugador inmune para que la muestra no termine. Esta
-sección sustituye a las mediciones provisionales de la misma fecha.
+con el controlador de calidad activo (SSAO en Medio), con carga 1,0; una pasada
+con carga 1,4 dio 67,0. Una medición anterior del Cusco con carga 10,6 dio 62,9,
+también por encima de 60. El Cusco se mide con las diez figuras de multitud y
+la defensa en curso (cuatro chancas), con el jugador inmune para que la muestra
+no termine. Esta sección sustituye a las mediciones provisionales de la misma
+fecha.
 
 | Escena | Perfil | Carga | FPS medio | FPS p1 | Draw calls | Vídeo |
 |---|---|---|---|---|---|---|
@@ -480,25 +481,25 @@ sección sustituye a las mediciones provisionales de la misma fecha.
 | Llacta (acto I) | Medio | 0,4 | 70,5 (70,4–70,5) | 55,6 | 35 | 160,5 MB |
 | Paso (acto II) | Bajo | 0,4 | 137,8 (135,5–138,0) | 111,1 | 10 | 121,7 MB |
 | Paso (acto II) | Medio | 0,4 | 61,0 (60,4–61,3) | 55,6 | 79 | 150,0 MB |
-| Cusco (acto III) | Bajo | 10,6 | 123,9 (119,3–125,3) | 62,5–83,3 | 5 | 140,8 MB |
-| Cusco (acto III) | Medio | 10,6 | 62,9 (62,1–63,2) | 41,7–52,6 | 1018 | 169,1 MB |
+| Cusco (acto III) | Bajo | 1,0 | 129,2 (125,8–129,4) | 90,9–100,0 | 5 | 140,9 MB |
+| Cusco (acto III) | Medio | 1,0 | 66,9 (63,6–67,1) | 55,6–58,8 | 1028 | 169,1 MB |
 
 - Los tres actos superan el objetivo vinculante (≥ 30 FPS en Bajo) y el
   recomendado (≥ 60 FPS en Medio) en la GPU integrada de referencia a 1080p.
   La llacta y el paso, con carga 4,3, dieron 68,2 y 61,1 en Medio; el Cusco,
-  con SSAO y carga 10,6, dio 62,1–63,2 (62,0 con carga 13,9). Las tres escenas
-  mantienen el margen incluso con el escritorio muy cargado.
+  con SSAO y carga 1,0, dio 63,6–67,1; una medición anterior con carga 10,6 dio 62,9. Las tres escenas
+  mantienen el margen incluso con el escritorio cargado.
 - El paso es el más ajustado. Para llegar a 60 se aplicaron dos cambios
   medidos: el terreno del desfiladero recibe sombra pero no la proyecta, y el
   `fbm` de la cúpula de nubes bajó de cinco a tres octavas. Antes de esos
   cambios el paso medía 54–56 FPS en Medio; el cielo conserva las nubes altas y
   el terreno sigue leyéndose por normales, rocas, vegetación y refugio. El
   terreno plano del Cusco también recibe sombra sin proyectarla.
-- En Medio, la llacta es la más rápida (70,5); el Cusco (62,9) y el paso (61,0)
-  quedan por encima de 60. El Cusco tiene ~1000 draw calls por las figuras
-  vestidas y el SSAO; el coste no lo hunde porque la ciudad es plana y las
-  catorce casas comparten tres modelos. Si se añaden más figuras o efectos, hay
-  que volver a medir.
+- En Medio, la llacta es la más rápida (70,5); el Cusco (66,9) y el paso (61,0)
+  quedan por encima de 60. El Cusco tiene ~1030 draw calls por las figuras
+  vestidas, los props y el SSAO; el coste no lo hunde porque la ciudad es plana
+  y las catorce casas comparten tres modelos. Si se añaden más figuras o
+  efectos, hay que volver a medir.
 - Las draw calls y la memoria de vídeo varían entre ejecuciones y no se usan
   como criterio; se incluyen como orden de magnitud. La GPU dedicada sigue sin
   definirse (docs/08 §4), así que el objetivo recomendado para ella no se ha

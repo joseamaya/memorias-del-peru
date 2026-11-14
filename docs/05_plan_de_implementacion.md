@@ -373,8 +373,8 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
-- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 70,5 / paso 61,0 / Cusco 62,9 FPS en Medio y 129,1 / 137,8 / 123,9 en Bajo. La llacta y el paso con carga 0,4; el Cusco con SSAO y carga 10,6, la condición más conservadora. Detalle en docs/08.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 154 pruebas en verde.)*
+- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 70,5 / paso 61,0 / Cusco 66,9 FPS en Medio y 129,1 / 137,8 / 129,2 en Bajo. La llacta y el paso con carga 0,4; el Cusco con SSAO y carga 1,0. Detalle en docs/08.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 155 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
@@ -393,7 +393,9 @@ los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de
 combate y golpes de honda y porra; los pasos del jugador suenan en tierra y
 piedra. El Cusco deja el bloqueo gris: terreno con plaza y caminos de tierra,
 santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
-terrazas de cultivo y diez figuras vestidas de multitud. El rendimiento final
-en la GPU integrada de referencia supera los 60 FPS en Medio en los tres actos,
-también con la multitud y la defensa en curso. 154 pruebas en verde. Pendiente:
-validación de autor.
+terrazas de cultivo y diez figuras vestidas de multitud. La multitud se retira
+al empezar la defensa; el portón con dintel, el remate de la muralla, los bancos,
+el altar y el ichu completan la plaza. El rendimiento final en la GPU integrada
+de referencia supera los 60 FPS en Medio en los tres actos, también con la
+multitud y la defensa en curso. 155 pruebas en verde. Pendiente: validación de
+autor.

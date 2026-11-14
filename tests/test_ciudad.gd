@@ -77,7 +77,48 @@ func test_ciudad_art() -> bool:
 			if visual != null:
 				var outfit: DressedMannequin = visual.get_node_or_null("Outfit") as DressedMannequin
 				ok = ok and outfit != null and outfit.is_built()
+	ok = ok and ciudad.get_node_or_null("Gate/Lintel") != null
+	ok = ok and ciudad.get_node_or_null("WallCaps/NorthCap") != null
+	ok = ok and ciudad.get_node_or_null("PlazaFurniture/Bench0") != null
+	ok = ok and ciudad.get_node_or_null("SanctuaryProps/Altar") != null
+	ok = ok and ciudad.get_node_or_null("Vegetation/Ichu0") != null
 	ciudad.free()
+	return ok
+
+
+## Al empezar la defensa, la multitud deja la plaza, camina a su refugio y se
+## detiene; su cuerpo de colisión usa la capa que solo consulta el jugador.
+func test_ciudad_crowd_retreats() -> bool:
+	var state: CampaignStateService = _state()
+	if state == null:
+		return false
+	state.clear()
+	var ciudad: Node = _spawn()
+	if ciudad == null:
+		state.clear()
+		return false
+	var crowd: Node = ciudad.get_node_or_null("Crowd")
+	var first: MannequinVisual = null
+	if crowd != null:
+		first = crowd.get_child(0) as MannequinVisual
+	if first == null:
+		ciudad.free()
+		state.clear()
+		return false
+	var ok: bool = true
+	var body: StaticBody3D = first.get_node_or_null("CrowdBody") as StaticBody3D
+	ok = ok and body != null and body.collision_layer == 16
+	var start: Vector3 = first.global_position
+	ciudad.call("_start_defense")
+	ok = ok and ciudad.get("_crowd_retreating") == true
+	ciudad.call("_process", 1.0)
+	ok = ok and first.global_position.distance_to(start) > 0.5
+	for _i: int in range(20):
+		ciudad.call("_process", 1.0)
+	ok = ok and ciudad.get("_crowd_retreating") == false
+	ok = ok and ciudad.call("is_ambush_active") == true
+	ciudad.free()
+	state.clear()
 	return ok
 
 

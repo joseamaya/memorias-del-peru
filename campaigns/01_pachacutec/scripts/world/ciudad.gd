@@ -57,6 +57,24 @@ const CROWD_ROLES: Array[StringName] = [
 	&"villager", &"farmer", &"weaver", &"villager", &"messenger",
 ]
 const CROWD_VARIANTS: Array[int] = [0, 0, 0, 1, 0, 2, 1, 1, 2, 2]
+## Destinos de la multitud cuando empieza la defensa: junto a las casas, fuera
+## de la plaza y de la línea de choque.
+const CROWD_SAFE_POSITIONS: Array[Vector3] = [
+	Vector3(-21.5, 0.0, 18.0),
+	Vector3(-21.5, 0.0, 0.0),
+	Vector3(-21.5, 0.0, -10.0),
+	Vector3(21.5, 0.0, 18.0),
+	Vector3(21.5, 0.0, 0.0),
+	Vector3(21.5, 0.0, -10.0),
+	Vector3(-12.0, 0.0, 20.0),
+	Vector3(12.0, 0.0, 20.0),
+	Vector3(-15.0, 0.0, -20.0),
+	Vector3(15.0, 0.0, -20.0),
+]
+const CROWD_RETREAT_SPEED: float = 2.2
+## Capa propia para que solo el jugador choque con la multitud; los chancas
+## (capa 1) la atraviesan y no se quedan atascados.
+const CROWD_COLLISION_LAYER: int = 16
 const CAMP_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/camp_point.tscn"
 const RECRUIT_POSITIONS: Array[Vector3] = [
 	Vector3(-15.0, 0.9, 0.0),
@@ -94,6 +112,17 @@ const ALLY_POSITIONS: Array[Vector3] = [
 	Vector3(0.0, 0.0, 5.0),
 ]
 
+## Figura de multitud con su destino de retirada.
+class CrowdMember:
+	var visual: MannequinVisual
+	var safe_position: Vector3
+	var retreating: bool = false
+
+	func _init(figure: MannequinVisual, safe: Vector3) -> void:
+		visual = figure
+		safe_position = safe
+
+
 @onready var player: PlayerFPS = $PlayerFPS
 @onready var hud: PlayerHud = $UILayer/HUD
 @onready var status_label: Label = $UILayer/StatusLabel
@@ -117,10 +146,15 @@ var _battle_drum: AudioStreamPlayer = null
 var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 var _ally_visuals: Dictionary[int, bool] = {}
+var _crowd: Array[CrowdMember] = []
+var _crowd_retreating: bool = false
 
 
 func _ready() -> void:
 	player.global_position = spawn.global_position
+	# La multitud usa una capa que solo el jugador consulta: evita atravesarla
+	# sin convertirla en un obstáculo para los chancas.
+	player.collision_mask = player.collision_mask | CROWD_COLLISION_LAYER
 	hud.bind(player, player.stamina)
 	_build_city()
 	_setup_player_combat()
@@ -197,6 +231,11 @@ func _physics_process(_delta: float) -> void:
 	if alive_enemies() == 0:
 		_finish_defense()
 	_update_status()
+
+
+func _process(delta: float) -> void:
+	if _crowd_retreating:
+		_update_crowd(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -488,6 +527,7 @@ func _start_defense() -> void:
 	_defense_active = true
 	_defense_requested = false
 	_start_drum()
+	_retreat_crowd()
 	var count: int = maxi(1, 4 - ally_count())
 	for index: int in range(count):
 		var enemy: AmbushEnemy = AmbushEnemy.new()
@@ -498,6 +538,43 @@ func _start_defense() -> void:
 		_enemies.append(enemy)
 	hud.show_subtitle(tr("PCH_CIUDAD_DEFENSE"), 0.0)
 	_update_status()
+
+
+## La multitud deja la plaza cuando empieza la defensa y se refugia junto a las
+## casas. No participa en el combate; solo da vida al cambio de la ciudad.
+func _retreat_crowd() -> void:
+	if _crowd.is_empty():
+		return
+	_crowd_retreating = true
+	for member: CrowdMember in _crowd:
+		member.retreating = true
+		member.visual.play(&"Walk", 1.15)
+
+
+func _update_crowd(delta: float) -> void:
+	var remaining: bool = false
+	for member: CrowdMember in _crowd:
+		if not member.retreating:
+			continue
+		remaining = true
+		var target: Vector3 = Vector3(
+			member.safe_position.x,
+			member.visual.position.y,
+			member.safe_position.z)
+		var distance: float = member.visual.position.distance_to(target)
+		if distance <= 0.2:
+			member.retreating = false
+			member.visual.play(&"Idle")
+			var center: Vector3 = Vector3(0.0, member.visual.position.y, 0.0)
+			if member.visual.position.distance_to(center) > 0.1:
+				member.visual.look_at(center, Vector3.UP)
+			continue
+		member.visual.position = member.visual.position.move_toward(target, CROWD_RETREAT_SPEED * delta)
+		var flat_target: Vector3 = Vector3(target.x, member.visual.position.y, target.z)
+		if member.visual.position.distance_to(flat_target) > 0.1:
+			member.visual.look_at(flat_target, Vector3.UP)
+	if not remaining:
+		_crowd_retreating = false
 
 
 func _finish_defense() -> void:
@@ -690,6 +767,11 @@ func _build_city() -> void:
 	_build_sanctuary()
 	_build_houses()
 	_build_walls()
+	_build_gate()
+	_build_wall_caps()
+	_build_plaza_furniture()
+	_build_sanctuary_props()
+	_build_vegetation()
 	_build_terraces()
 	_build_crowd()
 
@@ -899,6 +981,116 @@ func _build_walls() -> void:
 		_add_collision_box(walls, "Boundary" + side, at, size)
 
 
+## Portón sur: dos postes de piedra y un dintel de madera. No hay hoja de
+## puerta; el hueco queda abierto para entrar y salir de la ciudad.
+func _build_gate() -> void:
+	var gate: Node3D = Node3D.new()
+	gate.name = "Gate"
+	add_child(gate)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	var wood: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.WOOD, Color(0.36, 0.26, 0.17, 1.0))
+	for side: float in [-1.0, 1.0]:
+		_add_block(gate, "Post%s" % ("West" if side < 0.0 else "East"),
+			Vector3(6.6 * side, 1.4, WALL_RADIUS), Vector3(0.8, 2.8, 0.8), stone, true)
+	_add_block(gate, "Lintel", Vector3(0.0, 2.9, WALL_RADIUS), Vector3(14.0, 0.5, 0.8), wood, false)
+
+
+## Remate de la muralla: una faja de piedra sobre las dos caras de pirca. Sin
+## ella, el muro se ve hueco desde fuera y desde la plaza.
+func _build_wall_caps() -> void:
+	var caps: Node3D = Node3D.new()
+	caps.name = "WallCaps"
+	add_child(caps)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	_add_block(caps, "NorthCap", Vector3(0.0, 2.25, -WALL_RADIUS),
+		Vector3(WALL_RADIUS * 2.0, 0.15, 0.8), stone, false)
+	_add_block(caps, "WestCap", Vector3(-WALL_RADIUS, 2.25, 0.0),
+		Vector3(0.8, 0.15, WALL_RADIUS * 2.0), stone, false)
+	_add_block(caps, "EastCap", Vector3(WALL_RADIUS, 2.25, 0.0),
+		Vector3(0.8, 0.15, WALL_RADIUS * 2.0), stone, false)
+	_add_block(caps, "SouthWestCap", Vector3(-18.0, 2.25, WALL_RADIUS),
+		Vector3(24.0, 0.15, 0.8), stone, false)
+	_add_block(caps, "SouthEastCap", Vector3(18.0, 2.25, WALL_RADIUS),
+		Vector3(24.0, 0.15, 0.8), stone, false)
+
+
+## Bancos de piedra y props de plaza: le dan escala y un uso cotidiano al
+## espacio abierto, sin añadir edificios nuevos.
+func _build_plaza_furniture() -> void:
+	var furniture: Node3D = Node3D.new()
+	furniture.name = "PlazaFurniture"
+	add_child(furniture)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	var benches: Array[Vector3] = [
+		Vector3(-10.0, 0.2, 10.0),
+		Vector3(10.0, 0.2, 10.0),
+		Vector3(-10.0, 0.2, -10.0),
+		Vector3(10.0, 0.2, -10.0),
+	]
+	for index: int in range(benches.size()):
+		_add_block(furniture, "Bench%d" % index, benches[index], Vector3(2.0, 0.4, 0.6), stone, true)
+	_add_model_prop(furniture, "PlazaJarWest", MODEL_PROP_JAR, Vector3(-11.5, 0.0, 9.0), 0.3, 1.0)
+	_add_model_prop(furniture, "PlazaJarEast", MODEL_PROP_JAR, Vector3(11.5, 0.0, 9.0), -0.4, 1.0)
+	_add_model_prop(furniture, "PlazaFirewood", MODEL_PROP_FIREWOOD, Vector3(-11.0, 0.0, -9.5), 0.6, 1.0)
+
+
+## Altar y cántaros del santuario: el recinto se lee como lugar de ofrenda y no
+## como un pedestal vacío.
+func _build_sanctuary_props() -> void:
+	var props: Node3D = Node3D.new()
+	props.name = "SanctuaryProps"
+	add_child(props)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	_add_block(props, "Altar", Vector3(0.0, 1.95, -15.8), Vector3(1.6, 0.3, 0.8), stone, true)
+	_add_model_prop(props, "SanctuaryJarWest", MODEL_PROP_JAR, Vector3(-5.2, 0.0, -18.0), 0.2, 1.1)
+	_add_model_prop(props, "SanctuaryJarEast", MODEL_PROP_JAR, Vector3(5.2, 0.0, -18.0), -0.2, 1.1)
+
+
+## Matas de ichu junto a los muros: rompen la tierra desnuda sin invadir la
+## plaza, los caminos ni las casas.
+func _build_vegetation() -> void:
+	var vegetation: Node3D = Node3D.new()
+	vegetation.name = "Vegetation"
+	add_child(vegetation)
+	var clumps: Array[Array] = [
+		["pch_ichu_a.glb", Vector3(-27.0, 0.0, -26.0), 0.9],
+		["pch_ichu_b.glb", Vector3(27.0, 0.0, -26.0), 0.8],
+		["pch_ichu_a.glb", Vector3(-27.0, 0.0, 26.0), 1.0],
+		["pch_ichu_b.glb", Vector3(27.0, 0.0, 26.0), 0.9],
+		["pch_ichu_a.glb", Vector3(-28.0, 0.0, 0.0), 0.8],
+		["pch_ichu_b.glb", Vector3(28.0, 0.0, 0.0), 1.0],
+		["pch_ichu_a.glb", Vector3(-5.0, 0.0, 27.5), 0.8],
+		["pch_ichu_b.glb", Vector3(5.0, 0.0, 27.5), 0.9],
+	]
+	for index: int in range(clumps.size()):
+		var entry: Array = clumps[index]
+		var file: String = entry[0]
+		var at: Vector3 = entry[1]
+		var model_scale: float = entry[2]
+		_add_model_prop(vegetation, "Ichu%d" % index, file, at, 0.7 * float(index), model_scale)
+
+
+## Modelo suelto con material del proyecto, para props y vegetación.
+func _add_model_prop(
+	parent: Node3D,
+	node_name: String,
+	file: String,
+	at: Vector3,
+	yaw: float,
+	model_scale: float = 1.0
+) -> ModelSlot:
+	var slot: ModelSlot = ModelSlot.new()
+	slot.name = node_name
+	slot.position = at
+	slot.rotation.y = yaw
+	slot.scale = Vector3.ONE * model_scale
+	var paths: Array[String] = [MODEL_DIR + file]
+	slot.model_paths = paths
+	parent.add_child(slot)
+	SurfaceMaterials.apply_to_model(slot.model)
+	return slot
+
+
 ## Terrazas de cultivo al este del muro: tres fajas de tierra sostenidas por
 ## pirca, visibles por encima de la muralla.
 func _build_terraces() -> void:
@@ -944,10 +1136,23 @@ func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName
 	outfit.role = role
 	outfit.variant = variant
 	visual.add_child(outfit)
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = "CrowdBody"
+	body.collision_layer = CROWD_COLLISION_LAYER
+	body.collision_mask = 0
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var capsule: CapsuleShape3D = CapsuleShape3D.new()
+	capsule.radius = 0.28
+	capsule.height = 1.7
+	shape.shape = capsule
+	shape.position = Vector3(0.0, 0.85, 0.0)
+	body.add_child(shape)
+	visual.add_child(body)
 	var target: Vector3 = Vector3(0.0, at.y, 0.0)
 	if at.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)
 	visual.play(&"Idle", 0.85 + 0.1 * float(index % 3))
+	_crowd.append(CrowdMember.new(visual, CROWD_SAFE_POSITIONS[index]))
 
 
 ## Bloque con material del proyecto; si [param collision] es verdadero, el

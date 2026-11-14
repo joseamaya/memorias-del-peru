@@ -21,8 +21,7 @@ func _go() -> void:
 	await _shot(player, "02_cusi", Vector3(0.0, 0.15, -7.0), Vector3(0.0, 1.0, -12.0))
 	await _shot(player, "03_recluta", Vector3(0.0, 0.15, 16.0), Vector3(0.0, 1.0, 12.0))
 	ciudad.call("_start_defense")
-	for _i: int in range(6):
-		await process_frame
+	await create_timer(2.5).timeout
 	await _shot(player, "04_defensa", Vector3(0.0, 0.15, 6.0), Vector3(0.0, 1.0, -4.0))
 	await _shot(player, "05_muralla", Vector3(0.0, 0.15, 40.0), Vector3(0.0, 1.2, 30.0))
 	print("CIUDAD_VESTIDA_OK")
