@@ -1,47 +1,48 @@
-# AGENTS.md — Reglas de trabajo para agentes
+# AGENTS.md — Reglas de trabajo
 
-Este archivo es de lectura obligatoria para cualquier agente de IA (OpenCode, Claude Code u otros) y para colaboradores humanos antes de modificar el repositorio.
+## 1. Idea fuerza
 
-## 1. Fuentes de verdad
+**Memorias del Perú** es un RPG histórico en primera persona: exploración, narrativa ambiental, decisiones y combate al servicio de una reconstrucción histórica rigurosa. La campaña 01, *Pachacútec — La defensa del Cusco*, se juega en tres actos: la llacta, el paso y el Cusco de 1438.
 
-Orden de precedencia (el número menor prevalece):
+La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está al servicio del resultado; si una regla impide un resultado mejor, se simplifica y se anota en la [bitácora](docs/bitacora.md).
 
-1. **ADR aceptados** (`docs/adr/`), solo para las decisiones que cumplen el umbral de [docs/adr/README.md](docs/adr/README.md). Entre dos ADR, prevalece el más reciente. Un ADR aceptado prevalece también sobre este archivo; si lo modifica, el mismo cambio debe actualizar el texto de `AGENTS.md`.
-2. **Este archivo** (reglas de proceso).
-3. **`docs/01`–`08`** (visión, arquitectura, estándares, configuración, plan, pruebas, convenciones, rendimiento).
-4. **[`docs/00_especificacion.md`](docs/00_especificacion.md)** — especificación original v1.0. Es el origen del proyecto; los documentos anteriores la concretan y, donde difieren, la sustituyen de forma justificada.
-5. **`campaigns/<campaña>/documentation/`** — prevalece dentro del ámbito de su campaña siempre que no contradiga los niveles 1–4.
+## 2. Fuentes de verdad
 
-Si dos documentos se contradicen sin que la precedencia lo resuelva claramente, detener el trabajo afectado, señalar la contradicción y proponer un ADR. No resolverla en silencio.
+1. **Este archivo** (reglas de proceso y prioridad de producto).
+2. **`docs/01`–`08`** (visión, arquitectura, estándares, configuración, plan, pruebas, convenciones y rendimiento).
+3. **[`docs/00_especificacion.md`](docs/00_especificacion.md)** — especificación original.
+4. **`campaigns/<campaña>/documentation/`** — prevalece dentro del ámbito de su campaña.
 
-La [bitácora](docs/bitacora.md) registra los cambios que no llegan al umbral de ADR. Es un registro cronológico: no crea reglas ni prevalece sobre los niveles anteriores.
+La [bitácora](docs/bitacora.md) es el registro cronológico de cambios y decisiones. No crea reglas, pero conserva el porqué.
 
-## 2. Antes de implementar
+**Los ADR se retiraron el 2026-11-14.** Las referencias históricas a ADR que queden en documentos son registro, no normas. No se exige un ADR para arte, herramientas, assets o cambios de alcance: solo licencia/procedencia y pruebas.
+
+## 3. Antes de implementar
 
 - Inspeccionar el repositorio y leer los archivos que se van a tocar.
-- Verificar la versión instalada de Godot (`godot --version`) y compararla con [ADR-0002](docs/adr/0002-version-de-godot.md).
-- No sobrescribir código sin haberlo analizado.
-- Confirmar que la API de Godot que se va a usar existe en la versión instalada (documentación oficial de esa versión o `godot --doctool`). **No inventar APIs.**
-- Identificar la fase activa en [docs/05_plan_de_implementacion.md](docs/05_plan_de_implementacion.md). Solo se trabaja en la fase activa.
-- Comprobar si el cambio necesita ADR ([docs/adr/README.md](docs/adr/README.md)). Si no lo necesita, se anotará en la [bitácora](docs/bitacora.md).
+- Verificar la versión de Godot (`godot --version`) y que la API exista en esa versión. **No inventar APIs.**
+- Identificar la fase activa en [docs/05](docs/05_plan_de_implementacion.md). Solo se trabaja en la fase activa o en el pulido que la cierre.
+- Comprobar la licencia y la procedencia de cualquier asset externo. Solo se admiten recursos gratuitos y compatibles con uso comercial.
+- Si el cambio necesita una decisión de producto, discutirla y anotarla en la bitácora. No bloquear el trabajo por papeleo.
 
-## 3. Durante la implementación
+## 4. Durante la implementación
 
 - Trabajar por fases; no introducir sistemas de fases futuras.
 - Crear archivos completos y funcionales. Prohibido el pseudocódigo, los `TODO` que oculten funcionalidad requerida y las implementaciones ficticias.
-- Tipado estricto según [docs/03_estandares_de_codigo.md](docs/03_estandares_de_codigo.md). No suprimir advertencias con `@warning_ignore` para ocultar errores de diseño; cualquier supresión requiere comentario justificativo y debe mencionarse en el informe.
+- Tipado estricto según [docs/03](docs/03_estandares_de_codigo.md). No suprimir advertencias con `@warning_ignore` para ocultar errores de diseño; cualquier supresión requiere comentario justificativo.
 - Respetar las capas: `campaigns/` puede depender de `core/` y `shared_assets/`; `core/` **nunca** depende de `campaigns/`.
 - No crear carpetas vacías. Cada directorio nace con su primer archivo funcional.
-- Sin dependencias externas (addons) sin un ADR aceptado.
+- **Recursos gratuitos permitidos**: CC0, Mixamo, Blender, MCP de Blender, packs gratuitos y generación de referencias o texturas con IA. Registrar autor, origen, licencia y fecha en el `LICENSE.md` correspondiente. No usar assets de pago.
+- **Assets 3D finales**: preferir un script reproducible (`tools/` o `assets/blender/`). Si se edita a mano, documentar el proceso y versionar el `.blend` o el GLB con su procedencia.
 - No mezclar cambios no relacionados en una misma entrega.
 
-## 4. Después de implementar
+## 5. Después de implementar
 
-1. Ejecutar las validaciones de [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md) según el alcance del cambio: la suite completa siempre al cerrar un lote de trabajo; la partida de extremo a extremo y la prueba de humo solo si se toca el mundo, el evento o el jugador; la medición de rendimiento solo si cambia la escena (geometría, luces o personajes).
-2. Revisar la salida completa: cero errores y cero advertencias de GDScript procedentes de `res://` (la política de advertencias está en [docs/04](docs/04_configuracion_del_proyecto.md) §5 y no deja ninguna categoría en nivel “advertencia”, por lo que el criterio siempre es satisfacible).
+1. Ejecutar las validaciones de [docs/06](docs/06_estrategia_de_pruebas.md) según el alcance: suite completa al cerrar un lote; partida de extremo a extremo y prueba de humo si se toca el mundo, el evento o el jugador; rendimiento si cambia la escena.
+2. Revisar la salida completa: cero errores y cero advertencias de GDScript procedentes de `res://`.
 3. Corregir y volver a validar.
-4. Actualizar la documentación afectada y la tabla de estado de [docs/05](docs/05_plan_de_implementacion.md). Los cambios que no necesitan ADR se anotan en la [bitácora](docs/bitacora.md). Fuera de eso, la documentación está congelada según el criterio de suficiencia de la Fase 0 (docs/05): no se reescriben documentos por iniciativa propia.
-5. Informar con este formato. Para cambios que no tocan lógica de juego ni contenido histórico (textos, HUD, instrumentación, documentación), basta con tres líneas: qué cambió, cómo se verificó y qué queda pendiente.
+4. Actualizar la documentación afectada, la tabla de estado de [docs/05](docs/05_plan_de_implementacion.md) y la [bitácora](docs/bitacora.md).
+5. Informar con este formato:
 
 ```text
 ## Informe de entrega
@@ -51,22 +52,22 @@ Parcial: <lista + qué falta>
 Pendiente: <lista>
 Validaciones ejecutadas: <comandos + resultado>
 Limitaciones / riesgos: <lista>
-Decisiones tomadas: <lista o enlace a ADR>
+Decisiones tomadas: <lista o enlace a la bitácora>
 ```
 
-Una funcionalidad **no** está terminada porque el código fue escrito: está terminada cuando se comprobó. Si algo no pudo verificarse (por ejemplo, prueba visual sin pantalla), declararlo explícitamente como *no verificado*.
+Una funcionalidad **no** está terminada porque el código fue escrito: está terminada cuando se comprobó. Si algo no pudo verificarse, declararlo como *no verificado*.
 
-## 5. Restricción fundamental
+## 6. Restricción fundamental
 
 No avanzar a la siguiente fase mientras existan errores críticos o criterios de aceptación incumplidos en la fase actual.
 
-## 6. Contenido histórico
+## 7. Contenido histórico
 
-Todo elemento histórico relevante (personajes, arquitectura, vestimenta, objetos, eventos, textos en pantalla) debe registrarse con su clasificación y fuente según [docs/07_convenciones_historicas.md](docs/07_convenciones_historicas.md). Un agente nunca presenta una reconstrucción o licencia narrativa como hecho documentado.
+Todo elemento histórico relevante (personajes, arquitectura, vestimenta, objetos, eventos, textos en pantalla) debe registrarse con su clasificación y fuente según [docs/07](docs/07_convenciones_historicas.md). Un agente nunca presenta una reconstrucción o licencia narrativa como hecho documentado.
 
-## 7. Idioma
+## 8. Idioma
 
 - Identificadores de código (clases, funciones, variables, señales, acciones de entrada): inglés.
-- Nombres de archivos de contenido de campaña: pueden estar en español (`quero_chicha.gd`, `mundo_base.tscn`).
+- Nombres de archivos de contenido de campaña: pueden estar en español.
 - Comentarios, documentación y textos para el jugador: español.
-- Términos quechuas: grafía según la convención de la campaña (ver documentación de campaña).
+- Términos quechuas: grafía según la convención de la campaña.

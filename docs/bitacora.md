@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Directiva de producto: fin de los ADR | Se retiran los ADR y se adopta «resultado primero»: recursos gratuitos, MCP de Blender, assets externos y referencias con IA permitidos con licencia registrada; pruebas y rendimiento se mantienen. El historial de decisiones queda en esta bitácora | — |
 | Prototipo de personaje vestido en Blender | `pch_dressed.py` genera la tejedora con cuerpo/esqueleto UAL1, cabeza, pelo y ropa propios; el GLB trae tres mallas y nueve animaciones. Se elimina la geometría del cuerpo oculta bajo la ropa para evitar que asome y la tejedora queda de pie junto al telar. 155 pruebas en verde | — |
 | Pulido del Cusco | La multitud se retira al empezar la defensa y usa una capa de colisión que solo consulta el jugador; portón con dintel, remate de la muralla, bancos, altar, cántaros e ichu junto a los muros. 155 pruebas en verde; `test_ciudad_crowd_retreats` | — |
 | Cusco de 1438 construido | Terreno con plaza y caminos de tierra, santuario de gradas con puerta, catorce casas con los modelos definitivos y sus props, muro de pirca con portón, terrazas de cultivo y diez figuras vestidas de multitud. 154 pruebas en verde; `test_ciudad_art` | — |

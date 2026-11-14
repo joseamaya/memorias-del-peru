@@ -142,7 +142,7 @@ Sin cambios apreciables respecto a la medición anterior: el objetivo vinculante
 
 ### Medición con los primeros modelos (Fase 4, provisional, 2026-11-11)
 
-Mismo comando y condiciones que la medición anterior, con la carga del sistema entre 0,6 y 0,9. La escena carga los seis modelos generados ([ADR-0010](adr/0010-modelos-generados-con-blender.md)): 8 viviendas de ~9 000–10 000 triángulos cada una, más el quero, el pututu, el adoratorio y el telar. Los personajes siguen como bloqueo. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+Mismo comando y condiciones que la medición anterior, con la carga del sistema entre 0,6 y 0,9. La escena carga los seis modelos generados (ADR-0010): 8 viviendas de ~9 000–10 000 triángulos cada una, más el quero, el pututu, el adoratorio y el telar. Los personajes siguen como bloqueo. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
 
 | Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Draw calls | Vídeo |
 |---|---|---|---|---|---|---|
@@ -186,7 +186,7 @@ Las draw calls bajan de unas 165–200 a unas 60. El perfil Medio sube de ~72 a 
 
 ### Medición con movimiento natural de personajes (Fase 4, provisional, 2026-11-12)
 
-Mismo comando y GPU, con el movimiento de [ADR-0019](adr/0019-movimiento-natural-de-personajes.md): aceleración y giro en `NpcActor`, pies fijados en los ciclos y segundo reposo. Carga del sistema entre 4,8 y 6,0.
+Mismo comando y GPU, con el movimiento de ADR-0019: aceleración y giro en `NpcActor`, pies fijados en los ciclos y segundo reposo. Carga del sistema entre 4,8 y 6,0.
 
 | Perfil | FPS medio (2 ejecuciones) | Vídeo |
 |---|---|---|
@@ -199,7 +199,7 @@ El movimiento se mide aparte con `tests/measure_motion.gd`: deslizamiento del pi
 
 ### Medición con ropa cortada y cosida (Fase 4, provisional, 2026-11-12)
 
-Mismo comando y GPU, con la ropa de [ADR-0020](adr/0020-ropa-cortada-y-cosida.md):
+Mismo comando y GPU, con la ropa de ADR-0020:
 - prendas cortadas y caídas en la postura de reposo;
 - sin la piel que la ropa tapa;
 - tejido de lana Fabric031.
@@ -215,7 +215,7 @@ Sin cambio apreciable respecto a la medición anterior. El movimiento medido con
 
 ### Medición con construcciones de pirca (Fase 4, provisional, 2026-11-12)
 
-Mismo comando y GPU, con las construcciones de [ADR-0021](adr/0021-construcciones-de-pirca.md):
+Mismo comando y GPU, con las construcciones de ADR-0021:
 - casas y terrazas de piedra tosca;
 - tercera variante de casa;
 - poyos de pirca;
@@ -250,7 +250,7 @@ Mismo comando y GPU, en el commit 2cbeb56. Se buscaba repetir con el equipo desc
 
 ### Medición con textiles, caída y manto con muelles (Fase 4, provisional, 2026-11-12)
 
-Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas ([ADR-0018](adr/0018-ropa-textiles-caida-y-muelles.md)). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.
+Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída simulada (horneada) y, en los personajes con manto, un `SpringBoneSimulator3D` de tres cadenas (ADR-0018). Carga del sistema entre 10,8 y 13,8 por procesos ajenos.
 
 | Perfil | FPS medio (2 ejecuciones) | Vídeo |
 |---|---|---|
@@ -262,7 +262,7 @@ Mismo comando y GPU. La ropa lleva textiles de 768 × 1024 por personaje, caída
 
 ### Medición con cabezas de Rocketbox (Fase 4, provisional, 2026-11-12)
 
-Mismo comando y GPU. Diez personajes con cabeza de Rocketbox ([ADR-0017](adr/0017-cabezas-rocketbox.md)): entre 6900 y 8600 triángulos cada uno, con texturas de cara de 1K y mapa de normales. La carga del sistema rondaba 10 por procesos ajenos (navegador sin ventana, base de datos), así que el commit anterior (e05b752) se midió justo antes, en las mismas condiciones.
+Mismo comando y GPU. Diez personajes con cabeza de Rocketbox (ADR-0017): entre 6900 y 8600 triángulos cada uno, con texturas de cara de 1K y mapa de normales. La carga del sistema rondaba 10 por procesos ajenos (navegador sin ventana, base de datos), así que el commit anterior (e05b752) se midió justo antes, en las mismas condiciones.
 
 | Medición | Bajo | Medio | Vídeo (Medio) |
 |---|---|---|---|
@@ -276,7 +276,7 @@ Mismo comando y GPU. Diez personajes con cabeza de Rocketbox ([ADR-0017](adr/001
 
 ### Medición con personajes de MakeHuman (Fase 4, provisional, 2026-11-12)
 
-Mismo comando y GPU. Los nueve personajes pasan a ser los de MakeHuman con ropa propia y captura de CMU ([ADR-0016](adr/0016-personajes-realistas-makehuman.md)): unos 8500–10 100 triángulos y 5–6 mallas cada uno.
+Mismo comando y GPU. Los nueve personajes pasan a ser los de MakeHuman con ropa propia y captura de CMU (ADR-0016): unos 8500–10 100 triángulos y 5–6 mallas cada uno.
 
 La carga del sistema estaba entre 5,2 y 6,7 por procesos ajenos y varió mucho entre ejecuciones. Por eso el commit anterior (1f53822) se midió justo después, en condiciones parecidas.
 
@@ -295,7 +295,7 @@ La carga del sistema estaba entre 5,2 y 6,7 por procesos ajenos y varió mucho e
 
 Mismo comando y GPU que la medición con texturas de detalle. La escena añade:
 
-- nueve personajes con esqueleto de 18 huesos y animaciones ([ADR-0015](adr/0015-personajes-con-esqueleto.md));
+- nueve personajes con esqueleto de 18 huesos y animaciones (ADR-0015);
 - la cabeza que gira hacia el jugador;
 - el viento en el ichu y la queñua;
 - los pasos y los golpes de trabajo en 3D.
@@ -315,7 +315,7 @@ La carga del sistema estaba entre 4,3 y 4,5 por procesos ajenos, así que el com
 
 ### Medición con texturas de detalle (Fase 4, provisional, 2026-11-11)
 
-Mismo comando, en la GPU integrada de referencia (Intel Graphics RPL-S, Vulkan, Forward+). La escena añade el shader triplanar con texturas de detalle ([ADR-0014](adr/0014-texturas-de-detalle-triplanares.md)), el *tonemap* AgX y la plaza y los caminos pintados en el terreno. La carga del sistema estaba entre 3 y 6 por procesos ajenos (navegador sin ventana), así que el commit anterior se midió en las mismas condiciones para comparar. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
+Mismo comando, en la GPU integrada de referencia (Intel Graphics RPL-S, Vulkan, Forward+). La escena añade el shader triplanar con texturas de detalle (ADR-0014), el *tonemap* AgX y la plaza y los caminos pintados en el terreno. La carga del sistema estaba entre 3 y 6 por procesos ajenos (navegador sin ventana), así que el commit anterior se midió en las mismas condiciones para comparar. Se da la mediana de tres ejecuciones y, entre paréntesis, el rango.
 
 | Perfil | FPS medio | FPS p1 | Draw calls | Vídeo |
 |---|---|---|---|---|
@@ -402,7 +402,7 @@ propio. El jugador está quieto en la aparición y la vista gira 0,35 rad/s.
 - Las draw calls variaron entre 14 y 272 por la misma carga y no se usan como
   referencia. La medición es un orden de magnitud, como las anteriores.
 - La medición se hizo con los actores de modelo propio; después cambiaron a
-  maniquíes con vestuario ([ADR-0042](adr/0042-maniqui-vestido.md)), que añaden
+  maniquíes con vestuario (ADR-0042), que añaden
   mallas y draw calls, así que debe repetirse para dar la cifra por buena.
 - El Cusco con multitud y batalla se mide en la sección final de la Fase 8.
 
@@ -412,7 +412,7 @@ propio. El jugador está quieto en la aparición y la vista gira 0,35 rad/s.
 Mismos comandos y condiciones que las mediciones del acto I y del paso, con
 carga del sistema 1,04, 1920 × 1080, sin vsync y con `Engine.max_fps = 0`. La
 llacta y el paso usan ahora maniquíes UAL1 con vestuario y rostro anclados a
-huesos ([ADR-0042](adr/0042-maniqui-vestido.md)); el Cusco queda pendiente.
+huesos (ADR-0042); el Cusco queda pendiente.
 
 | Escena | Perfil | FPS medio | FPS p1 |
 |---|---|---|---|

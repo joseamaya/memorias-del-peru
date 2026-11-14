@@ -1,5 +1,7 @@
 # 05 — Plan de implementación
 
+> Los ADR se retiraron el 2026-11-14. Las referencias históricas a ADR que queden en este documento son registro, no normas. La prioridad es el RPG jugable y su aspecto; las únicas reglas duras son licencias/procedencia y pruebas.
+
 **Fase activa:** Fase 8 — Arte, audio y cierre.
 **Siguiente:** validación de autor del arco completo y pulido de personajes.
 
@@ -23,7 +25,7 @@ Reglas:
 | 7 — Actos II y III en gris | Cerrada | 2026-11-13 |
 | 8 — Arte, audio y cierre | En curso | — |
 
-La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con [ADR-0033](adr/0033-duracion-del-slice.md) tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» ([ADR-0031](adr/0031-validacion-por-el-autor.md)). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
+La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con ADR-0033 tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» (ADR-0031). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
 
 ---
 
@@ -209,7 +211,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ### Precondiciones
 
 - [x] Fase 3 cerrada.
-- [x] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de validación de autor de [ADR-0031](adr/0031-validacion-por-el-autor.md): tres pasadas, cuestionario de comprensión, criterio de corrección y umbrales). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
+- [x] Documento de alcance del vertical slice aprobado en `campaigns/01_pachacutec/documentation/` (guion, mapa, lista de assets y protocolo de validación de autor de ADR-0031: tres pasadas, cuestionario de comprensión, criterio de corrección y umbrales). Puede ajustar los objetivos de abajo, pero solo mediante un ADR.
 
 > **Corrección de proceso (2026-11-10).** La revisión de la primera versión del alcance encontró que la precondición se había marcado como cumplida sin estarlo: faltaban el cuestionario, el criterio de corrección y el reclutamiento. La Fase 4 quedó bloqueada hasta aprobar la revisión 2, que ya incluye el protocolo completo y la secuencia con disparo garantizado. El bloqueo de la llacta construido mientras tanto se conserva como trabajo provisional y se ajusta ahora a la revisión 2.
 
@@ -217,7 +219,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 2–3 minutos de mediana en ruta directa ([ADR-0033](adr/0033-duracion-del-slice.md)); medido en 121,2 s (AUTO-4). El horizonte de 10–15 min queda para la campaña completa |
+| Duración | 2–3 minutos de mediana en ruta directa (ADR-0033); medido en 121,2 s (AUTO-4). El horizonte de 10–15 min queda para la campaña completa |
 | Espacio | Una llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Caminos | Al menos 2 rutas distintas entre el inicio y el punto narrativo final |
@@ -231,8 +233,8 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 - [x] La experiencia puede jugarse de principio a fin sin bloqueos ni errores. *(2026-11-13: `DEMO_OK` en la partida de demostración y cuatro pasadas AUTO-1 a AUTO-4 sin bloqueos; el cierre sin fugas se corrigió y AUTO-4 terminó sin errores.)*
 - [x] Se cumplen los objetivos medibles de la tabla (o los ajustados por ADR). *(2026-11-12, inspección de `mundo_base.tscn` cargada y `demo_playthrough.gd` con `DEMO_OK`: espacio de 140 × 140 m dentro de los límites a ±70 m; 8 viviendas; 4 caminos y dos rutas, la baja por las viviendas del oeste y la alta por las terrazas, las rampas y el mirador; 3 interactuables de tipos distintos (quero, ofrenda y pututu) más «Hablar» en 6 personajes; 9 NPC, con la tejedora y el agricultor en su animación de trabajo; el evento del mensajero llega de principio a fin; ambiente de viento y sonido en las tres interacciones. 2026-11-13: la duración se midió en 121,2 s con el objetivo del mirador, dentro del objetivo de 2–3 min de ADR-0033.)*
 - [x] Rendimiento: objetivo vinculante de docs/01 §5 (métrica 2) cumplido con el vertical slice completo. *(2026-11-12, commit 2cbeb56, con todo el contenido del slice: 122–132 FPS de media en perfil Bajo en la GPU integrada de referencia, frente a ≥ 30 exigidos; [docs/08](08_entorno_y_rendimiento.md) §4. La carga del equipo varió entre 1,8 y 18; la medición con el equipo descargado sigue pendiente y no bloquea, porque el margen es de más de cuatro veces. 2026-11-13: el perfil Medio por defecto mide 61,8 FPS de media en la misma GPU.)*
-- [x] Validación de autor ([ADR-0031](adr/0031-validacion-por-el-autor.md), con el umbral de duración de [ADR-0033](adr/0033-duracion-del-slice.md); sustituye a la muestra de 6 jugadores de la métrica 5, que queda declarada «no verificada»). *(2026-11-13: AUTO-1 a AUTO-4; primera interacción en 10,9–13,8 s, duración de 121,2 s en la última pasada, cero bloqueos, cierre sin errores y preguntas 1 y 2 correctas sin consultar el registro. Registro en [sesiones/](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md).)*
-- [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-022, la ficha de la introducción de ADR-0023, se verificó el mismo día. PCH-023, el mapa de ADR-0025, también se verificó ese día. PCH-014 no está en el juego y no bloquea, según [ADR-0011](adr/0011-fichas-fuera-del-slice.md).)*
+- [x] Validación de autor (ADR-0031, con el umbral de duración de ADR-0033; sustituye a la muestra de 6 jugadores de la métrica 5, que queda declarada «no verificada»). *(2026-11-13: AUTO-1 a AUTO-4; primera interacción en 10,9–13,8 s, duración de 121,2 s en la última pasada, cero bloqueos, cierre sin errores y preguntas 1 y 2 correctas sin consultar el registro. Registro en [sesiones/](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md).)*
+- [x] Todo contenido histórico tiene ficha en estado “verificado”. *(2026-11-11: las 19 fichas de elementos del juego están verificadas; 2026-11-12: también PCH-021, el corral de pirca añadido con ADR-0021. PCH-022, la ficha de la introducción de ADR-0023, se verificó el mismo día. PCH-023, el mapa de ADR-0025, también se verificó ese día. PCH-014 no está en el juego y no bloquea, según ADR-0011.)*
 - [x] Ningún anacronismo de la lista de control (docs/07 §4) queda sin justificar. *(2026-11-12: revisión de las diez categorías en la [hoja de verificación](../campaigns/01_pachacutec/documentation/hoja_verificacion_fichas.md) §7; peinados de Rocketbox y pasos con botas declarados como limitación, y murmullo comprobado sin palabras inteligibles.)*
 
 ---
@@ -240,7 +242,7 @@ Primera tarea: enumerar las pruebas de la fase en docs/06 §3.
 ## Fase 5 — Museo explorable del Cusco (superada)
 
 Cerrada el 2026-11-13 como **modelo superado**, no como fase cumplida. El
-[ADR-0038](adr/0038-campana-rpg.md) sustituye el museo por un RPG en primera
+ADR-0038 sustituye el museo por un RPG en primera
 persona: la duración de 6–8 min, el HUD de tour y su validación dejan de
 aplicar. No se le exige la validación pendiente porque el modelo ya no existe.
 
@@ -254,7 +256,7 @@ nueve textos, que pasan a diálogo y a la «Memoria» del diario
 
 ### Precondiciones
 
-- [x] [ADR-0038](adr/0038-campana-rpg.md) y [ADR-0039](adr/0039-tres-actos-y-gris.md) aceptados.
+- [x] ADR-0038 y ADR-0039 aceptados.
 - [x] Biblia de la campaña aprobada.
 - [x] Fichas del acto I verificadas (PCH-004, 005, 007, 008, 010, 012, 016, 019 y 021).
 
@@ -379,7 +381,7 @@ autor del arco completo corresponde a la Fase 8.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
 
-**Estado (2026-11-14).** Se corrige la dirección de arte con [ADR-0042](adr/0042-maniqui-vestido.md):
+**Estado (2026-11-14).** Se corrige la dirección de arte con ADR-0042:
 todos los actos vuelven al maniquí UAL1, que mira a +Z y se gira 180° para
 coincidir con la orientación de la lógica. Los modelos MakeHuman/Rocketbox
 quedan como referencia, fuera de escena. El vestuario y el rostro se aplican

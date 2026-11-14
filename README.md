@@ -1,6 +1,6 @@
 # Memorias del Perú
 
-Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental, interacción y RPG. La campaña 01 es un **RPG histórico en primera persona de tres actos** ([ADR-0038](docs/adr/0038-campana-rpg.md), [ADR-0039](docs/adr/0039-tres-actos-y-gris.md)).
+Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental, interacción y RPG. La campaña 01 es un **RPG histórico en primera persona de tres actos**.
 
 **Objetivo de la etapa actual:** la campaña 01 jugable de 40–50 minutos, en tres actos ([biblia de la campaña](campaigns/01_pachacutec/documentation/biblia_campana.md)).
 
@@ -8,11 +8,11 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 
 | Dato | Valor |
 |---|---|
-| Motor | Godot 4.7.2 ([ADR-0002](docs/adr/0002-version-de-godot.md)) |
+| Motor | Godot 4.7.2 |
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 8 — Arte, audio y cierre (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. La Fase 7 cerró con el arco completo en gris, la víspera de los pururaucas y la partida continua automatizada (`ARCO_OK`). Todos los actos usan el **maniquí UAL1** (Quaternius, CC0) como base, con **vestuario y rostro** como capas ([ADR-0042](docs/adr/0042-maniqui-vestido.md)): los nueve del acto I, la comitiva y los chancas del acto II y los reclutas, Cusi, aliados y defensores del acto III. Los modelos MakeHuman/Rocketbox quedan como referencia, fuera de escena. El acto II tiene paisaje y el Cusco deja el bloqueo gris: plaza de tierra, santuario, catorce casas, muro de pirca, terrazas y multitud. Los tres actos superan los 60 FPS en Medio en la GPU integrada de referencia. La tejedora usa un prototipo de personaje vestido en Blender; el resto conserva las capas. Pendiente: validación de autor y pulido de personajes. |
+| Estado | **Fase 8 — Arte, audio y cierre (en curso).** La campaña se organiza en tres actos: llacta, paso y Cusco de 1438. La Fase 7 cerró con el arco completo en gris, la víspera de los pururaucas y la partida continua automatizada (`ARCO_OK`). Todos los actos usan el **maniquí UAL1** (Quaternius, CC0) como base, con **vestuario y rostro** como capas: los nueve del acto I, la comitiva y los chancas del acto II y los reclutas, Cusi, aliados y defensores del acto III. Los modelos MakeHuman/Rocketbox quedan como referencia, fuera de escena. El acto II tiene paisaje y el Cusco deja el bloqueo gris: plaza de tierra, santuario, catorce casas, muro de pirca, terrazas y multitud. Los tres actos superan los 60 FPS en Medio en la GPU integrada de referencia. La tejedora usa un prototipo de personaje vestido en Blender; el resto conserva las capas. Pendiente: validación de autor y pulido de personajes. |
 
 ## Requisitos
 
@@ -60,8 +60,7 @@ godot --path . -- --act=3   # empezar en el acto III
 | [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md) | Validación, pruebas automatizadas y verificación manual |
 | [docs/07_convenciones_historicas.md](docs/07_convenciones_historicas.md) | Clasificación de contenido histórico y fuentes |
 | [docs/08_entorno_y_rendimiento.md](docs/08_entorno_y_rendimiento.md) | Entorno atmosférico, perfiles gráficos y métricas |
-| [docs/adr/](docs/adr/) | Registro de decisiones arquitectónicas |
-| [docs/bitacora.md](docs/bitacora.md) | Cambios que no llegan al umbral de un ADR |
+| [docs/bitacora.md](docs/bitacora.md) | Registro cronológico de cambios y decisiones |
 | [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Documentación de la campaña Pachacútec |
 
 ## Validación rápida
