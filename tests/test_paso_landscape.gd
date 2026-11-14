@@ -72,6 +72,23 @@ func test_paso_landscape() -> bool:
 	return ok
 
 
+## El enemigo derribado no desaparece de golpe: se tambalea y cae hacia atrás
+## durante la caída, y solo después se oculta.
+func test_paso_defeated_enemy_falls() -> bool:
+	var paso: PasoWorld = _spawn()
+	if paso == null:
+		return false
+	var enemy: AmbushEnemy = paso.get_node_or_null("Ambusher1") as AmbushEnemy
+	var ok: bool = enemy != null and enemy.visual() != null
+	if ok:
+		enemy.take_hit(999.0)
+		ok = ok and enemy.is_resolved()
+		ok = ok and enemy.visible
+		ok = ok and enemy.visual().current_animation() == &"hit"
+	paso.free()
+	return ok
+
+
 func test_paso_actors_use_models() -> bool:
 	var paso: PasoWorld = _spawn()
 	if paso == null:
