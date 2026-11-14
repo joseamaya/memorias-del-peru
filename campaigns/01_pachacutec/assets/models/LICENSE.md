@@ -4,6 +4,19 @@
 
 Viviendas, objetos, vegetación, telar, cántaros y leña. Son de autoría propia del proyecto ([ADR-0010](../../../../docs/adr/0010-modelos-generados-con-blender.md)).
 
+## Tejedora vestida (`pch_weaver_dressed.glb`), de `pch_dressed.py`
+
+Prototipo de personaje completo sobre el maniquí UAL1 (ADR-0042).
+
+| Parte | Origen | Licencia | Añadido |
+|---|---|---|---|
+| Cuerpo, esqueleto de 65 huesos y animaciones | UAL1 de Quaternius, `shared_assets/characters/mannequin/ual1_standard.glb` | CC0 1.0 | 2026-11-14 |
+| Cabeza, pelo, ojos, ropa, sandalias y materiales | Autoría propia, generados por `pch_dressed.py` | Propia | 2026-11-14 |
+
+El GLB contiene tres mallas (cuerpo, ropa y cabeza) con el mismo esqueleto y
+nueve animaciones recortadas del UAL1. La ropa usa el material `pch_cloth`, que
+el juego sustituye por su shader de tejido; el color va por vértice.
+
 ## Personajes (`pch_npc_*.glb`), de `pch_people.py`
 
 Proceso descrito en [ADR-0016](../../../../docs/adr/0016-personajes-realistas-makehuman.md).

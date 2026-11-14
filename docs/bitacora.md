@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Prototipo de personaje vestido en Blender | `pch_dressed.py` genera la tejedora con cuerpo/esqueleto UAL1, cabeza, pelo y ropa propios; el GLB trae tres mallas y nueve animaciones. Se elimina la geometría del cuerpo oculta bajo la ropa para evitar que asome y la tejedora queda de pie junto al telar. 155 pruebas en verde | — |
 | Pulido del Cusco | La multitud se retira al empezar la defensa y usa una capa de colisión que solo consulta el jugador; portón con dintel, remate de la muralla, bancos, altar, cántaros e ichu junto a los muros. 155 pruebas en verde; `test_ciudad_crowd_retreats` | — |
 | Cusco de 1438 construido | Terreno con plaza y caminos de tierra, santuario de gradas con puerta, catorce casas con los modelos definitivos y sus props, muro de pirca con portón, terrazas de cultivo y diez figuras vestidas de multitud. 154 pruebas en verde; `test_ciudad_art` | — |
 | Rendimiento final de la Fase 8 | Mediana de tres pasadas en la Intel UHD 770 a 1920 × 1080: llacta 70,5 / paso 61,0 / Cusco 66,9 FPS en Medio; 129,1 / 137,8 / 129,2 en Bajo. Los terrenos del paso y el Cusco no proyectan sombra y el `fbm` de las nubes baja a tres octavas para que el paso supere los 60 | — |

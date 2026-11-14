@@ -89,6 +89,8 @@ const MURMUR_FADE_OUT: float = 5.0
 ## carga el primer archivo existente de su lista; sin archivo, sigue el bloqueo.
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
+## Personaje completo vestido en Blender (cuerpo UAL1 + capas nuevas).
+const DRESSED_WEAVER_MODEL: String = "pch_weaver_dressed.glb"
 const MODEL_QUERO: String = "pch_quero.glb"
 const MODEL_PUTUTU: String = "pch_pututu.glb"
 const MODEL_OFFERING: String = "pch_offering_shrine.glb"
@@ -827,7 +829,9 @@ func _build_llacta() -> void:
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
 	weaver.face(_plaza_center_flat(), true)
 	weaver.turn_body_to_talk = false
-	weaver.set_idle_animation(&"weave")
+	# El modelo vestido de Blender se sostiene mejor de pie junto al telar;
+	# la capa procedural antigua conserva la postura arrodillada de tejer.
+	weaver.set_idle_animation(&"idle" if weaver.preserve_materials else &"weave")
 	farmer.face(_plaza_center_flat(), true)
 	farmer.set_idle_animation(&"work")
 	for actor: Node in npcs.get_children():
@@ -1761,18 +1765,24 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 		slot_offset = -body_mesh.position
 	# La cápsula de colisión del bloqueo se conserva (alcance §7).
 	var no_collisions: Array[Node] = []
-	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, npc_model_files(node_name), blockout, no_collisions)
+	var files: Array[String] = npc_model_files(node_name)
+	var dressed_model: bool = node_name == "Tejedora"
+	if dressed_model:
+		files = [DRESSED_WEAVER_MODEL]
+	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, files, blockout, no_collisions)
 	slot.use_model_collision = false
 	# Maniquí vestido (ADR-0042): todos los personajes del acto I.
-	actor.mannequin_skin = true
+	actor.mannequin_skin = not dressed_model
+	actor.preserve_materials = dressed_model
 	actor.body_color = DressedMannequin.SKIN_COLOR
 	if slot.model != null:
 		actor.set_model(slot.model)
-	var outfit: DressedMannequin = DressedMannequin.new()
-	outfit.name = "Outfit"
-	outfit.role = dressed_role(node_name)
-	outfit.variant = dressed_variant(node_name)
-	actor.add_child(outfit)
+	if not dressed_model:
+		var outfit: DressedMannequin = DressedMannequin.new()
+		outfit.name = "Outfit"
+		outfit.role = dressed_role(node_name)
+		outfit.variant = dressed_variant(node_name)
+		actor.add_child(outfit)
 	return actor
 
 

@@ -19,6 +19,9 @@ signal beat(animation: StringName)
 @export var body_color: Color = Color(0.6, 0.45, 0.35, 1.0)
 ## Si es `true`, el maniquí se tiñe como piel (para el maniquí vestido).
 @export var mannequin_skin: bool = false
+## Si es `true`, el modelo trae sus propios materiales (personaje vestido en
+## Blender) y no se le aplica el tinte de piel del maniquí.
+@export var preserve_materials: bool = false
 @export var walk_speed: float = 1.8
 ## Animación de reposo: `idle`, `weave`, `work`, `talk`, `tired`…
 @export var idle_animation: StringName = &"idle"
@@ -154,7 +157,8 @@ func set_model(model: Node3D) -> void:
 		# UAL1 mira hacia +Z; el actor orienta su -Z hacia el objetivo. El giro
 		# deja la cara del maniquí hacia delante sin tocar los clips.
 		model.rotation.y = PI
-		_tint_model(model, mannequin_skin)
+		if not preserve_materials:
+			_tint_model(model, mannequin_skin)
 		_set_mannequin_beats()
 	_idle_rng.seed = hash(String(name))
 	_idle_switch_left = _idle_rng.randf_range(IDLE_SWITCH_MIN, IDLE_SWITCH_MAX)

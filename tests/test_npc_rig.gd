@@ -36,7 +36,7 @@ func test_npc_rig() -> bool:
 	# golpe de trabajo, aunque el maniquí no traiga el ritmo del modelo propio.
 	var weaver: NpcActor = world.get_node("Llacta/NPCs/Tejedora") as NpcActor
 	var loom: Node3D = world.get_node_or_null("Llacta/LoomSlot") as Node3D
-	ok = ok and weaver.current_animation() == &"weave"
+	ok = ok and weaver.current_animation() == &"idle"
 	if loom != null:
 		ok = ok and weaver.flat_distance_to(loom.global_position) < 0.6
 		var along: Vector3 = loom.global_transform.basis.z

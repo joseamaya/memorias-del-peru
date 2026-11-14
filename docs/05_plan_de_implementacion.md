@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** validación de autor del arco completo.
+**Siguiente:** validación de autor del arco completo y pulido de personajes.
 
 Reglas:
 
@@ -395,7 +395,12 @@ piedra. El Cusco deja el bloqueo gris: terreno con plaza y caminos de tierra,
 santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
 terrazas de cultivo y diez figuras vestidas de multitud. La multitud se retira
 al empezar la defensa; el portón con dintel, el remate de la muralla, los bancos,
-el altar y el ichu completan la plaza. El rendimiento final en la GPU integrada
-de referencia supera los 60 FPS en Medio en los tres actos, también con la
-multitud y la defensa en curso. 155 pruebas en verde. Pendiente: validación de
-autor.
+el altar y el ichu completan la plaza. La tejedora del acto I usa un prototipo
+completo vestido en Blender (`pch_dressed.py`): cuerpo y esqueleto UAL1, cabeza,
+pelo y ropa propios, exportados como tres mallas con el mismo esqueleto y nueve
+animaciones. El resto del elenco conserva las capas procedurales. La tejedora
+queda de pie junto al telar porque la falda del prototipo no se deforma bien
+arrodillada; la cara y la sastrería fina siguen en pulido. El rendimiento final
+en la GPU integrada de referencia supera los 60 FPS en Medio en los tres actos,
+también con la multitud y la defensa en curso. 155 pruebas en verde. Pendiente:
+validación de autor y pulido de personajes.

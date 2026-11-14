@@ -53,6 +53,9 @@ func test_npc_steps_and_work_beats() -> bool:
 	var weaver: NpcActor = world.get_node("Llacta/NPCs/Tejedora") as NpcActor
 	var farmer: NpcActor = world.get_node("Llacta/NPCs/Agricultor") as NpcActor
 	# El golpe del telar llega una vez por ciclo de la animación de tejer.
+	# La tejedora del juego está de pie con el modelo vestido; para probar el
+	# golpe se fuerza el ciclo de tejer.
+	weaver.set_idle_animation(&"weave")
 	var beats: Array[int] = [0, 0]
 	weaver.beat.connect(func(_animation: StringName) -> void: beats[0] += 1)
 	farmer.beat.connect(func(_animation: StringName) -> void: beats[1] += 1)

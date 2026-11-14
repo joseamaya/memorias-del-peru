@@ -1,10 +1,11 @@
 extends RefCounted
-## Comprueba el maniquí vestido del acto I (ADR-0042): los nueve personajes
-## llevan ropa y rostro anclados a los huesos del UAL1, cada uno con su rol, el
-## maniquí sigue animado y mira hacia delante, y no queda ningún modelo viejo.
+## Comprueba el maniquí vestido del acto I (ADR-0042): la tejedora usa el
+## modelo completo vestido en Blender y el resto conserva las capas ancladas
+## a los huesos del UAL1. Ningún personaje carga los modelos viejos.
 
 const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
 const MANNEQUIN_PATH: String = "res://shared_assets/characters/mannequin/ual1_standard.glb"
+const WEAVER_MODEL: String = "res://campaigns/01_pachacutec/assets/models/pch_weaver_dressed.glb"
 const EXPECTED_ROLES: Dictionary[String, StringName] = {
 	"Tejedora": &"weaver",
 	"Agricultor": &"farmer",
@@ -42,41 +43,36 @@ func test_dressed_weaver() -> bool:
 	if world == null:
 		return false
 	var weaver: NpcActor = world.get_node_or_null("Llacta/NPCs/Tejedora") as NpcActor
-	var outfit: DressedMannequin = _outfit_of(world, "Tejedora")
-	var ok: bool = weaver != null and outfit != null and outfit.is_built()
+	var slot: ModelSlot = null
+	if weaver != null:
+		slot = weaver.get_node_or_null("Body/ModelSlot") as ModelSlot
+	var ok: bool = weaver != null and slot != null and slot.model != null
 	if not ok:
 		world.free()
 		return false
-	var bones: Array[StringName] = outfit.attached_bones()
-	ok = ok and bones.has(&"pelvis") and bones.has(&"spine_02") and bones.has(&"Head")
-	# Ropa (shader de tejido o textil con franjas) y rostro/pelo.
-	var fabric: int = 0
-	var textile: int = 0
-	var skin: int = 0
-	for node: Node in weaver.find_children("*", "MeshInstance3D", true, false):
+	ok = ok and slot.loaded_path == WEAVER_MODEL
+	ok = ok and weaver.preserve_materials and not weaver.mannequin_skin
+	ok = ok and weaver.current_animation() == &"idle"
+	# El modelo conserva el giro de UAL1 y su esqueleto de 65 huesos.
+	ok = ok and absf(absf(slot.model.rotation.y) - PI) < 0.01
+	var skeleton: Skeleton3D = slot.model.find_child("Skeleton3D", true, false) as Skeleton3D
+	ok = ok and skeleton != null and skeleton.get_bone_count() == 65
+	var player: AnimationPlayer = slot.model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	ok = ok and player != null and player.has_animation(&"Idle") and player.has_animation(&"Fixing_Kneeling")
+	# La malla trae cuerpo, cabeza y ropa en superficies separadas; el shader
+	# de tejido se aplica a la superficie de tela.
+	var meshes: Array[Node] = slot.model.find_children("*", "MeshInstance3D", true, false)
+	var surfaces: int = 0
+	var cloth: bool = false
+	for node: Node in meshes:
 		var mesh_instance: MeshInstance3D = node as MeshInstance3D
-		if mesh_instance.material_override is ShaderMaterial:
-			fabric += 1
-		elif mesh_instance.material_override is StandardMaterial3D:
-			var standard: StandardMaterial3D = mesh_instance.material_override as StandardMaterial3D
-			if standard.albedo_texture != null:
-				textile += 1
-			else:
-				skin += 1
-	ok = ok and fabric >= 5 and textile >= 4 and skin >= 3
-	# Lliclla en dos paños y sandalias.
-	ok = ok and weaver.find_child("OutfitLliclla", true, false) != null
-	ok = ok and weaver.find_child("OutfitSandalL", true, false) != null
-	ok = ok and weaver.find_child("OutfitSandalR", true, false) != null
-	# El maniquí conserva su animación de tejer y su piel.
-	ok = ok and weaver.current_animation() == &"weave"
-	ok = ok and weaver.mannequin_skin
-	# UAL1 mira a +Z; el modelo se gira para que el actor mire a -Z.
-	var slot: ModelSlot = weaver.get_node_or_null("Body/ModelSlot") as ModelSlot
-	ok = ok and slot != null and slot.loaded_path == MANNEQUIN_PATH
-	if slot != null:
-		var model: Node3D = slot.model
-		ok = ok and model != null and absf(absf(model.rotation.y) - PI) < 0.01
+		if mesh_instance.mesh == null:
+			continue
+		surfaces += mesh_instance.mesh.get_surface_count()
+		for index: int in range(mesh_instance.mesh.get_surface_count()):
+			if mesh_instance.get_surface_override_material(index) is ShaderMaterial:
+				cloth = true
+	ok = ok and surfaces >= 8 and cloth
 	world.free()
 	return ok
 
@@ -88,9 +84,24 @@ func test_dressed_roles() -> bool:
 	var ok: bool = true
 	for npc_name: String in EXPECTED_ROLES:
 		var npc: NpcActor = world.get_node_or_null("Llacta/NPCs/%s" % npc_name) as NpcActor
+		ok = ok and npc != null
+		if npc == null:
+			continue
+		var slot: ModelSlot = npc.get_node_or_null("Body/ModelSlot") as ModelSlot
+		ok = ok and slot != null and slot.model != null
+		if slot != null:
+			var model: Node3D = slot.model
+			ok = ok and absf(absf(model.rotation.y) - PI) < 0.01
+		if npc_name == "Tejedora":
+			# La tejedora es el prototipo completo de Blender: no lleva la
+			# capa procedural encima.
+			ok = ok and npc.preserve_materials
+			ok = ok and npc.find_child("Outfit", true, false) == null
+			ok = ok and slot != null and slot.loaded_path == WEAVER_MODEL
+			continue
 		var outfit: DressedMannequin = _outfit_of(world, npc_name)
-		ok = ok and npc != null and outfit != null and outfit.is_built()
-		if npc == null or outfit == null:
+		ok = ok and outfit != null and outfit.is_built()
+		if outfit == null:
 			continue
 		ok = ok and outfit.role == EXPECTED_ROLES[npc_name]
 		var bones: Array[StringName] = outfit.attached_bones()
@@ -103,11 +114,7 @@ func test_dressed_roles() -> bool:
 		ok = ok and npc.find_child("OutfitSandalR", true, false) != null
 		if outfit.role == &"weaver" or outfit.role == &"villager":
 			ok = ok and npc.find_child("OutfitLliclla", true, false) != null
-		var slot: ModelSlot = npc.get_node_or_null("Body/ModelSlot") as ModelSlot
 		ok = ok and slot != null and slot.loaded_path == MANNEQUIN_PATH
-		if slot != null:
-			var model: Node3D = slot.model
-			ok = ok and model != null and absf(absf(model.rotation.y) - PI) < 0.01
 	# El curaca lleva manto y el mensajero, q'ipi.
 	var curaca: NpcActor = world.get_node_or_null("Llacta/NPCs/Curaca") as NpcActor
 	var messenger: NpcActor = world.get_node_or_null("Llacta/NPCs/Mensajero") as NpcActor

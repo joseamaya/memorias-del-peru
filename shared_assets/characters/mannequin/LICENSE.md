@@ -8,4 +8,4 @@
 - **Uso:** maniquí de prototipo para los personajes del juego. 43 animaciones sin root motion: locomoción, conversación, trabajo de rodillas, ataque, golpe y muerte.
 - **Nota:** el `ual1_bone_map.tres` es propio, generado con el `SkeletonProfileHumanoid` de Godot para retargeting futuro.
 
-Se sustituirá por los modelos propios cuando se aborde la fase de realismo. Hasta entonces, el maniquí es la capa visual de los actores; la lógica no depende de él.
+Es la base definitiva de los personajes ([ADR-0042](../../../docs/adr/0042-maniqui-vestido.md)): el cuerpo y el esqueleto se conservan, y la ropa y el rostro se añaden como capas. Los modelos MakeHuman/Rocketbox quedan como referencia, fuera de escena.
