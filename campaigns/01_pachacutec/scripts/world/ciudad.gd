@@ -33,6 +33,8 @@ const RECRUIT_INTROS: Array[StringName] = [
 	&"PCH_CIUDAD_YOUTH_INTRO",
 ]
 const CUSI_POSITION: Vector3 = Vector3(0.0, 0.9, -12.0)
+## El viejo que cuenta la leyenda de los pururaucas, junto al santuario.
+const VESPERA_POSITION: Vector3 = Vector3(5.0, 0.9, -8.0)
 const DEFENSE_POSITIONS: Array[Vector3] = [
 	Vector3(0.0, 0.0, -4.0),
 	Vector3(6.0, 0.0, -2.0),
@@ -60,6 +62,7 @@ var character: CharacterState = null
 var player_combatant: Combatant = null
 var inventory: Inventory = null
 var dialogue: DialogueRunner = null
+var journal: Journal = null
 
 var _enemies: Array[AmbushEnemy] = []
 var _attack_ray: RayCast3D = null
@@ -79,8 +82,10 @@ func _ready() -> void:
 	_build_greybox()
 	_setup_player_combat()
 	_setup_inventory_and_dialogue()
+	_setup_journal()
 	_setup_recruitment()
 	_setup_cusi()
+	_setup_vespera()
 	_restore_allies()
 	hint_label.text = ""
 	hud.show_subtitle(tr("PCH_CIUDAD_ARRIVAL"), 0.0)
@@ -150,6 +155,19 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("journal"):
+		if hud == null or journal == null or _completed or _dead or _defense_active:
+			return
+		if hud.is_dialogue_open():
+			return
+		if hud.is_journal_open():
+			hud.hide_journal()
+			player.process_mode = Node.PROCESS_MODE_INHERIT
+		else:
+			hud.show_journal(journal)
+			player.process_mode = Node.PROCESS_MODE_DISABLED
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventMouseButton:
 		var mouse: InputEventMouseButton = event as InputEventMouseButton
 		if mouse.button_index == MOUSE_BUTTON_LEFT and mouse.pressed:
@@ -221,6 +239,100 @@ func _setup_cusi() -> void:
 	add_child(point)
 	point.requested.connect(_on_cusi_requested)
 	_add_visual_npc(Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z), Color(0.72, 0.55, 0.42, 1.0))
+
+
+## Diario del acto III: guarda la leyenda de los pururaucas como Memoria.
+func _setup_journal() -> void:
+	journal = Journal.new()
+	journal.name = "Journal"
+	player.add_child(journal)
+	hud.journal_closed.connect(_on_journal_closed)
+
+
+## Víspera opcional: un viejo cuenta la leyenda antes de la defensa.
+func _setup_vespera() -> void:
+	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+	var point: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if point == null or body == null:
+		instance.free()
+		return
+	point.name = "VesperaPoint"
+	point.prompt_key = &"PCH_CIUDAD_TALK_VESPERA"
+	body.position = VESPERA_POSITION
+	add_child(point)
+	point.requested.connect(_on_vespera_requested)
+	_add_visual_npc(Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), Color(0.58, 0.55, 0.48, 1.0))
+
+
+func _on_vespera_requested() -> void:
+	if _defense_active or _completed or _dead or dialogue == null:
+		return
+	if dialogue.is_active():
+		return
+	if CampaignState.has_flag(&"mem_pururaucas"):
+		hud.show_subtitle(tr("PCH_VESPERA_AGAIN"), 0.0)
+		return
+	var graph: DialogueGraph = _build_vespera_dialogue()
+	if dialogue.start(graph):
+		player.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+## La leyenda se cuenta como creencia: el texto dice «dicen» y «así lo
+## cuentan», y ninguna piedra se transforma ni cambia la defensa (PCH-031).
+func _build_vespera_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_ELDER"
+	start.text_key = &"PCH_VESPERA_INTRO"
+	start.next_id = &"end"
+	var listen: DialogueChoice = DialogueChoice.new()
+	listen.text_key = &"PCH_VESPERA_LISTEN"
+	listen.next_id = &"tale"
+	var leave: DialogueChoice = DialogueChoice.new()
+	leave.text_key = &"PCH_DLG_LEAVE"
+	leave.next_id = &"end"
+	var choices: Array[DialogueChoice] = [listen, leave]
+	start.choices = choices
+	var tale: DialogueNode = DialogueNode.new()
+	tale.id = &"tale"
+	tale.speaker_key = &"PCH_NPC_ELDER"
+	tale.text_key = &"PCH_VESPERA_TALE"
+	tale.next_id = &"close"
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.SET_FLAG
+	effect.key = &"mem_pururaucas"
+	effect.amount = 1
+	var effects: Array[DialogueEffect] = [effect]
+	tale.effects = effects
+	var close: DialogueNode = DialogueNode.new()
+	close.id = &"close"
+	close.speaker_key = &"PCH_NPC_ELDER"
+	close.text_key = &"PCH_VESPERA_CLOSE"
+	close.next_id = &"end"
+	var nodes: Array[DialogueNode] = [start, tale, close]
+	graph.nodes = nodes
+	return graph
+
+
+func _on_journal_closed() -> void:
+	player.process_mode = Node.PROCESS_MODE_INHERIT
+
+
+func _unlock_memory(
+	entry_id: StringName,
+	title_key: StringName,
+	body_key: StringName,
+	badge: StringName,
+	source_key: StringName
+) -> void:
+	if journal == null:
+		return
+	if journal.add_memory(entry_id, title_key, body_key, badge, source_key):
+		if hud != null:
+			hud.show_hint(tr("UI_JOURNAL_UPDATED"), 3.0)
 
 
 func _on_recruit_requested(index: int) -> void:
@@ -351,6 +463,8 @@ func _finish_defense() -> void:
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_WOUNDED")
 	if CampaignState.has_flag(&"maiz_guardado"):
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_MAIZE")
+	if CampaignState.has_flag(&"scout_spared"):
+		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SPARED")
 	hud.show_subtitle(epilogue, 0.0)
 	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"))
 
@@ -421,6 +535,9 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 	CampaignState.set_flag(key, value)
 	if key == &"defensa_iniciada" and value != 0:
 		_defense_requested = true
+		return
+	if key == &"mem_pururaucas" and value != 0:
+		_unlock_memory(&"mem_pururaucas", &"PCH_ST_PURURAUCAS_TITLE", &"PCH_ST_PURURAUCAS_BODY", &"N", &"PCH-031")
 		return
 	if value == 0:
 		return

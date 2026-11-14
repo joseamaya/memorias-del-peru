@@ -92,10 +92,14 @@ func test_paso_ambush_and_combat() -> bool:
 	paso.call("_on_dialogue_advanced")
 	hud.get_dialogue_panel().choice_selected.emit(0)
 	paso.call("_on_dialogue_advanced")
+	# El explorador chanca herido: perdonarlo deja su bandera.
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	paso.call("_on_dialogue_advanced")
 	ok = ok and paso.call("is_completed") == true
 	if state != null:
 		ok = ok and state.get_flag(&"herido_salvado") == 1
 		ok = ok and state.get_flag(&"maiz_guardado") == 1
+		ok = ok and state.get_flag(&"scout_spared") == 1
 		state.clear()
 	paso.free()
 	return ok
@@ -162,8 +166,11 @@ func test_paso_alternatives() -> bool:
 	ok = ok and second.call("alive_enemies") == 0
 	hud.get_dialogue_panel().choice_selected.emit(0)
 	second.call("_on_dialogue_advanced")
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	second.call("_on_dialogue_advanced")
 	ok = ok and second.call("is_completed") == true
 	ok = ok and state.has_flag(&"maiz_guardado")
+	ok = ok and state.has_flag(&"scout_spared")
 	ok = ok and not state.has_flag(&"herido_salvado")
 	second.free()
 	state.clear()

@@ -106,9 +106,6 @@ func test_model_slot() -> bool:
 		elif parent is MeshInstance3D:
 			by_parent["object"] += 1
 		for path: String in slot.model_paths:
-			# El maniquí compartido no sigue la convención pch_ de la campaña.
-			if path.begins_with("res://shared_assets/"):
-				continue
 			ok = ok and AssetValidation.validate_file_name(path.get_file()).is_empty()
 	ok = ok and by_parent["house"] == 8 and by_parent["npc"] == 9
 	# Props junto a las casas: cántaros y leña (PCH-019 y PCH-020).

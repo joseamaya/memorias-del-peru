@@ -87,3 +87,49 @@ func test_ciudad_recruits_and_defense() -> bool:
 	ciudad.free()
 	state.clear()
 	return ok
+
+
+func test_ciudad_vespera_is_belief() -> bool:
+	var state: CampaignStateService = _state()
+	if state == null:
+		return false
+	state.clear()
+	var ciudad: Node = _spawn()
+	if ciudad == null:
+		return false
+	var hud: PlayerHud = ciudad.get_node_or_null("UILayer/HUD") as PlayerHud
+	var player: PlayerFPS = ciudad.get_node_or_null("PlayerFPS") as PlayerFPS
+	var point: CampPoint = ciudad.get_node_or_null("VesperaPoint") as CampPoint
+	var journal: Journal = ciudad.get_node_or_null("PlayerFPS/Journal") as Journal
+	if hud == null or player == null or point == null or journal == null:
+		ciudad.free()
+		return false
+	# La leyenda no altera aliados ni enemigos: es relato, no mecánica.
+	var allies_before: Variant = ciudad.call("ally_count")
+	point.interact(player)
+	var ok: bool = hud.is_dialogue_open()
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	ciudad.call("_on_dialogue_advanced")
+	ok = ok and state.has_flag(&"mem_pururaucas")
+	ok = ok and journal.has(&"mem_pururaucas")
+	var entry: JournalEntry = journal.get_entry(&"mem_pururaucas")
+	ok = ok and entry != null and entry.badge == &"N" and entry.source_key == &"PCH-031"
+	ciudad.call("_on_dialogue_advanced")
+	ok = ok and not hud.is_dialogue_open()
+	ok = ok and ciudad.call("ally_count") == allies_before
+	ok = ok and ciudad.call("alive_enemies") == 0
+	# La «Memoria» se abre con J y conserva la leyenda.
+	var open_event: InputEventAction = InputEventAction.new()
+	open_event.action = &"journal"
+	open_event.pressed = true
+	ciudad.call("_unhandled_input", open_event)
+	ok = ok and hud.is_journal_open()
+	ciudad.call("_unhandled_input", open_event)
+	ok = ok and not hud.is_journal_open()
+	# Escuchar de nuevo no duplica la entrada ni abre el diálogo.
+	point.interact(player)
+	ok = ok and not hud.is_dialogue_open()
+	ok = ok and journal.count() == 1
+	ciudad.free()
+	state.clear()
+	return ok

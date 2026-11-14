@@ -156,3 +156,17 @@ PCH_PASO_TALK_SNEAK,Seguir por el arroyo
 PCH_PASO_DISTRACT,"Arrojas una piedra lejos. Dos exploradores se apartan."
 PCH_PASO_SNEAK,"El arroyo cubre el ruido. Pasáis sin ser vistos."
 PCH_PASO_SILENT_END,"El paso queda atrás, en silencio."
+PCH_CIUDAD_TALK_VESPERA,Escuchar la leyenda
+PCH_NPC_ELDER,Viejo de la plaza
+PCH_VESPERA_INTRO,"El viejo mira las piedras del muro. «¿Quieres oír lo que se cuenta?»"
+PCH_VESPERA_LISTEN,Escuchar
+PCH_VESPERA_TALE,"«Dicen que, cuando los chancas llegaron, las piedras de pururauca se vistieron de guerreros y pelearon por el Cusco.»"
+PCH_VESPERA_CLOSE,"«Así lo cuentan los antiguos. Yo no vi piedras caminar: vi hombres defender su casa.»"
+PCH_VESPERA_AGAIN,"Ya escuchaste la leyenda. El viejo asiente y calla."
+PCH_ST_PURURAUCAS_TITLE,Los pururaucas
+PCH_ST_PURURAUCAS_BODY,"Leyenda recogida por Pachacuti Yamqui: las piedras se visten de guerreros y defienden el Cusco. Se cuenta como creencia, no como hecho; no cambia la batalla."
+PCH_AFTER_SCOUT,Un explorador chanca sigue con vida entre las rocas. ¿Qué haces?
+PCH_AFTER_SPARE,Dejarlo ir
+PCH_AFTER_LEAVE_SCOUT,Seguir sin mirar
+PCH_AFTER_SPARED,"Lo sueltas. Se aleja cojeando, sin mirar atrás."
+PCH_CIUDAD_EPILOGUE_SPARED,El explorador que dejaste ir contó que hubo piedad en el paso.

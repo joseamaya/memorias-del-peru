@@ -166,12 +166,14 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 
 | Prueba | Qué comprueba |
 |---|---|
-| `test_paso` | La escena del paso carga, tiene cuatro exploradores y el disparador; la emboscada arranca, la honda consume aliento, el escudo reduce el daño, la moral hace huir y el acto termina al resolverse todos |
-| `test_paso_alternatives` | La distracción deja dos exploradores; el sigilo cruza sin combate y lleva directo a la decisión del maíz |
+| `test_paso` | La escena del paso carga, tiene cuatro exploradores y el disparador; la emboscada arranca, la honda consume aliento, el escudo reduce el daño, la moral hace huir, el herido y el maíz dejan sus banderas y el explorador chanca perdonado deja `scout_spared` |
+| `test_paso_alternatives` | La distracción deja dos exploradores; el sigilo cruza sin combate, lleva directo a la decisión del maíz y también permite perdonar al explorador |
 | `paso_smoke` | Herramienta de humo: en un fotograma real, la honda acierta y los enemigos bajan la salud del jugador |
 | `test_campaign_state` | Banderas entre escenas: fijar, leer, borrar y limpiar; el valor 0 elimina la bandera (ADR-0041) |
-| `test_npc_rig` | Los nueve personajes usan el maniquí UAL1: esqueleto humanoide, clips base, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
+| `test_npc_rig` | Los nueve personajes del acto I usan sus modelos propios (MakeHuman/Rocketbox): esqueleto, clips base en bucle, ropa y textil, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
 | `test_ciudad` | El Cusco carga, recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
+| `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
+| `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
 
@@ -186,6 +188,16 @@ Partida completa conducida por guion (tampoco forma parte del ejecutor; sin pant
 ```bash
 godot --headless --path . --fixed-fps 30 --script res://tests/demo_playthrough.gd
 ```
+
+Partida continua de los tres actos (tampoco forma parte del ejecutor):
+
+```bash
+godot --headless --path . --script res://tests/arc_playthrough.gd
+```
+
+Recorre el acto I con tres encargos y el mensajero, cruza al paso con descanso,
+combate, herido, maíz y perdón, recluta a los tres aliados en el Cusco, sostiene
+la defensa y llega al título. Exige `ARCO_OK` y que las banderas sigan vivas.
 
 El jugador recorre la plaza, el oeste, las terrazas y el mirador, bebe del quero, deja la ofrenda, habla con la tejedora, espera al mensajero y toca el pututu en la llamada. Exige `DEMO_OK`: el evento llega a `DONE`, el quero, la ofrenda y la tejedora responden y el pututu lo toca el jugador. Es la prueba de extremo a extremo del vertical slice: entrada, interacción, evento y cierre ordenado.
 

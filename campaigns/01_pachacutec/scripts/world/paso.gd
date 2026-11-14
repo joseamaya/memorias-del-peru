@@ -381,8 +381,26 @@ func _build_aftermath_dialogue() -> DialogueGraph:
 	var maize_choices: Array[DialogueChoice] = [keep, abandon]
 	maize.choices = maize_choices
 	var keep_node: DialogueNode = _dialogue_answer(&"maize_keep", &"PCH_AFTER_MAIZE_KEEP", &"maiz_guardado")
+	keep_node.next_id = &"scout"
 	var abandon_node: DialogueNode = _dialogue_answer(&"maize_abandon", &"PCH_AFTER_MAIZE_ABANDON", &"maiz_abandonado")
-	var nodes: Array[DialogueNode] = [start, carry_node, leave_node, maize, keep_node, abandon_node]
+	abandon_node.next_id = &"scout"
+	# El explorador chanca herido no cambia la batalla, pero sí una línea del
+	# acto III (biblia §5.3).
+	var scout: DialogueNode = DialogueNode.new()
+	scout.id = &"scout"
+	scout.speaker_key = &"PCH_NPC_CURACA"
+	scout.text_key = &"PCH_AFTER_SCOUT"
+	scout.next_id = &"end"
+	var spare: DialogueChoice = DialogueChoice.new()
+	spare.text_key = &"PCH_AFTER_SPARE"
+	spare.next_id = &"scout_spared"
+	var ignore: DialogueChoice = DialogueChoice.new()
+	ignore.text_key = &"PCH_AFTER_LEAVE_SCOUT"
+	ignore.next_id = &"end"
+	var scout_choices: Array[DialogueChoice] = [spare, ignore]
+	scout.choices = scout_choices
+	var spare_node: DialogueNode = _dialogue_answer(&"scout_spared", &"PCH_AFTER_SPARED", &"scout_spared")
+	var nodes: Array[DialogueNode] = [start, carry_node, leave_node, maize, keep_node, abandon_node, scout, spare_node]
 	graph.nodes = nodes
 	return graph
 

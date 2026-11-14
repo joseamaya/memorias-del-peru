@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
-**Fase activa:** Fase 7 — Actos II y III en gris.
-**Siguiente:** Fase 8 — Arte, audio y cierre.
+**Fase activa:** Fase 8 — Arte, audio y cierre.
+**Siguiente:** realismo del acto I (hecho); paisaje y arte de los actos II–III.
 
 Reglas:
 
@@ -20,8 +20,8 @@ Reglas:
 | 4 — Vertical Slice Pachacútec | Cerrada | 2026-11-13 |
 | 5 — Museo explorable del Cusco | Superada | 2026-11-13 |
 | 6 — Núcleo RPG y acto I | Cerrada | 2026-11-13 |
-| 7 — Actos II y III en gris | En curso | — |
-| 8 — Arte, audio y cierre | Pendiente | — |
+| 7 — Actos II y III en gris | Cerrada | 2026-11-13 |
+| 8 — Arte, audio y cierre | En curso | — |
 
 La Fase 4 cerró con la autovalidación del 2026-11-13 ([registro](../campaigns/01_pachacutec/documentation/sesiones/autovalidacion-2026-11-13.md)): comprensión, primera interacción, bloqueos y cierre sin errores superados; la duración se rebaseó a **2–3 min** con [ADR-0033](adr/0033-duracion-del-slice.md) tras medir 121,2 s. La métrica 5 de audiencia queda declarada «no verificada» ([ADR-0031](adr/0031-validacion-por-el-autor.md)). La pasada de materiales y el modelo Discovery Tour quedan fuera de esta fase.
 
@@ -331,21 +331,24 @@ aparte.
 
 ### Criterios de aceptación
 
-- [ ] El arco completo se juega de principio a fin en gris. *(Parcial: los tres actos están conectados —acto I → paso → Cusco → título— y cada uno tiene prueba; falta la partida completa automatizada.)*
+- [x] El arco completo se juega de principio a fin en gris. *(2026-11-13: `arc_playthrough` recorre acto I → paso → Cusco → título en una sola pasada, con las transiciones reales y las banderas de `CampaignState`; `ARCO_OK`.)*
 - [x] La emboscada se puede resolver con honda, con sigilo o con distracción. *(2026-11-13: `test_paso_alternatives`; la distracción deja dos enemigos y el sigilo cruza sin combate.)*
 - [x] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo. *(2026-11-13: `test_paso` y `paso_smoke`; la escena del paso en gris.)*
 - [x] El herido, el maíz y el descanso cambian el acto III de forma comprobable. *(2026-11-13: `test_ciudad` recluta según `maiz_guardado`, `herido_salvado` y `coca_compartida`; el epílogo cambia con las banderas.)*
 - [x] Los aliados reclutados cambian la dificultad de la defensa. *(2026-11-13: la defensa lanza `4 − aliados` enemigos; `test_ciudad` con tres aliados deja uno.)*
-- [ ] La leyenda de los pururaucas se presenta como creencia, no como hecho, y no altera la batalla.
+- [x] La leyenda de los pururaucas se presenta como creencia, no como hecho, y no altera la batalla. *(2026-11-13: escena opcional de la víspera en el acto III, `test_ciudad_vespera_is_belief`; el texto dice «dicen» y «así lo cuentan», deja `mem_pururaucas` con sello N y fuente PCH-031, y no cambia aliados ni enemigos.)*
 - [x] El selector de acto y los puntos de control funcionan. *(2026-11-13: `--act=2|3` en el título; el punto de control es el inicio del acto y morir recarga la escena. No hay punto intermedio.)*
-- [ ] Todas las fichas nuevas están verificadas.
-- [ ] Cero errores y advertencias; pruebas en verde.
+- [x] Todas las fichas nuevas están verificadas. *(2026-11-13: PCH-024 y PCH-026 a PCH-031 verificadas; PCH-025 queda fuera del juego.)*
+- [x] Cero errores y advertencias; pruebas en verde. *(2026-11-13: 148 pruebas en verde; `ARCO_OK`, `DEMO_OK` y `PASO_SMOKE` sin errores.)*
 
-**Estado (2026-11-13).** Los tres actos están construidos en gris y conectados:
-llacta → paso → Cusco → título. El acto II tiene campamento, emboscada y
-decisiones; el acto III, reclutamiento según las banderas, defensa y epílogo.
-Faltan el sigilo, la distracción, el selector de acto, la partida completa
-automatizada y el arte.
+**Cierre (2026-11-13).** Fase 7 cerrada. Los tres actos se juegan en gris y
+conectados: llacta → paso → Cusco → título. El acto II tiene campamento,
+emboscada, sigilo, distracción, herido, maíz, descanso y perdón del explorador
+(`scout_spared`, que deja una línea en el epílogo). El acto III tiene
+reclutamiento según las banderas, la víspera opcional de los pururaucas —como
+creencia, con `mem_pururaucas` en la «Memoria»—, defensa y epílogo. La partida
+continua del arco queda automatizada en `arc_playthrough`; la validación de
+autor del arco completo corresponde a la Fase 8.
 
 ---
 
@@ -353,12 +356,13 @@ automatizada y el arte.
 
 ### Precondiciones
 
-- [ ] Fase 7 cerrada.
-- [ ] El arco completo funciona en gris y las decisiones se leen.
+- [x] Fase 7 cerrada.
+- [x] El arco completo funciona en gris y las decisiones se leen. *(2026-11-13: `arc_playthrough`.)*
 
 ### Entregables
 
-- **Pase de maniquí** (UAL1, CC0) para todos los personajes: prototipo visual con animaciones, antes del realismo.
+- **Realismo del acto I:** los nueve personajes recuperan sus modelos propios (MakeHuman/Rocketbox) con ropa, cabezas y mantos. El maniquí UAL1 queda para los actos II–III hasta su pase de arte.
+- **Pase de maniquí** (UAL1, CC0): prototipo visual con animaciones para los actos II–III; se retira al llegar su arte.
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
 - Equilibrio de combate, economía de objetos y duración.
 - Rendimiento del Cusco con multitud y batalla.
@@ -369,7 +373,7 @@ automatizada y el arte.
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante.
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 147 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 148 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
