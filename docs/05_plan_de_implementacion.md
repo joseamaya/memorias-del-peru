@@ -387,7 +387,9 @@ mensajero, el curaca, los principales y los tres vecinos vuelven a tener cara,
 ropa, esqueleto y animaciones propias. UAL1 queda como respaldo. La multitud del Cusco,
 el campamento y los chancas del acto II y los reclutas, Cusi, aliados y
 defensores del acto III usan los modelos propios; el chanca lleva ropa oscura
-teñida sobre el mismo tejido y una porra que sigue la mano. El prototipo de tejedora vestida en Blender
+teñida sobre el mismo tejido y una porra que sigue el giro de la mano. Los
+personajes tienen clips propios de combate (`attack` y `hit`), generados con
+`pch_combat.py` y servidos desde un GLB de armadura sin mallas. El prototipo de tejedora vestida en Blender
 (`pch_dressed.py`) se conserva como referencia, pero no se usa en escena. El acto II conserva
 el paisaje del desfiladero, el arroyo, el refugio y la vegetación. El audio de
 los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de

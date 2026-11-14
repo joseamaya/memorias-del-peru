@@ -84,7 +84,7 @@ func _physics_process(delta: float) -> void:
 		EnemyCombatant.Intent.ATTACK:
 			var damage: float = brain.attack(1.0)
 			if damage > 0.0:
-				_play_visual(&"Sword_Attack")
+				_play_visual(&"attack")
 				CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -10.0)
 				paso.call("apply_player_damage", damage)
 		EnemyCombatant.Intent.IDLE:
@@ -96,7 +96,7 @@ func take_hit(amount: float) -> void:
 	if _resolved or brain == null:
 		return
 	brain.take_damage(amount, MORALE_LOSS)
-	_play_visual(&"Hit_Chest")
+	_play_visual(&"hit")
 	if not character.is_alive():
 		_resolve()
 
@@ -111,8 +111,13 @@ func is_alive() -> bool:
 	return not _resolved and character.is_alive() and not brain.is_fleeing()
 
 
+## Reproduce un clip. Los de un solo disparo (`attack`, `hit`) se repiten
+## aunque sean el mismo que el anterior: si no, dos golpes seguidos se verían
+## como uno solo.
 func _play_visual(clip: StringName) -> void:
-	if _visual == null or _current_clip == clip:
+	if _visual == null:
+		return
+	if _current_clip == clip and clip != &"attack" and clip != &"hit":
 		return
 	_current_clip = clip
 	_visual.play(clip)

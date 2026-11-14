@@ -9,6 +9,13 @@ extends Node3D
 
 ## Tinte de la ropa oscura de los chancas; multiplica el tejido original.
 const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
+## Clips de combate compartidos por todo el elenco. Viven en un GLB aparte para
+## no duplicar mallas: solo trae la armadura y las dos acciones.
+const COMBAT_LIBRARY_PATH: String = "res://campaigns/01_pachacutec/assets/animation/pch_npc_combat.glb"
+const COMBAT_CLIPS: Array[StringName] = [&"attack", &"hit"]
+
+## Copias de los clips de combate, cargadas una vez para todos los personajes.
+static var _combat_cache: Dictionary[StringName, Animation] = {}
 
 @export var model_path: String = ""
 @export var idle_clip: StringName = &"idle"
@@ -38,6 +45,8 @@ func _ready() -> void:
 	if DisplayServer.get_name() != "headless":
 		SurfaceMaterials.apply_to_model(_model)
 	_player = _model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if _player != null:
+		_add_combat_clips()
 	if _player != null and _player.has_animation(idle_clip):
 		_player.play(idle_clip)
 	if dark_clothes:
@@ -46,8 +55,8 @@ func _ready() -> void:
 		_build_porra()
 
 
-## Reproduce un clip lógico (`Walk`, `Idle`, `Sword_Attack`, `Hit_Chest`) con
-## el nombre propio del modelo. Si no existe, cae a un clip equivalente.
+## Reproduce un clip. Acepta los nombres lógicos (`Walk`, `Idle`) y los
+## propios (`attack`, `hit`); si el clip pedido no existe, cae a un equivalente.
 func play(clip: StringName, speed: float = 1.0) -> void:
 	if _player == null:
 		return
@@ -60,24 +69,57 @@ func play(clip: StringName, speed: float = 1.0) -> void:
 				mapped = &"run"
 			&"Idle":
 				mapped = &"idle"
-			&"Sword_Attack":
-				mapped = &"idle"
-			&"Hit_Chest":
-				mapped = &"tired"
 			_:
 				mapped = &"idle"
 	if not _player.has_animation(mapped):
 		return
-	_player.play(mapped, 0.2, speed)
-	if clip == &"Sword_Attack" and _porra_pivot != null:
-		var tween: Tween = create_tween()
-		tween.tween_property(_porra_pivot, "rotation_degrees:x", -80.0, 0.12)
-		tween.tween_property(_porra_pivot, "rotation_degrees:x", -20.0, 0.18)
+	_player.play(mapped, 0.15, speed)
+
+
+## Añade `attack` y `hit` a la librería del personaje. La armadura del GLB de
+## combate es la misma, así que las rutas de pista coinciden.
+func _add_combat_clips() -> void:
+	var library: AnimationLibrary = _player.get_animation_library(&"")
+	if library == null:
+		return
+	for clip: StringName in _load_combat_clips():
+		if not library.has_animation(clip):
+			var copy: Animation = _combat_cache[clip].duplicate() as Animation
+			library.add_animation(clip, copy)
+
+
+## Carga los clips de combate una sola vez y devuelve los nombres disponibles.
+static func _load_combat_clips() -> Array[StringName]:
+	var names: Array[StringName] = []
+	if _combat_cache.is_empty():
+		if ResourceLoader.exists(COMBAT_LIBRARY_PATH):
+			var packed: PackedScene = load(COMBAT_LIBRARY_PATH) as PackedScene
+			if packed != null:
+				var holder: Node = packed.instantiate()
+				var player: AnimationPlayer = holder.find_child(
+					"AnimationPlayer", true, false) as AnimationPlayer
+				if player != null:
+					for clip: StringName in COMBAT_CLIPS:
+						if player.has_animation(clip):
+							# Se copia antes de liberar el nodo: la librería
+							# muere con él.
+							var copy: Animation = player.get_animation(clip).duplicate() as Animation
+							_combat_cache[clip] = copy
+				holder.free()
+	for clip: StringName in _combat_cache:
+		names.append(clip)
+	return names
 
 
 ## Nodo del modelo cargado, para las pruebas y las capturas.
 func model() -> Node3D:
 	return _model
+
+
+## Pivote de la porra, o null si el personaje no la lleva. Lo usan las pruebas
+## para comprobar que sigue la mano.
+func porra_pivot() -> Node3D:
+	return _porra_pivot
 
 
 ## Animación actual, o vacía si el modelo no trae AnimationPlayer.
@@ -109,8 +151,13 @@ func _darken_clothes() -> void:
 func _process(_delta: float) -> void:
 	if _porra_pivot == null or _skeleton == null or _hand_index < 0:
 		return
+	# La porra sigue el transform completo de la mano, no solo su posición: si
+	# solo siguiera el origen, se quedaría vertical mientras el brazo gira y el
+	# golpe no se leería. El eje Y del hueso va del puño a los dedos, así que la
+	# porra sale de la mano a lo largo de ese eje.
 	var hand: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_hand_index)
-	_porra_pivot.global_position = hand.origin + Vector3(0.08, 0.0, -0.05)
+	var grip: Basis = hand.basis.orthonormalized()
+	_porra_pivot.global_transform = Transform3D(grip, hand.origin + grip.y * 0.04)
 
 
 func _build_porra() -> void:
@@ -123,7 +170,6 @@ func _build_porra() -> void:
 	_porra_pivot = Node3D.new()
 	_porra_pivot.name = "PorraPivot"
 	_porra_pivot.top_level = true
-	_porra_pivot.rotation_degrees = Vector3(-20.0, 0.0, -25.0)
 	add_child(_porra_pivot)
 	var wood: StandardMaterial3D = StandardMaterial3D.new()
 	wood.albedo_color = Color(0.30, 0.22, 0.14, 1.0)

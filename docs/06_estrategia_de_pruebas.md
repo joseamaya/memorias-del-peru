@@ -178,6 +178,7 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
 | `test_campaign_audio` | Los recursos de audio de los actos II y III existen; los bucles WAV y OGG se configuran al cargar y los pasos de tierra y piedra están completos |
 | `test_character_models` | Los nueve personajes del acto I usan los GLB MakeHuman/Rocketbox ya versionados, con su esqueleto, animaciones (`idle`, `walk`, `run`, `talk`), ropa textil y cara; la tejedora teje y el agricultor trabaja; no queda ninguna capa procedural ni el prototipo de Blender en escena. La multitud del Cusco usa los mismos GLB |
+| `test_character_combat` | El GLB de combate trae `attack` y `hit` con pistas de hueso y sin mallas; los clips se añaden al `AnimationPlayer` de cualquier personaje, `play` los reproduce y la porra cuelga de la mano con su giro |
 | `test_paso_actors_use_models` | Los cuatro exploradores usan el modelo común oscuro con porra y animaciones propias; el campamento tiene tres modelos propios con roles distintos y todos quedan sobre el terreno |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
@@ -266,6 +267,7 @@ Capturas del vestuario del acto I y del Cusco, y de cerca de la multitud:
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_act_one.gd
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_ciudad.gd
 godot --path . --resolution 1280x720 --script res://tests/capture_crowd.gd
+godot --path . --resolution 1280x720 --script res://tests/capture_chanca_combat.gd
 ```
 
 Carga el mundo sin HUD, congela el evento y guarda cinco vistas en `user://capturas/`: aparición, suelo a media distancia, muro de pirca a 1,5 m, casa a 6 m y horizonte desde el mirador. Sirve para evaluar un cambio de materiales contra el mismo encuadre, no para probar lógica.
