@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Cielo y polvo en el Cusco | La ciudad gana la cúpula de nubes procedural que ya tenían la llacta y el paso, con cobertura y escala ajustadas para verla de cerca, y polvo en suspensión sobre la plaza. El Cusco se queda en 73,0 FPS en Medio con 329–332 draw calls. 157 pruebas en verde | — |
 | Pulido de la reacción al golpe | Los brazos de `hit` se cierran sobre el cuerpo (34° de codo) en lugar de abrirse en cruz; el retroceso del torso y la cabeza se mantiene. El GLB de combate se regenera con `pch_combat.py`. 157 pruebas en verde | — |
 | Registro de sesión en los tres actos | El acto II marca el inicio del paso, el enfoque de la emboscada, su cierre con enemigos vivos y cada decisión guardada; el acto III marca la llegada, cada grupo reclutado, el inicio y el fin de la defensa con aliados y salud. La duración de 40–50 min se puede leer por actos sin cronómetro manual. 157 pruebas en verde | — |
 | Mercado en la plaza del Cusco | Dos puestos de trueque con techo a dos aguas, respaldo de ichu, mostrador y cántaros, hechos con los materiales de las casas; cuatro figuras de la multitud se acercan al centro y a los puestos. El Cusco pasa de 299 a 327 draw calls sin perder FPS (72,9 en Medio). La plaza queda registrada como reconstrucción de ambiente (R) en PCH-027. 157 pruebas en verde | — |

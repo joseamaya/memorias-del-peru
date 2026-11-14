@@ -16,6 +16,11 @@ const STONE_TINT: Color = Color(0.52, 0.50, 0.46, 1.0)
 const THATCH_TINT: Color = Color(0.50, 0.40, 0.22, 1.0)
 const SOIL_TINT: Color = Color(0.34, 0.27, 0.19, 1.0)
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
+## Cúpula de nubes procedurales, la misma que usan la llacta y el paso.
+const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
+const CLOUD_DOME_RADIUS: float = 420.0
+const CLOUD_DOME_SEGMENTS: int = 48
+const CLOUD_DOME_RINGS: int = 24
 const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
@@ -790,6 +795,8 @@ func _build_city() -> void:
 	_build_vegetation()
 	_build_terraces()
 	_build_crowd()
+	_build_clouds()
+	_build_dust()
 
 
 func _build_terrain() -> void:
@@ -1175,6 +1182,83 @@ func _build_terraces() -> void:
 
 ## Multitud de refugiados y vecinos: figuras vestidas que no interactúan. Se
 ## colocan en el borde de la plaza y miran al centro; dan escala y vida.
+## Cúpula de nubes procedurales, como en la llacta y el paso: el cielo físico
+## sigue siendo el fondo y la cúpula solo añade las nubes altas.
+func _build_clouds() -> void:
+	if not ResourceLoader.exists(CLOUD_SHADER_PATH):
+		return
+	var shader: Shader = load(CLOUD_SHADER_PATH) as Shader
+	if shader == null:
+		return
+	var material: ShaderMaterial = ShaderMaterial.new()
+	material.shader = shader
+	# Sobre la plaza las nubes se ven de cerca: más pequeñas y más tenues que
+	# en el paisaje abierto, o parecen manchas.
+	material.set_shader_parameter("coverage", 0.30)
+	material.set_shader_parameter("cloud_scale", 4.6)
+	material.set_shader_parameter("opacity", 0.55)
+	var sphere: SphereMesh = SphereMesh.new()
+	sphere.radius = CLOUD_DOME_RADIUS
+	sphere.height = CLOUD_DOME_RADIUS * 2.0
+	sphere.radial_segments = CLOUD_DOME_SEGMENTS
+	sphere.rings = CLOUD_DOME_RINGS
+	var dome: MeshInstance3D = MeshInstance3D.new()
+	dome.name = "CloudDome"
+	dome.mesh = sphere
+	dome.material_override = material
+	dome.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	dome.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	add_child(dome)
+
+
+## Polvo en suspensión sobre la plaza, como en la llacta: da aire de lugar
+## habitado y seco, y ayuda a leer la profundidad del descampado.
+func _build_dust() -> void:
+	var particles: GPUParticles3D = GPUParticles3D.new()
+	particles.name = "Dust"
+	particles.amount = 140
+	particles.lifetime = 10.0
+	particles.preprocess = 5.0
+	particles.local_coords = false
+	particles.visibility_aabb = AABB(Vector3(-34.0, -2.0, -34.0), Vector3(68.0, 18.0, 68.0))
+	var process: ParticleProcessMaterial = ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	process.emission_box_extents = Vector3(20.0, 3.0, 20.0)
+	process.direction = Vector3(0.25, 0.05, -0.1)
+	process.spread = 40.0
+	process.initial_velocity_min = 0.03
+	process.initial_velocity_max = 0.14
+	process.gravity = Vector3(0.0, -0.01, 0.0)
+	process.scale_min = 0.5
+	process.scale_max = 1.2
+	process.color = Color(1.0, 0.94, 0.82, 1.0)
+	var gradient: Gradient = Gradient.new()
+	gradient.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
+	gradient.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
+	var texture: GradientTexture2D = GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	texture.width = 32
+	texture.height = 32
+	var mesh: QuadMesh = QuadMesh.new()
+	mesh.size = Vector2(0.06, 0.06)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.albedo_texture = texture
+	material.albedo_color = Color(1.0, 0.96, 0.88, 0.16)
+	material.disable_receive_shadows = true
+	mesh.material = material
+	particles.draw_pass_1 = mesh
+	particles.process_material = process
+	particles.position = Vector3(0.0, 4.0, 0.0)
+	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(particles)
+
+
 func _build_crowd() -> void:
 	var crowd: Node3D = Node3D.new()
 	crowd.name = "Crowd"
