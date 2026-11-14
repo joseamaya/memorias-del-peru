@@ -80,8 +80,9 @@ func _ready() -> void:
 		get_tree().create_timer(INITIAL_CAPTURE_DELAY).timeout.connect(_capture_mouse_if_allowed)
 	if stamina == null:
 		stamina = StaminaComponent.find_in(self)
-	if GameManager != null:
-		GameManager.pause_changed.connect(_on_game_manager_pause_changed)
+	var manager: GameManagerService = GameManagerService.instance()
+	if manager != null:
+		manager.pause_changed.connect(_on_game_manager_pause_changed)
 
 
 func _notification(what: int) -> void:
@@ -315,12 +316,13 @@ func _floor_surface() -> StringName:
 
 func _play_footstep() -> void:
 	footstep_taken.emit()
-	if AudioManager == null:
+	var audio: AudioManagerService = AudioManagerService.instance()
+	if audio == null:
 		return
 	var stream: AudioStream = next_footstep_stream(_floor_surface())
 	if stream == null:
 		return
-	AudioManager.play_sfx(stream, footstep_volume_db)
+	audio.play_sfx(stream, footstep_volume_db)
 
 
 func _on_game_manager_pause_changed(paused: bool) -> void:
@@ -341,6 +343,7 @@ func _capture_mouse_if_allowed() -> void:
 
 
 func _is_game_paused() -> bool:
-	if GameManager == null:
+	var manager: GameManagerService = GameManagerService.instance()
+	if manager == null:
 		return false
-	return GameManager.is_paused()
+	return manager.is_paused()

@@ -22,6 +22,19 @@ func _ready() -> void:
 		_players.append(player)
 
 
+## Devuelve el autoload, o null si no existe.
+##
+## Las herramientas que arrancan con `--script` (capturas y mediciones) no
+## registran los autoloads al compilar, así que referenciar `AudioManager` como
+## identificador global rompe esos scripts. Resolverlo por el árbol funciona en
+## el juego y en las herramientas.
+static func instance() -> AudioManagerService:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("AudioManager") as AudioManagerService
+
+
 ## Reproduce un efecto en el bus de efectos.
 func play_sfx(stream: AudioStream, volume_db: float = 0.0) -> void:
 	if stream == null or _players.is_empty():

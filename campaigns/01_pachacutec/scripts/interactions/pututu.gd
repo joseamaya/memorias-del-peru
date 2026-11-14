@@ -53,7 +53,9 @@ func _play() -> void:
 	used = true
 	armed = false
 	if audio_stream != null:
-		AudioManager.play_sfx(audio_stream)
+		var audio: AudioManagerService = AudioManagerService.instance()
+		if audio != null:
+			audio.play_sfx(audio_stream)
 	played.emit()
 	if _mesh_node == null:
 		return

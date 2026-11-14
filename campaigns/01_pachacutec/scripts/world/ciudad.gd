@@ -77,6 +77,10 @@ const CROWD_SAFE_POSITIONS: Array[Vector3] = [
 	Vector3(15.0, 0.0, -20.0),
 ]
 const CROWD_RETREAT_SPEED: float = 2.2
+## Distancia a la que un vecino quieto gira la cara hacia el jugador.
+const CROWD_LOOK_DISTANCE: float = 5.0
+## Velocidad del giro de la cara, en radianes por segundo (suavizada).
+const CROWD_LOOK_SPEED: float = 5.0
 ## Capa propia para que solo el jugador choque con la multitud; los chancas
 ## (capa 1) la atraviesan y no se quedan atascados.
 const CROWD_COLLISION_LAYER: int = 16
@@ -121,11 +125,14 @@ const ALLY_POSITIONS: Array[Vector3] = [
 class CrowdMember:
 	var visual: CharacterModelVisual
 	var safe_position: Vector3
+	## Orientación de reposo: mirando al centro de la plaza.
+	var home_yaw: float = 0.0
 	var retreating: bool = false
 
-	func _init(figure: CharacterModelVisual, safe: Vector3) -> void:
+	func _init(figure: CharacterModelVisual, safe: Vector3, yaw: float) -> void:
 		visual = figure
 		safe_position = safe
+		home_yaw = yaw
 
 
 @onready var player: PlayerFPS = $PlayerFPS
@@ -563,6 +570,15 @@ func _update_crowd(delta: float) -> void:
 	var remaining: bool = false
 	for member: CrowdMember in _crowd:
 		if not member.retreating:
+			# Quietos: si el jugador pasa cerca, giran la cara hacia él; si se
+			# aleja, vuelven a mirar al centro de la plaza.
+			var to_player: Vector3 = player.global_position - member.visual.global_position
+			to_player.y = 0.0
+			var desired: float = member.home_yaw
+			if to_player.length() <= CROWD_LOOK_DISTANCE and to_player.length() > 0.05:
+				desired = atan2(-to_player.x, -to_player.z)
+			member.visual.rotation.y = lerp_angle(
+				member.visual.rotation.y, desired, CROWD_LOOK_SPEED * delta)
 			continue
 		remaining = true
 		var target: Vector3 = Vector3(
@@ -1088,11 +1104,13 @@ func _add_stall(parent: Node3D, index: int, at: Vector3, yaw: float) -> Node3D:
 		_add_block(stall, "Post%d" % post, Vector3(x, 1.0, z), Vector3(0.12, 2.0, 0.12), wood, false)
 	# Techo a dos aguas y respaldo de ichu: sin ellos el puesto parece una mesa.
 	var roof_front: Node3D = _add_block(
-		stall, "RoofFront", Vector3(0.0, 2.06, 0.45), Vector3(2.5, 0.12, 1.05), thatch, false)
-	roof_front.rotation_degrees.x = 10.0
+		stall, "RoofFront", Vector3(0.0, 2.02, 0.46), Vector3(2.6, 0.20, 1.10), thatch, false)
+	roof_front.rotation_degrees.x = 12.0
 	var roof_back: Node3D = _add_block(
-		stall, "RoofBack", Vector3(0.0, 2.06, -0.45), Vector3(2.5, 0.12, 1.05), thatch, false)
-	roof_back.rotation_degrees.x = -10.0
+		stall, "RoofBack", Vector3(0.0, 2.02, -0.46), Vector3(2.6, 0.20, 1.10), thatch, false)
+	roof_back.rotation_degrees.x = -12.0
+	# Cumbrera: sin ella los dos faldones se leen como una tabla doblada.
+	_add_block(stall, "Ridge", Vector3(0.0, 2.13, 0.0), Vector3(2.66, 0.12, 0.26), thatch, false)
 	_add_block(stall, "BackPanel", Vector3(0.0, 1.15, -0.55), Vector3(2.2, 1.5, 0.08), thatch, false)
 	_add_block(stall, "Counter", Vector3(0.0, 0.68, 0.15), Vector3(1.9, 0.14, 0.9), wood, true)
 	_add_model_prop(stall, "Jar0", MODEL_PROP_JAR, Vector3(-0.5, 0.75, 0.15), 0.4, 0.85)
@@ -1293,7 +1311,7 @@ func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName
 	if at.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)
 	visual.play(&"Idle", 0.85 + 0.1 * float(index % 3))
-	_crowd.append(CrowdMember.new(visual, CROWD_SAFE_POSITIONS[index]))
+	_crowd.append(CrowdMember.new(visual, CROWD_SAFE_POSITIONS[index], visual.rotation.y))
 
 
 ## Bloque con material del proyecto; si [param collision] es verdadero, el

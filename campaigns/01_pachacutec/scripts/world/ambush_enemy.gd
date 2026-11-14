@@ -119,7 +119,7 @@ func is_alive() -> bool:
 func _play_visual(clip: StringName) -> void:
 	if _visual == null:
 		return
-	if _current_clip == clip and clip != &"attack" and clip != &"hit":
+	if _current_clip == clip and clip != &"attack" and clip != &"hit" and clip != &"death":
 		return
 	_current_clip = clip
 	_visual.play(clip)
@@ -161,10 +161,16 @@ func _resolve() -> void:
 	visible = false
 
 
-## Caída del enemigo derribado: el impacto ya lo tambaleó; ahora el cuerpo
-## pierde el equilibrio y cae hacia atrás. Sin clip propio: el nodo del modelo
-## gira sobre sus pies, que es donde está el origen del personaje.
+## Caída del enemigo derribado: reproduce el clip `death` y se oculta cuando
+## termina. Si el clip faltara, cae con un giro del nodo como respaldo.
 func _fall() -> void:
+	var seconds: float = _visual.clip_length(&"death")
+	if seconds > 0.0:
+		_play_visual(&"death")
+		await get_tree().create_timer(seconds).timeout
+		if is_inside_tree():
+			visible = false
+		return
 	_play_visual(&"hit")
 	var fall: Tween = create_tween()
 	fall.set_parallel(true)

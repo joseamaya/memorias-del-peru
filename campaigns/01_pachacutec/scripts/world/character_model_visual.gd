@@ -12,7 +12,7 @@ const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
 ## Clips de combate compartidos por todo el elenco. Viven en un GLB aparte para
 ## no duplicar mallas: solo trae la armadura y las dos acciones.
 const COMBAT_LIBRARY_PATH: String = "res://campaigns/01_pachacutec/assets/animation/pch_npc_combat.glb"
-const COMBAT_CLIPS: Array[StringName] = [&"attack", &"hit"]
+const COMBAT_CLIPS: Array[StringName] = [&"attack", &"hit", &"death"]
 
 ## Copias de los clips de combate, cargadas una vez para todos los personajes.
 static var _combat_cache: Dictionary[StringName, Animation] = {}
@@ -120,6 +120,13 @@ func model() -> Node3D:
 ## para comprobar que sigue la mano.
 func porra_pivot() -> Node3D:
 	return _porra_pivot
+
+
+## Duración de un clip, o 0 si el personaje no lo tiene.
+func clip_length(clip: StringName) -> float:
+	if _player == null or not _player.has_animation(clip):
+		return 0.0
+	return _player.get_animation(clip).length
 
 
 ## Animación actual, o vacía si el modelo no trae AnimationPlayer.

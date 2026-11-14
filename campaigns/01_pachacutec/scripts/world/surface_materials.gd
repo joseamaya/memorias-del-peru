@@ -198,14 +198,16 @@ static func apply_to_model(root: Node) -> int:
 static func _skin(material: BaseMaterial3D) -> BaseMaterial3D:
 	var skin: BaseMaterial3D = material.duplicate() as BaseMaterial3D
 	skin.albedo_color = Color(1.0, 0.94, 0.88, 1.0)
-	# Piel de museo: mate, sin el brillo de cera que delata a un maniquí.
-	skin.roughness = 0.78
-	skin.metallic_specular = 0.2
+	# Piel de museo: mate, sin el brillo de cera que delata a un maniquí, pero
+	# con algo más de dispersión y menos borde: la cara deja de verse de yeso
+	# bajo el sol fuerte del mediodía andino.
+	skin.roughness = 0.72
+	skin.metallic_specular = 0.25
 	skin.rim_enabled = true
-	skin.rim = 0.22
-	skin.rim_tint = 0.5
+	skin.rim = 0.16
+	skin.rim_tint = 0.45
 	skin.subsurf_scatter_enabled = true
-	skin.subsurf_scatter_strength = 0.08
+	skin.subsurf_scatter_strength = 0.12
 	skin.subsurf_scatter_skin_mode = true
 	return skin
 

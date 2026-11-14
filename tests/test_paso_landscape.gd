@@ -84,7 +84,7 @@ func test_paso_defeated_enemy_falls() -> bool:
 		enemy.take_hit(999.0)
 		ok = ok and enemy.is_resolved()
 		ok = ok and enemy.visible
-		ok = ok and enemy.visual().current_animation() == &"hit"
+		ok = ok and enemy.visual().current_animation() == &"death"
 	paso.free()
 	return ok
 

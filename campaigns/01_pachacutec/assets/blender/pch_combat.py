@@ -236,6 +236,82 @@ def build_hit(armature):
     return action
 
 
+def build_death(armature):
+    """Caída del derribado: impacto, rodillas que ceden y cuerpo al suelo."""
+    action = new_action(armature, "death")
+
+    reset_pose(armature)
+    key(armature, action, 1)
+
+    # 5 — impacto: el torso se va atrás y la cabeza rebota.
+    reset_pose(armature)
+    turn(armature, "Spine", -12.0, "x")
+    turn(armature, "Spine1", -16.0, "x")
+    turn(armature, "Neck", -12.0, "x")
+    turn(armature, "Head", -8.0, "x")
+    aim(armature, "RightArm", (-0.40, 0.20, -0.89))
+    turn(armature, "RightForeArm", 26.0, "x")
+    aim(armature, "LeftArm", (0.40, 0.20, -0.89))
+    turn(armature, "LeftForeArm", 24.0, "x")
+    armature.pose.bones["Hips"].location = Vector((0.0, -0.04, 0.03))
+    key(armature, action, 5)
+
+    # 13 — las rodillas ceden: el cuerpo baja y el torso queda atrás.
+    reset_pose(armature)
+    turn(armature, "Hips", -14.0, "x")
+    turn(armature, "Spine", -10.0, "x")
+    turn(armature, "Spine1", -12.0, "x")
+    turn(armature, "Neck", -8.0, "x")
+    turn(armature, "RightUpLeg", 34.0, "x")
+    turn(armature, "LeftUpLeg", 30.0, "x")
+    turn(armature, "RightLeg", -46.0, "x")
+    turn(armature, "LeftLeg", -42.0, "x")
+    aim(armature, "RightArm", (-0.52, 0.30, -0.80))
+    turn(armature, "RightForeArm", 34.0, "x")
+    aim(armature, "LeftArm", (0.52, 0.30, -0.80))
+    turn(armature, "LeftForeArm", 32.0, "x")
+    armature.pose.bones["Hips"].location = Vector((0.0, -0.30, 0.02))
+    key(armature, action, 13)
+
+    # 24 — pierde el equilibrio y cae de espaldas.
+    reset_pose(armature)
+    turn(armature, "Hips", -62.0, "x")
+    turn(armature, "Spine", -6.0, "x")
+    turn(armature, "Neck", -6.0, "x")
+    turn(armature, "RightUpLeg", 26.0, "x")
+    turn(armature, "LeftUpLeg", 22.0, "x")
+    turn(armature, "RightLeg", -28.0, "x")
+    turn(armature, "LeftLeg", -24.0, "x")
+    aim(armature, "RightArm", (-0.62, 0.34, -0.70))
+    turn(armature, "RightForeArm", 22.0, "x")
+    aim(armature, "LeftArm", (0.62, 0.34, -0.70))
+    turn(armature, "LeftForeArm", 20.0, "x")
+    armature.pose.bones["Hips"].location = Vector((0.0, -0.52, 0.16))
+    key(armature, action, 24)
+
+    # 32 — en el suelo, boca arriba.
+    reset_pose(armature)
+    turn(armature, "Hips", -88.0, "x")
+    turn(armature, "Neck", 10.0, "x")
+    turn(armature, "Head", 6.0, "x")
+    turn(armature, "RightUpLeg", 12.0, "x")
+    turn(armature, "LeftUpLeg", 8.0, "x")
+    turn(armature, "RightLeg", -14.0, "x")
+    turn(armature, "LeftLeg", -10.0, "x")
+    aim(armature, "RightArm", (-0.86, 0.10, -0.50))
+    turn(armature, "RightForeArm", 14.0, "x")
+    aim(armature, "LeftArm", (0.86, 0.10, -0.50))
+    turn(armature, "LeftForeArm", 12.0, "x")
+    armature.pose.bones["Hips"].location = Vector((0.0, -0.66, 0.30))
+    key(armature, action, 32)
+
+    # 34 — quieto.
+    key(armature, action, 34)
+
+    smooth(action)
+    return action
+
+
 def render_preview(armature, actions):
     os.makedirs(PREVIEW_DIR, exist_ok=True)
     scene = bpy.context.scene
@@ -252,12 +328,12 @@ def render_preview(armature, actions):
 
     # La armadura importada viene girada 180° en Z: el frente del personaje
     # mira al +Y del mundo, así que "adelante" en espacio de armadura es -Y.
-    target = Vector((0.0, 0.0, 0.95))
-    location = Vector((1.7, 2.5, 1.55))
+    target = Vector((0.0, 0.0, 0.70))
+    location = Vector((2.0, 3.0, 1.85))
     camera = bpy.data.objects.new("PreviewCamera", bpy.data.cameras.new("PreviewCamera"))
     camera.location = location
     camera.rotation_euler = (target - location).to_track_quat("-Z", "Y").to_euler()
-    camera.data.lens = 60.0
+    camera.data.lens = 52.0
     scene.collection.objects.link(camera)
     scene.camera = camera
 
@@ -274,7 +350,7 @@ def export(armature):
     # Solo viajan los dos clips nuevos: el resto de acciones viene del GLB de
     # origen y ya está en el personaje.
     for action in list(bpy.data.actions):
-        if action.name not in ("attack", "hit"):
+        if action.name not in ("attack", "hit", "death"):
             bpy.data.actions.remove(action)
     for obj in bpy.data.objects:
         obj.select_set(False)
@@ -302,8 +378,13 @@ def main():
     armature = load_armature()
     attack = build_attack(armature)
     hit = build_hit(armature)
+    death = build_death(armature)
     if "--preview" in args:
-        render_preview(armature, [(attack, (1, 7, 13, 19)), (hit, (1, 4, 10))])
+        render_preview(armature, [
+            (attack, (1, 7, 13, 19)),
+            (hit, (1, 4, 10)),
+            (death, (5, 13, 24, 32)),
+        ])
         return
     export(armature)
 

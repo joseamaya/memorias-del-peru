@@ -113,8 +113,9 @@ static func play_sfx(path: String, volume_db: float = 0.0) -> void:
 	if is_dummy() or not ResourceLoader.exists(path):
 		return
 	var stream: AudioStream = load(path) as AudioStream
-	if stream != null:
-		AudioManager.play_sfx(stream, volume_db)
+	var audio: AudioManagerService = AudioManagerService.instance()
+	if stream != null and audio != null:
+		audio.play_sfx(stream, volume_db)
 
 
 ## Carga un bucle y activa la repetición según el formato.

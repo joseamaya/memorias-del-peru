@@ -8,6 +8,17 @@ extends Node
 
 signal pause_changed(paused: bool)
 
+
+## Devuelve el autoload, o null si no existe.
+##
+## Las herramientas que arrancan con `--script` no registran los autoloads al
+## compilar; resolverlo por el árbol funciona en el juego y en las herramientas.
+static func instance() -> GameManagerService:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("GameManager") as GameManagerService
+
 ## Tipos de reproductor que se detienen antes de cerrar.
 const AUDIO_PLAYER_TYPES: Array[String] = [
 	"AudioStreamPlayer",

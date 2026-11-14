@@ -53,7 +53,9 @@ func interact(_interactor: Node3D) -> void:
 		return
 	used = true
 	if audio_stream != null:
-		AudioManager.play_sfx(audio_stream)
+		var audio: AudioManagerService = AudioManagerService.instance()
+		if audio != null:
+			audio.play_sfx(audio_stream)
 	offered.emit()
 	_place_gift()
 

@@ -369,14 +369,14 @@ autor del arco completo corresponde a la Fase 8.
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
 - Equilibrio de combate, economía de objetos y duración.
 - Rendimiento del Cusco con multitud y batalla.
-- Validación de autor del arco completo (ADR-0031): tres pasadas, cuestionario y umbrales.
+- Validación de autor del arco completo: [protocolo](../campaigns/01_pachacutec/documentation/validacion_arco.md) con tres pasadas, cuestionario, marcas por acto y umbrales.
 - Documentación y bitácora al día.
 
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia, con el 3D al 83 % y la interfaz a resolución completa: llacta 76,5 / paso 72,8 / Cusco 73,2 FPS en Medio y 122,3 / 126,2 / 117,3 en Bajo. El paso pasó de 58,7 a 72,8 al bajar la escala del búfer 3D; FSR 1 resultó un 8–9 % más caro que el bilineal y se descartó. Detalle en docs/08.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 155 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 158 pruebas en verde; las capturas y mediciones lanzadas con `--script` ya no fallan por los autoloads.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
@@ -400,7 +400,8 @@ santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
 terrazas de cultivo, dos puestos de trueque en la plaza y diez figuras de
 multitud con modelos propios. La multitud se retira
 al empezar la defensa; el portón con dintel, el remate de la muralla, los bancos,
-el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. La multitud del Cusco dejó el maniquí
-procedural: con los modelos propios, el Cusco baja de 714 a 299 draw calls y
-sube a 61,3 FPS en Medio. 155 pruebas en verde. Pendiente: medir el paso en
-reposo, validación de autor y pulido de personajes.
+el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. El Cusco baja de 714 a 329 draw calls con la multitud, el mercado y el cielo
+con nubes, y se queda en 73,0 FPS en Medio; el paso sube a 72,8 al renderizar
+el 3D al 83 %. Los enemigos caen con clip propio. 158 pruebas en verde.
+Pendiente: validación de autor ([protocolo](../campaigns/01_pachacutec/documentation/validacion_arco.md))
+y pulido fino de personajes.
