@@ -231,6 +231,20 @@ El jugador recorre la plaza, el oeste, las terrazas y el mirador, bebe del quero
 
 La misma partida con `--session PIL-TEST` comprueba el registro de las sesiones de prueba (alcance v4.16): deja `user://sesiones/PIL-TEST.log` con las marcas de introducción, llegada, pututu, cierre y tarjeta final.
 
+El registro cubre también los actos II y III, para medir la duración de 40–50 min por actos sin cronómetro manual:
+
+| Marca | Cuándo |
+|---|---|
+| `act` | Al arrancar cada mundo: `paso`, `cusco` |
+| `ambush_start` / `ambush_end` | Emboscada del paso, con el enfoque (`combate`, `sigilo`, `distraccion`) y los enemigos vivos al cerrar |
+| `flag` | Cada decisión que se guarda: `descanso`, `herido_salvado`, `maiz_guardado`, `scout_spared` |
+| `recruit` | Cada grupo del Cusco, con `si`/`no` según lo que se hizo en el paso |
+| `defense_start` / `defense_end` | Defensa, con aliados y salud final |
+
+```bash
+godot --path . -- --session ARCO-1
+```
+
 La misma partida sirve para grabar un vídeo de demostración con Movie Maker (AVI MJPEG con sonido):
 
 ```bash

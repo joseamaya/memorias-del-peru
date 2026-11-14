@@ -169,6 +169,7 @@ func _ready() -> void:
 	hint_label.text = ""
 	hud.show_subtitle(tr("PCH_CIUDAD_ARRIVAL"), 0.0)
 	_update_status()
+	SessionLog.mark(&"act", "cusco")
 
 
 ## Indica si la defensa está en curso. Lo consultan los enemigos reutilizados.
@@ -430,6 +431,7 @@ func _on_recruit_requested(index: int) -> void:
 		hud.show_subtitle(tr("PCH_CIUDAD_ALREADY"), 0.0)
 		return
 	var joins: bool = _recruit_joins(index)
+	SessionLog.mark(&"recruit", "%d:%s" % [index, "si" if joins else "no"])
 	var graph: DialogueGraph = _build_recruit_dialogue(index, joins)
 	if dialogue.start(graph):
 		player.process_mode = Node.PROCESS_MODE_DISABLED
@@ -528,6 +530,7 @@ func _start_defense() -> void:
 	_defense_requested = false
 	_start_drum()
 	_retreat_crowd()
+	SessionLog.mark(&"defense_start", "aliados=%d" % ally_count())
 	var count: int = maxi(1, 4 - ally_count())
 	for index: int in range(count):
 		var enemy: AmbushEnemy = AmbushEnemy.new()
@@ -593,6 +596,7 @@ func _finish_defense() -> void:
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SPARED")
 	hud.show_subtitle(epilogue, 0.0)
 	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"))
+	SessionLog.mark(&"defense_end", "salud=%d aliados=%d" % [int(character.get_health()), ally_count()])
 
 
 ## Aplica el perfil gráfico al cielo y al sol del Cusco, como en la llacta y el

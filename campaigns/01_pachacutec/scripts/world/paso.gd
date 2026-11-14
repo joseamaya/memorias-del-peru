@@ -95,6 +95,7 @@ func _ready() -> void:
 	_setup_audio()
 	hint_label.text = ""
 	_update_status()
+	SessionLog.mark(&"act", "paso")
 
 
 ## Indica si la emboscada está en curso.
@@ -194,6 +195,12 @@ func _start_ambush() -> void:
 	if _ambush_started or _completed or _dead:
 		return
 	_ambush_started = true
+	var approach: String = "combate"
+	if _sneak:
+		approach = "sigilo"
+	elif _distracted:
+		approach = "distraccion"
+	SessionLog.mark(&"ambush_start", approach)
 	if _sneak:
 		for enemy: AmbushEnemy in _enemies:
 			enemy.take_hit(999.0)
@@ -212,6 +219,7 @@ func _finish_ambush() -> void:
 	if _completed or _aftermath_pending:
 		return
 	_stop_drum()
+	SessionLog.mark(&"ambush_end", "vivos=%d" % alive_enemies())
 	_aftermath_pending = true
 	hud.show_subtitle(tr("PCH_PASO_CLEAR"), 0.0)
 	var entry: StringName = &"maize" if _sneak else &"start"
@@ -547,6 +555,7 @@ func _on_dialogue_finished() -> void:
 
 func _on_dialogue_flag(key: StringName, value: int) -> void:
 	CampaignState.set_flag(key, value)
+	SessionLog.mark(&"flag", "%s=%d" % [String(key), value])
 	if key == &"descanso" and value != 0 and character != null:
 		character.heal(25.0)
 
