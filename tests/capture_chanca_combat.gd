@@ -55,8 +55,19 @@ func _go() -> void:
 		player_anim.seek(time, true)
 		await _frames(2)
 		root.get_texture().get_image().save_png(OUT + "/" + shot_name + ".png")
+	# Caída del enemigo derribado: el tween necesita tiempo real, no `seek`.
+	player_anim.speed_scale = 1.0
+	_enemy.take_hit(999.0)
+	await create_timer(0.30).timeout
+	_save("05_caida")
+	await create_timer(0.45).timeout
+	_save("06_en_el_suelo")
 	print("CHANCA_COMBATE_OK")
 	quit(0)
+
+
+func _save(name: String) -> void:
+	root.get_texture().get_image().save_png(OUT + "/" + name + ".png")
 
 
 func _frames(count: int) -> void:

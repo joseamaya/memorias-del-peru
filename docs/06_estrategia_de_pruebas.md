@@ -179,7 +179,7 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_campaign_audio` | Los recursos de audio de los actos II y III existen; los bucles WAV y OGG se configuran al cargar y los pasos de tierra y piedra están completos |
 | `test_character_models` | Los nueve personajes del acto I usan los GLB MakeHuman/Rocketbox ya versionados, con su esqueleto, animaciones (`idle`, `walk`, `run`, `talk`), ropa textil y cara; la tejedora teje y el agricultor trabaja; no queda ninguna capa procedural ni el prototipo de Blender en escena. La multitud del Cusco usa los mismos GLB |
 | `test_character_combat` | El GLB de combate trae `attack` y `hit` con pistas de hueso y sin mallas; los clips se añaden al `AnimationPlayer` de cualquier personaje, `play` los reproduce y la porra cuelga de la mano con su giro |
-| `test_paso_actors_use_models` | Los cuatro exploradores usan el modelo común oscuro con porra y animaciones propias; el campamento tiene tres modelos propios con roles distintos y todos quedan sobre el terreno |
+| `test_paso_actors_use_models` | Los cuatro exploradores usan el modelo común oscuro con porra y animaciones propias; el campamento tiene tres modelos propios con roles distintos y todos quedan sobre el terreno. Al caer, el enemigo se tambalea y cae hacia atrás en lugar de desaparecer |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):

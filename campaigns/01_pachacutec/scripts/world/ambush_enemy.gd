@@ -9,6 +9,8 @@ extends CharacterBody3D
 const SPEED: float = 2.4
 const MORALE_LOSS: float = 15.0
 const MODEL_PATH: String = "res://campaigns/01_pachacutec/assets/models/pch_npc_commoner.glb"
+## Duración de la caída del enemigo derribado.
+const FALL_SECONDS: float = 0.85
 
 var player: Node3D = null
 var paso: Node = null
@@ -150,10 +152,29 @@ func _resolve() -> void:
 	if _resolved:
 		return
 	_resolved = true
-	visible = false
 	set_physics_process(false)
 	if paso != null:
 		paso.call("on_enemy_resolved")
+	if character != null and not character.is_alive() and _visual != null:
+		_fall()
+		return
+	visible = false
+
+
+## Caída del enemigo derribado: el impacto ya lo tambaleó; ahora el cuerpo
+## pierde el equilibrio y cae hacia atrás. Sin clip propio: el nodo del modelo
+## gira sobre sus pies, que es donde está el origen del personaje.
+func _fall() -> void:
+	_play_visual(&"hit")
+	var fall: Tween = create_tween()
+	fall.set_parallel(true)
+	fall.set_trans(Tween.TRANS_QUAD)
+	fall.set_ease(Tween.EASE_IN)
+	fall.tween_property(_visual, "rotation:x", deg_to_rad(-82.0), FALL_SECONDS)
+	fall.tween_property(_visual, "position:y", _visual.position.y - 0.18, FALL_SECONDS)
+	fall.chain().tween_callback(func() -> void:
+		if is_inside_tree():
+			visible = false)
 
 
 static func _make_weapon() -> CombatWeapon:
