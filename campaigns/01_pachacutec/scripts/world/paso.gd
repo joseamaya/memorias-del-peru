@@ -75,6 +75,7 @@ var _ambush_started: bool = false
 var _completed: bool = false
 var _dead: bool = false
 var _blocking: bool = false
+var _battle_drum: AudioStreamPlayer = null
 
 
 func _ready() -> void:
@@ -91,6 +92,7 @@ func _ready() -> void:
 	_setup_enemies()
 	_setup_trigger()
 	_bind_environment()
+	_setup_audio()
 	hint_label.text = ""
 	_update_status()
 
@@ -177,11 +179,13 @@ func _attack() -> void:
 	if damage <= 0.0:
 		return
 	player_combatant.register_hit()
+	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH, -12.0)
 	_attack_ray.force_raycast_update()
 	if not _attack_ray.is_colliding():
 		return
 	var enemy: AmbushEnemy = _attack_ray.get_collider() as AmbushEnemy
 	if enemy != null:
+		CampaignAudio.play_sfx(CampaignAudio.IMPACT_PATH, -6.0)
 		enemy.take_hit(damage)
 	_update_status()
 
@@ -196,6 +200,7 @@ func _start_ambush() -> void:
 		hud.show_subtitle(tr("PCH_PASO_SNEAK"), 0.0)
 		_finish_ambush()
 		return
+	_start_drum()
 	if _distracted:
 		for index: int in range(2, _enemies.size()):
 			_enemies[index].take_hit(999.0)
@@ -206,6 +211,7 @@ func _start_ambush() -> void:
 func _finish_ambush() -> void:
 	if _completed or _aftermath_pending:
 		return
+	_stop_drum()
 	_aftermath_pending = true
 	hud.show_subtitle(tr("PCH_PASO_CLEAR"), 0.0)
 	var entry: StringName = &"maize" if _sneak else &"start"
@@ -524,6 +530,7 @@ func _on_dialogue_choice(index: int) -> void:
 func _on_dialogue_finished() -> void:
 	hud.hide_dialogue()
 	player.process_mode = Node.PROCESS_MODE_INHERIT
+	_stop_drum()
 	if _aftermath_pending:
 		_aftermath_pending = false
 		_completed = true
@@ -891,6 +898,33 @@ func _build_clouds() -> void:
 	dome.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	dome.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	add_child(dome)
+
+
+func _setup_audio() -> void:
+	CampaignAudio.setup_footsteps(player)
+	var wind: AudioStreamPlayer = CampaignAudio.add_wind(self, -18.0)
+	var wind_node: LlactaWind = get_node_or_null("Wind") as LlactaWind
+	if wind_node != null and wind != null:
+		wind_node.ambience = wind
+		wind_node.ambience_base_db = wind.volume_db
+	CampaignAudio.add_loop_3d(
+		self, "StreamAmbience", CampaignAudio.WATER_PATH,
+		Vector3(STREAM_X, WATER_LEVEL + 0.3, 0.0), -20.0, 4.0, 25.0)
+	CampaignAudio.add_loop_3d(
+		self, "FireAmbience", CampaignAudio.FIRE_PATH,
+		Vector3(CAMP_POSITION.x, _height_at(CAMP_POSITION.x, CAMP_POSITION.z) + 0.5, CAMP_POSITION.z),
+		-14.0, 3.0, 18.0)
+	_battle_drum = CampaignAudio.add_loop(self, "BattleDrum", CampaignAudio.DRUM_PATH, -16.0, false)
+
+
+func _start_drum() -> void:
+	if _battle_drum != null and not _battle_drum.playing:
+		_battle_drum.play()
+
+
+func _stop_drum() -> void:
+	if _battle_drum != null and _battle_drum.playing:
+		_battle_drum.stop()
 
 
 func _bind_environment() -> void:

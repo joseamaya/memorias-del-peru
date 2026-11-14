@@ -12,6 +12,12 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `quero_bebida.wav` | Interacción del quero | OwlStorm | Freesound n.º 320139, «Drink Sip and Swallow»: https://freesound.org/people/OwlStorm/sounds/320139/ | CC0 1.0 | 2026-11-11 |
 | `ofrenda_grano.wav` | Interacción de la ofrenda | lucasfuchs | Freesound n.º 556974, «Pouring grain or seeds»: https://freesound.org/people/lucasfuchs/sounds/556974/ | CC0 1.0 | 2026-11-11 |
 | `telar_golpe.wav` | Golpe del batán de la tejedora en el telar (3D, ADR-0015) | Autoría propia del proyecto | Síntesis con Python y NumPy: golpe sordo de 95–245 Hz con caída de tono, ruido filtrado en dos resonancias de madera (820 y 1450 Hz) y un segundo golpe más débil a 75 ms | Propia | 2026-11-12 |
+| `agua_arroyo.wav` | Arroyo del paso (bucle de 10 s) | Autoría propia del proyecto | Síntesis con Python/NumPy (`tools/synthesize_audio.py`): ruido de banda 350–3200 Hz con modulaciones lentas y rumor grave, fundido cruzado de 0,5 s | Propia | 2026-11-14 |
+| `fuego_campamento.wav` | Fuego del campamento (bucle de 10 s) | Autoría propia del proyecto | Síntesis con Python/NumPy: rumor grave, chasquidos de banda 800–6000 Hz y golpes cortos, fundido cruzado de 0,5 s | Propia | 2026-11-14 |
+| `tambor_defensa.wav` | Tambor de la emboscada y la defensa (bucle de 8 s) | Autoría propia del proyecto | Síntesis con Python/NumPy: golpes graves de 95–120 Hz con caída de tono y tinya de 240 Hz | Propia | 2026-11-14 |
+| `honda_zumbido.wav` | Zumbido de la honda al atacar | Autoría propia del proyecto | Síntesis con Python/NumPy: ruido de banda 500–4000 Hz y silbido descendente de 1200 a 200 Hz | Propia | 2026-11-14 |
+| `honda_impacto.wav` | Impacto de la honda | Autoría propia del proyecto | Síntesis con Python/NumPy: seno grave de 110 Hz con caída y ruido de ataque | Propia | 2026-11-14 |
+| `golpe_porra.wav` | Golpe de la porra chanca | Autoría propia del proyecto | Síntesis con Python/NumPy: seno grave de 70 Hz con caída y ruido de ataque | Propia | 2026-11-14 |
 | `musica_intro_over_the_andes.ogg` | Música de la introducción (ADR-0029) | u_98673jp944 | Pixabay, «Over The Andes»: https://pixabay.com/music/main-title-over-the-andes-339710/. **Generada con IA** según la propia página | Pixabay Content License (uso comercial, sin atribución obligatoria; prohíbe redistribuirla sola) | 2026-11-12 |
 
 Los originales se descargaron con la cuenta del responsable del proyecto el 2026-11-11 y **no se versionan**: son WAV de 48–96 kHz que pesan hasta 66 MB. Lo que entra en el juego es una versión procesada con ffmpeg y Python:
@@ -21,6 +27,12 @@ Los originales se descargaron con la cuenta del responsable del proyecto el 2026
 - Ofrenda: tramo 2,0–3,7 s del grano vertido. Quero: sorbo y trago completos, con compresión suave.
 - Murmullo: sin el tintineo inicial; pasa-banda de 150 Hz a 3,5 kHz para alejarlo; bucle con fundido cruzado de 1,5 s.
 - Ambiente: estéreo a 44,1 kHz; bucle de 90 s con fundido cruzado de 4 s; −34 dB RMS por canal (unos −31 dB en mono, el nivel del ambiente anterior).
+
+Los sonidos de agua, fuego, tambor, honda y porra son de autoría propia y se
+generan con `tools/synthesize_audio.py`; se versionan como WAV mono a 44,1 kHz.
+El agua y el fuego se reproducen en bucle con fundido cruzado; el tambor, en
+bucle de 8 s; los golpes son de un solo disparo. El agente no puede escucharlos:
+la validación auditiva corresponde al responsable del proyecto.
 
 `pasos_tierra_02.wav` sirve también, a 0,62 de velocidad, como la chaquitaclla que entra en la tierra en el trabajo del agricultor, y los tres pasos en tierra suenan además en 3D para los pasos de los personajes.
 

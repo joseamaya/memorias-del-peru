@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Audio de los actos II y III | Viento en el paso y el Cusco, agua del arroyo, fuego del campamento, murmullo de la plaza, tambor de combate, zumbido e impacto de honda y golpe de porra; pasos del jugador en tierra y piedra. Sonidos sintetizados con `tools/synthesize_audio.py`; 153 pruebas en verde | — |
 | Tela, sandalias y textiles (ADR-0042) | Lliclla de un paño largo anclada a la cadera, con franjas finas; sandalias que siguen la posición del pie; textiles procedurales en túnica, falda y lliclla. 152 pruebas en verde; medición provisional con carga 5,6 | — |
 | Vestuario del acto I completo (ADR-0042) | Los nueve personajes del acto I llevan túnica, falda o faldón, cinturón, chuspa, pelo, vincha y cara anclados al maniquí; el curaca lleva manto y el mensajero q'ipi. 152 pruebas en verde | — |
 | Vestuario de los actos II y III (ADR-0042) | La comitiva del paso y los exploradores chancas usan el maniquí vestido; los chancas llevan túnica oscura, vincha y porra. Reclutas, Cusi, aliados y defensores del Cusco también van vestidos. 152 pruebas en verde | — |

@@ -174,6 +174,7 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_ciudad` | El Cusco carga con reclutas, Cusi y el viejo de la víspera vestidos sobre el maniquí; recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
 | `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
 | `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
+| `test_campaign_audio` | Los recursos de audio de los actos II y III existen; los bucles WAV y OGG se configuran al cargar y los pasos de tierra y piedra están completos |
 | `test_dressed_mannequin` | Los nueve personajes del acto I llevan vestuario y rostro anclados a `pelvis`, `spine_02` y `Head`; cada uno tiene su rol, el curaca lleva manto, el mensajero q'ipi, la tejedora y las vecinas lliclla, y todos sandalias; los textiles tienen franjas; el maniquí sigue animado, usa piel y gira 180° para mirar hacia delante; ningún personaje carga los modelos viejos |
 | `test_paso_actors_use_mannequins` | Los cuatro exploradores usan el maniquí UAL1 animado, orientado hacia delante y vestido como chanca con porra; el campamento tiene tres maniquíes vestidos con roles distintos y todos quedan sobre el terreno |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
@@ -238,6 +239,12 @@ Capturas del prototipo de maniquí vestido (la tejedora), sin el resto de NPC:
 
 ```bash
 godot --path . --resolution 1280x720 --script res://tests/capture_dressed_weaver.gd
+```
+
+Comprobación de audio con driver real (no forma parte del ejecutor):
+
+```bash
+godot --path . --script res://tests/inspect_audio.gd
 ```
 
 Capturas del vestuario del acto I y del Cusco:

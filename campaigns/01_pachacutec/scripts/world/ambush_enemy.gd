@@ -86,6 +86,7 @@ func _physics_process(delta: float) -> void:
 			var damage: float = brain.attack(1.0)
 			if damage > 0.0:
 				_play_visual(&"Sword_Attack")
+				CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -10.0)
 				paso.call("apply_player_damage", damage)
 		EnemyCombatant.Intent.IDLE:
 			_play_visual(&"Idle")

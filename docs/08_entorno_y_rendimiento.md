@@ -449,4 +449,6 @@ reposo antes de darla por buena.
   en esa vista: la ropa y las caras añaden muchas mallas pequeñas.
 - Si el Medio no llega a 60 en reposo, las palancas son fusionar mallas por
   material (caras y sandalias) y compartir los materiales de la ropa.
+- La medición es anterior al audio de los actos II y III; los nodos de audio
+  añaden poco coste, pero debe repetirse junto con el resto en reposo.
 - Falta el Cusco con multitud y batalla.

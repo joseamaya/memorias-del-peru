@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** audio, rendimiento en reposo y validación de autor.
+**Siguiente:** rendimiento en reposo y validación de autor.
 
 Reglas:
 
@@ -374,7 +374,7 @@ autor del arco completo corresponde a la Fase 8.
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(Parcial: el acto II mide 60,5 FPS de media en Medio y 128,6 en Bajo con carga 1,3; con el equipo cargado baja a ~58 en Medio. El objetivo vinculante de Bajo se cumple; el de Medio queda en el límite y debe repetirse en reposo. Falta el Cusco con multitud.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 152 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 153 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
@@ -388,6 +388,8 @@ mensajero, curaca, principales y vecinos), la comitiva y los chancas del acto II
 y los reclutas, Cusi, aliados y defensores del acto III. La lliclla es un paño
 largo anclado a la cadera, con sandalias que siguen el pie y textiles
 procedurales con franjas finas en túnica, falda y lliclla. El acto II conserva
-el paisaje del desfiladero, el arroyo, el refugio y la vegetación. 152 pruebas en
-verde; la medición con tela y sandalias es provisional por la carga del equipo.
-Pendiente: audio, rendimiento en reposo y validación de autor.
+el paisaje del desfiladero, el arroyo, el refugio y la vegetación. El audio de
+los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de
+combate y golpes de honda y porra; los pasos del jugador suenan en tierra y
+piedra. 153 pruebas en verde; la medición con tela y sandalias es provisional
+por la carga del equipo. Pendiente: rendimiento en reposo y validación de autor.

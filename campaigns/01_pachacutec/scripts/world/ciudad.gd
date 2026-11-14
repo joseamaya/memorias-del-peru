@@ -67,6 +67,7 @@ var _defense_requested: bool = false
 var _completed: bool = false
 var _dead: bool = false
 var _blocking: bool = false
+var _battle_drum: AudioStreamPlayer = null
 var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 var _ally_visuals: Dictionary[int, bool] = {}
@@ -83,6 +84,7 @@ func _ready() -> void:
 	_setup_cusi()
 	_setup_vespera()
 	_restore_allies()
+	_setup_audio()
 	hint_label.text = ""
 	hud.show_subtitle(tr("PCH_CIUDAD_ARRIVAL"), 0.0)
 	_update_status()
@@ -197,11 +199,13 @@ func _attack() -> void:
 	if damage <= 0.0:
 		return
 	player_combatant.register_hit()
+	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH, -12.0)
 	_attack_ray.force_raycast_update()
 	if not _attack_ray.is_colliding():
 		return
 	var enemy: AmbushEnemy = _attack_ray.get_collider() as AmbushEnemy
 	if enemy != null:
+		CampaignAudio.play_sfx(CampaignAudio.IMPACT_PATH, -6.0)
 		enemy.take_hit(damage)
 	_update_status()
 
@@ -436,6 +440,7 @@ func _start_defense() -> void:
 		return
 	_defense_active = true
 	_defense_requested = false
+	_start_drum()
 	var count: int = maxi(1, 4 - ally_count())
 	for index: int in range(count):
 		var enemy: AmbushEnemy = AmbushEnemy.new()
@@ -453,6 +458,7 @@ func _finish_defense() -> void:
 		return
 	_completed = true
 	_defense_active = false
+	_stop_drum()
 	hud.show_subtitle(tr("PCH_CIUDAD_COUNTER"), 0.0)
 	var epilogue: String = tr("PCH_CIUDAD_EPILOGUE")
 	if CampaignState.has_flag(&"herido_salvado"):
@@ -463,6 +469,25 @@ func _finish_defense() -> void:
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SPARED")
 	hud.show_subtitle(epilogue, 0.0)
 	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"))
+
+
+func _setup_audio() -> void:
+	CampaignAudio.setup_footsteps(player)
+	CampaignAudio.add_wind(self, -20.0)
+	CampaignAudio.add_loop_3d(
+		self, "PlazaMurmur", CampaignAudio.MURMUR_PATH,
+		Vector3(0.0, 1.5, -2.0), -18.0, 12.0, 70.0)
+	_battle_drum = CampaignAudio.add_loop(self, "BattleDrum", CampaignAudio.DRUM_PATH, -15.0, false)
+
+
+func _start_drum() -> void:
+	if _battle_drum != null and not _battle_drum.playing:
+		_battle_drum.play()
+
+
+func _stop_drum() -> void:
+	if _battle_drum != null and _battle_drum.playing:
+		_battle_drum.stop()
 
 
 func _update_status() -> void:
