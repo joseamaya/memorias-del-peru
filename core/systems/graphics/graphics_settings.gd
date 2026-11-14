@@ -16,10 +16,11 @@ const PROFILE_PATHS: Array[String] = [
 
 ## Perfil con el que arranca el juego.
 ##
-## Es el perfil Medio: el juego se percibe mucho mejor con oclusión ambiental y
-## sin reducción de escala, y el margen de rendimiento medido lo permite
-## (docs/08 §4). Bajo sigue disponible en el ciclo de desarrollo con F2 y en la
-## línea de comandos (`--profile`).
+## Es el perfil Medio: el juego se percibe mucho mejor con oclusión ambiental, y
+## el 3D se renderiza al 83 % de 1080p para cumplir los 60 FPS en la GPU
+## integrada de referencia, con la interfaz a resolución completa (docs/08 §4).
+## Bajo sigue disponible en el ciclo de desarrollo con F2 y en la línea de
+## comandos (`--profile`).
 const DEFAULT_PROFILE_INDEX: int = 1
 
 ## Los perfiles usan el atlas de sombras direccionales de 16 bits.
@@ -109,6 +110,7 @@ func _apply(profile: GraphicsProfile, index: int) -> void:
 	_active_index = index
 	var viewport: Viewport = get_viewport()
 	if viewport != null:
+		viewport.scaling_3d_mode = profile.scaling_3d_mode
 		viewport.scaling_3d_scale = profile.render_scale
 		viewport.msaa_3d = profile.msaa_3d
 		viewport.screen_space_aa = profile.screen_space_aa

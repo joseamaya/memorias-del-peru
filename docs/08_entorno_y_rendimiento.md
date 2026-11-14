@@ -88,7 +88,7 @@ Se establecen al cerrar la Fase 3, antes de ampliar escenarios.
 
 | Métrica | Herramienta | Objetivo inicial |
 |---|---|---|
-| FPS medio | Monitor de rendimiento del editor / `Performance` | **Vinculante:** ≥ 30 FPS, perfil Bajo, 1080p, en la referencia con GPU integrada. **Recomendado:** ≥ 60 FPS, perfil Medio, 1080p, en la referencia con GPU dedicada (se verifica cuando exista) |
+| FPS medio | Monitor de rendimiento del editor / `Performance` | **Vinculante:** ≥ 30 FPS, perfil Bajo, salida a 1080p, en la referencia con GPU integrada. **Comprometido:** ≥ 60 FPS, perfil Medio, salida a 1080p con el 3D al 83 %, en la misma referencia |
 | FPS del percentil 1 % | Medición en script durante un recorrido fijo | Registrar base; no inferior a 2/3 del FPS medio |
 | Tiempo de frame (CPU/GPU) | Profiler y monitores del editor | Vinculante: < 33,3 ms. Recomendado: < 16,6 ms |
 | Draw calls | `Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME` | Registrar base |
@@ -110,7 +110,7 @@ Consecuencias de que la referencia tenga GPU integrada:
 
 - El perfil Bajo debe funcionar bien sin niebla volumétrica, SSAO ni SDFGI, y con escala de renderizado 3D reducida.
 - La niebla volumétrica es exclusiva de Alto/Ultra y no puede considerarse parte imprescindible de la identidad visual: la niebla de altura debe lograr por sí sola la lectura de valle andino.
-- Sin una referencia con GPU dedicada, el objetivo recomendado de 60 FPS no puede verificarse; esa falta se declarará en el informe de la Fase 3 y no bloquea su cierre (solo el objetivo vinculante lo hace).
+- El objetivo de 60 FPS se mide en la GPU integrada, no se aplaza a una GPU dedicada. Con el 3D al 83 % de 1080p y la interfaz a resolución completa, los tres actos lo superan con margen (2026-11-14).
 
 ### Medición con recorrido fijo (2026-11-10)
 
@@ -573,3 +573,50 @@ Condiciones: 1920 × 1080, Intel UHD 770, Vulkan, Forward+, carga 15,5–22,5
   dibujo.
 - El paso (acto II) no cambia con este trabajo. Su medición de 57,5 FPS sigue
   pendiente de repetir en una máquina en reposo.
+
+
+### Escala del búfer 3D al 83 % en el perfil Medio (2026-11-14)
+
+Comandos: `measure_performance`, `measure_paso_performance`,
+`measure_ciudad_performance` y `measure_scale_variants` (variantes de escala).
+Condiciones: salida 1920 × 1080, Intel UHD 770, Vulkan, Forward+, carga 6,7–13,0,
+tres ejecuciones, sin vsync y con `Engine.max_fps = 0`.
+
+Con el 3D al 100 %, el paso se quedaba en **58,7 FPS** en Medio. La comparación
+de variantes en un mismo proceso (paso, 8 s por variante) confirmó que el límite
+es el relleno de píxeles, no la geometría: la escena tiene 44–54 draw calls.
+
+| Escala y upscaler | FPS medio |
+|---|---|
+| 1,00 bilineal | 58,0 |
+| 0,95 bilineal | 57,7 |
+| 0,83 bilineal | 72,1 |
+| 0,83 FSR 1 | 66,0 |
+| 0,75 bilineal | 84,1 |
+| 0,75 FSR 1 | 77,3 |
+
+- **FSR 1 cuesta un 8–9 % más que el bilineal** en esta GPU, así que el perfil
+  usa el bilineal. El campo `scaling_3d_mode` del perfil queda disponible para
+  otros equipos.
+- Se adopta la práctica del proyecto hermano *El despertar del sol* (decisión
+  0005, misma GPU): el 3D se renderiza al **83 %** de 1080p y la interfaz a
+  resolución completa. El criterio se lee como «60 FPS con salida a 1080p», no
+  «3D nativo a 1080p».
+
+| Escena | Perfil | FPS medio | Draw calls |
+|---|---|---|---|
+| Llacta (acto I) | Medio | 76,5 (76,4–78,2) | 149–183 |
+| Paso (acto II) | Medio | 72,8 (70,8–72,8) | 44–54 |
+| Cusco (acto III) | Medio | 73,2 (72,1–73,4) | 300–301 |
+| Llacta (acto I) | Bajo | 122,3 (120,3–123,6) | 149–183 |
+| Paso (acto II) | Bajo | 126,2 (121,5–129,1) | 44–54 |
+| Cusco (acto III) | Bajo | 117,3 (115,2–118,6) | 300–301 |
+
+- Los tres actos superan los 60 FPS en Medio **con margen** (12–16 FPS por
+  encima) y los 115 en Bajo. Antes del cambio, el paso quedaba en 58,7 y el
+  Cusco en 61,3.
+- El percentil 1 % se movió entre 41,7 y 66,7 según la carga del sistema en el
+  momento de medir; en esta máquina lo dominan los tirones del escritorio, no
+  la escena.
+- La captura del paso al 83 % conserva el detalle del terreno y del ichu; la
+  diferencia con el 100 % no se aprecia a tamaño de juego.

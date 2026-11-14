@@ -28,6 +28,7 @@ func test_graphics_settings_apply() -> bool:
 		and _signals >= 1
 		and viewport != null
 		and is_equal_approx(viewport.scaling_3d_scale, high.render_scale)
+		and viewport.scaling_3d_mode == high.scaling_3d_mode
 		and viewport.msaa_3d == high.msaa_3d
 		and viewport.screen_space_aa == high.screen_space_aa
 		and settings.last_applied_shadow_atlas_size == high.shadow_atlas_size
@@ -38,6 +39,7 @@ func test_graphics_settings_apply() -> bool:
 		settings.get_active_profile() == low
 		and viewport != null
 		and is_equal_approx(viewport.scaling_3d_scale, low.render_scale)
+		and viewport.scaling_3d_mode == low.scaling_3d_mode
 		and settings.last_applied_shadow_atlas_size == low.shadow_atlas_size
 	)
 	settings.profile_changed.disconnect(_on_profile_changed)

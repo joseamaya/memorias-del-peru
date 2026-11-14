@@ -11,7 +11,10 @@ func test_graphics_default_profile_is_medium() -> bool:
 		and profile != null
 		and profile.profile_name == "Medio"
 		and profile.ssao_enabled
-		and profile.render_scale >= 1.0
+		# El 3D se renderiza por debajo de 1080p para cumplir los 60 FPS en la
+		# GPU integrada; la interfaz sigue a resolución completa (docs/08 §4).
+		and profile.render_scale >= 0.8
+		and profile.render_scale < 1.0
 	)
 	ok = ok and GraphicsSettingsService.profile_index_from_args(PackedStringArray(["--profile=2"]), index) == 2
 	ok = ok and GraphicsSettingsService.profile_index_from_args(PackedStringArray(["--profile=x"]), index) == index

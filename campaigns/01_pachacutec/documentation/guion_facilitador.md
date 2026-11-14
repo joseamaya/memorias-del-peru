@@ -1,7 +1,7 @@
 # Guion del facilitador — sesiones de prueba del vertical slice
 
 - Estado: **Listo para el piloto** (2026-11-11)
-- **Sustituido para la validación actual** por [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la Fase 4 se valida con el protocolo de autor de alcance §9.1–§9.5. Este guion se conserva para una futura prueba con terceros o para la demo pública.
+- **Sustituido para la validación actual** por ADR-0031: la Fase 4 se valida con el protocolo de autor de alcance §9.1–§9.5. Este guion se conserva para una futura prueba con terceros o para la demo pública.
 - Aplica: [alcance_vertical_slice.md](alcance_vertical_slice.md) §9 (protocolo aprobado). Si este guion y el alcance difieren, prevalece el alcance.
 - Registro de cada sesión: [plantilla_sesion.md](plantilla_sesion.md)
 
@@ -19,7 +19,7 @@ Las personas del piloto quedan excluidas de las sesiones oficiales: ya conocen l
 El piloto responde a dos preguntas antes de las sesiones oficiales:
 
 1. **¿Se entiende la historia?** Preguntas 1 y 2 del cuestionario.
-2. **¿Se lee la espera como un fallo?** El mensajero sale a los 75 s si la persona está en la plaza, y si no la espera, como tarde hasta los 150 s (ADR-0013; antes, 4 min y luego 2) ([ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md)). Hay que observar si la persona cree que el juego se ha quedado parado, lo pregunta o abandona.
+2. **¿Se lee la espera como un fallo?** El mensajero sale a los 75 s si la persona está en la plaza, y si no la espera, como tarde hasta los 150 s (ADR-0013; antes, 4 min y luego 2) (ADR-0009). Hay que observar si la persona cree que el juego se ha quedado parado, lo pregunta o abandona.
 
 ## 2. Medición de la duración
 
@@ -116,7 +116,7 @@ Al terminar, agradecer y pedir que no comente la historia con otras personas que
 
 ## 8. Qué decidir tras el piloto
 
-**PIL-1 (2026-11-11):** textos demasiado rápidos, ninguna orientación al inicio, lugar sin identificar y aburrimiento en la espera. Se corrigió con [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) (alcance v3.4). Después, una revisión del slice llevó a [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) (alcance v3.5): espera de 75 s, vecino que recibe, tarjeta de fin y piernas que se balancean. PIL-2 comprueba todas las correcciones con el commit nuevo.
+**PIL-1 (2026-11-11):** textos demasiado rápidos, ninguna orientación al inicio, lugar sin identificar y aburrimiento en la espera. Se corrigió con ADR-0012 (alcance v3.4). Después, una revisión del slice llevó a ADR-0013 (alcance v3.5): espera de 75 s, vecino que recibe, tarjeta de fin y piernas que se balancean. PIL-2 comprueba todas las correcciones con el commit nuevo.
 
 | Si en el piloto… | Entonces |
 |---|---|

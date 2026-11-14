@@ -4,8 +4,8 @@
 - Fecha: 2026-11-10
 - Precondición de: Fase 4 ([docs/05](../../../docs/05_plan_de_implementacion.md))
 - Registro histórico: [registro_historico.md](registro_historico.md)
-- **Nota (2026-11-13):** el modelo de museo de §12 queda superado por el giro a RPG ([ADR-0038](../../../docs/adr/0038-campana-rpg.md)). Este documento se conserva como referencia del **acto I**: mapa, assets y textos siguen vigentes; la estructura de los tres actos está en la [biblia de la campaña](biblia_campana.md).
-- Decisiones técnicas: [ADR-0006](../../../docs/adr/0006-secuencia-narrativa-por-subtitulos.md), [ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md), [ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md), [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md), [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md), [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md), [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md) [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md) [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md) [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md) y [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md)
+- **Nota (2026-11-13):** el modelo de museo de §12 queda superado por el giro a RPG (ADR-0038). Este documento se conserva como referencia del **acto I**: mapa, assets y textos siguen vigentes; la estructura de los tres actos está en la [biblia de la campaña](biblia_campana.md).
+- Decisiones técnicas: ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0012, ADR-0013 ADR-0014 ADR-0015 ADR-0016 y ADR-0017
 
 ## 0. Historial de versiones
 
@@ -15,17 +15,17 @@
 | v2 | Añade el protocolo de prueba completo, la secuencia con disparo garantizado, los personajes que faltaban, el reparto de textos, la estimación de duración y el cambio de “chasqui” a “mensajero”. |
 | v3 | Disparo por reloj, pututu disponible solo en la llamada, aviso de la llamada, habitantes que no parten, casas fuera de los caminos, camino norte y mirador, y duración ajustada a 5–8 min. |
 | v3.1 | Define cuándo empieza y termina una sesión para medir la duración (§9.2). Aprobada por el responsable del proyecto el 2026-11-11. |
-| v3.2 | Aplica [ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md): Blender 5.x y modelos generados por script (§7 y §7.1). Cambio de herramienta; no altera el contenido ni el protocolo. |
+| v3.2 | Aplica ADR-0010: Blender 5.x y modelos generados por script (§7 y §7.1). Cambio de herramienta; no altera el contenido ni el protocolo. |
 | v3.3 | Personajes estáticos, sin rig ni animación, para el piloto y las sesiones (§5, §6.1 y §7.1). El rig queda para después del piloto si las sesiones muestran que el desplazamiento sin animación distrae. Aprobada por el responsable del proyecto el 2026-11-11. |
-| v3.4 | Aplica [ADR-0012](../../../docs/adr/0012-ajustes-tras-el-primer-piloto.md) tras el primer piloto: subtítulos con tiempo de lectura y en cola, rótulo de lugar, nueva apertura, mensajero a los 120 s con señal intermedia, «Hablar» con seis personajes y vecinos que pasean. Aprobada por el responsable del proyecto el 2026-11-11. |
-| v3.5 | Aplica [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md): mensajero a los 75 s que espera al jugador (como tarde a los 150 s, con aviso), vecino que recibe en el camino sur, tarjeta de fin con reinicio y balanceo de piernas. Aprobada por el responsable del proyecto el 2026-11-11. |
-| v3.6 | Aplica [ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md): texturas de detalle CC0 en proyección triplanar para modelos, terreno, muros y campos; la plaza y los caminos se pintan en el terreno con borde irregular; *tonemap* AgX. Aprobada por el responsable del proyecto el 2026-11-11. |
-| v3.7 | Aplica [ADR-0015](../../../docs/adr/0015-personajes-con-esqueleto.md): personajes con esqueleto y animaciones generadas (reposo, paseo, carrera, gestos, agotamiento, tejer arrodillada y trabajar con la chaquitaclla), mirada hacia el jugador y comitiva al paso. Añade vida y sonido: viento en el ichu y la queñua, pasos de los personajes y golpes del telar y de la chaquitaclla (§5, §6.1 y §6.3). Pedida por el responsable del proyecto el 2026-11-12. |
-| v3.8 | Aplica [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md): personajes realistas con cuerpos de MakeHuman (CC0), ropa andina propia ajustada al cuerpo y captura de movimiento de CMU (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12, tras las quejas de los jugadores sobre el aspecto de los personajes. |
-| v3.9 | Aplica [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md): cabezas de la Microsoft Rocketbox Avatar Library (MIT) sobre los cuerpos de MakeHuman; tres vecinas distintas en lugar de tres copias (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12. |
+| v3.4 | Aplica ADR-0012 tras el primer piloto: subtítulos con tiempo de lectura y en cola, rótulo de lugar, nueva apertura, mensajero a los 120 s con señal intermedia, «Hablar» con seis personajes y vecinos que pasean. Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.5 | Aplica ADR-0013: mensajero a los 75 s que espera al jugador (como tarde a los 150 s, con aviso), vecino que recibe en el camino sur, tarjeta de fin con reinicio y balanceo de piernas. Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.6 | Aplica ADR-0014: texturas de detalle CC0 en proyección triplanar para modelos, terreno, muros y campos; la plaza y los caminos se pintan en el terreno con borde irregular; *tonemap* AgX. Aprobada por el responsable del proyecto el 2026-11-11. |
+| v3.7 | Aplica ADR-0015: personajes con esqueleto y animaciones generadas (reposo, paseo, carrera, gestos, agotamiento, tejer arrodillada y trabajar con la chaquitaclla), mirada hacia el jugador y comitiva al paso. Añade vida y sonido: viento en el ichu y la queñua, pasos de los personajes y golpes del telar y de la chaquitaclla (§5, §6.1 y §6.3). Pedida por el responsable del proyecto el 2026-11-12. |
+| v3.8 | Aplica ADR-0016: personajes realistas con cuerpos de MakeHuman (CC0), ropa andina propia ajustada al cuerpo y captura de movimiento de CMU (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12, tras las quejas de los jugadores sobre el aspecto de los personajes. |
+| v3.9 | Aplica ADR-0017: cabezas de la Microsoft Rocketbox Avatar Library (MIT) sobre los cuerpos de MakeHuman; tres vecinas distintas en lugar de tres copias (§5 y §6.1). Pedida por el responsable del proyecto el 2026-11-12. |
 | v4.0 | Ropa más realista (§5): textiles con diseño propio (franjas, zigzag escalonado, rombos de gradas y t'oqapu en las autoridades) a la altura real de cada prenda, caída de la tela simulada en Blender y manto que se mece con huesos de muelle (`SpringBoneSimulator3D`). Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.1 | Aplica [ADR-0019](../../../docs/adr/0019-movimiento-natural-de-personajes.md): pies sin patinar, arranque, frenada y giro progresivos, orientación corregida de las tomas, gestos con movimiento y reposo variado (§5). Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.2 | Brazos y piernas revisados ([ADR-0018](../../../docs/adr/0018-ropa-textiles-caida-y-muelles.md) §4):
+| v4.1 | Aplica ADR-0019: pies sin patinar, arranque, frenada y giro progresivos, orientación corregida de las tomas, gestos con movimiento y reposo variado (§5). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.2 | Brazos y piernas revisados (ADR-0018 §4):
 - la falda del anacu se mece entera, sin partirse al andar;
 - el agricultor cierra la mano sobre la chaquitaclla;
 - la tejedora llega con las manos al telar, cuyo extremo sube a su regazo;
@@ -33,28 +33,28 @@
 - la ropa se dibuja por las dos caras.
 
 Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.3 | Aplica [ADR-0020](../../../docs/adr/0020-ropa-cortada-y-cosida.md): ropa cortada y cosida como paños de telar (unku, anacu, lliclla, manto, q'ipi y chuspa), caída simulada con los brazos bajados, sin piel que asome bajo la tela, y tejido de lana CC0 de ambientCG en lugar de arpillera (§5). Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.4 | Aplica [ADR-0021](../../../docs/adr/0021-construcciones-de-pirca.md): casas, terrazas y poyos de pirca de piedra tosca; casas con talud, enlucido desconchado, puerta baja con dintel de palos, techo de ichu con mechones, tierra pisada alrededor, tercera variante y giro respecto a la plaza; dos corrales de pirca seca (PCH-021) (§6.1 y §7). Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.5 | Aplica [ADR-0023](../../../docs/adr/0023-introduccion-del-slice.md): introducción de tres tarjetas antes de tomar el control, que sitúa al jugador sin adelantar la noticia; sustituye al rótulo de lugar y época; el reloj del mensajero espera a que termine; ficha PCH-022 (§2.2, §6.4, §8, §9.2 y §10). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
-| v4.6 | Aplica [ADR-0024](../../../docs/adr/0024-titulo-nota-historica-y-controles.md): pantalla de título de `core/` («Memorias del Perú» · «Una mañana en la llacta», Comenzar y Salir) como escena principal; nota histórica como primera tarjeta de la introducción; controles en pantalla 8 s al tomar el control (§2.2, §6.4, §9.2 y §10). Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.7 | Aplica [ADR-0025](../../../docs/adr/0025-imagenes-de-la-introduccion.md): imágenes de fondo en la introducción. La nota sigue sobre negro; los Andes y la llacta se ven con tomas del propio juego, y la última termina en los ojos del jugador; el valle del Cusco se explica con un mapa propio (PCH-023) (§2.2, §6.4 y §8). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
-| v4.8 | Aplica [ADR-0026](../../../docs/adr/0026-cierre-corto-y-mensajero.md), tras la prueba del responsable del proyecto: el mensajero parte con la comitiva hacia el Cusco, y la tarjeta de fin llega unos 8 s después de «La llacta queda en silencio…», sin esperar a que el grupo salga de la vista (§2.2, §5, §9.2 y §10). Aprobada el 2026-11-12. |
-| v4.9 | Aplica [ADR-0027](../../../docs/adr/0027-musica-de-la-introduccion.md): música de la introducción, compuesta con notas de quena CC0, un bordón y una tinya sintetizados; se funde al tomar el control (§6.3). Pedida por el responsable del proyecto el 2026-11-12. |
-| v4.10 | Aplica [ADR-0028](../../../docs/adr/0028-musica-epica-de-la-introduccion.md): la música de la introducción pasa a ser los primeros 44 s de «Atlas • Bolivia» (Pixabay, sikuri épico generado con IA), anacronismo declarado; sustituye a la pieza de quena de la v4.9 (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
-| v4.11 | Aplica [ADR-0029](../../../docs/adr/0029-tema-de-apertura.md): la música de la introducción pasa a ser un montaje de 40 s de «Over The Andes» (Pixabay, tema principal andino generado con IA), con entrada suave, clímax y final real; sustituye a «Atlas • Bolivia» (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
+| v4.3 | Aplica ADR-0020: ropa cortada y cosida como paños de telar (unku, anacu, lliclla, manto, q'ipi y chuspa), caída simulada con los brazos bajados, sin piel que asome bajo la tela, y tejido de lana CC0 de ambientCG en lugar de arpillera (§5). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.4 | Aplica ADR-0021: casas, terrazas y poyos de pirca de piedra tosca; casas con talud, enlucido desconchado, puerta baja con dintel de palos, techo de ichu con mechones, tierra pisada alrededor, tercera variante y giro respecto a la plaza; dos corrales de pirca seca (PCH-021) (§6.1 y §7). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.5 | Aplica ADR-0023: introducción de tres tarjetas antes de tomar el control, que sitúa al jugador sin adelantar la noticia; sustituye al rótulo de lugar y época; el reloj del mensajero espera a que termine; ficha PCH-022 (§2.2, §6.4, §8, §9.2 y §10). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
+| v4.6 | Aplica ADR-0024: pantalla de título de `core/` («Memorias del Perú» · «Una mañana en la llacta», Comenzar y Salir) como escena principal; nota histórica como primera tarjeta de la introducción; controles en pantalla 8 s al tomar el control (§2.2, §6.4, §9.2 y §10). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.7 | Aplica ADR-0025: imágenes de fondo en la introducción. La nota sigue sobre negro; los Andes y la llacta se ven con tomas del propio juego, y la última termina en los ojos del jugador; el valle del Cusco se explica con un mapa propio (PCH-023) (§2.2, §6.4 y §8). Pedida y aprobada por el responsable del proyecto el 2026-11-12. |
+| v4.8 | Aplica ADR-0026, tras la prueba del responsable del proyecto: el mensajero parte con la comitiva hacia el Cusco, y la tarjeta de fin llega unos 8 s después de «La llacta queda en silencio…», sin esperar a que el grupo salga de la vista (§2.2, §5, §9.2 y §10). Aprobada el 2026-11-12. |
+| v4.9 | Aplica ADR-0027: música de la introducción, compuesta con notas de quena CC0, un bordón y una tinya sintetizados; se funde al tomar el control (§6.3). Pedida por el responsable del proyecto el 2026-11-12. |
+| v4.10 | Aplica ADR-0028: la música de la introducción pasa a ser los primeros 44 s de «Atlas • Bolivia» (Pixabay, sikuri épico generado con IA), anacronismo declarado; sustituye a la pieza de quena de la v4.9 (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
+| v4.11 | Aplica ADR-0029: la música de la introducción pasa a ser un montaje de 40 s de «Over The Andes» (Pixabay, tema principal andino generado con IA), con entrada suave, clímax y final real; sustituye a «Atlas • Bolivia» (§6.3). Elegida por el responsable del proyecto el 2026-11-12. |
 | v4.12 | Corrección tras la prueba del responsable del proyecto: al dejar la ofrenda aparece un atado visible de coca y maíz sobre la losa, y el grupo se reúne en un anillo apretado alrededor del mensajero desde que llega, en lugar de quedar disperso por la plaza (§2.2, §4, §5 y §6.1). Pedida el 2026-11-12. |
 | v4.13 | Pase de realismo visual y de promoción: captura en perfil Alto con HUD limpio, nubes altas procedurales, cordillera lejana de dos capas, niebla volumétrica corregida y luz más cálida; el perfil Bajo sigue por encima de 30 FPS (§3, §6.2 y §8). Pedida el 2026-11-13. |
 | v4.14 | Pase de personajes y viviendas: manos en primera persona para beber, ofrecer y tocar el pututu; piel más cálida con subsuperficie y ropa con más detalle; puertas de tablones y escalón de piedra en las casas, con paja más envejecida (§4, §5 y §6.1). Pedida el 2026-11-13. |
 | v4.15 | Ajuste de mantos y llicllas: post-proceso de los GLB de personajes para reducir su apertura lateral y añadir un pliegue suave, sin tocar huesos, pesos, UV ni animaciones (§5 y §6.1). Pedido el 2026-11-13. |
 | v4.16 | Registro automático de las sesiones de prueba: argumento `--session <código>`, marcas de tiempo de los hitos de §9.2 y anexo de los errores del motor para §9.6, con el perfil Bajo fijado (§9.2 y §9.5). No altera el contenido jugable. Pedido el 2026-11-13. |
 | v4.17 | Corrección de la primera impresión tras la prueba del responsable del proyecto: el juego arranca en perfil Medio con oclusión ambiental, el jugador aparece a 22 m de la plaza, el HUD muestra una línea de objetivo que avanza con el quero, la ofrenda, la conversación y el evento, los textos narrativos se acortan, los personajes tienen mancha de contacto y las sesiones dejan de forzar el perfil Bajo y registran el activo (§2.2, §5, §6.1, §6.2 y §9.5). Pedida el 2026-11-13. |
-| v4.18 | Aplica [ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md): el mensajero sale cuando el jugador completa las tareas y está cerca de la plaza, con respaldo a los 45 s y 20 s de espera; desde los 18 s se le ve bajar por el camino del norte; el aviso de espera pasa a los 20 s y el vecino que recibe se coloca a 10 m de la aparición. Además, materiales de piel y ojos más mates y dos hombres principales conversando de perfil (§2.2, §5, §6.1, §6.2, §9.2 y §10). Pedida el 2026-11-13. |
-| v4.19 | Aplica [ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md): la validación pasa a ser del autor, con tres pasadas registradas y umbrales medibles; la métrica 5 de audiencia queda declarada «no verificada» y recuperable con una demo pública (§9.1–§9.5 y §10). Pedida el 2026-11-13. |
-| v4.20 | Aplica [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) tras la autovalidación del 2026-11-13 (mediana de 86 s): cuarto objetivo del mirador entre la conversación y la espera; el aviso de espera se emite al llegar allí y la llegada se pide desde el mirador, con respaldo a 80 s + 20 s; cierre sin fugas de audio (árbol en pausa y flujos liberados). Registro de la validación en [sesiones/](sesiones/autovalidacion-2026-11-13.md) (§2.2, §5, §6.4, §9 y §10). Pedida el 2026-11-13. |
-| v4.21 | Aplica [ADR-0033](../../../docs/adr/0033-duracion-del-slice.md): la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
-| v5.0 | Aplica [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md): la campaña se organiza como museo explorable, con nueve estaciones, tarjeta, contador y brújula; el evento sale tras cinco estaciones con el mirador y la cadena de objetivos anterior queda sustituida (§2.2, §5, §6.4 y §12). Pedida el 2026-11-13. |
-| v5.1 | Aplica [ADR-0035](../../../docs/adr/0035-tour-libre.md): la estación pasa a ser una estela legible a la altura del pecho; se quita el umbral de cinco estaciones, el evento sale al observar el mirador (o a los 360 s) y la brújula se muestra solo con Q o tres segundos tras observar, con objetivo neutro (§2.2, §5, §9 y §12). Pedida el 2026-11-13. |
-| v5.2 | Aplica [ADR-0036](../../../docs/adr/0036-leer-en-el-mundo.md) y [ADR-0037](../../../docs/adr/0037-duracion-del-museo.md): se eliminan las estelas, el contador, la brújula y la tecla Q; las nueve tarjetas se abren al entrar en el lugar o al hacer la acción, y el mirador dispara el evento. La prioridad pasa a la sensación de lugar: sol más bajo, polvo en suspensión y rutas más largas de los vecinos (§2.2, §5, §6.4, §9 y §12). Pedida el 2026-11-13. La duración del museo se fija en 6–8 min de exploración con lectura (ADR-0037). |
+| v4.18 | Aplica ADR-0030: el mensajero sale cuando el jugador completa las tareas y está cerca de la plaza, con respaldo a los 45 s y 20 s de espera; desde los 18 s se le ve bajar por el camino del norte; el aviso de espera pasa a los 20 s y el vecino que recibe se coloca a 10 m de la aparición. Además, materiales de piel y ojos más mates y dos hombres principales conversando de perfil (§2.2, §5, §6.1, §6.2, §9.2 y §10). Pedida el 2026-11-13. |
+| v4.19 | Aplica ADR-0031: la validación pasa a ser del autor, con tres pasadas registradas y umbrales medibles; la métrica 5 de audiencia queda declarada «no verificada» y recuperable con una demo pública (§9.1–§9.5 y §10). Pedida el 2026-11-13. |
+| v4.20 | Aplica ADR-0032 tras la autovalidación del 2026-11-13 (mediana de 86 s): cuarto objetivo del mirador entre la conversación y la espera; el aviso de espera se emite al llegar allí y la llegada se pide desde el mirador, con respaldo a 80 s + 20 s; cierre sin fugas de audio (árbol en pausa y flujos liberados). Registro de la validación en [sesiones/](sesiones/autovalidacion-2026-11-13.md) (§2.2, §5, §6.4, §9 y §10). Pedida el 2026-11-13. |
+| v4.21 | Aplica ADR-0033: la duración comprometida del slice pasa a 2–3 min en ruta directa (medido: 121,2 s en AUTO-4); el horizonte de 10–15 min queda para la campaña completa. Cierra la Fase 4 (§1 y §10). Pedida el 2026-11-13. |
+| v5.0 | Aplica ADR-0034: la campaña se organiza como museo explorable, con nueve estaciones, tarjeta, contador y brújula; el evento sale tras cinco estaciones con el mirador y la cadena de objetivos anterior queda sustituida (§2.2, §5, §6.4 y §12). Pedida el 2026-11-13. |
+| v5.1 | Aplica ADR-0035: la estación pasa a ser una estela legible a la altura del pecho; se quita el umbral de cinco estaciones, el evento sale al observar el mirador (o a los 360 s) y la brújula se muestra solo con Q o tres segundos tras observar, con objetivo neutro (§2.2, §5, §9 y §12). Pedida el 2026-11-13. |
+| v5.2 | Aplica ADR-0036 y ADR-0037: se eliminan las estelas, el contador, la brújula y la tecla Q; las nueve tarjetas se abren al entrar en el lugar o al hacer la acción, y el mirador dispara el evento. La prioridad pasa a la sensación de lugar: sol más bajo, polvo en suspensión y rutas más largas de los vecinos (§2.2, §5, §6.4, §9 y §12). Pedida el 2026-11-13. La duración del museo se fija en 6–8 min de exploración con lectura (ADR-0037). |
 
 ## 1. Objetivo
 
@@ -64,7 +64,7 @@ Objetivos medibles tomados de [docs/05](../../../docs/05_plan_de_implementacion.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración | 2–3 min de mediana en ruta directa ([ADR-0033](../../../docs/adr/0033-duracion-del-slice.md)); medido en 121,2 s. El horizonte de 10–15 min queda para la campaña completa |
+| Duración | 2–3 min de mediana en ruta directa (ADR-0033); medido en 121,2 s. El horizonte de 10–15 min queda para la campaña completa |
 | Espacio | Llacta de ~150 × 150 m explorables |
 | Viviendas | 6–8 |
 | Rutas | Al menos 2 entre el inicio y el punto narrativo final |
@@ -72,7 +72,7 @@ Objetivos medibles tomados de [docs/05](../../../docs/05_plan_de_implementacion.
 | Personajes | Mínimo 2 NPC con presencia |
 | Narrativa | 1 evento con inicio y cierre |
 | Sonido | Ambiente de exteriores y efectos de interacción |
-| Comprensión | Validación de autor ([ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md)): las preguntas 1 y 2 correctas sin consultar el registro; la muestra de 6 jugadores queda como objetivo recuperable |
+| Comprensión | Validación de autor (ADR-0031): las preguntas 1 y 2 correctas sin consultar el registro; la muestra de 6 jugadores queda como objetivo recuperable |
 
 ## 2. Premisa y secuencia narrativa
 
@@ -91,7 +91,7 @@ La noticia se presenta como lo que dice el mensajero. La tradición recoge versi
 
 ### 2.2 Secuencia y disparo
 
-La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/adr/0007-evento-del-mensajero.md)) y un disparo por acción con respaldo por reloj ([ADR-0030](../../../docs/adr/0030-ritmo-y-disparo-del-mensajero.md), que reemplaza a [ADR-0009](../../../docs/adr/0009-duracion-y-disparo-del-slice.md) y [ADR-0013](../../../docs/adr/0013-ritmo-orientacion-y-cierre.md)). La noticia cierra la sesión: el jugador explora primero y el mensajero llega a media mañana.
+La secuencia se gobierna con una máquina de estados (ADR-0007) y un disparo por acción con respaldo por reloj (ADR-0030, que reemplaza a ADR-0009 y ADR-0013). La noticia cierra la sesión: el jugador explora primero y el mensajero llega a media mañana.
 
 | Fase | Entra cuando | Ocurre | Subtítulo |
 |---|---|---|---|
@@ -106,7 +106,7 @@ La secuencia se gobierna con una máquina de estados ([ADR-0007](../../../docs/a
 
 Reglas:
 
-- **Antes de `CALL` el pututu no está disponible**: no se enfoca, no muestra acción y no se gasta ([ADR-0008](../../../docs/adr/0008-disponibilidad-de-interactuables.md)). Así ningún toque temprano puede dejar la llamada sin respuesta.
+- **Antes de `CALL` el pututu no está disponible**: no se enfoca, no muestra acción y no se gasta (ADR-0008). Así ningún toque temprano puede dejar la llamada sin respuesta.
 - El curaca usa `force_play()`: aunque el pututu llegue gastado por cualquier vía, el evento termina.
 - El subtítulo de la noticia se repite una vez si el jugador entra en la plaza durante `MESSAGE` o `CALL` (caso del disparo por espera agotada).
 - El cierre es corto: unos 8 s después del último subtítulo, un fundido muestra la tarjeta de fin, y R reinicia y Esc sale (v4.8, ADR-0026). Antes la tarjeta llegaba unos 60 s después (v3.5, ADR-0013), y en la prueba ese hueco dejaba al jugador sin saber qué hacer.
@@ -163,14 +163,14 @@ Reglas:
 
 **Manos del jugador (v4.14).** El jugador ve una mano y un antebrazo en primera persona con manga de unku y piel cálida; entra en cuadro al beber, dejar la ofrenda o tocar el pututu y se retira. Es una reconstrucción (R): un recurso genérico, sin retrato ni joyas, coherente con PCH-018.
 
-**Personajes realistas (v3.8, [ADR-0016](../../../docs/adr/0016-personajes-realistas-makehuman.md)).**
+**Personajes realistas (v3.8, ADR-0016).**
 
 - Los genera `assets/blender/pch_people.py` con el complemento MPFB2 de MakeHuman.
 - **Cuerpo:** humano con cara, manos y esqueleto, de complexión baja y robusta. La piel está teñida a un moreno de la sierra y el pelo es negro: interpretación declarada (PCH-018).
 - **Ropa andina propia** (unku, anacu con faja, lliclla con tupu, manto, tocados, chuspa, ojotas y bulto) ajustada al cuerpo.
 - **Movimiento:** captura real de CMU para reposo, paseo, carrera, gestos y trabajo, con la postura corregida: espalda más recta, cabeza estable y nivelada, dedos relajados.
 - **Cara:** boca cerrada y ojos castaños.
-- **Cabezas (v3.9, [ADR-0017](../../../docs/adr/0017-cabezas-rocketbox.md)):** de la Rocketbox Avatar Library, de calidad de artista, con la piel igualada al cuerpo. Los peinados son los de cada avatar.
+- **Cabezas (v3.9, ADR-0017):** de la Rocketbox Avatar Library, de calidad de artista, con la piel igualada al cuerpo. Los peinados son los de cada avatar.
 - **Variedad:** los tres vecinos son tres mujeres distintas (`pch_npc_villager`, `_b` y `_c`).
 - **Textiles (v4.0):** cada personaje lleva una textura de tela pintada por el generador, con trama de hilo:
   - **Unku:** franjas en la cintura y zigzag escalonado en el bajo. Las autoridades llevan además un cinturón de t'oqapu.
@@ -179,13 +179,13 @@ Reglas:
   - **Manto:** franjas en el borde inferior.
   - **Cinta:** zigzag. **Paño:** a rayas.
   - Los diseños son reconstrucción (R) a partir de las piezas de PCH-010, PCH-017 y PCH-018.
-- **Movimiento natural (v4.1, [ADR-0019](../../../docs/adr/0019-movimiento-natural-de-personajes.md)):**
+- **Movimiento natural (v4.1, ADR-0019):**
   - Los pies no patinan al caminar ni al correr.
   - Los personajes arrancan, frenan y giran poco a poco, y no caminan de lado.
   - Al hablar gesticulan con los brazos.
   - Quietos, alternan dos reposos distintos.
 - **Caída y movimiento (v4.0):** la falda, el manto y el borde de la lliclla caen por su peso (simulación de tela en Blender, horneada en el modelo). El manto se mece al caminar con tres cadenas de muelle que chocan con la cadera y el pecho.
-- **Ropa cortada y cosida (v4.3, [ADR-0020](../../../docs/adr/0020-ropa-cortada-y-cosida.md)):**
+- **Ropa cortada y cosida (v4.3, ADR-0020):**
   - Cada prenda es un paño de telar que cae sobre el cuerpo con los brazos bajados: el unku y el anacu doblados sobre los hombros y cosidos a los lados, y la lliclla y el manto echados sobre los hombros, prendidos o anudados al pecho.
   - El bulto del mensajero es un fardo de tela atado al pecho, y la chuspa, una bolsa llena.
   - La piel que la ropa tapa se quita, para que no asome al andar.
@@ -233,7 +233,7 @@ La tejedora y el agricultor son los dos NPC con presencia que exige el objetivo.
 - Nubes altas procedurales (shader propio, sin texturas externas) y cordillera lejana de siluetas (malla procedural).
 - Texturas de 1K o 2K; sin imágenes de terceros sin licencia compatible.
 - Materiales compartidos en `shared_assets/materials/`.
-- **Hecho en v3.6** ([ADR-0014](../../../docs/adr/0014-texturas-de-detalle-triplanares.md)):
+- **Hecho en v3.6** (ADR-0014):
   - Nueve texturas CC0 de Poly Haven a 1K (piedra, barro, paja, madera, tejido, hierba, tierra, roca y suelo de cultivo), registradas en [shared_assets/textures/LICENSE.md](../../../shared_assets/textures/LICENSE.md).
   - Un shader triplanar las aplica como detalle sobre la paleta: el color sigue siendo el de las fichas.
   - La plaza y los caminos se pintan en el terreno con borde irregular, en lugar de losas.
@@ -302,7 +302,7 @@ Cada subtítulo dura al menos su tiempo de lectura (largo ÷ 13 caracteres por s
 
 ## 7. Pipeline de assets
 
-- **Blender 5.x** para modelos, rigging y animación ([ADR-0010](../../../docs/adr/0010-modelos-generados-con-blender.md); sustituye a la 4.x LTS). Los modelos se generan con el script versionado `assets/blender/pch_models.py`.
+- **Blender 5.x** para modelos, rigging y animación (ADR-0010; sustituye a la 4.x LTS). Los modelos se generan con el script versionado `assets/blender/pch_models.py`.
 - Exportación a **glTF 2.0 binario (`.glb`)**; no se importan `.blend`.
 - 1 unidad = 1 metro; transformaciones aplicadas; origen en los pies para personajes.
 - Nombres `snake_case` con prefijo `pch_` (`pch_house_a.glb`, `pch_npc_weaver.glb`).
@@ -376,7 +376,7 @@ Antes del cierre de la Fase 4, todo elemento debe tener ficha en estado **verifi
 
 ### 9.1 Alcance y límite
 
-- La validación la hace el **responsable del proyecto** ([ADR-0031](../../../docs/adr/0031-validacion-por-el-autor.md)). No es una prueba de audiencia: mide si el contenido es legible y si el ritmo funciona, no si un jugador nuevo lo comprende.
+- La validación la hace el **responsable del proyecto** (ADR-0031). No es una prueba de audiencia: mide si el contenido es legible y si el ritmo funciona, no si un jugador nuevo lo comprende.
 - La métrica 5 de docs/01 §5 (6 jugadores ajenos) queda **no verificada**. Su definición se conserva como objetivo recuperable con una demo pública y el registro de sesión.
 - No hay consentimiento, facilitador ni evaluadores externos: no se recogen datos personales, ni vídeo, ni audio.
 
@@ -441,7 +441,7 @@ La llacta se cruza en 43 s a velocidad de caminata (3,5 m/s), así que la duraci
 | Tarjeta de fin y salida | 0,1 | 0,1 |
 | **Total** | **~2,2** | **~3,3** |
 
-La autovalidación del 2026-11-13 midió **77,7–97,9 s** (mediana 86 s) sin el mirador y **121,2 s** con él. Esa cifra cumple el objetivo rebaseado a **2–3 min** ([ADR-0033](../../../docs/adr/0033-duracion-del-slice.md)): el slice es un fragmento, y la duración de la campaña completa la resolverá el modelo de estaciones. El respaldo por reloj es de 80 s + 20 s.
+La autovalidación del 2026-11-13 midió **77,7–97,9 s** (mediana 86 s) sin el mirador y **121,2 s** con él. Esa cifra cumple el objetivo rebaseado a **2–3 min** (ADR-0033): el slice es un fragmento, y la duración de la campaña completa la resolverá el modelo de estaciones. El respaldo por reloj es de 80 s + 20 s.
 
 ## 11. Rendimiento
 
@@ -474,7 +474,7 @@ Aprobada el 2026-11-10. La precondición de la Fase 4 está marcada en [docs/05]
 
 ## 12. Museo explorable (v5.0)
 
-Desde [ADR-0034](../../../docs/adr/0034-una-campana-y-museo.md), la campaña se
+Desde ADR-0034, la campaña se
 organiza como un museo explorable: nueve lugares con tarjeta, sin contador ni
 brújula, y el evento del mensajero como clímax.
 
@@ -500,10 +500,10 @@ brújula, y el evento del mensajero como clímax.
   señala las tarjetas; se descubren recorriendo.
 - **Cierre:** el evento sale al **llegar al mirador** (mirar el camino del
   norte); la petición arranca al volver a la plaza. El respaldo por reloj de
-  [ADR-0032](../../../docs/adr/0032-objetivo-del-mirador.md) es de 360 s + 20 s.
+  ADR-0032 es de 360 s + 20 s.
   No hay umbral de estaciones.
 - **Sustitución:** la cadena de objetivos de v4.18 queda eliminada. Solo quedan
   los objetivos del evento (`PCH_OBJ_LISTEN`, `PCH_OBJ_PUTUTU`, `PCH_OBJ_LEAVE`).
-- **Duración objetivo:** 6–8 min explorando y leyendo ([ADR-0037](../../../docs/adr/0037-duracion-del-museo.md));
+- **Duración objetivo:** 6–8 min explorando y leyendo (ADR-0037);
   el horizonte de 10–15 min sigue
   reservado a la campaña completa.

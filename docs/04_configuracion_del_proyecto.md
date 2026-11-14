@@ -2,7 +2,7 @@
 
 Este documento define **qué** debe contener `project.godot`. El archivo se genera en la Fase 1; conviene crearlo desde el editor de la versión instalada y luego ajustar los valores, para que `config_version` y las claves coincidan exactamente con esa versión.
 
-> Claves verificadas con **Godot 4.7.2** el 2026-11-10 (versión fijada en [ADR-0002](adr/0002-version-de-godot.md)).
+> Claves verificadas con **Godot 4.7.2** el 2026-11-10 (versión fijada en ADR-0002).
 
 ## 1. Aplicación
 
@@ -28,7 +28,7 @@ Las opciones gráficas (sombras, niebla volumétrica, SSAO, etc.) **no** se fija
 |---|---|---|
 | `display/window/size/viewport_width` | `1920` | Resolución base |
 | `display/window/size/viewport_height` | `1080` | Resolución base |
-| `display/window/stretch/mode` | `"canvas_items"` | La UI escala con la ventana; el 3D se renderiza a la resolución real |
+| `display/window/stretch/mode` | `"canvas_items"` | La UI escala con la ventana; el 3D se renderiza a la escala del perfil gráfico (83 % en Medio) |
 | `display/window/stretch/aspect` | `"expand"` | Soporta 16:10, 21:9 sin bandas |
 | `display/window/vsync/vsync_mode` | Habilitado (por defecto) | Configurable en perfiles futuros |
 

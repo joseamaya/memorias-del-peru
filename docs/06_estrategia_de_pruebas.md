@@ -90,8 +90,8 @@ Para que la lógica sea comprobable sin entrada real, los cálculos (dirección 
 | `test_world_scene_loads` | `mundo_base` contiene `WorldEnvironment`, `Inti`, `Terrain` con malla y colisión, `PlayerSpawn`, `EnvironmentAudio`, `PlayerFPS` y HUD |
 | `test_sky_material` | El `Environment` usa `PhysicalSkyMaterial` |
 | `test_graphics_profiles_load` | Los cuatro perfiles cargan; Bajo/Medio sin niebla volumétrica, Alto/Ultra con ella, y el atlas de sombras crece con el perfil |
-| `test_graphics_default_profile` | El juego arranca en Medio (SSAO activo y escala 1.0) y `--profile=N` elige otro perfil |
-| `test_graphics_settings_apply` | `set_profile` emite `profile_changed`, aplica escala, MSAA y antialiasing al Viewport, y deja constancia del atlas de sombras y de sus 16 bits |
+| `test_graphics_default_profile` | El juego arranca en Medio (SSAO activo y el 3D por debajo de 1080p, entre 0,8 y 1,0) y `--profile=N` elige otro perfil |
+| `test_graphics_settings_apply` | `set_profile` emite `profile_changed`, aplica escala, upscaler, MSAA y antialiasing al Viewport, y deja constancia del atlas de sombras y de sus 16 bits |
 | `test_shadow_atlas_per_profile` | Los cuatro perfiles fijan su tamaño de atlas y todos usan 16 bits |
 | `test_environment_quality_controller` | El controlador aplica niebla, SSAO, SDFGI y distancia de sombras al cambiar de perfil |
 | `test_player_spawn` | El jugador aparece en la transformación de `PlayerSpawn` |
@@ -219,6 +219,7 @@ Medición del Cusco con multitud y defensa (tampoco forma parte del ejecutor):
 
 ```bash
 godot --path . --script res://tests/measure_ciudad_performance.gd
+godot --path . --script res://tests/measure_scale_variants.gd
 ```
 
 Arranca la defensa, mantiene al jugador con vida y gira la vista sobre la plaza

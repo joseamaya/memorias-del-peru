@@ -1,8 +1,8 @@
 # Biblia de la campaña 01 — Pachacútec: La defensa del Cusco
 
 - Estado: **Aprobado (v1.0)** — 2026-11-13
-- Sustituye al modelo de museo ([ADR-0038](../../../docs/adr/0038-campana-rpg.md)) y fija los tres actos ([ADR-0039](../../../docs/adr/0039-tres-actos-y-gris.md))
-- Crónica rectora: **Betanzos** ([ADR-0040](../../../docs/adr/0040-cronica-rectora.md)); Garcilaso y Pachacuti Yamqui, contraste y leyenda
+- Sustituye al modelo de museo (ADR-0038) y fija los tres actos (ADR-0039)
+- Crónica rectora: **Betanzos** (ADR-0040); Garcilaso y Pachacuti Yamqui, contraste y leyenda
 - Documentos de apoyo: [registro histórico](registro_historico.md), [alcance del acto I](alcance_vertical_slice.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
 
 Este documento manda sobre el contenido de la campaña. El alcance del vertical

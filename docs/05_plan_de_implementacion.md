@@ -375,7 +375,7 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
-- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia: llacta 61,1 / paso 57,5 / Cusco 61,3 FPS en Medio y 128,4 / 130,4 / 115,4 en Bajo. La llacta se midió con carga 1,1–6,9; el paso con carga 3,8–8,3; el Cusco con carga 15,5–22,5. El acto I y el Cusco cumplen por mediana; el paso queda por debajo de 60 en Medio bajo esa carga y su medición se repetirá en reposo. Detalle en docs/08.)*
+- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia, con el 3D al 83 % y la interfaz a resolución completa: llacta 76,5 / paso 72,8 / Cusco 73,2 FPS en Medio y 122,3 / 126,2 / 117,3 en Bajo. El paso pasó de 58,7 a 72,8 al bajar la escala del búfer 3D; FSR 1 resultó un 8–9 % más caro que el bilineal y se descartó. Detalle en docs/08.)*
 - [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 155 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.

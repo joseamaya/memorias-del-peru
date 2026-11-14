@@ -30,7 +30,7 @@
 
 ## 2. Estructura del repositorio
 
-Estructura oficial (de la [especificación](00_especificacion.md) §3) más dos adiciones justificadas en [ADR-0001](adr/0001-estructura-de-repositorio.md): `docs/` y `tests/`.
+Estructura oficial (de la [especificación](00_especificacion.md) §3) más dos adiciones justificadas en ADR-0001: `docs/` y `tests/`.
 
 ```text
 memorias-del-peru/
@@ -156,7 +156,7 @@ Riesgo a verificar: a frecuencias de refresco mayores que la tasa de física (60
 
 ## 5. Sistema de interacción
 
-Diseño propuesto en [ADR-0003](adr/0003-deteccion-de-interactuables.md) (se acepta formalmente al iniciar la Fase 2).
+Diseño propuesto en ADR-0003 (se acepta formalmente al iniciar la Fase 2).
 
 - `class_name Interactable extends Node` con `interact(interactor: Node3D) -> void` y `get_interaction_text() -> String`.
 - El script de un objeto interactuable (p. ej. `quero_chicha.gd`) hereda de `Interactable` y se asigna a la **raíz** de la escena del objeto.
@@ -220,7 +220,7 @@ Reglas:
 
 ## 6. Sistemas RPG (Fase 6)
 
-La campaña 01 es un RPG en primera persona ([ADR-0038](adr/0038-campana-rpg.md)).
+La campaña 01 es un RPG en primera persona (ADR-0038).
 Estos módulos viven en `core/` y no conocen la campaña; la campaña los compone.
 
 | Sistema | Ubicación | Contrato público |
