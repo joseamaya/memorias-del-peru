@@ -608,6 +608,7 @@ es el relleno de píxeles, no la geometría: la escena tiene 44–54 draw calls.
 | Llacta (acto I) | Medio | 76,5 (76,4–78,2) | 149–183 |
 | Paso (acto II) | Medio | 72,8 (70,8–72,8) | 44–54 |
 | Cusco (acto III) | Medio | 73,2 (72,1–73,4) | 300–301 |
+| Cusco con mercado (acto III) | Medio | 72,9 (72,2–73,7) | 327–328 |
 | Llacta (acto I) | Bajo | 122,3 (120,3–123,6) | 149–183 |
 | Paso (acto II) | Bajo | 126,2 (121,5–129,1) | 44–54 |
 | Cusco (acto III) | Bajo | 117,3 (115,2–118,6) | 300–301 |

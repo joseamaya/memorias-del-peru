@@ -368,7 +368,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Uso en el juego: mapa del acto III
 - Fuentes: se apoya en PCH-022 (Covey y otros 2025) y PCH-002. La bibliografía específica del Cusco preimperial sigue pendiente de ampliar.
 - Discrepancias entre fuentes: la arqueología del Cusco anterior a la expansión es limitada; la ciudad monumental es posterior.
-- Notas de representación: centro de señorío con plaza grande, casas de piedra y ichu, terrazas y un santuario modesto al sol (R). Sin Coricancha monumental, sin muros ciclópeos ni piedra labrada imperial.
+- Notas de representación: centro de señorío con plaza grande, casas de piedra y ichu, terrazas y un santuario modesto al sol (R). Sin Coricancha monumental, sin muros ciclópeos ni piedra labrada imperial. Los dos puestos de trueque de la plaza son **reconstrucción de ambiente (R)**: postes, techo de ichu, cántaros y leña, sin institución de mercado ni tiánguez nombrado en pantalla.
 - Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-13, sobre PCH-022 y PCH-002; la disposición concreta es R.
 
 ### PCH-028 — La coca: masticar y compartir

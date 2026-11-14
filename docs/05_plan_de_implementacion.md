@@ -396,7 +396,8 @@ los actos II y III añade viento, agua, fuego, murmullo del Cusco, tambor de
 combate y golpes de honda y porra; los pasos del jugador suenan en tierra y
 piedra. El Cusco deja el bloqueo gris: terreno con plaza y caminos de tierra,
 santuario de gradas, catorce casas con los modelos definitivos, muro de pirca,
-terrazas de cultivo y diez figuras de multitud con modelos propios. La multitud se retira
+terrazas de cultivo, dos puestos de trueque en la plaza y diez figuras de
+multitud con modelos propios. La multitud se retira
 al empezar la defensa; el portón con dintel, el remate de la muralla, los bancos,
 el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. La multitud del Cusco dejó el maniquí
 procedural: con los modelos propios, el Cusco baja de 714 a 299 draw calls y

@@ -42,14 +42,14 @@ const HOUSE_POSITIONS: Array[Vector3] = [
 ## Refugiados y vecinos que llenan la plaza; no interactúan, solo dan escala.
 const CROWD_POSITIONS: Array[Vector3] = [
 	Vector3(-18.0, 0.0, 10.0),
-	Vector3(-19.0, 0.0, 4.0),
+	Vector3(-11.0, 0.0, 3.4),
 	Vector3(-18.0, 0.0, -4.0),
 	Vector3(18.0, 0.0, 10.0),
-	Vector3(19.0, 0.0, 4.0),
+	Vector3(11.0, 0.0, 3.4),
 	Vector3(18.0, 0.0, -4.0),
 	Vector3(-9.0, 0.0, 16.0),
-	Vector3(9.0, 0.0, 16.0),
-	Vector3(-13.0, 0.0, -15.0),
+	Vector3(3.6, 0.0, 7.4),
+	Vector3(-3.6, 0.0, 7.4),
 	Vector3(13.0, 0.0, -15.0),
 ]
 const CROWD_ROLES: Array[StringName] = [
@@ -781,6 +781,7 @@ func _build_city() -> void:
 	_build_gate()
 	_build_wall_caps()
 	_build_plaza_furniture()
+	_build_market()
 	_build_sanctuary_props()
 	_build_vegetation()
 	_build_terraces()
@@ -1043,6 +1044,49 @@ func _build_plaza_furniture() -> void:
 	_add_model_prop(furniture, "PlazaJarWest", MODEL_PROP_JAR, Vector3(-11.5, 0.0, 9.0), 0.3, 1.0)
 	_add_model_prop(furniture, "PlazaJarEast", MODEL_PROP_JAR, Vector3(11.5, 0.0, 9.0), -0.4, 1.0)
 	_add_model_prop(furniture, "PlazaFirewood", MODEL_PROP_FIREWOOD, Vector3(-11.0, 0.0, -9.5), 0.6, 1.0)
+
+
+## Dos puestos de trueque en la plaza. Son la escala y el punto focal que
+## faltaban: el jugador entra por el sur y ve gente y mercancía en el camino.
+## La geometría es la misma de las casas (postes de madera, techo de ichu), sin
+## modelos nuevos.
+func _build_market() -> void:
+	var market: Node3D = Node3D.new()
+	market.name = "Market"
+	add_child(market)
+	_add_stall(market, 0, Vector3(-8.5, 0.0, 4.0), 0.35)
+	_add_stall(market, 1, Vector3(8.5, 0.0, 4.0), -0.35)
+	_add_model_prop(market, "MarketFirewood", MODEL_PROP_FIREWOOD, Vector3(-6.4, 0.0, 5.8), 0.9, 1.0)
+	_add_model_prop(market, "MarketJar", MODEL_PROP_JAR, Vector3(6.4, 0.0, 5.6), 0.2, 1.1)
+
+
+## Puesto de trueque: cuatro postes, techo de ichu y un mostrador con cántaros.
+func _add_stall(parent: Node3D, index: int, at: Vector3, yaw: float) -> Node3D:
+	var stall: Node3D = Node3D.new()
+	stall.name = "Stall%d" % index
+	stall.position = at
+	stall.rotation.y = yaw
+	parent.add_child(stall)
+	var wood: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.WOOD, Color(0.46, 0.34, 0.22))
+	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.THATCH, THATCH_TINT)
+	for post: int in range(4):
+		var x: float = -0.85 if post % 2 == 0 else 0.85
+		var z: float = -0.55 if post < 2 else 0.55
+		_add_block(stall, "Post%d" % post, Vector3(x, 1.0, z), Vector3(0.12, 2.0, 0.12), wood, false)
+	# Techo a dos aguas y respaldo de ichu: sin ellos el puesto parece una mesa.
+	var roof_front: Node3D = _add_block(
+		stall, "RoofFront", Vector3(0.0, 2.06, 0.45), Vector3(2.5, 0.12, 1.05), thatch, false)
+	roof_front.rotation_degrees.x = 10.0
+	var roof_back: Node3D = _add_block(
+		stall, "RoofBack", Vector3(0.0, 2.06, -0.45), Vector3(2.5, 0.12, 1.05), thatch, false)
+	roof_back.rotation_degrees.x = -10.0
+	_add_block(stall, "BackPanel", Vector3(0.0, 1.15, -0.55), Vector3(2.2, 1.5, 0.08), thatch, false)
+	_add_block(stall, "Counter", Vector3(0.0, 0.68, 0.15), Vector3(1.9, 0.14, 0.9), wood, true)
+	_add_model_prop(stall, "Jar0", MODEL_PROP_JAR, Vector3(-0.5, 0.75, 0.15), 0.4, 0.85)
+	_add_model_prop(stall, "Jar1", MODEL_PROP_JAR, Vector3(0.45, 0.75, 0.1), -0.3, 0.75)
+	return stall
 
 
 ## Altar y cántaros del santuario: el recinto se lee como lugar de ofrenda y no

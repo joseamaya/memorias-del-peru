@@ -24,6 +24,7 @@ func _go() -> void:
 	await create_timer(2.5).timeout
 	await _shot(player, "04_defensa", Vector3(0.0, 0.15, 6.0), Vector3(0.0, 1.0, -4.0))
 	await _shot(player, "05_muralla", Vector3(0.0, 0.15, 40.0), Vector3(0.0, 1.2, 30.0))
+	await _shot(player, "06_mercado", Vector3(-4.0, 0.15, 9.0), Vector3(-8.5, 1.1, 4.0))
 	print("CIUDAD_VESTIDA_OK")
 	quit(0)
 

@@ -49,7 +49,8 @@ func test_ciudad_scene_starts() -> bool:
 
 
 ## La ciudad de 1438 tiene terreno, santuario, catorce casas con modelo,
-## muro de pirca, terrazas y una multitud con modelos propios que no interactúa.
+## muro de pirca, terrazas, dos puestos de trueque y una multitud con modelos
+## propios que no interactúa.
 func test_ciudad_art() -> bool:
 	var ciudad: Node = _spawn()
 	if ciudad == null:
@@ -81,6 +82,9 @@ func test_ciudad_art() -> bool:
 	ok = ok and ciudad.get_node_or_null("Gate/Lintel") != null
 	ok = ok and ciudad.get_node_or_null("WallCaps/NorthCap") != null
 	ok = ok and ciudad.get_node_or_null("PlazaFurniture/Bench0") != null
+	# Dos puestos de trueque dan punto focal y escala a la plaza.
+	ok = ok and ciudad.get_node_or_null("Market/Stall0/RoofFront") != null
+	ok = ok and ciudad.get_node_or_null("Market/Stall1/Counter") != null
 	ok = ok and ciudad.get_node_or_null("SanctuaryProps/Altar") != null
 	ok = ok and ciudad.get_node_or_null("Vegetation/Ichu0") != null
 	ciudad.free()
