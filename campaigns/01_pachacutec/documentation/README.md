@@ -38,13 +38,14 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 | Documento | Estado |
 |---|---|
-| [registro_historico.md](registro_historico.md) | Completo para el slice: 19 fichas verificadas (7 sobre la comprobación del agente); PCH-014 fuera del slice |
-| [alcance_vertical_slice.md](alcance_vertical_slice.md) | Referencia del acto I (mapa, assets y textos); el modelo de museo queda superado por ADR-0038 |
-| [biblia_campana.md](biblia_campana.md) | **Aprobada (v1.0)** — diseño de los tres actos y del núcleo RPG (ADR-0038, ADR-0039) |
+| [registro_historico.md](registro_historico.md) | Completo: 29 fichas verificadas; PCH-025 (armadura acolchada) queda pendiente porque el elemento no está en el juego |
+| [alcance_vertical_slice.md](alcance_vertical_slice.md) | Referencia del acto I (mapa, assets y textos); el modelo de museo queda superado por la campaña de tres actos |
+| [biblia_campana.md](biblia_campana.md) | **Aprobada (v1.0)** — diseño de los tres actos y del núcleo RPG |
 | Guion y personajes | En el alcance v2 §2, §5 y §6.4 |
 | [guion_facilitador.md](guion_facilitador.md) | Listo para el piloto — sesiones de prueba |
 | [plantilla_sesion.md](plantilla_sesion.md) | Plantilla de registro de cada sesión |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
+| [validacion_arco.md](validacion_arco.md) | **Pendiente de pasada** — protocolo de la validación de autor del arco completo: marcas por acto, cuestionario y umbrales |
 
 ## 6. Notas de producción (Fase 2)
 
