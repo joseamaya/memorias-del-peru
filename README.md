@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 7 — Actos II y III en gris (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. La Fase 6 cerró con el acto I jugable: cuatro encargos, diálogo, diario y mensajero al tercero; los nueve textos viven en la «Memoria». Los tres actos están conectados en gris: llacta → paso → Cusco → título. El acto II tiene campamento, emboscada y decisiones; el acto III, reclutamiento, defensa y epílogo. Pendiente: sigilo, distracción, selector de acto y arte. |
+| Estado | **Fase 7 — Actos II y III en gris (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. La Fase 6 cerró con el acto I jugable: cuatro encargos, diálogo, diario y mensajero al tercero; los nueve textos viven en la «Memoria». Los tres actos están conectados en gris: llacta → paso → Cusco → título. Los personajes usan el **maniquí UAL1** (Quaternius, CC0) como prototipo visual; el realismo y el paisaje quedan para la Fase 8. Pendiente: validar el acto I con maniquíes, arte y audio. |
 
 ## Requisitos
 

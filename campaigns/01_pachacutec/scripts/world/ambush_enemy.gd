@@ -15,22 +15,17 @@ var character: CharacterState = null
 var brain: EnemyCombatant = null
 
 var _resolved: bool = false
+var _visual: MannequinVisual = null
+var _current_clip: StringName = &""
 
 
 func _ready() -> void:
 	collision_layer = 8
 	collision_mask = 1
-	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	var capsule: CapsuleMesh = CapsuleMesh.new()
-	capsule.radius = 0.35
-	capsule.height = 1.75
-	mesh_instance.mesh = capsule
-	mesh_instance.position = Vector3(0.0, 0.875, 0.0)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = Color(0.55, 0.28, 0.22, 1.0)
-	material.roughness = 1.0
-	mesh_instance.material_override = material
-	add_child(mesh_instance)
+	_visual = MannequinVisual.new()
+	_visual.name = "Visual"
+	_visual.tint = Color(0.55, 0.28, 0.22, 1.0)
+	add_child(_visual)
 	var shape: CollisionShape3D = CollisionShape3D.new()
 	var capsule_shape: CapsuleShape3D = CapsuleShape3D.new()
 	capsule_shape.radius = 0.35
@@ -72,8 +67,10 @@ func _physics_process(delta: float) -> void:
 	var intent: EnemyCombatant.Intent = brain.think(delta, distance, true)
 	match intent:
 		EnemyCombatant.Intent.APPROACH:
+			_play_visual(&"Walk")
 			_move_towards(player.global_position)
 		EnemyCombatant.Intent.FLEE:
+			_play_visual(&"Walk")
 			var away: Vector3 = global_position + (global_position - player.global_position).normalized() * 10.0
 			_move_towards(away)
 			if distance > 30.0:
@@ -81,7 +78,10 @@ func _physics_process(delta: float) -> void:
 		EnemyCombatant.Intent.ATTACK:
 			var damage: float = brain.attack(1.0)
 			if damage > 0.0:
+				_play_visual(&"Sword_Attack")
 				paso.call("apply_player_damage", damage)
+		EnemyCombatant.Intent.IDLE:
+			_play_visual(&"Idle")
 
 
 ## Aplica un golpe del jugador. Al perder la moral, el cerebro ordena huir.
@@ -89,6 +89,7 @@ func take_hit(amount: float) -> void:
 	if _resolved or brain == null:
 		return
 	brain.take_damage(amount, MORALE_LOSS)
+	_play_visual(&"Hit_Chest")
 	if not character.is_alive():
 		_resolve()
 
@@ -101,6 +102,13 @@ func is_resolved() -> bool:
 ## Indica si sigue en pie y en el combate.
 func is_alive() -> bool:
 	return not _resolved and character.is_alive() and not brain.is_fleeing()
+
+
+func _play_visual(clip: StringName) -> void:
+	if _visual == null or _current_clip == clip:
+		return
+	_current_clip = clip
+	_visual.play(clip)
 
 
 func _move_towards(target: Vector3) -> void:

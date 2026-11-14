@@ -358,6 +358,7 @@ automatizada y el arte.
 
 ### Entregables
 
+- **Pase de maniquí** (UAL1, CC0) para todos los personajes: prototipo visual con animaciones, antes del realismo.
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
 - Equilibrio de combate, economía de objetos y duración.
 - Rendimiento del Cusco con multitud y batalla.
@@ -368,7 +369,7 @@ automatizada y el arte.
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
 - [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante.
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 139 pruebas en verde.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 147 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.

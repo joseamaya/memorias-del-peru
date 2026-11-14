@@ -47,6 +47,18 @@ const RUN_STRIDE_LENGTH: float = 1.1
 const EXTRAS_META: StringName = &"extras"
 const BLEND_SECONDS: float = 0.3
 const LOOPED_ANIMATIONS: Array[StringName] = [&"idle", &"idle_b", &"walk", &"run", &"talk", &"tired", &"weave", &"work"]
+## Correspondencia entre los nombres lógicos del juego y los clips del maniquí
+## UAL1 (CC0). Los modelos propios usan sus propios nombres.
+const MANNEQUIN_CLIPS: Dictionary[StringName, StringName] = {
+	&"idle": &"Idle",
+	&"idle_b": &"Idle",
+	&"walk": &"Walk",
+	&"run": &"Jog_Fwd",
+	&"talk": &"Idle_Talking",
+	&"tired": &"Crouch_Idle",
+	&"weave": &"Fixing_Kneeling",
+	&"work": &"Fixing_Kneeling",
+}
 ## Variantes del reposo «idle»: se alternan cada IDLE_SWITCH_MIN–MAX segundos.
 const IDLE_VARIANTS: Array[StringName] = [&"idle", &"idle_b"]
 const IDLE_SWITCH_MIN: float = 6.0
@@ -111,6 +123,8 @@ var _run_cycle_speed: float = RUN_CYCLE_SPEED
 var _walk_stride: float = STRIDE_LENGTH
 var _run_stride: float = RUN_STRIDE_LENGTH
 var _beats: Dictionary[StringName, float] = ANIMATION_BEATS.duplicate()
+var _mannequin: bool = false
+var _current_logical: StringName = &""
 
 
 func _ready() -> void:
@@ -131,8 +145,12 @@ func set_model(model: Node3D) -> void:
 	_animation_player = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if _animation_player == null:
 		return
-	_prepare_loops(_animation_player)
+	_mannequin = _animation_player.has_animation(&"Idle")
+	_prepare_loops(_animation_player, _mannequin)
 	_read_rhythm(model)
+	if _mannequin:
+		_tint_model(model)
+		_set_mannequin_beats()
 	_idle_rng.seed = hash(String(name))
 	_idle_switch_left = _idle_rng.randf_range(IDLE_SWITCH_MIN, IDLE_SWITCH_MAX)
 	if _idle_tween != null and _idle_tween.is_valid():
@@ -159,6 +177,8 @@ func is_animated() -> bool:
 func current_animation() -> StringName:
 	if _animation_player == null:
 		return &""
+	if _mannequin and _current_logical != &"":
+		return _current_logical
 	return StringName(_animation_player.current_animation)
 
 
@@ -312,7 +332,7 @@ func _process(delta: float) -> void:
 ## Quieto en el reposo general, cambia de cuando en cuando entre sus
 ## variantes con una mezcla lenta.
 func _vary_idle(delta: float) -> void:
-	if IDLE_VARIANTS.size() < 2:
+	if _mannequin or IDLE_VARIANTS.size() < 2:
 		return
 	if _animation_player == null or moving or _perform_left > 0.0 or idle_animation != &"idle":
 		return
@@ -346,6 +366,39 @@ func set_footsteps(streams: Array[AudioStream]) -> void:
 		stepped.connect(_play_step)
 
 
+func _tint_model(model: Node3D) -> void:
+	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
+	if model is MeshInstance3D:
+		meshes.append(model)
+	for node: Node in meshes:
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		if mesh_instance == null:
+			continue
+		var material: StandardMaterial3D = StandardMaterial3D.new()
+		# El maniquí no lleva ropa: se tiñe de arcilla neutra para que se lea
+		# como prototipo y no como un cuerpo desnudo.
+		material.albedo_color = body_color.lerp(Color(0.62, 0.60, 0.55, 1.0), 0.7)
+		material.roughness = 1.0
+		mesh_instance.material_override = material
+
+
+static func _clip_for(animation: StringName) -> StringName:
+	return MANNEQUIN_CLIPS.get(animation, animation)
+
+
+## El maniquí no trae los extras de ritmo de los modelos propios: el golpe de
+## trabajo se coloca a mitad del ciclo de `Fixing_Kneeling`.
+func _set_mannequin_beats() -> void:
+	var clip: StringName = &"Fixing_Kneeling"
+	if not _animation_player.has_animation(clip):
+		return
+	var length: float = _animation_player.get_animation(clip).length
+	if length <= 0.0:
+		return
+	_beats[&"weave"] = length * 0.5
+	_beats[&"work"] = length * 0.5
+
+
 func _play_step() -> void:
 	if _steps_player == null or not _steps_player.is_inside_tree():
 		return
@@ -362,7 +415,7 @@ func _check_beat() -> void:
 	if _animation_player == null or not _animation_player.is_playing():
 		_last_position = -1.0
 		return
-	var animation: StringName = StringName(_animation_player.current_animation)
+	var animation: StringName = current_animation()
 	if not _beats.has(animation):
 		_last_position = -1.0
 		return
@@ -438,18 +491,21 @@ func _locomotion_rate(cycle: float) -> float:
 func _play(animation: StringName, speed: float = 1.0) -> void:
 	if _animation_player == null:
 		return
-	if not _animation_player.has_animation(animation):
-		animation = &"idle"
+	var clip: StringName = _clip_for(animation) if _mannequin else animation
+	if not _animation_player.has_animation(clip):
+		clip = _clip_for(&"idle") if _mannequin else &"idle"
 	# Si ya suena, `play` la continúa y solo cambia la velocidad. La escala
 	# general solo la usa la locomoción (_update_locomotion_rate).
 	_animation_player.speed_scale = 1.0
-	_animation_player.play(animation, BLEND_SECONDS, speed)
+	_animation_player.play(clip, BLEND_SECONDS, speed)
+	_current_logical = animation
 
 
 ## El glTF no guarda si una animación se repite, y el exportador añade un
 ## fotograma igual al primero: se marca el bucle y se recorta ese fotograma.
-static func _prepare_loops(player: AnimationPlayer) -> void:
-	for animation_name: StringName in LOOPED_ANIMATIONS:
+static func _prepare_loops(player: AnimationPlayer, mannequin: bool = false) -> void:
+	for logical_name: StringName in LOOPED_ANIMATIONS:
+		var animation_name: StringName = _clip_for(logical_name) if mannequin else logical_name
 		if not player.has_animation(animation_name):
 			continue
 		var animation: Animation = player.get_animation(animation_name)

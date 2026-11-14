@@ -288,17 +288,11 @@ func _setup_camp() -> void:
 
 
 func _add_camp_npc(at: Vector3, color: Color) -> void:
-	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	var capsule: CapsuleMesh = CapsuleMesh.new()
-	capsule.radius = 0.35
-	capsule.height = 1.75
-	mesh_instance.mesh = capsule
-	mesh_instance.position = at + Vector3(0.0, 0.875, 0.0)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = color
-	material.roughness = 1.0
-	mesh_instance.material_override = material
-	add_child(mesh_instance)
+	var visual: MannequinVisual = MannequinVisual.new()
+	visual.name = "CampVisual"
+	visual.tint = color
+	visual.position = at
+	add_child(visual)
 
 
 func _on_camp_requested() -> void:

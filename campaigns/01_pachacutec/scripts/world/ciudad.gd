@@ -368,34 +368,22 @@ func _restore_allies() -> void:
 
 
 func _add_visual_npc(at: Vector3, color: Color) -> void:
-	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	var capsule: CapsuleMesh = CapsuleMesh.new()
-	capsule.radius = 0.35
-	capsule.height = 1.75
-	mesh_instance.mesh = capsule
-	mesh_instance.position = at + Vector3(0.0, 0.875, 0.0)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = color
-	material.roughness = 1.0
-	mesh_instance.material_override = material
-	add_child(mesh_instance)
+	var visual: MannequinVisual = MannequinVisual.new()
+	visual.name = "Visual"
+	visual.tint = color
+	visual.position = at
+	add_child(visual)
 
 
 func _add_ally_visual(index: int) -> void:
 	if _ally_visuals.has(index):
 		return
 	_ally_visuals[index] = true
-	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
-	var capsule: CapsuleMesh = CapsuleMesh.new()
-	capsule.radius = 0.35
-	capsule.height = 1.75
-	mesh_instance.mesh = capsule
-	mesh_instance.position = ALLY_POSITIONS[index] + Vector3(0.0, 0.875, 0.0)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = Color(0.35, 0.45, 0.55, 1.0)
-	material.roughness = 1.0
-	mesh_instance.material_override = material
-	add_child(mesh_instance)
+	var visual: MannequinVisual = MannequinVisual.new()
+	visual.name = "Ally%d" % index
+	visual.tint = Color(0.35, 0.45, 0.55, 1.0)
+	visual.position = ALLY_POSITIONS[index]
+	add_child(visual)
 
 
 func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
