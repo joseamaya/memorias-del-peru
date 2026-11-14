@@ -26,8 +26,7 @@ var intent: Intent = Intent.IDLE
 ##
 ## [param distance] es la distancia al objetivo; [param line_of_sight] indica si
 ## lo ve. El enemigo no ataca si está fuera del alcance del arma.
-func think(delta: float, distance: float, line_of_sight: bool) -> Intent:
-	advance(delta)
+func think(_delta: float, distance: float, line_of_sight: bool) -> Intent:
 	if is_down():
 		intent = Intent.IDLE
 		return intent

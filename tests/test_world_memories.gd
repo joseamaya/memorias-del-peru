@@ -50,6 +50,7 @@ func test_world_memories() -> bool:
 	ok = ok and journal.has(&"mem_quero")
 	var ofrenda: OfrendaPachamama = world.get_node_or_null("OfrendaPachamama") as OfrendaPachamama
 	if ofrenda != null:
+		ofrenda.audio_stream = null
 		ofrenda.interact(player)
 	ok = ok and journal.has(&"mem_ofrenda")
 	var tasks: Array[TaskPoint] = [

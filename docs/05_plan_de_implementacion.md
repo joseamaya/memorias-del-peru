@@ -333,13 +333,18 @@ aparte.
 
 - [ ] El arco completo se juega de principio a fin en gris.
 - [ ] La emboscada se puede resolver con honda, con sigilo o con distracción.
-- [ ] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo.
+- [x] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo. *(2026-11-13: `test_paso` y `paso_smoke`; la escena del paso en gris.)*
 - [ ] El herido, el maíz y el descanso cambian el acto III de forma comprobable.
 - [ ] Los aliados reclutados cambian la dificultad de la defensa.
 - [ ] La leyenda de los pururaucas se presenta como creencia, no como hecho, y no altera la batalla.
 - [ ] El selector de acto y los puntos de control funcionan.
 - [ ] Todas las fichas nuevas están verificadas.
 - [ ] Cero errores y advertencias; pruebas en verde.
+
+**Estado (2026-11-13).** El paso en gris y la emboscada están construidos y
+probados: sendero, arroyo, roquedales y refugio; cuatro exploradores con moral
+y huida; honda y escudo. Faltan el campamento, las decisiones del herido y el
+maíz, el Cusco y el arco completo.
 
 ---
 

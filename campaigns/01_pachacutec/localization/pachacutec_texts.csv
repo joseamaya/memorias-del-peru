@@ -96,3 +96,8 @@ PCH_DLG_FARMER_ASK,¿Qué se cultiva aquí?
 PCH_DLG_FARMER_TERRACE,"Maíz, papas y quinua en los andenes. La tierra se cuida: si el muro cede, se pierde la cosecha."
 PCH_DLG_CURACA_ASK,¿Qué es este lugar?
 PCH_DLG_CURACA_PLAZA,"Una llacta del valle. Aquí se trabaja, se reparte y se recuerda a los que vinieron antes."
+PCH_PASO_AMBUSH,El paso está cerrado. ¡Chancas!
+PCH_PASO_CLEAR,"El paso queda libre. El Cusco se ve al fondo."
+PCH_PASO_STATUS,Salud: %d · Enemigos: %d
+PCH_PASO_DEAD,Has caído. R para reintentar.
+PCH_PASO_END,Fin del acto II (gris) · R para repetir

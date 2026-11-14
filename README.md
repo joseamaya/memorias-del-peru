@@ -12,7 +12,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 7 — Actos II y III en gris (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. La Fase 6 cerró con el acto I jugable: cuatro encargos, diálogo, diario y mensajero al tercero; los nueve textos viven en la «Memoria». Pendiente: los actos II y III en gris, el combate en escena y el arte. |
+| Estado | **Fase 7 — Actos II y III en gris (en curso).** El modelo de museo queda superado ([ADR-0038](docs/adr/0038-campana-rpg.md)); la campaña pasa a tres actos ([ADR-0039](docs/adr/0039-tres-actos-y-gris.md)): llacta, paso y Cusco de 1438. La Fase 6 cerró con el acto I jugable: cuatro encargos, diálogo, diario y mensajero al tercero; los nueve textos viven en la «Memoria». El acto II ya tiene un paso en gris con la emboscada, la honda y la moral enemiga. Pendiente: el campamento, las decisiones, el Cusco y el arte. |
 
 ## Requisitos
 
@@ -38,6 +38,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 ```bash
 godot --path . -- --skip-intro --spawn=plaza
 godot --path . -- --profile=0      # Bajo, para medir rendimiento
+godot --path . res://campaigns/01_pachacutec/scenes/world/paso.tscn  # acto II en gris
 ```
 
 `--skip-intro` entra directo al mundo, `--spawn=spawn|plaza|mirador` elige el punto de aparición y `--profile=0..3` el perfil gráfico (0 Bajo, 1 Medio, 2 Alto, 3 Ultra; por defecto Medio).
