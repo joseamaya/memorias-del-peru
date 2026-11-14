@@ -143,7 +143,7 @@ PCH_CIUDAD_COUNTER,"Cusi Yupanqui dirige la contraofensiva. La plaza resiste."
 PCH_CIUDAD_EPILOGUE,"La defensa se sostiene. La tradición dice que Cusi Yupanqui tomó el nombre de Pachacútec."
 PCH_CIUDAD_EPILOGUE_WOUNDED,"El herido del paso vuelve a la llacta contigo."
 PCH_CIUDAD_EPILOGUE_MAIZE,"El maíz guardado alcanzó para la defensa."
-PCH_CIUDAD_END_TITLE,Fin de la campaña (gris)
+PCH_CIUDAD_END_TITLE,Fin de la campaña
 PCH_CIUDAD_END_HINT,R para volver al título · Esc para salir
 PCH_CIUDAD_STATUS,Salud: %d · Aliados: %d · Enemigos: %d
 PCH_CIUDAD_DEAD,Has caído. R para reintentar.

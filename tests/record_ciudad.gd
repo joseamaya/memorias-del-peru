@@ -56,6 +56,15 @@ func _start() -> void:
 	_player = _world.get_node("PlayerFPS") as CharacterBody3D
 	_head = _player.get_node("Head") as Node3D
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	# El acto III se graba solo, así que las decisiones del acto II se dan por
+	# tomadas: sin ellas los tres grupos rechazan unirse y la defensa queda
+	# vacía. Es el camino con aliados.
+	var state: CampaignStateService = root.get_node_or_null("CampaignState") as CampaignStateService
+	if state != null:
+		state.set_flag(&"descanso", 1)
+		state.set_flag(&"herido_salvado", 1)
+		state.set_flag(&"maiz_guardado", 1)
+		state.set_flag(&"scout_spared", 1)
 	# Solo para el vídeo: el jugador aguanta la defensa sin morir y con aliento
 	# de sobra; la honda del Cusco cuesta 10 por disparo y sin esto el guion se
 	# queda sin atacar.
