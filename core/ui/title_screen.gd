@@ -14,6 +14,10 @@ const TITLE_FONT_SIZE: int = 72
 const SUBTITLE_FONT_SIZE: int = 30
 const BUTTON_FONT_SIZE: int = 28
 const BUTTON_WIDTH: float = 280.0
+## Selector de acto para desarrollo: `--act=2` o `--act=3`.
+const ACT_ARG: String = "--act="
+const ACT_TWO_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/paso.tscn"
+const ACT_THREE_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/ciudad.tscn"
 
 var _campaign: CampaignInfo = null
 var _title_label: Label = null
@@ -62,6 +66,19 @@ func get_quit_button() -> Button:
 	return _quit_button
 
 
+## Escena de inicio: la de la campaña o la que pida `--act=2|3`.
+func get_start_scene() -> String:
+	for arg: String in OS.get_cmdline_user_args():
+		if not arg.begins_with(ACT_ARG):
+			continue
+		var act: String = arg.substr(ACT_ARG.length())
+		if act == "2":
+			return ACT_TWO_SCENE
+		if act == "3":
+			return ACT_THREE_SCENE
+	return _campaign.entry_scene if _campaign != null else ""
+
+
 ## Empieza la campaña configurada. Devuelve si se pudo pedir el cambio.
 func start_campaign() -> bool:
 	if _campaign == null or not _campaign.has_entry_scene():
@@ -70,7 +87,10 @@ func start_campaign() -> bool:
 	if manager != null:
 		manager.call("set_paused", false)
 	CampaignState.clear()
-	var changed: bool = get_tree().change_scene_to_file(_campaign.entry_scene) == OK
+	var scene: String = get_start_scene()
+	if scene.is_empty():
+		return false
+	var changed: bool = get_tree().change_scene_to_file(scene) == OK
 	if changed:
 		SessionLog.mark(&"campaign_start")
 	return changed

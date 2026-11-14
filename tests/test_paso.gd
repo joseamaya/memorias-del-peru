@@ -124,3 +124,47 @@ func test_paso_camp_rest() -> bool:
 	state.clear()
 	paso.free()
 	return ok
+
+
+func test_paso_alternatives() -> bool:
+	var state: CampaignStateService = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("CampaignState") as CampaignStateService
+	if state == null:
+		return false
+	state.clear()
+	# Distracción: dos exploradores se apartan.
+	var first: Node = _spawn()
+	if first == null:
+		return false
+	var player_one: PlayerFPS = first.get_node_or_null("PlayerFPS") as PlayerFPS
+	var distract: CampPoint = first.get_node_or_null("DistractPoint") as CampPoint
+	if player_one == null or distract == null:
+		first.free()
+		return false
+	distract.interact(player_one)
+	first.call("_start_ambush")
+	var ok: bool = first.call("alive_enemies") == 2
+	first.free()
+	# Sigilo: se cruza sin combatir y solo queda la decisión del maíz.
+	var second: Node = _spawn()
+	if second == null:
+		state.clear()
+		return false
+	var player_two: PlayerFPS = second.get_node_or_null("PlayerFPS") as PlayerFPS
+	var hud: PlayerHud = second.get_node_or_null("UILayer/HUD") as PlayerHud
+	var sneak: CampPoint = second.get_node_or_null("SneakPoint") as CampPoint
+	if player_two == null or hud == null or sneak == null:
+		second.free()
+		state.clear()
+		return false
+	sneak.interact(player_two)
+	second.call("_start_ambush")
+	ok = ok and hud.is_dialogue_open()
+	ok = ok and second.call("alive_enemies") == 0
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	second.call("_on_dialogue_advanced")
+	ok = ok and second.call("is_completed") == true
+	ok = ok and state.has_flag(&"maiz_guardado")
+	ok = ok and not state.has_flag(&"herido_salvado")
+	second.free()
+	state.clear()
+	return ok

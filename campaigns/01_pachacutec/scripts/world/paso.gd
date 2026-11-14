@@ -20,6 +20,8 @@ const ENEMY_POSITIONS: Array[Vector3] = [
 const PLAYER_DAMAGE_BLOCKED: float = 0.3
 const CAMP_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/camp_point.tscn"
 const CAMP_POSITION: Vector3 = Vector3(-4.0, 0.9, 18.0)
+const DISTRACT_POSITION: Vector3 = Vector3(12.0, 0.9, 6.0)
+const SNEAK_POSITION: Vector3 = Vector3(-14.0, 0.9, 6.0)
 
 @onready var player: PlayerFPS = $PlayerFPS
 @onready var hud: PlayerHud = $UILayer/HUD
@@ -35,6 +37,10 @@ var dialogue: DialogueRunner = null
 var _camp_graph: DialogueGraph = null
 var _aftermath_graph: DialogueGraph = null
 var _aftermath_pending: bool = false
+var _distracted: bool = false
+var _sneak: bool = false
+var _distraction_done: bool = false
+var _sneak_done: bool = false
 var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 
@@ -54,6 +60,7 @@ func _ready() -> void:
 	_setup_player_combat()
 	_setup_inventory_and_dialogue()
 	_setup_camp()
+	_setup_alternatives()
 	_setup_enemies()
 	_setup_trigger()
 	hint_label.text = ""
@@ -155,6 +162,15 @@ func _start_ambush() -> void:
 	if _ambush_started or _completed or _dead:
 		return
 	_ambush_started = true
+	if _sneak:
+		for enemy: AmbushEnemy in _enemies:
+			enemy.take_hit(999.0)
+		hud.show_subtitle(tr("PCH_PASO_SNEAK"), 0.0)
+		_finish_ambush()
+		return
+	if _distracted:
+		for index: int in range(2, _enemies.size()):
+			_enemies[index].take_hit(999.0)
 	hud.show_subtitle(tr("PCH_PASO_AMBUSH"), 0.0)
 	_update_status()
 
@@ -164,7 +180,8 @@ func _finish_ambush() -> void:
 		return
 	_aftermath_pending = true
 	hud.show_subtitle(tr("PCH_PASO_CLEAR"), 0.0)
-	if dialogue != null and _aftermath_graph != null and dialogue.start(_aftermath_graph):
+	var entry: StringName = &"maize" if _sneak else &"start"
+	if dialogue != null and _aftermath_graph != null and dialogue.start(_aftermath_graph, entry):
 		player.process_mode = Node.PROCESS_MODE_DISABLED
 	else:
 		_aftermath_pending = false
@@ -428,6 +445,45 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 	CampaignState.set_flag(key, value)
 	if key == &"descanso" and value != 0 and character != null:
 		character.heal(25.0)
+
+
+func _setup_alternatives() -> void:
+	_add_alternative("DistractPoint", DISTRACT_POSITION, &"PCH_PASO_TALK_DISTRACT", _on_distract_requested)
+	_add_alternative("SneakPoint", SNEAK_POSITION, &"PCH_PASO_TALK_SNEAK", _on_sneak_requested)
+
+
+func _add_alternative(node_name: String, at: Vector3, prompt_key: StringName, handler: Callable) -> void:
+	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+	var point: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if point == null or body == null:
+		instance.free()
+		return
+	point.name = node_name
+	point.prompt_key = prompt_key
+	body.position = at
+	add_child(point)
+	point.requested.connect(handler)
+
+
+func _on_distract_requested() -> void:
+	if _distraction_done or _ambush_started or _completed or _dead:
+		return
+	if dialogue != null and dialogue.is_active():
+		return
+	_distraction_done = true
+	_distracted = true
+	hud.show_subtitle(tr("PCH_PASO_DISTRACT"), 0.0)
+
+
+func _on_sneak_requested() -> void:
+	if _sneak_done or _ambush_started or _completed or _dead:
+		return
+	if dialogue != null and dialogue.is_active():
+		return
+	_sneak_done = true
+	_sneak = true
+	hud.show_subtitle(tr("PCH_PASO_SNEAK"), 0.0)
 
 
 func _setup_enemies() -> void:

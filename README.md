@@ -40,6 +40,8 @@ godot --path . -- --skip-intro --spawn=plaza
 godot --path . -- --profile=0      # Bajo, para medir rendimiento
 godot --path . res://campaigns/01_pachacutec/scenes/world/paso.tscn    # acto II en gris
 godot --path . res://campaigns/01_pachacutec/scenes/world/ciudad.tscn  # acto III en gris
+godot --path . -- --act=2   # empezar en el acto II
+godot --path . -- --act=3   # empezar en el acto III
 ```
 
 `--skip-intro` entra directo al mundo, `--spawn=spawn|plaza|mirador` elige el punto de aparición y `--profile=0..3` el perfil gráfico (0 Bajo, 1 Medio, 2 Alto, 3 Ultra; por defecto Medio).

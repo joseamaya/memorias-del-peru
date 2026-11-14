@@ -332,12 +332,12 @@ aparte.
 ### Criterios de aceptación
 
 - [ ] El arco completo se juega de principio a fin en gris. *(Parcial: los tres actos están conectados —acto I → paso → Cusco → título— y cada uno tiene prueba; falta la partida completa automatizada.)*
-- [ ] La emboscada se puede resolver con honda, con sigilo o con distracción.
+- [x] La emboscada se puede resolver con honda, con sigilo o con distracción. *(2026-11-13: `test_paso_alternatives`; la distracción deja dos enemigos y el sigilo cruza sin combate.)*
 - [x] El combate en escena permite acertar con la honda, bloquear con el escudo y ver huir a un enemigo. *(2026-11-13: `test_paso` y `paso_smoke`; la escena del paso en gris.)*
 - [x] El herido, el maíz y el descanso cambian el acto III de forma comprobable. *(2026-11-13: `test_ciudad` recluta según `maiz_guardado`, `herido_salvado` y `coca_compartida`; el epílogo cambia con las banderas.)*
 - [x] Los aliados reclutados cambian la dificultad de la defensa. *(2026-11-13: la defensa lanza `4 − aliados` enemigos; `test_ciudad` con tres aliados deja uno.)*
 - [ ] La leyenda de los pururaucas se presenta como creencia, no como hecho, y no altera la batalla.
-- [ ] El selector de acto y los puntos de control funcionan.
+- [x] El selector de acto y los puntos de control funcionan. *(2026-11-13: `--act=2|3` en el título; el punto de control es el inicio del acto y morir recarga la escena. No hay punto intermedio.)*
 - [ ] Todas las fichas nuevas están verificadas.
 - [ ] Cero errores y advertencias; pruebas en verde.
 

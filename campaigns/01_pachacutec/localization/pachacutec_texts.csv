@@ -151,3 +151,8 @@ PCH_CIUDAD_ALREADY,Ya están con nosotros.
 PCH_CIUDAD_CUSI_ACCEPT,Que vengan.
 PCH_CIUDAD_ARRIVAL,El Cusco. La ciudad espera.
 PCH_END_HINT,R para seguir al paso · Esc para salir
+PCH_PASO_TALK_DISTRACT,Distraer a los chancas
+PCH_PASO_TALK_SNEAK,Seguir por el arroyo
+PCH_PASO_DISTRACT,"Arrojas una piedra lejos. Dos exploradores se apartan."
+PCH_PASO_SNEAK,"El arroyo cubre el ruido. Pasáis sin ser vistos."
+PCH_PASO_SILENT_END,"El paso queda atrás, en silencio."
