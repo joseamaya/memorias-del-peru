@@ -1,10 +1,10 @@
 class_name AmbushEnemy
 extends CharacterBody3D
-## Explorador chanca del acto II en gris.
+## Explorador chanca del acto II.
 ##
-## Cuerpo simple con cápsula, sin modelo ni animación: la versión gris prueba
-## distancia, moral y huida. La lógica de combate vive en [EnemyCombatant]; este
-## nodo la mueve y aplica el daño al jugador.
+## Usa un modelo propio del proyecto teñido como chanca y una porra simple. La
+## lógica de combate vive en [EnemyCombatant]; este nodo la mueve, orienta al
+## enemigo hacia el jugador y aplica el daño.
 
 const SPEED: float = 2.4
 const MORALE_LOSS: float = 15.0
@@ -15,16 +15,18 @@ var character: CharacterState = null
 var brain: EnemyCombatant = null
 
 var _resolved: bool = false
-var _visual: MannequinVisual = null
+var _visual: RealisticCharacterVisual = null
 var _current_clip: StringName = &""
 
 
 func _ready() -> void:
 	collision_layer = 8
 	collision_mask = 1
-	_visual = MannequinVisual.new()
+	_visual = RealisticCharacterVisual.new()
 	_visual.name = "Visual"
-	_visual.tint = Color(0.55, 0.28, 0.22, 1.0)
+	_visual.model_file = "pch_npc_commoner.glb"
+	_visual.tint = Color(0.64, 0.44, 0.34, 1.0)
+	_visual.with_porra = true
 	add_child(_visual)
 	var shape: CollisionShape3D = CollisionShape3D.new()
 	var capsule_shape: CapsuleShape3D = CapsuleShape3D.new()
@@ -65,6 +67,8 @@ func _physics_process(delta: float) -> void:
 		return
 	var distance: float = global_position.distance_to(player.global_position)
 	var intent: EnemyCombatant.Intent = brain.think(delta, distance, true)
+	if intent != EnemyCombatant.Intent.IDLE:
+		_face(player.global_position)
 	match intent:
 		EnemyCombatant.Intent.APPROACH:
 			_play_visual(&"Walk")
@@ -109,6 +113,18 @@ func _play_visual(clip: StringName) -> void:
 		return
 	_current_clip = clip
 	_visual.play(clip)
+
+
+## Gira el cuerpo hacia el objetivo; el modelo mira hacia -Z.
+func _face(target: Vector3) -> void:
+	var flat: Vector3 = Vector3(target.x, global_position.y, target.z)
+	if flat.distance_to(global_position) > 0.05:
+		look_at(flat, Vector3.UP)
+
+
+## Visual del enemigo, para las pruebas.
+func visual() -> RealisticCharacterVisual:
+	return _visual
 
 
 func _move_towards(target: Vector3) -> void:

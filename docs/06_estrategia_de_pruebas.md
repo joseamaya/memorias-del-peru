@@ -173,6 +173,8 @@ La partida del arco completo (tres actos) se añade en la Fase 7 y sustituye al
 | `test_npc_rig` | Los nueve personajes del acto I usan sus modelos propios (MakeHuman/Rocketbox): esqueleto, clips base en bucle, ropa y textil, mirada al jugador, tejedora arrodillada, golpe de trabajo del agricultor y mensajero que corre y vuelve al reposo |
 | `test_ciudad` | El Cusco carga, recluta a los tres grupos según las banderas del acto II, Cusi inicia la defensa con `4 − aliados` enemigos y el epílogo muestra la tarjeta de fin |
 | `test_ciudad_vespera_is_belief` | La víspera opcional cuenta la leyenda de los pururaucas como creencia, deja `mem_pururaucas` con sello N y fuente PCH-031 en la «Memoria», no cambia aliados ni enemigos y no duplica la entrada |
+| `test_paso_landscape` | El paso tiene terreno con relieve y colisión de malla, paredes más altas que el corredor, arroyo por debajo de la orilla, refugio con tres muros y techo, ichu y queñua con viento, cuatro límites y la aparición sobre el terreno; la caja plana del gris ya no existe |
+| `test_paso_actors_use_models` | Los cuatro exploradores usan un modelo propio animado con porra y quedan sobre el terreno; el campamento tiene tres modelos propios distintos |
 | `arc_playthrough` | Partida continua automatizada: acto I → paso → Cusco → título con las transiciones reales y las banderas de `CampaignState`; exige `ARCO_OK` |
 
 Prueba de humo con tiempo real acelerado (no forma parte del ejecutor):
@@ -199,6 +201,16 @@ Recorre el acto I con tres encargos y el mensajero, cruza al paso con descanso,
 combate, herido, maíz y perdón, recluta a los tres aliados en el Cusco, sostiene
 la defensa y llega al título. Exige `ARCO_OK` y que las banderas sigan vivas.
 
+Medición del acto II con el paisaje nuevo (tampoco forma parte del ejecutor):
+
+```bash
+godot --path . --script res://tests/measure_paso_performance.gd
+```
+
+Gira la vista sobre el paso durante 8 s por perfil, sin vsync y con
+`Engine.max_fps = 0`; imprime FPS medio, p1, frame medio y p99, draw calls y
+memoria de vídeo para Bajo y Medio.
+
 El jugador recorre la plaza, el oeste, las terrazas y el mirador, bebe del quero, deja la ofrenda, habla con la tejedora, espera al mensajero y toca el pututu en la llamada. Exige `DEMO_OK`: el evento llega a `DONE`, el quero, la ofrenda y la tejedora responden y el pututu lo toca el jugador. Es la prueba de extremo a extremo del vertical slice: entrada, interacción, evento y cierre ordenado.
 
 La misma partida con `--session PIL-TEST` comprueba el registro de las sesiones de prueba (alcance v4.16): deja `user://sesiones/PIL-TEST.log` con las marcas de introducción, llegada, pututu, cierre y tarjeta final.
@@ -213,6 +225,12 @@ Capturas fijas para comparar materiales (tampoco forma parte del ejecutor):
 
 ```bash
 godot --path . --resolution 1280x720 --script res://tests/capture_views.gd
+```
+
+Capturas fijas del paso para comparar el paisaje del acto II:
+
+```bash
+godot --path . --resolution 1280x720 --script res://tests/capture_paso_art.gd
 ```
 
 Carga el mundo sin HUD, congela el evento y guarda cinco vistas en `user://capturas/`: aparición, suelo a media distancia, muro de pirca a 1,5 m, casa a 6 m y horizonte desde el mirador. Sirve para evaluar un cambio de materiales contra el mismo encuadre, no para probar lógica.

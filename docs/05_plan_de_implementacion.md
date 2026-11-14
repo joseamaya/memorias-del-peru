@@ -1,7 +1,7 @@
 # 05 — Plan de implementación
 
 **Fase activa:** Fase 8 — Arte, audio y cierre.
-**Siguiente:** realismo del acto I (hecho); paisaje y arte de los actos II–III.
+**Siguiente:** arte del acto III, audio y validación de autor.
 
 Reglas:
 
@@ -361,8 +361,9 @@ autor del arco completo corresponde a la Fase 8.
 
 ### Entregables
 
-- **Realismo del acto I:** los nueve personajes recuperan sus modelos propios (MakeHuman/Rocketbox) con ropa, cabezas y mantos. El maniquí UAL1 queda para los actos II–III hasta su pase de arte.
-- **Pase de maniquí** (UAL1, CC0): prototipo visual con animaciones para los actos II–III; se retira al llegar su arte.
+- **Realismo del acto I:** los nueve personajes recuperan sus modelos propios (MakeHuman/Rocketbox) con ropa, cabezas y mantos.
+- **Paisaje y actores del acto II:** desfiladero, arroyo, refugio, vegetación y cielo; exploradores chancas y comitiva con modelos propios.
+- **Pase de maniquí** (UAL1, CC0): queda solo para el acto III hasta su pase de arte.
 - Arte y audio de los actos II y III: paso, Cusco, personajes nuevos y batalla.
 - Equilibrio de combate, economía de objetos y duración.
 - Rendimiento del Cusco con multitud y batalla.
@@ -372,8 +373,18 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [ ] El arco completo dura 40–50 min y no tiene bloqueos.
-- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante.
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 148 pruebas en verde.)*
+- [ ] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(Parcial: el acto II mide 60,5 FPS de media en Medio y 128,6 en Bajo con carga 1,3; con el equipo cargado baja a ~58 en Medio. El objetivo vinculante de Bajo se cumple; el de Medio queda en el límite y debe repetirse en reposo. Falta el Cusco con multitud.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-13: 150 pruebas en verde.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
 - [ ] Todo el contenido histórico con ficha verificada.
 - [ ] La documentación refleja lo construido.
+
+**Estado (2026-11-13).** El acto I recupera sus modelos propios. El acto II deja
+el gris: terreno con desfiladero y cresta, sendero y campamento pintados sobre
+el terreno, arroyo encajado con agua, roquedales, refugio de pirca seca con
+techo de lajas, ichu y queñua con viento, cielo físico con nubes y control de
+calidad gráfica. Los exploradores chancas usan un modelo propio teñido y una
+porra; la comitiva del campamento usa tres modelos propios distintos. La
+medición provisional del paso da 60,5 FPS de media en Medio y 128,6 en Bajo con
+carga 1,3; falta repetirla en reposo y medir el Cusco. Pendiente: arte del acto
+III, audio de ambos actos y validación de autor del arco completo.

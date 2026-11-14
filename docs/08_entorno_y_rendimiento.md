@@ -376,3 +376,29 @@ El juego pasa a arrancar en **Medio** ([bitácora](bitacora.md)): el perfil Bajo
 - El perfil Medio supera los 60 FPS de media en la GPU integrada de referencia: el objetivo recomendado de docs/01 §5 se cumple también ahí, sin esperar a la referencia con GPU dedicada. Es la mediana de tres ejecuciones; una de ellas, con el equipo cargado, dio 53,1 FPS y 299 draw calls, así que las cifras se leen como orden de magnitud.
 - El jugador termina apoyado en el terreno en ambos perfiles.
 - La medición se hizo con la carga del sistema habitual del equipo; las cifras se leen como orden de magnitud.
+
+
+### Medición del paso con paisaje (Fase 8, provisional, 2026-11-13)
+
+Comando: `godot --path . --script res://tests/measure_paso_performance.gd`.
+Condiciones: 1920 × 1080, la misma GPU integrada de referencia, vista girando
+sobre el paso, 3 s de calentamiento y 8 s de medida por perfil, sin vsync y con
+`Engine.max_fps = 0`. La escena incluye el terreno del desfiladero con cresta,
+sendero y campamento pintados, arroyo, roquedales, refugio de pirca, ichu y
+queñua con viento, cielo físico con nubes y cuatro exploradores con modelo
+propio. El jugador está quieto en la aparición y la vista gira 0,35 rad/s.
+
+| Perfil | FPS medio | FPS p1 | Frame medio | Frame p99 | Vídeo |
+|---|---|---|---|---|---|
+| Bajo | 125,7 (123,5–128,6) | 83,3–100,0 | 7,95–8,10 ms | 10–12 ms | 152,5 MB |
+| Medio | 58,4 (57,9–60,6) | 50,0–52,6 | 16,9–17,3 ms | 19–20 ms | 180,7–184,4 MB |
+
+- El objetivo vinculante (≥ 30 FPS en Bajo) se cumple con más de cuatro veces
+  el margen.
+- El perfil Medio queda en el límite de 60 FPS. Las tres ejecuciones con carga
+  8,5 dieron 57,9–59,1 FPS; las ejecuciones con carga 0,7–1,3 dieron 60,5–64,6.
+  La diferencia es la carga del equipo, no un cambio de escena: debe repetirse
+  en reposo antes de dar la cifra por buena.
+- Las draw calls variaron entre 14 y 272 por la misma carga y no se usan como
+  referencia. La medición es un orden de magnitud, como las anteriores.
+- Falta la medición del Cusco con multitud y batalla (Fase 8).
