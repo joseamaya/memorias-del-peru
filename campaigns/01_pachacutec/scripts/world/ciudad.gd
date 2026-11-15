@@ -574,7 +574,8 @@ func _retreat_crowd() -> void:
 	_crowd_retreating = true
 	for member: CrowdMember in _crowd:
 		member.retreating = true
-		member.visual.play(&"Walk", 1.15)
+		# La multitud huye: el ciclo se ajusta a la velocidad real de la huida.
+		member.visual.play_locomotion(CROWD_RETREAT_SPEED)
 
 
 func _update_crowd(delta: float) -> void:
@@ -810,6 +811,7 @@ func _setup_inventory_and_dialogue() -> void:
 ## sin cambiar la lógica de reclutamiento ni de defensa.
 func _build_city() -> void:
 	_build_terrain()
+	_build_ground_clutter()
 	_build_plaza_areas()
 	_build_sanctuary()
 	_build_houses()
@@ -824,6 +826,14 @@ func _build_city() -> void:
 	_build_crowd()
 	_build_clouds()
 	_build_dust()
+
+
+## Piedras sueltas: el suelo plano de la plaza se leía como una alfombra.
+func _build_ground_clutter() -> void:
+	var clutter: GroundClutter = GroundClutter.new()
+	clutter.name = "GroundClutter"
+	add_child(clutter)
+	clutter.build(func(_x: float, _z: float) -> float: return 0.0, Vector3.ZERO, 72.0, 6.0)
 
 
 func _build_terrain() -> void:
@@ -1245,7 +1255,7 @@ func _build_clouds() -> void:
 	material.shader = shader
 	# Sobre la plaza las nubes se ven de cerca: más pequeñas y más tenues que
 	# en el paisaje abierto, o parecen manchas.
-	material.set_shader_parameter("coverage", 0.30)
+	material.set_shader_parameter("coverage", 0.42)
 	material.set_shader_parameter("cloud_scale", 4.6)
 	material.set_shader_parameter("opacity", 0.55)
 	var sphere: SphereMesh = SphereMesh.new()

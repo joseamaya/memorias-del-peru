@@ -28,6 +28,12 @@ signal beat(animation: StringName)
 ## Si es `false`, al hablar solo gira la cabeza (la tejedora no se aparta del
 ## telar).
 @export var turn_body_to_talk: bool = true
+## Altura visible a la que se ajusta el modelo, en metros. Los GLB del elenco
+## venían con alturas de 1,34 a 1,68 m y se notaba al lado del jugador (1,70).
+## Con 0 no se escala: solo se apoyan los pies en el suelo (posturas sentadas).
+@export var target_height: float = 0.0
+## Variación de altura por personaje, para que el elenco no sea un molde.
+@export var height_variation: float = 0.04
 
 ## A partir de esta velocidad corre en lugar de caminar.
 const RUN_SPEED_THRESHOLD: float = 2.6
@@ -150,6 +156,7 @@ func set_model(model: Node3D) -> void:
 	_animation_player = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if _animation_player == null:
 		return
+	_fit_model(model)
 	_mannequin = _animation_player.has_animation(&"Idle")
 	_prepare_loops(_animation_player, _mannequin)
 	_read_rhythm(model)
@@ -175,6 +182,18 @@ func set_model(model: Node3D) -> void:
 	var length: float = _animation_player.current_animation_length
 	if length > 0.0:
 		_animation_player.seek(fmod(float(absi(hash(String(name)))) * 0.618, 1.0) * length, true)
+
+
+## Ajusta la altura del modelo y apoya sus pies en el suelo. La variación sale
+## del nombre para que sea estable entre partidas y no cambie al recargar.
+func _fit_model(model: Node3D) -> void:
+	if target_height <= 0.0:
+		ModelSlot.fit_height(model, 0.0)
+		return
+	# Variación estable a partir del nombre: el mismo personaje mide lo mismo
+	# en cada partida.
+	var jitter: float = float(absi(hash(String(name))) % 1000) / 1000.0 * 2.0 - 1.0
+	ModelSlot.fit_height(model, target_height + jitter * height_variation)
 
 
 ## Indica si el personaje tiene modelo con animaciones.

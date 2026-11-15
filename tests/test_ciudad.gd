@@ -116,7 +116,8 @@ func test_ciudad_crowd_retreats() -> bool:
 	var start: Vector3 = first.global_position
 	ciudad.call("_start_defense")
 	ok = ok and ciudad.get("_crowd_retreating") == true
-	ok = ok and first.current_animation() == &"walk"
+	# La huida es a 2,2 m/s: el ciclo de carrera es el que cuadra con los pies.
+	ok = ok and first.current_animation() == &"run"
 	ciudad.call("_process", 1.0)
 	ok = ok and first.global_position.distance_to(start) > 0.5
 	for _i: int in range(20):

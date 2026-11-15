@@ -23,13 +23,15 @@ sky_material = SubResource("PhysicalSkyMaterial_paso")
 background_mode = 2
 sky = SubResource("Sky_paso")
 ambient_light_source = 3
-ambient_light_color = Color(0.66, 0.68, 0.72, 1)
+ambient_light_color = Color(0.67, 0.70, 0.75, 1)
 ambient_light_sky_contribution = 0.45
-ambient_light_energy = 0.8
+ambient_light_energy = 0.86
 reflected_light_source = 2
 fog_enabled = true
 fog_light_color = Color(0.64, 0.72, 0.82, 1)
 fog_light_energy = 0.55
+; La niebla da profundidad al terreno, pero no debe lavar el cielo.
+fog_sky_affect = 0.35
 fog_density = 0.003
 fog_height = 0.0
 fog_height_density = 0.04
@@ -40,8 +42,8 @@ volumetric_fog_length = 90.0
 tonemap_mode = 4
 tonemap_exposure = 1.02
 adjustment_enabled = true
-adjustment_contrast = 1.12
-adjustment_saturation = 1.04
+adjustment_contrast = 1.05
+adjustment_saturation = 1.0
 
 [node name="Paso" type="Node3D"]
 script = ExtResource("1_paso")

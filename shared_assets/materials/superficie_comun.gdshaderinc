@@ -43,6 +43,9 @@ uniform float plain_roughness : hint_range(0.0, 1.0) = 0.9;
 uniform float roughness_floor : hint_range(0.0, 1.0) = 0.78;
 // Variación de brillo a gran escala para disimular la repetición.
 uniform float macro_strength : hint_range(0.0, 1.0) = 0.0;
+// Apaga el color sin oscurecerlo. La ropa del elenco venía con azules y
+// amarillos muy saturados para un mundo de tierras y ocres.
+uniform float desaturation : hint_range(0.0, 1.0) = 0.0;
 uniform float macro_scale = 0.11;
 
 uniform int steep_layer = -1;
@@ -211,7 +214,9 @@ void fragment() {
 				}
 			}
 		}
-		ALBEDO = albedo * mix(1.0, macro, macro_strength);
+		albedo *= mix(1.0, macro, macro_strength);
+		float luma = dot(albedo, vec3(0.2126, 0.7152, 0.0722));
+		ALBEDO = mix(albedo, vec3(luma), desaturation);
 		ROUGHNESS = max(roughness, roughness_floor);
 		NORMAL_MAP = normal_map;
 		NORMAL_MAP_DEPTH = normal_strength * normal_fade;

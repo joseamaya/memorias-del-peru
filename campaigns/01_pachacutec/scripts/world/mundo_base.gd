@@ -52,9 +52,9 @@ const DISTANT_MID_BASE: float = 36.0
 const DISTANT_MID_AMPLITUDE: float = 42.0
 const DISTANT_FAR_BASE: float = 46.0
 const DISTANT_FAR_AMPLITUDE: float = 48.0
-const DISTANT_NEAR_COLOR: Color = Color(0.24, 0.28, 0.35, 1.0)
-const DISTANT_MID_COLOR: Color = Color(0.27, 0.32, 0.41, 1.0)
-const DISTANT_FAR_COLOR: Color = Color(0.30, 0.36, 0.46, 1.0)
+const DISTANT_NEAR_COLOR: Color = Color(0.26, 0.31, 0.38, 1.0)
+const DISTANT_MID_COLOR: Color = Color(0.33, 0.38, 0.46, 1.0)
+const DISTANT_FAR_COLOR: Color = Color(0.41, 0.46, 0.54, 1.0)
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 ## Nombres de las fases del evento, en el orden del enum de [MessengerEvent];
 ## el registro de sesión los usa como marcas (§9.2).
@@ -102,6 +102,20 @@ const CHARACTER_MODELS: Dictionary[String, String] = {
 	"Habitante1": "pch_npc_villager.glb",
 	"Habitante2": "pch_npc_villager_b.glb",
 	"Habitante3": "pch_npc_villager_c.glb",
+}
+## Altura visible de cada papel, en metros. Los GLB venían de 1,34 a 1,68 y la
+## diferencia se notaba junto al jugador (1,70). La tejedora va sentada: con 0
+## solo se apoya en el suelo, sin escalar.
+const CHARACTER_HEIGHTS: Dictionary[String, float] = {
+	"Tejedora": 0.0,
+	"Agricultor": 1.57,
+	"Mensajero": 1.61,
+	"Curaca": 1.65,
+	"Principal1": 1.63,
+	"Principal2": 1.63,
+	"Habitante1": 1.53,
+	"Habitante2": 1.56,
+	"Habitante3": 1.50,
 }
 const MODEL_QUERO: String = "pch_quero.glb"
 const MODEL_PUTUTU: String = "pch_pututu.glb"
@@ -303,6 +317,7 @@ func _ready() -> void:
 		event.start_on_bind = false
 		event.set_process(false)
 	_build_terrain()
+	_build_ground_clutter()
 	_build_llacta()
 	_build_distant_ranges()
 	_build_clouds()
@@ -530,6 +545,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## Piedras sueltas sobre la tierra: dan escala y rompen la alfombra de textura.
+func _build_ground_clutter() -> void:
+	var clutter: GroundClutter = GroundClutter.new()
+	clutter.name = "GroundClutter"
+	add_child(clutter)
+	clutter.build(_height_at, Vector3.ZERO, 78.0, 8.0)
+
+
 func _build_terrain() -> void:
 	var surface: SurfaceTool = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -660,8 +683,11 @@ func _build_distant_ranges() -> void:
 func _build_range(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
 	var surface: SurfaceTool = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var bottom_color: Color = color.darkened(0.34)
-	var top_color: Color = color.lightened(0.04)
+	# Perspectiva aérea pintada a mano: la niebla automática convertía las tres
+	# cordilleras en una banda plana. El pie se aclara hacia el horizonte y la
+	# cumbre conserva el tono, así que la distancia se lee por capas.
+	var bottom_color: Color = color.lightened(0.12)
+	var top_color: Color = color
 	for index: int in range(DISTANT_SEGMENTS):
 		var angle0: float = TAU * float(index) / float(DISTANT_SEGMENTS)
 		var angle1: float = TAU * float(index + 1) / float(DISTANT_SEGMENTS)
@@ -681,6 +707,7 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.vertex_color_use_as_albedo = true
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.disable_fog = true
 	var range_node: MeshInstance3D = MeshInstance3D.new()
 	range_node.name = node_name
 	range_node.mesh = surface.commit()
@@ -1762,6 +1789,8 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	actor.name = node_name
 	actor.position = at
 	actor.body_color = color
+	if CHARACTER_HEIGHTS.has(node_name):
+		actor.target_height = CHARACTER_HEIGHTS[node_name]
 	parent.add_child(actor)
 	actor.add_to_group("npcs")
 	_add_contact_shadow(actor)

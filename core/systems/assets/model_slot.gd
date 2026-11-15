@@ -81,6 +81,54 @@ static func enable_vertex_colors_in(root: Node) -> int:
 	return changed
 
 
+## Altura visible de [param root] en su espacio local, o 0 si no tiene mallas.
+static func visible_height(root: Node3D) -> float:
+	if root == null:
+		return 0.0
+	var bounds: AABB = visible_bounds(root)
+	return bounds.size.y if bounds.size.y > 0.0 else 0.0
+
+
+## Caja que ocupan las mallas de [param root] en su espacio local.
+static func visible_bounds(root: Node3D) -> AABB:
+	var bounds: AABB = AABB()
+	var first: bool = true
+	if root == null:
+		return bounds
+	var nodes: Array[Node] = root.find_children("*", "MeshInstance3D", true, false)
+	if root is MeshInstance3D:
+		nodes.append(root)
+	for node: Node in nodes:
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		if mesh_instance == null or mesh_instance.mesh == null:
+			continue
+		var box: AABB = mesh_instance.transform * mesh_instance.get_aabb()
+		if first:
+			bounds = box
+			first = false
+		else:
+			bounds = bounds.merge(box)
+	return bounds
+
+
+## Ajusta [param root] para que su altura visible sea [param target_height] y
+## sus pies queden en el origen del hueco. Con [param target_height] en 0 solo
+## se apoya en el suelo, sin escalar: sirve para las posturas sentadas.
+## Devuelve la escala aplicada.
+static func fit_height(root: Node3D, target_height: float, ground_offset: float = 0.0) -> float:
+	if root == null:
+		return 1.0
+	var bounds: AABB = visible_bounds(root)
+	if bounds.size.y <= 0.01:
+		return 1.0
+	var factor: float = 1.0
+	if target_height > 0.0:
+		factor = target_height / bounds.size.y
+	root.scale = Vector3.ONE * factor
+	root.position.y = -bounds.position.y * factor + ground_offset
+	return factor
+
+
 ## Carga el modelo si existe. Devuelve `true` si hay un modelo cargado.
 ## Las llamadas repetidas no lo duplican.
 func load_model() -> bool:

@@ -7,6 +7,11 @@ extends CharacterBody3D
 ## orienta al enemigo hacia el jugador y aplica el daño.
 
 const SPEED: float = 2.4
+## Velocidad de desplazamiento del ciclo de carrera del modelo (m/s). El clip
+## se reproduce a SPEED / RUN_CYCLE_SPEED para que los pies acompañen al cuerpo.
+const RUN_CYCLE_SPEED: float = 3.0
+## Grados por segundo a los que el cuerpo encara al objetivo.
+const TURN_RATE: float = 220.0
 const MORALE_LOSS: float = 15.0
 const MODEL_PATH: String = "res://campaigns/01_pachacutec/assets/models/pch_npc_commoner.glb"
 ## Duración de la caída del enemigo derribado.
@@ -30,6 +35,10 @@ func _ready() -> void:
 	_visual.model_path = MODEL_PATH
 	_visual.dark_clothes = true
 	_visual.porra = true
+	# El chanca es el único que corre hacia el jugador: algo más alto que la
+	# aldea y sin variación, para que los cuatro se lean como un grupo.
+	_visual.target_height = 1.67
+	_visual.height_variation = 0.0
 
 	add_child(_visual)
 	var shape: CollisionShape3D = CollisionShape3D.new()
@@ -72,7 +81,7 @@ func _physics_process(delta: float) -> void:
 	var distance: float = global_position.distance_to(player.global_position)
 	var intent: EnemyCombatant.Intent = brain.think(delta, distance, true)
 	if intent != EnemyCombatant.Intent.IDLE:
-		_face(player.global_position)
+		_face(player.global_position, delta)
 	match intent:
 		EnemyCombatant.Intent.APPROACH:
 			_play_visual(&"Walk")
@@ -122,14 +131,25 @@ func _play_visual(clip: StringName) -> void:
 	if _current_clip == clip and clip != &"attack" and clip != &"hit" and clip != &"death":
 		return
 	_current_clip = clip
+	if clip == &"Walk":
+		# El chanca trota: el ciclo se ajusta a la velocidad real. Antes se
+		# reproducía a 1.0 con un clip de 3 m/s y el cuerpo iba a 2,4: los pies
+		# patinaban.
+		_visual.play_locomotion(SPEED)
+		return
 	_visual.play(clip)
 
 
-## Gira el cuerpo hacia el objetivo; el modelo mira hacia -Z.
-func _face(target: Vector3) -> void:
+## Gira el cuerpo hacia el objetivo; el modelo mira hacia -Z. El giro es
+## progresivo: un `look_at` instantáneo cada fotograma convertía al chanca en
+## una peonza que encaraba al jugador de golpe.
+func _face(target: Vector3, delta: float) -> void:
 	var flat: Vector3 = Vector3(target.x, global_position.y, target.z)
-	if flat.distance_to(global_position) > 0.05:
-		look_at(flat, Vector3.UP)
+	var to: Vector3 = flat - global_position
+	if to.length() <= 0.05:
+		return
+	var desired: float = atan2(-to.x, -to.z)
+	rotation.y = move_toward(rotation.y, desired, deg_to_rad(TURN_RATE) * delta)
 
 
 ## Visual del enemigo, para las pruebas.

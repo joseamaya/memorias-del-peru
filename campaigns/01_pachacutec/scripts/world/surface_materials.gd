@@ -14,7 +14,12 @@ const CLOTH_SHADER_PATH: String = "res://shared_assets/materials/superficie_tela
 const DETAIL_PATH: String = "res://shared_assets/textures/superficies_detalle.webp"
 const NORMAL_PATH: String = "res://shared_assets/textures/superficies_normal.webp"
 ## Repeticiones por metro de cada capa, en el orden de [enum Layer].
-const LAYER_SCALES: PackedFloat32Array = [0.75, 0.6, 0.85, 1.0, 3.0, 0.24, 0.32, 0.15, 0.3]
+##
+## Las capas de terreno y muro van finas a propósito: con una repetición cada
+## 3 m el barro se leía como manchas de un metro y la piedra como blobs
+## blancos. A escala de grano el patrón deja de verse y la variación de gran
+## escala (macro) rompe la repetición.
+const LAYER_SCALES: PackedFloat32Array = [1.6, 1.1, 1.2, 1.0, 3.0, 0.5, 1.2, 0.8, 1.4]
 ## Corrección de color por clase (alfa = intensidad), en el orden de [enum Layer].
 ## Atenúa los tintes de los modelos generados sin volver a exportarlos.
 const LAYER_TINTS: Array[Color] = [
@@ -31,6 +36,8 @@ const LAYER_TINTS: Array[Color] = [
 const MAX_OVERLAY_RECTS: int = 8
 ## Material que el generador de personajes pone a la ropa (ADR-0016).
 const CLOTH_MATERIAL_NAME: String = "pch_cloth"
+## Cuánto se apaga el color de la ropa (0 = tal cual, 1 = gris).
+const CLOTH_DESATURATION: float = 0.22
 ## Repeticiones por metro del tejido de la ropa (las coordenadas UV2 van en
 ## metros). La lana de la capa de tejido (Fabric031) tiene unas 180 puntadas
 ## por repetición: cada 33 cm da unos 5 hilos por centímetro.
@@ -63,6 +70,9 @@ static func cloth_material() -> ShaderMaterial:
 		_cloth_material.shader = load(CLOTH_SHADER_PATH) as Shader
 		_cloth_material.set_shader_parameter("cloth_uv2", true)
 		_cloth_material.set_shader_parameter("detail_strength", CLOTH_DETAIL)
+		# La ropa venía con azules y amarillos de pantalla; el resto del mundo es
+		# tierra y ocre. Un poco de desaturación los mete en la misma paleta.
+		_cloth_material.set_shader_parameter("desaturation", CLOTH_DESATURATION)
 		var scales: PackedFloat32Array = LAYER_SCALES.duplicate()
 		scales[Layer.FABRIC] = CLOTH_SCALE
 		_cloth_material.set_shader_parameter("layer_scale", scales)
@@ -112,8 +122,11 @@ static func terrain_material(grass_tint: Color, rock_tint: Color, dirt_tint: Col
 	material.set_shader_parameter("overlay_tint", dirt_tint)
 	# El borde de la plaza y los caminos tenía un corte recto visible a poca
 	# distancia; un fundido más ancho lo disuelve sin emborronar el camino.
-	material.set_shader_parameter("overlay_fade", 2.6)
-	material.set_shader_parameter("macro_strength", 0.45)
+	material.set_shader_parameter("overlay_fade", 5.0)
+	# La variación de gran escala usa una lectura muy ampliada del mismo
+	# detalle: si es demasiado grande se convierte en manchas.
+	material.set_shader_parameter("macro_scale", 0.28)
+	material.set_shader_parameter("macro_strength", 0.38)
 	return material
 
 
@@ -234,6 +247,6 @@ static func _base_material() -> ShaderMaterial:
 	material.set_shader_parameter("layer_tint", PackedColorArray(LAYER_TINTS))
 	# Relieve sin exagerar: a media distancia separa una pared de una calcomanía;
 	# de cerca, un exceso convierte la tierra apisonada en grava.
-	material.set_shader_parameter("normal_strength", 1.0)
+	material.set_shader_parameter("normal_strength", 0.75)
 	material.set_shader_parameter("roughness_floor", 0.85)
 	return material

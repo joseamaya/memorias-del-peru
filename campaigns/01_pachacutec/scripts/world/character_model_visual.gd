@@ -21,6 +21,12 @@ static var _combat_cache: Dictionary[StringName, Animation] = {}
 @export var idle_clip: StringName = &"idle"
 @export var dark_clothes: bool = false
 @export var porra: bool = false
+## Altura visible a la que se ajusta el modelo. Los GLB del elenco venían con
+## alturas de 1,34 a 1,68 m; el jugador mide 1,70 y la diferencia se notaba.
+## Con 0 no se escala: solo se apoyan los pies en el suelo.
+@export var target_height: float = 1.58
+## Variación de altura, para que la multitud no sea un molde.
+@export var height_variation: float = 0.04
 
 var _slot: ModelSlot = null
 var _model: Node3D = null
@@ -40,6 +46,7 @@ func _ready() -> void:
 	_model = _slot.model
 	if _model == null:
 		return
+	_fit_model()
 	# Bajo el driver Dummy de las pruebas sin pantalla, los overrides de
 	# material se liberan mal; en el juego y en las capturas sí se aplican.
 	if DisplayServer.get_name() != "headless":
@@ -53,6 +60,15 @@ func _ready() -> void:
 		_darken_clothes()
 	if porra:
 		_build_porra()
+
+
+## Ajusta la altura del modelo y apoya sus pies en el suelo.
+func _fit_model() -> void:
+	if target_height <= 0.0:
+		ModelSlot.fit_height(_model, 0.0)
+		return
+	var jitter: float = float(absi(hash(name)) % 1000) / 1000.0 * 2.0 - 1.0
+	ModelSlot.fit_height(_model, target_height + jitter * height_variation)
 
 
 ## Reproduce un clip. Acepta los nombres lógicos (`Walk`, `Idle`) y los
@@ -120,6 +136,22 @@ func model() -> Node3D:
 ## para comprobar que sigue la mano.
 func porra_pivot() -> Node3D:
 	return _porra_pivot
+
+
+## Velocidad de desplazamiento de cada ciclo a velocidad 1 (m/s). Los clips del
+## elenco vienen de la captura de CMU y traen su propia zancada; si se reproducen
+## a 1.0 mientras el cuerpo va a otra velocidad, los pies patinan.
+const WALK_CYCLE_SPEED: float = 1.2
+const RUN_CYCLE_SPEED: float = 3.0
+
+
+## Reproduce el ciclo de locomoción que corresponde a [param speed] (m/s) y lo
+## ajusta para que la zancada acompañe al desplazamiento real.
+func play_locomotion(speed: float) -> void:
+	if speed >= 2.0:
+		play(&"Run", speed / RUN_CYCLE_SPEED)
+	else:
+		play(&"Walk", speed / WALK_CYCLE_SPEED)
 
 
 ## Duración de un clip, o 0 si el personaje no lo tiene.

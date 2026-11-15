@@ -142,6 +142,10 @@ common/physics_interpolation=false
 
 [rendering]
 
+; El suelo y los muros se ven en ángulo rasante: sin anisotropía, el detalle
+; fino se convierte en franjas al fondo.
+textures/default_filters/anisotropic_filtering_level=3
+
 renderer/rendering_method="forward_plus"
 
 [internationalization]
