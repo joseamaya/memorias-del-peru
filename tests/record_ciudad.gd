@@ -113,10 +113,12 @@ func _process(delta: float) -> bool:
 		9:
 			_combat(delta)
 		10:
-			_turn_towards(_player.global_position + Vector3(0.0, 1.2, -10.0), delta)
-			if _step_time > 4.0:
+			# Plano final: el santuario y la plaza, no la pared de una casa.
+			_turn_towards(Vector3(0.0, 2.2, -15.0), delta)
+			if _step_time > 5.0:
 				_advance()
 		11:
+			_turn_towards(Vector3(-9.0, 1.4, 4.0), delta)
 			if _step_time > 4.0:
 				_advance()
 	return false
