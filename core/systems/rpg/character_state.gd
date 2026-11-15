@@ -117,6 +117,19 @@ func register_skill_use(skill: StringName, uses: int = 1) -> int:
 	return rank
 
 
+## Fija los usos de una habilidad y recalcula su rango (restauración de estado).
+func set_skill_uses(skill: StringName, uses: int) -> void:
+	if skill == &"":
+		return
+	var previous_rank: int = get_skill(skill)
+	var total: int = maxi(uses, 0)
+	_skill_uses[skill] = total
+	var rank: int = rank_for_uses(total)
+	_skill_ranks[skill] = rank
+	if rank != previous_rank:
+		skill_changed.emit(skill, rank)
+
+
 ## Reputación actual con un grupo.
 func get_reputation(group: StringName) -> int:
 	return _reputation.get(group, 0)

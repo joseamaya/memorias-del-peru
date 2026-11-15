@@ -29,6 +29,14 @@ func test_assembly() -> bool:
 		return false
 	for task: TaskPoint in tasks:
 		task.interact(player)
+	var messenger: CampPoint = world.get_node_or_null("MessengerPoint") as CampPoint
+	if messenger == null:
+		world.free()
+		CampaignState.clear()
+		return false
+	messenger.interact(player)
+	hud.get_dialogue_panel().choice_selected.emit(2)
+	world.call("_on_dialogue_advanced")
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	world.call("_process", 0.016)
 	var ok: bool = hud.is_dialogue_open()

@@ -73,6 +73,7 @@ const CHARACTER_MODELS: Dictionary[String, String] = {
 	"Habitante2": "pch_npc_villager_b.glb",
 	"Habitante3": "pch_npc_villager_c.glb",
 	"Anca": "pch_npc_villager_b.glb",
+	"Mensajero": "pch_npc_messenger.glb",
 }
 ## Altura visible de cada papel, en metros.
 const CHARACTER_HEIGHTS: Dictionary[String, float] = {
@@ -84,12 +85,14 @@ const CHARACTER_HEIGHTS: Dictionary[String, float] = {
 	"Habitante2": 1.56,
 	"Habitante3": 1.50,
 	"Anca": 1.58,
+	"Mensajero": 1.60,
 }
 const NPC_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_actor.tscn"
 const MODEL_LOOM: String = "pch_loom.glb"
 const FIRE_PIT_POSITION: Vector3 = Vector3(-6.0, 0.0, 7.0)
 const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
 const TASK_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/task_point.tscn"
+const CAMP_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/camp_point.tscn"
 const TASK_IDS: Array[StringName] = [&"agua", &"maiz", &"telar", &"pirca"]
 const TASK_PROMPTS: Array[StringName] = [
 	&"PCH_TASK_AGUA", &"PCH_TASK_MAIZ", &"PCH_TASK_TELAR", &"PCH_TASK_PIRCA",
@@ -100,6 +103,17 @@ const TASK_DONE_KEYS: Array[StringName] = [
 const TASK_ITEM_IDS: Array[StringName] = [&"agua", &"maiz", &"manta", &"cuerda"]
 const TASK_ITEM_KEYS: Array[StringName] = [
 	&"PCH_ITEM_AGUA", &"PCH_ITEM_MAIZ", &"PCH_ITEM_MANTA", &"PCH_ITEM_CUERDA",
+]
+const ACCOUNT_POSITIONS: Array[Vector3] = [
+	Vector3(-19.0, 0.9, 9.5),
+	Vector3(19.0, 0.9, 11.5),
+	Vector3(0.0, 0.9, 16.0),
+]
+const ACCOUNT_PROMPTS: Array[StringName] = [
+	&"PCH_ACCOUNT_1", &"PCH_ACCOUNT_2", &"PCH_ACCOUNT_3",
+]
+const ACCOUNT_TEXTS: Array[StringName] = [
+	&"PCH_ACCOUNT_1_TEXT", &"PCH_ACCOUNT_2_TEXT", &"PCH_ACCOUNT_3_TEXT",
 ]
 const TASK_POSITIONS: Array[Vector3] = [
 	Vector3(14.0, 0.0, 8.0),
@@ -155,6 +169,10 @@ var _curaca: NpcActor = null
 var _assembly_started: bool = false
 var _assembly_done: bool = false
 var _assembly_choice: StringName = &""
+var _messenger_seen: bool = false
+var _messenger_spawned: bool = false
+var _duda_started: bool = false
+var _accounts_done: Dictionary[StringName, bool] = {}
 var _act_four_done: bool = false
 var _act_five_done: bool = false
 var _rebuild_done: Dictionary[StringName, bool] = {}
@@ -188,7 +206,7 @@ func _ready() -> void:
 			_setup_act_one()
 			hud.show_objective(tr("PCH_OBJ_LLACTA"))
 		4:
-			hud.show_objective(tr("PCH_OBJ_POST"))
+			_setup_act_four()
 		5:
 			_setup_act_five()
 			hud.show_objective(tr("PCH_OBJ_REBUILD"))
@@ -196,6 +214,7 @@ func _ready() -> void:
 	_setup_ambience()
 	environment_controller.bind(world_environment, sun)
 	_apply_act_mood()
+	CampaignProgress.save_checkpoint(self, player.global_position)
 	SessionLog.mark(&"control_taken")
 
 
@@ -230,6 +249,19 @@ func _setup_rpg() -> void:
 	dialogue.character = character
 	dialogue.inventory = inventory
 	player.add_child(dialogue)
+	CampaignProgress.apply(self)
+	if CampaignProgress.is_respawn_pending():
+		CampaignProgress.restore_checkpoint(self)
+
+
+## Oficio elegido con el primer encargo.
+func get_oficio() -> StringName:
+	return _oficio
+
+
+## Restaura el oficio desde el estado de campaña.
+func set_oficio(oficio: StringName) -> void:
+	_oficio = oficio
 
 
 ## Terreno del valle: meseta plana en la llacta, lomas fuera y cresta en el
@@ -546,8 +578,10 @@ func _build_cast() -> void:
 			"sibling": &"PCH_TALK_HERMANO_4",
 			"sisa": &"PCH_TALK_SISA_4",
 			"curaca": &"PCH_TALK_CURACA_4",
-			"puma": &"PCH_TALK_PUMA_4",
+			"puma": &"PCH_TALK_PUMA_4" if CampaignState.has_flag(&"costo_joven") else &"PCH_TALK_PUMA_4_NO_COST",
 		}
+		if CampaignState.has_flag(&"puma_reconciliado"):
+			lines["puma"] = &"PCH_TALK_PUMA_4_RECONCILED"
 	elif act == 5:
 		lines = {
 			"mother": &"PCH_TALK_MADRE_5",
@@ -563,7 +597,8 @@ func _build_cast() -> void:
 	_add_talk(puma, lines["puma"])
 	_add_talk(weaver, &"PCH_TALK_WEAVER")
 	_add_talk(farmer, &"PCH_TALK_FARMER")
-	if act == 4 and CampaignState.has_flag(&"herido_salvado"):
+	if act == 4 and CampaignState.has_flag(&"herido_dejado") \
+			and not CampaignState.has_flag(&"costo_anca"):
 		var anca: NpcActor = _add_npc(npcs, "Anca", Vector3(-5.5, 0.0, 9.0), Color(0.45, 0.35, 0.3, 1.0))
 		if anca != null:
 			anca.watch_target = player
@@ -635,8 +670,9 @@ func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
 func _process(_delta: float) -> void:
 	if _assembly_started or player == null:
 		return
-	var required: bool = act == 1 and _tasks_done.size() >= TASKS_REQUIRED
-	var can_assemble: bool = required or act == 4
+	var required: bool = act == 1 and _tasks_done.size() >= TASKS_REQUIRED and _messenger_seen
+	var accounts: bool = act == 4 and _accounts_done.size() >= 3
+	var can_assemble: bool = required or accounts
 	if not can_assemble:
 		return
 	var center: Vector3 = _plaza_center_flat()
@@ -653,6 +689,35 @@ func _setup_dialogue_ui() -> void:
 	dialogue.flag_changed.connect(_on_dialogue_flag)
 	hud.dialogue_advanced.connect(_on_dialogue_advanced)
 	hud.dialogue_choice.connect(_on_dialogue_choice)
+	hud.journal_closed.connect(_on_journal_closed)
+
+
+## IV.1 y IV.2: volver a la llacta y contar casa por casa.
+func _setup_act_four() -> void:
+	if hud != null:
+		hud.show_subtitle(tr("PCH_ACT4_RETURN"), 0.0)
+		hud.show_objective(tr("PCH_OBJ_ACCOUNTS"))
+	if journal != null:
+		journal.add_quest(&"cuentas", &"PCH_Q_CUENTAS_TITLE", &"PCH_Q_CUENTAS_BODY")
+	for index: int in range(ACCOUNT_POSITIONS.size()):
+		_add_request_point("Account%d" % index, ACCOUNT_POSITIONS[index], ACCOUNT_PROMPTS[index],
+			_on_account_requested.bind(index))
+
+
+func _on_account_requested(index: int) -> void:
+	if index < 0 or index >= ACCOUNT_TEXTS.size():
+		return
+	if _accounts_done.has(StringName("account_%d" % index)):
+		return
+	_accounts_done[StringName("account_%d" % index)] = true
+	if hud != null:
+		hud.show_subtitle(tr(String(ACCOUNT_TEXTS[index])), 0.0)
+		hud.show_hint(tr("PCH_ACCOUNT_DONE") % _accounts_done.size(), 3.0)
+	SessionLog.mark(&"account", str(index))
+	if _accounts_done.size() >= 3 and hud != null:
+		hud.show_objective(tr("PCH_OBJ_ASSEMBLY"))
+		if journal != null:
+			journal.complete_quest(&"cuentas")
 
 
 ## La asamblea del acto: en I decide quién va; en IV, qué se dice de los que no volvieron.
@@ -714,7 +779,7 @@ func _build_act_four_assembly() -> DialogueGraph:
 	var start: DialogueNode = DialogueNode.new()
 	start.id = &"start"
 	start.speaker_key = &"PCH_NPC_PUMA"
-	start.text_key = &"PCH_ASM4_ASK"
+	start.text_key = &"PCH_ASM4_ASK_COST" if _has_cost() else &"PCH_ASM4_ASK"
 	start.next_id = &"end"
 	var speak: DialogueChoice = DialogueChoice.new()
 	speak.text_key = &"PCH_ASM4_SPEAK"
@@ -722,25 +787,55 @@ func _build_act_four_assembly() -> DialogueGraph:
 	var silence: DialogueChoice = DialogueChoice.new()
 	silence.text_key = &"PCH_ASM4_SILENCE"
 	silence.next_id = &"silence"
-	var choices: Array[DialogueChoice] = [speak, silence]
+	var choices: Array[DialogueChoice] = [speak]
+	if CampaignState.has_flag(&"apoyo_puma") or CampaignState.has_flag(&"costo_joven"):
+		var reconcile: DialogueChoice = DialogueChoice.new()
+		reconcile.text_key = &"PCH_ASM4_RECONCILE"
+		reconcile.next_id = &"reconcile"
+		choices.append(reconcile)
+	if character != null and character.get_skill(&"palabra") >= 2:
+		var word: DialogueChoice = DialogueChoice.new()
+		word.text_key = &"PCH_ASM4_PALABRA"
+		word.next_id = &"palabra"
+		choices.append(word)
+	choices.append(silence)
 	start.choices = choices
 	var nodes: Array[DialogueNode] = [start]
-	for entry: Array in [[&"speak", &"PCH_ASM4_SPEAK_ANSWER", &"hablo_en_asamblea"],
-			[&"silence", &"PCH_ASM4_SILENCE_ANSWER", &"asamblea_silencio"]]:
-		var node: DialogueNode = DialogueNode.new()
-		node.id = entry[0]
-		node.speaker_key = &"PCH_NPC_CURACA"
-		node.text_key = entry[1]
-		node.next_id = &"end"
-		var effect: DialogueEffect = DialogueEffect.new()
-		effect.kind = DialogueEffect.Kind.SET_FLAG
-		effect.key = entry[2]
-		effect.amount = 1
-		var effects: Array[DialogueEffect] = [effect]
-		node.effects = effects
-		nodes.append(node)
+	var speak_key: StringName = &"PCH_ASM4_SPEAK_ANSWER"
+	if CampaignState.has_flag(&"costo_anca"):
+		speak_key = &"PCH_ASM4_SPEAK_ANCA"
+	elif CampaignState.has_flag(&"costo_joven"):
+		speak_key = &"PCH_ASM4_SPEAK_JOVEN"
+	var speak_node: DialogueNode = _answer_node(&"speak", &"PCH_NPC_AYLLUS", speak_key)
+	speak_node.effects = _effects([_flag_effect(&"hablo_en_asamblea"),
+		_reputation_effect(&"llacta", 1)])
+	nodes.append(speak_node)
+	var reconcile_node: DialogueNode = _answer_node(&"reconcile", &"PCH_NPC_PUMA", &"PCH_ASM4_RECONCILE_ANSWER")
+	reconcile_node.effects = _effects([_flag_effect(&"puma_reconciliado"),
+		_flag_effect(&"hablo_en_asamblea")])
+	nodes.append(reconcile_node)
+	var word_node: DialogueNode = _answer_node(&"palabra", &"PCH_NPC_CURACA", &"PCH_ASM4_PALABRA_ANSWER")
+	word_node.effects = _effects([_flag_effect(&"hablo_en_asamblea"),
+		_reputation_effect(&"llacta", 1), _reputation_effect(&"cusco", 1)])
+	nodes.append(word_node)
+	var silence_node: DialogueNode = _answer_node(&"silence", &"PCH_NPC_CURACA", &"PCH_ASM4_SILENCE_ANSWER")
+	silence_node.effects = _effects([_flag_effect(&"asamblea_silencio")])
+	nodes.append(silence_node)
 	graph.nodes = nodes
 	return graph
+
+
+func _has_cost() -> bool:
+	return CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")
+
+
+func _answer_node(node_id: StringName, speaker_key: StringName, text_key: StringName) -> DialogueNode:
+	var node: DialogueNode = DialogueNode.new()
+	node.id = node_id
+	node.speaker_key = speaker_key
+	node.text_key = text_key
+	node.next_id = &"end"
+	return node
 
 func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
 	_dialogue_speaker = speaker_key
@@ -771,6 +866,10 @@ func _on_dialogue_choice(index: int) -> void:
 		dialogue.choose(index)
 
 
+func _on_journal_closed() -> void:
+	player.set_controls_locked(false)
+
+
 func _on_dialogue_finished() -> void:
 	if hud != null:
 		hud.hide_dialogue()
@@ -784,6 +883,16 @@ func _on_dialogue_finished() -> void:
 func _on_dialogue_flag(key: StringName, value: int) -> void:
 	if value == 0:
 		return
+	CampaignState.set_flag(key, value)
+	SessionLog.mark(&"flag", "%s=%d" % [String(key), value])
+	if key == &"noticia_chanca":
+		_messenger_seen = true
+		if hud != null:
+			hud.show_objective(tr("PCH_OBJ_ASAMBLEA"))
+	if key == &"apoyo_curaca" and character != null:
+		character.register_skill_use(&"palabra", 4)
+	if key == &"hablo_en_asamblea" and character != null:
+		character.register_skill_use(&"palabra", 2)
 	if key == &"asm_go" or key == &"asm_together" or key == &"asm_doubt" \
 			or key == &"hablo_en_asamblea" or key == &"asamblea_silencio":
 		_assembly_choice = key
@@ -799,21 +908,42 @@ func _end_act_one() -> void:
 		CampaignState.set_flag(&"apoyo_llacta", 1)
 	else:
 		CampaignState.set_flag(&"apoyo_duda", 1)
-	CampaignState.set_flag(&"confianza_companero", 1)
+	if _assembly_choice == &"asm_together":
+		CampaignState.set_flag(&"confianza_sisa", 2)
+	elif _assembly_choice == &"asm_go":
+		CampaignState.set_flag(&"confianza_sisa", 1)
+	else:
+		CampaignState.set_flag(&"confianza_sisa", 0)
 	SessionLog.mark(&"act_one_end", String(_assembly_choice))
+	CampaignProgress.save(self)
 	if hud != null:
 		hud.show_end_card(tr("PCH_END_TITLE"), tr("PCH_END_HINT"))
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("journal"):
+		if hud == null or journal == null or dialogue == null:
+			return
+		if dialogue.is_active() or _assembly_started:
+			return
+		if hud.is_journal_open():
+			hud.hide_journal()
+			player.set_controls_locked(false)
+		else:
+			hud.show_journal(journal)
+			player.set_controls_locked(true)
+		get_viewport().set_input_as_handled()
+		return
 	if not (event is InputEventKey):
 		return
 	var key: InputEventKey = event as InputEventKey
 	if not key.pressed or key.echo or key.keycode != KEY_R:
 		return
 	if act == 1 and _assembly_done:
+		CampaignProgress.save(self)
 		get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/paso.tscn")
 	elif act == 4 and _act_four_done:
+		CampaignProgress.save(self)
 		get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/llacta_act5.tscn")
 	elif act == 5 and _act_five_done:
 		get_tree().change_scene_to_file("res://core/ui/title_screen.tscn")
@@ -828,9 +958,9 @@ func _end_act_four() -> void:
 	else:
 		CampaignState.set_flag(&"asamblea_silencio", 1)
 	SessionLog.mark(&"act_four_end")
+	CampaignProgress.save(self)
 	if hud != null:
-		hud.show_subtitle(tr("PCH_ASM4_NEWS"), 0.0)
-		hud.show_end_card(tr("PCH_END4_TITLE"), tr("PCH_END4_HINT"))
+		hud.show_end_card(tr("PCH_END4_TITLE"), tr("PCH_END4_HINT"), tr("PCH_ASM4_NEWS"))
 
 
 ## Acto V: tres obras de reconstrucción y la noticia del nombre nuevo.
@@ -838,10 +968,10 @@ func _setup_act_five() -> void:
 	var packed: PackedScene = load(TASK_SCENE) as PackedScene
 	if packed == null:
 		return
-	var ids: Array[StringName] = [&"pirca", &"terraza", &"acequia"]
-	var prompts: Array[StringName] = [&"PCH_REBUILD_PIRCA", &"PCH_REBUILD_TERRAZA", &"PCH_REBUILD_ACEQUIA"]
-	var points: Array[Vector3] = [Vector3(-27.5, 0.0, -12.0), Vector3(34.0, 0.8, -3.0), Vector3(14.0, 0.0, 8.0)]
-	var done_keys: Array[StringName] = [&"PCH_REBUILD_PIRCA_DONE", &"PCH_REBUILD_TERRAZA_DONE", &"PCH_REBUILD_ACEQUIA_DONE"]
+	var ids: Array[StringName] = [&"pirca", &"terraza", &"acequia", &"telar"]
+	var prompts: Array[StringName] = [&"PCH_REBUILD_PIRCA", &"PCH_REBUILD_TERRAZA", &"PCH_REBUILD_ACEQUIA", &"PCH_REBUILD_TELAR"]
+	var points: Array[Vector3] = [Vector3(-27.5, 0.0, -12.0), Vector3(34.0, 0.8, -3.0), Vector3(14.0, 0.0, 8.0), Vector3(-10.0, 0.0, 6.2)]
+	var done_keys: Array[StringName] = [&"PCH_REBUILD_PIRCA_DONE", &"PCH_REBUILD_TERRAZA_DONE", &"PCH_REBUILD_ACEQUIA_DONE", &"PCH_REBUILD_TELAR_DONE"]
 	_five_done_keys = done_keys
 	for index: int in range(ids.size()):
 		var instance: Node = packed.instantiate()
@@ -855,21 +985,58 @@ func _setup_act_five() -> void:
 		task.prompt_key = prompts[index]
 		var point: Vector3 = points[index]
 		body.position = Vector3(point.x, _height_at(point.x, point.z) + 0.9, point.z)
+		_add_task_marker(task)
 		add_child(task)
 		task.completed.connect(_on_rebuild_completed)
+
+
+## Poste de obra: hace visible el punto de encargo sin convertirlo en un cartel.
+func _add_task_marker(task: TaskPoint) -> void:
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	var box: BoxMesh = BoxMesh.new()
+	box.size = Vector3(0.28, 1.0, 0.28)
+	mesh_instance.mesh = box
+	mesh_instance.position = Vector3(0.0, -0.4, 0.0)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = Color(0.55, 0.38, 0.20, 1.0)
+	material.roughness = 0.95
+	mesh_instance.material_override = material
+	task.add_child(mesh_instance)
 
 
 func _on_rebuild_completed(task_id: StringName) -> void:
 	if _rebuild_done.has(task_id):
 		return
 	_rebuild_done[task_id] = true
-	var index: int = [&"pirca", &"terraza", &"acequia"].find(task_id)
+	var index: int = [&"pirca", &"terraza", &"acequia", &"telar"].find(task_id)
 	if hud != null and index >= 0:
 		hud.show_hint(tr("PCH_REBUILD_DONE") % _rebuild_done.size(), 3.0)
 		hud.show_subtitle(tr(String(_five_done_keys[index])), 0.0)
 	SessionLog.mark(&"rebuild", String(task_id))
-	if _rebuild_done.size() >= 3:
+	_show_rebuild(task_id)
+	if _rebuild_done.size() >= 4:
 		_finish_act_five()
+
+
+## Deja una pieza visible de la obra: el jugador ve lo que reconstruyó.
+func _show_rebuild(task_id: StringName) -> void:
+	var parent: Node3D = $Llacta as Node3D
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.ROCK, Color(0.55, 0.52, 0.47, 1.0))
+	match task_id:
+		&"pirca":
+			_add_box_body(parent, "RebuiltPirca", Vector3(-27.5, 0.55, -12.0), Vector3(3.4, 1.1, 0.6), stone, 1)
+		&"terraza":
+			var soil: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.DIRT, Color(0.44, 0.33, 0.22, 1.0))
+			_add_box_body(parent, "RebuiltTerraza", Vector3(34.0, 1.0, -3.0), Vector3(5.0, 0.45, 3.2), soil, 1)
+		&"acequia":
+			var water: StandardMaterial3D = StandardMaterial3D.new()
+			water.albedo_color = Color(0.28, 0.45, 0.52, 0.75)
+			water.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			water.roughness = 0.1
+			_add_box_body(parent, "RebuiltAcequia", Vector3(14.0, 0.12, 8.0), Vector3(4.0, 0.12, 0.8), water, 0)
+		&"telar":
+			var wood: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.WOOD, Color(0.38, 0.27, 0.18, 1.0))
+			_add_box_body(parent, "RebuiltTelar", LOOM_POSITION + Vector3(0.0, 0.25, 0.0), Vector3(1.2, 0.5, 0.5), wood, 0)
 
 
 func _finish_act_five() -> void:
@@ -877,10 +1044,16 @@ func _finish_act_five() -> void:
 		return
 	_act_five_done = true
 	CampaignState.set_flag(&"casa_reconstruida", 1)
-	SessionLog.mark(&"act_five_end")
+	var final_key: StringName = &"PCH_FINAL_EN_PIE"
+	if CampaignState.has_flag(&"herido_dejado") and CampaignState.has_flag(&"puma_reconciliado"):
+		final_key = &"PCH_FINAL_LLENA"
+	elif CampaignState.has_flag(&"asamblea_silencio") \
+			and (CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")):
+		final_key = &"PCH_FINAL_VACIA"
+	var body: String = tr("PCH_END5_NAME") + "\n\n" + tr(String(final_key))
+	SessionLog.mark(&"act_five_end", String(final_key))
 	if hud != null:
-		hud.show_subtitle(tr("PCH_END5_NAME"), 0.0)
-		hud.show_end_card(tr("PCH_END5_TITLE"), tr("PCH_END5_HINT"))
+		hud.show_end_card(tr("PCH_END5_TITLE"), tr("PCH_END5_HINT"), body)
 
 
 func _setup_act_one() -> void:
@@ -907,8 +1080,186 @@ func _setup_act_one() -> void:
 					model.position = Vector3(0.0, -0.9, 0.0)
 					SurfaceMaterials.apply_to_model(model)
 					task.add_child(model)
+		else:
+			_add_task_marker(task)
 		add_child(task)
 		task.completed.connect(_on_task_completed)
+	if journal != null:
+		journal.add_quest(&"encargos", &"PCH_Q_ENCARGOS_TITLE", &"PCH_Q_ENCARGOS_BODY")
+		journal.add_memory(&"mem_plaza", &"PCH_ST_PLAZA_TITLE", &"PCH_ST_PLAZA_BODY", &"A", &"PCH_ST_PLAZA_SOURCE")
+	if hud != null:
+		hud.show_subtitle(tr("PCH_NARR_OPENING"), 0.0)
+	_add_request_point("DudaPoint", Vector3(-7.8, 0.9, -1.0), &"PCH_TALK_DUDA", _on_duda_requested)
+
+
+## Punto de interacción sin modelo: abre una conversación de la escena.
+func _add_request_point(node_name: String, at: Vector3, prompt_key: StringName, handler: Callable) -> CampPoint:
+	var packed: PackedScene = load(CAMP_SCENE) as PackedScene
+	if packed == null:
+		return null
+	var instance: Node = packed.instantiate()
+	var point: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if point == null or body == null:
+		instance.free()
+		return null
+	point.name = node_name
+	point.prompt_key = prompt_key
+	body.position = at
+	add_child(point)
+	point.requested.connect(handler)
+	return point
+
+
+## La duda del acto I: Puma y el curaca discuten delante del jugador.
+func _on_duda_requested() -> void:
+	if _duda_started or dialogue == null or _assembly_started:
+		return
+	if dialogue.is_active():
+		return
+	_duda_started = true
+	if dialogue.start(_build_duda_dialogue()):
+		player.begin_dialogue(_curaca)
+
+
+func _build_duda_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_PUMA"
+	start.text_key = &"PCH_DUDA_INTRO"
+	start.next_id = &"end"
+	var puma: DialogueChoice = DialogueChoice.new()
+	puma.text_key = &"PCH_DUDA_PUMA"
+	puma.next_id = &"puma"
+	var curaca: DialogueChoice = DialogueChoice.new()
+	curaca.text_key = &"PCH_DUDA_CURACA"
+	curaca.next_id = &"curaca"
+	var silence: DialogueChoice = DialogueChoice.new()
+	silence.text_key = &"PCH_DUDA_SILENCE"
+	silence.next_id = &"silence"
+	var choices: Array[DialogueChoice] = [puma, curaca, silence]
+	start.choices = choices
+	var nodes: Array[DialogueNode] = [start]
+	var puma_node: DialogueNode = _answer_node(&"puma", &"PCH_NPC_PUMA", &"PCH_DUDA_PUMA_ANSWER")
+	puma_node.effects = _effects([_flag_effect(&"apoyo_puma"),
+		_reputation_effect(&"llacta", 1), _reputation_effect(&"cusco", -1)])
+	nodes.append(puma_node)
+	var curaca_node: DialogueNode = _answer_node(&"curaca", &"PCH_NPC_CURACA", &"PCH_DUDA_CURACA_ANSWER")
+	curaca_node.effects = _effects([_flag_effect(&"apoyo_curaca"),
+		_reputation_effect(&"cusco", 1)])
+	nodes.append(curaca_node)
+	var silence_node: DialogueNode = _answer_node(&"silence", &"PCH_NPC_CURACA", &"PCH_DUDA_SILENCE_ANSWER")
+	silence_node.effects = _effects([_flag_effect(&"apoyo_silencio")])
+	nodes.append(silence_node)
+	graph.nodes = nodes
+	return graph
+
+
+## El mensajero llega cuando la llacta ya respondió a tres encargos.
+func _spawn_messenger() -> void:
+	if _messenger_spawned:
+		return
+	_messenger_spawned = true
+	var npcs: Node3D = get_node_or_null("Llacta/NPCs") as Node3D
+	var actor: NpcActor = _add_npc(npcs, "Mensajero", Vector3(-3.0, 0.0, 3.0), Color(0.55, 0.42, 0.32, 1.0))
+	if actor != null:
+		actor.watch_target = player
+		actor.face(_plaza_center_flat(), true)
+	var point: CampPoint = _add_request_point("MessengerPoint", Vector3(-3.0, 0.9, 3.0), &"PCH_TALK_MESSENGER", _on_messenger_requested)
+	if point != null:
+		point.name = "MessengerPoint"
+
+
+func _on_messenger_requested() -> void:
+	if dialogue == null or _assembly_started:
+		return
+	if dialogue.is_active():
+		return
+	if CampaignState.has_flag(&"noticia_chanca"):
+		if hud != null:
+			hud.show_subtitle(tr("PCH_MSG_AGAIN"), 0.0)
+		return
+	if dialogue.start(_build_messenger_dialogue()):
+		player.begin_dialogue(null)
+
+
+func _build_messenger_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_MENSAJERO"
+	start.text_key = &"PCH_MSG_INTRO"
+	start.next_id = &"end"
+	var water: DialogueChoice = DialogueChoice.new()
+	water.text_key = &"PCH_MSG_WATER"
+	water.next_id = &"water"
+	water.conditions = _conditions([_item_condition(&"agua")])
+	var maize: DialogueChoice = DialogueChoice.new()
+	maize.text_key = &"PCH_MSG_MAIZE"
+	maize.next_id = &"maize"
+	maize.conditions = _conditions([_item_condition(&"maiz")])
+	var listen: DialogueChoice = DialogueChoice.new()
+	listen.text_key = &"PCH_MSG_LISTEN"
+	listen.next_id = &"listen"
+	var choices: Array[DialogueChoice] = [water, maize, listen]
+	start.choices = choices
+	var nodes: Array[DialogueNode] = [start]
+	var water_node: DialogueNode = _answer_node(&"water", &"PCH_NPC_MENSAJERO", &"PCH_MSG_WATER_ANSWER")
+	water_node.effects = _effects([_item_remove_effect(&"agua"), _flag_effect(&"mensajero_ayudado"),
+		_flag_effect(&"noticia_chanca"), _reputation_effect(&"llacta", 1)])
+	nodes.append(water_node)
+	var maize_node: DialogueNode = _answer_node(&"maize", &"PCH_NPC_MENSAJERO", &"PCH_MSG_MAIZE_ANSWER")
+	maize_node.effects = _effects([_item_remove_effect(&"maiz"), _flag_effect(&"mensajero_ayudado"),
+		_flag_effect(&"noticia_chanca"), _reputation_effect(&"llacta", 1)])
+	nodes.append(maize_node)
+	var listen_node: DialogueNode = _answer_node(&"listen", &"PCH_NPC_MENSAJERO", &"PCH_MSG_LISTEN_ANSWER")
+	listen_node.effects = _effects([_flag_effect(&"noticia_chanca")])
+	nodes.append(listen_node)
+	graph.nodes = nodes
+	return graph
+
+
+func _flag_effect(key: StringName) -> DialogueEffect:
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.SET_FLAG
+	effect.key = key
+	effect.amount = 1
+	return effect
+
+
+func _reputation_effect(group: StringName, amount: int) -> DialogueEffect:
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.REPUTATION
+	effect.group = group
+	effect.amount = amount
+	return effect
+
+
+func _item_remove_effect(key: StringName) -> DialogueEffect:
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.ITEM_REMOVE
+	effect.key = key
+	effect.amount = 1
+	return effect
+
+
+func _item_condition(key: StringName) -> DialogueCondition:
+	var condition: DialogueCondition = DialogueCondition.new()
+	condition.kind = DialogueCondition.Kind.ITEM
+	condition.key = key
+	condition.minimum = 1
+	return condition
+
+
+func _conditions(items: Array[DialogueCondition]) -> Array[DialogueCondition]:
+	return items
+
+
+func _effects(items: Array[DialogueEffect]) -> Array[DialogueEffect]:
+	return items
 
 
 ## Registra un encargo: da su recurso, fija el oficio en el primero y avisa.
@@ -921,17 +1272,23 @@ func _on_task_completed(task_id: StringName) -> void:
 		var item: ItemDefinition = _make_quest_item(TASK_ITEM_IDS[index], TASK_ITEM_KEYS[index])
 		if inventory != null and item != null:
 			inventory.add(item, 1)
+	if character != null:
+		character.register_skill_use(_skill_for_task(task_id), 4)
 	if _oficio == &"":
 		_oficio = task_id
-		if character != null:
-			character.register_skill_use(_skill_for_task(task_id), 3)
+		CampaignProgress.set_oficio(_oficio)
+	CampaignProgress.save(self)
 	if hud != null:
 		hud.show_hint(tr("PCH_TASK_DONE") % _tasks_done.size(), 3.0)
 		if index >= 0:
 			hud.show_subtitle(tr(String(TASK_DONE_KEYS[index])), 0.0)
 	SessionLog.mark(&"task", String(task_id))
-	if _tasks_done.size() >= TASKS_REQUIRED and hud != null:
-		hud.show_objective(tr("PCH_OBJ_WAIT"))
+	if _tasks_done.size() >= TASKS_REQUIRED:
+		if journal != null:
+			journal.complete_quest(&"encargos")
+		_spawn_messenger()
+		if hud != null:
+			hud.show_objective(tr("PCH_OBJ_MESSENGER"))
 
 
 func _make_quest_item(id: StringName, name_key: StringName) -> ItemDefinition:
@@ -1033,20 +1390,25 @@ func _apply_act_mood() -> void:
 		return
 	var environment: Environment = world_environment.environment
 	if act == 4:
-		sun.light_energy = 0.85
+		sun.light_energy = 0.95
 		sun.light_color = Color(1.0, 0.78, 0.6, 1.0)
 		if environment != null:
-			environment.ambient_light_energy = 0.7
+			environment.ambient_light_energy = 0.85
 		var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
 		if fire != null:
 			fire.visible = false
 		_add_ruin(Vector3(-19.0, 0.0, 9.5), "RuinWest")
 		_add_ruin(Vector3(19.0, 0.0, 11.5), "RuinEast")
+		_add_ruin(Vector3(-33.0, 0.0, 3.0), "RuinNorthWest")
+		_add_ruin(Vector3(33.0, 0.0, -5.0), "RuinNorthEast")
 	else:
 		sun.light_energy = 1.35
 		sun.light_color = Color(1.0, 0.87, 0.7, 1.0)
 		if environment != null:
 			environment.ambient_light_energy = 1.0
+		var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
+		if fire != null:
+			fire.visible = true
 
 
 func _add_ruin(at: Vector3, node_name: String) -> void:

@@ -187,3 +187,15 @@ El mapa no cita fuentes nuevas: se apoya en PCH-006 y en la geografía interna d
 - [x] No aparece ningún territorio, frontera, río ni pueblo que no esté en la ficha.
 
 Verificado por: responsable del proyecto · Fecha: 2026-11-12
+
+## 10. PCH-032 a PCH-036 — Verificación documental (2026-11-15)
+
+Las cinco fichas nuevas se verificaron sobre las ediciones digitales citadas en el registro:
+
+- **PCH-032:** Betanzos, I parte, caps. VI–X (pp. 19–62); Sarmiento, caps. XXV–XXVII; Rostworowski (1988). La asamblea concreta es R.
+- **PCH-033:** Betanzos, I parte, caps. VI–X; Sarmiento, caps. XXV–XXVII; Garcilaso, lib. V. La muerte se cuenta como noticia.
+- **PCH-034:** Betanzos, I parte, caps. VI–X; Sarmiento, caps. XXV–XXVII; Rostworowski (1953). El nombre se presenta como tradición.
+- **PCH-035:** PCH-007, PCH-008 y PCH-021; la reconstrucción se infiere de las técnicas documentadas.
+- **PCH-036:** PCH-003, PCH-024 y PCH-030; la patrulla es ficción declarada.
+
+Revisión documental: agente · Fecha: 2026-11-15. El responsable del proyecto puede añadir su firma cuando contraste las ediciones en papel.

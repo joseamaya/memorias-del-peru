@@ -10,6 +10,7 @@ extends Node
 signal flag_changed(key: StringName, value: int)
 
 var _flags: Dictionary[StringName, int] = {}
+var _data: Dictionary[StringName, Variant] = {}
 
 
 ## Fija una bandera y emite el cambio.
@@ -40,6 +41,28 @@ func get_flags() -> Dictionary[StringName, int]:
 	return _flags.duplicate()
 
 
-## Borra todas las banderas; se llama al empezar una campaña nueva.
+## Guarda un dato de campaña que no es una bandera (inventario, oficio, punto
+## de control). El llamador no debe mutar el valor después de guardarlo.
+func set_data(key: StringName, value: Variant) -> void:
+	if key == &"":
+		return
+	if value == null:
+		_data.erase(key)
+		return
+	_data[key] = value
+
+
+## Devuelve un dato de campaña, o [param default_value] si no existe.
+func get_data(key: StringName, default_value: Variant = null) -> Variant:
+	return _data.get(key, default_value)
+
+
+## Indica si existe un dato de campaña.
+func has_data(key: StringName) -> bool:
+	return _data.has(key)
+
+
+## Borra todas las banderas y datos; se llama al empezar una campaña nueva.
 func clear() -> void:
 	_flags.clear()
+	_data.clear()

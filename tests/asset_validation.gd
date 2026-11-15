@@ -1,6 +1,6 @@
 class_name AssetValidation
 extends RefCounted
-## Reglas de los modelos definitivos (alcance del vertical slice, §7).
+## Reglas de los modelos definitivos (reglas de los modelos definitivos, §7).
 ##
 ## Auxiliar de las pruebas: el ejecutor solo carga `test_*.gd`, así que este
 ## archivo se usa con preload(). Trabaja sobre la escena ya instanciada, de modo

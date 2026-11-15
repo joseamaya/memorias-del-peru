@@ -41,6 +41,8 @@ const TRUNK_RADIUS: float = 0.35
 const TRUNK_HEIGHT: float = 2.4
 const ICHU_WIND_BEND: float = 0.17
 const QUENUA_WIND_BEND: float = 0.008
+## Entierra un poco el tronco para que la copa no parezca flotar en la ladera.
+const QUENUA_SINK: float = 0.22
 ## Radio libre alrededor de cada roquedal.
 const ROCK_CLEARANCE: float = 2.6
 
@@ -148,7 +150,7 @@ func quenua_placements() -> Array[Placement]:
 				continue
 			trunks.append(point)
 			var rotation_basis: Basis = Basis(Vector3.UP, heading).scaled(Vector3.ONE * size_factor)
-			var origin: Vector3 = Vector3(point.x, _height_at(point.x, point.y), point.y)
+			var origin: Vector3 = Vector3(point.x, _height_at(point.x, point.y) - QUENUA_SINK, point.y)
 			result.append(Placement.new(Transform3D(rotation_basis, origin), variant))
 			placed += 1
 	return result

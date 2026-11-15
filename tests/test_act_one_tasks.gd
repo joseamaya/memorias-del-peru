@@ -6,6 +6,7 @@ const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/llacta.ts
 
 
 func test_act_one_tasks() -> bool:
+	CampaignState.clear()
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	if tree == null:
 		return false
@@ -34,8 +35,19 @@ func test_act_one_tasks() -> bool:
 	telar.interact(player)
 	ok = ok and inventory.has(&"agua") and inventory.has(&"maiz") and inventory.has(&"manta")
 	ok = ok and agua.is_done() and maiz.is_done() and telar.is_done()
-	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_WAIT")
+	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_MESSENGER")
 	# El cuarto encargo sigue disponible, pero ya no hace falta.
 	ok = ok and pirca.is_available()
+	var messenger: CampPoint = world.get_node_or_null("MessengerPoint") as CampPoint
+	ok = ok and messenger != null
+	if messenger != null:
+		messenger.interact(player)
+		ok = ok and hud.is_dialogue_open()
+		ok = ok and hud.get_dialogue_panel().get_choice_count() == 3
+		hud.get_dialogue_panel().choice_selected.emit(0)
+		world.call("_on_dialogue_advanced")
+		ok = ok and CampaignState.has_flag(&"noticia_chanca")
+		ok = ok and hud.get_objective_text() == tr("PCH_OBJ_ASAMBLEA")
 	world.free()
+	CampaignState.clear()
 	return ok

@@ -11,22 +11,20 @@ const START_KEY: StringName = &"UI_START"
 const QUIT_KEY: StringName = &"UI_QUIT"
 const BACKGROUND_COLOR: Color = Color(0.05, 0.04, 0.035, 1.0)
 const BACKGROUND_TEXTURE: String = "res://shared_assets/ui/title_background.png"
+const MUSIC_PATH: String = "res://shared_assets/audio/musica_intro_over_the_andes.ogg"
 const TITLE_FONT_SIZE: int = 82
 const SUBTITLE_FONT_SIZE: int = 32
 const BUTTON_FONT_SIZE: int = 26
 const BUTTON_WIDTH: float = 300.0
 const OVERLAY_COLOR: Color = Color(0.02, 0.018, 0.015, 0.62)
 const TITLE_COLOR: Color = Color(0.98, 0.94, 0.84, 1.0)
-## Selector de acto para desarrollo: `--act=2` o `--act=3`.
-const ACT_ARG: String = "--act="
-const ACT_TWO_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/paso.tscn"
-const ACT_THREE_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/ciudad.tscn"
 
 var _campaign: CampaignInfo = null
 var _title_label: Label = null
 var _subtitle_label: Label = null
 var _start_button: Button = null
 var _quit_button: Button = null
+var _music: AudioStreamPlayer = null
 
 
 func _ready() -> void:
@@ -35,6 +33,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_campaign = CampaignInfo.load_configured()
 	_build()
+	_start_music()
 	_start_button.disabled = _campaign == null or not _campaign.has_entry_scene()
 	_start_button.grab_focus()
 
@@ -70,16 +69,8 @@ func get_quit_button() -> Button:
 	return _quit_button
 
 
-## Escena de inicio: la de la campaña o la que pida `--act=2|3`.
+## Escena de inicio de la campaña configurada.
 func get_start_scene() -> String:
-	for arg: String in OS.get_cmdline_user_args():
-		if not arg.begins_with(ACT_ARG):
-			continue
-		var act: String = arg.substr(ACT_ARG.length())
-		if act == "2":
-			return ACT_TWO_SCENE
-		if act == "3":
-			return ACT_THREE_SCENE
 	return _campaign.entry_scene if _campaign != null else ""
 
 
@@ -91,6 +82,7 @@ func start_campaign() -> bool:
 	if manager != null:
 		manager.call("set_paused", false)
 	CampaignState.clear()
+	_stop_music()
 	var scene: String = get_start_scene()
 	if scene.is_empty():
 		return false
@@ -101,6 +93,7 @@ func start_campaign() -> bool:
 
 
 func _on_quit_pressed() -> void:
+	_stop_music()
 	var manager: Node = get_node_or_null("/root/GameManager")
 	if manager != null:
 		manager.call("request_quit")
@@ -110,6 +103,29 @@ func _on_quit_pressed() -> void:
 
 func _on_start_pressed() -> void:
 	start_campaign()
+
+
+func _start_music() -> void:
+	if AudioServer.get_driver_name() == "Dummy":
+		return
+	if not ResourceLoader.exists(MUSIC_PATH):
+		return
+	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
+	if stream == null:
+		return
+	_music = AudioStreamPlayer.new()
+	_music.name = "TitleMusic"
+	_music.stream = stream
+	_music.volume_db = -12.0
+	if AudioServer.get_bus_index(&"Music") >= 0:
+		_music.bus = &"Music"
+	add_child(_music)
+	_music.play()
+
+
+func _stop_music() -> void:
+	if _music != null and _music.playing:
+		_music.stop()
 
 
 func _build() -> void:

@@ -54,15 +54,28 @@ func _act_one() -> void:
 	if player == null or hud == null:
 		world.free()
 		return
-	for task_name: String in ["TaskAgua", "TaskMaiz", "TaskTelar"]:
+	for task_name: String in ["TaskAgua", "TaskPirca", "TaskTelar"]:
 		var task: Node = world.get_node_or_null(task_name)
 		if task != null:
 			task.call("interact", player)
 			await _wait(0.9)
+	var messenger: Node = world.get_node_or_null("MessengerPoint")
+	if messenger != null:
+		messenger.call("interact", player)
+		await _wait(1.2)
+		_choose_last(hud)
+		await _wait(0.8)
+		world.call("_on_dialogue_advanced")
+		await _wait(1.2)
+	for index: int in range(3):
+		var account: Node = world.get_node_or_null("Account%d" % index)
+		if account != null:
+			account.call("interact", player)
+			await _wait(0.7)
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	world.call("_process", 0.1)
 	await _wait(1.5)
-	_choose(hud, 0)
+	_choose(hud, 1)
 	await _wait(1.6)
 	world.call("_on_dialogue_advanced")
 	await _wait(2.2)
@@ -80,11 +93,20 @@ func _act_two() -> void:
 	if player == null or hud == null or camp == null:
 		paso.free()
 		return
+	var sisa: Node = paso.get_node_or_null("SisaPoint")
+	if sisa != null:
+		sisa.call("interact", player)
+		await _wait(1.0)
+		_choose(hud, 0)
+		paso.call("_on_dialogue_advanced")
+		await _wait(0.8)
 	camp.call("interact", player)
 	await _wait(1.2)
-	_choose(hud, 0)
+	_choose(hud, 2)
 	paso.call("_on_dialogue_advanced")
 	await _wait(1.0)
+	paso.call("_on_sneak_requested")
+	await _wait(0.8)
 	paso.call("_start_ambush")
 	await _wait(1.5)
 	for index: int in range(1, 5):
@@ -115,6 +137,13 @@ func _act_three() -> void:
 	if player == null or hud == null:
 		ciudad.free()
 		return
+	var arrival: Node = ciudad.get_node_or_null("ArrivalPoint")
+	if arrival != null:
+		arrival.call("interact", player)
+		await _wait(1.0)
+		_choose(hud, 0)
+		ciudad.call("_on_dialogue_advanced")
+		await _wait(1.0)
 	for index: int in range(3):
 		var point: Node = ciudad.get_node_or_null("Recruit%d" % index)
 		if point != null:
@@ -123,19 +152,31 @@ func _act_three() -> void:
 			_choose(hud, 0)
 			ciudad.call("_on_dialogue_advanced")
 			await _wait(0.8)
+	var prep: Node = ciudad.get_node_or_null("Prep2")
+	if prep != null:
+		prep.call("interact", player)
+		await _wait(1.0)
+	var trap: Node = ciudad.get_node_or_null("TrapPoint")
+	if trap != null:
+		trap.call("interact", player)
+		await _wait(1.0)
+		_choose(hud, 0)
+		ciudad.call("_on_dialogue_advanced")
+		await _wait(1.0)
 	var cusi: Node = ciudad.get_node_or_null("CusiPoint")
 	if cusi != null:
 		cusi.call("interact", player)
 		await _wait(1.0)
 		_choose(hud, 0)
 		ciudad.call("_on_dialogue_advanced")
-	await _wait(2.0)
-	for index: int in range(1, 5):
-		var enemy: Node = ciudad.get_node_or_null("Defender%d" % index)
-		if enemy != null:
-			enemy.call("take_hit", 200.0)
-	ciudad.call("_physics_process", 0.1)
-	await _wait(3.0)
+	await _wait(1.5)
+	for _wave: int in range(3):
+		for child: Node in ciudad.get_children():
+			if child is AmbushEnemy and (child as AmbushEnemy).is_alive():
+				child.call("take_hit", 200.0)
+		ciudad.call("_physics_process", 0.1)
+		await _wait(1.0)
+	await _wait(2.5)
 	ciudad.free()
 
 
@@ -149,6 +190,11 @@ func _act_four() -> void:
 	if player == null or hud == null:
 		world.free()
 		return
+	for index: int in range(3):
+		var account: Node = world.get_node_or_null("Account%d" % index)
+		if account != null:
+			account.call("interact", player)
+			await _wait(0.7)
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	world.call("_process", 0.1)
 	await _wait(2.0)
@@ -168,7 +214,7 @@ func _act_five() -> void:
 	if player == null:
 		world.free()
 		return
-	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia"]:
+	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar"]:
 		var task: Node = world.get_node_or_null(task_name)
 		if task != null:
 			task.call("interact", player)
@@ -198,3 +244,9 @@ func _choose(hud: Node, index: int) -> void:
 	var panel: Node = hud.get_node_or_null("DialoguePanel")
 	if panel != null:
 		panel.emit_signal("choice_selected", index)
+
+
+func _choose_last(hud: Node) -> void:
+	var panel: DialoguePanel = hud.get_node_or_null("DialoguePanel") as DialoguePanel
+	if panel != null:
+		panel.emit_signal("choice_selected", panel.get_choice_count() - 1)

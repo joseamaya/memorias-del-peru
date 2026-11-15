@@ -55,6 +55,7 @@ const CLOUD_DOME_RINGS: int = 24
 var character: CharacterState = null
 var player_combatant: Combatant = null
 var inventory: Inventory = null
+var journal: Journal = null
 var dialogue: DialogueRunner = null
 
 var _camp_graph: DialogueGraph = null
@@ -87,7 +88,11 @@ func _ready() -> void:
 	hud.bind(player, player.stamina)
 	_setup_player_combat()
 	_setup_inventory_and_dialogue()
+	CampaignProgress.apply(self)
+	if CampaignProgress.is_respawn_pending():
+		CampaignProgress.restore_checkpoint(self)
 	_setup_camp()
+	_setup_march()
 	_setup_alternatives()
 	_setup_enemies()
 	_setup_trigger()
@@ -95,6 +100,7 @@ func _ready() -> void:
 	_setup_audio()
 	hint_label.text = ""
 	_update_status()
+	CampaignProgress.save_checkpoint(self, player.global_position)
 	SessionLog.mark(&"act", "paso")
 
 
@@ -164,13 +170,32 @@ func _unhandled_input(event: InputEvent) -> void:
 			_blocking = mouse.pressed
 			get_viewport().set_input_as_handled()
 			return
+	if event.is_action_pressed("journal"):
+		if hud == null or journal == null or dialogue == null or _completed or _dead:
+			return
+		if _ambush_started or hud.is_dialogue_open():
+			return
+		if hud.is_journal_open():
+			hud.hide_journal()
+			player.set_controls_locked(false)
+		else:
+			hud.show_journal(journal)
+			player.set_controls_locked(true)
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey:
 		var key: InputEventKey = event as InputEventKey
 		if key.pressed and not key.echo and key.keycode == KEY_R and (_dead or _completed):
 			if _completed:
+				CampaignProgress.save(self)
 				get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/ciudad.tscn")
 			else:
+				CampaignProgress.request_respawn()
 				get_tree().reload_current_scene()
+
+
+func _on_journal_closed() -> void:
+	player.set_controls_locked(false)
 
 
 func _attack() -> void:
@@ -212,6 +237,7 @@ func _start_ambush() -> void:
 		hud.show_subtitle(tr("PCH_PASO_SNEAK"), 0.0)
 		_finish_ambush()
 		return
+	CampaignState.set_flag(&"paso_cruzado", 1)
 	_start_drum()
 	if _distracted:
 		for index: int in range(2, _enemies.size()):
@@ -226,9 +252,9 @@ func _finish_ambush() -> void:
 	_stop_drum()
 	SessionLog.mark(&"ambush_end", "vivos=%d" % alive_enemies())
 	_aftermath_pending = true
+	CampaignProgress.save_checkpoint(self, player.global_position)
 	hud.show_subtitle(tr("PCH_PASO_CLEAR"), 0.0)
-	var entry: StringName = &"maize" if _sneak else &"start"
-	if dialogue != null and _aftermath_graph != null and dialogue.start(_aftermath_graph, entry):
+	if dialogue != null and _aftermath_graph != null and dialogue.start(_aftermath_graph, &"start"):
 		player.begin_dialogue(null)
 	else:
 		_aftermath_pending = false
@@ -288,6 +314,10 @@ func _setup_inventory_and_dialogue() -> void:
 	coca.stamina_restore = 25.0
 	coca.morale_change = -5.0
 	inventory.add(coca, 2)
+	journal = Journal.new()
+	journal.name = "Journal"
+	player.add_child(journal)
+	hud.journal_closed.connect(_on_journal_closed)
 	dialogue = DialogueRunner.new()
 	dialogue.name = "DialogueRunner"
 	dialogue.character = character
@@ -410,6 +440,7 @@ func _on_camp_requested() -> void:
 	if dialogue.is_active():
 		return
 	if dialogue.start(_camp_graph):
+		CampaignProgress.save_checkpoint(self, player.global_position)
 		var target: Node3D = _camp_visuals[0] if not _camp_visuals.is_empty() else null
 		player.begin_dialogue(target)
 
@@ -422,6 +453,18 @@ func _build_camp_dialogue() -> DialogueGraph:
 	start.speaker_key = &"PCH_NPC_CURACA"
 	start.text_key = &"PCH_CAMP_INTRO"
 	start.next_id = &"end"
+	var water: DialogueChoice = DialogueChoice.new()
+	water.text_key = &"PCH_PASO_WATER"
+	water.next_id = &"water"
+	water.conditions = _conditions([_item_condition(&"agua")])
+	var maize: DialogueChoice = DialogueChoice.new()
+	maize.text_key = &"PCH_PASO_MAIZE"
+	maize.next_id = &"maize"
+	maize.conditions = _conditions([_item_condition(&"maiz")])
+	var manta: DialogueChoice = DialogueChoice.new()
+	manta.text_key = &"PCH_PASO_MANTA"
+	manta.next_id = &"manta"
+	manta.conditions = _conditions([_item_condition(&"manta")])
 	var rest: DialogueChoice = DialogueChoice.new()
 	rest.text_key = &"PCH_CAMP_REST"
 	rest.next_id = &"rest"
@@ -440,8 +483,13 @@ func _build_camp_dialogue() -> DialogueGraph:
 	var leave: DialogueChoice = DialogueChoice.new()
 	leave.text_key = &"PCH_DLG_LEAVE"
 	leave.next_id = &"end"
-	var choices: Array[DialogueChoice] = [rest, push, share, leave]
+	var choices: Array[DialogueChoice] = [water, maize, manta, rest, push, share, leave]
 	start.choices = choices
+	var water_node: DialogueNode = _dialogue_answer(&"water", &"PCH_PASO_WATER_DONE", &"agua_bebida")
+	_append_effect(water_node, _item_remove_effect(&"agua"))
+	var maize_node: DialogueNode = _dialogue_answer(&"maize", &"PCH_PASO_MAIZE_DONE", &"maiz_comido")
+	_append_effect(maize_node, _item_remove_effect(&"maiz"))
+	var manta_node: DialogueNode = _dialogue_answer(&"manta", &"PCH_PASO_MANTA_DONE", &"manta_usada")
 	var rest_node: DialogueNode = _dialogue_answer(&"rest", &"PCH_CAMP_REST_DONE", &"descanso")
 	var push_node: DialogueNode = _dialogue_answer(&"push", &"PCH_CAMP_PUSH_DONE", &"marcha_nocturna")
 	var coca_node: DialogueNode = _dialogue_answer(&"coca", &"PCH_CAMP_COCA_DONE", &"coca_compartida")
@@ -452,7 +500,7 @@ func _build_camp_dialogue() -> DialogueGraph:
 	var coca_effects: Array[DialogueEffect] = coca_node.effects
 	coca_effects.append(coca_effect)
 	coca_node.effects = coca_effects
-	var nodes: Array[DialogueNode] = [start, rest_node, push_node, coca_node]
+	var nodes: Array[DialogueNode] = [start, water_node, maize_node, manta_node, rest_node, push_node, coca_node]
 	graph.nodes = nodes
 	return graph
 
@@ -567,8 +615,119 @@ func _on_dialogue_finished() -> void:
 func _on_dialogue_flag(key: StringName, value: int) -> void:
 	CampaignState.set_flag(key, value)
 	SessionLog.mark(&"flag", "%s=%d" % [String(key), value])
-	if key == &"descanso" and value != 0 and character != null:
+	if value == 0 or character == null:
+		return
+	if key == &"descanso":
 		character.heal(25.0)
+	elif key == &"agua_bebida":
+		character.heal(10.0)
+		if player.stamina != null:
+			player.stamina.restore(30.0)
+	elif key == &"maiz_comido":
+		character.change_morale(15.0)
+	elif key == &"manta_usada":
+		character.change_morale(10.0)
+	elif key == &"marcha_nocturna":
+		character.change_morale(-5.0)
+	elif key == &"coca_compartida" or key == &"marcha_sisa":
+		var trust: int = mini(CampaignState.get_flag(&"confianza_sisa") + 1, 2)
+		CampaignState.set_flag(&"confianza_sisa", trust)
+		if key == &"marcha_sisa":
+			character.register_skill_use(&"monte", 2)
+
+
+## II.1: Sisa comparte el camino antes de la emboscada.
+func _setup_march() -> void:
+	_add_camp_npc(Vector3(2.0, 0.0, 28.0), &"villager", 0)
+	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+	var point: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if point == null or body == null:
+		instance.free()
+		return
+	point.name = "SisaPoint"
+	point.prompt_key = &"PCH_PASO_TALK_SISA"
+	body.position = Vector3(2.0, 0.9, 28.0)
+	add_child(point)
+	point.requested.connect(_on_march_requested)
+
+
+func _on_march_requested() -> void:
+	if dialogue == null or _ambush_started or _completed or _dead:
+		return
+	if dialogue.is_active():
+		return
+	if dialogue.start(_build_march_dialogue()):
+		player.begin_dialogue(null)
+
+
+func _build_march_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_SISA"
+	start.text_key = &"PCH_PASO_MARCH_INTRO"
+	start.next_id = &"end"
+	var listen: DialogueChoice = DialogueChoice.new()
+	listen.text_key = &"PCH_PASO_MARCH_LISTEN"
+	listen.next_id = &"listen"
+	var silent: DialogueChoice = DialogueChoice.new()
+	silent.text_key = &"PCH_PASO_MARCH_SILENT"
+	silent.next_id = &"silent"
+	var choices: Array[DialogueChoice] = [listen, silent]
+	start.choices = choices
+	var listen_node: DialogueNode = DialogueNode.new()
+	listen_node.id = &"listen"
+	listen_node.speaker_key = &"PCH_NPC_SISA"
+	listen_node.text_key = &"PCH_PASO_MARCH_LISTEN_ANSWER"
+	listen_node.next_id = &"end"
+	var listen_effect: DialogueEffect = DialogueEffect.new()
+	listen_effect.kind = DialogueEffect.Kind.SET_FLAG
+	listen_effect.key = &"marcha_sisa"
+	listen_effect.amount = 1
+	var listen_effects: Array[DialogueEffect] = [listen_effect]
+	listen_node.effects = listen_effects
+	var silent_node: DialogueNode = DialogueNode.new()
+	silent_node.id = &"silent"
+	silent_node.speaker_key = &"PCH_NPC_SISA"
+	silent_node.text_key = &"PCH_PASO_MARCH_SILENT_ANSWER"
+	silent_node.next_id = &"end"
+	var silent_effect: DialogueEffect = DialogueEffect.new()
+	silent_effect.kind = DialogueEffect.Kind.SET_FLAG
+	silent_effect.key = &"marcha_silencio"
+	silent_effect.amount = 1
+	var silent_effects: Array[DialogueEffect] = [silent_effect]
+	silent_node.effects = silent_effects
+	var nodes: Array[DialogueNode] = [start, listen_node, silent_node]
+	graph.nodes = nodes
+	return graph
+
+
+func _item_condition(key: StringName) -> DialogueCondition:
+	var condition: DialogueCondition = DialogueCondition.new()
+	condition.kind = DialogueCondition.Kind.ITEM
+	condition.key = key
+	condition.minimum = 1
+	return condition
+
+
+func _conditions(items: Array[DialogueCondition]) -> Array[DialogueCondition]:
+	return items
+
+
+func _item_remove_effect(key: StringName) -> DialogueEffect:
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.ITEM_REMOVE
+	effect.key = key
+	effect.amount = 1
+	return effect
+
+
+func _append_effect(node: DialogueNode, effect: DialogueEffect) -> void:
+	var effects: Array[DialogueEffect] = node.effects
+	effects.append(effect)
+	node.effects = effects
 
 
 func _setup_alternatives() -> void:
@@ -597,7 +756,12 @@ func _on_distract_requested() -> void:
 		return
 	_distraction_done = true
 	_distracted = true
-	hud.show_subtitle(tr("PCH_PASO_DISTRACT"), 0.0)
+	if inventory != null and inventory.has(&"cuerda"):
+		inventory.remove(&"cuerda", 1)
+		CampaignState.set_flag(&"distraccion_cuerda", 1)
+		hud.show_subtitle(tr("PCH_PASO_DISTRACT_CUERDA"), 0.0)
+	else:
+		hud.show_subtitle(tr("PCH_PASO_DISTRACT"), 0.0)
 
 
 func _on_sneak_requested() -> void:
@@ -605,9 +769,14 @@ func _on_sneak_requested() -> void:
 		return
 	if dialogue != null and dialogue.is_active():
 		return
+	if character == null or character.get_skill(&"monte") < 2:
+		hud.show_subtitle(tr("PCH_PASO_SNEAK_FAIL"), 0.0)
+		return
 	_sneak_done = true
 	_sneak = true
-	hud.show_subtitle(tr("PCH_PASO_SNEAK"), 0.0)
+	CampaignState.set_flag(&"mensaje_chanca", 1)
+	CampaignState.set_flag(&"paso_cruzado", 1)
+	hud.show_subtitle(tr("PCH_PASO_SNEAK_INFO"), 0.0)
 
 
 func _setup_enemies() -> void:
@@ -699,6 +868,12 @@ func _build_terrain() -> void:
 	mesh_instance.mesh = mesh
 	var material: ShaderMaterial = SurfaceMaterials.terrain_material(GRASS_COLOR, ROCK_COLOR, DIRT_COLOR)
 	material.set_shader_parameter("steep_height_range", Vector2(2.5, 6.0))
+	# El paso tiene laderas muy tendidas: el detalle triplanar se repite si se
+	# lee a escala de sendero. Se baja el detalle y se sube la variación macro.
+	material.set_shader_parameter("detail_strength", 0.25)
+	material.set_shader_parameter("normal_strength", 0.12)
+	material.set_shader_parameter("macro_scale", 0.18)
+	material.set_shader_parameter("macro_strength", 0.65)
 	mesh_instance.material_override = material
 	# El terreno recibe sombra pero no la proyecta: es la malla más grande del
 	# mapa y su sombra no aporta volumen frente a rocas, vegetación y refugio.

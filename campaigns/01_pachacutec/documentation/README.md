@@ -41,12 +41,14 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 |---|---|
 | [biblia_campana.md](biblia_campana.md) | **Aprobada (v1.0)** — los cinco actos, el protagonista, el elenco, los sistemas y las banderas |
 | [expediente_historico.md](expediente_historico.md) | **v1.0** — cronología, lugares, personajes, cultura material, controversias y ficción declarada |
-| [registro_historico.md](registro_historico.md) | 29 fichas verificadas; PCH-025 (armadura acolchada) fuera del juego; PCH-032 a PCH-036 pendientes de verificar |
+| [registro_historico.md](registro_historico.md) | 29 fichas verificadas; PCH-025 (armadura acolchada) fuera del juego; PCH-032 a PCH-036 verificadas el 2026-11-15 |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
+| [guion_campana.md](guion_campana.md) | **Cerrado (v1.0)** — 15 secciones, fichas de misión, banderas y finales |
+| [checklist_biblia.md](checklist_biblia.md) | Checklist de diseño por acto; pendientes de duración y rendimiento |
 
 ## 6. Estado de construcción
 
-La campaña se juega de principio a fin en gris: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene elenco, encargos con recursos y asamblea; el II y el III usan el paso y el Cusco; el IV añade la asamblea de posguerra y el V la reconstrucción y el nombre nuevo. Falta el pase de arte y audio y cerrar el guion escrito. El núcleo RPG, la base técnica y la biblioteca de assets están construidos.
+La campaña se juega de principio a fin en gris: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cuatro obras y cierra con variantes. El guion está cerrado y las 97 pruebas pasan. Falta el pase de arte y audio, el equilibrio y llevar la duración a 40–50 min.
 
 ## 7. Notas de producción
 

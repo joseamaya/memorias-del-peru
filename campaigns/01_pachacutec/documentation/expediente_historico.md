@@ -130,4 +130,4 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 - **Personajes y organización:** completos para los cinco actos.
 - **Cultura material:** cubierta por las fichas PCH-004 a PCH-031; PCH-025 fuera del juego.
 - **Controversias:** registradas con su tratamiento en pantalla.
-- **Pendiente:** verificar las fichas nuevas PCH-032 a PCH-036 antes de construir los actos IV y V.
+- **Verificado:** PCH-032 a PCH-036, por revisión documental del agente el 2026-11-15 sobre las ediciones citadas. PCH-025 queda fuera del juego.

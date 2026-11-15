@@ -49,16 +49,24 @@ func _act_one() -> bool:
 	if player == null or hud == null:
 		return false
 	var ok: bool = true
-	for task_name: String in ["TaskAgua", "TaskMaiz", "TaskTelar"]:
+	for task_name: String in ["TaskAgua", "TaskPirca", "TaskTelar"]:
 		var task: Node = world.get_node_or_null(task_name)
 		if task == null:
 			ok = false
 			break
 		task.call("interact", player)
+	var messenger: Node = world.get_node_or_null("MessengerPoint")
+	if messenger == null:
+		print("ACTO_I_SIN_MENSAJERO")
+		return false
+	messenger.call("interact", player)
+	_choose_last(hud)
+	world.call("_on_dialogue_advanced")
+	ok = ok and _flag(&"noticia_chanca")
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	world.call("_process", 0.1)
 	ok = ok and hud.call("is_dialogue_open") == true
-	_choose(hud, 0)
+	_choose(hud, 1)
 	world.call("_on_dialogue_advanced")
 	ok = ok and world.call("get", "_assembly_done") == true
 	ok = ok and _flag(&"ofrecio")
@@ -84,9 +92,11 @@ func _act_two() -> bool:
 	var ok: bool = true
 	camp.call("interact", player)
 	ok = ok and hud.call("is_dialogue_open") == true
-	_choose(hud, 0)
+	_choose(hud, 2)
 	paso.call("_on_dialogue_advanced")
 	ok = ok and _flag(&"descanso")
+	paso.call("_on_sneak_requested")
+	ok = ok and _flag(&"mensaje_chanca")
 	paso.call("_start_ambush")
 	for index: int in range(1, 5):
 		var enemy: Node = paso.get_node_or_null("Ambusher%d" % index)
@@ -123,6 +133,14 @@ func _act_three() -> bool:
 	if player == null or hud == null:
 		return false
 	var ok: bool = true
+	var arrival: Node = ciudad.get_node_or_null("ArrivalPoint")
+	if arrival == null:
+		print("ACTO_III_SIN_LLEGADA")
+		return false
+	arrival.call("interact", player)
+	_choose(hud, 0)
+	ciudad.call("_on_dialogue_advanced")
+	ok = ok and _flag(&"mensaje_entregado")
 	for index: int in range(3):
 		var point: Node = ciudad.get_node_or_null("Recruit%d" % index)
 		if point == null:
@@ -139,11 +157,11 @@ func _act_three() -> bool:
 	_choose(hud, 0)
 	ciudad.call("_on_dialogue_advanced")
 	ok = ok and ciudad.call("is_ambush_active") == true
-	for index: int in range(1, 5):
-		var enemy: Node = ciudad.get_node_or_null("Defender%d" % index)
-		if enemy != null:
-			enemy.call("take_hit", 200.0)
-	ciudad.call("_physics_process", 0.1)
+	for _wave: int in range(3):
+		for child: Node in ciudad.get_children():
+			if child is AmbushEnemy and (child as AmbushEnemy).is_alive():
+				child.call("take_hit", 200.0)
+		ciudad.call("_physics_process", 0.1)
 	ok = ok and ciudad.call("is_completed") == true
 	ok = ok and hud.call("is_end_card_visible") == true
 	if not ok:
@@ -164,6 +182,10 @@ func _act_four() -> bool:
 	var hud: Node = world.get_node_or_null("UILayer/HUD")
 	if player == null or hud == null:
 		return false
+	for index: int in range(3):
+		var account: Node = world.get_node_or_null("Account%d" % index)
+		if account != null:
+			account.call("interact", player)
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	world.call("_process", 0.1)
 	var ok: bool = hud.call("is_dialogue_open") == true
@@ -190,7 +212,7 @@ func _act_five() -> bool:
 	if player == null or hud == null:
 		return false
 	var ok: bool = true
-	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia"]:
+	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar"]:
 		var task: Node = world.get_node_or_null(task_name)
 		if task == null:
 			ok = false
@@ -236,6 +258,12 @@ func _choose(hud: Node, index: int) -> void:
 	var panel: Node = hud.get_node_or_null("DialoguePanel")
 	if panel != null:
 		panel.emit_signal("choice_selected", index)
+
+
+func _choose_last(hud: Node) -> void:
+	var panel: DialoguePanel = hud.get_node_or_null("DialoguePanel") as DialoguePanel
+	if panel != null:
+		panel.emit_signal("choice_selected", panel.get_choice_count() - 1)
 
 
 func _press_restart(scene: Node) -> void:

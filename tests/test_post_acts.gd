@@ -27,7 +27,12 @@ func test_act_four_assembly() -> bool:
 	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
 	var ok: bool = player != null and hud != null and world.get("act") == 4
-	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_POST")
+	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_ACCOUNTS")
+	for index: int in range(3):
+		var account: CampPoint = world.get_node_or_null("Account%d" % index) as CampPoint
+		if account != null:
+			account.interact(player)
+	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_ASSEMBLY")
 	player.global_position = Vector3(0.0, 0.05, 2.0)
 	world.call("_process", 0.016)
 	ok = ok and hud.is_dialogue_open()
@@ -51,11 +56,11 @@ func test_act_five_rebuild() -> bool:
 	var ok: bool = player != null and hud != null and world.get("act") == 5
 	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_REBUILD")
 	var tasks: Array[TaskPoint] = []
-	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia"]:
+	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar"]:
 		var task: TaskPoint = world.get_node_or_null(task_name) as TaskPoint
 		if task != null:
 			tasks.append(task)
-	ok = ok and tasks.size() == 3
+	ok = ok and tasks.size() == 4
 	for task: TaskPoint in tasks:
 		task.interact(player)
 	ok = ok and world.get("_act_five_done") == true and hud.is_end_card_visible()

@@ -119,4 +119,14 @@ Consecuencias de que la referencia tenga GPU integrada:
 4. Se registran FPS medio y p1, tiempo de frame, draw calls y memoria de vídeo.
 5. La medición se repite al cerrar cada acto y al cambiar la escena.
 
-**Estado:** las mediciones se harán sobre el arco nuevo, acto por acto, cuando existan sus escenas. No se heredan cifras de escenarios retirados.
+**Estado:** medido sobre el arco nuevo el 2026-11-15 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con un proceso nuevo por acto. La herramienta es `tests/scenes/measure_performance.tscn`.
+
+| Acto | Perfil Bajo (3 pasadas, mediana) | Perfil Medio (1 pasada) | Draw calls (Bajo) | Memoria de vídeo (Bajo) |
+|---|---|---|---|---|
+| I — Llacta | 52,7 FPS | 52,1 FPS | 301 | 187,8 MB |
+| II — Paso | 46,6 FPS | 52,6 FPS | 212 | 169,6 MB |
+| III — Cusco | 51,7 FPS | 48,4 FPS | 348 | 214,8 MB |
+| IV — Posguerra | 52,0 FPS | 50,9 FPS | 249 | 188,1 MB |
+| V — Obra | 52,6 FPS | 52,1 FPS | 296 | 183,3 MB |
+
+El perfil Bajo cumple el objetivo vinculante de ≥ 30 FPS. El perfil Medio no alcanza el objetivo comprometido de ≥ 60 FPS: queda entre 48 y 53 FPS. La Fase 4 sigue abierta hasta cerrar esa brecha o declararla aceptada en la bitácora.

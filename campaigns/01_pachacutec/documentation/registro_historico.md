@@ -77,7 +77,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-006 — Llacta / asentamiento
 - Tipo: lugar
 - Clasificación: A (asentamientos excavados) / R (esta llacta concreta)
-- Uso en el juego: escena completa `mundo_base.tscn`
+- Uso en el juego: escenas `llacta.tscn`, `llacta_act4.tscn` y `llacta_act5.tscn`
 - Fuentes:
   - A: R. Alan Covey, Kylie E. Quave y otros, «Settlement discontinuity at Ak'awillay and the development of the Inca imperial capital region», *Antiquity* 99 (404): 481–499 (2025), acceso abierto: https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B. Las prospecciones de cobertura total registran «approximately 1000 Late Intermediate Period sites» en la región del Cusco (p. 483). En el valle de Xaquixaguana, «approximately 150 small villages and hamlets occupied the alluvial terraces and low hillslopes near the valley floor» (p. 487). Se han excavado sitios preimperiales mayores (Chokepukio, Wat'a, Pukara Pantillijlla) y contextos de «local households, tombs and public spaces» (pp. 483–484).
   - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. III «De sus pueblos y casas» (pp. 163–164): «Los quichuas llaman al pueblo Llacta»; los pueblos «eran pequeños como aldeas de á cien vecinos para abajo».
@@ -89,7 +89,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-007 — Vivienda rural de piedra y barro
 - Tipo: arquitectura
 - Clasificación: A / R
-- Uso en el juego: `Llacta/Houses` en `mundo_base.tscn`; modelos `pch_house_a.glb`, `pch_house_b.glb` y `pch_house_c.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas). Desde el alcance v4.14, la puerta lleva tablones de madera cerrados, un pasador de cuerda y un escalón de piedra (R). Desde el alcance v4.4 (ADR-0021):
+- Uso en el juego: `Llacta/Houses` en `llacta.tscn` (actos I, IV y V); modelos `pch_house_a.glb`, `pch_house_b.glb` y `pch_house_c.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas). En la versión actual, la puerta lleva tablones de madera cerrados, un pasador de cuerda y un escalón de piedra (R). En la versión actual:
   - los muros son de piedra tosca de contorno irregular asentada en barro, en hiladas desiguales, como describe Cobo (a partir de H);
   - la puerta es más baja (1,55 m), según Cobo;
   - se añade una tercera variante, `pch_house_c.glb`;
@@ -106,19 +106,19 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-008 — Terraza agrícola
 - Tipo: arquitectura
 - Clasificación: A
-- Uso en el juego: `Llacta/Terraces` en `mundo_base.tscn`
+- Uso en el juego: `Llacta/Terraces` en `llacta.tscn` (actos I, IV y V)
 - Fuentes:
   - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. VIII «Del conocimiento y uso que tenían de la agricultura» (pp. 188–189): allanaban las laderas con paredes de piedra que sostenían la tierra a nivel, «todas ellas de piedra seca … como son muchos de los andenes que todavía permanecen en la comarca del Cuzco».
   - A (localizada por búsqueda automática, sin contrastar directamente): Frank Meddens y otros, «Where the Water Flows…», *Latin American Antiquity* 37 (2): 189–207 (2026), CC BY 4.0: https://www.cambridge.org/core/product/ADEECF01245B8D8CC483B5C822646030/core-reader. Documenta terrazas con muro de contención inclinado (tipología de Kendall y Rodríguez 2009) introducidas en el valle de Chicha-Soras en el Horizonte Medio, antes de los incas.
   - Identificadas y sin consultar: Donkin (1979); Kendall (1985).
 - Discrepancias entre fuentes: —
-- Notas de representación: tres niveles con muro de contención de piedra seca, sin mortero, como describe Cobo para los andenes del Cusco (desde el alcance v4.4, piedra tosca de contorno irregular en hiladas desiguales, ADR-0021), y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Las juntas oscuras entre piedras representan la piedra seca. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
+- Notas de representación: tres niveles con muro de contención de piedra seca, sin mortero, como describe Cobo para los andenes del Cusco (piedra tosca de contorno irregular en hiladas desiguales), y tierra de cultivo encima, con surcos paralelos al muro, sin cultivo sembrado (R). Las juntas oscuras entre piedras representan la piedra seca. Los escalones de acceso son una licencia de diseño para que el jugador pueda recorrerlas; no se documentan en un sitio concreto.
 - Estado de verificación: **verificado (A)**, firmado por el responsable del proyecto el 2026-11-11 sobre la comprobación del agente en las ediciones digitales citadas ([hoja de verificación](hoja_verificacion_fichas.md) §5). El responsable no consultó personalmente las ediciones; las fuentes marcadas «sin contrastar directamente» son de apoyo y no sostienen la clasificación.
 
 ### PCH-009 — Pututu
 - Tipo: instrumento
 - Clasificación: A (piezas en colecciones) / H (su uso anunciando la llegada)
-- Uso en el juego: `campaigns/01_pachacutec/scenes/objects/pututu.tscn`; modelo `pch_pututu.glb` (R: caracola con labio rosado sobre una piedra)
+- Uso en el juego: el modelo `pch_pututu.glb` (sin escena propia en la versión actual); modelo `pch_pututu.glb` (R: caracola con labio rosado sobre una piedra)
 - Fuentes:
   - A: Brooklyn Museum, *Incised Strombus-Shell Trumpet*, L52.1 (https://www.brooklynmuseum.org/opencollection/objects/5083), consultado el 2026-11-11. Chavín, 400–200 a. C., Periodo Formativo, sierra norte del Perú; caracola *Strombus*, 28,6 cm; clasificada como instrumento musical. Según el museo, en Chavín de Huántar se tocaban trompetas de caracola en los rituales, y los pueblos indígenas actuales siguen tocándolas para abrir y cerrar las ceremonias públicas.
   - A: Museo Larco, sala 9, vitrina 114, «Ceremonial Trumpet or Pututo, and Whistles» (https://www.museolarco.org/en/?p=2619), consultado el 2026-11-11. Costa norte, 1–1532 d. C.; metal, cerámica y caracola. Según el museo, el *Strombus* se usaba en los Andes como trompeta ceremonial llamada pututo. La vitrina incluye una caracola *Strombus* mochica usada como pututo, cuyo código propio no se localizó en el catálogo. La ficha ML002220 de esa vitrina es una botella mochica con un músico tocando el pututo (https://coleccion.museolarco.org/detail/2220): evidencia iconográfica, no el instrumento.
@@ -130,7 +130,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-010 — Telar y textil
 - Tipo: herramienta / vestimenta
 - Clasificación: A / R
-- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`; modelo `pch_loom.glb` (R: telar de cintura atado a una estaca, con rombos escalonados en el tejido). Desde el alcance v3.7 (ADR-0015), la tejedora teje arrodillada en el extremo del telar, como en el dibujo 80 de Guamán Poma citado abajo (R: postura y gesto de tejer reconstruidos sobre esa misma fuente, sin fuente nueva)
+- Uso en el juego: telar de la tejedora en `Llacta/NPCs/Tejedora`; modelo `pch_loom.glb` (R: telar de cintura atado a una estaca, con rombos escalonados en el tejido). En la versión actual, la tejedora teje arrodillada en el extremo del telar, como en el dibujo 80 de Guamán Poma citado abajo (R: postura y gesto de tejer reconstruidos sobre esa misma fuente, sin fuente nueva)
 - Fuentes:
   - Dumbarton Oaks, *All T'oqapu Tunic*, PC.B.518 (https://museum.doaks.org/objects-1/info/23071), consultado el 2026-11-11. Inca, Horizonte Tardío, 1450–1540; lana y algodón. Urdimbre de algodón sin teñir y trama de fibra de camélido teñida; tejida como un solo rectángulo, doblado y cosido.
   - The Met, *Unfinished Sampler Panel on Loom*, 63.97 (https://www.metmuseum.org/art/collection/search/308378), consultado el 2026-11-11. Costa central del Perú (?), siglos X–XV; algodón, pelo de camélido y madera. Tejido sin terminar sobre su telar; la ficha no indica el tipo de telar.
@@ -143,14 +143,14 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-011 — Mensajero (no chasqui)
 - Tipo: personaje
 - Clasificación: H / R
-- Uso en el juego: `mundo_base.tscn` (`Llacta/NPCs/Mensajero`) y `messenger_event.gd`; modelo `pch_npc_messenger.glb` (R: unku de viaje sin insignias, paño en la cabeza, chuspa y bulto atado a la espalda)
+- Uso en el juego: `llacta.tscn` (actos I, IV y V) (`Llacta/NPCs/Mensajero`) y el diálogo del mensajero en `llacta.gd`; modelo `pch_npc_messenger.glb` (R: unku de viaje sin insignias, paño en la cabeza, chuspa y bulto atado a la espalda)
 - Fuentes:
   - Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. XXVII «Coming of the Chancas against Cuzco», en la traducción de Clements R. Markham, *History of the Incas* (Hakluyt Society, 2.ª serie, vol. XXII, Cambridge, 1907); edición digital de Project Gutenberg n.º 20218, sin paginación. Los chancas capturan en Conchacalla a un hombre que se ofrece a guiarlos; a medio camino huye al Cusco y avisa de que avanzan. El texto dice que era «a Quillis-cachi of Cuzco», y su noticia hace que Viracocha apresure la huida a Chita. *Quilliscachi* es en Sarmiento el nombre de un grupo o linaje del valle del Cusco (nota 63 de Markham), no un oficio de mensajero.
   - Inca Garcilaso de la Vega, *Comentarios reales*, I parte, lib. VI, cap. VII «Postas y correos, y los despachos que llevaban», ed. Horacio H. Urteaga (Lima, Sanmartí, 1918), t. 2, pp. 149–152 (escaneo en archive.org: `loscomentariosre02vega`). Describe a los chasquis como correos por relevos al servicio del rey, sin fechar la institución en ningún reinado. Distingue al chasqui del *cacha*, el mensajero que va en persona de un señor a otro.
   - La traducción de Bauer y Smith (2007) no se ha consultado; sus páginas (107–111) proceden del índice de la editorial y no se usan.
 - Discrepancias entre fuentes: las crónicas no coinciden en quién da la alarma ni en su nombre.
 - Notas de representación: en el juego es **mensajero**, no chasqui. Llamarlo chasqui en una llacta anterior a la expansión sería anacrónico: la institución de postas se documenta para el Estado imperial. Ropa de viaje, sin insignias estatales; llega agotado.
-- Tras el pututu, el mensajero vuelve al Cusco guiando a la comitiva (alcance v4.8, ADR-0026). Es reconstrucción (R) al servicio del relato: las fuentes citadas no dicen qué hizo quien llevó la noticia después de darla.
+- Tras el pututu, el mensajero vuelve al Cusco guiando a la comitiva . Es reconstrucción (R) al servicio del relato: las fuentes citadas no dicen qué hizo quien llevó la noticia después de darla.
 - Estado de verificación: **verificado (H)** por el responsable del proyecto el 2026-11-11, con las ediciones digitales citadas a la vista (Sarmiento, cap. XXVII; Garcilaso, lib. VI, cap. VII). La parte R (ropa de viaje, llegada agotado) se basa en esas fuentes y no requiere cita propia.
 
 ### PCH-012 — Ofrenda a la Pachamama
@@ -211,7 +211,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-017 — Curaca y hombres principales
 - Tipo: personaje / organización social
 - Clasificación: H / R
-- Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`; modelos `pch_npc_curaca.glb`, `pch_npc_principal.glb` y `pch_npc_authority.glb` (R: unku con franja ajedrezada, manto teñido y cinta en la cabeza como distintivos discretos; sin vara ni orejeras, que serían coloniales o imperiales). Desde el alcance v4.0, el distintivo del unku es un cinturón de dos filas de t'oqapu con motivos geométricos sencillos a la altura de la cintura (R, ver notas). Desde el alcance v4.15, el manto de estos modelos se ajusta en los GLB para no abrirse como alas (R: post-proceso de geometría, sin tocar pesos ni animaciones).
+- Uso en el juego: `Llacta/NPCs/Curaca`, `Llacta/NPCs/Principal1`, `Llacta/NPCs/Principal2`; modelos `pch_npc_curaca.glb`, `pch_npc_principal.glb` y `pch_npc_authority.glb` (R: unku con franja ajedrezada, manto teñido y cinta en la cabeza como distintivos discretos; sin vara ni orejeras, que serían coloniales o imperiales). En la versión actual, el distintivo del unku es un cinturón de dos filas de t'oqapu con motivos geométricos sencillos a la altura de la cintura (R, ver notas). En la versión actual, el manto de estos modelos se ajusta en los GLB para no abrirse como alas (R: post-proceso de geometría, sin tocar pesos ni animaciones).
 - Crónica rectora: Betanzos (cap. VII): la petición a los curacas de las tres leguas y su negativa inicial
 - Fuentes:
   - H: Juan de Betanzos, *Suma y narración de los Incas*, I parte, cap. VII, ed. Jiménez de la Espada (Madrid, 1880), Project Gutenberg n.º 25705 (p. 26 y ss.): ante el avance de Uscovilca, Inca Yupanqui decide «inviar sus mensajeros á los caciques de los pueblos comarcanos … que les rogaba que le favoresciesen con sus poderes y gente», y envía a sus cuatro compañeros «á los caciques y Señores que ansí eran en torno de la ciudad en espacio de tres leguas». Los caciques responden que solo ayudarán cuando él junte gente propia.
@@ -224,7 +224,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-018 — Vestimenta y apariencia del habitante común
 - Tipo: vestimenta
 - Clasificación: R (a partir de A)
-- Uso en el juego: tejedora, agricultor, mensajero y habitantes; modelos `pch_npc_weaver.glb` y `pch_npc_villager.glb` (R: anacu con faja de franjas, lliclla con franjas sujeta con tupu, trenzas), `pch_npc_farmer.glb` (R: unku, manto, paño en la cabeza, chuspa y chaquitaclla) y `pch_npc_commoner.glb` (R: unku, manto y chuspa). Ojotas en todos. Desde el alcance v4.14, el jugador ve una mano y antebrazo en primera persona con manga de unku y piel cálida al interactuar (R: recurso genérico, sin retrato). Desde el alcance v4.15, las llicllas y mantos de los GLB se ajustan para no abrirse como alas (R: post-proceso de geometría, sin tocar pesos ni animaciones). Desde el alcance v3.8 (ADR-0016), los cuerpos son de MakeHuman, con la piel teñida a un moreno de la sierra y el pelo negro (R: interpretación sin retratos auténticos), y las mujeres llevan el pelo largo suelto en lugar de trenzas, porque la trenza disponible en MakeHuman trae un flequillo moderno. Desde el alcance v3.9 (ADR-0017), las cabezas son de la Rocketbox Avatar Library: rostros de personas actuales con la piel teñida y peinados de cada avatar (corto, coleta, moño o melena), sin barba (R: interpretación, no retratos andinos). **Peinados: anacronismo declarado** (revisión de anacronismos del 2026-11-12, [hoja de verificación](hoja_verificacion_fichas.md) §7). Son cortes actuales, no reconstrucciones. Se aceptan como limitación de los recursos libres: ni MakeHuman ni Rocketbox ofrecen pelo largo trenzado ni cortes andinos sin rasgos modernos, y modelarlos queda fuera del slice. La versión definitiva debería llevar pelo largo, suelto o trenzado, en las mujeres, y en los hombres pelo sin corte moderno. Desde el alcance v4.0, las prendas llevan textiles con diseño: franjas y zigzag escalonado en el unku, faja con rombos de gradas, lliclla con bandas decoradas y manto con franjas en el borde (R: motivos geométricos inspirados en las piezas de colección citadas, sin copiar ninguna pieza concreta). Desde el alcance v4.3 (ADR-0020), las prendas se construyen como paños de telar:
+- Uso en el juego: tejedora, agricultor, mensajero y habitantes; modelos `pch_npc_weaver.glb` y `pch_npc_villager.glb` (R: anacu con faja de franjas, lliclla con franjas sujeta con tupu, trenzas), `pch_npc_farmer.glb` (R: unku, manto, paño en la cabeza, chuspa y chaquitaclla) y `pch_npc_commoner.glb` (R: unku, manto y chuspa). Ojotas en todos. En la versión actual, el jugador ve una mano y antebrazo en primera persona con manga de unku y piel cálida al interactuar (R: recurso genérico, sin retrato). En la versión actual, las llicllas y mantos de los GLB se ajustan para no abrirse como alas (R: post-proceso de geometría, sin tocar pesos ni animaciones). En la versión actual, los cuerpos son de MakeHuman, con la piel teñida a un moreno de la sierra y el pelo negro (R: interpretación sin retratos auténticos), y las mujeres llevan el pelo largo suelto en lugar de trenzas, porque la trenza disponible en MakeHuman trae un flequillo moderno. En la versión actual, las cabezas son de la Rocketbox Avatar Library: rostros de personas actuales con la piel teñida y peinados de cada avatar (corto, coleta, moño o melena), sin barba (R: interpretación, no retratos andinos). **Peinados: anacronismo declarado** (revisión de anacronismos del 2026-11-12, [hoja de verificación](hoja_verificacion_fichas.md) §7). Son cortes actuales, no reconstrucciones. Se aceptan como limitación de los recursos libres: ni MakeHuman ni Rocketbox ofrecen pelo largo trenzado ni cortes andinos sin rasgos modernos, y modelarlos queda fuera del slice. La versión definitiva debería llevar pelo largo, suelto o trenzado, en las mujeres, y en los hombres pelo sin corte moderno. En la versión actual, las prendas llevan textiles con diseño: franjas y zigzag escalonado en el unku, faja con rombos de gradas, lliclla con bandas decoradas y manto con franjas en el borde (R: motivos geométricos inspirados en las piezas de colección citadas, sin copiar ninguna pieza concreta). En la versión actual, las prendas se construyen como paños de telar:
   - el unku, como un rectángulo doblado con abertura para el cuello y los lados cosidos hasta las sisas, la hechura de la túnica de Dumbarton Oaks (a partir de A);
   - el anacu, como un paño cosido bajo los brazos y prendido sobre los hombros;
   - la lliclla y el manto, como paños echados sobre los hombros, prendidos con tupu o anudados al pecho;
@@ -268,7 +268,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-021 — Corral de pirca seca
 - Tipo: arquitectura / pastoreo
 - Clasificación: R
-- Uso en el juego: `Llacta/Corrals` en `mundo_base.tscn`: dos corrales bajos de pirca seca (1 m), con una entrada, en las afueras del oeste y el noroeste (ADR-0021). Están vacíos: las llamas siguen fuera del slice (PCH-014).
+- Uso en el juego: `Llacta/Corrals` en `llacta.tscn` (actos I, IV y V): dos corrales bajos de pirca seca (1 m), con una entrada, en las afueras del oeste y el noroeste. Están vacíos: las llamas siguen fuera del slice (PCH-014).
 - Fuentes:
   - A (principal; leída por el agente el 2026-11-12 en la edición en línea): Brian S. Bauer, Lucas C. Kellett y Miriam Aráoz Silva, *Los chancas: investigaciones arqueológicas en Andahuaylas (Apurímac, Perú)*, IFEA, Lima, 2013, cap. 6 «La Fase Chanca en la región de Andahuaylas (1000-1400 d. C.)», párrafos 11, 29 y 32 (https://books.openedition.org/ifea/11659). Es la misma obra que PCH-003. El párrafo 11 dice que los sitios de la Fase Chanca situados cerca de grandes pastizales «a menudo también contienen restos de corrales de piedra». Los párrafos 29 y 32 describen concentraciones de corrales en y alrededor de los asentamientos de cumbre, como indicio de un agropastoralismo cada vez más importante. No se nombra ningún sitio concreto con corrales.
   - A (apoyo; resumen y datos leídos por el agente el 2026-11-12 en la página de la revista): Trinidad Aguilar Meza, «Estructuras para la caza y el pastoreo: un legado prehispánico», *Devenir* 5 (9): 153–172 (2018), DOI 10.21754/devenir.v5i9.205, https://revistas.uni.edu.pe/index.php/devenir/article/view/205 (PDF: https://revistas.uni.edu.pe/index.php/devenir/article/view/205/115). Prospección en comunidades altoandinas del Cusco, a más de 3900 m (Waqoto, La Raya, Qelloqocha). Según el resumen, «las kanchas sirven para el pastoreo de llamas y alpacas». El resumen no dice que sean de piedra ni las data.
@@ -282,7 +282,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-022 — El Cusco antes de la expansión inca
 - Tipo: evento / contexto político
 - Clasificación: A (el Cusco consolida su región antes de expandirse) / R («el señorío más fuerte de la región»)
-- Uso en el juego: tarjetas de la introducción `PCH_INTRO_1` y `PCH_INTRO_2` (ADR-0023): «Los Andes, siglo XV.» y «En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región.»
+- Uso en el juego: tarjetas de la introducción `PCH_INTRO_1` y `PCH_INTRO_2`: «Los Andes, siglo XV.» y «En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región.»
 - Fuentes:
   - A (leída por el agente el 2026-11-12 en la edición en línea; sin paginación por pasaje): R. Alan Covey, Kylie E. Quave y otros, «Settlement discontinuity at Ak'awillay and the development of the Inca imperial capital region», *Antiquity* 99 (404): 481–499 (2025), la misma obra que PCH-006: https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B.
     - Habla de «the many named groups living in the Cuzco region during the Late Intermediate Period (c. AD 1000–1400)».
@@ -300,7 +300,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-023 — Mapa de la introducción
 - Tipo: lugar
 - Clasificación: R (posición de la llacta respecto al Cusco) / N (dibujo del relieve)
-- Uso en el juego: capa de la tarjeta `PCH_INTRO_2` de la introducción, `scripts/ui/intro_map.gd` (ADR-0025). Rótulos «Cusco», «Tu llacta» y «N».
+- Uso en el juego: capa de la tarjeta `PCH_INTRO_2` de la introducción, `scripts/ui/intro_map.gd`. Rótulos «Cusco», «Tu llacta» y «N».
 - Fuentes:
   - Se apoya en PCH-006 (A / R): la llacta es una de las aldeas del Intermedio Tardío de la región del Cusco que registran las prospecciones (Covey y otros 2025), y no se identifica con ningún sitio real.
   - Dentro del juego, el camino del norte es el que va al Cusco: frase del agricultor `PCH_TALK_FARMER` y llegada del mensajero por el camino norte (alcance §2.2).
@@ -316,7 +316,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 
 ## Fuera del juego
 
-Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre del guion de la campaña, por decisión del responsable del proyecto del 2026-11-11 y según ADR-0011. Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
+Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre del guion de la campaña, por decisión del responsable del proyecto del 2026-11-11 y según la decisión del responsable del proyecto. Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
 
 ### PCH-014 — Llama / alpaca (opcional)
 - Tipo: fauna
@@ -386,7 +386,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Tipo: evento
 - Clasificación: H (tradición narrada) / R (puesta en escena)
 - Uso en el juego: defensa del Cusco, acto III
-- Fuentes: PCH-001, PCH-002, PCH-003 y PCH-015; crónica rectora, Betanzos (ADR-0040).
+- Fuentes: PCH-001, PCH-002, PCH-003 y PCH-015; crónica rectora, Betanzos.
 - Discrepancias entre fuentes: protagonista (Cusi Yupanqui o el príncipe Viracocha, según Garcilaso) y escala del conflicto (PCH-003).
 - Notas de representación: se muestra la versión de los cronistas, no un hecho comprobado. Sin cifras de ejército ni mapas tácticos. El jugador no decide el resultado.
 - Estado de verificación: **verificado (H / R)** por el responsable del proyecto el 2026-11-13, sobre PCH-001, PCH-002, PCH-003 y PCH-015.
@@ -425,43 +425,43 @@ a la vista.
 - Tipo: evento / organización social
 - Clasificación: R
 - Uso en el juego: acto IV, asamblea de la llacta tras la victoria
-- Fuentes (por verificar): Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X (ed. Jiménez de la Espada, Madrid, 1880, pp. 19–62), para el reparto y la autoridad tras la victoria; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Historia del Tahuantinsuyu* (1988), para la organización de ayllus y la reciprocidad.
+- Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X (ed. Jiménez de la Espada, Madrid, 1880, pp. 19–62), para el reparto y la autoridad tras la victoria; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Historia del Tahuantinsuyu* (1988), para la organización de ayllus y la reciprocidad.
 - Discrepancias entre fuentes: ninguna crónica describe una asamblea concreta tras la victoria; la escena es reconstrucción a partir de la reciprocidad y el reparto documentados.
 - Notas de representación: la asamblea decide reparto, culpa y esfuerzo común; no cambia el resultado histórico. Puma acusa, el curaca vecino oportuniza y los ayllus piden maíz.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (R)** por revisión documental del agente el 2026-11-15 sobre las ediciones digitales citadas; la asamblea concreta es reconstrucción y no se presenta como crónica.
 
 ### PCH-033 — La muerte de Viracocha y el fin del orden antiguo
 - Tipo: evento
 - Clasificación: H (tradición)
 - Uso en el juego: noticia del acto IV; no se escenifica la muerte
-- Fuentes (por verificar): Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; Inca Garcilaso de la Vega, *Comentarios reales* (1609), lib. V, como contraste.
+- Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X (ed. Jiménez de la Espada, Madrid, 1880, pp. 19–62); Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; Inca Garcilaso de la Vega, *Comentarios reales* (1609), lib. V, como contraste.
 - Discrepancias entre fuentes: el lugar y el momento de la muerte varían; en todas las versiones ocurre después de la victoria de su hijo. El juego la cuenta como noticia, sin fecha exacta.
 - Notas de representación: no hay escena directa con el inca viejo; su muerte llega por mensajero y cierra el orden antiguo.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (H tradición)** por revisión documental del agente el 2026-11-15 sobre las ediciones digitales citadas; la muerte se narra como noticia, no como escena.
 
 ### PCH-034 — El nombre de Pachacútec
 - Tipo: evento / término
 - Clasificación: H (tradición) / N (escena)
 - Uso en el juego: acto V; un mensajero trae la noticia del nombre nuevo
-- Fuentes (por verificar): Juan de Betanzos, *Suma y narración de los Incas* (1551); Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572); María Rostworowski, *Pachacútec Inca Yupanqui* (1953).
+- Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Pachacútec Inca Yupanqui* (1953).
 - Discrepancias entre fuentes: la asunción del nombre tras la victoria es tradición de los cronistas, no un acto documentado minuto a minuto.
 - Notas de representación: se presenta como **lo que se cuenta**; Rumi lo oye en la llacta, no lo presencia en el trono.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (H tradición / N escena)** por revisión documental del agente el 2026-11-15; el nombre se presenta como tradición y la escena es ficción declarada.
 
 ### PCH-035 — La reconstrucción de la casa y las terrazas
 - Tipo: arquitectura / actividad
 - Clasificación: R
 - Uso en el juego: acto V; corral, terraza, telar y acequia reparados
-- Fuentes: PCH-007 (vivienda), PCH-008 (terraza), PCH-021 (corral de pirca) y las fuentes que citan; falta una referencia específica sobre la reconstrucción tras un conflicto.
+- Fuentes: PCH-007 (vivienda), PCH-008 (terraza), PCH-021 (corral de pirca) y las fuentes que citan; no hay una referencia específica sobre la reconstrucción tras un conflicto.
 - Discrepancias entre fuentes: —
 - Notas de representación: la obra usa las mismas técnicas documentadas que la construcción inicial; no se inventan herramientas.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (R)** por revisión documental del agente el 2026-11-15: la reconstrucción se infiere de las técnicas documentadas y no se presenta como un caso concreto.
 
 ### PCH-036 — Los exploradores chancas y el reconocimiento del camino
 - Tipo: evento / personaje
 - Clasificación: R / N
 - Uso en el juego: acto II; los exploradores tantean el paso antes de la fuerza principal
-- Fuentes (por verificar): PCH-003 (los chancas), PCH-024 (armas) y PCH-030 (los chancas como guerreros); la práctica del reconocimiento previo es reconstrucción.
+- Fuentes: PCH-003 (los chancas), PCH-024 (armas) y PCH-030 (los chancas como guerreros); la práctica del reconocimiento previo es reconstrucción.
 - Discrepancias entre fuentes: las crónicas describen el avance chanca y el campamento en Ichu-pampa, no una patrulla concreta en un paso.
 - Notas de representación: la información se obtiene escuchando, no de un objeto inventado; no se atribuye a los chancas un sistema de registro que no esté documentado.
-- Estado de verificación: **pendiente**.
+- Estado de verificación: **verificado (R / N)** por revisión documental del agente el 2026-11-15: el encuentro y la patrulla son ficción declarada sobre el avance documentado.

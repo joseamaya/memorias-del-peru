@@ -230,7 +230,7 @@ Estos módulos viven en `core/` y no conocen la campaña; la campaña los compon
 | Diálogo | `core/systems/dialogue/dialogue_runner.gd` | Nodos con texto, opciones, condiciones y efectos; no conoce la UI: emite `line_shown` y `choices_shown`, recibe la opción elegida |
 | Diario | `core/systems/journal/journal.gd` | Encargos y «Memoria»; añade entradas con clave de texto, sello H/A/R/N y fuente; señal `changed` |
 | Combate | `core/systems/combat/` | Honda con carga y proyectil, porra y escudo, enemigos con moral; sin HUD |
-| Puntos de control (previsto) | `core/systems/checkpoint/` | Estado en memoria al empezar cada acto y a mitad del II, III y IV; sin guardado completo |
+| Puntos de control | `campaigns/<campaña>/scripts/systems/campaign_progress.gd` sobre `CampaignState` | Estado en memoria al empezar cada acto y a mitad del II y III; salud, aliento, ánimo, inventario, oficio, diario y posición; sin guardado completo |
 
 Reglas:
 

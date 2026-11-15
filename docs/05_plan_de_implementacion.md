@@ -2,7 +2,7 @@
 
 > La prioridad es el RPG jugable y su aspecto; las únicas reglas duras son licencias/procedencia y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** Fase 4 — Arte, audio y equilibrio. El arco completo (I–V) ya se juega en gris.
+**Fase activa:** Fase 4 — Arte, audio y equilibrio. El arco completo (I–V), el guion y los sistemas de campaña están cerrados; queda el pase visual, sonoro y la medición.
 
 ## Estado
 
@@ -10,8 +10,8 @@
 |---|---|---|
 | 0 — Documentación | Cerrada | 2026-11-15 |
 | 1 — Fundación y núcleo RPG | Cerrada | 2026-11-15 |
-| 2 — Guion de la campaña 01 | En curso (el guion vive en las escenas) | — |
-| 3 — Arco jugable en gris (I–V) | Cerrada | 2026-11-15 |
+| 2 — Guion de la campaña 01 | Cerrada | 2026-11-15 |
+| 3 — Arco jugable en gris (I–V) | Cerrada (duración se mide en Fase 5) | 2026-11-15 |
 | 4 — Arte, audio y equilibrio | En curso | — |
 | 5 — Validación y cierre | Prevista | — |
 
@@ -74,10 +74,10 @@
 
 **Criterios de aceptación:**
 
-- [ ] Cada misión especifica contexto, objetivo narrativo, objetivo del jugador, personajes, desarrollo, conflicto, resolución, consecuencias e información histórica.
-- [ ] Todas las banderas de la biblia tienen origen y pago declarados.
-- [ ] Las fichas nuevas están verificadas; ninguna escena usa una ficha pendiente.
-- [ ] La duración estimada por acto suma 40–50 min.
+- [x] Cada misión especifica contexto, objetivo narrativo, objetivo del jugador, personajes, desarrollo, conflicto, resolución, consecuencias e información histórica.
+- [x] Todas las banderas de la biblia tienen origen y pago declarados.
+- [x] Las fichas nuevas están verificadas; ninguna escena usa una ficha pendiente.
+- [x] La duración estimada por acto suma 40–50 min (8–9 + 11–13 + 9–10 + 9–11 + 6–7).
 
 ---
 
@@ -89,7 +89,7 @@
 
 | # | Entregable | Descripción |
 |---|---|---|
-| 1 | Acto I | Llacta, elenco y encargos con recursos (jugable); mensajero y asamblea en curso |
+| 1 | Acto I | Llacta, elenco, encargos, duda, mensajero y asamblea |
 | 2 | Acto II | Paso, campamento, emboscada, Cusco, reclutamiento, preparación y víspera |
 | 3 | Acto III | Defensa en tres fases y costo con nombre |
 | 4 | Acto IV | Regreso, cuentas, asamblea y noticia de la muerte de Viracocha |
@@ -98,17 +98,17 @@
 | 7 | Pruebas | Unitarias de los sistemas nuevos, por acto y partida guionizada I→V |
 | 8 | Registro de sesión | Marcas por acto, decisiones y duración |
 
-**Objetivo medible:** una partida guionizada recorre los cinco actos sin bloqueos y sin arte final; la duración estimada es 40–50 min.
+**Objetivo medible:** una partida guionizada recorre los cinco actos sin bloqueos y sin arte final. La duración real de 40–50 min se mide en la Fase 5 con una partida humana cronometrada; la pasada guionizada de revisión dura 74,6 s y no sustituye esa métrica.
 
 **Criterios de aceptación:**
 
-- [ ] Los cinco actos cargan y se encadenan con las transiciones reales.
-- [ ] Cada acto responde a su pregunta dramática y tiene clímax.
-- [ ] Las decisiones del acto I se notan en los actos II, IV y V.
-- [ ] El costo del acto III depende de las banderas y se ve en el acto IV.
-- [ ] El punto de control restaura salud, aliento, ánimo, inventario y posición.
-- [ ] `ARCO_OK` con los cinco actos; cero errores en consola.
-- [ ] Todas las claves de texto existen en la tabla de localización.
+- [x] Los cinco actos cargan y se encadenan con las transiciones reales.
+- [x] Cada acto responde a su pregunta dramática y tiene clímax.
+- [x] Las decisiones del acto I se notan en los actos II, IV y V.
+- [x] El costo del acto III depende de las banderas y se ve en el acto IV.
+- [x] El punto de control restaura salud, aliento, ánimo, inventario y posición.
+- [x] `ARCO_OK` con los cinco actos; cero errores en consola.
+- [x] Todas las claves de texto existen en la tabla de localización.
 
 ---
 
@@ -146,7 +146,7 @@
 
 | # | Entregable | Descripción |
 |---|---|---|
-| 1 | Checklist de la biblia | Una pasada por acto: pregunta, decisión, consecuencia, clasificación |
+| 1 | Checklist de la biblia | Una pasada por acto: pregunta, decisión, consecuencia, clasificación ([checklist](../campaigns/01_pachacutec/documentation/checklist_biblia.md)) |
 | 2 | Partida completa | Recorrido real de los cinco actos, cronometrado |
 | 3 | Informe de duración | Minutos por acto y total |
 | 4 | Pruebas | Suite completa en verde |

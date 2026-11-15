@@ -10,7 +10,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V) se juega en gris; el motor, el núcleo RPG y las cinco escenas están construidos. Queda el pase visual y sonoro |
+| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion y los sistemas de campaña están cerrados; las 97 pruebas pasan. Queda el pase visual, sonoro y la brecha de rendimiento en Medio |
 
 ## Requisitos
 
@@ -67,6 +67,17 @@ godot --headless --path . --import
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
+```
+
+```bash
+godot --headless --path . --script res://tests/arc_playthrough.gd
+```
+
+Medición de rendimiento por acto:
+
+```bash
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_performance.tscn -- --profile=0
 ```
 
 Detalles en [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md).

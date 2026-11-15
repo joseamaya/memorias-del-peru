@@ -141,7 +141,7 @@ PCH_CIUDAD_CUSI_READY,Estamos listos
 PCH_CIUDAD_CUSI_WAIT,Todavía no
 PCH_CIUDAD_DEFENSE,Los chancas entran en la plaza. ¡Sostened la línea!
 PCH_CIUDAD_COUNTER,Cusi Yupanqui dirige la contraofensiva. La plaza resiste.
-PCH_CIUDAD_EPILOGUE,La defensa se sostiene. La tradición dice que Cusi Yupanqui tomó el nombre de Pachacútec.
+PCH_CIUDAD_EPILOGUE,La defensa se sostiene. Cusi Yupanqui queda al mando.
 PCH_CIUDAD_EPILOGUE_WOUNDED,El herido del paso vuelve a la llacta contigo.
 PCH_CIUDAD_EPILOGUE_MAIZE,El maíz guardado alcanzó para la defensa.
 PCH_CIUDAD_END_TITLE,Fin del acto III
@@ -218,6 +218,105 @@ PCH_REBUILD_PIRCA_DONE,La pirca vuelve a cerrar.
 PCH_REBUILD_TERRAZA_DONE,La tierra vuelve a estar lista.
 PCH_REBUILD_ACEQUIA_DONE,El agua corre otra vez.
 PCH_REBUILD_DONE,Obra hecha · %d de 3
-PCH_END5_NAME,Un mensajero del Cusco trae la noticia: Cusi Yupanqui ha tomado el nombre de Pachacútec. La ciudad empieza a cambiar.
+PCH_END5_NAME,"Según la tradición, Cusi Yupanqui tomó el nombre de Pachacútec. La ciudad empieza a cambiar."
 PCH_END5_TITLE,Fin de El despertar del Sol
 PCH_END5_HINT,R para volver al título · Esc para salir
+PCH_NPC_MENSAJERO,Mensajero
+PCH_TALK_DUDA,Escuchar la discusión
+PCH_DUDA_INTRO,"Puma y el curaca discuten junto al fuego. «Si el Cusco cayó, ¿qué defendemos aquí?»"
+PCH_DUDA_PUMA,Puma tiene razón: resistir es una tumba.
+PCH_DUDA_CURACA,El curaca tiene razón: hay que responder.
+PCH_DUDA_SILENCE,Callar y escuchar.
+PCH_DUDA_PUMA_ANSWER,Puma asiente. «Al menos alguien lo dice en voz alta.»
+PCH_DUDA_CURACA_ANSWER,El curaca te mira. «La llacta responde. Bien.»
+PCH_DUDA_SILENCE_ANSWER,Nadie insiste. El fuego cruje.
+PCH_TALK_MESSENGER,Escuchar al mensajero
+PCH_MSG_INTRO,El mensajero llega sin aliento. «Los chancas vienen por el paso. El Cusco no tiene quien lo defienda.»
+PCH_MSG_WATER,Darle agua
+PCH_MSG_MAIZE,Darle maíz
+PCH_MSG_LISTEN,Escuchar sin dar nada
+PCH_MSG_WATER_ANSWER,Bebe. «Que la llacta no olvide quién le dio de beber.»
+PCH_MSG_MAIZE_ANSWER,Come. «Con esto llego al Cusco.»
+PCH_MSG_LISTEN_ANSWER,Habla hasta que la voz se le rompe. Luego calla.
+PCH_MSG_AGAIN,El mensajero ya contó lo que sabía.
+PCH_OBJ_MESSENGER,Escucha al mensajero
+PCH_OBJ_ASAMBLEA,La asamblea te espera en la plaza
+PCH_Q_ENCARGOS_TITLE,Los encargos de la llacta
+PCH_Q_ENCARGOS_BODY,Completa tres tareas antes de que llegue la noticia.
+PCH_PASO_WATER,Beber agua del cántaro
+PCH_PASO_MAIZE,Comer una ración de maíz
+PCH_PASO_MANTA,Cubrirse con la manta
+PCH_PASO_WATER_DONE,El agua te devuelve el aliento.
+PCH_PASO_MAIZE_DONE,El maíz te levanta el ánimo.
+PCH_PASO_MANTA_DONE,La manta corta el frío de la noche.
+PCH_PASO_SNEAK_FAIL,La cornisa es demasiado estrecha para ti. Necesitas más Monte.
+PCH_PASO_SNEAK_INFO,"Cruzas sin ser visto. Abajo, los exploradores hablan de la fuerza principal."
+PCH_PASO_DISTRACT_CUERDA,Atas la cuerda entre las rocas. Los exploradores miran hacia allí.
+PCH_OBJ_RECRUIT,Recluta a los tres grupos
+PCH_OBJ_DEFENSE,Prepárate para la defensa
+PCH_Q_DEFENSA_TITLE,La defensa del Cusco
+PCH_Q_DEFENSA_BODY,Recluta aliados y prepara la plaza antes de que lleguen los chancas.
+PCH_CIUDAD_TALK_MESSAGE,Entregar el mensaje
+PCH_CIUDAD_MESSAGE_INTRO,Cusi Yupanqui espera noticias del paso. «¿Qué traes?»
+PCH_CIUDAD_MESSAGE_DELIVER,Entregar el mensaje
+PCH_CIUDAD_MESSAGE_ANSWER,«Los chancas vienen por el paso. Que la ciudad se prepare.»
+PCH_CIUDAD_MESSAGE_AGAIN,El mensaje ya está entregado.
+PCH_PREP_MURO,Reparar el muro
+PCH_PREP_MAIZ,Moler maíz para los defensores
+PCH_PREP_AGUA,Acarrear agua
+PCH_PREP_HONDAS,Coser hondas
+PCH_PREP_DONE,Tu oficio ayuda a la defensa.
+PCH_PREP_NO_OFICIO,Ese trabajo no es el tuyo.
+PCH_PREP_ALREADY,La preparación ya está hecha.
+PCH_PREP_FIRST,Primero entrega el mensaje a Cusi.
+PCH_CIUDAD_TRAP,Decidir sobre el santuario
+PCH_CIUDAD_TRAP_INTRO,El curaca vecino señala el santuario. «Los chancas lo rodean. ¿Qué hacemos?»
+PCH_CIUDAD_TRAP_PROTECT,Proteger el santuario
+PCH_CIUDAD_TRAP_ORDER,Llevar la orden a Cusi
+PCH_CIUDAD_TRAP_PROTECT_ANSWER,«El santuario no se toca. Que los nuestros aguanten allí.»
+PCH_CIUDAD_TRAP_ORDER_ANSWER,«La orden vale más que las piedras. Corre.»
+PCH_CIUDAD_TRAP_AGAIN,La decisión del santuario ya está tomada.
+PCH_CIUDAD_WAVE,Oleada %d: los chancas vuelven.
+PCH_CIUDAD_COST_ANCA,Anca cayó sosteniendo la línea.
+PCH_CIUDAD_COST_JOVEN,El hijo de Puma cayó entre los jóvenes.
+PCH_CIUDAD_NO_COST,Nadie con nombre cayó esta vez.
+PCH_CIUDAD_EPILOGUE_SANCTUARY,El santuario sigue en pie.
+PCH_CIUDAD_EPILOGUE_ORDER,La orden llegó a tiempo.
+PCH_OBJ_ACCOUNTS,Cuenta los que volvieron
+PCH_OBJ_ASSEMBLY,La asamblea te espera en la plaza
+PCH_ACT4_RETURN,La columna baja a la llacta. Nadie habla.
+PCH_Q_CUENTAS_TITLE,Las cuentas de la llacta
+PCH_Q_CUENTAS_BODY,Recorre las casas y averigua quién volvió.
+PCH_ACCOUNT_1,Llamar a la casa del este
+PCH_ACCOUNT_2,Llamar a la casa del oeste
+PCH_ACCOUNT_3,Llamar a la casa del sur
+PCH_ACCOUNT_1_TEXT,La casa del este está vacía. Nadie responde.
+PCH_ACCOUNT_2_TEXT,Dos familias volvieron. Otras no.
+PCH_ACCOUNT_3_TEXT,La casa del sur perdió a un hijo en la defensa.
+PCH_ACCOUNT_DONE,Casas contadas · %d de 3
+PCH_TALK_PUMA_4_NO_COST,Mi hijo volvió. Otros no. No te pido que lo celebres.
+PCH_TALK_PUMA_4_RECONCILED,"Mi hijo volvió, y tú hablaste por los que no. Gracias."
+PCH_ASM4_ASK_COST,"Puma se levanta. «Se cuentan los que no volvieron. ¿Qué dices tú, Rumi?»"
+PCH_ASM4_RECONCILE,Reconozco lo que Puma perdió.
+PCH_ASM4_RECONCILE_ANSWER,Puma baja la cabeza. «Que se diga: no fue en vano.»
+PCH_ASM4_PALABRA,Hablo con las palabras del ayllu.
+PCH_ASM4_PALABRA_ANSWER,El curaca asiente. «La llacta escucha. Hablas como un adulto.»
+PCH_ASM4_SPEAK_ANCA,Anca cayó por nosotros. Que su nombre quede en la casa.
+PCH_ASM4_SPEAK_JOVEN,El hijo de Puma cayó por nosotros. Que su nombre quede.
+PCH_REBUILD_TELAR,Rehacer el telar
+PCH_REBUILD_TELAR_DONE,El telar vuelve a sonar.
+PCH_FINAL_LLENA,La casa está llena: Anca volvió y Puma se reconcilió con la llacta.
+PCH_FINAL_EN_PIE,"La casa sigue en pie. Falta gente, pero la obra continúa."
+PCH_FINAL_VACIA,La casa se levanta con menos manos. El silencio de la asamblea pesa.
+PCH_NPC_SISA,Sisa
+PCH_PASO_TALK_SISA,Hablar con Sisa
+PCH_PASO_MARCH_INTRO,Sisa camina a tu lado. «El paso no perdona a quien corre.»
+PCH_PASO_MARCH_LISTEN,Escuchar su consejo
+PCH_PASO_MARCH_SILENT,Seguir en silencio
+PCH_PASO_MARCH_LISTEN_ANSWER,«Pisa donde pisó otro. Yo voy contigo.»
+PCH_PASO_MARCH_SILENT_ANSWER,Sisa asiente y no insiste.
+PCH_VESPERA_OFFER,Dejar una ofrenda de coca
+PCH_VESPERA_OFFER_DONE,Dejas la coca en el altar. El miedo pesa menos.
+PCH_VESPERA_SLEEP,Dormir un rato
+PCH_VESPERA_SLEEP_DONE,Duermes junto al fuego. El cuerpo descansa.
+PCH_TASK,Trabajar

@@ -63,6 +63,7 @@ signal journal_closed
 @onready var pause_panel: Control = $PausePanel
 @onready var end_panel: ColorRect = $EndPanel
 @onready var end_title: Label = $EndPanel/EndTitle
+@onready var end_body: Label = $EndPanel/EndBody
 @onready var end_hint: Label = $EndPanel/EndHint
 
 var _subtitle_remaining: float = 0.0
@@ -201,10 +202,12 @@ func _set_cinematic_offset(value: float) -> void:
 	cinematic_bottom.offset_top = -value
 
 
-## Muestra la tarjeta de fin con un fundido: título y cómo seguir.
-func show_end_card(title: String, hint: String) -> void:
+## Muestra la tarjeta de fin con un fundido: título, cuerpo opcional y cómo seguir.
+func show_end_card(title: String, hint: String, body: String = "") -> void:
 	clear_subtitle()
 	end_title.text = title
+	end_body.text = body
+	end_body.visible = not body.is_empty()
 	end_hint.text = hint
 	end_panel.visible = true
 	_end_elapsed = 0.0

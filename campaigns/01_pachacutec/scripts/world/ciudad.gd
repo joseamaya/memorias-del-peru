@@ -142,7 +142,20 @@ const RECRUIT_INTROS: Array[StringName] = [
 	&"PCH_CIUDAD_CURACA_INTRO",
 	&"PCH_CIUDAD_YOUTH_INTRO",
 ]
+const ARRIVAL_POSITION: Vector3 = Vector3(0.0, 0.9, 24.0)
 const CUSI_POSITION: Vector3 = Vector3(0.0, 0.9, -12.0)
+const PREP_POSITIONS: Array[Vector3] = [
+	Vector3(-10.0, 0.9, -5.0),
+	Vector3(10.0, 0.9, -5.0),
+	Vector3(10.0, 0.9, 6.0),
+	Vector3(-10.0, 0.9, 6.0),
+]
+const PREP_PROMPTS: Array[StringName] = [
+	&"PCH_PREP_MURO", &"PCH_PREP_MAIZ", &"PCH_PREP_AGUA", &"PCH_PREP_HONDAS",
+]
+const PREP_OFICIOS: Array[StringName] = [&"pirca", &"maiz", &"agua", &"telar"]
+const TRAP_POSITION: Vector3 = Vector3(5.0, 0.9, -10.0)
+const DEFENSE_WAVES: int = 3
 ## El viejo que cuenta la leyenda de los pururaucas, junto al santuario.
 const VESPERA_POSITION: Vector3 = Vector3(5.0, 0.9, -8.0)
 const DEFENSE_POSITIONS: Array[Vector3] = [
@@ -198,6 +211,8 @@ var _enemies: Array[AmbushEnemy] = []
 var _attack_ray: RayCast3D = null
 var _defense_active: bool = false
 var _defense_requested: bool = false
+var _wave: int = 0
+var _trap_resolved: bool = false
 var _completed: bool = false
 var _dead: bool = false
 var _blocking: bool = false
@@ -225,6 +240,12 @@ func _ready() -> void:
 	_setup_player_combat()
 	_setup_inventory_and_dialogue()
 	_setup_journal()
+	CampaignProgress.apply(self)
+	if CampaignProgress.is_respawn_pending():
+		CampaignProgress.restore_checkpoint(self)
+	_setup_arrival()
+	_setup_preparation()
+	_setup_trap()
 	_setup_recruitment()
 	_setup_cusi()
 	_setup_vespera()
@@ -234,6 +255,7 @@ func _ready() -> void:
 	hint_label.text = ""
 	hud.show_subtitle(tr("PCH_CIUDAD_ARRIVAL"), 0.0)
 	_update_status()
+	CampaignProgress.save_checkpoint(self, player.global_position)
 	SessionLog.mark(&"act", "cusco")
 
 
@@ -297,7 +319,12 @@ func _physics_process(_delta: float) -> void:
 	if not _defense_active or _completed or _dead:
 		return
 	if alive_enemies() == 0:
-		_finish_defense()
+		if _wave < DEFENSE_WAVES:
+			_wave += 1
+			_spawn_wave()
+			hud.show_subtitle(tr("PCH_CIUDAD_WAVE") % _wave, 0.0)
+		else:
+			_finish_defense()
 	_update_status()
 
 
@@ -334,8 +361,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		var key: InputEventKey = event as InputEventKey
 		if key.pressed and not key.echo and key.keycode == KEY_R:
 			if _completed:
+				CampaignProgress.save(self)
 				get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/llacta_act4.tscn")
 			elif _dead:
+				CampaignProgress.request_respawn()
 				get_tree().reload_current_scene()
 			return
 		if key.pressed and not key.echo and key.keycode == KEY_ESCAPE and _completed:
@@ -365,6 +394,174 @@ func _attack() -> void:
 		CampaignAudio.play_sfx(CampaignAudio.IMPACT_PATH, -6.0)
 		enemy.take_hit(damage)
 	_update_status()
+
+
+## II.4: entregar el mensaje del paso antes de reclutar.
+func _setup_arrival() -> void:
+	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+	var point: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if point == null or body == null:
+		instance.free()
+		return
+	point.name = "ArrivalPoint"
+	point.prompt_key = &"PCH_CIUDAD_TALK_MESSAGE"
+	body.position = ARRIVAL_POSITION
+	add_child(point)
+	point.requested.connect(_on_arrival_requested)
+
+
+func _on_arrival_requested() -> void:
+	if dialogue == null or _defense_active or _completed or _dead:
+		return
+	if dialogue.is_active():
+		return
+	if CampaignState.has_flag(&"mensaje_entregado"):
+		hud.show_subtitle(tr("PCH_CIUDAD_MESSAGE_AGAIN"), 0.0)
+		return
+	if dialogue.start(_build_arrival_dialogue()):
+		player.begin_dialogue(null)
+
+
+func _build_arrival_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_CUSI"
+	start.text_key = &"PCH_CIUDAD_MESSAGE_INTRO"
+	start.next_id = &"end"
+	var deliver: DialogueChoice = DialogueChoice.new()
+	deliver.text_key = &"PCH_CIUDAD_MESSAGE_DELIVER"
+	deliver.next_id = &"answer"
+	var leave: DialogueChoice = DialogueChoice.new()
+	leave.text_key = &"PCH_DLG_LEAVE"
+	leave.next_id = &"end"
+	var choices: Array[DialogueChoice] = [deliver, leave]
+	start.choices = choices
+	var answer: DialogueNode = DialogueNode.new()
+	answer.id = &"answer"
+	answer.speaker_key = &"PCH_NPC_CUSI"
+	answer.text_key = &"PCH_CIUDAD_MESSAGE_ANSWER"
+	answer.next_id = &"end"
+	var effect: DialogueEffect = DialogueEffect.new()
+	effect.kind = DialogueEffect.Kind.SET_FLAG
+	effect.key = &"mensaje_entregado"
+	effect.amount = 1
+	var reputation: DialogueEffect = DialogueEffect.new()
+	reputation.kind = DialogueEffect.Kind.REPUTATION
+	reputation.group = &"cusco"
+	reputation.amount = 1
+	var effects: Array[DialogueEffect] = [effect, reputation]
+	answer.effects = effects
+	var nodes: Array[DialogueNode] = [start, answer]
+	graph.nodes = nodes
+	return graph
+
+
+## II.5: cada oficio abre una preparación distinta.
+func _setup_preparation() -> void:
+	for index: int in range(PREP_POSITIONS.size()):
+		var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+		var point: CampPoint = instance as CampPoint
+		var body: Node3D = instance as Node3D
+		if point == null or body == null:
+			instance.free()
+			continue
+		point.name = "Prep%d" % index
+		point.prompt_key = PREP_PROMPTS[index]
+		body.position = PREP_POSITIONS[index]
+		add_child(point)
+		point.requested.connect(_on_prep_requested.bind(index))
+
+
+func _on_prep_requested(index: int) -> void:
+	if _defense_active or _completed or _dead:
+		return
+	if CampaignState.has_flag(&"preparacion_hecha"):
+		hud.show_subtitle(tr("PCH_PREP_ALREADY"), 0.0)
+		return
+	if not CampaignState.has_flag(&"mensaje_entregado"):
+		hud.show_subtitle(tr("PCH_PREP_FIRST"), 0.0)
+		return
+	var oficio: StringName = CampaignProgress.get_oficio()
+	if oficio == &"" or oficio != PREP_OFICIOS[index]:
+		hud.show_subtitle(tr("PCH_PREP_NO_OFICIO"), 0.0)
+		return
+	CampaignState.set_flag(&"preparacion_hecha", 1)
+	CampaignState.set_flag(StringName("preparacion_" + String(oficio)), 1)
+	if character != null:
+		character.change_morale(10.0)
+		character.register_skill_use(&"oficio", 2)
+	SessionLog.mark(&"preparation", String(oficio))
+	hud.show_subtitle(tr("PCH_PREP_DONE"), 0.0)
+	hud.show_objective(tr("PCH_OBJ_DEFENSE"))
+
+
+## III.2: el santuario o la orden; no se puede hacer todo.
+func _setup_trap() -> void:
+	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
+	var point: CampPoint = instance as CampPoint
+	var body: Node3D = instance as Node3D
+	if point == null or body == null:
+		instance.free()
+		return
+	point.name = "TrapPoint"
+	point.prompt_key = &"PCH_CIUDAD_TRAP"
+	body.position = TRAP_POSITION
+	add_child(point)
+	point.requested.connect(_on_trap_requested)
+
+
+func _on_trap_requested() -> void:
+	if dialogue == null or _defense_active or _completed or _dead:
+		return
+	if dialogue.is_active():
+		return
+	if _trap_resolved:
+		hud.show_subtitle(tr("PCH_CIUDAD_TRAP_AGAIN"), 0.0)
+		return
+	if dialogue.start(_build_trap_dialogue()):
+		player.begin_dialogue(null)
+
+
+func _build_trap_dialogue() -> DialogueGraph:
+	var graph: DialogueGraph = DialogueGraph.new()
+	graph.entry_id = &"start"
+	var start: DialogueNode = DialogueNode.new()
+	start.id = &"start"
+	start.speaker_key = &"PCH_NPC_CURACA_VECINO"
+	start.text_key = &"PCH_CIUDAD_TRAP_INTRO"
+	start.next_id = &"end"
+	var protect: DialogueChoice = DialogueChoice.new()
+	protect.text_key = &"PCH_CIUDAD_TRAP_PROTECT"
+	protect.next_id = &"protect"
+	var order: DialogueChoice = DialogueChoice.new()
+	order.text_key = &"PCH_CIUDAD_TRAP_ORDER"
+	order.next_id = &"order"
+	var choices: Array[DialogueChoice] = [protect, order]
+	start.choices = choices
+	var nodes: Array[DialogueNode] = [start]
+	for entry: Array in [[&"protect", &"PCH_CIUDAD_TRAP_PROTECT_ANSWER", &"santuario_protegido"],
+			[&"order", &"PCH_CIUDAD_TRAP_ORDER_ANSWER", &"orden_llevada"]]:
+		var node: DialogueNode = DialogueNode.new()
+		node.id = entry[0]
+		node.speaker_key = &"PCH_NPC_CURACA_VECINO"
+		node.text_key = entry[1]
+		node.next_id = &"end"
+		var effect: DialogueEffect = DialogueEffect.new()
+		effect.kind = DialogueEffect.Kind.SET_FLAG
+		effect.key = entry[2]
+		effect.amount = 1
+		var trap_effect: DialogueEffect = DialogueEffect.new()
+		trap_effect.kind = DialogueEffect.Kind.SET_FLAG
+		trap_effect.key = &"trampa_resuelta"
+		trap_effect.amount = 1
+		var effects: Array[DialogueEffect] = [effect, trap_effect]
+		node.effects = effects
+		nodes.append(node)
+	graph.nodes = nodes
+	return graph
 
 
 func _setup_recruitment() -> void:
@@ -406,6 +603,7 @@ func _setup_journal() -> void:
 	journal.name = "Journal"
 	player.add_child(journal)
 	hud.journal_closed.connect(_on_journal_closed)
+	journal.add_quest(&"defensa", &"PCH_Q_DEFENSA_TITLE", &"PCH_Q_DEFENSA_BODY")
 
 
 ## Víspera opcional: un viejo cuenta la leyenda antes de la defensa.
@@ -451,10 +649,22 @@ func _build_vespera_dialogue() -> DialogueGraph:
 	var listen: DialogueChoice = DialogueChoice.new()
 	listen.text_key = &"PCH_VESPERA_LISTEN"
 	listen.next_id = &"tale"
+	var offer: DialogueChoice = DialogueChoice.new()
+	offer.text_key = &"PCH_VESPERA_OFFER"
+	offer.next_id = &"offer"
+	var offer_condition: DialogueCondition = DialogueCondition.new()
+	offer_condition.kind = DialogueCondition.Kind.ITEM
+	offer_condition.key = &"coca"
+	offer_condition.minimum = 1
+	var offer_conditions: Array[DialogueCondition] = [offer_condition]
+	offer.conditions = offer_conditions
+	var sleep: DialogueChoice = DialogueChoice.new()
+	sleep.text_key = &"PCH_VESPERA_SLEEP"
+	sleep.next_id = &"sleep"
 	var leave: DialogueChoice = DialogueChoice.new()
 	leave.text_key = &"PCH_DLG_LEAVE"
 	leave.next_id = &"end"
-	var choices: Array[DialogueChoice] = [listen, leave]
+	var choices: Array[DialogueChoice] = [listen, offer, sleep, leave]
 	start.choices = choices
 	var tale: DialogueNode = DialogueNode.new()
 	tale.id = &"tale"
@@ -472,7 +682,33 @@ func _build_vespera_dialogue() -> DialogueGraph:
 	close.speaker_key = &"PCH_NPC_ELDER"
 	close.text_key = &"PCH_VESPERA_CLOSE"
 	close.next_id = &"end"
-	var nodes: Array[DialogueNode] = [start, tale, close]
+	var offer_node: DialogueNode = DialogueNode.new()
+	offer_node.id = &"offer"
+	offer_node.speaker_key = &"PCH_NPC_ELDER"
+	offer_node.text_key = &"PCH_VESPERA_OFFER_DONE"
+	offer_node.next_id = &"end"
+	var offer_effect: DialogueEffect = DialogueEffect.new()
+	offer_effect.kind = DialogueEffect.Kind.ITEM_REMOVE
+	offer_effect.key = &"coca"
+	offer_effect.amount = 1
+	var offer_flag: DialogueEffect = DialogueEffect.new()
+	offer_flag.kind = DialogueEffect.Kind.SET_FLAG
+	offer_flag.key = &"ofrenda_hecha"
+	offer_flag.amount = 1
+	var offer_effects: Array[DialogueEffect] = [offer_effect, offer_flag]
+	offer_node.effects = offer_effects
+	var sleep_node: DialogueNode = DialogueNode.new()
+	sleep_node.id = &"sleep"
+	sleep_node.speaker_key = &"PCH_NPC_ELDER"
+	sleep_node.text_key = &"PCH_VESPERA_SLEEP_DONE"
+	sleep_node.next_id = &"end"
+	var sleep_effect: DialogueEffect = DialogueEffect.new()
+	sleep_effect.kind = DialogueEffect.Kind.SET_FLAG
+	sleep_effect.key = &"descanso_cusco"
+	sleep_effect.amount = 1
+	var sleep_effects: Array[DialogueEffect] = [sleep_effect]
+	sleep_node.effects = sleep_effects
+	var nodes: Array[DialogueNode] = [start, tale, close, offer_node, sleep_node]
 	graph.nodes = nodes
 	return graph
 
@@ -524,13 +760,15 @@ func _on_cusi_requested() -> void:
 
 
 func _recruit_joins(index: int) -> bool:
+	var cusco_reputation: int = character.get_reputation(&"cusco") if character != null else 0
+	var word: int = character.get_skill(&"palabra") if character != null else 0
 	match index:
 		0:
-			return CampaignState.has_flag(&"maiz_guardado")
+			return CampaignState.has_flag(&"maiz_guardado") or cusco_reputation >= 1
 		1:
-			return CampaignState.has_flag(&"herido_salvado") or CampaignState.has_flag(&"descanso")
+			return (CampaignState.has_flag(&"mensaje_chanca") or word >= 2) and cusco_reputation >= 1
 		2:
-			return CampaignState.has_flag(&"coca_compartida") or CampaignState.has_flag(&"descanso")
+			return CampaignState.get_flag(&"confianza_sisa") >= 1
 	return false
 
 
@@ -562,6 +800,8 @@ func _build_recruit_dialogue(index: int, joins: bool) -> DialogueGraph:
 		effect.amount = 1
 		var effects: Array[DialogueEffect] = [effect]
 		answer.effects = effects
+		if index == 1 and character != null:
+			character.register_skill_use(&"palabra", 2)
 	var nodes: Array[DialogueNode] = [start, answer]
 	graph.nodes = nodes
 	return graph
@@ -604,20 +844,28 @@ func _start_defense() -> void:
 		return
 	_defense_active = true
 	_defense_requested = false
+	_wave = 1
+	CampaignProgress.save_checkpoint(self, player.global_position)
 	_start_drum()
 	_retreat_crowd()
 	_play_gesture(_cusi_visual, &"talk")
 	SessionLog.mark(&"defense_start", "aliados=%d" % ally_count())
-	var count: int = maxi(1, 4 - ally_count())
+	_spawn_wave()
+	hud.show_subtitle(tr("PCH_CIUDAD_DEFENSE"), 0.0)
+	_update_status()
+
+
+## Cada oleada trae menos enemigos si el jugador reclutó y preparó la defensa.
+func _spawn_wave() -> void:
+	var prepared: int = 1 if CampaignState.has_flag(&"preparacion_hecha") else 0
+	var count: int = maxi(1, 4 - ally_count() - prepared - (_wave - 1))
 	for index: int in range(count):
 		var enemy: AmbushEnemy = AmbushEnemy.new()
-		enemy.name = "Defender%d" % (index + 1)
-		enemy.position = DEFENSE_POSITIONS[index]
+		enemy.name = "Defender%d_%d" % [_wave, index + 1]
+		enemy.position = DEFENSE_POSITIONS[index % DEFENSE_POSITIONS.size()]
 		add_child(enemy)
 		enemy.setup(player, self)
 		_enemies.append(enemy)
-	hud.show_subtitle(tr("PCH_CIUDAD_DEFENSE"), 0.0)
-	_update_status()
 
 
 ## La multitud deja la plaza cuando empieza la defensa y se refugia junto a las
@@ -796,16 +1044,34 @@ func _finish_defense() -> void:
 	_completed = true
 	_defense_active = false
 	_stop_drum()
-	hud.show_subtitle(tr("PCH_CIUDAD_COUNTER"), 0.0)
-	var epilogue: String = tr("PCH_CIUDAD_EPILOGUE")
 	if CampaignState.has_flag(&"herido_salvado"):
-		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_WOUNDED")
+		CampaignState.set_flag(&"costo_anca", 1)
+	elif ally_count() < 2:
+		CampaignState.set_flag(&"costo_joven", 1)
+	else:
+		CampaignState.set_flag(&"sin_costo", 1)
+	if character != null and (CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")):
+		character.change_morale(-15.0)
+	var epilogue: String = tr("PCH_CIUDAD_COUNTER") + " " + tr("PCH_CIUDAD_EPILOGUE")
+	if CampaignState.has_flag(&"costo_anca"):
+		epilogue += " " + tr("PCH_CIUDAD_COST_ANCA")
+	elif CampaignState.has_flag(&"costo_joven"):
+		epilogue += " " + tr("PCH_CIUDAD_COST_JOVEN")
+	else:
+		epilogue += " " + tr("PCH_CIUDAD_NO_COST")
+	if CampaignState.has_flag(&"santuario_protegido"):
+		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SANCTUARY")
+	elif CampaignState.has_flag(&"orden_llevada"):
+		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_ORDER")
 	if CampaignState.has_flag(&"maiz_guardado"):
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_MAIZE")
 	if CampaignState.has_flag(&"scout_spared"):
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SPARED")
-	hud.show_subtitle(epilogue, 0.0)
-	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"))
+	if journal != null:
+		journal.complete_quest(&"defensa")
+		journal.add_memory(&"mem_cusco", &"PCH_ST_PLAZA_TITLE", &"PCH_ST_PLAZA_BODY", &"A", &"PCH_ST_PLAZA_SOURCE")
+	CampaignProgress.save(self)
+	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"), epilogue)
 	SessionLog.mark(&"defense_end", "salud=%d aliados=%d" % [int(character.get_health()), ally_count()])
 
 
@@ -961,6 +1227,23 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 	CampaignState.set_flag(key, value)
 	if key == &"defensa_iniciada" and value != 0:
 		_defense_requested = true
+		return
+	if key == &"mensaje_entregado" and value != 0:
+		hud.show_objective(tr("PCH_OBJ_RECRUIT"))
+		return
+	if key == &"preparacion_hecha" and value != 0:
+		hud.show_objective(tr("PCH_OBJ_DEFENSE"))
+		return
+	if key == &"trampa_resuelta" and value != 0:
+		_trap_resolved = true
+		return
+	if key == &"ofrenda_hecha" and value != 0 and character != null:
+		character.change_morale(10.0)
+		return
+	if key == &"descanso_cusco" and value != 0 and character != null:
+		character.heal(15.0)
+		if player.stamina != null:
+			player.stamina.restore(20.0)
 		return
 	if key == &"mem_pururaucas" and value != 0:
 		_unlock_memory(&"mem_pururaucas", &"PCH_ST_PURURAUCAS_TITLE", &"PCH_ST_PURURAUCAS_BODY", &"N", &"PCH-031")

@@ -84,6 +84,12 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_act_one_tasks` | Tres encargos dan agua, maíz y manta, dejan el cuarto disponible y cambian el objetivo |
 | `test_assembly` | El tercer encargo abre la asamblea, la elección deja su bandera y aparece la tarjeta de fin |
 | `test_post_acts` | El acto IV abre la asamblea de posguerra; el acto V completa las tres obras y cierra la campaña |
+| `test_campaign_progress` | Recursos, oficio y habilidades del acto I sobreviven al paso al acto II |
+| `test_end_card_body` | La tarjeta de fin muestra la noticia de Viracocha y el nombre nuevo con su variante |
+| `test_act_three_cost` | La defensa tiene tres oleadas y el costo con nombre llega al epílogo |
+| `test_paso_sneak` | El sigilo exige Monte y la cuerda se consume al distraer |
+| `test_core_layering` | `core/` no referencia rutas, clases ni recursos de `campaigns/` |
+| `test_checkpoint` | El punto de control restaura salud, aliento, inventario y posición |
 
 ### 3.3. Núcleo RPG
 
@@ -143,6 +149,7 @@ Al cerrar cada acto:
 
 | Fecha | Alcance | Comando | Resultado |
 |---|---|---|---|
-| 2026-11-15 | Arco completo I–V en gris, con asambleas y reconstrucción | `run_tests.gd` | 91 pruebas, 0 fallos, 0 advertencias |
+| 2026-11-15 | Arco completo I–V, guion, sistemas de campaña y finales | `run_tests.gd` | 97 pruebas, 0 fallos, 0 advertencias |
+| 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.
