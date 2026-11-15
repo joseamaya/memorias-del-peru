@@ -41,6 +41,10 @@ Proceso descrito en [ADR-0016](../../../../docs/adr/0016-personajes-realistas-ma
 - Captura con la columna en parte enderezada, cuello y cabeza estabilizados, cara nivelada y dedos relajados.
 - La postura arrodillada de la tejedora se calcula a partir del esqueleto; sobre ella van los brazos de la toma de coser.
 - Los movimientos se trasladan al esqueleto alineando cada hueso, se recortan en ciclos cerrados y se hornean a 30 fps.
+- **Pesos de la ropa al torso** (2026-11-14): la prenda venía pesada a los brazos
+  y se estiraba como una vela al levantar el brazo. `pch_cloth_weights.py` mueve
+  los pesos de brazos y hombros a `Spine1` y reexporta con los mismos ajustes;
+  conserva animaciones, esqueleto, UV y materiales.
 
 ### Aviso de licencia de Rocketbox (MIT)
 
