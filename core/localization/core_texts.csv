@@ -2,6 +2,7 @@ keys,es
 INTERACT_DEFAULT,Interactuar
 UI_PAUSED,Pausa · Esc para continuar
 UI_STAMINA,Aliento
+UI_HEALTH,Salud
 UI_END_HINT,R para volver a empezar · Esc para salir
 UI_GAME_TITLE,Memorias del Perú
 UI_START,Comenzar

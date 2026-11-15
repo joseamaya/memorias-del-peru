@@ -99,6 +99,7 @@ PCH_DLG_CURACA_PLAZA,"Una llacta del valle. Aquí se trabaja, se reparte y se re
 PCH_PASO_AMBUSH,El paso está cerrado. ¡Chancas!
 PCH_PASO_CLEAR,"El paso queda libre. El Cusco se ve al fondo."
 PCH_PASO_STATUS,Salud: %d · Enemigos: %d
+PCH_PASO_COMBAT_STATUS,Enemigos: %d
 PCH_PASO_DEAD,Has caído. R para reintentar.
 PCH_PASO_END,Fin del acto II · R para ir al Cusco
 PCH_CAMP_TALK,Hablar en el campamento
@@ -146,6 +147,7 @@ PCH_CIUDAD_EPILOGUE_MAIZE,"El maíz guardado alcanzó para la defensa."
 PCH_CIUDAD_END_TITLE,Fin de la campaña
 PCH_CIUDAD_END_HINT,R para volver al título · Esc para salir
 PCH_CIUDAD_STATUS,Salud: %d · Aliados: %d · Enemigos: %d
+PCH_CIUDAD_COMBAT_STATUS,Aliados: %d · Enemigos: %d
 PCH_CIUDAD_DEAD,Has caído. R para reintentar.
 PCH_CIUDAD_ALREADY,Ya están con nosotros.
 PCH_CIUDAD_CUSI_ACCEPT,Que vengan.

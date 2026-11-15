@@ -2,12 +2,15 @@ class_name PlayerHud
 extends Control
 ## HUD mínimo y contextual.
 ##
-## Muestra la indicación de interacción solo al enfocar un objeto, la estamina
-## solo cuando no está llena, los subtítulos narrativos (ADR-0006) y un rótulo
-## de lugar. Los subtítulos duran lo que hace falta para leerlos y se ponen en
-## cola en lugar de pisarse (ADR-0012). Se comunica exclusivamente por señales
-## y no conoce la campaña. También muestra una indicación breve, como los
-## controles al empezar (ADR-0024).
+## Muestra la indicación de interacción solo al enfocar un objeto, la salud y la
+## estamina solo cuando no están llenas (o durante el combate), los subtítulos
+## narrativos y un rótulo de lugar. Los subtítulos duran lo que hace falta para
+## leerlos y se ponen en cola en lugar de pisarse. Se comunica exclusivamente
+## por señales y no conoce la campaña.
+##
+## Durante un diálogo o el diario se retira todo el HUD de exploración y, en el
+## diálogo, aparecen dos bandas cinematográficas. El centro de la pantalla lleva
+## una retícula discreta que se abre al enfocar un interactuable.
 
 ## Velocidad de lectura supuesta y margen añadido a cada subtítulo.
 const CHARS_PER_SECOND: float = 13.0
@@ -23,6 +26,14 @@ const END_ALPHA: float = 0.85
 ## Fundidos del rótulo de lugar.
 const TITLE_FADE_IN: float = 0.8
 const TITLE_FADE_OUT: float = 1.2
+## Bandas cinematográficas del diálogo y velocidad de su entrada.
+const CINEMATIC_BAR_HEIGHT: float = 64.0
+const CINEMATIC_SECONDS: float = 0.28
+## Retícula: radio del punto y del anillo de enfoque.
+const RETICLE_DOT_RADIUS: float = 2.0
+const RETICLE_RING_RADIUS: float = 7.0
+const RETICLE_IDLE_ALPHA: float = 0.42
+const RETICLE_FOCUS_ALPHA: float = 0.9
 
 ## Se emite al avanzar una línea de diálogo sin opciones.
 signal dialogue_advanced
@@ -35,7 +46,13 @@ signal journal_closed
 @export var stamina: StaminaComponent
 
 @onready var interaction_label: Label = $InteractionLabel
+@onready var interaction_key: Label = $InteractionKey
+@onready var health_bar: ProgressBar = $HealthBar
+@onready var health_label: Label = $HealthLabel
 @onready var stamina_bar: ProgressBar = $StaminaBar
+@onready var status_label: Label = $StatusLabel
+@onready var cinematic_top: ColorRect = $CinematicTop
+@onready var cinematic_bottom: ColorRect = $CinematicBottom
 @onready var subtitle_label: Label = $SubtitleLabel
 @onready var title_label: Label = $TitleLabel
 @onready var hint_label: Label = $HintLabel
@@ -56,6 +73,12 @@ var _title_elapsed: float = 0.0
 var _hint_total: float = 0.0
 var _hint_elapsed: float = 0.0
 var _end_elapsed: float = -1.0
+var _character: CharacterState = null
+var _status_visible: bool = false
+var _cinematic: bool = false
+var _reticle_focused: bool = false
+var _exploration_visible: bool = true
+var _cinematic_tween: Tween = null
 
 
 func _ready() -> void:
@@ -64,8 +87,20 @@ func _ready() -> void:
 	title_label.visible = false
 	hint_label.visible = false
 	objective_label.visible = false
+	interaction_label.visible = false
+	interaction_key.visible = false
+	health_bar.visible = false
+	health_label.visible = false
+	stamina_bar.visible = false
+	var stamina_caption: Label = get_node_or_null("StaminaLabel") as Label
+	if stamina_caption != null:
+		stamina_caption.visible = false
+	status_label.visible = false
 	pause_panel.visible = false
 	end_panel.visible = false
+	cinematic_top.visible = true
+	cinematic_bottom.visible = true
+	_set_cinematic_offset(0.0)
 	dialogue_panel.advanced.connect(_on_dialogue_advanced)
 	dialogue_panel.choice_selected.connect(_on_dialogue_choice)
 	journal_panel.closed.connect(_on_journal_closed)
@@ -77,10 +112,23 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_ensure_character()
 	advance_subtitle(delta)
 	advance_title(delta)
 	advance_hint(delta)
 	advance_end_card(delta)
+
+
+## Retícula central: un punto tenue y un anillo que se abre al enfocar.
+func _draw() -> void:
+	if not _exploration_visible or _cinematic or pause_panel.visible or end_panel.visible:
+		return
+	var center: Vector2 = size * 0.5
+	var alpha: float = RETICLE_FOCUS_ALPHA if _reticle_focused else RETICLE_IDLE_ALPHA
+	var color: Color = Color(0.97, 0.93, 0.82, alpha)
+	draw_circle(center, RETICLE_DOT_RADIUS, color)
+	if _reticle_focused:
+		draw_arc(center, RETICLE_RING_RADIUS, 0.0, TAU, 24, color, 1.4, true)
 
 
 ## Asigna el jugador y su estamina desde la escena que compone el HUD.
@@ -91,13 +139,75 @@ func bind(player_node: PlayerFPS, stamina_node: StaminaComponent) -> void:
 		_connect_refs()
 
 
+## Muestra u oculta una línea de estado de combate (enemigos, aliados).
+func set_status(text: String) -> void:
+	_ensure_character()
+	_status_visible = not text.is_empty()
+	status_label.text = text
+	_refresh_vitals_visibility()
+	_refresh_status_visibility()
+
+
+## Indica si el estado de combate está a la vista.
+func is_status_visible() -> bool:
+	return status_label.visible
+
+
+## Indica si la salud está a la vista.
+func is_health_visible() -> bool:
+	return health_bar.visible
+
+
+## Entra o sale del modo cinematográfico del diálogo: bandas arriba y abajo y
+## el HUD de exploración fuera de la pantalla.
+func set_cinematic(active: bool) -> void:
+	if _cinematic == active:
+		return
+	_cinematic = active
+	_exploration_visible = not active
+	_refresh_interaction_visibility()
+	_refresh_vitals_visibility()
+	_refresh_status_visibility()
+	objective_label.visible = not active and not objective_label.text.is_empty()
+	if _cinematic_tween != null and _cinematic_tween.is_valid():
+		_cinematic_tween.kill()
+	_cinematic_tween = create_tween()
+	_cinematic_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	var target: float = CINEMATIC_BAR_HEIGHT if active else 0.0
+	_cinematic_tween.tween_method(_set_cinematic_offset, _current_cinematic_offset(), target, CINEMATIC_SECONDS)
+	queue_redraw()
+
+
+## Indica si el HUD está en modo cinematográfico.
+func is_cinematic() -> bool:
+	return _cinematic
+
+
+func _current_cinematic_offset() -> float:
+	return cinematic_top.offset_bottom
+
+
+func _set_cinematic_offset(value: float) -> void:
+	cinematic_top.offset_bottom = value
+	cinematic_bottom.offset_top = -value
+
+
 ## Muestra la tarjeta de fin con un fundido: título y cómo seguir.
 func show_end_card(title: String, hint: String) -> void:
 	end_title.text = title
 	end_hint.text = hint
 	end_panel.visible = true
 	_end_elapsed = 0.0
+	_exploration_visible = false
+	interaction_label.visible = false
+	interaction_key.visible = false
+	health_bar.visible = false
+	health_label.visible = false
+	stamina_bar.visible = false
+	status_label.visible = false
+	objective_label.visible = false
 	_apply_end_fade()
+	queue_redraw()
 
 
 ## Avanza el fundido de la tarjeta de fin.
@@ -123,6 +233,7 @@ func _apply_end_fade() -> void:
 ## Muestra u oculta el aviso de pausa.
 func show_pause(paused: bool) -> void:
 	pause_panel.visible = paused
+	queue_redraw()
 
 
 ## Segundos que necesita [param text] para leerse con calma; nunca menos que
@@ -239,6 +350,8 @@ func is_showing_objective() -> bool:
 
 ## Abre el panel de diálogo con textos ya traducidos.
 func show_dialogue(speaker: String, text: String, choices: Array[String]) -> void:
+	if not dialogue_panel.is_open():
+		set_cinematic(true)
 	dialogue_panel.open(speaker, text, choices)
 
 
@@ -250,6 +363,7 @@ func update_dialogue(speaker: String, text: String, choices: Array[String]) -> v
 ## Cierra el panel de diálogo.
 func hide_dialogue() -> void:
 	dialogue_panel.close()
+	set_cinematic(false)
 
 
 ## Indica si el diálogo está abierto.
@@ -259,12 +373,24 @@ func is_dialogue_open() -> bool:
 
 ## Abre el diario con las entradas del jugador.
 func show_journal(journal: Journal) -> void:
+	_exploration_visible = false
+	interaction_label.visible = false
+	interaction_key.visible = false
+	objective_label.visible = false
+	_refresh_vitals_visibility()
+	_refresh_status_visibility()
 	journal_panel.open(journal)
+	queue_redraw()
 
 
 ## Cierra el diario.
 func hide_journal() -> void:
 	journal_panel.close()
+	_exploration_visible = true
+	objective_label.visible = not objective_label.text.is_empty()
+	_refresh_vitals_visibility()
+	_refresh_status_visibility()
+	queue_redraw()
 
 
 ## Indica si el diario está abierto.
@@ -340,19 +466,71 @@ func _connect_refs() -> void:
 	if stamina != null and not stamina.stamina_changed.is_connected(_on_stamina_changed):
 		stamina.stamina_changed.connect(_on_stamina_changed)
 		_on_stamina_changed(stamina.get_current(), stamina.get_maximum())
+	_ensure_character()
+
+
+## El estado del jugador puede crearse después del bind (Paso y Cusco montan el
+## combate más tarde): se busca de forma perezosa y se conecta una sola vez.
+func _ensure_character() -> void:
+	if _character != null and is_instance_valid(_character):
+		return
+	if player == null:
+		return
+	_character = player.get_node_or_null("CharacterState") as CharacterState
+	if _character == null:
+		_character = player.find_child("CharacterState", true, false) as CharacterState
+	if _character == null:
+		return
+	if not _character.health_changed.is_connected(_on_health_changed):
+		_character.health_changed.connect(_on_health_changed)
+	_on_health_changed(_character.get_health(), _character.get_max_health())
 
 
 func _on_interactable_focused(interactable: Interactable) -> void:
 	var text: String = interactable.get_interaction_text()
 	interaction_label.text = text
-	interaction_label.visible = not text.is_empty()
+	_reticle_focused = true
+	_refresh_interaction_visibility()
+	queue_redraw()
 
 
 func _on_interactable_unfocused() -> void:
-	interaction_label.visible = false
+	_reticle_focused = false
+	_refresh_interaction_visibility()
+	queue_redraw()
 
 
 func _on_stamina_changed(current: float, maximum: float) -> void:
 	stamina_bar.max_value = maximum
 	stamina_bar.value = current
-	stamina_bar.visible = current < maximum
+	_refresh_vitals_visibility()
+
+
+func _on_health_changed(current: float, maximum: float) -> void:
+	health_bar.max_value = maximum
+	health_bar.value = current
+	_refresh_vitals_visibility()
+
+
+## La interacción solo se ve durante la exploración y con un objeto enfocado.
+func _refresh_interaction_visibility() -> void:
+	var visible_now: bool = _exploration_visible and not _cinematic and not interaction_label.text.is_empty()
+	interaction_label.visible = visible_now
+	interaction_key.visible = visible_now
+
+
+## Salud y estamina aparecen cuando no están llenas o durante el combate.
+func _refresh_vitals_visibility() -> void:
+	var can_show: bool = _exploration_visible and not _cinematic
+	var health_active: bool = _character != null and _character.get_health() < _character.get_max_health()
+	health_bar.visible = can_show and (health_active or _status_visible)
+	health_label.visible = health_bar.visible
+	var stamina_active: bool = stamina != null and stamina.get_current() < stamina.get_maximum()
+	stamina_bar.visible = can_show and stamina_active
+	var stamina_label: Label = get_node_or_null("StaminaLabel") as Label
+	if stamina_label != null:
+		stamina_label.visible = stamina_bar.visible
+
+
+func _refresh_status_visibility() -> void:
+	status_label.visible = _status_visible and _exploration_visible and not _cinematic

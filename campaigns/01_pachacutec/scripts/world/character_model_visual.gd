@@ -34,6 +34,7 @@ var _player: AnimationPlayer = null
 var _porra_pivot: Node3D = null
 var _skeleton: Skeleton3D = null
 var _hand_index: int = -1
+var _head_index: int = -1
 
 
 func _ready() -> void:
@@ -51,6 +52,9 @@ func _ready() -> void:
 	# material se liberan mal; en el juego y en las capturas sí se aplican.
 	if DisplayServer.get_name() != "headless":
 		SurfaceMaterials.apply_to_model(_model)
+	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
+	if _skeleton != null:
+		_head_index = _skeleton.find_bone("Head")
 	_player = _model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if _player != null:
 		_add_combat_clips()
@@ -125,6 +129,14 @@ static func _load_combat_clips() -> Array[StringName]:
 	for clip: StringName in _combat_cache:
 		names.append(clip)
 	return names
+
+
+## Punto de la cara para encuadrar un diálogo, tomado del hueso de la cabeza.
+func focus_point() -> Vector3:
+	if _skeleton != null and _head_index >= 0 and _skeleton.is_inside_tree():
+		var head_pose: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_head_index)
+		return head_pose.origin + Vector3.UP * 0.12
+	return global_position + Vector3.UP * 1.55
 
 
 ## Nodo del modelo cargado, para las pruebas y las capturas.

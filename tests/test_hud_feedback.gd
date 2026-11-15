@@ -16,11 +16,33 @@ func test_hud_pause_and_stamina_label() -> bool:
 	var ok: bool = panel != null and label != null and stamina_label != null
 	if ok:
 		ok = ok and not panel.visible and label.visible
+		# La etiqueta de aliento ya no queda flotando cuando la barra está llena.
+		ok = ok and not stamina_label.visible
 		hud.show_pause(true)
 		ok = ok and panel.visible and label.is_visible_in_tree()
 		ok = ok and not tr(label.text).begins_with("UI_") and not tr(stamina_label.text).begins_with("UI_")
 		hud.show_pause(false)
 		ok = ok and not panel.visible
+	hud.free()
+	return ok
+
+
+func test_hud_health_status_and_cinematic() -> bool:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return false
+	var hud: PlayerHud = (load("res://core/ui/hud.tscn") as PackedScene).instantiate() as PlayerHud
+	tree.root.add_child(hud)
+	var ok: bool = not hud.is_health_visible() and not hud.is_status_visible()
+	hud.set_status("Enemigos: 2")
+	ok = ok and hud.is_status_visible() and hud.is_health_visible()
+	hud.set_cinematic(true)
+	ok = ok and hud.is_cinematic()
+	ok = ok and not hud.is_status_visible() and not hud.is_health_visible()
+	hud.set_cinematic(false)
+	ok = ok and not hud.is_cinematic() and hud.is_status_visible()
+	hud.set_status("")
+	ok = ok and not hud.is_status_visible() and not hud.is_health_visible()
 	hud.free()
 	return ok
 

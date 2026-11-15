@@ -49,7 +49,6 @@ const CLOUD_DOME_RINGS: int = 24
 
 @onready var player: PlayerFPS = $PlayerFPS
 @onready var hud: PlayerHud = $UILayer/HUD
-@onready var status_label: Label = $UILayer/StatusLabel
 @onready var hint_label: Label = $UILayer/HintLabel
 @onready var spawn: Marker3D = $PlayerSpawn
 
@@ -224,7 +223,7 @@ func _finish_ambush() -> void:
 	hud.show_subtitle(tr("PCH_PASO_CLEAR"), 0.0)
 	var entry: StringName = &"maize" if _sneak else &"start"
 	if dialogue != null and _aftermath_graph != null and dialogue.start(_aftermath_graph, entry):
-		player.process_mode = Node.PROCESS_MODE_DISABLED
+		player.begin_dialogue(null)
 	else:
 		_aftermath_pending = false
 		_completed = true
@@ -232,9 +231,13 @@ func _finish_ambush() -> void:
 
 
 func _update_status() -> void:
-	if status_label == null or character == null:
+	if hud == null or character == null:
 		return
-	status_label.text = tr("PCH_PASO_STATUS") % [int(character.get_health()), alive_enemies()]
+	# Solo durante la emboscada: fuera de ella el HUD queda limpio.
+	if not _ambush_started or _completed or _dead:
+		hud.set_status("")
+		return
+	hud.set_status(tr("PCH_PASO_COMBAT_STATUS") % alive_enemies())
 
 
 func _setup_player_combat() -> void:
@@ -400,7 +403,7 @@ func _on_camp_requested() -> void:
 	if dialogue.is_active():
 		return
 	if dialogue.start(_camp_graph):
-		player.process_mode = Node.PROCESS_MODE_DISABLED
+		player.begin_dialogue(null)
 
 
 func _build_camp_dialogue() -> DialogueGraph:
@@ -545,7 +548,7 @@ func _on_dialogue_choice(index: int) -> void:
 
 func _on_dialogue_finished() -> void:
 	hud.hide_dialogue()
-	player.process_mode = Node.PROCESS_MODE_INHERIT
+	player.end_dialogue()
 	_stop_drum()
 	if _aftermath_pending:
 		_aftermath_pending = false

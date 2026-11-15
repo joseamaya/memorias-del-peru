@@ -526,10 +526,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if hud.is_journal_open():
 			hud.hide_journal()
-			player.process_mode = Node.PROCESS_MODE_INHERIT
+			player.set_controls_locked(false)
 		else:
 			hud.show_journal(journal)
-			player.process_mode = Node.PROCESS_MODE_DISABLED
+			player.set_controls_locked(true)
 		get_viewport().set_input_as_handled()
 		return
 	if not OS.is_debug_build():
@@ -1160,7 +1160,7 @@ func _on_npc_dialogue_requested(actor: Node3D, graph: DialogueGraph) -> void:
 	if npc != null and npc.turn_body_to_talk:
 		npc.face(player.global_position)
 		npc.perform(&"talk" if npc.idle_animation == &"idle" else &"idle", TALK_HOLD_SECONDS)
-	player.process_mode = Node.PROCESS_MODE_DISABLED
+	player.begin_dialogue(actor)
 
 
 func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
@@ -1196,7 +1196,7 @@ func _on_dialogue_choice(index: int) -> void:
 func _on_dialogue_finished() -> void:
 	if hud != null:
 		hud.hide_dialogue()
-	player.process_mode = Node.PROCESS_MODE_INHERIT
+	player.end_dialogue()
 
 
 func _on_dialogue_flag(key: StringName, value: int) -> void:
@@ -1212,7 +1212,7 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 
 
 func _on_journal_closed() -> void:
-	player.process_mode = Node.PROCESS_MODE_INHERIT
+	player.set_controls_locked(false)
 
 
 func _on_quero_memory() -> void:

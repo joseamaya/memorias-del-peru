@@ -150,7 +150,6 @@ class CrowdMember:
 
 @onready var player: PlayerFPS = $PlayerFPS
 @onready var hud: PlayerHud = $UILayer/HUD
-@onready var status_label: Label = $UILayer/StatusLabel
 @onready var hint_label: Label = $UILayer/HintLabel
 @onready var spawn: Marker3D = $PlayerSpawn
 
@@ -171,6 +170,9 @@ var _battle_drum: AudioStreamPlayer = null
 var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 var _ally_visuals: Dictionary[int, bool] = {}
+var _recruit_visuals: Array[CharacterModelVisual] = []
+var _cusi_visual: CharacterModelVisual = null
+var _vespera_visual: CharacterModelVisual = null
 var _crowd: Array[CrowdMember] = []
 var _crowd_retreating: bool = false
 
@@ -272,10 +274,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if hud.is_journal_open():
 			hud.hide_journal()
-			player.process_mode = Node.PROCESS_MODE_INHERIT
+			player.set_controls_locked(false)
 		else:
 			hud.show_journal(journal)
-			player.process_mode = Node.PROCESS_MODE_DISABLED
+			player.set_controls_locked(true)
 		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseButton:
@@ -335,7 +337,9 @@ func _setup_recruitment() -> void:
 		body.position = RECRUIT_POSITIONS[index]
 		add_child(point)
 		point.requested.connect(_on_recruit_requested.bind(index))
-		_add_visual_npc(Vector3(RECRUIT_POSITIONS[index].x, 0.0, RECRUIT_POSITIONS[index].z), RECRUIT_ROLES[index], index)
+		_recruit_visuals.append(_add_visual_npc(
+			Vector3(RECRUIT_POSITIONS[index].x, 0.0, RECRUIT_POSITIONS[index].z),
+			RECRUIT_ROLES[index], index))
 
 
 func _setup_cusi() -> void:
@@ -350,7 +354,7 @@ func _setup_cusi() -> void:
 	body.position = CUSI_POSITION
 	add_child(point)
 	point.requested.connect(_on_cusi_requested)
-	_add_visual_npc(Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z), &"curaca", 0)
+	_cusi_visual = _add_visual_npc(Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z), &"curaca", 0)
 
 
 ## Diario del acto III: guarda la leyenda de los pururaucas como Memoria.
@@ -374,7 +378,8 @@ func _setup_vespera() -> void:
 	body.position = VESPERA_POSITION
 	add_child(point)
 	point.requested.connect(_on_vespera_requested)
-	_add_visual_npc(Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), &"villager", 2)
+	_vespera_visual = _add_visual_npc(
+		Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), &"villager", 2)
 
 
 func _on_vespera_requested() -> void:
@@ -387,7 +392,7 @@ func _on_vespera_requested() -> void:
 		return
 	var graph: DialogueGraph = _build_vespera_dialogue()
 	if dialogue.start(graph):
-		player.process_mode = Node.PROCESS_MODE_DISABLED
+		player.begin_dialogue(_vespera_visual)
 
 
 ## La leyenda se cuenta como creencia: el texto dice «dicen» y «así lo
@@ -430,7 +435,7 @@ func _build_vespera_dialogue() -> DialogueGraph:
 
 
 func _on_journal_closed() -> void:
-	player.process_mode = Node.PROCESS_MODE_INHERIT
+	player.set_controls_locked(false)
 
 
 func _unlock_memory(
@@ -459,7 +464,10 @@ func _on_recruit_requested(index: int) -> void:
 	SessionLog.mark(&"recruit", "%d:%s" % [index, "si" if joins else "no"])
 	var graph: DialogueGraph = _build_recruit_dialogue(index, joins)
 	if dialogue.start(graph):
-		player.process_mode = Node.PROCESS_MODE_DISABLED
+		var target: Node3D = null
+		if index >= 0 and index < _recruit_visuals.size():
+			target = _recruit_visuals[index]
+		player.begin_dialogue(target)
 
 
 func _on_cusi_requested() -> void:
@@ -469,7 +477,7 @@ func _on_cusi_requested() -> void:
 		return
 	var graph: DialogueGraph = _build_cusi_dialogue()
 	if dialogue.start(graph):
-		player.process_mode = Node.PROCESS_MODE_DISABLED
+		player.begin_dialogue(_cusi_visual)
 
 
 func _recruit_joins(index: int) -> bool:
@@ -662,9 +670,13 @@ func _stop_drum() -> void:
 
 
 func _update_status() -> void:
-	if status_label == null or character == null:
+	if hud == null or character == null:
 		return
-	status_label.text = tr("PCH_CIUDAD_STATUS") % [int(character.get_health()), ally_count(), alive_enemies()]
+	# Fuera de la defensa no hay marcador: la salud solo aparece si baja.
+	if not _defense_active or _completed or _dead:
+		hud.set_status("")
+		return
+	hud.set_status(tr("PCH_CIUDAD_COMBAT_STATUS") % [ally_count(), alive_enemies()])
 
 
 func _restore_allies() -> void:
@@ -694,13 +706,14 @@ func _character_model_for(role: StringName, variant: int) -> String:
 	return "pch_npc_villager.glb"
 
 
-func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> void:
+func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> CharacterModelVisual:
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Visual"
 	visual.model_path = MODEL_DIR + _character_model_for(role, variant)
 	visual.position = at
 	add_child(visual)
 	visual.look_at(Vector3(0.0, at.y, 28.0), Vector3.UP)
+	return visual
 
 
 func _add_ally_visual(index: int) -> void:
@@ -741,7 +754,7 @@ func _on_dialogue_choice(index: int) -> void:
 
 func _on_dialogue_finished() -> void:
 	hud.hide_dialogue()
-	player.process_mode = Node.PROCESS_MODE_INHERIT
+	player.end_dialogue()
 	if _defense_requested:
 		_start_defense()
 

@@ -5,11 +5,25 @@ extends CharacterBody3D
 ## Movimiento relativo a la orientación horizontal, cámara con límite de pitch,
 ## reacción a la pausa, interacción por rayo y head bobbing calculado en el tick
 ## de física.
+##
+## La cámara tiene dos estados además de la exploración: el bloqueo de controles
+## (diario) y el encuadre de diálogo. En el diálogo el jugador no anda ni mira
+## con el ratón; la cámara gira hacia la cara del interlocutor y, al cerrar,
+## vuelve a la orientación que tenía. La transición es suave para no cortar la
+## inmersión ni provocar mareo.
 
 signal interactable_focused(interactable: Interactable)
 signal interactable_unfocused()
 signal interacted(interactable: Interactable)
 signal footstep_taken()
+
+## Fases del encuadre de diálogo.
+enum FocusPhase {
+	NONE,
+	FOCUS,
+	HOLD,
+	RESTORE,
+}
 
 const MAX_INTERACTABLE_SEARCH_DEPTH: int = 8
 const BOB_PHASE_WRAP: float = TAU * 2.0
@@ -22,17 +36,35 @@ const FOOTSTEP_SURFACE_META: StringName = &"footstep_surface"
 const FOOTSTEP_PROBE_DEPTH: float = 0.4
 ## Segundos tras _ready() antes del intento de captura de respaldo.
 const INITIAL_CAPTURE_DELAY: float = 0.3
+## Altura de los ojos del interlocutor a la que mira la cámara al dialogar.
+const FOCUS_TARGET_HEIGHT: float = 1.55
+## Giro máximo hacia el interlocutor, para no arrancar la mirada de golpe.
+const FOCUS_MAX_TURN_DEGREES: float = 72.0
+## Suavizado del escalón bajo los pies: cuánto se corrige por segundo.
+const STEP_SMOOTH_RATE: float = 7.0
+## Hundimiento de cámara al aterrizar desde una caída, en metros por m/s.
+const LANDING_DIP_PER_SPEED: float = 0.008
+const LANDING_DIP_MAX: float = 0.075
+## Inclinación lateral de la cámara al desplazarse de lado, en grados.
+const STRAFE_SWAY_DEGREES: float = 0.6
 
 @export_group("Movimiento")
 @export var walk_speed: float = 3.5
 @export var run_speed: float = 6.5
 @export var acceleration: float = 10.0
 @export var deceleration: float = 12.0
+## Proporción de la aceleración que se conserva en el aire.
+@export_range(0.0, 1.0, 0.05) var air_control: float = 0.35
 @export var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 
 @export_group("Cámara")
 @export var mouse_sensitivity: float = 0.15
 @export var pitch_limit_degrees: float = 80.0
+@export var base_fov: float = 78.0
+@export var run_fov_bonus: float = 4.0
+@export var dialogue_fov_offset: float = -3.0
+@export var focus_seconds: float = 0.35
+@export var restore_seconds: float = 0.4
 
 @export_group("Head bobbing")
 @export var bob_walk_frequency: float = 1.8
@@ -69,10 +101,37 @@ var _focused_collider: Object = null
 var _run_blocked: bool = false
 var _step_cycle: float = 0.0
 var _footstep_index: int = 0
+var _controls_locked: bool = false
+var _focus_phase: FocusPhase = FocusPhase.NONE
+var _focus_target: Node3D = null
+var _focus_elapsed: float = 0.0
+var _focus_from_yaw: float = 0.0
+var _focus_from_pitch: float = 0.0
+var _focus_to_yaw: float = 0.0
+var _focus_to_pitch: float = 0.0
+var _restore_from_yaw: float = 0.0
+var _restore_from_pitch: float = 0.0
+var _restore_to_yaw: float = 0.0
+var _restore_to_pitch: float = 0.0
+var _pre_dialogue_yaw: float = 0.0
+var _pre_dialogue_pitch: float = 0.0
+var _step_offset: float = 0.0
+var _last_ground_y: float = 0.0
+var _landing_dip: float = 0.0
+var _sway: float = 0.0
+var _fov_target: float = 78.0
 
 
 func _ready() -> void:
 	_camera_base_position = camera.position
+	base_fov = camera.fov if not is_zero_approx(camera.fov) else base_fov
+	_fov_target = base_fov
+	_last_ground_y = global_position.y
+	# El cuerpo se apoya en el suelo y no se queda flotando al subir un escalón.
+	floor_snap_length = 0.32
+	floor_stop_on_slope = true
+	floor_max_angle = deg_to_rad(46.0)
+	camera.near = 0.06
 	# No se captura aquí: durante _ready() la ventana puede no ser visible aún y
 	# X11 rechaza la captura («NO GRAB») aunque declare tener el foco. Se captura
 	# al recibir el foco, con un clic o, como respaldo, poco después de arrancar.
@@ -100,12 +159,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 	if event.is_action_pressed("interact"):
+		if _controls_locked:
+			return
 		try_interact()
 		get_viewport().set_input_as_handled()
 		return
 	if not (event is InputEventMouseMotion):
 		return
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	if _controls_locked or Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		return
 	var motion: InputEventMouseMotion = event as InputEventMouseMotion
 	rotate_y(-motion.relative.x * deg_to_rad(mouse_sensitivity))
@@ -116,7 +177,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
 	_move(delta)
-	_apply_head_bob(delta)
+	_update_focus(delta)
+	_apply_camera(delta)
 	update_interaction()
 
 
@@ -162,12 +224,149 @@ func find_interactable_from(start: Node) -> Interactable:
 
 ## Ejecuta la interacción sobre el objeto enfocado, si existe y está disponible.
 func try_interact() -> void:
+	if _controls_locked:
+		return
 	if _focused_interactable == null:
 		return
 	if not _focused_interactable.is_available():
 		return
 	_focused_interactable.interact(self)
 	interacted.emit(_focused_interactable)
+
+
+## Bloquea o libera el movimiento y la mirada. El diario lo usa para detener al
+## jugador sin apagar su física ni el mundo.
+func set_controls_locked(locked: bool) -> void:
+	_controls_locked = locked
+	if locked:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		_fov_target = base_fov
+		_clear_focus()
+
+
+## Indica si el jugador tiene los controles bloqueados.
+func is_controls_locked() -> bool:
+	return _controls_locked
+
+
+## Empieza un diálogo: bloquea los controles y gira la cámara hacia la cara de
+## [param target]. Con `null` solo bloquea, para diálogos sin interlocutor.
+func begin_dialogue(target: Node3D = null) -> void:
+	_controls_locked = true
+	velocity.x = 0.0
+	velocity.z = 0.0
+	_pre_dialogue_yaw = rotation.y
+	_pre_dialogue_pitch = _pitch
+	_focus_target = target
+	_focus_from_yaw = rotation.y
+	_focus_from_pitch = _pitch
+	_focus_to_yaw = _pre_dialogue_yaw
+	_focus_to_pitch = _pre_dialogue_pitch
+	if target != null and target.is_inside_tree():
+		_focus_to_yaw = _focus_yaw_towards(target)
+		_focus_to_pitch = _focus_pitch_towards(target)
+	_focus_phase = FocusPhase.FOCUS
+	_focus_elapsed = 0.0
+	_fov_target = base_fov + dialogue_fov_offset
+
+
+## Termina el diálogo y devuelve la cámara a la orientación previa. Los
+## controles se liberan cuando la transición acaba.
+func end_dialogue() -> void:
+	if _focus_phase == FocusPhase.NONE:
+		_controls_locked = false
+		_fov_target = base_fov
+		return
+	_restore_from_yaw = rotation.y
+	_restore_from_pitch = _pitch
+	_restore_to_yaw = _pre_dialogue_yaw
+	_restore_to_pitch = _pre_dialogue_pitch
+	_focus_target = null
+	_focus_phase = FocusPhase.RESTORE
+	_focus_elapsed = 0.0
+	_fov_target = base_fov
+
+
+## Indica si la cámara está encuadrando a un interlocutor.
+func is_dialogue_focused() -> bool:
+	return _focus_phase == FocusPhase.FOCUS or _focus_phase == FocusPhase.HOLD
+
+
+## Orientación horizontal hacia la cabeza de [param target], limitada para que
+## la cámara no gire 180° de golpe.
+func _focus_yaw_towards(target: Node3D) -> float:
+	var to_target: Vector3 = _focus_point_for(target) - global_position
+	to_target.y = 0.0
+	if to_target.length_squared() < 0.001:
+		return rotation.y
+	var desired: float = atan2(-to_target.x, -to_target.z)
+	var limit: float = deg_to_rad(FOCUS_MAX_TURN_DEGREES)
+	return rotation.y + clampf(wrapf(desired - rotation.y, -PI, PI), -limit, limit)
+
+
+## Inclinación hacia la cabeza de [param target], dentro del límite de pitch.
+func _focus_pitch_towards(target: Node3D) -> float:
+	# La altura de los ojos está en Head, no en la cámara: su posición local es
+	# cero. Usar la cámara dejaba el encuadre mirando 38° hacia arriba.
+	var eye: Vector3 = head.global_position
+	var to_target: Vector3 = _focus_point_for(target) - eye
+	var horizontal: float = Vector2(to_target.x, to_target.z).length()
+	if horizontal < 0.001:
+		return _pitch
+	return clamp_pitch(atan2(to_target.y, horizontal), pitch_limit_degrees)
+
+
+## Punto de la cara del interlocutor. Los personajes con esqueleto exponen
+## [method focus_point]; así la tejedora arrodillada no se encuadra como si
+## estuviera de pie.
+func _focus_point_for(target: Node3D) -> Vector3:
+	if target.has_method("focus_point"):
+		var point: Variant = target.call("focus_point")
+		if point is Vector3:
+			return point
+	return target.global_position + Vector3.UP * FOCUS_TARGET_HEIGHT
+
+
+func _clear_focus() -> void:
+	_focus_phase = FocusPhase.NONE
+	_focus_target = null
+	_focus_elapsed = 0.0
+
+
+## Avanza la transición del encuadre. En HOLD sigue lentamente la cara del
+## interlocutor; en RESTORE vuelve a la orientación de antes del diálogo.
+func _update_focus(delta: float) -> void:
+	if _focus_phase == FocusPhase.NONE:
+		return
+	var smooth: float = 0.0
+	if _focus_phase == FocusPhase.HOLD:
+		if _focus_target != null and _focus_target.is_inside_tree():
+			_focus_to_yaw = _focus_yaw_towards(_focus_target)
+			_focus_to_pitch = _focus_pitch_towards(_focus_target)
+		var follow: float = 1.0 - exp(-2.5 * delta)
+		rotation.y = lerp_angle(rotation.y, _focus_to_yaw, follow)
+		_pitch = lerpf(_pitch, _focus_to_pitch, follow)
+		head.rotation.x = _pitch
+		return
+	_focus_elapsed += delta
+	var duration: float = focus_seconds if _focus_phase == FocusPhase.FOCUS else restore_seconds
+	var t: float = clampf(_focus_elapsed / maxf(duration, 0.001), 0.0, 1.0)
+	smooth = t * t * (3.0 - 2.0 * t)
+	if _focus_phase == FocusPhase.FOCUS:
+		rotation.y = lerp_angle(_focus_from_yaw, _focus_to_yaw, smooth)
+		_pitch = lerpf(_focus_from_pitch, _focus_to_pitch, smooth)
+	else:
+		rotation.y = lerp_angle(_restore_from_yaw, _restore_to_yaw, smooth)
+		_pitch = lerpf(_restore_from_pitch, _restore_to_pitch, smooth)
+	head.rotation.x = _pitch
+	if t < 1.0:
+		return
+	if _focus_phase == FocusPhase.FOCUS:
+		_focus_phase = FocusPhase.HOLD
+	else:
+		_focus_phase = FocusPhase.NONE
+		_controls_locked = false
 
 
 ## Decide si el jugador corre y aplica el consumo de estamina.
@@ -212,7 +411,7 @@ static func should_capture_mouse(paused: bool, window_focused: bool) -> bool:
 ## indica si el jugador está apoyado. La posición se recalcula desde cero en cada
 ## llamada, por lo que no acumula desplazamiento.
 func calculate_head_bob_offset(horizontal_speed: float, grounded: bool, delta: float) -> Vector3:
-	var moving: bool = grounded and horizontal_speed > bob_min_speed
+	var moving: bool = grounded and horizontal_speed > bob_min_speed and not _controls_locked
 	var target_weight: float = 1.0 if moving else 0.0
 	_bob_weight = move_toward(_bob_weight, target_weight, bob_blend_speed * delta)
 	var speed_ratio: float = clampf(horizontal_speed / run_speed, 0.0, 1.0)
@@ -236,7 +435,7 @@ func bob_frequency_for(horizontal_speed: float) -> float:
 ## el tick en que el ciclo cruza [constant FOOTSTEP_CYCLE_POINT], es decir, un
 ## paso por ciclo de balanceo vertical.
 func advance_footstep(horizontal_speed: float, grounded: bool, delta: float) -> bool:
-	if not grounded or horizontal_speed <= bob_min_speed:
+	if _controls_locked or not grounded or horizontal_speed <= bob_min_speed:
 		return false
 	var previous: float = _step_cycle
 	var advanced: float = previous + delta * bob_frequency_for(horizontal_speed)
@@ -247,33 +446,78 @@ func advance_footstep(horizontal_speed: float, grounded: bool, delta: float) -> 
 
 
 func _move(delta: float) -> void:
-	var input_vector: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	var input_vector: Vector2 = Vector2.ZERO
+	var run_pressed: bool = false
+	if not _controls_locked:
+		input_vector = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+		run_pressed = Input.is_action_pressed("run")
 	var direction: Vector3 = (transform.basis * Vector3(input_vector.x, 0.0, input_vector.y)).normalized()
 	var has_input: bool = input_vector.length_squared() > 0.0
-	var run_pressed: bool = Input.is_action_pressed("run")
 	var is_running: bool = update_run_state(has_input, run_pressed, delta)
 	var target_speed: float = run_speed if is_running else walk_speed
 	var target_velocity: Vector3 = direction * target_speed
 	var rate: float = acceleration if has_input else deceleration
-	velocity.x = move_toward(velocity.x, target_velocity.x, rate * delta)
-	velocity.z = move_toward(velocity.z, target_velocity.z, rate * delta)
+	if not is_on_floor():
+		rate *= air_control
+	# Suavizado exponencial: el arranque y la frenada tienen peso, no un corte
+	# lineal. A 60 Hz el factor es equivalente al antiguo move_toward, pero se
+	# comporta igual a cualquier tasa de refresco.
+	var blend: float = 1.0 - exp(-rate * delta)
+	velocity.x = lerpf(velocity.x, target_velocity.x, blend)
+	velocity.z = lerpf(velocity.z, target_velocity.z, blend)
+	if absf(velocity.x) < 0.015:
+		velocity.x = 0.0
+	if absf(velocity.z) < 0.015:
+		velocity.z = 0.0
 	move_and_slide()
 
 
 func _apply_gravity(delta: float) -> void:
 	if is_on_floor():
+		# Un aterrizaje desde una caída corta hunde un poco la cámara y luego
+		# se recupera: el cuerpo pesa sin sacudir la vista.
+		if velocity.y < -2.0:
+			_landing_dip = minf(-velocity.y * LANDING_DIP_PER_SPEED, LANDING_DIP_MAX)
 		if velocity.y < 0.0:
 			velocity.y = 0.0
 		return
 	velocity.y -= gravity * delta
 
 
-func _apply_head_bob(delta: float) -> void:
+func _apply_camera(delta: float) -> void:
 	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
-	var offset: Vector3 = calculate_head_bob_offset(horizontal_speed, is_on_floor(), delta)
-	camera.position = _camera_base_position + offset
+	var bob: Vector3 = calculate_head_bob_offset(horizontal_speed, is_on_floor(), delta)
+	_update_step_smoothing(delta)
+	_landing_dip = move_toward(_landing_dip, 0.0, 0.22 * delta)
+	var strafe: float = Input.get_axis("move_left", "move_right") if not _controls_locked else 0.0
+	var sway_target: float = -strafe * deg_to_rad(STRAFE_SWAY_DEGREES) * _bob_weight
+	_sway = lerpf(_sway, sway_target, 1.0 - exp(-8.0 * delta))
+	camera.rotation.z = _sway
+	camera.position = _camera_base_position + bob + Vector3(0.0, _step_offset - _landing_dip, 0.0)
+	_update_fov(horizontal_speed, delta)
 	if advance_footstep(horizontal_speed, is_on_floor(), delta):
 		_play_footstep()
+
+
+## Corrige el salto vertical de la cámara al subir un escalón o una rampa
+## corta: el cuerpo sube, pero la vista lo acompaña con un pequeño retardo.
+func _update_step_smoothing(delta: float) -> void:
+	if is_on_floor():
+		var vertical_delta: float = global_position.y - _last_ground_y
+		if absf(vertical_delta) < 0.4:
+			_step_offset = clampf(_step_offset - vertical_delta, -0.14, 0.14)
+	_last_ground_y = global_position.y
+	_step_offset = move_toward(_step_offset, 0.0, STEP_SMOOTH_RATE * delta)
+
+
+## Ajusta el campo de visión: se abre al correr y se cierra al dialogar.
+func _update_fov(horizontal_speed: float, delta: float) -> void:
+	var speed_ratio: float = clampf(horizontal_speed / maxf(run_speed, 0.01), 0.0, 1.0)
+	var run_weight: float = smoothstep(0.62, 1.0, speed_ratio)
+	_fov_target = base_fov + run_fov_bonus * run_weight
+	if _controls_locked:
+		_fov_target += dialogue_fov_offset
+	camera.fov = lerpf(camera.fov, _fov_target, 1.0 - exp(-4.5 * delta))
 
 
 ## Superficie declarada por un cuerpo del mundo, o vacía si no declara ninguna.

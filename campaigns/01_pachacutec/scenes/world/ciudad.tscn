@@ -73,16 +73,6 @@ position = Vector3(0, 0, 28)
 
 [node name="HUD" parent="UILayer" instance=ExtResource("3_hud")]
 
-[node name="StatusLabel" type="Label" parent="UILayer"]
-offset_left = 24.0
-offset_top = 16.0
-offset_right = 520.0
-offset_bottom = 48.0
-theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 20
-
 [node name="HintLabel" type="Label" parent="UILayer"]
 anchor_left = 0.5
 anchor_top = 1.0

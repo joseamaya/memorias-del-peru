@@ -112,6 +112,8 @@ var _animation_player: AnimationPlayer = null
 var _look: LookAtModifier3D = null
 var _look_point: Marker3D = null
 var _springs: SpringBoneSimulator3D = null
+var _skeleton: Skeleton3D = null
+var _head_index: int = -1
 var _perform_animation: StringName = &""
 var _perform_left: float = 0.0
 var _stride_distance: float = 0.0
@@ -463,6 +465,16 @@ func flat_distance_to(point: Vector3) -> float:
 	return Vector2(global_position.x, global_position.z).distance_to(Vector2(point.x, point.z))
 
 
+## Punto al que mirar para encuadrar la cara en un diálogo. Sale del hueso de
+## la cabeza, así que sirve igual para un personaje de pie que para la tejedora
+## arrodillada: no hay una altura fija que valga para todos.
+func focus_point() -> Vector3:
+	if _skeleton != null and _head_index >= 0 and _skeleton.is_inside_tree():
+		var head_pose: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_head_index)
+		return head_pose.origin + Vector3.UP * 0.12
+	return global_position + Vector3.UP * LOOK_TARGET_HEIGHT
+
+
 ## Indica si quiere mirar a [member watch_target] ahora mismo: quieto, cerca y
 ## por delante (no gira la cabeza hacia la espalda).
 func wants_to_look() -> bool:
@@ -636,6 +648,8 @@ func _setup_look(skeleton: Skeleton3D) -> void:
 			break
 	if head_bone.is_empty():
 		return
+	_skeleton = skeleton
+	_head_index = skeleton.find_bone(head_bone)
 	_look_point = Marker3D.new()
 	_look_point.name = "LookPoint"
 	_look_point.top_level = true

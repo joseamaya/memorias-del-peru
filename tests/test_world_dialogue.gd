@@ -39,7 +39,7 @@ func test_world_dialogue_and_journal() -> bool:
 	var ok: bool = hud.is_dialogue_open()
 	ok = ok and hud.get_dialogue_panel().get_text() == tr("PCH_TALK_WEAVER")
 	ok = ok and hud.get_dialogue_panel().get_choice_count() == 2
-	ok = ok and player.process_mode == Node.PROCESS_MODE_DISABLED
+	ok = ok and player.call("is_controls_locked") == true
 	# Primera opción: la tejedora explica el teñido y deja una entrada de Memoria.
 	hud.get_dialogue_panel().choice_selected.emit(0)
 	ok = ok and runner.get_current_node() != null
@@ -49,13 +49,14 @@ func test_world_dialogue_and_journal() -> bool:
 	ok = ok and journal.get_entry(&"mem_telar").source_key == &"PCH-010"
 	world.call("_on_dialogue_advanced")
 	ok = ok and not hud.is_dialogue_open()
-	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
+	player.call("_update_focus", 1.0)
+	ok = ok and player.call("is_controls_locked") == false
 	# J abre y cierra el diario.
 	world.call("_unhandled_input", _journal_event())
 	ok = ok and hud.is_journal_open()
-	ok = ok and player.process_mode == Node.PROCESS_MODE_DISABLED
+	ok = ok and player.call("is_controls_locked") == true
 	world.call("_unhandled_input", _journal_event())
 	ok = ok and not hud.is_journal_open()
-	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
+	ok = ok and player.call("is_controls_locked") == false
 	world.free()
 	return ok

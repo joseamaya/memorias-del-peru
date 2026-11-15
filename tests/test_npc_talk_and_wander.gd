@@ -65,14 +65,16 @@ func test_npc_talk_and_wander() -> bool:
 	# La tejedora abre una conversación con opciones (Fase 6).
 	ok = ok and hud.is_dialogue_open()
 	ok = ok and hud.get_dialogue_panel().get_text() == tr("PCH_TALK_WEAVER")
-	ok = ok and player.process_mode == Node.PROCESS_MODE_DISABLED
+	ok = ok and player.call("is_controls_locked") == true
 	ok = ok and weaver.is_animated() and weaver.current_animation() == &"weave"
 	ok = ok and (-weaver.global_transform.basis.z).is_equal_approx(weaver_forward)
 	ok = ok and weaver.wants_to_look() and weaver.look_modifier() != null
-	# Salir de la conversación por la segunda opción.
+	# Salir de la conversación por la segunda opción. La cámara vuelve a la
+	# orientación anterior en 0,4 s; los controles se liberan al terminar.
 	hud.get_dialogue_panel().choice_selected.emit(1)
 	ok = ok and not hud.is_dialogue_open()
-	ok = ok and player.process_mode == Node.PROCESS_MODE_INHERIT
+	player.call("_update_focus", 1.0)
+	ok = ok and player.call("is_controls_locked") == false
 
 	# Hablar con el agricultor: se gira hacia el jugador y deja la chaquitaclla.
 	var farmer: NpcActor = world.get_node("Llacta/NPCs/Agricultor") as NpcActor
