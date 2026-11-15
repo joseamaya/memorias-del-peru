@@ -374,7 +374,7 @@ autor del arco completo corresponde a la Fase 8.
 
 ### Criterios de aceptación
 
-- [ ] El arco completo dura 40–50 min y no tiene bloqueos.
+- [ ] El arco completo dura 40–50 min y no tiene bloqueos. *(2026-11-14: la pasada guionada mide 4 min 21 s y la estimación humana es 13–20 min; el análisis y las opciones están en [plan_duracion.md](../campaigns/01_pachacutec/documentation/plan_duracion.md). Hace falta la pasada real antes de decidir.)*
 - [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia, con el 3D al 83 % y la interfaz a resolución completa: llacta 76,5 / paso 72,8 / Cusco 73,2 FPS en Medio y 122,3 / 126,2 / 117,3 en Bajo. El paso pasó de 58,7 a 72,8 al bajar la escala del búfer 3D; FSR 1 resultó un 8–9 % más caro que el bilineal y se descartó. Detalle en docs/08.)*
 - [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 158 pruebas en verde; las capturas y mediciones lanzadas con `--script` ya no fallan por los autoloads.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.

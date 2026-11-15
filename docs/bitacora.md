@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Análisis de duración | La pasada guionada mide 4 min 21 s y la estimación humana 13–20 min, frente al objetivo de 40–50. Se documenta el inventario y tres opciones (rebasear a 15–20, añadir ~23 min de contenido o híbrido a 25–30). Vídeo reencodeado con separadores entre actos. 158 pruebas en verde | — |
 | Cierre de textos y vídeo del arco | La portada dice «La defensa del Cusco» y la tarjeta final ya no dice «(gris)». La grabación del Cusco fija las banderas del acto II para que los tres grupos se unan. Vídeo de 4 min 25 s en `build/pachacutec-demo.mp4`: portada, acto I completo, paso y Cusco hasta el epílogo, 1080p30 con audio. 158 pruebas en verde | — |
 | Lienzo fijo para grabar | Con el aspecto «expand», una ventana más ancha ensancha el lienzo y el vídeo recortaba el HUD por la izquierda. Las grabaciones fijan el lienzo a 1920 × 1080 (aspecto «keep»); el acto I solo lo aplica con `--video`. `test_hud_feedback` apunta a la nueva ruta de la etiqueta. 158 pruebas en verde | — |
 | Vídeo del arco y HUD del aliento | La etiqueta del aliento salía cortada por la izquierda: pasa a colgar del HUD con anclaje abajo-izquierda. Se añaden `record_title.gd`, `record_paso.gd` y `record_ciudad.gd` para grabar los tres actos por separado y concatenarlos. 158 pruebas en verde | — |
