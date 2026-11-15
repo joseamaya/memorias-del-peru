@@ -605,18 +605,20 @@ es el relleno de píxeles, no la geometría: la escena tiene 44–54 draw calls.
 
 | Escena | Perfil | FPS medio | Draw calls |
 |---|---|---|---|
-| Llacta (acto I) | Medio | 76,5 (76,4–78,2) | 149–183 |
-| Paso (acto II) | Medio | 72,8 (70,8–72,8) | 44–54 |
-| Cusco (acto III) | Medio | 73,2 (72,1–73,4) | 300–301 |
+| Llacta (acto I) | Medio | 79,9 | 149–183 |
+| Paso (acto II) | Medio | 79,3 | 44–54 |
+| Cusco (acto III) | Medio | 71,1 | 300–301 |
 | Cusco con mercado (acto III) | Medio | 72,9 (72,2–73,7) | 327–328 |
 | Cusco con cielo y polvo (acto III) | Medio | 73,0 (69,5–73,1) | 329–332 |
-| Llacta (acto I) | Bajo | 122,3 (120,3–123,6) | 149–183 |
-| Paso (acto II) | Bajo | 126,2 (121,5–129,1) | 44–54 |
-| Cusco (acto III) | Bajo | 117,3 (115,2–118,6) | 300–301 |
+| Llacta (acto I) | Bajo | 124,2 | 149–183 |
+| Paso (acto II) | Bajo | 141,0 | 44–54 |
+| Cusco (acto III) | Bajo | 115,0 | 300–301 |
 
-- Los tres actos superan los 60 FPS en Medio **con margen** (12–16 FPS por
+- Los tres actos superan los 60 FPS en Medio **con margen** (11–20 FPS por
   encima) y los 115 en Bajo. Antes del cambio, el paso quedaba en 58,7 y el
-  Cusco en 61,3.
+  Cusco en 61,3. *(2026-11-14: medición tras el pulido de superficies —texturas
+  finas, anisotropía 8x y piedras de suelo—; el coste es nulo y la llacta y el
+  paso suben.)*
 - El percentil 1 % se movió entre 41,7 y 66,7 según la carga del sistema en el
   momento de medir; en esta máquina lo dominan los tirones del escritorio, no
   la escena.

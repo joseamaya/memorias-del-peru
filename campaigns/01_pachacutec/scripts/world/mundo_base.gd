@@ -52,9 +52,9 @@ const DISTANT_MID_BASE: float = 36.0
 const DISTANT_MID_AMPLITUDE: float = 42.0
 const DISTANT_FAR_BASE: float = 46.0
 const DISTANT_FAR_AMPLITUDE: float = 48.0
-const DISTANT_NEAR_COLOR: Color = Color(0.26, 0.31, 0.38, 1.0)
-const DISTANT_MID_COLOR: Color = Color(0.33, 0.38, 0.46, 1.0)
-const DISTANT_FAR_COLOR: Color = Color(0.41, 0.46, 0.54, 1.0)
+const DISTANT_NEAR_COLOR: Color = Color(0.30, 0.34, 0.41, 1.0)
+const DISTANT_MID_COLOR: Color = Color(0.36, 0.41, 0.48, 1.0)
+const DISTANT_FAR_COLOR: Color = Color(0.43, 0.48, 0.55, 1.0)
 const DEBUG_PROFILE_KEY: Key = KEY_F2
 ## Nombres de las fases del evento, en el orden del enum de [MessengerEvent];
 ## el registro de sesión los usa como marcas (§9.2).
@@ -686,8 +686,10 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 	# Perspectiva aérea pintada a mano: la niebla automática convertía las tres
 	# cordilleras en una banda plana. El pie se aclara hacia el horizonte y la
 	# cumbre conserva el tono, así que la distancia se lee por capas.
-	var bottom_color: Color = color.lightened(0.12)
-	var top_color: Color = color
+	# El pie se desvanece en la bruma y la cumbre conserva el tono: sin esto la
+	# cordillera es una banda opaca con un borde recto sobre el horizonte.
+	var bottom_color: Color = Color(color.r, color.g, color.b, 0.0)
+	var top_color: Color = Color(color.r, color.g, color.b, 1.0)
 	for index: int in range(DISTANT_SEGMENTS):
 		var angle0: float = TAU * float(index) / float(DISTANT_SEGMENTS)
 		var angle1: float = TAU * float(index + 1) / float(DISTANT_SEGMENTS)
@@ -707,6 +709,7 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.vertex_color_use_as_albedo = true
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.disable_fog = true
 	var range_node: MeshInstance3D = MeshInstance3D.new()
 	range_node.name = node_name

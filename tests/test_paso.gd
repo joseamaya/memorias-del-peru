@@ -66,7 +66,8 @@ func test_paso_ambush_and_combat() -> bool:
 	ok = ok and is_equal_approx(character.get_health(), health_before - 6.0)
 	# El enemigo ataca si está en alcance.
 	paso.set("_blocking", false)
-	player.global_position = enemy.global_position + Vector3(0.0, 0.0, 5.0)
+	# La porra alcanza 2,6 m: a cinco metros no habría golpe.
+	player.global_position = enemy.global_position + Vector3(0.0, 0.0, 2.0)
 	var health_before_enemy: float = character.get_health()
 	enemy.brain.advance(1.0)
 	enemy._physics_process(1.0)

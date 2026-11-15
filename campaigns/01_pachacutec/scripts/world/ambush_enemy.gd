@@ -29,7 +29,9 @@ var _current_clip: StringName = &""
 
 func _ready() -> void:
 	collision_layer = 8
-	collision_mask = 1
+	# Choca con el mundo (1) y con los otros chancas (8): así se separan al
+	# rodear al jugador en lugar de apilarse en el mismo punto.
+	collision_mask = 9
 	_visual = CharacterModelVisual.new()
 	_visual.name = "Visual"
 	_visual.model_path = MODEL_PATH
@@ -205,11 +207,14 @@ func _fall() -> void:
 
 static func _make_weapon() -> CombatWeapon:
 	var weapon: CombatWeapon = CombatWeapon.new()
-	weapon.kind = CombatWeapon.Kind.SLING
+	# Porra, no honda: el chanca lleva una maza en la mano y golpea de cerca.
+	# Antes el arma era una honda con 22 m de alcance, así que golpeaba desde
+	# lejos con una animación de maza y se pegaba a la cámara sin atacar.
+	weapon.kind = CombatWeapon.Kind.CLUB
 	weapon.damage_min = 8.0
 	weapon.damage_max = 14.0
-	weapon.range_min = 2.0
-	weapon.range_max = 22.0
+	weapon.range_min = 1.0
+	weapon.range_max = 2.6
 	weapon.charge_full_seconds = 1.0
 	weapon.stamina_cost = 0.0
 	weapon.cooldown_seconds = 2.0
