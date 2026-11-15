@@ -686,10 +686,6 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 	# Perspectiva aérea pintada a mano: la niebla automática convertía las tres
 	# cordilleras en una banda plana. El pie se aclara hacia el horizonte y la
 	# cumbre conserva el tono, así que la distancia se lee por capas.
-	# El pie se desvanece en la bruma y la cumbre conserva el tono: sin esto la
-	# cordillera es una banda opaca con un borde recto sobre el horizonte.
-	var bottom_color: Color = Color(color.r, color.g, color.b, 0.0)
-	var top_color: Color = Color(color.r, color.g, color.b, 1.0)
 	for index: int in range(DISTANT_SEGMENTS):
 		var angle0: float = TAU * float(index) / float(DISTANT_SEGMENTS)
 		var angle1: float = TAU * float(index + 1) / float(DISTANT_SEGMENTS)
@@ -699,17 +695,17 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 		var bottom1: Vector3 = Vector3(cos(angle1) * radius, DISTANT_BOTTOM, sin(angle1) * radius)
 		var top0: Vector3 = Vector3(cos(angle0) * radius, height0, sin(angle0) * radius)
 		var top1: Vector3 = Vector3(cos(angle1) * radius, height1, sin(angle1) * radius)
-		_range_vertex(surface, bottom0, bottom_color)
-		_range_vertex(surface, bottom1, bottom_color)
-		_range_vertex(surface, top1, top_color)
-		_range_vertex(surface, bottom0, bottom_color)
-		_range_vertex(surface, top1, top_color)
-		_range_vertex(surface, top0, top_color)
+		# El terreno tapa el pie de la silueta: no hace falta degradado alfa.
+		surface.add_vertex(bottom0)
+		surface.add_vertex(bottom1)
+		surface.add_vertex(top1)
+		surface.add_vertex(bottom0)
+		surface.add_vertex(top1)
+		surface.add_vertex(top0)
 	var material: StandardMaterial3D = StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.vertex_color_use_as_albedo = true
+	material.albedo_color = color
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.disable_fog = true
 	var range_node: MeshInstance3D = MeshInstance3D.new()
 	range_node.name = node_name
@@ -718,11 +714,6 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 	range_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	range_node.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	add_child(range_node)
-
-
-func _range_vertex(surface: SurfaceTool, point: Vector3, color: Color) -> void:
-	surface.set_color(color)
-	surface.add_vertex(point)
 
 
 ## Altura de la silueta de la cordillera para un ángulo; suma de senos para

@@ -13,9 +13,9 @@ detenerse a leer ni a explorar:
 | Acto | Recorrido guionado | Qué incluye | Qué falta |
 |---|---|---|---|
 | I — llacta | **2 min 47 s** | quero, ofrenda, tejedora, mensajero, pututu, recorrido por la llacta | los cuatro encargos (`agua`, `maiz`, `telar`, `pirca`) |
-| II — paso | **44 s** | campamento, emboscada, combate, decisiones | explorar el arroyo y el refugio |
-| III — Cusco | **50 s** | tres reclutamientos, Cusi, defensa con 3 aliados, epílogo | leer los diálogos, mirar la ciudad |
-| **Total** | **4 min 21 s** | | |
+| II — paso | **43 s** | campamento, emboscada, combate, decisiones | explorar el arroyo y el refugio |
+| III — Cusco | **49 s** | tres reclutamientos, Cusi, defensa con 3 aliados, epílogo | leer los diálogos, mirar la ciudad |
+| **Total** | **4 min 19 s** | | |
 
 Registros: `record_paso.gd`, `record_ciudad.gd` y `demo_playthrough.gd`; el
 vídeo `build/demo_pachacutec_arco_1080p.mp4` los recorre.
@@ -28,9 +28,9 @@ cada línea, completar los cuatro encargos, equivocarse y volver.
 | Acto | Guionado | Estimación humana | Supuesto |
 |---|---|---|---|
 | I | 2:47 | **7–10 min** | +4 encargos (2–3 min) y lectura y deambular (2–4 min) |
-| II | 0:44 | **3–5 min** | explorar el paso y leer las decisiones |
-| III | 0:50 | **3–5 min** | leer los reclutamientos y mirar la plaza |
-| **Total** | **4:21** | **13–20 min** | |
+| II | 0:43 | **3–5 min** | explorar el paso y leer las decisiones |
+| III | 0:49 | **3–5 min** | leer los reclutamientos y mirar la plaza |
+| **Total** | **4:19** | **13–20 min** | |
 
 Es una estimación, no una medida: la única forma de cerrarla es una pasada con
 `--session` ([protocolo](validacion_arco.md)). Aun con el margen alto, el arco

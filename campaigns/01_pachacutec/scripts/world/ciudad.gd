@@ -7,6 +7,8 @@ extends Node3D
 ## epílogo cambia con las decisiones anteriores.
 
 const CITY_SIZE: float = 150.0
+## Lado del terreno visible. La colisión sigue en [constant CITY_SIZE].
+const CITY_TERRAIN_SIZE: float = 520.0
 const WALL_RADIUS: float = 30.0
 const BOUNDARY_RADIUS: float = 70.0
 const GRASS_COLOR: Color = Color(0.33, 0.36, 0.24, 1.0)
@@ -824,8 +826,57 @@ func _build_city() -> void:
 	_build_vegetation()
 	_build_terraces()
 	_build_crowd()
+	_build_distant_hills()
 	_build_clouds()
 	_build_dust()
+
+
+## Cordilleras que cierran el valle. Son siluetas sin colisión ni sombra, con
+## el pie desvanecido en bruma: sin ellas el terreno termina en una línea recta.
+func _build_distant_hills() -> void:
+	_add_hill_ring("HillsNear", 175.0, 26.0, 16.0, Color(0.30, 0.33, 0.36, 1.0))
+	_add_hill_ring("HillsFar", 250.0, 38.0, 22.0, Color(0.42, 0.46, 0.52, 1.0))
+
+
+func _add_hill_ring(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
+	const SEGMENTS: int = 128
+	var surface: SurfaceTool = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for index: int in range(SEGMENTS):
+		var angle0: float = TAU * float(index) / float(SEGMENTS)
+		var angle1: float = TAU * float(index + 1) / float(SEGMENTS)
+		var height0: float = _hill_height(angle0, base_height, amplitude)
+		var height1: float = _hill_height(angle1, base_height, amplitude)
+		var bottom0: Vector3 = Vector3(cos(angle0) * radius, -6.0, sin(angle0) * radius)
+		var bottom1: Vector3 = Vector3(cos(angle1) * radius, -6.0, sin(angle1) * radius)
+		var top0: Vector3 = Vector3(cos(angle0) * radius, height0, sin(angle0) * radius)
+		var top1: Vector3 = Vector3(cos(angle1) * radius, height1, sin(angle1) * radius)
+		# El terreno tapa el pie de la silueta: no hace falta degradado alfa.
+		surface.add_vertex(bottom0)
+		surface.add_vertex(bottom1)
+		surface.add_vertex(top1)
+		surface.add_vertex(bottom0)
+		surface.add_vertex(top1)
+		surface.add_vertex(top0)
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.albedo_color = color
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.disable_fog = true
+	var ring: MeshInstance3D = MeshInstance3D.new()
+	ring.name = node_name
+	ring.mesh = surface.commit()
+	ring.material_override = material
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	ring.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	add_child(ring)
+
+
+static func _hill_height(angle: float, base_height: float, amplitude: float) -> float:
+	var ridge: float = 0.5 + 0.5 * sin(angle * 4.0 + 1.1) * sin(angle * 7.0 - 0.6)
+	ridge = pow(maxf(ridge, 0.0), 0.7)
+	var detail: float = 0.14 * sin(angle * 23.0 + 0.8) + 0.07 * sin(angle * 47.0 + 1.9)
+	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
 
 
 ## Piedras sueltas: el suelo plano de la plaza se leía como una alfombra.
@@ -841,7 +892,9 @@ func _build_terrain() -> void:
 	terrain.name = "Terrain"
 	add_child(terrain)
 	var plane: PlaneMesh = PlaneMesh.new()
-	plane.size = Vector2(CITY_SIZE, CITY_SIZE)
+	# El plano visible es mucho mayor que el límite jugable (70 m): con 150 m
+	# el borde quedaba a la vista y la ciudad parecía flotar sobre el vacío.
+	plane.size = Vector2(CITY_TERRAIN_SIZE, CITY_TERRAIN_SIZE)
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "TerrainMesh"
 	mesh_instance.mesh = plane

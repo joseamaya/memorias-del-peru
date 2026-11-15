@@ -9,6 +9,8 @@ func test_player_collision_layers() -> bool:
 	var player: PlayerFPS = packed.instantiate() as PlayerFPS
 	if player == null:
 		return false
-	var ok: bool = player.collision_layer == 2 and player.collision_mask == 9
+	# Capa 2: jugador. Máscara 25 = mundo (1) + personajes (8) + multitud (16):
+	# el jugador no atraviesa a nadie.
+	var ok: bool = player.collision_layer == 2 and player.collision_mask == 25
 	player.free()
 	return ok
