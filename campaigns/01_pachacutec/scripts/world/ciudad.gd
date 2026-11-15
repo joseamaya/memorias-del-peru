@@ -9,6 +9,9 @@ extends Node3D
 const CITY_SIZE: float = 150.0
 ## Lado del terreno visible. La colisión sigue en [constant CITY_SIZE].
 const CITY_TERRAIN_SIZE: float = 520.0
+## Resolución de la malla de terreno visible y radio plano de la ciudad.
+const TERRAIN_RESOLUTION: int = 128
+const TERRAIN_FLAT_RADIUS: float = 31.0
 const WALL_RADIUS: float = 30.0
 const BOUNDARY_RADIUS: float = 70.0
 const GRASS_COLOR: Color = Color(0.33, 0.36, 0.24, 1.0)
@@ -23,11 +26,11 @@ const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
 const CLOUD_DOME_RADIUS: float = 420.0
 const CLOUD_DOME_SEGMENTS: int = 48
 const CLOUD_DOME_RINGS: int = 24
-const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
+const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb", "pch_house_d.glb", "pch_house_e.glb"]
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
-const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0]
-const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7]
+const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0, 5.4, 3.8]
+const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7, -2.5, -1.5]
 const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
 ## Catorce casas con tres modelos: la escala y el tinte rompen la repetición sin
 ## generar geometría nueva.
@@ -42,20 +45,20 @@ const HOUSE_TINTS: Array[Color] = [
 ]
 ## Catorce viviendas alrededor de la plaza, fuera de los caminos y del santuario.
 const HOUSE_POSITIONS: Array[Vector3] = [
-	Vector3(-24.0, 0.0, -18.0),
-	Vector3(-26.0, 0.0, -8.0),
-	Vector3(-24.0, 0.0, 4.0),
-	Vector3(-25.0, 0.0, 14.0),
-	Vector3(-18.0, 0.0, 22.0),
-	Vector3(24.0, 0.0, -18.0),
-	Vector3(26.0, 0.0, -8.0),
-	Vector3(24.0, 0.0, 4.0),
-	Vector3(25.0, 0.0, 14.0),
-	Vector3(18.0, 0.0, 22.0),
-	Vector3(-12.0, 0.0, -24.0),
-	Vector3(12.0, 0.0, -24.0),
-	Vector3(-10.0, 0.0, 26.0),
-	Vector3(10.0, 0.0, 26.0),
+	Vector3(-22.0, 0.0, -19.0),
+	Vector3(-27.0, 0.0, -6.0),
+	Vector3(-22.0, 0.0, 5.0),
+	Vector3(-25.0, 0.0, 15.0),
+	Vector3(-16.0, 0.0, 23.0),
+	Vector3(23.0, 0.0, -17.0),
+	Vector3(27.0, 0.0, -8.0),
+	Vector3(21.0, 0.0, 3.0),
+	Vector3(25.0, 0.0, 11.0),
+	Vector3(18.0, 0.0, 24.0),
+	Vector3(-10.0, 0.0, -26.0),
+	Vector3(13.0, 0.0, -23.0),
+	Vector3(-7.0, 0.0, 27.0),
+	Vector3(10.0, 0.0, 27.0),
 ]
 ## Refugiados y vecinos que llenan la plaza; no interactúan, solo dan escala.
 const CROWD_POSITIONS: Array[Vector3] = [
@@ -94,6 +97,27 @@ const CROWD_RETREAT_SPEED: float = 2.2
 const CROWD_LOOK_DISTANCE: float = 5.0
 ## Velocidad del giro de la cara, en radianes por segundo (suavizada).
 const CROWD_LOOK_SPEED: float = 5.0
+## Paseo cotidiano de la multitud: velocidad, pausas y radio de reacción.
+const CROWD_WALK_SPEED: float = 1.15
+const CROWD_PAUSE_MIN: float = 3.0
+const CROWD_PAUSE_MAX: float = 7.0
+const CROWD_REACT_DISTANCE: float = 4.0
+const CROWD_REACT_SECONDS: float = 2.4
+const CROWD_ACTIVITY_MIN: float = 5.0
+const CROWD_ACTIVITY_MAX: float = 9.0
+## Actividad de reposo de cada figura: paseo, conversación de pareja, puesto o
+## descanso. Los índices se corresponden con [constant CROWD_POSITIONS].
+const CROWD_ACTIVITIES: Array[StringName] = [
+	&"idle_b", &"talk", &"talk", &"idle_b", &"talk",
+	&"talk", &"idle_b", &"talk", &"talk", &"tired",
+]
+## Parejas que conversan de frente: índices en [constant CROWD_POSITIONS].
+const CROWD_PAIRS: Array[Vector2i] = [Vector2i(7, 8)]
+## Puestos atendidos: índice de la figura y posición detrás del mostrador.
+const CROWD_VENDORS: Dictionary[int, Vector3] = {
+	2: Vector3(-8.5, 0.0, -6.2),
+	5: Vector3(8.5, 0.0, -6.2),
+}
 ## Capa propia para que solo el jugador choque con la multitud; los chancas
 ## (capa 1) la atraviesan y no se quedan atascados.
 const CROWD_COLLISION_LAYER: int = 16
@@ -134,13 +158,24 @@ const ALLY_POSITIONS: Array[Vector3] = [
 	Vector3(0.0, 0.0, 5.0),
 ]
 
-## Figura de multitud con su destino de retirada.
+## Figura de multitud con su rutina, su pareja y su destino de retirada.
 class CrowdMember:
 	var visual: CharacterModelVisual
 	var safe_position: Vector3
 	## Orientación de reposo: mirando al centro de la plaza.
 	var home_yaw: float = 0.0
 	var retreating: bool = false
+	var home: Vector3 = Vector3.ZERO
+	var route: PackedVector3Array = PackedVector3Array()
+	var route_index: int = 0
+	var pause_left: float = 0.0
+	var activity: StringName = &"idle_b"
+	var activity_left: float = 0.0
+	var pair: int = -1
+	var reacting_left: float = 0.0
+	var react_cooldown: float = 0.0
+	var speed: float = 0.0
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 	func _init(figure: CharacterModelVisual, safe: Vector3, yaw: float) -> void:
 		visual = figure
@@ -173,6 +208,9 @@ var _ally_visuals: Dictionary[int, bool] = {}
 var _recruit_visuals: Array[CharacterModelVisual] = []
 var _cusi_visual: CharacterModelVisual = null
 var _vespera_visual: CharacterModelVisual = null
+## Orientación de reposo de cada figura que no es multitud (Cusi, reclutas,
+## aliados): al acercarse el jugador, giran la cabeza/cuerpo y luego vuelven.
+var _idle_visual_home: Dictionary[CharacterModelVisual, float] = {}
 var _crowd: Array[CrowdMember] = []
 var _crowd_retreating: bool = false
 
@@ -242,6 +280,8 @@ func apply_player_damage(amount: float) -> void:
 		if player.stamina != null:
 			player.stamina.consume(5.0)
 	character.damage(applied)
+	if hud != null:
+		hud.flash_damage()
 	if not character.is_alive():
 		_dead = true
 		hint_label.text = tr("PCH_CIUDAD_DEAD")
@@ -262,8 +302,8 @@ func _physics_process(_delta: float) -> void:
 
 
 func _process(delta: float) -> void:
-	if _crowd_retreating:
-		_update_crowd(delta)
+	_update_crowd(delta)
+	_update_idle_visuals(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -314,6 +354,9 @@ func _attack() -> void:
 		return
 	player_combatant.register_hit()
 	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH, -12.0)
+	var hands: FirstPersonHands = player.get_node_or_null("Head/Camera3D/FirstPersonHands") as FirstPersonHands
+	if hands != null:
+		hands.play(&"attack")
 	_attack_ray.force_raycast_update()
 	if not _attack_ray.is_colliding():
 		return
@@ -563,6 +606,7 @@ func _start_defense() -> void:
 	_defense_requested = false
 	_start_drum()
 	_retreat_crowd()
+	_play_gesture(_cusi_visual, &"talk")
 	SessionLog.mark(&"defense_start", "aliados=%d" % ally_count())
 	var count: int = maxi(1, 4 - ally_count())
 	for index: int in range(count):
@@ -590,37 +634,160 @@ func _retreat_crowd() -> void:
 
 func _update_crowd(delta: float) -> void:
 	var remaining: bool = false
-	for member: CrowdMember in _crowd:
-		if not member.retreating:
-			# Quietos: si el jugador pasa cerca, giran la cara hacia él; si se
-			# aleja, vuelven a mirar al centro de la plaza.
-			var to_player: Vector3 = player.global_position - member.visual.global_position
-			to_player.y = 0.0
-			var desired: float = member.home_yaw
-			if to_player.length() <= CROWD_LOOK_DISTANCE and to_player.length() > 0.05:
-				desired = atan2(-to_player.x, -to_player.z)
-			member.visual.rotation.y = lerp_angle(
-				member.visual.rotation.y, desired, CROWD_LOOK_SPEED * delta)
+	for index: int in range(_crowd.size()):
+		var member: CrowdMember = _crowd[index]
+		if member.retreating:
+			remaining = true
+			_update_crowd_retreat(member, delta)
 			continue
-		remaining = true
-		var target: Vector3 = Vector3(
-			member.safe_position.x,
-			member.visual.position.y,
-			member.safe_position.z)
-		var distance: float = member.visual.position.distance_to(target)
-		if distance <= 0.2:
-			member.retreating = false
-			member.visual.play(&"Idle")
-			var center: Vector3 = Vector3(0.0, member.visual.position.y, 0.0)
-			if member.visual.position.distance_to(center) > 0.1:
-				member.visual.look_at(center, Vector3.UP)
+		if _defense_active:
 			continue
-		member.visual.position = member.visual.position.move_toward(target, CROWD_RETREAT_SPEED * delta)
-		var flat_target: Vector3 = Vector3(target.x, member.visual.position.y, target.z)
-		if member.visual.position.distance_to(flat_target) > 0.1:
-			member.visual.look_at(flat_target, Vector3.UP)
-	if not remaining:
+		_update_crowd_member(index, member, delta)
+	if not remaining and _crowd_retreating:
 		_crowd_retreating = false
+
+
+## Retirada al refugio cuando empieza la defensa.
+func _update_crowd_retreat(member: CrowdMember, delta: float) -> void:
+	var target: Vector3 = Vector3(
+		member.safe_position.x,
+		member.visual.position.y,
+		member.safe_position.z)
+	var distance: float = member.visual.position.distance_to(target)
+	if distance <= 0.2:
+		member.retreating = false
+		member.speed = 0.0
+		member.visual.play(&"Idle")
+		var center: Vector3 = Vector3(0.0, member.visual.position.y, 0.0)
+		if member.visual.position.distance_to(center) > 0.1:
+			member.visual.look_at(center, Vector3.UP)
+		return
+	member.visual.position = member.visual.position.move_toward(target, CROWD_RETREAT_SPEED * delta)
+	member.speed = CROWD_RETREAT_SPEED
+	member.visual.play_locomotion(CROWD_RETREAT_SPEED)
+	var flat_target: Vector3 = Vector3(target.x, member.visual.position.y, target.z)
+	if member.visual.position.distance_to(flat_target) > 0.1:
+		member.visual.look_at(flat_target, Vector3.UP)
+
+
+## Rutina de una figura: pareja que conversa, puesto atendido, paseo corto o
+## descanso junto a la plaza. La reacción al jugador interrumpe el paseo, no la
+## conversación de una pareja.
+func _update_crowd_member(index: int, member: CrowdMember, delta: float) -> void:
+	var visual: CharacterModelVisual = member.visual
+	var to_player: Vector3 = player.global_position - visual.global_position
+	to_player.y = 0.0
+	var player_distance: float = to_player.length()
+	member.react_cooldown = maxf(member.react_cooldown - delta, 0.0)
+	if member.reacting_left > 0.0:
+		member.reacting_left -= delta
+		member.speed = 0.0
+		if player_distance > 0.05:
+			var react_yaw: float = atan2(-to_player.x, -to_player.z)
+			visual.rotation.y = lerp_angle(visual.rotation.y, react_yaw, CROWD_LOOK_SPEED * delta)
+		_play_if_needed(visual, &"idle_b")
+		return
+	if member.pair >= 0 and member.pair < _crowd.size():
+		_update_crowd_pair(member, delta)
+		return
+	if CROWD_VENDORS.has(index):
+		_update_crowd_vendor(member, player_distance, to_player, delta)
+		return
+	# Un paseante se detiene y mira al jugador cuando pasa cerca; luego sigue.
+	if not member.route.is_empty() and member.react_cooldown <= 0.0 \
+			and player_distance < CROWD_REACT_DISTANCE and member.rng.randf() < 0.45:
+		member.reacting_left = CROWD_REACT_SECONDS
+		member.react_cooldown = CROWD_REACT_SECONDS + 8.0
+		member.pause_left = maxf(member.pause_left, 1.0)
+		return
+	if member.pause_left > 0.0:
+		member.pause_left -= delta
+		member.speed = 0.0
+		_play_if_needed(visual, member.activity)
+		if member.pause_left <= 0.0:
+			member.activity_left = member.rng.randf_range(CROWD_ACTIVITY_MIN, CROWD_ACTIVITY_MAX)
+		return
+	if member.route.is_empty():
+		_face_rest_point(member, player_distance, to_player, delta)
+		_cycle_activity(member, delta)
+		return
+	var target: Vector3 = member.route[member.route_index]
+	var to_target: Vector3 = target - visual.position
+	to_target.y = 0.0
+	var distance: float = to_target.length()
+	if distance < 0.22:
+		member.route_index = (member.route_index + 1) % member.route.size()
+		member.pause_left = member.rng.randf_range(CROWD_PAUSE_MIN, CROWD_PAUSE_MAX)
+		member.activity = CROWD_ACTIVITIES[index % CROWD_ACTIVITIES.size()]
+		member.activity_left = member.rng.randf_range(CROWD_ACTIVITY_MIN, CROWD_ACTIVITY_MAX)
+		visual.play(member.activity)
+		return
+	var step: float = minf(CROWD_WALK_SPEED * delta, distance)
+	visual.position += to_target.normalized() * step
+	member.speed = step / maxf(delta, 0.001)
+	var travel_yaw: float = atan2(-to_target.x, -to_target.z)
+	visual.rotation.y = lerp_angle(visual.rotation.y, travel_yaw, CROWD_LOOK_SPEED * delta)
+	visual.play_locomotion(member.speed)
+
+
+## Pareja que conversa: se miran, alternan gesto y reposo.
+func _update_crowd_pair(member: CrowdMember, delta: float) -> void:
+	var other: CharacterModelVisual = _crowd[member.pair].visual
+	var to_other: Vector3 = other.global_position - member.visual.global_position
+	to_other.y = 0.0
+	if to_other.length() > 0.1:
+		var yaw: float = atan2(-to_other.x, -to_other.z)
+		member.visual.rotation.y = lerp_angle(member.visual.rotation.y, yaw, CROWD_LOOK_SPEED * delta)
+	member.speed = 0.0
+	member.activity_left -= delta
+	if member.activity_left <= 0.0:
+		member.activity = &"idle_b" if member.activity == &"talk" else &"talk"
+		member.activity_left = member.rng.randf_range(4.0, 7.0)
+		member.visual.play(member.activity)
+
+
+## Puesto atendido: mira al jugador si se acerca y alterna gesto de trato con
+## reposo. La mercancía y el mostrador ya están en la plaza.
+func _update_crowd_vendor(
+	member: CrowdMember,
+	player_distance: float,
+	to_player: Vector3,
+	delta: float
+) -> void:
+	member.speed = 0.0
+	var desired: float = member.home_yaw
+	if player_distance < 6.0 and player_distance > 0.05:
+		desired = atan2(-to_player.x, -to_player.z)
+	member.visual.rotation.y = lerp_angle(member.visual.rotation.y, desired, CROWD_LOOK_SPEED * delta)
+	member.activity_left -= delta
+	if member.activity_left <= 0.0:
+		member.activity = &"idle_b" if member.activity == &"talk" else &"talk"
+		member.activity_left = member.rng.randf_range(5.0, 9.0)
+		member.visual.play(member.activity)
+
+
+func _face_rest_point(member: CrowdMember, player_distance: float, to_player: Vector3, delta: float) -> void:
+	var desired: float = member.home_yaw
+	if player_distance < CROWD_LOOK_DISTANCE and player_distance > 0.05:
+		desired = atan2(-to_player.x, -to_player.z)
+	member.visual.rotation.y = lerp_angle(member.visual.rotation.y, desired, CROWD_LOOK_SPEED * delta)
+	_cycle_activity(member, delta)
+
+
+func _cycle_activity(member: CrowdMember, delta: float) -> void:
+	member.speed = 0.0
+	member.activity_left -= delta
+	if member.activity_left > 0.0:
+		return
+	member.activity = &"idle_b" if member.activity == &"talk" else &"talk"
+	member.activity_left = member.rng.randf_range(CROWD_ACTIVITY_MIN, CROWD_ACTIVITY_MAX)
+	member.visual.play(member.activity)
+
+
+## Cambia el clip solo cuando hace falta, para no reiniciar el gesto cada tick.
+func _play_if_needed(visual: CharacterModelVisual, clip: StringName) -> void:
+	if visual.current_animation() != clip:
+		visual.play(clip)
 
 
 func _finish_defense() -> void:
@@ -713,7 +880,37 @@ func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> CharacterMo
 	visual.position = at
 	add_child(visual)
 	visual.look_at(Vector3(0.0, at.y, 28.0), Vector3.UP)
+	_idle_visual_home[visual] = visual.rotation.y
 	return visual
+
+
+## Gira despacio a Cusi, los reclutas y los aliados hacia el jugador cuando se
+## acerca; al alejarse recuperan su orientación de reposo. No es una mirada de
+## hueso (esos modelos no la traen), pero rompe la sensación de estatua.
+func _update_idle_visuals(delta: float) -> void:
+	for visual: CharacterModelVisual in _idle_visual_home:
+		if not is_instance_valid(visual):
+			continue
+		var to_player: Vector3 = player.global_position - visual.global_position
+		to_player.y = 0.0
+		var desired: float = _idle_visual_home[visual]
+		if to_player.length() < CROWD_LOOK_DISTANCE and to_player.length() > 0.05:
+			desired = atan2(-to_player.x, -to_player.z)
+		visual.rotation.y = lerp_angle(visual.rotation.y, desired, CROWD_LOOK_SPEED * delta)
+
+
+## Gesto puntual de un personaje (Cusi al arengar) y vuelta al reposo cuando el
+## clip termina. No bloquea la escena ni el diálogo.
+func _play_gesture(visual: CharacterModelVisual, clip: StringName) -> void:
+	if visual == null:
+		return
+	var seconds: float = visual.clip_length(clip)
+	if seconds <= 0.0:
+		return
+	visual.play(clip)
+	get_tree().create_timer(seconds).timeout.connect(func() -> void:
+		if is_instance_valid(visual):
+			visual.play(&"Idle"))
 
 
 func _add_ally_visual(index: int) -> void:
@@ -726,6 +923,7 @@ func _add_ally_visual(index: int) -> void:
 	visual.position = ALLY_POSITIONS[index]
 	add_child(visual)
 	visual.look_at(Vector3(0.0, ALLY_POSITIONS[index].y, 28.0), Vector3.UP)
+	_idle_visual_home[visual] = visual.rotation.y
 
 
 func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
@@ -827,6 +1025,7 @@ func _setup_inventory_and_dialogue() -> void:
 func _build_city() -> void:
 	_build_terrain()
 	_build_ground_clutter()
+	_build_processional_path()
 	_build_plaza_areas()
 	_build_sanctuary()
 	_build_houses()
@@ -847,6 +1046,8 @@ func _build_city() -> void:
 ## Cordilleras que cierran el valle. Son siluetas sin colisión ni sombra, con
 ## el pie desvanecido en bruma: sin ellas el terreno termina en una línea recta.
 func _build_distant_hills() -> void:
+	# Tres anillos: el más cercano cierra el valle, los otros dan profundidad.
+	_add_hill_ring("HillsMid", 105.0, 12.0, 9.0, Color(0.32, 0.35, 0.31, 1.0))
 	_add_hill_ring("HillsNear", 175.0, 26.0, 16.0, Color(0.30, 0.33, 0.36, 1.0))
 	_add_hill_ring("HillsFar", 250.0, 38.0, 22.0, Color(0.42, 0.46, 0.52, 1.0))
 
@@ -875,7 +1076,7 @@ func _add_hill_ring(node_name: String, radius: float, base_height: float, amplit
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.albedo_color = color
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.disable_fog = true
+	material.disable_fog = false
 	var ring: MeshInstance3D = MeshInstance3D.new()
 	ring.name = node_name
 	ring.mesh = surface.commit()
@@ -897,26 +1098,105 @@ func _build_ground_clutter() -> void:
 	var clutter: GroundClutter = GroundClutter.new()
 	clutter.name = "GroundClutter"
 	add_child(clutter)
-	clutter.build(func(_x: float, _z: float) -> float: return 0.0, Vector3.ZERO, 72.0, 6.0)
+	clutter.build(_height_at, Vector3.ZERO, 72.0, 6.0)
+
+
+## Camino procesional de la puerta al santuario: lajas planas irregulares, en
+## una sola llamada de dibujo. La plaza de tierra necesita una guía visual; sin
+## ella el jugador entra a un descampado. Es reconstrucción de ambiente (R).
+func _build_processional_path() -> void:
+	var surface: MultiMesh = MultiMesh.new()
+	surface.transform_format = MultiMesh.TRANSFORM_3D
+	surface.use_colors = true
+	var cobble: CylinderMesh = CylinderMesh.new()
+	cobble.top_radius = 0.23
+	cobble.bottom_radius = 0.20
+	cobble.height = 0.05
+	cobble.radial_segments = 7
+	surface.mesh = cobble
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = 1438
+	var transforms: Array[Transform3D] = []
+	var colors: Array[Color] = []
+	var rows: Array[float] = [-0.72, 0.0, 0.72]
+	for row: float in rows:
+		var z: float = -13.2
+		while z < 29.5:
+			if rng.randf() > 0.16:
+				var yaw: float = rng.randf_range(-0.5, 0.5)
+				var size: float = rng.randf_range(0.78, 1.18)
+				var x: float = row + rng.randf_range(-0.14, 0.14)
+				var stone_basis: Basis = Basis(Vector3.UP, yaw).scaled(Vector3(size, 1.0, size))
+				transforms.append(Transform3D(stone_basis, Vector3(x, 0.035, z)))
+				var shade: float = rng.randf_range(-0.05, 0.05)
+				colors.append(Color(0.38 + shade, 0.35 + shade, 0.31 + shade, 1.0))
+			z += rng.randf_range(0.52, 0.78)
+	surface.instance_count = transforms.size()
+	for index: int in range(transforms.size()):
+		surface.set_instance_transform(index, transforms[index])
+		surface.set_instance_color(index, colors[index])
+	var instance: MultiMeshInstance3D = MultiMeshInstance3D.new()
+	instance.name = "ProcessionalPath"
+	instance.multimesh = surface
+	instance.material_override = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.STONE, Color(0.56, 0.52, 0.46, 1.0), true)
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	instance.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	add_child(instance)
 
 
 func _build_terrain() -> void:
 	var terrain: Node3D = Node3D.new()
 	terrain.name = "Terrain"
 	add_child(terrain)
-	var plane: PlaneMesh = PlaneMesh.new()
-	# El plano visible es mucho mayor que el límite jugable (70 m): con 150 m
-	# el borde quedaba a la vista y la ciudad parecía flotar sobre el vacío.
-	plane.size = Vector2(CITY_TERRAIN_SIZE, CITY_TERRAIN_SIZE)
+	var surface: SurfaceTool = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var step: float = CITY_TERRAIN_SIZE / float(TERRAIN_RESOLUTION)
+	var half: float = CITY_TERRAIN_SIZE * 0.5
+	for zi: int in range(TERRAIN_RESOLUTION):
+		for xi: int in range(TERRAIN_RESOLUTION):
+			var x0: float = -half + step * float(xi)
+			var z0: float = -half + step * float(zi)
+			var x1: float = x0 + step
+			var z1: float = z0 + step
+			var p00: Vector3 = Vector3(x0, _height_at(x0, z0), z0)
+			var p10: Vector3 = Vector3(x1, _height_at(x1, z0), z0)
+			var p01: Vector3 = Vector3(x0, _height_at(x0, z1), z1)
+			var p11: Vector3 = Vector3(x1, _height_at(x1, z1), z1)
+			for vertex: Vector3 in [p00, p10, p11, p00, p11, p01]:
+				surface.add_vertex(vertex)
+	surface.generate_normals()
+	var mesh: ArrayMesh = surface.commit()
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "TerrainMesh"
-	mesh_instance.mesh = plane
+	mesh_instance.mesh = mesh
 	mesh_instance.material_override = SurfaceMaterials.terrain_material(GRASS_COLOR, ROCK_COLOR, DIRT_COLOR)
-	# El suelo es plano: recibe las sombras de casas y figuras, pero no necesita
-	# proyectar la suya sobre sí mismo.
+	# El terreno recibe sombra; su propia sombra no aporta frente a casas y muros.
 	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	terrain.add_child(mesh_instance)
-	_add_collision_box(terrain, "TerrainBody", Vector3(0.0, -0.5, 0.0), Vector3(CITY_SIZE, 1.0, CITY_SIZE))
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = "TerrainBody"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var collision: CollisionShape3D = CollisionShape3D.new()
+	collision.name = "TerrainCollision"
+	collision.shape = mesh.create_trimesh_shape()
+	body.add_child(collision)
+	terrain.add_child(body)
+
+
+## Cota del terreno. La plaza y el anillo de casas quedan planos; a partir del
+## muro el valle ondula y se cierra en lomas. El borde del plano ya no es una
+## línea recta en el horizonte.
+func _height_at(x: float, z: float) -> float:
+	var distance: float = Vector2(x, z).length()
+	if distance <= TERRAIN_FLAT_RADIUS:
+		return 0.0
+	var t: float = smoothstep(TERRAIN_FLAT_RADIUS, 72.0, distance)
+	var wave: float = 0.55 * sin(x * 0.045 + 1.1) + 0.35 * cos(z * 0.052 - 0.6) 		+ 0.18 * sin((x - z) * 0.09 + 0.7)
+	var rise: float = smoothstep(34.0, 58.0, distance) * 1.05
+	var ridge: float = smoothstep(82.0, 145.0, distance) * 2.2
+	return rise + wave * 0.55 * t + ridge
 
 
 ## La plaza y los caminos se pintan como tierra apisonada sobre el terreno; las
@@ -953,11 +1233,16 @@ func _build_sanctuary() -> void:
 	sanctuary.name = "Sanctuary"
 	add_child(sanctuary)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
+	var pirca: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT, true)
 	var thatch: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.THATCH, THATCH_TINT)
 	_add_block(sanctuary, "Base", Vector3(0.0, 0.3, -18.0), Vector3(9.0, 0.6, 9.0), stone, true)
+	_add_sanctuary_pirca(sanctuary, "BasePirca", Vector3(0.0, 0.0, -18.0), Vector3(9.0, 0.6, 9.0), pirca, 2401)
 	_add_block(sanctuary, "StepMiddle", Vector3(0.0, 0.9, -18.0), Vector3(7.0, 0.6, 7.0), stone, true)
+	_add_sanctuary_pirca(sanctuary, "MiddlePirca", Vector3(0.0, 0.6, -18.0), Vector3(7.0, 0.6, 7.0), pirca, 2402)
 	_add_block(sanctuary, "StepTop", Vector3(0.0, 1.5, -18.0), Vector3(5.0, 0.6, 5.0), stone, true)
+	_add_sanctuary_pirca(sanctuary, "TopPirca", Vector3(0.0, 1.2, -18.0), Vector3(5.0, 0.6, 5.0), pirca, 2403)
 	_add_block(sanctuary, "Shrine", Vector3(0.0, 2.4, -18.0), Vector3(3.0, 1.2, 3.0), stone, true)
+	_add_sanctuary_pirca(sanctuary, "ShrinePirca", Vector3(0.0, 1.8, -18.0), Vector3(3.0, 1.2, 3.0), pirca, 2404)
 	for side: float in [-1.0, 1.0]:
 		_add_block(sanctuary, "Pillar%s" % ("West" if side < 0.0 else "East"),
 			Vector3(2.2 * side, 2.4, -18.0), Vector3(0.45, 2.0, 0.45), stone, true)
@@ -975,6 +1260,31 @@ func _build_sanctuary() -> void:
 	shadow.albedo_color = Color(0.05, 0.04, 0.03, 1.0)
 	shadow.roughness = 1.0
 	_add_block(sanctuary, "Doorway", Vector3(0.0, 2.5, -16.46), Vector3(1.2, 1.6, 0.06), shadow, false)
+
+
+## Reviste una grada del santuario con pirca seca. Los bloques de colisión
+## siguen detrás; la cara de piedra evita que la grada parezca hormigón.
+func _add_sanctuary_pirca(
+	parent: Node3D,
+	node_name: String,
+	base: Vector3,
+	size: Vector3,
+	material: Material,
+	wall_seed: int
+) -> void:
+	var half_x: float = size.x * 0.5
+	var half_z: float = size.z * 0.5
+	var faces: Array[StoneWall.Face] = [
+		StoneWall.Face.new(Vector3(base.x - half_x, base.y, base.z + half_z), Vector3.RIGHT, Vector3.BACK, size.x, size.y),
+		StoneWall.Face.new(Vector3(base.x + half_x, base.y, base.z - half_z), Vector3.LEFT, Vector3.FORWARD, size.x, size.y),
+		StoneWall.Face.new(Vector3(base.x + half_x, base.y, base.z + half_z), Vector3.FORWARD, Vector3.RIGHT, size.z, size.y),
+		StoneWall.Face.new(Vector3(base.x - half_x, base.y, base.z - half_z), Vector3.BACK, Vector3.LEFT, size.z, size.y),
+	]
+	var mesh: MeshInstance3D = MeshInstance3D.new()
+	mesh.name = node_name
+	mesh.mesh = StoneWall.build(faces, wall_seed)
+	mesh.material_override = material
+	parent.add_child(mesh)
 
 
 ## Catorce viviendas de piedra y ichu con los modelos definitivos, sus props y
@@ -1257,12 +1567,32 @@ func _build_vegetation() -> void:
 		["pch_ichu_a.glb", Vector3(-5.0, 0.0, 27.5), 0.8],
 		["pch_ichu_b.glb", Vector3(5.0, 0.0, 27.5), 0.9],
 	]
+	# Queñuas y matas fuera del muro: el valle deja de ser una llanura vacía.
+	var groves: Array[Array] = [
+		["pch_quenua_a.glb", Vector3(-40.0, 0.0, 25.0), 1.15],
+		["pch_quenua_b.glb", Vector3(-46.0, 0.0, -18.0), 1.0],
+		["pch_quenua_a.glb", Vector3(41.0, 0.0, -22.0), 1.2],
+		["pch_quenua_b.glb", Vector3(48.0, 0.0, 20.0), 1.05],
+		["pch_quenua_a.glb", Vector3(-55.0, 0.0, 4.0), 1.0],
+		["pch_quenua_b.glb", Vector3(56.0, 0.0, -2.0), 1.1],
+		["pch_ichu_a.glb", Vector3(-34.0, 0.0, 12.0), 1.1],
+		["pch_ichu_b.glb", Vector3(34.0, 0.0, 14.0), 1.2],
+		["pch_ichu_a.glb", Vector3(-35.0, 0.0, -12.0), 1.0],
+		["pch_ichu_b.glb", Vector3(36.0, 0.0, -10.0), 1.1],
+	]
 	for index: int in range(clumps.size()):
 		var entry: Array = clumps[index]
 		var file: String = entry[0]
 		var at: Vector3 = entry[1]
 		var model_scale: float = entry[2]
 		_add_model_prop(vegetation, "Ichu%d" % index, file, at, 0.7 * float(index), model_scale)
+	for index: int in range(groves.size()):
+		var entry: Array = groves[index]
+		var file: String = entry[0]
+		var at: Vector3 = entry[1]
+		at.y = _height_at(at.x, at.z)
+		var model_scale: float = entry[2]
+		_add_model_prop(vegetation, "Grove%d" % index, file, at, 1.3 * float(index), model_scale)
 
 
 ## Modelo suelto con material del proyecto, para props y vegetación.
@@ -1400,10 +1730,13 @@ func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName
 	# La multitud usa los mismos modelos que el elenco: seis GLB distintos
 	# repartidos en diez puestos, con variación de talla para romper la
 	# repetición. Ya no queda ninguna figura procedural en escena.
+	var spawn_at: Vector3 = at
+	if CROWD_VENDORS.has(index):
+		spawn_at = CROWD_VENDORS[index]
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Crowd%02d" % index
 	visual.model_path = MODEL_DIR + _character_model_for(role, variant)
-	visual.position = at
+	visual.position = spawn_at
 	visual.scale = Vector3.ONE * (0.96 + 0.02 * float(index % 5))
 	parent.add_child(visual)
 	var body: StaticBody3D = StaticBody3D.new()
@@ -1412,17 +1745,58 @@ func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName
 	body.collision_mask = 0
 	var shape: CollisionShape3D = CollisionShape3D.new()
 	var capsule: CapsuleShape3D = CapsuleShape3D.new()
-	capsule.radius = 0.28
+	capsule.radius = 0.34
 	capsule.height = 1.7
 	shape.shape = capsule
 	shape.position = Vector3(0.0, 0.85, 0.0)
 	body.add_child(shape)
 	visual.add_child(body)
-	var target: Vector3 = Vector3(0.0, at.y, 0.0)
-	if at.distance_to(target) > 0.1:
+	var target: Vector3 = Vector3(0.0, spawn_at.y, 0.0)
+	if spawn_at.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)
 	visual.play(&"Idle", 0.85 + 0.1 * float(index % 3))
-	_crowd.append(CrowdMember.new(visual, CROWD_SAFE_POSITIONS[index], visual.rotation.y))
+	var member: CrowdMember = CrowdMember.new(visual, CROWD_SAFE_POSITIONS[index], visual.rotation.y)
+	member.home = spawn_at
+	member.route = crowd_route(index, spawn_at)
+	member.route_index = 1 if member.route.size() > 1 else 0
+	member.pause_left = 0.8 + 0.55 * float(index)
+	member.activity = CROWD_ACTIVITIES[index % CROWD_ACTIVITIES.size()]
+	member.activity_left = 4.0 + 0.7 * float(index)
+	member.pair = _crowd_pair_for(index)
+	member.rng.seed = 7013 + index * 97
+	_crowd.append(member)
+
+
+## Ruta corta alrededor de casa: no cruza el centro de la plaza ni los puestos.
+## Las parejas y los vendedores no tienen ruta; se quedan conversando o
+## atendiendo.
+static func crowd_route(index: int, home: Vector3) -> PackedVector3Array:
+	if CROWD_VENDORS.has(index):
+		return PackedVector3Array()
+	for pair: Vector2i in CROWD_PAIRS:
+		if pair.x == index or pair.y == index:
+			return PackedVector3Array()
+	var points: PackedVector3Array = PackedVector3Array()
+	var to_center: Vector3 = Vector3(0.0, home.y, 0.0) - home
+	to_center.y = 0.0
+	if to_center.length() < 0.5:
+		return points
+	to_center = to_center.normalized()
+	var side: Vector3 = Vector3(-to_center.z, 0.0, to_center.x)
+	points.append(home)
+	points.append(home + to_center * 1.8 + side * 1.1)
+	points.append(home + to_center * 1.0 - side * 1.6)
+	points.append(home + side * 0.7)
+	return points
+
+
+static func _crowd_pair_for(index: int) -> int:
+	for pair: Vector2i in CROWD_PAIRS:
+		if pair.x == index:
+			return pair.y
+		if pair.y == index:
+			return pair.x
+	return -1
 
 
 ## Bloque con material del proyecto; si [param collision] es verdadero, el

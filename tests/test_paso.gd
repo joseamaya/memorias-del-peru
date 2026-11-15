@@ -70,6 +70,9 @@ func test_paso_ambush_and_combat() -> bool:
 	player.global_position = enemy.global_position + Vector3(0.0, 0.0, 2.0)
 	var health_before_enemy: float = character.get_health()
 	enemy.brain.advance(1.0)
+	# El golpe tiene anticipación: el primer tick levanta la porra y el segundo
+	# aplica el daño si el jugador sigue en alcance.
+	enemy._physics_process(1.0)
 	enemy._physics_process(1.0)
 	ok = ok and character.get_health() < health_before_enemy
 	# Un enemigo con la moral baja huye y deja de contar.

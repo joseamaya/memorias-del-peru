@@ -8,7 +8,7 @@ extends Node
 ## «Hablar» de un personaje), resalta las de su padre. Al perder el foco
 ## restaura la superposición anterior. No conoce campañas.
 
-const GLOW_COLOR: Color = Color(1.0, 0.92, 0.75, 0.16)
+const GLOW_COLOR: Color = Color(1.0, 0.92, 0.75, 0.10)
 
 var _material: StandardMaterial3D = null
 var _highlighted: Array[MeshInstance3D] = []

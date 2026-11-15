@@ -89,7 +89,7 @@ const MURMUR_FADE_OUT: float = 5.0
 ## Modelos definitivos (alcance §6.1 y §7). Cada bloqueo tiene un hueco que
 ## carga el primer archivo existente de su lista; sin archivo, sigue el bloqueo.
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
-const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb"]
+const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb", "pch_house_d.glb", "pch_house_e.glb"]
 ## Elenco del acto I: modelos MakeHuman/Rocketbox ya versionados (CC0/MIT),
 ## con esqueleto, animaciones y ropa propios. UAL1 queda para los actos II y
 ## III y como respaldo.
@@ -128,9 +128,9 @@ const MODEL_LOOM: String = "pch_loom.glb"
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
 ## Fondo de las viviendas A, B y C, para dejar los props delante del muro.
-const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0]
+const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0, 5.4, 3.8]
 ## Lado izquierdo de la puerta de cada variante, donde van la leña o un cántaro.
-const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7]
+const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7, -2.5, -1.5]
 ## Giro de cada vivienda respecto a la plaza, en grados: sin él, todas la
 ## miran de frente y el trazado parece planificado (ADR-0021).
 const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
@@ -155,6 +155,8 @@ const QUERO_BASE: Vector3 = Vector3(0.0, -0.11, 0.0)
 const PUTUTU_BASE: Vector3 = Vector3(0.0, -0.2, 0.0)
 const OFFERING_BASE: Vector3 = Vector3(0.0, -0.15, 0.0)
 const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
+## Fuego comunal de la plaza: punto de reunión y foco de luz y sonido.
+const FIRE_PIT_POSITION: Vector3 = Vector3(-6.0, 0.0, 7.0)
 ## Distancia entre la tejedora arrodillada y el extremo del telar.
 const WEAVER_LOOM_GAP: float = 0.22
 ## Tapa del extremo alto de cada rampa: grosor y margen bajo la superficie.
@@ -265,9 +267,6 @@ const SPAWN_POINTS: Dictionary[String, String] = {
 
 ## Mancha de contacto bajo los personajes: sin ella, los pies parecen flotar y
 ## la escena pierde realismo aunque la iluminación sea correcta.
-const CONTACT_SHADOW_SIZE: Vector2 = Vector2(1.4, 1.4)
-const CONTACT_SHADOW_ALPHA: float = 0.55
-const CONTACT_SHADOW_OFFSET: float = 0.02
 
 ## Cuándo se muestra la introducción: AUTO, solo si el mundo es la escena
 ## principal (partida real y reinicio con R), para que las pruebas que cargan
@@ -291,7 +290,6 @@ var _music_fade_remaining: float = -1.0
 var _end_card_remaining: float = -1.0
 var _end_card_shown: bool = false
 var _objective: int = -1
-var _contact_shadow_material: StandardMaterial3D = null
 ## Núcleo RPG de la partida. Vive en el jugador y no conoce la campaña.
 var character: CharacterState = null
 var inventory: Inventory = null
@@ -303,6 +301,10 @@ var _dialogue_text: StringName = &""
 var _dialogue_choices: Array[StringName] = []
 
 var _tasks_done: Dictionary[StringName, bool] = {}
+## Grupo de autoridades que conversa por turnos antes de la noticia.
+var _ambient_group: Array[NpcActor] = []
+var _ambient_timer: float = 6.0
+var _ambient_index: int = 0
 var _oficio: StringName = &""
 
 
@@ -451,6 +453,29 @@ func _on_intro_finished() -> void:
 func _process(delta: float) -> void:
 	advance_end_card(delta)
 	advance_intro_music(delta)
+	_advance_ambient(delta)
+
+
+## Las autoridades intercambian un gesto de conversación por turnos mientras
+## esperan la noticia. No mueve a nadie ni cambia el evento: solo evita que el
+## grupo del curaca quede como estatuas hasta que llega el mensajero.
+func _advance_ambient(delta: float) -> void:
+	if _ambient_group.is_empty() or hud == null or hud.is_dialogue_open():
+		return
+	var event: MessengerEvent = $EventController as MessengerEvent
+	if event != null and event.phase != MessengerEvent.Phase.IDLE:
+		return
+	if is_intro_playing():
+		return
+	_ambient_timer -= delta
+	if _ambient_timer > 0.0:
+		return
+	var actor: NpcActor = _ambient_group[_ambient_index % _ambient_group.size()]
+	_ambient_index += 1
+	_ambient_timer = 7.0 + 1.5 * float(_ambient_index % 3)
+	if actor == null or actor.moving:
+		return
+	actor.perform(&"talk", 2.4)
 
 
 ## Música de la introducción, para las pruebas.
@@ -787,14 +812,14 @@ func _build_llacta() -> void:
 	# Tres grupos que dejan libres los ejes de los caminos: viviendas oeste,
 	# viviendas este y las dos casas del camino norte.
 	var positions: Array[Vector3] = [
-		Vector3(-19.0, 0.0, 10.0),
+		Vector3(-18.0, 0.0, 11.0),
 		Vector3(-27.0, 0.0, 6.0),
-		Vector3(-19.0, 0.0, -10.0),
-		Vector3(19.0, 0.0, 10.0),
-		Vector3(23.0, 0.0, 15.0),
-		Vector3(19.0, 0.0, -10.0),
-		Vector3(-9.0, 0.0, -21.0),
-		Vector3(9.0, 0.0, -21.0),
+		Vector3(-20.0, 0.0, -9.0),
+		Vector3(20.0, 0.0, 9.0),
+		Vector3(24.0, 0.0, 14.0),
+		Vector3(18.0, 0.0, -11.0),
+		Vector3(-8.0, 0.0, -22.0),
+		Vector3(10.0, 0.0, -20.0),
 	]
 	for index: int in range(positions.size()):
 		_add_house(houses, index, positions[index], stone, thatch)
@@ -810,6 +835,7 @@ func _build_llacta() -> void:
 	wind.materials = vegetation.wind_materials
 	add_child(wind)
 
+	_add_community_fire(llacta)
 	var corrals: Node3D = Node3D.new()
 	corrals.name = "Corrals"
 	llacta.add_child(corrals)
@@ -858,6 +884,7 @@ func _build_llacta() -> void:
 	principal_one.face(principal_two.global_position, true)
 	principal_two.face(principal_one.global_position, true)
 	principal_two.set_idle_animation(&"idle_b")
+	_ambient_group = [curaca, principal_one, principal_two]
 	var neighbor_one: NpcActor = _add_npc(npcs, "Habitante1", Vector3(9.0, 0.0, 4.0), Color(0.48, 0.36, 0.28, 1.0))
 	var neighbor_two: NpcActor = _add_npc(npcs, "Habitante2", Vector3(11.0, 0.0, -1.0), Color(0.42, 0.33, 0.26, 1.0))
 	var neighbor_three: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
@@ -1414,10 +1441,76 @@ func _setup_ambience() -> void:
 	player_audio.volume_db = -16.0
 	player_audio.autoplay = true
 	$EnvironmentAudio.add_child(player_audio)
+	if AudioServer.get_bus_index(&"Ambience") >= 0:
+		player_audio.bus = &"Ambience"
 	var wind: LlactaWind = get_node_or_null("Wind") as LlactaWind
 	if wind != null:
 		wind.ambience = player_audio
 		wind.ambience_base_db = player_audio.volume_db
+	# Murmullo lejano de la comunidad, por debajo del viento. El evento sube su
+	# propio murmullo cuando llega el mensajero.
+	CampaignAudio.add_loop_3d(self, "VillageMurmur", CampaignAudio.MURMUR_PATH,
+		_plaza_center_flat() + Vector3.UP * 1.3, -27.0, 12.0, 55.0)
+
+
+## Fuego comunal: piedras, troncos, llama y una luz cálida. Es reconstrucción
+## de ambiente (R): no documenta un fuego concreto, solo el uso del espacio.
+func _add_community_fire(parent: Node3D) -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "CommunityFire"
+	root.position = FIRE_PIT_POSITION
+	parent.add_child(root)
+	var rock: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.ROCK, Color(0.50, 0.48, 0.45, 1.0))
+	for index: int in range(8):
+		var angle: float = TAU * float(index) / 8.0
+		var stone_instance: MeshInstance3D = MeshInstance3D.new()
+		var sphere: SphereMesh = SphereMesh.new()
+		sphere.radius = 0.15
+		sphere.height = 0.26
+		sphere.radial_segments = 6
+		sphere.rings = 3
+		stone_instance.mesh = sphere
+		stone_instance.material_override = rock
+		stone_instance.position = Vector3(cos(angle) * 0.72, 0.10, sin(angle) * 0.72)
+		root.add_child(stone_instance)
+	var wood: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.WOOD, Color(0.36, 0.26, 0.17, 1.0))
+	for offset: Vector3 in [Vector3(-0.55, 0.0, 0.2), Vector3(0.5, 0.0, -0.25)]:
+		var log_instance: MeshInstance3D = MeshInstance3D.new()
+		var cylinder: CylinderMesh = CylinderMesh.new()
+		cylinder.top_radius = 0.07
+		cylinder.bottom_radius = 0.09
+		cylinder.height = 0.9
+		log_instance.mesh = cylinder
+		log_instance.material_override = wood
+		log_instance.position = Vector3(offset.x, 0.12, offset.z)
+		log_instance.rotation_degrees = Vector3(0.0, 20.0, 90.0)
+		root.add_child(log_instance)
+	for size: Vector2 in [Vector2(0.20, 0.48), Vector2(0.12, 0.30)]:
+		var flame: MeshInstance3D = MeshInstance3D.new()
+		var cone: CylinderMesh = CylinderMesh.new()
+		cone.top_radius = 0.0
+		cone.bottom_radius = size.x
+		cone.height = size.y
+		flame.mesh = cone
+		var material: StandardMaterial3D = StandardMaterial3D.new()
+		material.albedo_color = Color(0.98, 0.52, 0.16, 1.0)
+		material.emission_enabled = true
+		material.emission = Color(1.0, 0.42, 0.1, 1.0)
+		material.emission_energy_multiplier = 2.0
+		flame.material_override = material
+		flame.position = Vector3(0.0, 0.12 + size.y * 0.5, 0.0)
+		root.add_child(flame)
+	var light: OmniLight3D = OmniLight3D.new()
+	light.name = "FireLight"
+	light.position = Vector3(0.0, 0.9, 0.0)
+	light.light_color = Color(1.0, 0.62, 0.32, 1.0)
+	light.light_energy = 1.0
+	light.omni_range = 5.5
+	light.shadow_enabled = false
+	root.add_child(light)
+	if AudioServer.get_driver_name() != "Dummy":
+		CampaignAudio.add_loop_3d(self, "VillageFire", CampaignAudio.FIRE_PATH,
+			FIRE_PIT_POSITION + Vector3.UP * 0.35, -18.0, 4.0, 24.0)
 
 
 
@@ -1788,7 +1881,6 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 		actor.target_height = CHARACTER_HEIGHTS[node_name]
 	parent.add_child(actor)
 	actor.add_to_group("npcs")
-	_add_contact_shadow(actor)
 	var body_mesh: MeshInstance3D = actor.get_node_or_null("Body") as MeshInstance3D
 	var blockout: Array[Node3D] = []
 	var slot_parent: Node3D = actor
@@ -1822,49 +1914,6 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 		outfit.variant = dressed_variant(node_name)
 		actor.add_child(outfit)
 	return actor
-
-
-## Añade la mancha de contacto bajo un personaje: un quad con degradado radial,
-## sin luz ni sombra propia. Cuesta un draw call por personaje y evita que los
-## pies parezcan flotar.
-func _add_contact_shadow(actor: Node3D) -> void:
-	var quad: MeshInstance3D = MeshInstance3D.new()
-	quad.name = "ContactShadow"
-	var mesh: QuadMesh = QuadMesh.new()
-	mesh.size = CONTACT_SHADOW_SIZE
-	quad.mesh = mesh
-	quad.material_override = _get_contact_shadow_material()
-	quad.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
-	quad.position = Vector3(0.0, CONTACT_SHADOW_OFFSET, 0.0)
-	quad.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	actor.add_child(quad)
-
-
-## Material compartido por todas las manchas de contacto.
-##
-## La textura se construye como ImageTexture: con una GradientTexture2D el
-## renderizador no muestreaba el RGB negro y la mancha salía como una losa
-## clara. La imagen radial evita depender del filtro de la textura procedural.
-func _get_contact_shadow_material() -> StandardMaterial3D:
-	if _contact_shadow_material != null:
-		return _contact_shadow_material
-	var image: Image = Image.create(64, 64, false, Image.FORMAT_RGBA8)
-	for y: int in range(64):
-		for x: int in range(64):
-			var p: Vector2 = Vector2(float(x) + 0.5, float(y) + 0.5) / 64.0 * 2.0 - Vector2.ONE
-			var fade: float = 1.0 - smoothstep(0.12, 1.0, p.length())
-			image.set_pixel(x, y, Color(0.0, 0.0, 0.0, CONTACT_SHADOW_ALPHA * fade))
-	var texture: ImageTexture = ImageTexture.create_from_image(image)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = Color(0.0, 0.0, 0.0, 1.0)
-	material.albedo_texture = texture
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.disable_receive_shadows = true
-	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
-	_contact_shadow_material = material
-	return material
 
 
 ## Telar orientado con su extremo de trabajo en [constant LOOM_POSITION] y

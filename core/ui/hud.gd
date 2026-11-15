@@ -51,6 +51,7 @@ signal journal_closed
 @onready var health_label: Label = $HealthLabel
 @onready var stamina_bar: ProgressBar = $StaminaBar
 @onready var status_label: Label = $StatusLabel
+@onready var damage_flash: ColorRect = $DamageFlash
 @onready var cinematic_top: ColorRect = $CinematicTop
 @onready var cinematic_bottom: ColorRect = $CinematicBottom
 @onready var subtitle_label: Label = $SubtitleLabel
@@ -82,6 +83,7 @@ var _cinematic_tween: Tween = null
 
 
 func _ready() -> void:
+	theme = UiTheme.build()
 	_connect_refs()
 	subtitle_label.visible = false
 	title_label.visible = false
@@ -183,6 +185,13 @@ func is_cinematic() -> bool:
 	return _cinematic
 
 
+## Destello breve al recibir daño. No bloquea la vista y se apaga solo.
+func flash_damage() -> void:
+	damage_flash.color = Color(0.55, 0.08, 0.05, 0.34)
+	var tween: Tween = create_tween()
+	tween.tween_property(damage_flash, "color:a", 0.0, 0.45).set_trans(Tween.TRANS_QUAD)
+
+
 func _current_cinematic_offset() -> float:
 	return cinematic_top.offset_bottom
 
@@ -206,6 +215,7 @@ func show_end_card(title: String, hint: String) -> void:
 	stamina_bar.visible = false
 	status_label.visible = false
 	objective_label.visible = false
+	damage_flash.color = Color(0.55, 0.08, 0.05, 0.0)
 	_apply_end_fade()
 	queue_redraw()
 

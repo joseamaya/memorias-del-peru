@@ -53,6 +53,7 @@ static func add_wind(parent: Node, volume_db: float = -18.0) -> AudioStreamPlaye
 	var player: AudioStreamPlayer = AudioStreamPlayer.new()
 	player.name = "WindAmbience"
 	player.stream = stream
+	player.bus = &"Ambience"
 	player.volume_db = volume_db
 	player.autoplay = true
 	parent.add_child(player)
@@ -77,6 +78,7 @@ static func add_loop_3d(
 	var player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 	player.name = node_name
 	player.stream = stream
+	player.bus = &"Ambience"
 	player.volume_db = volume_db
 	player.unit_size = unit_size
 	player.max_distance = max_distance
@@ -102,6 +104,7 @@ static func add_loop(
 	var player: AudioStreamPlayer = AudioStreamPlayer.new()
 	player.name = node_name
 	player.stream = stream
+	player.bus = &"Ambience"
 	player.volume_db = volume_db
 	player.autoplay = autoplay
 	parent.add_child(player)

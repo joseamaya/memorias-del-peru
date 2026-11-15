@@ -7,6 +7,9 @@ extends Node
 
 const BUS_MASTER: StringName = &"Master"
 const BUS_SFX: StringName = &"SFX"
+const BUS_AMBIENCE: StringName = &"Ambience"
+const BUS_MUSIC: StringName = &"Music"
+const BUS_UI: StringName = &"UI"
 const SFX_PLAYERS: int = 8
 
 var _players: Array[AudioStreamPlayer] = []
@@ -15,6 +18,10 @@ var _next_player: int = 0
 
 func _ready() -> void:
 	_ensure_bus(BUS_SFX)
+	_ensure_bus(BUS_AMBIENCE)
+	_ensure_bus(BUS_MUSIC)
+	_ensure_bus(BUS_UI)
+	_ensure_master_limiter()
 	for _index: int in range(SFX_PLAYERS):
 		var player: AudioStreamPlayer = AudioStreamPlayer.new()
 		player.bus = BUS_SFX
@@ -68,3 +75,17 @@ func _ensure_bus(bus_name: StringName) -> void:
 	var index: int = AudioServer.bus_count - 1
 	AudioServer.set_bus_name(index, bus_name)
 	AudioServer.set_bus_send(index, BUS_MASTER)
+
+
+## Limitador suave en Master: evita que un golpe, el viento y el murmullo a la
+## vez saturen la salida.
+func _ensure_master_limiter() -> void:
+	var master: int = AudioServer.get_bus_index(BUS_MASTER)
+	if master < 0 or AudioServer.get_bus_effect_count(master) > 0:
+		return
+	var limiter: AudioEffectLimiter = AudioEffectLimiter.new()
+	limiter.ceiling_db = -1.0
+	limiter.threshold_db = -1.0
+	limiter.soft_clip_db = 0.0
+	limiter.soft_clip_ratio = 2.0
+	AudioServer.add_bus_effect(master, limiter)

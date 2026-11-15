@@ -87,6 +87,8 @@ func _action_target(action: StringName) -> Array:
 			return [Vector3(0.18, -0.32, -0.62), Vector3(72.0, -10.0, 2.0)]
 		&"blow":
 			return [Vector3(0.20, -0.26, -0.58), Vector3(70.0, -12.0, 4.0)]
+		&"attack":
+			return [Vector3(0.12, -0.44, -0.72), Vector3(78.0, -4.0, -8.0)]
 		_:
 			return [Vector3(0.18, -0.28, -0.62), Vector3(72.0, -10.0, 2.0)]
 

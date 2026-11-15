@@ -60,6 +60,7 @@ var dialogue: DialogueRunner = null
 var _camp_graph: DialogueGraph = null
 var _aftermath_graph: DialogueGraph = null
 var _aftermath_pending: bool = false
+var _camp_visuals: Array[CharacterModelVisual] = []
 var _distracted: bool = false
 var _sneak: bool = false
 var _distraction_done: bool = false
@@ -131,6 +132,8 @@ func apply_player_damage(amount: float) -> void:
 		if player.stamina != null:
 			player.stamina.consume(5.0)
 	character.damage(applied)
+	if hud != null:
+		hud.flash_damage()
 	if not character.is_alive():
 		_dead = true
 		hint_label.text = tr("PCH_PASO_DEAD")
@@ -180,6 +183,9 @@ func _attack() -> void:
 		return
 	player_combatant.register_hit()
 	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH, -12.0)
+	var hands: FirstPersonHands = player.get_node_or_null("Head/Camera3D/FirstPersonHands") as FirstPersonHands
+	if hands != null:
+		hands.play(&"attack")
 	_attack_ray.force_raycast_update()
 	if not _attack_ray.is_colliding():
 		return
@@ -359,9 +365,9 @@ func _setup_camp() -> void:
 		fire_log.position = Vector3(CAMP_POSITION.x + offset.x, ground + 0.12, CAMP_POSITION.z + offset.z)
 		fire_log.rotation_degrees = Vector3(0.0, 0.0, 90.0)
 		add_child(fire_log)
-	_add_camp_npc(Vector3(-5.4, 0.0, 17.2), &"villager", 0)
-	_add_camp_npc(Vector3(-2.6, 0.0, 17.4), &"farmer", 0)
-	_add_camp_npc(Vector3(-4.2, 0.0, 19.4), &"messenger", 0)
+	_camp_visuals.append(_add_camp_npc(Vector3(-5.4, 0.0, 17.2), &"villager", 0))
+	_camp_visuals.append(_add_camp_npc(Vector3(-2.6, 0.0, 17.4), &"farmer", 0))
+	_camp_visuals.append(_add_camp_npc(Vector3(-4.2, 0.0, 19.4), &"messenger", 0))
 	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
 	var camp: CampPoint = instance as CampPoint
 	var body: Node3D = instance as Node3D
@@ -373,7 +379,7 @@ func _setup_camp() -> void:
 	camp.requested.connect(_on_camp_requested)
 
 
-func _add_camp_npc(at: Vector3, role: StringName, variant: int) -> void:
+func _add_camp_npc(at: Vector3, role: StringName, variant: int) -> CharacterModelVisual:
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "CampVisual"
 	visual.model_path = "res://campaigns/01_pachacutec/assets/models/" + _camp_model_for(role, variant)
@@ -382,6 +388,7 @@ func _add_camp_npc(at: Vector3, role: StringName, variant: int) -> void:
 	var target: Vector3 = Vector3(CAMP_POSITION.x, visual.position.y, CAMP_POSITION.z)
 	if visual.position.distance_to(target) > 0.1:
 		visual.look_at(target, Vector3.UP)
+	return visual
 
 
 static func _camp_model_for(role: StringName, variant: int) -> String:
@@ -403,7 +410,8 @@ func _on_camp_requested() -> void:
 	if dialogue.is_active():
 		return
 	if dialogue.start(_camp_graph):
-		player.begin_dialogue(null)
+		var target: Node3D = _camp_visuals[0] if not _camp_visuals.is_empty() else null
+		player.begin_dialogue(target)
 
 
 func _build_camp_dialogue() -> DialogueGraph:

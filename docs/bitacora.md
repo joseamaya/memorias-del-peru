@@ -6,6 +6,18 @@ El criterio es simple: si revertir cuesta menos de una hora y no cambia contrato
 
 La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`08` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §1). El historial anterior a su creación sigue en la tabla de versiones de [alcance_vertical_slice.md](../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md).
 
+## 2026-11-15
+
+| Cambio | Detalle | Commit |
+|---|---|---|
+| Cámara, diálogo e interacción | El jugador bloquea controles sin apagar su física, la cámara encuadra la cara del interlocutor (hueso de la cabeza, sirve para la tejedora arrodillada) y vuelve a la orientación previa; FOV de carrera y de diálogo, suavizado de escalones, aterrizaje y balanceo lateral. Prompt con tecla y retícula contextual; diálogo con bandas y HUD retirado. 162 pruebas en verde | — |
+| HUD de estado | La etiqueta «Aliento» deja de flotar cuando la barra está llena; salud y estamina aparecen solo cuando bajan o durante el combate; se retiran los rótulos crudos de Paso y Cusco. Aviso de daño en pantalla | — |
+| Vida del Cusco | La multitud pasa de estatuas a rutinas: paseos cortos, parejas que conversan, dos puestos atendidos, reacción al jugador y retirada a refugio. Cusi, reclutas y aliados giran hacia el jugador y Cusi arenga con un gesto al empezar la defensa | — |
+| Asentamiento y terreno del Cusco | Casas D y E generadas con `pch_models.py` (5 variantes), posiciones menos simétricas, santuario revestido de pirca, camino procesional de lajas, terreno 128×128 con relieve y colisión trimesh, laderas intermedias, queñuas fuera del muro y fuego comunal con luz y sonido | — |
+| Interfaz | Tema compartido con EB Garamond (OFL), botones y paneles oscuros con borde dorado, portada con captura propia del Cusco y barra de salud/estamina integrada | — |
+| Audio y combate | Buses Ambience/Music/UI y limitador en Master; murmullo lejano y fuego en la llacta. El chanca anticipa el golpe 0,45 s antes de aplicar daño; la mano del jugador acompaña el ataque y el daño tiñe la pantalla | — |
+| Manchas de contacto | Se retiran las manchas de contacto de los NPC: el quad se pintaba como una losa clara en este renderer. Las sombras dinámicas cubren la función hasta encontrar una solución fiable | — |
+
 ## 2026-11-14
 
 | Cambio | Detalle | Commit |

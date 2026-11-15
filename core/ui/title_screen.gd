@@ -10,10 +10,13 @@ const TITLE_KEY: StringName = &"UI_GAME_TITLE"
 const START_KEY: StringName = &"UI_START"
 const QUIT_KEY: StringName = &"UI_QUIT"
 const BACKGROUND_COLOR: Color = Color(0.05, 0.04, 0.035, 1.0)
-const TITLE_FONT_SIZE: int = 72
-const SUBTITLE_FONT_SIZE: int = 30
-const BUTTON_FONT_SIZE: int = 28
-const BUTTON_WIDTH: float = 280.0
+const BACKGROUND_TEXTURE: String = "res://shared_assets/ui/title_background.png"
+const TITLE_FONT_SIZE: int = 82
+const SUBTITLE_FONT_SIZE: int = 32
+const BUTTON_FONT_SIZE: int = 26
+const BUTTON_WIDTH: float = 300.0
+const OVERLAY_COLOR: Color = Color(0.02, 0.018, 0.015, 0.62)
+const TITLE_COLOR: Color = Color(0.98, 0.94, 0.84, 1.0)
 ## Selector de acto para desarrollo: `--act=2` o `--act=3`.
 const ACT_ARG: String = "--act="
 const ACT_TWO_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/paso.tscn"
@@ -27,6 +30,7 @@ var _quit_button: Button = null
 
 
 func _ready() -> void:
+	theme = UiTheme.build()
 	# Debe responder aunque una pausa anterior hubiera quedado activa.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_campaign = CampaignInfo.load_configured()
@@ -116,6 +120,22 @@ func _build() -> void:
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(background)
+	if ResourceLoader.exists(BACKGROUND_TEXTURE):
+		var photo: TextureRect = TextureRect.new()
+		photo.name = "Backdrop"
+		photo.texture = load(BACKGROUND_TEXTURE) as Texture2D
+		photo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		photo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		photo.set_anchors_preset(Control.PRESET_FULL_RECT)
+		photo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		photo.modulate = Color(0.88, 0.86, 0.82, 1.0)
+		add_child(photo)
+	var overlay: ColorRect = ColorRect.new()
+	overlay.name = "Overlay"
+	overlay.color = OVERLAY_COLOR
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(overlay)
 
 	var column: VBoxContainer = VBoxContainer.new()
 	column.name = "Column"
@@ -127,16 +147,28 @@ func _build() -> void:
 	add_child(column)
 
 	_title_label = _make_label("Title", tr(String(TITLE_KEY)), TITLE_FONT_SIZE)
+	_title_label.add_theme_color_override("font_color", TITLE_COLOR)
+	_title_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
+	_title_label.add_theme_constant_override("outline_size", 8)
 	column.add_child(_title_label)
 	var subtitle: String = ""
 	if _campaign != null and not String(_campaign.subtitle_key).is_empty():
 		subtitle = tr(String(_campaign.subtitle_key))
 	_subtitle_label = _make_label("Subtitle", subtitle, SUBTITLE_FONT_SIZE)
-	_subtitle_label.modulate = Color(1.0, 1.0, 1.0, 0.75)
+	_subtitle_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.68, 1.0))
+	_subtitle_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
+	_subtitle_label.add_theme_constant_override("outline_size", 5)
 	column.add_child(_subtitle_label)
 
+	var rule: ColorRect = ColorRect.new()
+	rule.name = "Rule"
+	rule.custom_minimum_size = Vector2(180.0, 1.0)
+	rule.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	rule.color = Color(0.84, 0.70, 0.40, 0.8)
+	column.add_child(rule)
+
 	var spacer: Control = Control.new()
-	spacer.custom_minimum_size = Vector2(0.0, 48.0)
+	spacer.custom_minimum_size = Vector2(0.0, 40.0)
 	column.add_child(spacer)
 
 	_start_button = _make_button("Start", tr(String(START_KEY)))

@@ -24,6 +24,7 @@ var _choice_count: int = 0
 
 
 func _ready() -> void:
+	theme = UiTheme.build()
 	visible = false
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	var index: int = 0

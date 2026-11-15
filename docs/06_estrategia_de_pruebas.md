@@ -305,6 +305,18 @@ godot --path . --resolution 1280x720 --script res://tests/capture_crowd.gd
 godot --path . --resolution 1280x720 --script res://tests/capture_chanca_combat.gd
 ```
 
+Capturas específicas del pulido de cámara, HUD, vida del Cusco y portada:
+
+```bash
+godot --path . --resolution 1280x720 res://tests/scenes/capture_hud.tscn
+godot --path . --resolution 1920x1080 res://tests/scenes/capture_ciudad_life.tscn
+godot --path . --resolution 1920x1080 res://tests/scenes/capture_title.tscn
+godot --path . --resolution 1920x1080 res://tests/scenes/capture_combat_hud.tscn
+```
+
+Las cuatro guardan PNG en `user://` y sirven para comparar el encuadre de
+diálogo, la vida de la plaza, la portada y el HUD de combate.
+
 Carga el mundo sin HUD, congela el evento y guarda cinco vistas en `user://capturas/`: aparición, suelo a media distancia, muro de pirca a 1,5 m, casa a 6 m y horizonte desde el mirador. Sirve para evaluar un cambio de materiales contra el mismo encuadre, no para probar lógica.
 
 ## 4. Verificación manual — Fase 1
@@ -335,6 +347,17 @@ Con el quero colocado en el sandbox:
 5. El quero recupera estamina y el HUD se actualiza por señal.
 6. Una pared entre el jugador y el quero impide la interacción.
 7. Escape sigue pausando y recapturando el ratón.
+8. Consola sin errores ni advertencias.
+
+### Verificación manual — pulido de cámara, HUD y vida (2026-11-15)
+
+1. Al hablar con la tejedora arrodillada, la cámara encuadra su cara y no el cielo; al cerrar, vuelve a la orientación anterior sin salto.
+2. Durante el diálogo no se anda ni se gira con el ratón; las bandas superior e inferior aparecen y el HUD de exploración se retira.
+3. Al diario le pasa lo mismo, pero sin bandas: no se anda y el HUD se oculta.
+4. Con la estamina llena no aparece «Aliento»; al correr aparece la barra y la etiqueta. La salud solo aparece al recibir daño o durante el combate.
+5. En el Cusco, la multitud pasea, conversa en pareja, atiende los puestos y se detiene a mirar al jugador; al empezar la defensa se retira.
+6. El camino de lajas guía de la puerta al santuario y el terreno ondula fuera del anillo de casas; no hay objetos flotando.
+7. En la emboscada, el chanca levanta la porra antes de golpear y el daño se nota con el destello del HUD.
 8. Consola sin errores ni advertencias.
 
 ## 5. Registro de resultados

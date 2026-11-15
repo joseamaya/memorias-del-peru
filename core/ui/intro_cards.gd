@@ -103,6 +103,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	theme = UiTheme.build()
 	# Se detiene con la pausa aunque cuelgue de un HUD que no se detiene.
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 

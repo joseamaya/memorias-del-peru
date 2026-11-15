@@ -15,6 +15,9 @@ const TURN_RATE: float = 220.0
 ## Distancia a la que se detiene aunque el golpe esté en recarga: sin esto se
 ## seguía acercando durante la espera y acababa dentro de la cámara.
 const STANDOFF_DISTANCE: float = 1.9
+## Anticipación del golpe: la porra sube y el daño llega al final del gesto.
+const ATTACK_WINDUP: float = 0.45
+const ATTACK_REACH: float = 2.9
 const MORALE_LOSS: float = 15.0
 const MODEL_PATH: String = "res://campaigns/01_pachacutec/assets/models/pch_npc_commoner.glb"
 ## Duración de la caída del enemigo derribado.
@@ -28,6 +31,8 @@ var brain: EnemyCombatant = null
 var _resolved: bool = false
 var _visual: CharacterModelVisual = null
 var _current_clip: StringName = &""
+var _winding_up: bool = false
+var _windup_left: float = 0.0
 
 
 func _ready() -> void:
@@ -102,11 +107,19 @@ func _physics_process(delta: float) -> void:
 			if distance > 30.0:
 				_resolve()
 		EnemyCombatant.Intent.ATTACK:
-			var damage: float = brain.attack(1.0)
-			if damage > 0.0:
+			if not _winding_up:
+				_winding_up = true
+				_windup_left = ATTACK_WINDUP
 				_play_visual(&"attack")
-				CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -10.0)
-				paso.call("apply_player_damage", damage)
+			else:
+				_windup_left -= delta
+				if _windup_left <= 0.0:
+					_winding_up = false
+					if distance <= ATTACK_REACH:
+						var damage: float = brain.attack(1.0)
+						if damage > 0.0:
+							CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -10.0)
+							paso.call("apply_player_damage", damage)
 		EnemyCombatant.Intent.IDLE:
 			_play_visual(&"Idle")
 
@@ -115,6 +128,7 @@ func _physics_process(delta: float) -> void:
 func take_hit(amount: float) -> void:
 	if _resolved or brain == null:
 		return
+	_winding_up = false
 	brain.take_damage(amount, MORALE_LOSS)
 	_play_visual(&"hit")
 	if not character.is_alive():

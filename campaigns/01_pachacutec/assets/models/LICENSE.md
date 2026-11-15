@@ -4,6 +4,11 @@
 
 Viviendas, objetos, vegetación, telar, cántaros y leña. Son de autoría propia del proyecto ([ADR-0010](../../../../docs/adr/0010-modelos-generados-con-blender.md)).
 
+Las viviendas D y E (`pch_house_d.glb`, `pch_house_e.glb`) se añadieron el
+2026-11-15 con el mismo generador y la misma licencia propia. D es una casa
+mayor enlucida y E una casa menor de piedra; no introducen una tipología nueva,
+solo variación de planta, altura y acabado.
+
 ## Tejedora vestida (`pch_weaver_dressed.glb`), de `pch_dressed.py`
 
 Prototipo de personaje completo sobre el maniquí UAL1 (ADR-0042).

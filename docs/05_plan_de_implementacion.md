@@ -375,8 +375,8 @@ autor del arco completo corresponde a la Fase 8.
 ### Criterios de aceptación
 
 - [x] El arco completo dura lo que fija esta etapa (15–20 min) y no tiene bloqueos. *(2026-11-14: la pasada guionada mide 4 min 19 s y la estimación humana 13–20 min; el objetivo se rebasa de 40–50 a 15–20 para esta fase, y los 40–50 pasan a la fase de contenido con su plan y coste en [plan_duracion.md](../campaigns/01_pachacutec/documentation/plan_duracion.md). La medida definitiva sigue pendiente de la pasada del autor.)*
-- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia, con el 3D al 83 % y la interfaz a resolución completa: llacta 76,5 / paso 72,8 / Cusco 73,2 FPS en Medio y 122,3 / 126,2 / 117,3 en Bajo. El paso pasó de 58,7 a 72,8 al bajar la escala del búfer 3D; FSR 1 resultó un 8–9 % más caro que el bilineal y se descartó. Detalle en docs/08.)*
-- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 158 pruebas en verde; las capturas y mediciones lanzadas con `--script` ya no fallan por los autoloads.)*
+- [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-15: pasada a 1920 × 1080 en la Intel UHD 770, 3D al 83 % e interfaz completa: llacta 81,2 / paso 79,2 / Cusco 61,4 FPS en Medio y 126,2 / 129,3 / 107,1 en Bajo. El Cusco queda con poco margen por el terreno, el camino y la vegetación nuevos; el dibujo sube a ~406 draw calls. Detalle en docs/08.)*
+- [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-15: 162 pruebas en verde; capturas y mediciones con `--script` sin fallos de autoload.)*
 - [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores. *(Pendiente de la pasada del autor; el protocolo está en [validacion_arco.md](../campaigns/01_pachacutec/documentation/validacion_arco.md).)*
 - [x] Todo el contenido histórico con ficha verificada. *(2026-11-14: 29 fichas verificadas; PCH-025 queda pendiente porque la armadura acolchada no está en el juego y no bloquea.)*
 - [x] La documentación refleja lo construido. *(2026-11-14: docs/05 con las cifras finales de rendimiento y pruebas; docs/06 con las herramientas de vídeo; índice de campaña al día; protocolo de validación del arco en `documentation/validacion_arco.md`.)*
@@ -403,5 +403,17 @@ al empezar la defensa; el portón con dintel, el remate de la muralla, los banco
 el altar y el ichu completan la plaza. La tejedora vuelve a tejer arrodillada. El Cusco baja de 714 a 329 draw calls con la multitud, el mercado y el cielo
 con nubes, y se queda en 73,0 FPS en Medio; el paso sube a 72,8 al renderizar
 el 3D al 83 %. Los enemigos caen con clip propio. 158 pruebas en verde.
-Pendiente: validación de autor ([protocolo](../campaigns/01_pachacutec/documentation/validacion_arco.md))
-y pulido fino de personajes.
+**Pulido de cámara, HUD y vida (2026-11-15).** El jugador bloquea los
+controles sin apagar su física y la cámara encuadra al interlocutor y vuelve a
+su orientación; el HUD deja de mostrar «Aliento» cuando la barra está llena y
+lleva salud, estamina y estado de combate. La multitud del Cusco tiene rutinas,
+parejas que conversan, puestos atendidos y reacción al jugador; Cusi arenga al
+empezar la defensa. El Cusco suma dos variantes de vivienda, un santuario
+revestido de pirca, un camino procesional de lajas, terreno con relieve y
+colisión trimesh, laderas, queñuas y un fuego comunal. La interfaz usa un tema
+compartido con EB Garamond y portada propia. El chanca anticipa el golpe y el
+jugador tiene gesto de ataque, destello de daño y buses de audio. 162 pruebas
+en verde. El Cusco mide 61,4 FPS en Medio, con poco margen; el resto de actos
+queda por encima de 79. Pendiente: validación de autor
+([protocolo](../campaigns/01_pachacutec/documentation/validacion_arco.md)) y
+pulido fino de personajes.

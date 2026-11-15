@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/interactions/npc_talk.gd" id="1_talk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_talk"]
-radius = 0.45
+radius = 0.5
 height = 1.8
 
 [node name="Talk" type="StaticBody3D"]

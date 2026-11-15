@@ -652,6 +652,20 @@ def build_house_c(rng):
 		["stone_b", "stone_c", "stone_warm"], ["thatch_c", "thatch_b", "thatch_a"], plaster=0.75)
 
 
+def build_house_d(rng):
+	"""Vivienda mayor de dos vanos, con el frente algo girado respecto a la
+	plaza. La planta más ancha y la cumbrera más alta rompen la silueta de las
+	tres casas base sin inventar una tipología nueva."""
+	build_house("pch_house_d", rng, 7.0, 5.4, 2.5, 4.2, 0.4,
+		["stone_warm", "stone_b", "stone_a"], ["thatch_c", "thatch_a", "thatch_b"], plaster=1.0)
+
+
+def build_house_e(rng):
+	"""Vivienda menor, casi toda enlucida, para el interior de las canchas."""
+	build_house("pch_house_e", rng, 4.4, 3.8, 2.0, 3.3, -0.4,
+		["stone_b", "stone_warm", "stone_c"], ["thatch_b", "thatch_c", "thatch_a"], plaster=0.0)
+
+
 def build_pedestal(rng):
 	"""Poyo de pirca de 0,6 × 0,6 × 0,8 m con una losa tosca encima, donde se
 	dejan el quero y el pututu (sustituye a la caja del bloqueo)."""
@@ -1143,6 +1157,8 @@ MODELS = {
 	"pch_house_a": build_house_a,
 	"pch_house_b": build_house_b,
 	"pch_house_c": build_house_c,
+	"pch_house_d": build_house_d,
+	"pch_house_e": build_house_e,
 	"pch_pedestal": build_pedestal,
 	"pch_quero": build_quero,
 	"pch_pututu": build_pututu,

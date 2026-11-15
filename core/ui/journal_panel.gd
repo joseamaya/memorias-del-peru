@@ -20,6 +20,7 @@ var _entries: Array[JournalEntry] = []
 
 
 func _ready() -> void:
+	theme = UiTheme.build()
 	visible = false
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	title_label.text = tr("UI_JOURNAL_TITLE")
