@@ -1124,10 +1124,12 @@ func _build_market() -> void:
 	var market: Node3D = Node3D.new()
 	market.name = "Market"
 	add_child(market)
-	_add_stall(market, 0, Vector3(-8.5, 0.0, 4.0), 0.35)
-	_add_stall(market, 1, Vector3(8.5, 0.0, 4.0), -0.35)
-	_add_model_prop(market, "MarketFirewood", MODEL_PROP_FIREWOOD, Vector3(-6.4, 0.0, 5.8), 0.9, 1.0)
-	_add_model_prop(market, "MarketJar", MODEL_PROP_JAR, Vector3(6.4, 0.0, 5.6), 0.2, 1.1)
+	# Al norte de la plaza: en el eje sur quedaban en medio del camino de
+	# entrada y la cámara les pasaba por debajo del techo.
+	_add_stall(market, 0, Vector3(-8.5, 0.0, -6.0), 0.35)
+	_add_stall(market, 1, Vector3(8.5, 0.0, -6.0), -0.35)
+	_add_model_prop(market, "MarketFirewood", MODEL_PROP_FIREWOOD, Vector3(-6.4, 0.0, -4.2), 0.9, 1.0)
+	_add_model_prop(market, "MarketJar", MODEL_PROP_JAR, Vector3(6.4, 0.0, -4.4), 0.2, 1.1)
 
 
 ## Puesto de trueque: cuatro postes, techo de ichu y un mostrador con cántaros.

@@ -12,6 +12,9 @@ const SPEED: float = 2.4
 const RUN_CYCLE_SPEED: float = 3.0
 ## Grados por segundo a los que el cuerpo encara al objetivo.
 const TURN_RATE: float = 220.0
+## Distancia a la que se detiene aunque el golpe esté en recarga: sin esto se
+## seguía acercando durante la espera y acababa dentro de la cámara.
+const STANDOFF_DISTANCE: float = 1.9
 const MORALE_LOSS: float = 15.0
 const MODEL_PATH: String = "res://campaigns/01_pachacutec/assets/models/pch_npc_commoner.glb"
 ## Duración de la caída del enemigo derribado.
@@ -86,8 +89,12 @@ func _physics_process(delta: float) -> void:
 		_face(player.global_position, delta)
 	match intent:
 		EnemyCombatant.Intent.APPROACH:
-			_play_visual(&"Walk")
-			_move_towards(player.global_position)
+			if distance > STANDOFF_DISTANCE:
+				_play_visual(&"Walk")
+				_move_towards(player.global_position)
+			else:
+				_play_visual(&"Idle")
+				velocity = Vector3.ZERO
 		EnemyCombatant.Intent.FLEE:
 			_play_visual(&"Walk")
 			var away: Vector3 = global_position + (global_position - player.global_position).normalized() * 10.0
