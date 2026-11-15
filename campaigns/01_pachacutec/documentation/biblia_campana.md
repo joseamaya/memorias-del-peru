@@ -1,400 +1,301 @@
-# Biblia de la campaña 01 — Pachacútec: La defensa del Cusco
+# Biblia de la campaña 01 — El despertar del Sol
 
-- Estado: **Aprobado (v1.0)** — 2026-11-13
-- Sustituye al modelo de museo (ADR-0038) y fija los tres actos (ADR-0039)
-- Crónica rectora: **Betanzos** (ADR-0040); Garcilaso y Pachacuti Yamqui, contraste y leyenda
-- Documentos de apoyo: [registro histórico](registro_historico.md), [alcance del acto I](alcance_vertical_slice.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
+- **Versión:** 1.0 — 2026-11-15
+- **Estado:** aprobada para construir
+- **Crónica rectora:** Betanzos. Contraste: Garcilaso y Pachacuti Yamqui
+- **Marco narrativo:** [biblia narrativa general](../../../docs/09_biblia_narrativa.md)
+- **Documentos de apoyo:** [registro histórico](registro_historico.md), [expediente histórico](expediente_historico.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
 
-Este documento manda sobre el contenido de la campaña. El alcance del vertical
-slice se conserva como referencia del acto I: mapa, assets y textos siguen
-siendo válidos; su modelo de museo, no.
+Este documento manda sobre el contenido de la campaña: actos, misiones, personajes, sistemas, banderas y criterios de cierre.
 
-## 0. Resumen
+## 0. Alcance
 
-RPG histórico en primera persona, en tres actos. La Fase 8 entrega 15–20 minutos de arco; el objetivo de 40–50 minutos queda para la fase de contenido. En
-total. El jugador es un joven de una llacta del valle del Cusco. Vive la
-mañana en que llega la noticia del avance chanca, cruza el paso con la comitiva
-y llega al Cusco para la defensa. No sustituye a Cusi Yupanqui ni cambia el
-resultado histórico: participa en él.
+RPG histórico en primera persona, en **cinco actos**, con una duración objetivo de **40–50 minutos**.
 
-## 1. Premisa y arco
-
-| Acto | Pregunta dramática | Respuesta |
+| Acto | Título | Pregunta dramática |
 |---|---|---|
-| I. La llacta | ¿Qué haces cuando la noticia llega? | Cumples tus obligaciones y te ofreces a llevar la respuesta |
-| II. El paso | ¿Hasta dónde estás dispuesto a llegar? | Cruzas el paso, sobrevives a la emboscada y eliges a quién cargas |
-| III. El Cusco | ¿Quién acude cuando la ciudad llama? | Reclutas a los que puedes y sostienes la defensa |
+| I | La casa que se vacía | ¿Qué haces cuando la noticia llega? |
+| II | El paso y la ciudad dividida | ¿Hasta dónde estás dispuesto a llegar? |
+| III | La guerra de los chancas | ¿Quién sostiene la línea? |
+| IV | El precio de la victoria | ¿Qué queda cuando la victoria llega? |
+| V | El nombre nuevo | ¿Qué se hace con lo que queda? |
 
-La victoria es la de la tradición: Cusi Yupanqui asume la defensa y vence. El
-juego lo presenta como versión de cronistas, con la discrepancia de Garcilaso
-en la «Memoria» (PCH-002, PCH-015).
+La base técnica y el núcleo RPG están construidos y probados. Esta biblia define la campaña que se construye encima: escenas, misiones, textos y pruebas de campaña.
 
-## 2. El jugador
+## 1. Identidad
 
-Joven de la llacta, sin nombre canónico ni retrato. No hay creación de
-personaje: **el primer encargo que completa fija su especialidad** y le da +1 en
-la habilidad correspondiente, un objeto y una línea de diálogo distinta en el
-acto II.
+**Periodo:** siglo XV, guerra contra los chancas.
+**Espacio:** una llacta del valle, el paso de montaña y el Cusco de 1438.
+**Tono:** épico e íntimo; la guerra se ve desde abajo.
 
-### 2.1 Los cuatro encargos y su habilidad
+La campaña responde a una sola pregunta de fondo: **¿qué hace una persona común cuando el mundo que conoce se rompe?** Cada acto la formula desde un lugar distinto.
 
-| Encargo | Habilidad | Objeto inicial |
-|---|---|---|
-| Agua del manantial | Monte | Cantimplora de calabaza |
-| Maíz para moler | Oficio | Puñado de maíz |
-| Lana y telar | Palabra | Ovillo de lana |
-| Pirca del corral | Monte / Oficio | Cuerda de ichu |
+El jugador no gana la guerra ni decide el resultado histórico. Sostiene su parte, la pierde o la conserva, y paga el precio.
 
-El «oficio» es una bandera narrativa (`oficio_agua`, `oficio_maiz`,
-`oficio_telar`, `oficio_pirca`), no una clase. No cierra opciones: cambia una
-línea de diálogo y el objeto con el que empiezas el acto II.
+## 2. Protagonista y elenco
 
-### 2.2 El compañero
+### 2.1 Rumi
 
-Otro joven de la llacta que se suma a la comitiva. Nombre y género pendientes
-de la convención quechua (el diccionario de referencia sigue sin elegirse). Es
-el hilo emocional: su confianza (`confianza_companero`, 0–2) se gana en el acto
-I y se pierde o se gana en el acto II. En el acto III reúne a los jóvenes si la
-confianza es alta.
+| Campo | Valor |
+|---|---|
+| Nombre | Rumi (N, provisional hasta fijar la norma quechua) |
+| Edad | 17 |
+| Origen | Llacta del valle, casa de piedra y barro al este de la plaza |
+| Ocupación | Aprendiz de las tareas del ayllu; el primer encargo fija su oficio |
+| Familia | Madre y hermano menor |
+| Personalidad | Observador, terco, se ofrece antes de estar listo |
+| Defecto | Mide su valor por lo que aguanta y calla lo que le pesa |
+| Miedo | Que la casa se vacíe, como se vació la élite |
+| Motivación | Sostener a los suyos y dejar de ser el que sobra |
+| Objetivo final | Reunir a la familia y reconstruir la casa |
+| Evolución | De callar a hablar en la asamblea; de probarse a sostener |
+
+El nombre queda registrado como **N** con nota de provisionalidad. No altera ninguna ficha histórica.
+
+No hay creación de personaje: **el primer encargo que completa fija su oficio**, con +1 en la habilidad correspondiente, un objeto y una línea distinta en el acto II.
+
+### 2.2 Elenco
+
+| Personaje | Objetivo | Conflicto | Evolución |
+|---|---|---|---|
+| **Sisa** (N, 18) | Llevar la carga y volver a su rebaño | Quiere ir, pero teme que la usen | De acompañante a voz que discute a Rumi |
+| **Asto**, curaca | Que la llacta responda sin perderse | Debe obedecer al Cusco y proteger al ayllu | De autoridad a hombre que reconoce su miedo |
+| **Puma**, principal | Que no se derrame sangre de la llacta | Su hijo quiere ir; él cree que resistir es una tumba | De opositor a hombre que ha pagado el precio |
+| **Madre** | Que su casa no se vacíe | No puede retener a Rumi | De proteger a soltar |
+| **Hermano menor** | Que lo traten como adulto | Es demasiado joven para ir | De mirar a Rumi a ocupar su lugar |
+| **Anca**, comitiva | Volver a su chacra | Herido en el paso | De carga a testigo |
+| **Cusi Yupanqui** | Defender el Cusco y asumir el mando | La élite huyó; nadie le debe obediencia | De hijo del inca a señor que decide |
+| **Viracocha Inca** | Retirarse y conservar el orden antiguo | Su hijo lo desborda | Muere fuera de escena; su mundo muere con él |
+| **Curaca vecino** | No comprometer su ayllu | Le piden lo que no quiere dar | De negarse a ceder por interés |
+| **Chancas** | Quebrar el Cusco | Son un adversario plural, no un imperio | Sin caricatura |
+
+Cada personaje tiene objetivo, conflicto y evolución. Ninguno existe solo para entregar misiones.
 
 ## 3. Sistemas
 
-### 3.1 Estado y habilidades
+### 3.1 Base
 
-| Valor | Rango | Qué hace |
-|---|---|---|
-| Salud | 0–100 | A 0, punto de control. Sin barra fija: viñeta, respiración y paso |
-| Aliento | 0–100 | Ya existe (`StaminaComponent`). Correr, cargar, honda |
-| Ánimo | 0–100 | Afecta al pulso y a la moral del grupo; sube con chicha y descanso |
-
-Habilidades, de 0 a 5, **suben por uso** (3, 8, 15, 24 y 35 usos):
+Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Honda, Mano, Palabra, Oficio y Monte. Reputación de −2 a +2 en llacta, comitiva y Cusco. Inventario de ocho huecos y tres equipados.
 
 | Habilidad | Uso | Efecto |
 |---|---|---|
-| Honda | Acertar con la honda | Precisión, tiempo de carga y daño |
+| Honda | Acertar con la honda | Precisión, carga y daño |
 | Mano | Golpear o bloquear | Daño y aguante del escudo |
-| Palabra | Convencer en diálogo | Opciones y éxito al reclutar |
-| Oficio | Reparar, moler, tejer | Encargos y objetos |
+| Palabra | Convencer en diálogo | Opciones, reclutamiento y asamblea |
+| Oficio | Reparar, moler, tejer | Encargos, preparación y reconstrucción |
 | Monte | Caminar, cargar, esquivar | Aliento, sigilo y carga |
 
-### 3.2 Reputación
+### 3.2 Lo propio de esta campaña
 
-Tres grupos, de −2 a +2: **llacta**, **comitiva** y **Cusco**. Abre o cierra
-opciones de diálogo y decide cuántos aliados acuden en el acto III. No se
-muestra como número; se lee en el trato de los personajes.
-
-### 3.3 Inventario
-
-Ocho huecos y tres equipados (mano principal, mano torpe, prenda). Sin peso, sin
-loot aleatorio. Los objetos de encargo no ocupan hueco.
-
-| Objeto | Tipo | Efecto |
+| Sistema | Regla | Dónde paga |
 |---|---|---|
-| Honda | Equipo | Arma a distancia; consume piedras |
-| Porra | Equipo | Cuerpo a cuerpo |
-| Escudo | Equipo | Bloqueo; consume aliento |
-| Piedras | Munición | 12 por montón |
-| Coca | Consumible | +25 aliento, −10 ánimo por el amargor |
-| Chicha | Consumible | +20 ánimo, +10 salud |
-| Maíz | Consumible | +15 salud |
-| Agua | Consumible | +10 aliento |
-| Hierbas | Consumible | +25 salud |
-| Cuerda | Herramienta | Reparar, atar, descender |
-| Q'ipi | Encargo | Carga de la comitiva; pesa en el aliento |
-| Mensaje | Encargo | La respuesta de la llacta |
+| **Recursos del acto I** | Los encargos producen agua, maíz, manta y cuerda; son objetos reales | Acto II: campamento y emboscada |
+| **Oficio aplicado** | El oficio elegido abre una escena de preparación distinta en el Cusco | Acto II, preparación de la defensa |
+| **Confianza de Sisa** | 0–2; se gana escuchando y compartiendo, se pierde al presumir | Reclutamiento de jóvenes y cierre |
+| **Asamblea** | Prueba de Palabra en el acto IV; hablar o callar | Epílogo y reconciliación de Puma |
+| **Puntos de control** | Al empezar cada acto y a mitad del II, III y IV; guardan salud, aliento, ánimo, inventario y posición | Muerte |
+| **Muerte** | Restaura el último punto de control; la historia no cambia | Todos los actos |
 
-### 3.4 Diálogo
+### 3.3 Diálogo, diario y combate
 
-Nodos con 1–4 opciones; condiciones por bandera, objeto, habilidad o
-reputación; efectos sobre banderas, reputación, objetos y encargos. Sin
-retratos ni voces: la cámara sigue en primera persona y el NPC mira al jugador.
-Los textos viven en las tablas de localización, nunca en el código.
+- **Diálogo:** nodos con 1–4 opciones; condiciones por bandera, objeto, habilidad o reputación; sin retratos ni voces. La cámara sigue en primera persona.
+- **Diario:** tecla J. «Encargos» y «Memoria»; la Memoria guarda lo aprendido con sello H/A/R/N y fuente.
+- **Combate:** honda (3–28 m), porra (1,6 m) y escudo; enemigos con moral que huyen; sin sangre ni desmembramientos. Sin HUD fijo: salud en la viñeta, aliento en la respiración, munición en la mano.
+- **Textos:** viven en la tabla de localización de la campaña, nunca en el código.
 
-### 3.5 Diario
+## 4. Acto I — La casa que se vacía (8–9 min)
 
-Tecla **J**. Dos pestañas:
+**Mapa:** la llacta. **Sin combate.**
 
-- **Encargos**: activos y cumplidos, sin marcadores en el mundo.
-- **Memoria**: lo aprendido, con su sello H/A/R/N y su fuente. Aquí viven los
-  nueve textos del museo, desbloqueados por diálogo, no por entrar en una zona.
+| # | Misión | Contexto | Objetivo | Conflicto | Consecuencia | Ficha |
+|---|---|---|---|---|---|---|
+| I.1 | La mañana | Amanece; la plaza despierta | Ayudar en la casa y bajar a la plaza | El hermano quiere ir; la madre lo retiene | Vínculo y tono | PCH-007, 016 |
+| I.2 | Los cuatro encargos | Agua, maíz, telar y pirca | Completar tres | El tiempo; el mensajero está por llegar | Recursos y oficio | PCH-004, 005, 010, 019, 021 |
+| I.3 | La duda | Puma y Asto discuten | Escuchar y tomar partido | Resistir o no resistir | Reputación; línea de Puma en IV | PCH-001, 015 |
+| I.4 | El mensajero | Llega agotado | Escuchar y darle agua o maíz | Los recursos son para el camino | Más o menos información del paso | PCH-011, 015 |
+| I.5 | La asamblea | El curaca pregunta quién va | Ofrecerse | La familia y Puma en contra | Comitiva, Sisa y partida | R (ayllu) |
 
-### 3.6 Combate
+**Diseño clave:** los encargos no son relleno. Producen los cuatro recursos que consume el acto II. El jugador completa tres: el que falte se nota en el paso.
 
-| Arma | Alcance | Daño | Ritmo |
+| Encargo | Recurso | Habilidad | Uso posterior |
 |---|---|---|---|
-| Honda | 3–28 m | 18–32 según habilidad y carga | Carga 0,6–1,2 s; piedra |
-| Porra | 1,6 m | 22–34 | Golpe y bloqueo; aliento |
-| Escudo | — | Bloquea 70 % | Consume aliento; no ataca |
+| Agua del manantial | Cántaro lleno | Monte | Aliento en la marcha y la emboscada |
+| Maíz para moler | Ración de maíz | Oficio | Ánimo en el campamento y trueque en el Cusco |
+| Lana y telar | Manta | Palabra | Frío del campamento |
+| Pirca del corral | Cuerda de ichu | Monte / Oficio | Descenso y distracción en la emboscada |
 
-- Enemigos con **moral**: huyen por debajo de 25 y no se persigue.
-- Salud enemiga: 60 (explorador) a 100 (guerrero).
-- Sin sangre ni desmembramientos. Heridas: sangrado lento y paso más lento.
-- Muerte: fundido y punto de control, conservando inventario y encargos.
-- Sin HUD: el ánimo se oye en la respiración; la salud, en la viñeta; la
-  munición, en la mano.
+**Clímax:** la llacta se divide; la columna sale al amanecer.
 
-### 3.7 Puntos de control y selector de acto
+**Banderas:** `oficio_*`, `recurso_agua/maiz/manta/cuerda`, `encargos_hechos`, `apoyo_curaca/puma/silencio`, `mensajero_ayudado`, `confianza_sisa`, `reputacion_llacta`.
 
-- Punto de control al empezar cada acto y en la mitad del acto II y del III.
-- `--act=1|2|3` y `--checkpoint=paso|ciudad` para desarrollo y pruebas.
-- Sin guardado completo en esta etapa: el estado vive en memoria.
+## 5. Acto II — El paso y la ciudad dividida (11–13 min)
 
-## 4. Acto I — La llacta
+**Mapas:** paso de montaña y Cusco de 1438. **Primer combate.**
 
-**Duración:** 12–15 min. **Mapa:** la llacta actual, con una casa abierta y
-objetos de encargo. **Sin combate.**
+| # | Misión | Contexto | Objetivo | Conflicto | Consecuencia | Ficha |
+|---|---|---|---|---|---|---|
+| II.1 | La marcha | La columna sube | Seguir y aprender el camino | Los hombres dudan del inca que huyó | Confianza de Sisa | PCH-026 |
+| II.2 | El campamento | Noche y frío | Descansar o seguir; compartir | Los recursos escasean | Aliento y salud en la emboscada | PCH-028 |
+| II.3 | La emboscada | Cuatro exploradores chancas | Pasar: combatir, sigilo o distraer | El herido y la carga de maíz | Banderas; información del enemigo | PCH-024, 030 |
+| II.4 | La llegada | Cusco lleno de refugiados | Entregar el mensaje y ver a Cusi | La élite se ha ido | Reputación Cusco | PCH-022, 027 |
+| II.5 | La ciudad dividida | Tres grupos dudan | Reclutar y preparar la defensa | Cada grupo pide algo distinto | Aliados 0–3 | PCH-017 |
+| II.6 | La víspera | Noche antes de la batalla | Escuchar, ofrendar, dormir | El miedo | Ánimo y Memoria | PCH-031, 012 |
 
-### 4.1 Secuencia
+**La emboscada:** combatir desde las rocas, cruzar por la cornisa con Monte ≥ 2 o distraer con el q'ipi o una piedra. Si el jugador cruza en sigilo, **oye a los exploradores**: están tanteando el camino para la fuerza principal. Esa información abre la opción de convencer al curaca vecino; sin ella hay que pagar con maíz o con Palabra.
 
-| # | Beat | Qué ocurre | Sistemas |
-|---|---|---|---|
-| 1 | Despertar | La plaza vive. Un vecino saluda y explica el día | Diálogo, cámara |
-| 2 | Los encargos | Cuatro tareas; hay que completar tres | Inventario, aliento, habilidades |
-| 3 | El quero y la ofrenda | Opcionales: servir chicha, dejar coca y maíz | Reputación, ritual |
-| 4 | El mensajero | Llega agotado; la noticia; el curaca llama a los principales | Evento existente + diálogo |
-| 5 | La partida | El jugador se ofrece a llevar la respuesta; se forma la columna | Diálogo, transición |
+**El herido Anca:** cargarlo cuesta aliento durante todo el acto; dejarlo con agua y coca cuesta reputación. Si vive, testifica en el acto IV.
 
-### 4.2 Los encargos
+**El maíz:** conservarlo da un aliado en el Cusco; abandonarlo aligera la huida y cierra esa puerta.
 
-| Encargo | Dónde | Qué se hace | Habilidad |
-|---|---|---|---|
-| Agua | Manantial al este | Dos viajes con el cántaro; el peso consume aliento | Monte |
-| Maíz | Casa de las mujeres | Desgranar y moler al ritmo de la mano | Oficio |
-| Telar | Telar de la tejedora | Traer lana y sostener el telar mientras se cruza la trama | Palabra / Oficio |
-| Pirca | Corral del noroeste | Acarrear piedras y cerrar el hueco | Monte / Oficio |
+**La ciudad dividida:** tres grupos, cada uno con una condición distinta.
 
-- Al completar el primero: se fija el oficio, +1 a la habilidad y un objeto.
-- Al completar el tercero: el mensajero llega.
-- Cada encargo da +1 de reputación con la llacta y una entrada de Memoria.
-
-### 4.3 El mensajero
-
-Se reutiliza la máquina de estados actual (`MessengerEvent`) con dos cambios:
-
-- El disparo deja de depender de las tarjetas: lo lanza el tercer encargo.
-- Tras la noticia, el curaca pregunta quién llevará la respuesta. Todas las
-  opciones llevan a ir, pero cambian la reputación:
-
-| Opción | Efecto |
-|---|---|
-| «Voy yo» | +1 comitiva |
-| «Iré con vosotros» | +1 llacta |
-| «No sé si sirvo» | El curaca insiste; 0 |
-
-### 4.4 Estado al cerrar
-
-Banderas: `oficio_*`, `encargos_hechos` (0–4), `ofrecio` (bool), `bebio`
-(bool), `reputacion_llacta`, `reputacion_comitiva`, `confianza_companero`.
-
-### 4.5 Textos y fichas
-
-Los nueve textos del museo se reparten: quero y chicha en la escena de la
-bebida; ofrenda en el adoratorio; telar con la tejedora; vivienda con la
-anciana; terraza con el agricultor; corral con el pastor; plaza con el curaca;
-mirador con el mensajero. Fichas: PCH-004, 005, 007, 008, 010, 012, 016, 019,
-021 y 022.
-
-## 5. Acto II — El paso
-
-**Duración:** 12–15 min. **Mapa nuevo:** paso de montaña de ~80 × 80 m, en
-gris. **Primer combate.**
-
-### 5.1 Secuencia
-
-| # | Beat | Qué ocurre | Sistemas |
-|---|---|---|---|
-| 1 | La marcha | La columna sube; diálogo con el curaca y el compañero | Diálogo con condiciones |
-| 2 | El campamento | Noche y frío. Descansar o seguir; compartir coca o chicha | Inventario, ánimo, aliento |
-| 3 | La emboscada | Cuatro exploradores chancas cortan el paso | Combate con honda, sigilo |
-| 4 | La consecuencia | Un hombre herido y la carga de maíz | Decisión con efecto |
-| 5 | El Cusco al fondo | Desde la cresta se ve la ciudad | Transición |
-
-### 5.2 El paso
-
-- Sendero en zigzag, roquedales para cubrirse, un refugio de piedra abierto y
-  un arroyo.
-- El refugio y el sendero son reconstrucción (R): no se llama tambo ni se
-  presenta como infraestructura imperial.
-- En gris: terreno, rocas, queñua e ichu; sin arte nuevo.
-
-### 5.3 La emboscada
-
-- Cuatro exploradores chancas (salud 60, moral 80) con hondas y porras.
-- El jugador puede:
-  - **Combatir** desde las rocas; la honda es el arma principal.
-  - **Esquivar** por la cornisa con Monte ≥ 2; evita el combate y pierde la carga.
-  - **Distraer** con el q'ipi o una piedra; separa a dos enemigos.
-- Un explorador herido puede ser **perdonado** (`scout_spared`): no cambia la
-  batalla, pero sí una línea del acto III.
-- Los enemigos huyen al bajar la moral; no se persigue.
-
-### 5.4 La consecuencia
-
-| Decisión | Efecto |
-|---|---|
-| Cargar al herido | −20 aliento al caminar; `herido_salvado`; aparece en el Cusco |
-| Dejarlo con agua y coca | `herido_dejado`; −1 comitiva; no aparece |
-| Conservar el maíz | Más lento; `maiz_guardado`; +1 aliado en el Cusco |
-| Abandonar el maíz | Rápido; `maiz_abandonado`; sin aliado de los ayllus |
-
-### 5.5 Estado al cerrar
-
-Banderas: `paso_cruzado`, `scout_spared`, `herido_salvado` / `herido_dejado`,
-`maiz_guardado` / `maiz_abandonado`, `descanso` (bool), `confianza_companero`.
-
-### 5.6 Fichas
-
-PCH-002 (guerra chanca), PCH-003 (los chancas), PCH-011 (mensajero). Nuevas:
-armas andinas, coca, el paso y el refugio.
-
-## 6. Acto III — El Cusco
-
-**Duración:** 16–18 min. **Mapa nuevo:** Cusco de 1438, ~150 × 150 m, en gris.
-**Batalla y cierre.**
-
-### 6.1 El Cusco de 1438
-
-No es la ciudad monumental, que es posterior a Pachacútec: es el centro de un
-señorío en consolidación (PCH-022). Plaza grande de tierra apisonada, casas de
-piedra y ichu, terrazas, un santuario modesto al sol (R) y un muro bajo. Se
-construye con los constructores de la llacta a mayor escala.
-
-### 6.2 Secuencia
-
-| # | Beat | Qué ocurre | Sistemas |
-|---|---|---|---|
-| 1 | La llegada | Ciudad llena de refugiados y hombres. Se entrega la respuesta; aparece Cusi Yupanqui | Reputación, diálogo |
-| 2 | La ciudad dividida | La élite ha huido. Hay que reclutar a tres grupos | Palabra, favores |
-| 3 | La víspera | Noche: hablar con los tuyos, la leyenda de los pururaucas, ofrenda, dormir | Ritual, diálogo, cierre emocional |
-| 4 | La defensa | Sostener la entrada, proteger el santuario, contraofensiva | Combate, aliados, moral |
-| 5 | El epílogo | Victoria; variantes personales | Banderas |
-
-### 6.3 El reclutamiento
-
-| Grupo | Cómo se consigue | Aliado |
+| Grupo | Condición | Aliado |
 |---|---|---|
-| Ayllus de la ciudad | Entregar el maíz guardado o reputación Cusco ≥ 1 | +1 |
-| Curaca vecino | Palabra ≥ 2 y reputación ≥ 1; si no, se niega (PCH-017) | +1 |
-| Jóvenes | `confianza_companero` ≥ 1 y el compañero vivo | +1 |
+| Ayllus de la ciudad | Maíz guardado o reputación Cusco ≥ 1 | +1 |
+| Curaca vecino | Información del paso o Palabra ≥ 2, con reputación ≥ 1 | +1 |
+| Jóvenes | Confianza de Sisa ≥ 1 | +1 |
 
-Cada aliado reduce una oleada o acorta la batalla. Con 0 aliados, la defensa es
-posible pero dura más y el epílogo es más amargo.
+**Preparación:** el oficio elegido en el acto I abre una escena propia (reparar el muro, moler para los defensores, acarrear agua o coser hondas). Las demás las cubren los aliados.
 
-### 6.4 La víspera y la leyenda
+**Clímax:** los chancas llegan; la ciudad contiene la respiración.
 
-Antes de la defensa, una anciana o un veterano cuenta la historia de los
-**pururaucas**: las piedras que se volvieron guerreros para salvar al Cusco. Es
-una escena opcional de diálogo; el jugador puede escuchar y desbloquear
-`mem_pururaucas` en la «Memoria».
+**Banderas:** `paso_cruzado`, `scout_spared`, `mensaje_chanca`, `herido_salvado/dejado`, `maiz_guardado/abandonado`, `descanso`, `aliados`, `preparacion_*`, `confianza_sisa`.
 
-- Fuente: Pachacuti Yamqui Salcamaygua, *Relación de antigüedades deste reyno del
-  Pirú* (c. 1613), en *Tres relaciones de antigüedades peruanas*, Madrid, 1879,
-  pp. 271–272; ficha PCH-031, **N / H (tradición)**, verificada.
-- Se presenta como **lo que se cuenta**, no como un hecho. Ninguna piedra se
-  transforma en pantalla ni cambia la batalla.
-- La arenga de Cusi Yupanqui se parafrasea; la «Memoria» advierte que es
-  elaboración literaria de las crónicas, no una transcripción.
-- Si PCH-031 no se verifica, la escena se retira; no se inventa una versión.
+## 6. Acto III — La guerra de los chancas (9–10 min)
 
-### 6.5 La defensa
+**Mapa:** el Cusco. **Batalla.**
 
-- **Fase 1 — la entrada:** dos oleadas de exploradores y un guerrero. El
-  jugador sostiene con honda y piedras; los aliados cubren los flancos.
-- **Fase 2 — el santuario:** los chancas rodean; el jugador elige entre
-  proteger el santuario o llevar la orden que cierra la trampa. La elección
-  cambia el epílogo, no la victoria.
-- **Contraofensiva:** scripted; Cusi Yupanqui dirige. El jugador no lo sustituye.
-- Sin aliados, las oleadas son más numerosas; con tres, la fase 1 termina antes.
+| # | Misión | Contexto | Objetivo | Conflicto | Consecuencia |
+|---|---|---|---|---|---|
+| III.1 | La entrada | Primeras oleadas | Sostener la plaza | Los aliados son pocos | Oleadas según aliados |
+| III.2 | La trampa | Los chancas rodean el santuario | Protegerlo o llevar la orden | No se puede hacer todo | Variante del epílogo |
+| III.3 | El costo | Cae un defensor con nombre | Seguir luchando | No se puede salvar a todos | `costo_anca` / `costo_joven` |
+| III.4 | La contraofensiva | Cusi dirige | Seguir la orden | La victoria no es del jugador | Fin del acto III |
 
-### 6.6 Epílogo
+**El costo no es una cinemática.** Si Anca sobrevivió, cae aquí; si no, cae el hijo de Puma cuando los jóvenes se unieron y los aliados son menos de dos. La victoria es fija; el duelo, no.
 
-La victoria es fija. Varían tres cosas:
+**Clímax:** la plaza resiste; el precio se cuenta en el acto IV.
 
-| Bandera | Efecto en el epílogo |
-|---|---|
-| `herido_salvado` | El herido del paso vuelve a la llacta contigo |
-| `companero_vivo` | El compañero aparece en la memoria final |
-| `aliados` (0–3) | El texto de la asamblea cambia; con 3, el curaca vecino reconoce su error |
+**Banderas:** `defensa_iniciada`, `santuario_protegido/orden_llevada`, `costo_anca/costo_joven/sin_costo`.
 
-La Memoria cierra con la versión de Garcilaso y la nota de que la escala del
-conflicto está debatida (PCH-002, PCH-003).
+## 7. Acto IV — El precio de la victoria (9–11 min)
 
-### 6.7 Fichas
+**Mapa:** la llacta, transformada. **Sin combate.**
 
-PCH-001 (Cusi Yupanqui), PCH-002, PCH-003, PCH-022. Nuevas: Cusco de 1438,
-armas, armadura, batalla, coca, chancas guerreros y PCH-031 (pururaucas,
-leyenda N / H).
+| # | Misión | Contexto | Objetivo | Conflicto | Consecuencia |
+|---|---|---|---|---|---|
+| IV.1 | El regreso | La columna baja | Volver y mirar | Nadie habla | Tono |
+| IV.2 | Las cuentas | La llacta, casa por casa | Saber quién volvió | Las ausencias | Banderas del acto III |
+| IV.3 | La asamblea | Ayllus, curaca y Puma | Hablar o callar | Reparto, culpa y poder | `hablo_en_asamblea` |
+| IV.4 | La noticia | Llega del Cusco | Escuchar | Viracocha ha muerto | Acto V |
 
-## 7. Elenco
+**La asamblea** es la prueba de Palabra y el corazón del acto. Puma acusa; el curaca vecino oportuniza; los ayllus piden maíz. Rumi puede hablar por primera vez como adulto.
 
-| Personaje | Papel | Actos |
+**Clímax:** la casa empieza a reconstruirse; el mundo antiguo ha muerto.
+
+**Banderas:** `herido_salvado/dejado`, `companero_vivo`, `aliados`, `scout_spared`, `hablo_en_asamblea`, `puma_reconciliado/ruptura`, `viracocha_muerto`.
+
+## 8. Acto V — El nombre nuevo (6–7 min)
+
+**Mapa:** la llacta, en obra. **Sin combate.**
+
+| # | Misión | Contexto | Objetivo | Conflicto | Consecuencia |
+|---|---|---|---|---|---|
+| V.1 | La obra | Corral, terraza, telar, acequia | Reconstruir con el oficio | Falta gente | `casa_reconstruida` |
+| V.2 | El nombre | Un mensajero del Cusco | Escuchar la noticia | Es tradición, no decreto | Memoria |
+| V.3 | El cierre | La familia en la casa | Despedir la campaña | Qué decir | Variante final |
+
+**La obra usa los mismos verbos del acto I**, ahora para reconstruir. El círculo se cierra con las manos, no con una batalla.
+
+**El nombre de Pachacútec** se presenta como tradición de los cronistas, no como un acto documentado.
+
+**Clímax:** Cusi Yupanqui ha tomado el nombre de Pachacútec; el Cusco empieza a cambiar; Rumi se queda.
+
+## 9. Banderas y consecuencias
+
+| Bandera | Se fija en | Paga en |
 |---|---|---|
-| El jugador | Joven de la llacta | I–III |
-| El compañero | Vínculo emocional; recluta jóvenes | I–III |
-| Curaca de la llacta | Autoridad local; parte al Cusco | I–III |
-| Hombres principales | Comitiva | I–III |
-| Tejedora, agricultor, pastor, anciana | Oficios y Memoria | I |
-| Mensajero | La noticia | I |
-| Cusi Yupanqui | Dirige la defensa; no es el jugador | III |
-| Curaca vecino | Se niega a ayudar (PCH-017) | III |
-| Exploradores y guerreros chancas | Antagonista colectivo, sin caricatura | II–III |
+| `oficio_*`, `recurso_*` | I.2 | II.2–II.3, II.5, V.1 |
+| `apoyo_curaca/puma/silencio` | I.3 | IV.3 |
+| `mensajero_ayudado` | I.4 | II.3 (aviso del camino) |
+| `confianza_sisa` | I.5, II.1, II.6 | II.5 (jóvenes), V.3 |
+| `paso_cruzado`, `scout_spared` | II.3 | III.3, IV.2 |
+| `mensaje_chanca` | II.3 (sigilo) | II.5 (curaca vecino) |
+| `herido_salvado/dejado` | II.3 | III.3, IV.2 |
+| `maiz_guardado/abandonado` | II.3 | II.5 (ayllus) |
+| `aliados` 0–3 | II.5 | III.1, III.3, IV.3 |
+| `santuario_protegido/orden_llevada` | III.2 | III.4, V.3 |
+| `costo_anca/costo_joven` | III.3 | IV.2–IV.3, V.3 |
+| `hablo_en_asamblea` | IV.3 | IV.4, V.3 |
+| `casa_reconstruida` | V.1 | V.3 |
 
-## 8. Objetos
+**Finales (la historia no cambia):**
+- **La casa llena:** Anca vive, Puma se reconcilia, la casa se reconstruye.
+- **La casa en pie:** falta alguien; Puma calla; la obra sigue.
+- **La casa vacía:** el costo fue alto y la asamblea no cerró; la casa se levanta con menos manos.
 
-Además de los de §3.3: cántaro, piedra de moler, lana, ovillo, cuerda de ichu,
-q'ipi, mensaje, ofrenda de coca y maíz, hierbas, calabaza de agua.
+## 10. Objetos
 
-## 9. Mapas
+Honda, porra, escudo, piedras, coca, chicha, maíz, agua, hierbas, cuerda, q'ipi, mensaje. Propios del acto I: **cántaro**, **ración de maíz**, **manta**, **cuerda de ichu**. Propios del acto II: **ofrenda** (coca y maíz).
 
-| Acto | Escenario | Estado inicial |
+## 11. Mapas
+
+| Acto | Escenario | Requisito |
 |---|---|---|
-| I | Llacta actual | Existe; se abre una casa y se añaden objetos |
-| II | Paso de montaña | Gris: terreno, rocas, sendero, refugio, arroyo |
-| III | Cusco de 1438 | Gris: plaza, 12–15 casas, terrazas, santuario, muro |
+| I | Llacta | Plaza, 8–10 casas, terrazas, corral, manantial, mirador, camino del norte |
+| II | Paso | 80 × 80 m: zigzag, campamento, cornisa, arroyo, refugio de pirca |
+| II–III | Cusco de 1438 | 150 × 150 m: plaza, 12–14 casas, santuario, muro, terrazas |
+| IV | Llacta de posguerra | Mismo terreno; casas vacías, heridos, asamblea, campos sin cuidar |
+| V | Llacta en obra | Mismo terreno; corral, terraza, telar y acequia reparados |
 
-## 10. Fichas históricas necesarias
+El Cusco de 1438 no es la ciudad monumental, posterior a Pachacútec: es el centro de un señorío en consolidación (PCH-022, PCH-027).
 
-| Ficha nueva | Clasificación | Nota |
+## 12. Fichas históricas
+
+Se conservan las fichas PCH-001 a PCH-031 del [registro histórico](registro_historico.md). Nuevas, obligatorias antes de construir su escena:
+
+| Ficha | Tema | Clasificación |
 |---|---|---|
-| Armas andinas: honda, porra, escudo | A / R | Forma y uso documentados; la fabricación del juego es R |
-| Armadura acolchada | A / R | Solo si se representa |
-| El paso y el refugio de piedra | R | No es un tambo |
-| El Cusco de 1438 | A / R | Amplía PCH-022 |
-| La coca: masticar y compartir | A / R | Uso ritual y social |
-| La batalla: representación | H / R | Versión de cronistas; escala debatida |
-| Los chancas como guerreros | H / R | Sin caricatura |
+| PCH-032 | La posguerra y la asamblea de ayllus | R |
+| PCH-033 | La muerte de Viracocha y el fin del orden antiguo | H (tradición) |
+| PCH-034 | El nombre de Pachacútec | H (tradición) / N (escena) |
+| PCH-035 | La reconstrucción de la casa y las terrazas | R |
+| PCH-036 | Los exploradores chancas y el reconocimiento del camino | R / N |
 
 Ninguna entra al juego sin estado «verificado».
 
-## 11. Pruebas
+## 13. Pruebas y validación
 
 | Nivel | Qué |
 |---|---|
-| Unitarias | Inventario, condiciones de diálogo, subida de habilidad, daño y moral, reputación |
-| Por acto | Carga, objetivo principal, cero bloqueos, textos con clave |
-| Del arco | Partida guionizada de los tres actos (~45 min), decisiones fijas |
-| Rendimiento | Cusco con multitud y batalla |
-| Histórico | Todas las fichas nuevas verificadas y citadas |
-| Manual | Una partida completa del autor, cuestionario y umbrales de ADR-0031 |
+| Unitarias | Recursos, oficio aplicado, confianza, asamblea, puntos de control |
+| Por acto | Carga, objetivo, cero bloqueos, claves de texto |
+| Del arco | Partida guionizada I→V con decisiones fijas (`ARCO_OK`) |
+| Duración | Registro de sesión por actos; objetivo 40–50 min |
+| Rendimiento | Los cinco actos en la GPU de referencia |
+| Contra la biblia | Checklist por acto: ¿se vive la pregunta?, ¿la decisión tiene consecuencia?, ¿el hecho está clasificado y citado? |
 
-## 12. Producción
+La validación de diseño se hace contra esta biblia. La métrica de audiencia externa queda como objetivo futuro.
 
-| Fase | Contenido | Semanas |
-|---|---|---|
-| 6 | Núcleo RPG y acto I | 6–7 |
-| 7 | Actos II y III en gris + arco jugable | 4–5 |
-| 8 | Arte, audio, equilibrio y validación | 6–8 |
+## 14. Producción
 
-## 13. Fuera de alcance
+| Fase | Contenido |
+|---|---|
+| 1 | Guion con diálogos y fichas de misión |
+| 2 | Arco jugable en gris: los cinco actos, de principio a fin |
+| 3 | Arte, audio y equilibrio |
+| 4 | Validación contra la biblia, duración y rendimiento |
 
-- Guardado completo, multijugador, mando, VR, móviles.
+La fase 2 es la apuesta: tener los cinco actos jugables antes de gastar arte, para comprobar que el arco se sostiene.
+
+## 15. Fuera de alcance
+
+- Guardado completo en disco, multijugador, mando, VR, móviles.
 - Niveles, XP, loot aleatorio, magia, crafting profundo.
 - Diálogo con voz, retratos o árboles enormes.
 - Combate a caballo, asedios a escala real, pururaucas como mecánica.
 - Cambiar el resultado histórico.
 
-## 14. Aprobación
+## 16. Aprobación
 
-Aprobado por el responsable del proyecto el 2026-11-13 como diseño de los tres
-actos. Cualquier cambio de acto, sistema o final requiere otro ADR o una nueva
-versión de este documento.
+Aprobada el 2026-11-15 como diseño de los cinco actos. Cualquier cambio de acto, sistema o final exige una versión nueva de este documento y una fila en la [bitácora](../../../docs/bitacora.md).

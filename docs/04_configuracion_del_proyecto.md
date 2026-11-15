@@ -1,6 +1,6 @@
 # 04 — Configuración del proyecto (`project.godot`)
 
-Este documento define **qué** debe contener `project.godot`. El archivo se genera en la Fase 1; conviene crearlo desde el editor de la versión instalada y luego ajustar los valores, para que `config_version` y las claves coincidan exactamente con esa versión.
+Este documento define **qué** debe contener `project.godot`. El archivo se creó desde el editor de la versión instalada y se ajusta a mano, para que `config_version` y las claves coincidan exactamente con esa versión.
 
 > Claves verificadas con **Godot 4.7.2** el 2026-11-10 (versión fijada en ADR-0002).
 
@@ -10,8 +10,7 @@ Este documento define **qué** debe contener `project.godot`. El archivo se gene
 |---|---|
 | `application/config/name` | `"Memorias del Perú"` |
 | `application/config/features` | versión instalada + `"Forward Plus"` |
-| `application/run/main_scene` | Según la tabla “Escena principal” de [05_plan_de_implementacion.md](05_plan_de_implementacion.md) (Fases 1–2: sandbox de `tests/`; Fase 3: `mundo_base.tscn`; desde ADR-0024: `core/ui/title_screen.tscn`) |
-| `memorias/campaign/first` | Ruta del `CampaignInfo` de la campaña que abre la pantalla de título (ADR-0024): `res://campaigns/01_pachacutec/campaign.tres` |
+| `application/run/main_scene` | `res://core/ui/title_screen.tscn`: la portada es el punto de entrada y no depende de una campaña concreta |
 
 ## 2. Renderizado
 
@@ -43,7 +42,7 @@ Se usan **teclas físicas** (`physical_keycode`) para que WASD conserve su posic
 | `move_left` | A (física) | |
 | `move_right` | D (física) | |
 | `run` | Shift izquierdo (`KEY_SHIFT`, `location = left`) | `InputEventKey.location` (disponible desde 4.3; la versión mínima del proyecto es 4.4) distingue izquierda/derecha |
-| `interact` | E (física) | Uso desde Fase 2 |
+| `interact` | E (física) | En uso |
 | `jump` | Espacio | Reservado: sin lógica |
 | `pause` | Escape | Procesado por `GameManager` |
 
@@ -115,7 +114,7 @@ Criterio de aceptación: con esta configuración, el proyecto abre y se ejecuta 
 |---|---|
 | `physics/common/physics_ticks_per_second` | `60` (por defecto) |
 | `physics/3d/default_gravity` | `9.8` (por defecto) |
-| `physics/common/physics_interpolation` | `false` inicialmente; se evalúa en Fase 1 (ver arquitectura §4) |
+| `physics/common/physics_interpolation` | `false` inicialmente; se evalúa (ver arquitectura §4) |
 
 ## 7. Capas de colisión (nombradas)
 
@@ -124,7 +123,7 @@ Criterio de aceptación: con esta configuración, el proyecto abre y se ejecuta 
 | 1 | `world` | Terreno, arquitectura |
 | 2 | `player` | Cuerpo del jugador |
 | 3 | `interactable` | Colliders de objetos interactuables |
-| 4 | `npc` | Personajes (se usa desde la Fase 4) |
+| 4 | `npc` | Personajes |
 
 Asignación por tipo de cuerpo:
 
@@ -133,12 +132,12 @@ Asignación por tipo de cuerpo:
 | `PlayerFPS` | `player` | `world` + `npc` | Colisiona con el mundo y con personajes; no con colliders solo interactuables |
 | Geometría del mundo | `world` | — (cuerpos estáticos) | |
 | Collider de interactuable | `interactable` | — | Si además debe bloquear físicamente al jugador, se añade `world` a su capa |
-| NPC (Fase 4) | `npc` | `world` + `player` | Configuración definitiva al implementar personajes |
+| NPC | `npc` | `world` + `player` | Configuración definitiva al implementar personajes |
 | `InteractionRay` | — | `world` + `interactable` | El mundo bloquea la línea de visión: no se interactúa a través de paredes |
 
 ## 8. Autoloads
 
-Estado final previsto. Un autoload solo se registra en `project.godot` cuando llega su fase (docs/02 §3): **en la Fase 1 solo existe `GameManager`.**
+Un autoload solo se registra en `project.godot` cuando tiene una responsabilidad real (docs/02 §3).
 
 | Nombre | Ruta | Fase |
 |---|---|---|
@@ -149,4 +148,4 @@ Estado final previsto. Un autoload solo se registra en `project.godot` cuando ll
 
 ## 9. Localización
 
-Desde la Fase 2 se registran en `internationalization/locale/translations` los archivos de textos generados a partir de las tablas CSV de docs/02 §7. Idioma inicial y por defecto: `es`.
+En `internationalization/locale/translations` se registran los archivos de textos generados a partir de las tablas CSV de docs/02 §7. Idioma inicial y por defecto: `es`.

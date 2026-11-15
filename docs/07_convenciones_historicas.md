@@ -13,7 +13,7 @@ El proyecto no inventa reconstrucciones para presentarlas como hechos. Todo elem
 | **R** | Reconstrucción interpretativa | Inferencia razonada a partir de H/A cuando falta información directa | Indicar en qué H/A se basa y qué se infiere |
 | **N** | Licencia narrativa | Invención consciente al servicio del juego | Justificación de diseño; no debe contradecir H/A sin declararlo |
 
-**Clasificación y verificación son independientes.** La clasificación dice *qué tipo* de afirmación es; el estado de verificación dice *si la cita ya se comprobó*. Una ficha puede crearse con su clasificación definitiva y una cita incompleta (sin capítulo/página): queda en estado **pendiente**, y el requisito mínimo de la tabla se exige para pasar a **verificado**. Las fichas pendientes bloquean el cierre de la Fase 4 (§3), no su creación.
+**Clasificación y verificación son independientes.** La clasificación dice *qué tipo* de afirmación es; el estado de verificación dice *si la cita ya se comprobó*. Una ficha puede crearse con su clasificación definitiva y una cita incompleta (sin capítulo/página): queda en estado **pendiente**, y el requisito mínimo de la tabla se exige para pasar a **verificado**. Las fichas pendientes bloquean el cierre del guion de la campaña (§3), no su creación.
 
 Las crónicas coloniales se tratan como fuentes con sesgos (autor, informantes, fecha, intención). Un relato mítico o legendario recogido en una crónica (por ejemplo, intervención sobrenatural) se clasifica como **H** en cuanto a que *la tradición existe*, pero el suceso mostrado en el juego se clasifica como **N** o **R** según cómo se represente.
 
@@ -32,7 +32,7 @@ Cada campaña mantiene `documentation/registro_historico.md` con una ficha por e
 - Estado de verificación: pendiente | verificado por <persona/fecha>
 ```
 
-Ningún asset histórico entra en el Vertical Slice sin ficha. Las fichas con estado “pendiente” se marcan como bloqueantes para el cierre de la Fase 4. Las fichas de elementos que no están en el juego pueden figurar en una sección aparte del registro y no bloquean el cierre (ADR-0011).
+Ningún asset histórico entra en el juego sin ficha. Las fichas con estado “pendiente” se marcan como bloqueantes para cerrar el guion de la campaña. Las fichas de elementos que no están en el juego pueden figurar en una sección aparte del registro y no bloquean el cierre (ADR-0011).
 
 ## 4. Lista de control de anacronismos
 
@@ -60,3 +60,23 @@ Revisar antes de aprobar cualquier asset o escena:
 - Paleta basada en materiales reales: piedra andesita/caliza, adobe, ichu, madera, textiles con tintes naturales.
 - Luz de altura: cielo de azul profundo, sombras nítidas, contraste fuerte al mediodía, amaneceres cálidos con niebla en valles.
 - Referencias visuales (fotos de sitios, piezas de museo) se guardan con su fuente y licencia en `campaigns/<campaña>/documentation/referencias/`; no se incluyen en el juego imágenes sin licencia compatible.
+
+## 7. Representación de la violencia y sensibilidad
+
+Las campañas II y IV incluyen ejecuciones, represión y violencia de ocupación. La regla es la misma que la del resto del proyecto: se muestra la **consecuencia humana**, no el espectáculo.
+
+| Caso | Cómo se representa | Qué no se muestra |
+|---|---|---|
+| Combate | Golpe, retroceso, caída; sin sangre ni desmembramientos | Heridas abiertas, agonía prolongada |
+| Ejecución de un personaje histórico (campaña II) | El hecho, la fecha y la reacción de la comunidad; la cámara se retira antes | El suplicio, la mutilación, la participación del jugador |
+| Represión y ocupación (campañas II y IV) | Requisas, desplazamiento, miedo, casas vacías, listas de ausentes | Violencia sexual explícita, tortura interactiva, sufrimiento infantil en pantalla |
+| Muerte del protagonista | Recarga de la escena; el hecho histórico no cambia | Sufrimiento gratuito, muerte como castigo narrativo |
+| Muerte de un personaje ficticio querido | El vacío que deja; el objeto o la casa que queda | Morbo, cuerpo expuesto |
+
+Reglas complementarias:
+
+- **El fuera de campo es una decisión, no un olvido.** Lo que se omite se declara en el expediente de la campaña.
+- **Nada de triunfalismo sobre los vencidos.** La victoria tiene costo y se ve en la población.
+- **La clasificación no cambia por ser violento:** un hecho documentado sigue siendo H; una escena creada para el juego, N.
+- **Público:** cada campaña declara su público y su rating antes de escribir el guion; el objetivo es que el uso educativo siga siendo posible.
+- **Duda razonable:** si una escena no puede mostrarse sin morbo, se cuenta por lo que deja. La decisión se anota en la bitácora.

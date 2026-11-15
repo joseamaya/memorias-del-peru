@@ -334,7 +334,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var key: InputEventKey = event as InputEventKey
 		if key.pressed and not key.echo and key.keycode == KEY_R:
 			if _completed:
-				get_tree().change_scene_to_file("res://core/ui/title_screen.tscn")
+				get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/llacta_act4.tscn")
 			elif _dead:
 				get_tree().reload_current_scene()
 			return

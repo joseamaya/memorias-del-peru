@@ -38,8 +38,12 @@ func _run_tests() -> void:
 			else:
 				printerr("FALLO ", file_name, "::", method_name)
 				failures += 1
+	await process_frame
+	await process_frame
 	print("Pruebas finalizadas: ", failures, " fallo(s)")
 	var audio: AudioManagerService = root.get_node_or_null("AudioManager") as AudioManagerService
 	if audio != null:
 		audio.stop_all()
+	# Deja que el hilo de audio suelte las reproducciones antes de salir.
+	await create_timer(0.2).timeout
 	quit(1 if failures > 0 else 0)

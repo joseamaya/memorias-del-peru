@@ -1,6 +1,8 @@
 # Registro histórico — Campaña 01: Pachacútec
 
-Formato y reglas en [docs/07_convenciones_historicas.md](../../../docs/07_convenciones_historicas.md). Ningún elemento entra en el Vertical Slice con estado “pendiente”.
+Formato y reglas en [docs/07_convenciones_historicas.md](../../../docs/07_convenciones_historicas.md). Ningún elemento entra en el juego con estado “pendiente”.
+
+Las rutas de escena y los nombres de nodo de las fichas se actualizarán cuando existan las escenas de la campaña; las citas, clasificaciones y notas de representación están vigentes.
 
 Las fichas en estado “pendiente” tienen clasificación definitiva pero citas incompletas (falta edición, capítulo o página). Para pasar a “verificado” deben cumplir el requisito mínimo de su clasificación (docs/07 §2).
 
@@ -312,14 +314,14 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 
 ---
 
-## Fuera del vertical slice
+## Fuera del juego
 
-Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre de la Fase 4, por decisión del responsable del proyecto del 2026-11-11 y según ADR-0011. Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
+Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean el cierre del guion de la campaña, por decisión del responsable del proyecto del 2026-11-11 y según ADR-0011. Si alguno se incorpora, su ficha vuelve a la lista principal como pendiente y bloquea el cierre hasta que se verifique.
 
 ### PCH-014 — Llama / alpaca (opcional)
 - Tipo: fauna
 - Clasificación: A
-- Uso en el juego: ninguno; el elemento no está en el vertical slice
+- Uso en el juego: ninguno; el elemento no está en el juego
 - Fuentes (identificadas; pendiente de publicación): estudios de camélidos sudamericanos domésticos; falta referencia concreta.
 - Discrepancias entre fuentes: —
 - Notas de representación: si se incluye, sin aparejos de origen europeo.
@@ -327,7 +329,7 @@ Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean
 
 ---
 
-## Pendientes de los actos II y III (Fase 7)
+## Pendientes de los actos II y III
 
 Fichas de los elementos que el RPG introduce después del acto I. Ninguna entra
 al juego hasta estar **verificada**; se listan aquí para no inventar contenido
@@ -409,3 +411,57 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 - Discrepancias entre fuentes: la leyenda engrandece la victoria y la atribuye a una intervención maravillosa; la arqueología (PCH-003) sugiere un conflicto menor y entre confederaciones frágiles. La fuente principal de los pururaucas es Pachacuti Yamqui; Garcilaso no se usa para esta escena.
 - Notas de representación: se cuenta como **creencia y relato**, nunca como un hecho. Sin piedras que se transformen en pantalla, sin ejército sobrenatural y sin cambiar el resultado. La arenga de Cusi Yupanqui se parafrasea y se marca como elaboración literaria.
 - Estado de verificación: **verificado (N / H)** por el responsable del proyecto el 2026-11-13, sobre la comprobación del agente en la edición digital citada.
+
+---
+
+## Pendientes de los actos IV y V
+
+Fichas de los elementos que la posguerra y el cierre introducen. Ninguna entra
+al juego hasta estar **verificada**; se listan para no inventar contenido ni
+citas. Las fuentes marcadas «por verificar» no se han consultado con la edición
+a la vista.
+
+### PCH-032 — La posguerra y la asamblea de ayllus
+- Tipo: evento / organización social
+- Clasificación: R
+- Uso en el juego: acto IV, asamblea de la llacta tras la victoria
+- Fuentes (por verificar): Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X (ed. Jiménez de la Espada, Madrid, 1880, pp. 19–62), para el reparto y la autoridad tras la victoria; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Historia del Tahuantinsuyu* (1988), para la organización de ayllus y la reciprocidad.
+- Discrepancias entre fuentes: ninguna crónica describe una asamblea concreta tras la victoria; la escena es reconstrucción a partir de la reciprocidad y el reparto documentados.
+- Notas de representación: la asamblea decide reparto, culpa y esfuerzo común; no cambia el resultado histórico. Puma acusa, el curaca vecino oportuniza y los ayllus piden maíz.
+- Estado de verificación: **pendiente**.
+
+### PCH-033 — La muerte de Viracocha y el fin del orden antiguo
+- Tipo: evento
+- Clasificación: H (tradición)
+- Uso en el juego: noticia del acto IV; no se escenifica la muerte
+- Fuentes (por verificar): Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; Inca Garcilaso de la Vega, *Comentarios reales* (1609), lib. V, como contraste.
+- Discrepancias entre fuentes: el lugar y el momento de la muerte varían; en todas las versiones ocurre después de la victoria de su hijo. El juego la cuenta como noticia, sin fecha exacta.
+- Notas de representación: no hay escena directa con el inca viejo; su muerte llega por mensajero y cierra el orden antiguo.
+- Estado de verificación: **pendiente**.
+
+### PCH-034 — El nombre de Pachacútec
+- Tipo: evento / término
+- Clasificación: H (tradición) / N (escena)
+- Uso en el juego: acto V; un mensajero trae la noticia del nombre nuevo
+- Fuentes (por verificar): Juan de Betanzos, *Suma y narración de los Incas* (1551); Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572); María Rostworowski, *Pachacútec Inca Yupanqui* (1953).
+- Discrepancias entre fuentes: la asunción del nombre tras la victoria es tradición de los cronistas, no un acto documentado minuto a minuto.
+- Notas de representación: se presenta como **lo que se cuenta**; Rumi lo oye en la llacta, no lo presencia en el trono.
+- Estado de verificación: **pendiente**.
+
+### PCH-035 — La reconstrucción de la casa y las terrazas
+- Tipo: arquitectura / actividad
+- Clasificación: R
+- Uso en el juego: acto V; corral, terraza, telar y acequia reparados
+- Fuentes: PCH-007 (vivienda), PCH-008 (terraza), PCH-021 (corral de pirca) y las fuentes que citan; falta una referencia específica sobre la reconstrucción tras un conflicto.
+- Discrepancias entre fuentes: —
+- Notas de representación: la obra usa las mismas técnicas documentadas que la construcción inicial; no se inventan herramientas.
+- Estado de verificación: **pendiente**.
+
+### PCH-036 — Los exploradores chancas y el reconocimiento del camino
+- Tipo: evento / personaje
+- Clasificación: R / N
+- Uso en el juego: acto II; los exploradores tantean el paso antes de la fuerza principal
+- Fuentes (por verificar): PCH-003 (los chancas), PCH-024 (armas) y PCH-030 (los chancas como guerreros); la práctica del reconocimiento previo es reconstrucción.
+- Discrepancias entre fuentes: las crónicas describen el avance chanca y el campamento en Ichu-pampa, no una patrulla concreta en un paso.
+- Notas de representación: la información se obtiene escuchando, no de un objeto inventado; no se atribuye a los chancas un sistema de registro que no esté documentado.
+- Estado de verificación: **pendiente**.

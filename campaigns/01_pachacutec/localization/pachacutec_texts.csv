@@ -3,27 +3,27 @@ PCH_QUERO_INTERACT,Beber chicha
 PCH_OFFERING_INTERACT,Dejar ofrenda
 PCH_PUTUTU_PLAY,Hacer sonar el pututu
 PCH_NARR_OPENING,"Hoy llega un mensajero del Cusco. Mientras tanto, recorre la llacta."
-PCH_NARR_NEWS_1,"¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido."
+PCH_NARR_NEWS_1,¡Los chancas marchan sobre el Cusco! El inca y su heredero han salido.
 PCH_NARR_NEWS_2,Cusi Yupanqui llama a los ayllus.
 PCH_NARR_CALL,Los hombres esperan. El pututu puede convocar.
 PCH_NARR_CLOSING_1,El curaca y los principales parten hacia el Cusco.
 PCH_NARR_CLOSING_2,La llacta queda en silencio.
-PCH_INTRO_NOTE,"Esta historia se basa en crónicas coloniales y en la arqueología. Algunos elementos son reconstrucción o licencia narrativa."
-PCH_CAMPAIGN_SUBTITLE,La defensa del Cusco
+PCH_INTRO_NOTE,Esta historia se basa en crónicas coloniales y en la arqueología. Algunos elementos son reconstrucción o licencia narrativa.
+PCH_CAMPAIGN_SUBTITLE,El despertar del Sol
 PCH_INTRO_1,"Los Andes, siglo XV."
-PCH_INTRO_2,"En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región."
+PCH_INTRO_2,En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región.
 PCH_INTRO_3,"Tú vives en una llacta, una pequeña aldea de la sierra cerca del Cusco. Hoy se esperan noticias."
 PCH_INTRO_HINT,E para continuar
-PCH_NARR_WAIT,"El sol sube. Por el camino del norte aún no viene nadie."
+PCH_NARR_WAIT,El sol sube. Por el camino del norte aún no viene nadie.
 PCH_TALK,Hablar
-PCH_TALK_WEAVER,"Tejo esta manta para el curaca. Dicen que hoy llega alguien del Cusco; ojalá traiga buenas noticias."
+PCH_TALK_WEAVER,Tejo esta manta para el curaca. Dicen que hoy llega alguien del Cusco; ojalá traiga buenas noticias.
 PCH_TALK_FARMER,"Las terrazas ya están listas para sembrar. Desde aquí arriba se ve el camino del norte, el que va al Cusco."
 PCH_TALK_VILLAGER_1,"Somos un ayllu pequeño. Cuando el Cusco llama, los hombres van con el curaca."
 PCH_TALK_VILLAGER_2,"Los viajeros hablan de los chancas, allá por Andahuaylas. Dicen que cada vez son más."
-PCH_TALK_VILLAGER_3,"El curaca no se mueve de la plaza. Él será el primero en oír lo que traiga el mensajero."
-PCH_TALK_CURACA,"Espero noticias del Cusco. Quédate cerca de la plaza."
-PCH_NARR_GATHER,"Desde la plaza llaman: el mensajero está por llegar."
-PCH_NARR_GREET,"¡Llegas a tiempo! Ven a la plaza: hoy hay noticias del Cusco."
+PCH_TALK_VILLAGER_3,El curaca no se mueve de la plaza. Él será el primero en oír lo que traiga el mensajero.
+PCH_TALK_CURACA,Espero noticias del Cusco. Quédate cerca de la plaza.
+PCH_NARR_GATHER,Desde la plaza llaman: el mensajero está por llegar.
+PCH_NARR_GREET,¡Llegas a tiempo! Ven a la plaza: hoy hay noticias del Cusco.
 PCH_END_TITLE,Fin del acto I
 PCH_MAP_CUSCO,Cusco
 PCH_MAP_LLACTA,Tu llacta
@@ -76,10 +76,10 @@ PCH_TASK_AGUA,Acarrear agua
 PCH_TASK_MAIZ,Moler maíz
 PCH_TASK_TELAR,Sostener el telar
 PCH_TASK_PIRCA,Cerrar la pirca
-PCH_TASK_AGUA_DONE,"Llevas el agua a la casa. El cántaro pesa menos de lo que parecía."
+PCH_TASK_AGUA_DONE,Llevas el agua a la casa. El cántaro pesa menos de lo que parecía.
 PCH_TASK_MAIZ_DONE,El maíz queda molido para la chicha de mediodía.
 PCH_TASK_TELAR_DONE,Sostienes el telar mientras la trama se cruza.
-PCH_TASK_PIRCA_DONE,"La piedra encaja. El corral queda cerrado."
+PCH_TASK_PIRCA_DONE,La piedra encaja. El corral queda cerrado.
 PCH_TASK_DONE,Encargo cumplido · %d de 3
 PCH_Q_AGUA_TITLE,El agua de la mañana
 PCH_Q_AGUA_BODY,Lleva agua del cántaro del este a la casa antes de que suba el sol.
@@ -97,7 +97,7 @@ PCH_DLG_FARMER_TERRACE,"Maíz, papas y quinua en los andenes. La tierra se cuida
 PCH_DLG_CURACA_ASK,¿Qué es este lugar?
 PCH_DLG_CURACA_PLAZA,"Una llacta del valle. Aquí se trabaja, se reparte y se recuerda a los que vinieron antes."
 PCH_PASO_AMBUSH,El paso está cerrado. ¡Chancas!
-PCH_PASO_CLEAR,"El paso queda libre. El Cusco se ve al fondo."
+PCH_PASO_CLEAR,El paso queda libre. El Cusco se ve al fondo.
 PCH_PASO_STATUS,Salud: %d · Enemigos: %d
 PCH_PASO_COMBAT_STATUS,Enemigos: %d
 PCH_PASO_DEAD,Has caído. R para reintentar.
@@ -107,19 +107,19 @@ PCH_CAMP_INTRO,El paso está arriba. Podemos descansar junto al fuego o seguir d
 PCH_CAMP_REST,Descansar junto al fuego
 PCH_CAMP_PUSH,Seguir de noche
 PCH_CAMP_COCA,Compartir coca
-PCH_CAMP_REST_DONE,"El fuego templa el cuerpo. El aliento vuelve."
+PCH_CAMP_REST_DONE,El fuego templa el cuerpo. El aliento vuelve.
 PCH_CAMP_PUSH_DONE,La columna se pone en marcha a oscuras.
-PCH_CAMP_COCA_DONE,"Pasas la hoja. La columna respira mejor."
-PCH_AFTER_INTRO,"El paso está despejado. Uno de los nuestros no puede caminar."
+PCH_CAMP_COCA_DONE,Pasas la hoja. La columna respira mejor.
+PCH_AFTER_INTRO,El paso está despejado. Uno de los nuestros no puede caminar.
 PCH_AFTER_CARRY,Cargar al herido
 PCH_AFTER_LEAVE,Dejarlo con agua y coca
-PCH_AFTER_WOUNDED_CARRY,"Lo cargas entre dos. La columna irá más lenta."
-PCH_AFTER_WOUNDED_LEAVE,"Lo dejas al resguardo. No miras atrás."
+PCH_AFTER_WOUNDED_CARRY,Lo cargas entre dos. La columna irá más lenta.
+PCH_AFTER_WOUNDED_LEAVE,Lo dejas al resguardo. No miras atrás.
 PCH_AFTER_MAIZE,Queda la carga de maíz. ¿La llevamos?
 PCH_AFTER_KEEP,Conservar el maíz
 PCH_AFTER_ABANDON,Abandonar la carga
 PCH_AFTER_MAIZE_KEEP,"El maíz pesa, pero en el Cusco hará falta."
-PCH_AFTER_MAIZE_ABANDON,"La carga queda junto al sendero."
+PCH_AFTER_MAIZE_ABANDON,La carga queda junto al sendero.
 PCH_ITEM_COCA,Coca
 PCH_ITEM_COCA_DESC,Hoja para el aliento.
 PCH_NPC_AYLLUS,Ayllus
@@ -131,21 +131,21 @@ PCH_CIUDAD_TALK_CURACA,Hablar con el curaca vecino
 PCH_CIUDAD_TALK_YOUTH,Hablar con los jóvenes
 PCH_CIUDAD_TALK_CUSI,Hablar con Cusi Yupanqui
 PCH_CIUDAD_AYLLUS_INTRO,"Los ayllus de la ciudad dudan. Si hay maíz, hay voluntad."
-PCH_CIUDAD_CURACA_INTRO,"El curaca vecino escucha. No olvida a los que ayudaron en el paso."
-PCH_CIUDAD_YOUTH_INTRO,"Los jóvenes esperan una señal. Los que compartieron en el camino tienen su confianza."
+PCH_CIUDAD_CURACA_INTRO,El curaca vecino escucha. No olvida a los que ayudaron en el paso.
+PCH_CIUDAD_YOUTH_INTRO,Los jóvenes esperan una señal. Los que compartieron en el camino tienen su confianza.
 PCH_CIUDAD_RECRUIT_ASK,Pedir ayuda
-PCH_CIUDAD_RECRUIT_JOIN,"Cuentan con nosotros. Se suman a la defensa."
-PCH_CIUDAD_RECRUIT_REFUSE,"No es suficiente. Se quedan al margen."
-PCH_CIUDAD_CUSI_INTRO,"Cusi Yupanqui mira la plaza. «¿Cuántos han respondido?»"
+PCH_CIUDAD_RECRUIT_JOIN,Cuentan con nosotros. Se suman a la defensa.
+PCH_CIUDAD_RECRUIT_REFUSE,No es suficiente. Se quedan al margen.
+PCH_CIUDAD_CUSI_INTRO,Cusi Yupanqui mira la plaza. «¿Cuántos han respondido?»
 PCH_CIUDAD_CUSI_READY,Estamos listos
 PCH_CIUDAD_CUSI_WAIT,Todavía no
-PCH_CIUDAD_DEFENSE,"Los chancas entran en la plaza. ¡Sostened la línea!"
-PCH_CIUDAD_COUNTER,"Cusi Yupanqui dirige la contraofensiva. La plaza resiste."
-PCH_CIUDAD_EPILOGUE,"La defensa se sostiene. La tradición dice que Cusi Yupanqui tomó el nombre de Pachacútec."
-PCH_CIUDAD_EPILOGUE_WOUNDED,"El herido del paso vuelve a la llacta contigo."
-PCH_CIUDAD_EPILOGUE_MAIZE,"El maíz guardado alcanzó para la defensa."
-PCH_CIUDAD_END_TITLE,Fin de la campaña
-PCH_CIUDAD_END_HINT,R para volver al título · Esc para salir
+PCH_CIUDAD_DEFENSE,Los chancas entran en la plaza. ¡Sostened la línea!
+PCH_CIUDAD_COUNTER,Cusi Yupanqui dirige la contraofensiva. La plaza resiste.
+PCH_CIUDAD_EPILOGUE,La defensa se sostiene. La tradición dice que Cusi Yupanqui tomó el nombre de Pachacútec.
+PCH_CIUDAD_EPILOGUE_WOUNDED,El herido del paso vuelve a la llacta contigo.
+PCH_CIUDAD_EPILOGUE_MAIZE,El maíz guardado alcanzó para la defensa.
+PCH_CIUDAD_END_TITLE,Fin del acto III
+PCH_CIUDAD_END_HINT,R para volver a la llacta · Esc para salir
 PCH_CIUDAD_STATUS,Salud: %d · Aliados: %d · Enemigos: %d
 PCH_CIUDAD_COMBAT_STATUS,Aliados: %d · Enemigos: %d
 PCH_CIUDAD_DEAD,Has caído. R para reintentar.
@@ -155,16 +155,16 @@ PCH_CIUDAD_ARRIVAL,El Cusco. La ciudad espera.
 PCH_END_HINT,R para seguir al paso · Esc para salir
 PCH_PASO_TALK_DISTRACT,Distraer a los chancas
 PCH_PASO_TALK_SNEAK,Seguir por el arroyo
-PCH_PASO_DISTRACT,"Arrojas una piedra lejos. Dos exploradores se apartan."
-PCH_PASO_SNEAK,"El arroyo cubre el ruido. Pasáis sin ser vistos."
+PCH_PASO_DISTRACT,Arrojas una piedra lejos. Dos exploradores se apartan.
+PCH_PASO_SNEAK,El arroyo cubre el ruido. Pasáis sin ser vistos.
 PCH_PASO_SILENT_END,"El paso queda atrás, en silencio."
 PCH_CIUDAD_TALK_VESPERA,Escuchar la leyenda
 PCH_NPC_ELDER,Viejo de la plaza
-PCH_VESPERA_INTRO,"El viejo mira las piedras del muro. «¿Quieres oír lo que se cuenta?»"
+PCH_VESPERA_INTRO,El viejo mira las piedras del muro. «¿Quieres oír lo que se cuenta?»
 PCH_VESPERA_LISTEN,Escuchar
 PCH_VESPERA_TALE,"«Dicen que, cuando los chancas llegaron, las piedras de pururauca se vistieron de guerreros y pelearon por el Cusco.»"
-PCH_VESPERA_CLOSE,"«Así lo cuentan los antiguos. Yo no vi piedras caminar: vi hombres defender su casa.»"
-PCH_VESPERA_AGAIN,"Ya escuchaste la leyenda. El viejo asiente y calla."
+PCH_VESPERA_CLOSE,«Así lo cuentan los antiguos. Yo no vi piedras caminar: vi hombres defender su casa.»
+PCH_VESPERA_AGAIN,Ya escuchaste la leyenda. El viejo asiente y calla.
 PCH_ST_PURURAUCAS_TITLE,Los pururaucas
 PCH_ST_PURURAUCAS_BODY,"Leyenda recogida por Pachacuti Yamqui: las piedras se visten de guerreros y defienden el Cusco. Se cuenta como creencia, no como hecho; no cambia la batalla."
 PCH_AFTER_SCOUT,Un explorador chanca sigue con vida entre las rocas. ¿Qué haces?
@@ -172,3 +172,52 @@ PCH_AFTER_SPARE,Dejarlo ir
 PCH_AFTER_LEAVE_SCOUT,Seguir sin mirar
 PCH_AFTER_SPARED,"Lo sueltas. Se aleja cojeando, sin mirar atrás."
 PCH_CIUDAD_EPILOGUE_SPARED,El explorador que dejaste ir contó que hubo piedad en el paso.
+PCH_ASM_ASK,El curaca mira a los presentes. «¿Quién lleva la respuesta al Cusco?»
+PCH_ASM_GO,Voy yo.
+PCH_ASM_TOGETHER,Iré con vosotros.
+PCH_ASM_DOUBT,No sé si sirvo.
+PCH_ASM_GO_ANSWER,El curaca asiente. «Entonces prepárate: sales al amanecer.»
+PCH_ASM_TOGETHER_ANSWER,«Bien. La llacta responde contigo.»
+PCH_ASM_DOUBT_ANSWER,«Nadie sirve hasta que camina. Saldrás con nosotros.»
+PCH_OBJ_LLACTA,Recorre la llacta
+PCH_OBJ_WAIT,La noticia está por llegar
+PCH_TALK_MADRE,"Rumi, come antes de salir. Si todos se van al Cusco, ¿quién queda en esta casa?"
+PCH_TALK_HERMANO,"Dicen que los chancas son muchos. ¿Tú también vas a ir con los hombres, Rumi?"
+PCH_TALK_SISA,"Conozco el camino del paso. Si vas, no vayas solo."
+PCH_TALK_PUMA,"El inca se ha ido al valle con su heredero. Si ni el Cusco se defiende, ¿qué nos espera aquí?"
+PCH_ITEM_AGUA,Agua
+PCH_ITEM_MAIZ,Maíz
+PCH_ITEM_MANTA,Manta
+PCH_ITEM_CUERDA,Cuerda de ichu
+PCH_NPC_PUMA,Puma
+PCH_OBJ_POST,Vuelve a la plaza
+PCH_OBJ_REBUILD,Reconstruye la casa
+PCH_TALK_MADRE_4,"Volviste. La casa sigue en pie, pero no está llena."
+PCH_TALK_HERMANO_4,Ahora yo cuido el corral. Tú ya no tienes que probarte.
+PCH_TALK_SISA_4,No todos volvieron. Pero volvimos.
+PCH_TALK_CURACA_4,Hay que hablar de lo que viene. La llacta escucha.
+PCH_TALK_PUMA_4,Mi hijo no volvió. No te culpo. Pero no me pidas que lo celebre.
+PCH_TALK_ANCA_4,Me dejaste agua y coca. Volví.
+PCH_TALK_MADRE_5,La casa vuelve a tener humo.
+PCH_TALK_HERMANO_5,"Cuando sea grande, voy a cuidar esta casa."
+PCH_TALK_SISA_5,El paso sigue ahí. Nosotros también.
+PCH_TALK_CURACA_5,El Cusco cambia. La llacta también.
+PCH_TALK_PUMA_5,"La casa de mi hijo sigue vacía. La tuya, no."
+PCH_ASM4_ASK,"Puma se levanta. «Se cuentan los que no volvieron. ¿Qué dices tú, Rumi?»"
+PCH_ASM4_SPEAK,Hablo por los que no volvieron.
+PCH_ASM4_SILENCE,Callo.
+PCH_ASM4_SPEAK_ANSWER,«Que se diga en voz alta: no murieron por nada. La llacta sigue porque ellos sostuvieron.»
+PCH_ASM4_SILENCE_ANSWER,El curaca asiente despacio. «El silencio también es una respuesta.»
+PCH_ASM4_NEWS,Desde el Cusco llega otra noticia: Viracocha Inca ha muerto lejos de la ciudad. El orden antiguo se apaga.
+PCH_END4_TITLE,Fin del acto IV
+PCH_END4_HINT,R para volver a la llacta · Esc para salir
+PCH_REBUILD_PIRCA,Reparar el corral
+PCH_REBUILD_TERRAZA,Rehacer la terraza
+PCH_REBUILD_ACEQUIA,Abrir la acequia
+PCH_REBUILD_PIRCA_DONE,La pirca vuelve a cerrar.
+PCH_REBUILD_TERRAZA_DONE,La tierra vuelve a estar lista.
+PCH_REBUILD_ACEQUIA_DONE,El agua corre otra vez.
+PCH_REBUILD_DONE,Obra hecha · %d de 3
+PCH_END5_NAME,Un mensajero del Cusco trae la noticia: Cusi Yupanqui ha tomado el nombre de Pachacútec. La ciudad empieza a cambiar.
+PCH_END5_TITLE,Fin de El despertar del Sol
+PCH_END5_HINT,R para volver al título · Esc para salir

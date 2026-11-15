@@ -9,10 +9,10 @@ extends Node
 ##
 ## Escribe `user://sesiones/<código>.log` con una línea por marca y la hora
 ## transcurrida, para que la duración y los hitos del protocolo
-## ([alcance §9.2](../../campaigns/01_pachacutec/documentation/alcance_vertical_slice.md))
-## no dependan del cronómetro del facilitador. También anexa los mensajes de
-## error y advertencia del motor, de modo que la comprobación de «cero errores
-## en consola» (§9.6) quede en el propio archivo.
+## ([docs/06 §4](../../docs/06_estrategia_de_pruebas.md)) no dependan del
+## cronómetro del facilitador. También anexa los mensajes de error y advertencia
+## del motor, de modo que la comprobación de «cero errores en consola» quede en
+## el propio archivo.
 ##
 ## Fuera de una sesión no escribe nada ni altera el juego.
 

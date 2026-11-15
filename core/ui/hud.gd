@@ -203,6 +203,7 @@ func _set_cinematic_offset(value: float) -> void:
 
 ## Muestra la tarjeta de fin con un fundido: título y cómo seguir.
 func show_end_card(title: String, hint: String) -> void:
+	clear_subtitle()
 	end_title.text = title
 	end_hint.text = hint
 	end_panel.visible = true

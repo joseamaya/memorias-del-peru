@@ -1,7 +1,7 @@
 # Hoja de verificación de fichas — Campaña 01
 
 - Estado: **Hoja de trabajo** (2026-11-11). No sustituye al [registro histórico](registro_historico.md): cuando una ficha se verifica, el resultado se copia allí y se firma.
-- Reglas: [docs/07](../../../docs/07_convenciones_historicas.md) §2 y [alcance](alcance_vertical_slice.md) §8. Para marcar una ficha como «verificado», una persona con la edición a la vista (en papel o digital) comprueba la cita y la firma. Una edición digital completa o una ficha de colección en línea cuentan como edición, siempre que la pieza o el pasaje sea el que se cita.
+- Reglas: [docs/07](../../../docs/07_convenciones_historicas.md) §2 y la [biblia de la campaña](biblia_campana.md) §12. Para marcar una ficha como «verificado», una persona con la edición a la vista (en papel o digital) comprueba la cita y la firma. Una edición digital completa o una ficha de colección en línea cuentan como edición, siempre que la pieza o el pasaje sea el que se cita.
 - Las direcciones de esta hoja se localizaron el 2026-11-11 y se comprobó que cargan, salvo las marcadas **[sin abrir]**: esas webs bloquean a los programas, pero se abren con normalidad en un navegador. **Localizar una fuente no es verificarla:** lo que dice cada fuente sobre el elemento del juego tiene que leerlo una persona.
 
 Qué exige cada clasificación:
@@ -111,7 +111,7 @@ Para una visita a biblioteca. En estas obras, un capítulo o una página bastan 
 
 ## 4. Fichas que pueden salir del cierre
 
-- **PCH-014 Llama / alpaca:** **fuera del slice desde el 2026-11-11**, por decisión del responsable del proyecto. La ficha pasa a la sección «Fuera del vertical slice» del registro y no bloquea el cierre. Si se añade al juego, vuelve como pendiente; hay una referencia identificada: J. C. Wheeler, *Biological Journal of the Linnean Society* 54(3): 271–295 (1995), DOI 10.1016/0024-4066(95)90021-7.
+- **PCH-014 Llama / alpaca:** **fuera del juego desde el 2026-11-11**, por decisión del responsable del proyecto. La ficha pasa a la sección «Fuera del juego» del registro y no bloquea el cierre. Si se añade al juego, vuelve como pendiente; hay una referencia identificada: J. C. Wheeler, *Biological Journal of the Linnean Society* 54(3): 271–295 (1995), DOI 10.1016/0024-4066(95)90021-7.
 - **PCH-001 y PCH-002:** **verificadas el 2026-11-11** con Sarmiento, caps. XXVI–XXVIII, y las fuentes de PCH-003 y PCH-015.
 
 ## 5. Comprobación en línea por el agente (2026-11-11)

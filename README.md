@@ -1,10 +1,8 @@
 # Memorias del Perú
 
-Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental, interacción y RPG. La campaña 01 es un **RPG histórico en primera persona de tres actos**.
+Antología de experiencias históricas en 3D que reconstruye períodos de la historia peruana mediante exploración en primera persona, narrativa ambiental, interacción y RPG.
 
-**Objetivo de la etapa actual:** la campaña 01 jugable de 40–50 minutos, en tres actos ([biblia de la campaña](campaigns/01_pachacutec/documentation/biblia_campana.md)).
-
-**Campaña 01:** *Pachacútec — La defensa del Cusco* (siglo XV).
+**Campaña en desarrollo:** *Pachacútec — El despertar del Sol* (siglo XV), en cinco actos y con una duración objetivo de 40–50 minutos.
 
 | Dato | Valor |
 |---|---|
@@ -12,14 +10,14 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Estado | **Fase 8 — Arte, audio y cierre (en curso).** La campaña se organiza en tres actos: llacta, paso y Cusco de 1438. La Fase 7 cerró con el arco completo en gris, la víspera de los pururaucas y la partida continua automatizada (`ARCO_OK`). El acto I usa los **modelos MakeHuman/Rocketbox** (CC0/MIT) ya versionados, con cara, ropa y animaciones propias; la multitud del Cusco, el campamento, los chancas y los NPC del acto III usan también los modelos propios; UAL1 queda como respaldo. El acto II tiene paisaje y el Cusco deja el bloqueo gris: plaza de tierra con camino de lajas, santuario de pirca, catorce casas de cinco variantes, muro de pirca, terrazas, terreno con relieve y una multitud con rutinas, parejas y puestos atendidos. La cámara encuadra al interlocutor en los diálogos y el HUD ya no deja el rótulo «Aliento» flotando. Los tres actos cumplen los 60 FPS en Medio; el Cusco queda en 61,4 y es el más ajustado. El prototipo de tejedora vestida en Blender se conserva como referencia, fuera de escena. Pendiente: validación de autor y pulido fino de personajes. |
+| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V) se juega en gris; el motor, el núcleo RPG y las cinco escenas están construidos. Queda el pase visual y sonoro |
 
 ## Requisitos
 
 - Godot 4.7.2 estable (edición estándar, no .NET). Debe estar disponible en el `PATH` como `godot` para ejecutar las validaciones de línea de comandos.
 - GPU compatible con Vulkan (requisito de Forward+).
 
-## Controles (Fase 1)
+## Controles
 
 | Acción | Tecla |
 |---|---|
@@ -36,32 +34,30 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 ## Iteración rápida (desarrollo)
 
 ```bash
-godot --path . -- --skip-intro --spawn=plaza
-godot --path . -- --profile=0      # Bajo, para medir rendimiento
-godot --path . res://campaigns/01_pachacutec/scenes/world/paso.tscn    # acto II en gris
-godot --path . res://campaigns/01_pachacutec/scenes/world/ciudad.tscn  # acto III en gris
-godot --path . -- --act=2   # empezar en el acto II
-godot --path . -- --act=3   # empezar en el acto III
+godot --path .                              # portada
+godot --path . -- --profile=0               # perfil Bajo
+godot --path . res://tests/scenes/player_sandbox.tscn   # banco de pruebas del jugador
 ```
 
-`--skip-intro` entra directo al mundo, `--spawn=spawn|plaza|mirador` elige el punto de aparición y `--profile=0..3` el perfil gráfico (0 Bajo, 1 Medio, 2 Alto, 3 Ultra; por defecto Medio).
+Los argumentos `--profile=0..3` eligen perfil gráfico (0 Bajo, 1 Medio, 2 Alto, 3 Ultra; por defecto Medio).
 
 ## Documentación
 
 | Documento | Contenido |
 |---|---|
 | [AGENTS.md](AGENTS.md) | Reglas obligatorias para agentes de IA y colaboradores |
-| [docs/00_especificacion.md](docs/00_especificacion.md) | Especificación original v1.0 (origen del proyecto) |
-| [docs/01_vision_y_alcance.md](docs/01_vision_y_alcance.md) | Visión, pilares, alcance, definición de éxito y horizonte |
+| [docs/00_especificacion.md](docs/00_especificacion.md) | Especificación original (origen del proyecto) |
+| [docs/01_vision_y_alcance.md](docs/01_vision_y_alcance.md) | Visión, pilares, alcance y definición de éxito |
 | [docs/02_arquitectura.md](docs/02_arquitectura.md) | Capas, dependencias, sistemas Core y diseño técnico |
 | [docs/03_estandares_de_codigo.md](docs/03_estandares_de_codigo.md) | Tipado estricto, estilo y convenciones de nombres |
 | [docs/04_configuracion_del_proyecto.md](docs/04_configuracion_del_proyecto.md) | Contenido requerido de `project.godot` e Input Map |
-| [docs/05_plan_de_implementacion.md](docs/05_plan_de_implementacion.md) | Fases, entregables, tareas y criterios de aceptación |
+| [docs/05_plan_de_implementacion.md](docs/05_plan_de_implementacion.md) | Fases, entregables y criterios de aceptación |
 | [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md) | Validación, pruebas automatizadas y verificación manual |
 | [docs/07_convenciones_historicas.md](docs/07_convenciones_historicas.md) | Clasificación de contenido histórico y fuentes |
 | [docs/08_entorno_y_rendimiento.md](docs/08_entorno_y_rendimiento.md) | Entorno atmosférico, perfiles gráficos y métricas |
-| [docs/bitacora.md](docs/bitacora.md) | Registro cronológico de cambios y decisiones |
-| [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Documentación de la campaña Pachacútec |
+| [docs/09_biblia_narrativa.md](docs/09_biblia_narrativa.md) | Biblia narrativa de la antología: campañas, actos y reglas de guion |
+| [docs/bitacora.md](docs/bitacora.md) | Registro cronológico de cambios |
+| [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Biblia, expediente y registro histórico de la campaña |
 
 ## Validación rápida
 

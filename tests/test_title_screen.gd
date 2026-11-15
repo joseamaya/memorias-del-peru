@@ -1,6 +1,6 @@
 extends RefCounted
-## Comprueba la pantalla de título (ADR-0024): textos traducidos, campaña
-## válida, foco en Comenzar y un subtítulo que no adelanta la noticia.
+## Comprueba la pantalla de título: textos traducidos, campaña válida y foco en
+## Comenzar. El subtítulo no adelanta la noticia.
 
 const SPOILERS: Array[String] = ["chanca", "heredero", "cusi yupanqui", "amenaza", "pachac"]
 

@@ -136,7 +136,7 @@ static func is_free(point: Vector2, houses: Array[Vector3]) -> bool:
 		if Vector2(house.x, house.z).distance_to(point) < HOUSE_CLEARANCE:
 			return false
 	# Los corrales de la llacta (ADR-0021), con un metro de margen.
-	for corral: Array in MundoBase.CORRALS:
+	for corral: Array in Llacta.CORRALS:
 		var center: Vector3 = corral[0]
 		var size: Vector2 = corral[1]
 		if Rect2(Vector2(center.x, center.z) - size * 0.5, size).grow(CORRAL_CLEARANCE).has_point(point):

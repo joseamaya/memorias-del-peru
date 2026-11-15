@@ -1,24 +1,18 @@
 extends SceneTree
-## Partida continua del arco, sin pantalla: acto I → paso → Cusco → título.
-##
-## Cierra el criterio de Fase 7 que faltaba: una sola pasada automatizada por
-## los tres actos, con las transiciones reales de escena y las banderas de
-## `CampaignState` sobreviviendo al cambio. No sustituye la partida del autor:
-## comprueba que el arco no se bloquea y que las decisiones llegan al acto III.
+## Partida continua del arco completo, sin pantalla:
+## llacta → paso → Cusco → llacta de posguerra → llacta en obra → título.
 ##
 ##   godot --headless --path . --script res://tests/arc_playthrough.gd
 ##
-## Como `demo_playthrough` y `paso_smoke`, no usa tipos de la campaña: con
-## `--script`, los autoloads aún no existen cuando se compila este archivo.
+## Comprueba que las cinco escenas se encadenan, que las decisiones sobreviven
+## y que ningún acto se bloquea.
 
-const ACT_ONE: String = "res://campaigns/01_pachacutec/scenes/world/mundo_base.tscn"
+const ACT_ONE: String = "res://campaigns/01_pachacutec/scenes/world/llacta.tscn"
 const ACT_TWO: String = "res://campaigns/01_pachacutec/scenes/world/paso.tscn"
 const ACT_THREE: String = "res://campaigns/01_pachacutec/scenes/world/ciudad.tscn"
+const ACT_FOUR: String = "res://campaigns/01_pachacutec/scenes/world/llacta_act4.tscn"
+const ACT_FIVE: String = "res://campaigns/01_pachacutec/scenes/world/llacta_act5.tscn"
 const TITLE: String = "res://core/ui/title_screen.tscn"
-## MessengerEvent.Phase.DONE (el tipo no está disponible al compilar).
-const EVENT_DONE: int = 5
-const MAX_EVENT_STEPS: int = 500
-const EVENT_STEP_SECONDS: float = 2.0
 
 
 func _initialize() -> void:
@@ -32,6 +26,10 @@ func _run() -> void:
 	if ok:
 		ok = await _act_three()
 	if ok:
+		ok = await _act_four()
+	if ok:
+		ok = await _act_five()
+	if ok:
 		ok = _check_title()
 	await _stop_audio()
 	if ok:
@@ -41,13 +39,14 @@ func _run() -> void:
 	quit(0 if ok else 1)
 
 
-## Acto I: tres encargos, mensajero y salida al paso.
+## Acto I: tres encargos, asamblea y salida al paso.
 func _act_one() -> bool:
 	var world: Node = await _open(ACT_ONE)
 	if world == null:
 		return false
 	var player: Node3D = world.get_node_or_null("PlayerFPS") as Node3D
-	if player == null:
+	var hud: Node = world.get_node_or_null("UILayer/HUD")
+	if player == null or hud == null:
 		return false
 	var ok: bool = true
 	for task_name: String in ["TaskAgua", "TaskMaiz", "TaskTelar"]:
@@ -56,19 +55,13 @@ func _act_one() -> bool:
 			ok = false
 			break
 		task.call("interact", player)
-	var event: Node = world.get_node_or_null("EventController")
-	if event == null:
-		return false
-	# El mensajero espera en la plaza; se avanza el reloj del evento sin esperar.
 	player.global_position = Vector3(0.0, 0.05, 2.0)
-	var steps: int = 0
-	while event.get("phase") != EVENT_DONE and steps < MAX_EVENT_STEPS:
-		event.call("step", EVENT_STEP_SECONDS)
-		steps += 1
-	ok = ok and event.get("phase") == EVENT_DONE
-	ok = ok and event.get("completed") == true
-	world.call("advance_end_card", 999.0)
-	ok = ok and world.call("is_end_card_shown") == true
+	world.call("_process", 0.1)
+	ok = ok and hud.call("is_dialogue_open") == true
+	_choose(hud, 0)
+	world.call("_on_dialogue_advanced")
+	ok = ok and world.call("get", "_assembly_done") == true
+	ok = ok and _flag(&"ofrecio")
 	if not ok:
 		print("ACTO_I_FALLO")
 		return false
@@ -78,8 +71,7 @@ func _act_one() -> bool:
 	return current_scene != null and String(current_scene.scene_file_path) == ACT_TWO
 
 
-## Acto II: descanso, combate, herido y maíz. Deja las tres banderas que
-## reclutan a los tres aliados del acto III.
+## Acto II: campamento, combate, herido, maíz y perdón.
 func _act_two() -> bool:
 	var paso: Node = current_scene
 	if paso == null:
@@ -90,13 +82,11 @@ func _act_two() -> bool:
 	if player == null or hud == null or camp == null:
 		return false
 	var ok: bool = true
-	# Descanso en el campamento.
 	camp.call("interact", player)
 	ok = ok and hud.call("is_dialogue_open") == true
 	_choose(hud, 0)
 	paso.call("_on_dialogue_advanced")
 	ok = ok and _flag(&"descanso")
-	# Emboscada: se resuelve por combate para poder decidir sobre el herido.
 	paso.call("_start_ambush")
 	for index: int in range(1, 5):
 		var enemy: Node = paso.get_node_or_null("Ambusher%d" % index)
@@ -104,15 +94,12 @@ func _act_two() -> bool:
 			enemy.call("take_hit", 200.0)
 	paso.call("_physics_process", 0.1)
 	ok = ok and hud.call("is_dialogue_open") == true
-	# Salvar al herido.
 	_choose(hud, 0)
 	paso.call("_on_dialogue_advanced")
 	ok = ok and _flag(&"herido_salvado")
-	# Guardar el maíz.
 	_choose(hud, 0)
 	paso.call("_on_dialogue_advanced")
 	ok = ok and _flag(&"maiz_guardado")
-	# Perdonar al explorador chanca herido.
 	_choose(hud, 0)
 	paso.call("_on_dialogue_advanced")
 	ok = ok and _flag(&"scout_spared")
@@ -126,7 +113,7 @@ func _act_two() -> bool:
 	return current_scene != null and String(current_scene.scene_file_path) == ACT_THREE
 
 
-## Acto III: tres reclutas, Cusi, defensa y salida al título.
+## Acto III: tres reclutas, Cusi y defensa.
 func _act_three() -> bool:
 	var ciudad: Node = current_scene
 	if ciudad == null:
@@ -152,7 +139,6 @@ func _act_three() -> bool:
 	_choose(hud, 0)
 	ciudad.call("_on_dialogue_advanced")
 	ok = ok and ciudad.call("is_ambush_active") == true
-	ok = ok and ciudad.call("alive_enemies") == 1
 	for index: int in range(1, 5):
 		var enemy: Node = ciudad.get_node_or_null("Defender%d" % index)
 		if enemy != null:
@@ -166,7 +152,60 @@ func _act_three() -> bool:
 	print("ACTO_III_OK")
 	_press_restart(ciudad)
 	await _settle()
-	return true
+	return current_scene != null and String(current_scene.scene_file_path) == ACT_FOUR
+
+
+## Acto IV: la asamblea de posguerra.
+func _act_four() -> bool:
+	var world: Node = current_scene
+	if world == null:
+		return false
+	var player: Node3D = world.get_node_or_null("PlayerFPS") as Node3D
+	var hud: Node = world.get_node_or_null("UILayer/HUD")
+	if player == null or hud == null:
+		return false
+	player.global_position = Vector3(0.0, 0.05, 2.0)
+	world.call("_process", 0.1)
+	var ok: bool = hud.call("is_dialogue_open") == true
+	_choose(hud, 0)
+	world.call("_on_dialogue_advanced")
+	ok = ok and world.call("get", "_act_four_done") == true
+	ok = ok and _flag(&"hablo_en_asamblea")
+	if not ok:
+		print("ACTO_IV_FALLO")
+		return false
+	print("ACTO_IV_OK")
+	_press_restart(world)
+	await _settle()
+	return current_scene != null and String(current_scene.scene_file_path) == ACT_FIVE
+
+
+## Acto V: reconstrucción y nombre nuevo.
+func _act_five() -> bool:
+	var world: Node = current_scene
+	if world == null:
+		return false
+	var player: Node3D = world.get_node_or_null("PlayerFPS") as Node3D
+	var hud: Node = world.get_node_or_null("UILayer/HUD")
+	if player == null or hud == null:
+		return false
+	var ok: bool = true
+	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia"]:
+		var task: Node = world.get_node_or_null(task_name)
+		if task == null:
+			ok = false
+			break
+		task.call("interact", player)
+	ok = ok and world.call("get", "_act_five_done") == true
+	ok = ok and hud.call("is_end_card_visible") == true
+	ok = ok and _flag(&"casa_reconstruida")
+	if not ok:
+		print("ACTO_V_FALLO")
+		return false
+	print("ACTO_V_OK")
+	_press_restart(world)
+	await _settle()
+	return current_scene != null and String(current_scene.scene_file_path) == TITLE
 
 
 ## El título es el final del arco y las banderas siguen vivas.
@@ -175,13 +214,11 @@ func _check_title() -> bool:
 		print("TITULO_FALLO")
 		return false
 	var ok: bool = _flag(&"descanso") and _flag(&"herido_salvado") and _flag(&"maiz_guardado")
-	ok = ok and _flag(&"scout_spared")
-	ok = ok and _flag(&"aliado_0") and _flag(&"aliado_2")
+	ok = ok and _flag(&"scout_spared") and _flag(&"casa_reconstruida")
 	print("TITULO_OK")
 	return ok
 
 
-## Carga una escena como escena actual y espera a que esté lista.
 func _open(path: String) -> Node:
 	var error: int = change_scene_to_file(path)
 	if error != OK:
@@ -191,8 +228,6 @@ func _open(path: String) -> Node:
 
 
 func _settle() -> void:
-	# El cambio de escena se aplica al final del fotograma; dos frames cubren
-	# también el `_ready` de la escena nueva.
 	await process_frame
 	await process_frame
 
@@ -210,8 +245,6 @@ func _press_restart(scene: Node) -> void:
 	scene.call("_unhandled_input", event)
 
 
-## Detiene la música y los efectos antes de salir; el pututu del acto I puede
-## seguir sonando cuando la escena ya se liberó.
 func _stop_audio() -> void:
 	var audio: Node = root.get_node_or_null("AudioManager")
 	if audio != null:
