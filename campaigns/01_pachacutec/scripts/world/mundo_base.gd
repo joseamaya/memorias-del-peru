@@ -36,6 +36,7 @@ const ROCK_FROM_HEIGHT: float = 1.0
 const ROCK_FULL_HEIGHT: float = 4.0
 ## Cúpula de nubes procedurales (shared_assets/materials/nubes.gdshader).
 const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
+
 const CLOUD_DOME_RADIUS: float = 420.0
 const CLOUD_DOME_SEGMENTS: int = 64
 const CLOUD_DOME_RINGS: int = 32
@@ -1840,26 +1841,28 @@ func _add_contact_shadow(actor: Node3D) -> void:
 
 
 ## Material compartido por todas las manchas de contacto.
+##
+## La textura se construye como ImageTexture: con una GradientTexture2D el
+## renderizador no muestreaba el RGB negro y la mancha salía como una losa
+## clara. La imagen radial evita depender del filtro de la textura procedural.
 func _get_contact_shadow_material() -> StandardMaterial3D:
 	if _contact_shadow_material != null:
 		return _contact_shadow_material
-	var gradient: Gradient = Gradient.new()
-	gradient.set_color(0, Color(0.0, 0.0, 0.0, CONTACT_SHADOW_ALPHA))
-	gradient.set_color(1, Color(0.0, 0.0, 0.0, 0.0))
-	gradient.add_point(0.55, Color(0.0, 0.0, 0.0, CONTACT_SHADOW_ALPHA * 0.4))
-	var texture: GradientTexture2D = GradientTexture2D.new()
-	texture.gradient = gradient
-	texture.fill = GradientTexture2D.FILL_RADIAL
-	texture.fill_from = Vector2(0.5, 0.5)
-	texture.fill_to = Vector2(1.0, 0.5)
-	texture.width = 64
-	texture.height = 64
+	var image: Image = Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	for y: int in range(64):
+		for x: int in range(64):
+			var p: Vector2 = Vector2(float(x) + 0.5, float(y) + 0.5) / 64.0 * 2.0 - Vector2.ONE
+			var fade: float = 1.0 - smoothstep(0.12, 1.0, p.length())
+			image.set_pixel(x, y, Color(0.0, 0.0, 0.0, CONTACT_SHADOW_ALPHA * fade))
+	var texture: ImageTexture = ImageTexture.create_from_image(image)
 	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = Color(0.0, 0.0, 0.0, 1.0)
 	material.albedo_texture = texture
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	material.disable_receive_shadows = true
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
 	_contact_shadow_material = material
 	return material
 

@@ -38,7 +38,8 @@ func test_dialogue_camera_focus_and_return() -> bool:
 	ok = ok and absf(wrapf(player.rotation.y, -PI, PI)) < deg_to_rad(8.0)
 	# El interlocutor está a la altura de los ojos: la cámara no debe mirar al
 	# cielo por confundir la altura de Head con la posición local de la cámara.
-	ok = ok and absf(player.get("_pitch")) < deg_to_rad(10.0)
+	var pitch: float = player.get("_pitch")
+	ok = ok and absf(pitch) < deg_to_rad(10.0)
 	player.end_dialogue()
 	ok = ok and player.is_controls_locked()
 	player.call("_update_focus", 0.6)

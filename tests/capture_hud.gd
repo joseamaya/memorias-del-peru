@@ -23,15 +23,17 @@ func _capture() -> void:
 	var player: PlayerFPS = world.get_node("PlayerFPS") as PlayerFPS
 	var weaver: NpcActor = world.get_node("Llacta/NPCs/Tejedora") as NpcActor
 	var talk: NpcTalk = weaver.get_node("Talk") as NpcTalk
-	for shadow: Node in world.find_children("ContactShadow", "", true, false):
-		print("SHADOW ", shadow.get_parent().name, " at ", (shadow as Node3D).global_position)
-		var quad: MeshInstance3D = shadow as MeshInstance3D
-		var mat: StandardMaterial3D = quad.material_override as StandardMaterial3D
-		var tex: GradientTexture2D = mat.albedo_texture as GradientTexture2D
-		if tex != null:
-			var img: Image = tex.get_image()
-			print("  tex center=", img.get_pixel(32, 32), " edge=", img.get_pixel(0, 32), " alpha_mode=", mat.transparency)
-		break
+	var shadow_node: MeshInstance3D = weaver.get_node_or_null("ContactShadow") as MeshInstance3D
+	if shadow_node != null:
+		print("SHADOW_MAT ", shadow_node.material_override)
+		if shadow_node.material_override is ShaderMaterial:
+			var sm: ShaderMaterial = shadow_node.material_override as ShaderMaterial
+			print("  shader=", sm.shader, " code=", sm.shader.code.length() if sm.shader != null else -1)
+		print("  exists old=", ResourceLoader.exists("res://shared_assets/materials/sombra_contacto.gdshader"),
+			" new=", ResourceLoader.exists("res://shared_assets/materials/sombra_contacto_v2.gdshader"))
+
+
+
 	# Exploración: delante de la tejedora, dentro del alcance de «Hablar».
 	var forward: Vector3 = -weaver.global_transform.basis.z
 	player.global_position = weaver.global_position + forward * 2.0
