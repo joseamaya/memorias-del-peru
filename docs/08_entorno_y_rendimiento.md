@@ -635,16 +635,16 @@ y `measure_ciudad_performance.gd`, 1920 × 1080, 3D al 83 %, sin vsync y con
 |---|---|---|---|---|
 | Llacta (acto I) | Medio | 81,2 | 71,4 | 110 |
 | Paso (acto II) | Medio | 79,2 | 71,4 | 54 |
-| Cusco (acto III) | Medio | 61,4 | 55,6 | 406 |
+| Cusco (acto III) | Medio | 61,4 | 55,6 | 405 |
 | Llacta (acto I) | Bajo | 126,2 | 100,0 | 141 |
 | Paso (acto II) | Bajo | 129,3 | 71,4 | 10 |
-| Cusco (acto III) | Bajo | 107,1 | 90,9 | 49 |
+| Cusco (acto III) | Bajo | 105,0 | 90,9 | 49 |
 
 - La llacta y el paso conservan margen amplio. **El Cusco queda en 61,4 FPS**:
   cumple el criterio, pero con menos de 2 FPS de margen. El coste viene del
   terreno 128 × 128 con colisión trimesh, el camino de lajas, las cinco
   variantes de casa y la vegetación del perímetro, que suben el dibujo de
-  ~330 a ~406 draw calls. Si una pasada posterior baja de 60, el orden de
+  ~330 a ~405 draw calls. Si una pasada posterior baja de 60, el orden de
   recorte es vegetación exterior y luego resolución del terreno; no se toca la
   colisión ni el camino.
 - El terreno del Cusco deja de ser un plano de dos triángulos: la malla tiene
