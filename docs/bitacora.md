@@ -10,6 +10,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Variedad en las casas del Cusco | Catorce viviendas con tres modelos: se añaden escala (0,94–1,06) y tinte por casa, también en el techo de ichu, sin geometría nueva. El santuario conserva su material compartido. 158 pruebas en verde | — |
 | Decisión de duración | La Fase 8 se compromete a 15–20 min y los 40–50 de la biblia pasan a una fase de contenido con su plan y coste. Se cierran las casillas de contenido histórico (29 fichas; PCH-025 fuera del juego) y de la Fase 6. Reversible: volver a 40–50 no deshace nada construido. 158 pruebas en verde | — |
 | Análisis de duración | La pasada guionada mide 4 min 21 s y la estimación humana 13–20 min, frente al objetivo de 40–50. Se documenta el inventario y tres opciones (rebasear a 15–20, añadir ~23 min de contenido o híbrido a 25–30). Vídeo reencodeado con separadores entre actos. 158 pruebas en verde | — |
 | Cierre de textos y vídeo del arco | La portada dice «La defensa del Cusco» y la tarjeta final ya no dice «(gris)». La grabación del Cusco fija las banderas del acto II para que los tres grupos se unan. Vídeo de 4 min 25 s en `build/pachacutec-demo.mp4`: portada, acto I completo, paso y Cusco hasta el epílogo, 1080p30 con audio. 158 pruebas en verde | — |

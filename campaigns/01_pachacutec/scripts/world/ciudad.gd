@@ -27,6 +27,17 @@ const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
 const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0]
 const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7]
 const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
+## Catorce casas con tres modelos: la escala y el tinte rompen la repetición sin
+## generar geometría nueva.
+const HOUSE_SCALES: Array[float] = [1.0, 0.94, 1.06, 0.97, 1.03]
+const HOUSE_TINTS: Array[Color] = [
+	Color(1.0, 1.0, 1.0),
+	Color(0.96, 0.94, 0.90),
+	Color(1.0, 0.98, 0.93),
+	Color(0.94, 0.95, 0.98),
+	Color(1.0, 0.97, 0.91),
+	Color(0.98, 0.99, 0.97),
+]
 ## Catorce viviendas alrededor de la plaza, fuera de los caminos y del santuario.
 const HOUSE_POSITIONS: Array[Vector3] = [
 	Vector3(-24.0, 0.0, -18.0),
@@ -909,6 +920,8 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	parent.add_child(root)
 	root.look_at(Vector3(0.0, at.y, 0.0), Vector3.UP)
 	root.rotate_y(deg_to_rad(HOUSE_YAW_JITTER[index % HOUSE_YAW_JITTER.size()]))
+	var tint: Color = HOUSE_TINTS[index % HOUSE_TINTS.size()]
+	root.scale = Vector3.ONE * HOUSE_SCALES[index % HOUSE_SCALES.size()]
 	var base: Node3D = _add_block(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, true)
 	var roof: MeshInstance3D = MeshInstance3D.new()
 	roof.name = "Roof"
@@ -916,7 +929,11 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	var prism: PrismMesh = PrismMesh.new()
 	prism.size = Vector3(6.6, 1.5, 5.6)
 	roof.mesh = prism
-	roof.material_override = thatch
+	# El techo también varía de tono: dos casas iguales se notan menos si el
+	# ichu no es exactamente del mismo color.
+	var roof_material: ShaderMaterial = thatch.duplicate() as ShaderMaterial
+	roof_material.set_shader_parameter("tint", tint)
+	roof.material_override = roof_material
 	root.add_child(roof)
 	root.add_to_group("houses")
 	var blockout: Array[Node3D] = [roof]
@@ -934,7 +951,23 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	slot.blockout_collisions = collisions
 	root.add_child(slot)
 	SurfaceMaterials.apply_to_model(slot.model)
+	_tint_model(slot.model, tint)
 	_add_house_props(root, index)
+
+
+## Aplica un tinte propio a todas las mallas del modelo sin tocar el material
+## compartido del resto de la ciudad.
+func _tint_model(model: Node3D, tint: Color) -> void:
+	if model == null or tint == Color(1.0, 1.0, 1.0):
+		return
+	for node: Node in model.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		var base: ShaderMaterial = mesh_instance.material_override as ShaderMaterial
+		if base == null:
+			continue
+		var material: ShaderMaterial = base.duplicate() as ShaderMaterial
+		material.set_shader_parameter("tint", tint)
+		mesh_instance.material_override = material
 
 
 ## Cántaros y leña delante de la vivienda. El frente mira a −Z local.
