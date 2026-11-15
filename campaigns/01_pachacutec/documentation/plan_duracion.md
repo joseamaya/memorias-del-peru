@@ -83,7 +83,20 @@ no de pulido: no cabe en una entrega de arte.
 Rebasar a **25–30 min** y añadir solo las piezas baratas (encargos con ida y
 vuelta, víspera y avisos): +12–14 min, con un coste de una o dos sesiones.
 
-## 5. Recomendación
+## 5. Decisión (2026-11-14)
+
+**Opción A para esta fase, con la B como fase siguiente.** El arco de la Fase 8
+se compromete a **15–20 min** y los 40–50 pasan a una fase de contenido con el
+plan de §4. Motivos:
+
+- El contenido actual da para 15–20 min densos; estirarlo con relleno
+  contradice el criterio de «que se juegue bien» ([AGENTS.md §1](../../../AGENTS.md)).
+- La decisión es reversible: si se aprueba la fase de contenido, se vuelve a
+  40–50 sin deshacer nada de lo construido.
+- La medida definitiva sigue pendiente de la pasada del autor
+  ([validacion_arco.md](validacion_arco.md)).
+
+## 6. Recomendación original
 
 1. **Hacer la pasada de validación** antes de decidir: si sale 20 min, la
    opción C basta para acercarse; si sale 12, hace falta la B.
@@ -93,7 +106,7 @@ vuelta, víspera y avisos): +12–14 min, con un coste de una o dos sesiones.
 3. Si el objetivo de 40–50 min es firme, planificar la opción B como **fase 9**
    con su propia tabla de estado, no como pulido de la fase 8.
 
-## 6. Qué NO cambia la duración
+## 7. Qué NO cambia la duración
 
 - El pulido visual, el audio y el rendimiento.
 - Los clips de combate y la caída del enemigo.

@@ -11,7 +11,7 @@ siendo válidos; su modelo de museo, no.
 
 ## 0. Resumen
 
-RPG histórico en primera persona, en tres actos de 12–18 minutos, 40–50 en
+RPG histórico en primera persona, en tres actos. La Fase 8 entrega 15–20 minutos de arco; el objetivo de 40–50 minutos queda para la fase de contenido. En
 total. El jugador es un joven de una llacta del valle del Cusco. Vive la
 mañana en que llega la noticia del avance chanca, cruza el paso con la comitiva
 y llega al Cusco para la defensa. No sustituye a Cusi Yupanqui ni cambia el

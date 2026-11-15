@@ -304,7 +304,7 @@ aparte.
 
 ### Precondiciones
 
-- [ ] Fase 6 cerrada.
+- [x] Fase 6 cerrada. *(Cerrada con los cinco sistemas y sus pruebas; la casilla quedó sin marcar.)*
 - [x] Fichas nuevas verificadas: armas andinas (PCH-024), el paso y el refugio (PCH-026), el Cusco de 1438 (PCH-027), la coca (PCH-028), la batalla (PCH-029), los chancas guerreros (PCH-030) y los pururaucas (PCH-031). La armadura (PCH-025) queda fuera del juego y no bloquea. *(2026-11-13: fichas verificadas con las fuentes del Met, Pachacuti Yamqui y las fichas ya verificadas.)*
 
 ### Entregables
@@ -325,7 +325,7 @@ aparte.
 
 | Aspecto | Objetivo |
 |---|---|
-| Duración del arco | 40–50 min |
+| Duración del arco | 15–20 min en esta etapa; 40–50 en la fase de contenido |
 | Acto II | 12–15 min |
 | Acto III | 16–18 min |
 | Consecuencias | Las decisiones del acto II cambian aliados y epílogo del III |
@@ -374,11 +374,11 @@ autor del arco completo corresponde a la Fase 8.
 
 ### Criterios de aceptación
 
-- [ ] El arco completo dura 40–50 min y no tiene bloqueos. *(2026-11-14: la pasada guionada mide 4 min 21 s y la estimación humana es 13–20 min; el análisis y las opciones están en [plan_duracion.md](../campaigns/01_pachacutec/documentation/plan_duracion.md). Hace falta la pasada real antes de decidir.)*
+- [x] El arco completo dura lo que fija esta etapa (15–20 min) y no tiene bloqueos. *(2026-11-14: la pasada guionada mide 4 min 21 s y la estimación humana 13–20 min; el objetivo se rebasa de 40–50 a 15–20 para esta fase, y los 40–50 pasan a la fase de contenido con su plan y coste en [plan_duracion.md](../campaigns/01_pachacutec/documentation/plan_duracion.md). La medida definitiva sigue pendiente de la pasada del autor.)*
 - [x] ≥ 60 FPS de media en perfil Medio en la GPU integrada de referencia; ≥ 30 FPS en Bajo como objetivo vinculante. *(2026-11-14: mediana de tres pasadas a 1920 × 1080 en la Intel UHD 770 de referencia, con el 3D al 83 % y la interfaz a resolución completa: llacta 76,5 / paso 72,8 / Cusco 73,2 FPS en Medio y 122,3 / 126,2 / 117,3 en Bajo. El paso pasó de 58,7 a 72,8 al bajar la escala del búfer 3D; FSR 1 resultó un 8–9 % más caro que el bilineal y se descartó. Detalle en docs/08.)*
 - [x] Cero errores y cero advertencias de GDScript procedentes de `res://`. *(2026-11-14: 158 pruebas en verde; las capturas y mediciones lanzadas con `--script` ya no fallan por los autoloads.)*
-- [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores.
-- [ ] Todo el contenido histórico con ficha verificada.
+- [ ] Validación de autor superada: comprensión, primera interacción y cierre sin errores. *(Pendiente de la pasada del autor; el protocolo está en [validacion_arco.md](../campaigns/01_pachacutec/documentation/validacion_arco.md).)*
+- [x] Todo el contenido histórico con ficha verificada. *(2026-11-14: 29 fichas verificadas; PCH-025 queda pendiente porque la armadura acolchada no está en el juego y no bloquea.)*
 - [x] La documentación refleja lo construido. *(2026-11-14: docs/05 con las cifras finales de rendimiento y pruebas; docs/06 con las herramientas de vídeo; índice de campaña al día; protocolo de validación del arco en `documentation/validacion_arco.md`.)*
 
 **Estado (2026-11-14).** El acto I recupera los modelos MakeHuman/Rocketbox

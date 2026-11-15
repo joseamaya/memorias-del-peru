@@ -45,7 +45,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | [guion_facilitador.md](guion_facilitador.md) | Listo para el piloto — sesiones de prueba |
 | [plantilla_sesion.md](plantilla_sesion.md) | Plantilla de registro de cada sesión |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
-| [plan_duracion.md](plan_duracion.md) | **Decisión pendiente** — medida y estimación de la duración, inventario del contenido y tres opciones para llegar a 40–50 min |
+| [plan_duracion.md](plan_duracion.md) | **Resuelto (2026-11-14)** — medida y estimación de la duración; la Fase 8 rebasa a 15–20 min y los 40–50 pasan a la fase de contenido, con coste por pieza |
 | [validacion_arco.md](validacion_arco.md) | **Pendiente de pasada** — protocolo de la validación de autor del arco completo: marcas por acto, cuestionario y umbrales |
 
 ## 6. Notas de producción (Fase 2)

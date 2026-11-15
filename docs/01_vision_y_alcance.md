@@ -33,7 +33,7 @@ En la campaña 01 el jugador vive los acontecimientos asociados a Cusi Yupanqui 
 - Controlador FPS: caminar, correr, cámara, head bobbing.
 - Sistema de interacción genérico por `RayCast3D` y clase `Interactable`.
 - Núcleo RPG: estado, habilidades, reputación, inventario, diálogo con opciones, diario, combate a distancia y puntos de control ([biblia de la campaña](../campaigns/01_pachacutec/documentation/biblia_campana.md)).
-- Tres actos jugables: la llacta, el paso y el Cusco de 1438; 40–50 min en total.
+- Tres actos jugables: la llacta, el paso y el Cusco de 1438; **15–20 min** en esta etapa y 40–50 como objetivo de la fase de contenido.
 - Entorno base: cielo físico, niebla, sol, perfiles de calidad gráfica.
 - Llacta, paso y Cusco construidos con terreno, viviendas, caminos, vegetación, personajes, objetos interactuables y sonido ambiente.
 
@@ -48,11 +48,11 @@ En la campaña 01 el jugador vive los acontecimientos asociados a Cusi Yupanqui 
 
 ## 5. Definición de éxito
 
-**Objetivo comprometido:** entregar la campaña 01 jugable de **40–50 minutos**, en tres actos, con todo su contenido histórico verificado y sin errores técnicos (ADR-0039). La antología completa y las demás campañas siguen siendo la visión del proyecto, no un compromiso de esta etapa.
+**Objetivo comprometido:** entregar la campaña 01 jugable en tres actos, con todo su contenido histórico verificado y sin errores técnicos. La Fase 8 entrega **15–20 minutos** de arco denso; los **40–50 minutos** de la biblia quedan como objetivo de la fase de contenido, con el plan y el coste en [plan_duracion.md](../campaigns/01_pachacutec/documentation/plan_duracion.md). La antología completa y las demás campañas siguen siendo la visión del proyecto.
 
 | # | Métrica | Umbral | Cómo se mide |
 |---|---|---|---|
-| 1 | Duración de la campaña | **40–50 min** en una partida completa de los tres actos (ADR-0039) | Pasadas cronometradas del registro de sesión |
+| 1 | Duración de la campaña | **15–20 min** en esta etapa; 40–50 min como objetivo de la fase de contenido | Pasadas cronometradas del registro de sesión |
 | 2 | Rendimiento | **Vinculante:** ≥ 30 FPS de media en perfil Bajo, salida a 1080p, en el equipo de referencia con GPU integrada (docs/08 §4). **Comprometido:** ≥ 60 FPS de media en perfil Medio en la misma GPU integrada, con el 3D al 83 % de 1080p y la interfaz a resolución completa | Recorrido fijo medido con `Performance` |
 | 3 | Rigor histórico | 100 % del contenido histórico con ficha “verificado” | Registro histórico de la campaña |
 | 4 | Estabilidad técnica | 0 errores en consola, 0 bloqueos de progreso | Pruebas automatizadas + sesiones de prueba |
