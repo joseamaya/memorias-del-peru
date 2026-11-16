@@ -18,8 +18,9 @@ const SHADER_PATH: String = "res://shared_assets/materials/range_shade.gdshader"
 
 ## Construye la banda bajo [param parent] y devuelve el nodo creado.
 static func build(parent: Node3D, node_name: String, inner: float, outer: float,
-		amplitude: float, seed_value: float, color: Color,
-		sun_direction: Vector3) -> MeshInstance3D:
+		amplitude: float, seed_value: float, color: Color, sun_direction: Vector3,
+		snow_start: float = 999.0, snow_end: float = 999.0,
+		snow_strength: float = 0.0) -> MeshInstance3D:
 	var surface: SurfaceTool = SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for ri: int in range(RADIAL_STEPS):
@@ -42,6 +43,9 @@ static func build(parent: Node3D, node_name: String, inner: float, outer: float,
 	material.shader = load(SHADER_PATH) as Shader
 	material.set_shader_parameter("sun_direction", sun_direction.normalized())
 	material.set_shader_parameter("rock_color", color)
+	material.set_shader_parameter("snow_start", snow_start)
+	material.set_shader_parameter("snow_end", snow_end)
+	material.set_shader_parameter("snow_strength", snow_strength)
 	var node: MeshInstance3D = MeshInstance3D.new()
 	node.name = node_name
 	node.mesh = surface.commit()

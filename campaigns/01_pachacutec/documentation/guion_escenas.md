@@ -1,6 +1,6 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
-- **Versión:** 1.5 — 2026-11-16
+- **Versión:** 1.6 — 2026-11-16
 - **Estado:** arco jugable con blockout y materiales propios; sin deudas de escena.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
 - **Uso:** este documento manda sobre la puesta en escena. Las claves de texto viven en `localization/pachacutec_texts.csv`; las banderas, en `CampaignState`.
@@ -1123,7 +1123,7 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 ## 11. Deudas y pendientes
 
 1. **Duración:** no hay partida humana cronometrada; la suma de escenas es una estimación.
-2. **Arte y audio:** el arco usa blockout con materiales procedurales y modelos propios. El pase visual empezó por nubes, cordilleras y terreno; las montañas ya tienen volumen, pero faltan texturas de roca, animaciones de personaje, retratos, props de detalle y mezcla de audio.
+2. **Arte y audio:** el arco usa blockout con materiales procedurales y modelos propios. El pase visual empezó por nubes, cordilleras y terreno; las montañas ya tienen volumen, pero faltan texturas finas de roca, animaciones de personaje, retratos, props de detalle y mezcla de audio.
 3. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
 
 **Cerradas en v1.1:** I.3 (punto junto al fuego), II.1 (línea del inca que huyó), II.2 (descanso duplicado), II.3 (`distraccion_cuerda` y q'ipi), III.3 (coste en la última oleada), IV.3 (curaca vecino, Anca testifica, `maiz_repartido`), V.1 (verbos y habilidades del acto I) y los rótulos de nombre.
@@ -1142,3 +1142,4 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 | 1.3 | 2026-11-16 | Se cierra el rendimiento en Medio: tres pasadas por acto y mediana ≥ 60 FPS, con la escala 3D al 0,70 y SSAO. La duración humana sigue pendiente. |
 | 1.4 | 2026-11-16 | Pase visual parcial: nubes, cordilleras y terreno. La deuda de arte deja de describirse como «gris» y se concreta en animaciones, retratos, props y mezcla de audio. |
 | 1.5 | 2026-11-16 | Cordilleras con volumen en la llacta y el Cusco mediante `DistantRange`: laderas, crestas, luz horneada y bruma por distancia. |
+| 1.6 | 2026-11-16 | Estratos de roca y nieve en las cumbres altas; la deuda de arte se concreta en texturas finas y audio. |

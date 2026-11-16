@@ -446,16 +446,17 @@ func _build_distant_ranges() -> void:
 	_build_range("DistantRangeNear", DISTANT_NEAR_INNER, DISTANT_NEAR_OUTER,
 		DISTANT_NEAR_AMPLITUDE, 1.0, DISTANT_NEAR_COLOR)
 	_build_range("DistantRangeMid", DISTANT_MID_INNER, DISTANT_MID_OUTER,
-		DISTANT_MID_AMPLITUDE, 2.0, DISTANT_MID_COLOR)
+		DISTANT_MID_AMPLITUDE, 2.0, DISTANT_MID_COLOR, 88.0, 102.0, 0.30)
 	_build_range("DistantRangeFar", DISTANT_FAR_INNER, DISTANT_FAR_OUTER,
-		DISTANT_FAR_AMPLITUDE, 3.0, DISTANT_FAR_COLOR)
+		DISTANT_FAR_AMPLITUDE, 3.0, DISTANT_FAR_COLOR, 80.0, 98.0, 0.45)
 
 
 ## Construye una banda de montaña con volumen (ver [DistantRange]).
 func _build_range(node_name: String, inner: float, outer: float, amplitude: float,
-		seed_value: float, color: Color) -> void:
+		seed_value: float, color: Color, snow_start: float = 999.0,
+		snow_end: float = 999.0, snow_strength: float = 0.0) -> void:
 	DistantRange.build(self, node_name, inner, outer, amplitude, seed_value, color,
-		_sun_direction())
+		_sun_direction(), snow_start, snow_end, snow_strength)
 
 
 func _sun_direction() -> Vector3:
