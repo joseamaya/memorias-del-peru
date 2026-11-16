@@ -46,20 +46,21 @@ void fragment() {
 	vec3 normal = normalize(NORMAL);
 	vec3 sun = normalize((VIEW_MATRIX * vec4(sun_direction, 0.0)).xyz);
 	float light = clamp(dot(normal, sun), -1.0, 1.0) * 0.5 + 0.5;
-	float variation = 0.86 + 0.20 * value_noise(world_pos.xz * 0.045)
-		+ 0.06 * value_noise(world_pos.xz * 0.35);
+	float variation = 0.86 + 0.20 * value_noise(world_pos.xz * 0.045);
 	vec3 rock = rock_color.rgb * variation;
 	// Estratos: bandas horizontales suaves que rompen el color plano.
-	float strata = value_noise(vec2(world_pos.y * 0.10, (world_pos.x + world_pos.z) * 0.012));
-	rock *= 1.0 + strata_strength * (strata - 0.5) * 2.0;
+	float strata = sin(world_pos.y * 0.28 + (world_pos.x + world_pos.z) * 0.012);
+	rock *= 1.0 + strata_strength * strata;
 	float pale = smoothstep(pale_start, pale_end, world_pos.y) * pale_strength;
 	rock = mix(rock, pale_color.rgb, pale);
 	// Nieve por encima de una línea irregular; el ruido evita el corte recto.
-	float snow_noise = value_noise(world_pos.xz * 0.03);
-	float snow_line = (snow_noise - 0.5) * 12.0;
-	float snow = smoothstep(snow_start + snow_line, snow_end + snow_line, world_pos.y)
-		* snow_strength;
-	rock = mix(rock, snow_color.rgb, snow);
+	if (snow_strength > 0.001) {
+		float snow_noise = value_noise(world_pos.xz * 0.03);
+		float snow_line = (snow_noise - 0.5) * 12.0;
+		float snow = smoothstep(snow_start + snow_line, snow_end + snow_line, world_pos.y)
+			* snow_strength;
+		rock = mix(rock, snow_color.rgb, snow);
+	}
 	vec3 lit = rock * mix(vec3(0.62, 0.68, 0.78), vec3(1.12, 1.07, 1.00), light);
 	float distance = length(world_pos - CAMERA_POSITION_WORLD);
 	float haze = smoothstep(haze_start, haze_end, distance) * haze_strength;
