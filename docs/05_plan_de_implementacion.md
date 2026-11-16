@@ -139,7 +139,7 @@
 
 **Criterios de aceptación:**
 
-- [x] ≥ 30 FPS de media en Bajo y ≥ 60 FPS de media en Medio en la GPU integrada de referencia (medido el 2026-11-16 con el arte final; Cusco 63,6 FPS de mediana y 63,2 en la peor pasada).
+- [x] ≥ 30 FPS de media en Bajo y ≥ 60 FPS de media en Medio en la GPU integrada de referencia (medido el 2026-11-16 con el arte final; el mínimo de Bajo es 73,8 en el Cusco y el de Medio 63,2).
 - [ ] Cada acto tiene su pase visual y sonoro aprobado.
 - [ ] No hay anacronismos visuales ni sonoros sin declarar.
 - [ ] La interfaz y los textos se leen sin esfuerzo.
