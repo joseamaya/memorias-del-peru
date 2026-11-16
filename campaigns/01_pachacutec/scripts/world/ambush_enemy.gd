@@ -27,12 +27,18 @@ var player: Node3D = null
 var paso: Node = null
 var character: CharacterState = null
 var brain: EnemyCombatant = null
+## Director del encuentro; si es null, el enemigo ataca por su cuenta.
+var director: EncounterDirector = null
 
 var _resolved: bool = false
 var _visual: CharacterModelVisual = null
 var _current_clip: StringName = &""
 var _winding_up: bool = false
 var _windup_left: float = 0.0
+var _has_token: bool = false
+var _telegraph: MeshInstance3D = null
+var _strafe_sign: int = 1
+var _strafe_elapsed: float = 0.0
 
 
 func _ready() -> void:
@@ -72,6 +78,7 @@ func _ready() -> void:
 	brain.alert_radius = 30.0
 	brain.flee_morale = 25.0
 	add_child(brain)
+	_build_telegraph()
 
 
 ## Asigna el objetivo y la escena que recibe el daño del jugador.
@@ -94,6 +101,7 @@ func _physics_process(delta: float) -> void:
 		_face(player.global_position, delta)
 	match intent:
 		EnemyCombatant.Intent.APPROACH:
+			_cancel_windup()
 			if distance > STANDOFF_DISTANCE:
 				_play_visual(&"Walk")
 				_move_towards(player.global_position)
@@ -101,6 +109,7 @@ func _physics_process(delta: float) -> void:
 				_play_visual(&"Idle")
 				velocity = Vector3.ZERO
 		EnemyCombatant.Intent.FLEE:
+			_cancel_windup()
 			_play_visual(&"Walk")
 			var away: Vector3 = global_position + (global_position - player.global_position).normalized() * 10.0
 			_move_towards(away)
@@ -108,31 +117,53 @@ func _physics_process(delta: float) -> void:
 				_resolve()
 		EnemyCombatant.Intent.ATTACK:
 			if not _winding_up:
+				# Sin ficha del director, el enemigo rodea en vez de atacar.
+				if director != null and not director.has_token(self):
+					if not director.request_token(self):
+						_strafe(delta, distance)
+						return
+					_has_token = true
 				_winding_up = true
 				_windup_left = ATTACK_WINDUP
+				_set_telegraph(true)
+				CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -18.0)
 				_play_visual(&"attack")
 			else:
 				_windup_left -= delta
 				if _windup_left <= 0.0:
 					_winding_up = false
+					_set_telegraph(false)
 					if distance <= ATTACK_REACH:
 						var damage: float = brain.attack(1.0)
 						if damage > 0.0:
 							CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -10.0)
-							paso.call("apply_player_damage", damage)
+							paso.call("apply_player_damage", damage, self)
+					_release_token()
 		EnemyCombatant.Intent.IDLE:
+			_cancel_windup()
 			_play_visual(&"Idle")
+			velocity = Vector3.ZERO
 
 
 ## Aplica un golpe del jugador. Al perder la moral, el cerebro ordena huir.
 func take_hit(amount: float) -> void:
 	if _resolved or brain == null:
 		return
-	_winding_up = false
+	_cancel_windup()
 	brain.take_damage(amount, MORALE_LOSS)
+	if _visual != null:
+		_visual.flash_hit()
 	_play_visual(&"hit")
 	if not character.is_alive():
 		_resolve()
+
+
+## Interrumpe el golpe en curso (por un parry o un empujón).
+func stagger() -> void:
+	if _resolved:
+		return
+	_cancel_windup()
+	_play_visual(&"hit")
 
 
 ## Indica si ya no cuenta para la emboscada (derribado o huido).
@@ -187,14 +218,88 @@ func _move_towards(target: Vector3) -> void:
 		velocity = Vector3.ZERO
 		return
 	direction = direction.normalized()
+	if director != null:
+		direction = (direction + director.separation(self)).normalized()
 	velocity = direction * SPEED
 	move_and_slide()
+
+
+## Rodea al jugador cuando no tiene ficha de ataque: así el grupo espera su
+## turno en vez de quedarse quieto o apilarse.
+func _strafe(delta: float, distance: float) -> void:
+	_strafe_elapsed += delta
+	if _strafe_elapsed >= 1.8:
+		_strafe_elapsed = 0.0
+		_strafe_sign = -_strafe_sign
+	var to_player: Vector3 = player.global_position - global_position
+	to_player.y = 0.0
+	if to_player.length() <= 0.05:
+		return
+	var radial: Vector3 = to_player.normalized()
+	var tangent: Vector3 = radial.cross(Vector3.UP) * float(_strafe_sign)
+	var correction: float = clampf(distance - STANDOFF_DISTANCE, -1.0, 1.0)
+	var direction: Vector3 = (tangent + radial * correction).normalized()
+	if director != null:
+		direction = (direction + director.separation(self)).normalized()
+	velocity = direction * SPEED * 0.7
+	move_and_slide()
+	_play_visual(&"Walk")
+
+
+func _build_telegraph() -> void:
+	var mesh: SphereMesh = SphereMesh.new()
+	mesh.radius = 0.075
+	mesh.height = 0.15
+	mesh.radial_segments = 6
+	mesh.rings = 3
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = Color(1.0, 0.58, 0.16, 1.0)
+	material.emission_enabled = true
+	material.emission = Color(1.0, 0.38, 0.08, 1.0)
+	material.emission_energy_multiplier = 2.2
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_telegraph = MeshInstance3D.new()
+	_telegraph.name = "AttackTelegraph"
+	_telegraph.mesh = mesh
+	_telegraph.material_override = material
+	_telegraph.position = Vector3(0.0, 2.08, 0.0)
+	_telegraph.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_telegraph.visible = false
+	add_child(_telegraph)
+
+
+func _set_telegraph(value: bool) -> void:
+	if _telegraph != null:
+		_telegraph.visible = value
+
+
+func _cancel_windup() -> void:
+	if not _winding_up and not _has_token:
+		return
+	_winding_up = false
+	_windup_left = 0.0
+	_set_telegraph(false)
+	_release_token()
+
+
+func _release_token() -> void:
+	if director != null and _has_token:
+		director.release_token(self)
+	_has_token = false
 
 
 func _resolve() -> void:
 	if _resolved:
 		return
 	_resolved = true
+	_cancel_windup()
+	if director != null:
+		director.unregister(self)
+	# Un cuerpo derribado no debe seguir bloqueando los ataques ni el paso: si
+	# conserva la colisión, el rayo del jugador sigue golpeando el cadáver y los
+	# compañeros quedan detrás. Se difiere porque estamos en el tick de física.
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
 	set_physics_process(false)
 	if paso != null:
 		paso.call("on_enemy_resolved")
@@ -239,4 +344,8 @@ static func _make_weapon() -> CombatWeapon:
 	weapon.charge_full_seconds = 1.0
 	weapon.stamina_cost = 0.0
 	weapon.cooldown_seconds = 2.0
+	weapon.windup_seconds = ATTACK_WINDUP
+	weapon.active_seconds = 0.12
+	weapon.recovery_seconds = 0.40
+	weapon.lunge_distance = 0.0
 	return weapon

@@ -7,6 +7,9 @@ extends Node
 
 @export var world_environment: WorldEnvironment
 @export var sun: DirectionalLight3D
+## Paleta del acto. Si está asignada, manda sobre los colores del `.tscn`; el
+## perfil gráfico sigue mandando sobre SSAO, niebla volumétrica y sombras.
+@export var palette: PaletteTuning
 
 ## Ajuste de la oclusión ambiental. Sin ella, las juntas de pirca, los poyos y
 ## los objetos apoyados se leen como calcomanías planas: es la diferencia más
@@ -48,3 +51,10 @@ func _on_profile_changed(profile: GraphicsProfile) -> void:
 		environment.ssao_light_affect = SSAO_LIGHT_AFFECT
 	if sun != null:
 		sun.directional_shadow_max_distance = profile.shadow_distance
+	apply_palette()
+
+
+## Aplica la paleta del acto, si hay una asignada.
+func apply_palette() -> void:
+	if palette != null and world_environment != null:
+		palette.apply_to(world_environment, sun)

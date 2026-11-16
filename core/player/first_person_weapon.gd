@@ -48,20 +48,24 @@ func current_kind() -> CombatWeapon.Kind:
 	return _kind
 
 
-## Gesto de ataque.
-func play_attack() -> void:
+## Gesto de ataque. Los tiempos se sincronizan con el compás del arma:
+## [param forward_seconds] cubre anticipación y ventana activa; [param
+## return_seconds], la recuperación.
+func play_attack(forward_seconds: float = ATTACK_SECONDS,
+		return_seconds: float = RETURN_SECONDS) -> void:
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
 	_tween = create_tween()
 	var forward: Vector3 = REST_POSITION + Vector3(-0.08, -0.04, -0.18)
-	_tween.tween_property(self, "position", forward, ATTACK_SECONDS) \
+	_tween.tween_property(self, "position", forward, maxf(forward_seconds, 0.01)) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_tween.parallel().tween_property(self, "rotation_degrees",
-		REST_ROTATION + Vector3(-28.0, 0.0, -18.0), ATTACK_SECONDS) \
+		REST_ROTATION + Vector3(-28.0, 0.0, -18.0), maxf(forward_seconds, 0.01)) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_tween.tween_property(self, "position", REST_POSITION, RETURN_SECONDS) \
+	_tween.tween_property(self, "position", REST_POSITION, maxf(return_seconds, 0.01)) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	_tween.parallel().tween_property(self, "rotation_degrees", REST_ROTATION, RETURN_SECONDS) \
+	_tween.parallel().tween_property(self, "rotation_degrees", REST_ROTATION,
+		maxf(return_seconds, 0.01)) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
 

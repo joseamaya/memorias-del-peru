@@ -1,6 +1,6 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
-- **Versión:** 1.8 — 2026-11-16
+- **Versión:** 1.9 — 2026-11-16
 - **Estado:** arco jugable con blockout y materiales propios; sin deudas de escena.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
 - **Uso:** este documento manda sobre la puesta en escena. Las claves de texto viven en `localization/pachacutec_texts.csv`; las banderas, en `CampaignState`.
@@ -1123,7 +1123,7 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:45 y sirve para revi
 ## 11. Deudas y pendientes
 
 1. **Duración:** no hay partida humana cronometrada; la suma de escenas es una estimación.
-2. **Arte y audio:** el arco usa blockout con materiales procedurales y modelos propios. El pase visual empezó por nubes, cordilleras y terreno; las montañas ya tienen volumen. El elenco tiene reposo, habla, trabajo, caminar, correr y manto simulado, y la biblia excluye retratos y voces. Faltan texturas finas de roca, props de detalle y mezcla de audio.
+2. **Arte y audio:** el arco usa blockout con materiales procedurales y modelos propios. El pase visual empezó por nubes, cordilleras y terreno; las montañas ya tienen volumen y la [guía visual](guia_visual.md) fija escala, formas y una paleta por acto. El elenco tiene reposo, habla, trabajo, caminar, correr y manto simulado, y la biblia excluye retratos y voces. Faltan texturas finas de roca, props de detalle y mezcla de audio.
 3. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
 
 **Cerradas en v1.1:** I.3 (punto junto al fuego), II.1 (línea del inca que huyó), II.2 (descanso duplicado), II.3 (`distraccion_cuerda` y q'ipi), III.3 (coste en la última oleada), IV.3 (curaca vecino, Anca testifica, `maiz_repartido`), V.1 (verbos y habilidades del acto I) y los rótulos de nombre.
@@ -1133,6 +1133,8 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:45 y sirve para revi
 **Cerradas en v1.7:** rendimiento en Medio con la escena anterior a las cordilleras (Cusco 62,4 de mediana, escala 0,70).
 
 **Cerradas en v1.8:** rendimiento final con las cordilleras, el shader aligerado y la escala 0,68; Cusco 63,6 de mediana y el resto por encima de 89.
+
+**Cerradas en v1.9:** sensación de combate: fases de anticipación/activa/recuperación, parry de 0,15 s, bloqueo del 70 %, hitstop, golpe de cámara, destello, aviso enemigo y fichas de ataque (máximo dos a la vez).
 
 ## 12. Registro de cambios
 
@@ -1147,3 +1149,4 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:45 y sirve para revi
 | 1.6 | 2026-11-16 | Estratos de roca y nieve en las cumbres altas; la deuda de arte se concreta en texturas finas y audio. |
 | 1.7 | 2026-11-16 | Se reabre el rendimiento: la tanda con cordilleras da Cusco 59,4 de mediana. Se aligera el shader y la escala de Medio baja a 0,68; falta la medición final. |
 | 1.8 | 2026-11-16 | Rendimiento final cerrado: Cusco 63,6 FPS de mediana (63,2 en la peor pasada) y los demás actos por encima de 89, con SSAO y escala 0,68. |
+| 1.9 | 2026-11-16 | Pase de sensación de combate y guía visual: fases del golpe, parry, hitstop, cámara, telegrafía, fichas de ataque y paletas por acto. |

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="PaletteTuning" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/systems/graphics/palette_tuning.gd" id="1_palette"]
+
+[resource]
+script = ExtResource("1_palette")
+display_name = "II — Paso, altura fría"
+sky_rayleigh = Color(0.34, 0.52, 0.86, 1)
+sky_ground = Color(0.16, 0.15, 0.13, 1)
+sky_turbidity = 1.6
+sky_mie = Color(0.85, 0.78, 0.68, 1)
+sun_color = Color(1, 0.86, 0.7, 1)
+sun_energy = 1.2
+sun_elevation_deg = -20.0
+sun_azimuth_deg = -38.0
+ambient_color = Color(0.67, 0.7, 0.75, 1)
+ambient_energy = 0.9
+ambient_sky_contribution = 0.45
+fog_color = Color(0.64, 0.72, 0.82, 1)
+fog_density = 0.003
+fog_height_density = 0.04
+fog_sky_affect = 0.35
+exposure = 1.02
+contrast = 1.05
+saturation = 1.0
+background_energy = 1.0

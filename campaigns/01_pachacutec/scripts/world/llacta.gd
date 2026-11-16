@@ -446,9 +446,11 @@ func _build_distant_ranges() -> void:
 	_build_range("DistantRangeNear", DISTANT_NEAR_INNER, DISTANT_NEAR_OUTER,
 		DISTANT_NEAR_AMPLITUDE, 1.0, DISTANT_NEAR_COLOR)
 	_build_range("DistantRangeMid", DISTANT_MID_INNER, DISTANT_MID_OUTER,
-		DISTANT_MID_AMPLITUDE, 2.0, DISTANT_MID_COLOR, 88.0, 102.0, 0.30)
+		DISTANT_MID_AMPLITUDE, 2.0, DISTANT_MID_COLOR, 70.0, 92.0, 0.35)
+	# La nieve se queda en la banda media: en la lejana solo asomaban las
+	# cumbres por encima de la media y parecían jirones blancos flotando.
 	_build_range("DistantRangeFar", DISTANT_FAR_INNER, DISTANT_FAR_OUTER,
-		DISTANT_FAR_AMPLITUDE, 3.0, DISTANT_FAR_COLOR, 80.0, 98.0, 0.45)
+		DISTANT_FAR_AMPLITUDE, 3.0, DISTANT_FAR_COLOR)
 
 
 ## Construye una banda de montaña con volumen (ver [DistantRange]).
@@ -1868,16 +1870,10 @@ func _add_community_fire(parent: Node3D) -> void:
 func _apply_act_mood() -> void:
 	if act == 1:
 		return
-	var environment: Environment = world_environment.environment
+	# Los colores viven en la paleta del acto (`resources/palettes/`). Aquí solo
+	# quedan los cambios de puesta en escena: fuego, ruinas y ausencia.
+	var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
 	if act == 4:
-		sun.light_energy = 0.85
-		sun.light_color = Color(0.76, 0.85, 1.0, 1.0)
-		if environment != null:
-			environment.ambient_light_energy = 0.75
-			environment.ambient_light_color = Color(0.62, 0.70, 0.84, 1.0)
-			environment.background_energy_multiplier = 0.72
-			environment.fog_light_color = Color(0.60, 0.68, 0.82, 1.0)
-		var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
 		if fire != null:
 			fire.visible = false
 		_add_ruin(Vector3(-19.0, 0.0, 9.5), "RuinWest")
@@ -1887,14 +1883,6 @@ func _apply_act_mood() -> void:
 		_add_home_absence()
 		_add_uncared_field()
 	else:
-		sun.light_energy = 1.35
-		sun.light_color = Color(1.0, 0.87, 0.7, 1.0)
-		if environment != null:
-			environment.ambient_light_energy = 1.0
-			environment.ambient_light_color = Color(0.72, 0.68, 0.61, 1.0)
-			environment.background_energy_multiplier = 1.0
-			environment.fog_light_color = Color(0.66, 0.74, 0.86, 1.0)
-		var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
 		if fire != null:
 			fire.visible = true
 		_add_home_absence()

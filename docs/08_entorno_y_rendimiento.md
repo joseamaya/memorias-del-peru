@@ -119,6 +119,23 @@ Consecuencias de que la referencia tenga GPU integrada:
 4. Se registran FPS medio y p1, tiempo de frame, draw calls y memoria de vídeo.
 5. La medición se repite al cerrar cada acto y al cambiar la escena.
 
+### 4.1. Auditoría de escena
+
+`tools/scene_audit.gd` cuenta draw calls, primitivas, memoria de vídeo, mallas,
+colisiones y luces con sombra de una escena. Se ejecuta con ventana (el servidor Dummy no
+cuenta draw calls):
+
+```bash
+godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
+    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20
+```
+
+**Línea base del Cusco (2026-11-16):** 488 draw calls, 1,48 M primitivas, 250 mallas,
+1 luz con sombra, 211 MB de vídeo. El presupuesto de la referencia es ≤ 350 draw calls y
+≤ 1,2 M primitivas; el Cusco lo supera. La mediana de FPS sigue por encima de 60 porque
+el coste es de relleno, no de CPU. La siguiente optimización debe fusionar geometría
+estática de casas y muros por material, no bajar más la escala.
+
 **Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |

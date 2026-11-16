@@ -35,6 +35,8 @@ var _porra_pivot: Node3D = null
 var _skeleton: Skeleton3D = null
 var _hand_index: int = -1
 var _head_index: int = -1
+var _flashing: bool = false
+var _flash_restore: Dictionary[MeshInstance3D, Material] = {}
 
 
 func _ready() -> void:
@@ -197,6 +199,38 @@ func _darken_clothes() -> void:
 			var plain: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
 			plain.albedo_color = DARK_CLOTH_TINT
 			clothes.set_surface_override_material(surface, plain)
+
+
+## Destello breve al recibir un golpe. Se aplica a todas las mallas del modelo
+## y se restaura el override anterior; si ya había un destello, no se apila.
+func flash_hit(color: Color = Color(1.0, 0.96, 0.90, 1.0), seconds: float = 0.08) -> void:
+	# Bajo el driver Dummy de las pruebas sin pantalla, los overrides de
+	# material se liberan mal; en el juego y en las capturas sí se aplican.
+	if DisplayServer.get_name() == "headless":
+		return
+	if _model == null or _flashing:
+		return
+	var meshes: Array[Node] = _model.find_children("*", "MeshInstance3D", true, false)
+	if meshes.is_empty():
+		return
+	_flashing = true
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = color
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_flash_restore.clear()
+	for node: Node in meshes:
+		var mesh: MeshInstance3D = node as MeshInstance3D
+		if mesh == null:
+			continue
+		_flash_restore[mesh] = mesh.material_override
+		mesh.material_override = material
+	await get_tree().create_timer(seconds, false).timeout
+	if is_inside_tree():
+		for mesh: MeshInstance3D in _flash_restore:
+			if is_instance_valid(mesh):
+				mesh.material_override = _flash_restore[mesh]
+	_flash_restore.clear()
+	_flashing = false
 
 
 func _process(_delta: float) -> void:

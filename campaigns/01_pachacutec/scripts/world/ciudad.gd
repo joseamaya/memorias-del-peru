@@ -210,6 +210,10 @@ var journal: Journal = null
 var _enemies: Array[AmbushEnemy] = []
 var _attack_ray: RayCast3D = null
 var loadout: CombatLoadout = null
+var _director: EncounterDirector = null
+var _hit_stop: HitStop = null
+var _camera_kick: CameraKick = null
+var _pending_damage: float = 0.0
 var _defense_active: bool = false
 var _defense_requested: bool = false
 var _wave: int = 0
@@ -310,19 +314,20 @@ func ally_count() -> int:
 
 
 ## Aplica daño al jugador; el escudo reduce una parte y consume aliento.
-func apply_player_damage(amount: float) -> void:
+func apply_player_damage(amount: float, source: Node = null) -> void:
 	if _dead or _completed or character == null:
 		return
+	var parried: bool = loadout != null and loadout.is_parry_window()
 	var applied: float = amount
-	if _blocking and loadout != null:
-		var ratio: float = loadout.block_ratio()
-		if ratio > 0.0:
-			applied *= 1.0 - ratio
-			if player.stamina != null:
-				player.stamina.consume(5.0)
+	if loadout != null:
+		applied = loadout.resolve_incoming_damage(amount)
+	if parried and source is AmbushEnemy:
+		(source as AmbushEnemy).stagger()
 	character.damage(applied)
 	if hud != null:
 		hud.flash_damage()
+	if _camera_kick != null and applied > 0.0:
+		_camera_kick.kick(-1.4, 0.9)
 	if not character.is_alive():
 		_dead = true
 		hint_label.text = tr("PCH_CIUDAD_DEAD")
@@ -411,26 +416,50 @@ func _unhandled_input(event: InputEvent) -> void:
 func _attack() -> void:
 	if not is_ambush_active() or loadout == null or _attack_ray == null:
 		return
-	if not loadout.can_attack():
+	_pending_damage = loadout.attack(1.0)
+	if _pending_damage <= 0.0:
 		return
-	_attack_ray.target_position = Vector3(0.0, 0.0, -maxf(loadout.range_max(), 0.5))
-	var damage: float = loadout.attack(1.0)
-	if damage <= 0.0:
-		return
-	loadout.register_hit()
 	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH if loadout.is_ranged()
 		else CampaignAudio.PORRA_PATH, -12.0)
+
+
+func _on_attack_started(weapon: CombatWeapon) -> void:
 	var weapon_visual: FirstPersonWeapon = player.get_node_or_null("Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
-	if weapon_visual != null:
-		weapon_visual.play_attack()
+	if weapon_visual != null and weapon != null:
+		weapon_visual.play_attack(
+			weapon.windup_seconds + weapon.active_seconds, weapon.recovery_seconds)
+
+
+func _on_attack_active(weapon: CombatWeapon) -> void:
+	if weapon == null or _attack_ray == null or _pending_damage <= 0.0:
+		return
+	_attack_ray.target_position = Vector3(0.0, 0.0, -maxf(weapon.range_max, 0.5))
 	_attack_ray.force_raycast_update()
 	if not _attack_ray.is_colliding():
 		return
 	var enemy: AmbushEnemy = _attack_ray.get_collider() as AmbushEnemy
-	if enemy != null:
-		CampaignAudio.play_sfx(CampaignAudio.IMPACT_PATH, -6.0)
-		enemy.take_hit(damage)
+	if enemy == null:
+		return
+	loadout.register_hit()
+	CampaignAudio.play_sfx(CampaignAudio.IMPACT_PATH, -6.0)
+	enemy.take_hit(_pending_damage)
+	if _hit_stop != null:
+		_hit_stop.trigger(0.055)
+	if _camera_kick != null:
+		_camera_kick.kick(-1.8, 0.8)
 	_update_status()
+
+
+func _on_parried() -> void:
+	CampaignAudio.play_sfx(CampaignAudio.PORRA_PATH, -13.0)
+	if _camera_kick != null:
+		_camera_kick.kick(-1.2, -0.6)
+
+
+func _on_blocked() -> void:
+	CampaignAudio.play_sfx(CampaignAudio.IMPACT_PATH, -9.0)
+	if _camera_kick != null:
+		_camera_kick.kick(-0.8, 0.5)
 
 
 ## II.4: entregar el mensaje del paso antes de reclutar.
@@ -1011,6 +1040,11 @@ func _disable_interactions_for_defense() -> void:
 
 ## Cada oleada trae menos enemigos si el jugador reclutó y preparó la defensa.
 func _spawn_wave() -> void:
+	if _director == null:
+		_director = EncounterDirector.new()
+		_director.name = "EncounterDirector"
+		_director.max_attackers = 2
+		add_child(_director)
 	var prepared: int = 1 if CampaignState.has_flag(&"preparacion_hecha") else 0
 	# Cruzar el paso con la columna evita un enemigo en la primera oleada; si
 	# la bandera falta (partida de prueba), la plaza trae uno más.
@@ -1022,6 +1056,8 @@ func _spawn_wave() -> void:
 		enemy.position = DEFENSE_POSITIONS[index % DEFENSE_POSITIONS.size()]
 		add_child(enemy)
 		enemy.setup(player, self)
+		enemy.director = _director
+		_director.register(enemy)
 		_enemies.append(enemy)
 
 
@@ -1496,6 +1532,14 @@ func _setup_player_combat() -> void:
 	loadout.weapon_changed.connect(_on_weapon_changed)
 	loadout.ammo_changed.connect(_on_ammo_changed)
 	loadout.blocking_changed.connect(_on_blocking_changed)
+	loadout.attack_started.connect(_on_attack_started)
+	loadout.attack_active.connect(_on_attack_active)
+	loadout.parried.connect(_on_parried)
+	loadout.blocked.connect(_on_blocked)
+	_hit_stop = HitStop.new()
+	_hit_stop.name = "HitStop"
+	add_child(_hit_stop)
+	_camera_kick = player.get_node_or_null("Head/CameraKick") as CameraKick
 	if not CampaignState.has_data(&"stones"):
 		CampaignState.set_data(&"stones", CombatLoadout.DEFAULT_STONES)
 	var raw_stones: Variant = CampaignState.get_data(&"stones", CombatLoadout.DEFAULT_STONES)

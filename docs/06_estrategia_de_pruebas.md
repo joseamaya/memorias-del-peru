@@ -35,7 +35,26 @@ Ejecutar las pruebas automatizadas:
 godot --headless --path . --script res://tests/run_tests.gd
 ```
 
+Comprobar el comportamiento del combate con tres enemigos y un bot (fichas de
+ataque, resolución y atascos):
+
+```bash
+godot --headless --path . --script res://tests/combat_arena_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`.
+
+La CI de GitHub Actions (`.github/workflows/ci.yml`) repite en cada push a `main`:
+importar, límites de GDScript, pruebas, comportamiento del combate y exportación de
+Linux/Windows; el build de Linux se arranca en headless. Si la CI falla, la entrega no
+está terminada.
+
+Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
+
+```bash
+godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
+    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20
+```
 
 ## 3. Pruebas automatizadas
 
@@ -105,6 +124,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_journal` | Encargos y entradas de Memoria con sello y fuente |
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
 | `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
+| `test_combat_feel` | Fases del golpe, parry de 0,15 s, bloqueo del 70 % y fichas del director |
+| `combat_arena_check.gd` | Tres chancas contra un bot: ≤ 2 atacantes, resolución y sin atascos |
 | `test_campaign_state` | Banderas entre escenas |
 | `test_dialogue_panel` | Panel de diálogo y opciones |
 | `test_journal_panel` | Diario y detalle de entradas |
@@ -119,6 +140,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | Archivo | Qué cubre |
 |---|---|
 | `test_graphics_profiles_load` | Los cuatro perfiles cargan |
+| `test_palette_tuning` | Las paletas de acto se aplican al sol, ambiente, niebla y cielo; los cinco recursos cargan |
 | `test_graphics_default_profile` | Perfil por defecto y selección por argumento |
 | `test_graphics_settings_apply` | Aplicación de escala, upscaler, MSAA y antialiasing |
 | `test_audio_manager_buses` | Buses y limitador |
@@ -197,6 +219,8 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-16 | Tanda completa con cordilleras (shader intermedio) | `measure_performance.tscn` | Carga 1,6–3,7; Cusco 59,4 FPS de mediana (55,6–60,9), por debajo de 60. Se aligera el shader y la escala de Medio baja a 0,68 |
 | 2026-11-16 | Medición final de Medio con cordilleras, shader aligerado y escala 0,68 | `measure_performance.tscn` | Carga 1,8–2,7; 3 pasadas; llacta 89,4, paso 93,4, Cusco 63,6, posguerra 97,5, obra 90,5 FPS (mediana); los cinco actos ≥ 60 |
 | 2026-11-16 | Medición final del perfil Bajo con el arte nuevo | `measure_performance.tscn` | Carga 1,6–3,8; 3 pasadas; llacta 102,4, paso 102,0, Cusco 74,2, posguerra 124,5, obra 105,3 FPS (mediana); mínimo 73,8 |
+| 2026-11-16 | Paletas por acto y guía visual 4.9 | `run_tests.gd`, `test_palette_tuning.gd` y `capture_palettes.tscn` | 121 pruebas, 0 fallos; cinco capturas generadas y revisadas; `ARCO_OK` |
+| 2026-11-16 | Sensación de combate 4.11: fases del golpe, parry, hitstop, cámara, telegrafía y fichas | `run_tests.gd`, `test_combat_feel.gd` y `combat_arena_check.gd` | 125 pruebas, 0 fallos; arena 3 enemigos resueltos con ≤ 2 atacantes; `ARCO_OK` |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

@@ -10,7 +10,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, el guion de escenas, los sistemas de campaña y el rendimiento en Medio están cerrados; las 118 pruebas pasan. Queda el pase visual y sonoro, la duración real y la prueba de humo |
+| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, el guion de escenas, los sistemas de campaña, la sensación de combate, la guía visual y el rendimiento en Medio están cerrados; las 125 pruebas pasan. Queda la mezcla de audio escuchada, la duración real y la prueba de humo |
 
 ## Requisitos
 
@@ -75,11 +75,29 @@ godot --headless --path . --script res://tests/run_tests.gd
 godot --headless --path . --script res://tests/arc_playthrough.gd
 ```
 
+```bash
+godot --headless --path . --script res://tests/combat_arena_check.gd
+```
+
+Exportar y arrancar el build de Linux:
+
+```bash
+godot --headless --path . --export-release "Linux" build/linux/memorias-del-peru.x86_64
+./build/linux/memorias-del-peru.x86_64 --headless --quit-after 10
+```
+
 Medición de rendimiento por acto (tres pasadas; `--profile=0` Bajo, `--profile=1` Medio):
 
 ```bash
 godot --path . --disable-vsync --resolution 1920x1080 \
     res://tests/scenes/measure_performance.tscn -- --profile=1
+```
+
+Auditar una escena (draw calls, primitivas y luces con sombra):
+
+```bash
+godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
+    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20
 ```
 
 Duración de una partida (requiere jugarla):
