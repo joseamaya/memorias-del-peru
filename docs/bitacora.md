@@ -8,6 +8,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Alcance de arte 4.9 | Se corrige el alcance pendiente: el elenco ya tiene reposo, habla, trabajo, caminar, correr, mirada y manto simulado, y la biblia excluye retratos y voces. El arte que falta queda en texturas finas de roca, props de detalle y mezcla de audio escuchada | — |
 | Niveles de audio 4.9 | Se añade `tools/audio_levels.py`, que decodifica cada audio a estéreo y mide duración, pico, RMS y clips. Los 19 archivos están sin clip (picos entre -3,2 y -13,9 dBFS) y sin efectos casi mudos; la escucha por acto sigue pendiente. El primer análisis daba un falso clip en `honda_impacto.wav` por bajar a mono y sumar canales | — |
 | Roca y nieve 4.9 | Las cordilleras ganan estratos por ruido y nieve sobre una línea irregular en las cumbres medias y lejanas; la luz separa sombra fría y sol cálido. La nieve solo aparece en las bandas altas, con umbral y fuerza por material. 118 pruebas; `ARCO_OK` | — |
 | Medición pendiente 4.10 | La herramienta de rendimiento ahora limpia `CampaignState` entre actos: las banderas de un acto cambiaban la puesta en escena del siguiente y los draw calls. La re-medición tras las cordilleras con volumen no se pudo completar: el equipo estuvo entre carga 30 y 40 por procesos externos y las pasadas contaminadas daban 53–59 FPS en el Cusco. Se obtuvieron dos pasadas válidas con el shader anterior (Cusco 61,1 y 59,6); falta la tercera. Después se aligeró el shader de cordilleras, sin re-medir | — |

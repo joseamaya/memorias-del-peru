@@ -1123,7 +1123,7 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 ## 11. Deudas y pendientes
 
 1. **Duración:** no hay partida humana cronometrada; la suma de escenas es una estimación.
-2. **Arte y audio:** el arco usa blockout con materiales procedurales y modelos propios. El pase visual empezó por nubes, cordilleras y terreno; las montañas ya tienen volumen, pero faltan texturas finas de roca, animaciones de personaje, retratos, props de detalle y mezcla de audio.
+2. **Arte y audio:** el arco usa blockout con materiales procedurales y modelos propios. El pase visual empezó por nubes, cordilleras y terreno; las montañas ya tienen volumen. El elenco tiene reposo, habla, trabajo, caminar, correr y manto simulado, y la biblia excluye retratos y voces. Faltan texturas finas de roca, props de detalle y mezcla de audio.
 3. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
 
 **Cerradas en v1.1:** I.3 (punto junto al fuego), II.1 (línea del inca que huyó), II.2 (descanso duplicado), II.3 (`distraccion_cuerda` y q'ipi), III.3 (coste en la última oleada), IV.3 (curaca vecino, Anca testifica, `maiz_repartido`), V.1 (verbos y habilidades del acto I) y los rótulos de nombre.
