@@ -126,7 +126,7 @@ static func terrain_material(grass_tint: Color, rock_tint: Color, dirt_tint: Col
 	# La variación de gran escala usa una lectura muy ampliada del mismo
 	# detalle: si es demasiado grande se convierte en manchas.
 	material.set_shader_parameter("macro_scale", 0.28)
-	material.set_shader_parameter("macro_strength", 0.38)
+	material.set_shader_parameter("macro_strength", 0.50)
 	return material
 
 

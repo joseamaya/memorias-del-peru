@@ -12,9 +12,9 @@ extends Node3D
 ## Semilla fija: el reparto es el mismo en cada partida.
 const DEFAULT_SEED: int = 7331
 ## Piedras por cada 100 m².
-const DENSITY: float = 2.2
+const DENSITY: float = 4.0
 ## Radio del grano base, en metros; cada piedra lo multiplica entre 0.4 y 1.6.
-const BASE_RADIUS: float = 0.09
+const BASE_RADIUS: float = 0.10
 
 
 ## Siembra piedras en un disco de [param radius] alrededor de [param center].

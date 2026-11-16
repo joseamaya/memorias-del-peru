@@ -9,13 +9,13 @@ shader_type spatial;
 // cúpula y además no se estira en los polos.
 render_mode unshaded, cull_front, depth_draw_never, blend_mix, fog_disabled, shadows_disabled, ambient_light_disabled;
 
-uniform vec4 cloud_light : source_color = vec4(1.0, 0.97, 0.92, 1.0);
-uniform vec4 cloud_shadow : source_color = vec4(0.52, 0.58, 0.66, 1.0);
-uniform float coverage : hint_range(0.0, 1.0) = 0.56;
-uniform float edge_softness : hint_range(0.01, 0.5) = 0.16;
-uniform float cloud_scale : hint_range(0.5, 12.0) = 2.4;
-uniform float wind_speed : hint_range(0.0, 0.1) = 0.004;
-uniform float opacity : hint_range(0.0, 1.0) = 0.55;
+uniform vec4 cloud_light : source_color = vec4(0.97, 0.96, 0.94, 1.0);
+uniform vec4 cloud_shadow : source_color = vec4(0.60, 0.65, 0.72, 1.0);
+uniform float coverage : hint_range(0.0, 1.0) = 0.50;
+uniform float edge_softness : hint_range(0.01, 0.6) = 0.40;
+uniform float cloud_scale : hint_range(0.5, 12.0) = 1.7;
+uniform float wind_speed : hint_range(0.0, 0.1) = 0.003;
+uniform float opacity : hint_range(0.0, 1.0) = 0.38;
 // Invierte la mitad de la cúpula que se pinta, por si la esfera cambia de
 // orientación.
 uniform bool flip_horizon = false;
@@ -61,7 +61,9 @@ void fragment() {
 	vec3 world = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec3 dir = normalize(world - CAMERA_POSITION_WORLD);
 	float up = flip_horizon ? -dir.y : dir.y;
-	float horizon = smoothstep(0.06, 0.34, up);
+	// Las nubes solo viven por encima de las crestas: si empiezan antes, se
+	// cortan contra las montañas y parecen jirones pegados al cielo.
+	float horizon = smoothstep(0.30, 0.70, up);
 	vec3 p = dir * cloud_scale * 2.0;
 	p.x += TIME * wind_speed * 12.0;
 	p.z += TIME * wind_speed * 4.0;
@@ -69,9 +71,12 @@ void fragment() {
 	// Detalle fino en el borde: rompe el contorno de las nubes grandes sin
 	// añadir otra capa completa de fbm.
 	float detail = value_noise(p * 7.0 + vec3(TIME * wind_speed * 30.0, 0.0, 0.0));
-	float shape = n + (detail - 0.5) * 0.12;
+	float shape = n + (detail - 0.5) * 0.05;
 	float mask = smoothstep(coverage, coverage + edge_softness, shape) * horizon;
-	float light = smoothstep(0.42, 0.88, n);
+	// Funde también el borde interior: sin esto la nube conserva un contorno
+	// de recorte duro cuando el ruido baja de golpe.
+	mask *= smoothstep(0.0, 0.30, shape);
+	float light = smoothstep(0.36, 0.86, n);
 	ALBEDO = mix(cloud_shadow.rgb, cloud_light.rgb, light);
 	ALPHA = mask * opacity;
 }

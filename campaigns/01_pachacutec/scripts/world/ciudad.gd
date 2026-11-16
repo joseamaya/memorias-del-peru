@@ -1600,7 +1600,7 @@ func _build_distant_hills() -> void:
 	# Tres anillos: el más cercano cierra el valle, los otros dan profundidad.
 	_add_hill_ring("HillsMid", 105.0, 12.0, 9.0, Color(0.32, 0.35, 0.31, 1.0))
 	_add_hill_ring("HillsNear", 175.0, 26.0, 16.0, Color(0.30, 0.33, 0.36, 1.0))
-	_add_hill_ring("HillsFar", 250.0, 38.0, 22.0, Color(0.42, 0.46, 0.52, 1.0))
+	_add_hill_ring("HillsFar", 250.0, 50.0, 28.0, Color(0.36, 0.40, 0.46, 1.0))
 
 
 func _add_hill_ring(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
@@ -1640,7 +1640,7 @@ func _add_hill_ring(node_name: String, radius: float, base_height: float, amplit
 static func _hill_height(angle: float, base_height: float, amplitude: float) -> float:
 	var ridge: float = 0.5 + 0.5 * sin(angle * 4.0 + 1.1) * sin(angle * 7.0 - 0.6)
 	ridge = pow(maxf(ridge, 0.0), 0.7)
-	var detail: float = 0.14 * sin(angle * 23.0 + 0.8) + 0.07 * sin(angle * 47.0 + 1.9)
+	var detail: float = 0.08 * sin(angle * 19.0 + 0.8) + 0.04 * sin(angle * 31.0 + 1.9)
 	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
 
 

@@ -9,9 +9,9 @@ extends Node3D
 
 const PASS_SIZE: float = 80.0
 const TERRAIN_SIZE: float = 160.0
-const TERRAIN_RESOLUTION: int = 64
-const GRASS_COLOR: Color = Color(0.47, 0.46, 0.33, 1.0)
-const ROCK_COLOR: Color = Color(0.45, 0.43, 0.41, 1.0)
+const TERRAIN_RESOLUTION: int = 96
+const GRASS_COLOR: Color = Color(0.44, 0.44, 0.30, 1.0)
+const ROCK_COLOR: Color = Color(0.38, 0.36, 0.33, 1.0)
 const DIRT_COLOR: Color = Color(0.46, 0.38, 0.30, 1.0)
 const WATER_COLOR: Color = Color(0.30, 0.46, 0.52, 0.68)
 ## El arroyo corre encajado en el lado oeste; el agua queda por debajo de la
@@ -1181,7 +1181,7 @@ func _build_shelter() -> void:
 	# Junta oscura detrás de las piedras: los huecos de la pirca seca no deben
 	# dejar ver el cielo ni el interior del refugio.
 	var mortar: StandardMaterial3D = StandardMaterial3D.new()
-	mortar.albedo_color = Color(0.16, 0.14, 0.12, 1.0)
+	mortar.albedo_color = Color(0.30, 0.26, 0.22, 1.0)
 	mortar.roughness = 1.0
 	for wall_data: Array in [
 		[Vector3(14.32, ground + 1.0, 0.0), Vector3(0.22, 2.0, 5.0)],

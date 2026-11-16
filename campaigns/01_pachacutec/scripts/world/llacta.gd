@@ -7,7 +7,7 @@ extends Node3D
 ## asamblea) se añade en las misiones del acto.
 
 const TERRAIN_SIZE: float = 150.0
-const TERRAIN_RESOLUTION: int = 64
+const TERRAIN_RESOLUTION: int = 96
 const PLATEAU_RADIUS: float = 55.0
 const BOUNDARY_RADIUS: float = 70.0
 const RIDGE_START: float = 61.0
@@ -38,13 +38,13 @@ const DISTANT_SEGMENTS: int = 160
 const DISTANT_BOTTOM: float = -10.0
 const DISTANT_NEAR_BASE: float = 28.0
 const DISTANT_NEAR_AMPLITUDE: float = 34.0
-const DISTANT_MID_BASE: float = 36.0
-const DISTANT_MID_AMPLITUDE: float = 42.0
-const DISTANT_FAR_BASE: float = 46.0
-const DISTANT_FAR_AMPLITUDE: float = 48.0
-const DISTANT_NEAR_COLOR: Color = Color(0.30, 0.34, 0.41, 1.0)
-const DISTANT_MID_COLOR: Color = Color(0.36, 0.41, 0.48, 1.0)
-const DISTANT_FAR_COLOR: Color = Color(0.43, 0.48, 0.55, 1.0)
+const DISTANT_MID_BASE: float = 44.0
+const DISTANT_MID_AMPLITUDE: float = 52.0
+const DISTANT_FAR_BASE: float = 62.0
+const DISTANT_FAR_AMPLITUDE: float = 60.0
+const DISTANT_NEAR_COLOR: Color = Color(0.27, 0.31, 0.37, 1.0)
+const DISTANT_MID_COLOR: Color = Color(0.30, 0.34, 0.40, 1.0)
+const DISTANT_FAR_COLOR: Color = Color(0.33, 0.37, 0.43, 1.0)
 
 const AMBIENCE_PATH: String = "res://shared_assets/audio/ambiente_viento_andes.ogg"
 const FOOTSTEP_PATHS: Array[String] = [
@@ -471,11 +471,11 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 		surface.add_vertex(bottom0)
 		surface.add_vertex(top1)
 		surface.add_vertex(top0)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = color
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.disable_fog = true
+	var material: ShaderMaterial = ShaderMaterial.new()
+	material.shader = load("res://shared_assets/materials/range_shade.gdshader") as Shader
+	material.set_shader_parameter("ridge_color", color)
+	material.set_shader_parameter("base_darkness", 0.18)
+	material.set_shader_parameter("top_height", base_height + amplitude)
 	var range_node: MeshInstance3D = MeshInstance3D.new()
 	range_node.name = node_name
 	range_node.mesh = surface.commit()
@@ -488,7 +488,9 @@ func _build_range(node_name: String, radius: float, base_height: float, amplitud
 static func _distant_height(angle: float, base_height: float, amplitude: float) -> float:
 	var ridge: float = 0.5 + 0.5 * sin(angle * 5.0 + 0.4) * sin(angle * 9.0 - 0.9)
 	ridge = pow(maxf(ridge, 0.0), 0.65)
-	var detail: float = 0.16 * sin(angle * 31.0 + 1.7) + 0.09 * sin(angle * 53.0 - 0.3) + 0.05 * sin(angle * 89.0 + 0.5)
+	# Detalle de cresta suave: las frecuencias altas producían un serrucho que
+	# a contraluz se leía como un recorte de papel.
+	var detail: float = 0.08 * sin(angle * 17.0 + 1.7) + 0.04 * sin(angle * 29.0 - 0.3) + 0.02 * sin(angle * 47.0 + 0.5)
 	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
 
 
