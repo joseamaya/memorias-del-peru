@@ -260,7 +260,19 @@ func _ready() -> void:
 	environment_controller.bind(world_environment, sun)
 	_apply_act_mood()
 	CampaignProgress.save_checkpoint(self, player.global_position)
+	SessionLog.mark(&"act", _act_slug())
 	SessionLog.mark(&"control_taken")
+
+
+## Identificador del acto en el registro de sesión, para medir su duración.
+func _act_slug() -> String:
+	match act:
+		4:
+			return "posguerra"
+		5:
+			return "obra"
+		_:
+			return "llacta"
 
 
 ## Punto de aparición: el de la escena, salvo que `--spawn=<punto>` pida otro.

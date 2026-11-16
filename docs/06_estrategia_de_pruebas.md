@@ -162,6 +162,22 @@ Al cerrar cada acto:
 5. Verificar que las decisiones tomadas se notan en el acto siguiente.
 6. Anotar la duración con `--session <código>`.
 
+### Duración de la partida
+
+Cada mundo marca su acto al tomar el control (`SessionLog.mark(&"act", ...)`) y
+la campaña cierra con `act_five_end`. El registro permite calcular la duración
+real sin cronómetro externo:
+
+```bash
+godot --path . -- --session PCH-DUR-1
+python3 tools/session_duration.py PCH-DUR-1
+```
+
+El script imprime una tabla con inicio, fin y duración de cada acto, y el total
+entre la primera marca y el cierre. `--json` sirve para adjuntar la medición a
+un informe. La partida debe jugarse sin atajos y con el perfil por defecto; los
+tiempos de carga de escena quedan dentro del acto que empieza.
+
 ## 5. Registro de resultados
 
 | Fecha | Alcance | Comando | Resultado |
@@ -174,6 +190,7 @@ Al cerrar cada acto:
 | 2026-11-16 | Guion de escena 4.5: plantilla reutilizable y 22 fichas de la campaña 01 con bloqueo, cámara, banderas, aceptación y deudas | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 113 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-16 | Cierre de escenas 4.6: I.3, II.1, II.2, III.3, IV.3 y V.1; banderas muertas, rótulos de nombre, campos sin cuidar y coste en la última oleada | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 115 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-16 | Combate 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y HUD sin barra fija | `run_tests.gd`, `test_combat_loadout.gd`, `test_hud_combat.gd` y `arc_playthrough.gd` | 117 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
+| 2026-11-16 | Duración 4.8: marcas de acto en los cinco mundos y resumen automático del registro | `run_tests.gd`, `test_session_acts.gd`, `arc_playthrough.gd` y `tools/session_duration.py` | 118 pruebas, 0 fallos, 0 advertencias; `ARCO_OK`; herramienta validada con registros sintéticos |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.
