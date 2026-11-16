@@ -1,6 +1,6 @@
 # Checklist de la biblia — Campaña 01
 
-- **Fecha:** 2026-11-15
+- **Fecha:** 2026-11-16
 - **Alcance:** los cinco actos, contra `biblia_campana.md` §4–§8 y §13
 - **Método:** revisión de diseño + partida guionizada (`ARCO_OK`) + pruebas por acto
 

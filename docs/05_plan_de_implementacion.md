@@ -2,7 +2,7 @@
 
 > La prioridad es el RPG jugable y su aspecto; las únicas reglas duras son licencias/procedencia y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** Fase 4 — Arte, audio y equilibrio. El arco completo (I–V), el guion y los sistemas de campaña están cerrados; queda el pase visual, sonoro y la medición.
+**Fase activa:** Fase 4 — Arte, audio y equilibrio. El arco completo (I–V), el guion, los sistemas de campaña y el rendimiento en Medio están cerrados; quedan el pase visual y sonoro, la duración real y la prueba de humo.
 
 ## Estado
 
@@ -116,7 +116,7 @@
 
 **Precondiciones:** Fase 3 cerrada.
 
-**Bloques 4.1–4.7 — Cierre jugable, puesta en escena, alineación con la biblia y combate (cerrados):** el campamento reparte sus opciones en dos páginas, el resaltado no ilumina la escena entera, el diario se navega con teclado y puntero, las tarjetas de fin aceptan E/Intro/R y bloquean al jugador, y la defensa muestra «Sostén la plaza». Cusi recibe en la puerta y se traslada al santuario, las preparaciones tienen puesto visible, la trampa tiene al curaca vecino y es obligatoria antes de la defensa, las cuentas se hacen en casas reales y varían con el coste, y el oficio queda anotado en el diario. El costo de Anca y del hijo de Puma se escenifica, Anca consume provisiones o reduce el aliento máximo, la casa de Rumi está al este, la posguerra tiene heridos y luz fría, la asamblea paga maíz, apoyo al curaca y aliados, los mensajeros de IV.4 y V.2 aparecen, la familia se reúne en el cierre y la obra del acto V marca el oficio. La campaña 01 cuenta con guion de escenas, matriz de banderas y criterios de aceptación por escena; no quedan escenas parciales. El combate usa honda, porra y escudo, con munición de piedras, viñeta de salud, respiración y sin barra fija de estado. Queda la partida humana cronometrada, el arte/audio y la medición de rendimiento.
+**Bloques 4.1–4.7 — Cierre jugable, puesta en escena, alineación con la biblia y combate (cerrados):** el campamento reparte sus opciones en dos páginas, el resaltado no ilumina la escena entera, el diario se navega con teclado y puntero, las tarjetas de fin aceptan E/Intro/R y bloquean al jugador, y la defensa muestra «Sostén la plaza». Cusi recibe en la puerta y se traslada al santuario, las preparaciones tienen puesto visible, la trampa tiene al curaca vecino y es obligatoria antes de la defensa, las cuentas se hacen en casas reales y varían con el coste, y el oficio queda anotado en el diario. El costo de Anca y del hijo de Puma se escenifica, Anca consume provisiones o reduce el aliento máximo, la casa de Rumi está al este, la posguerra tiene heridos y luz fría, la asamblea paga maíz, apoyo al curaca y aliados, los mensajeros de IV.4 y V.2 aparecen, la familia se reúne en el cierre y la obra del acto V marca el oficio. La campaña 01 cuenta con guion de escenas, matriz de banderas y criterios de aceptación por escena; no quedan escenas parciales. El combate usa honda, porra y escudo, con munición de piedras, viñeta de salud, respiración y sin barra fija de estado. El rendimiento en Medio cumple el objetivo de 60 FPS. Quedan la partida humana cronometrada, la prueba de humo y el arte/audio.
 
 **Estado de la fase 4:**
 

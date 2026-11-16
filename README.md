@@ -75,11 +75,18 @@ godot --headless --path . --script res://tests/run_tests.gd
 godot --headless --path . --script res://tests/arc_playthrough.gd
 ```
 
-Medición de rendimiento por acto:
+Medición de rendimiento por acto (tres pasadas; `--profile=0` Bajo, `--profile=1` Medio):
 
 ```bash
 godot --path . --disable-vsync --resolution 1920x1080 \
-    res://tests/scenes/measure_performance.tscn -- --profile=0
+    res://tests/scenes/measure_performance.tscn -- --profile=1
+```
+
+Duración de una partida (requiere jugarla):
+
+```bash
+godot --path . -- --session PCH-DUR-1
+python3 tools/session_duration.py PCH-DUR-1
 ```
 
 Detalles en [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md).

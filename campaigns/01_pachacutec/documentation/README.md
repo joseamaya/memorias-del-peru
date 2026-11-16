@@ -45,7 +45,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
 | [guion_campana.md](guion_campana.md) | **Cerrado (v1.1)** — 15 secciones, fichas de misión, banderas y finales |
 | [guion_escenas.md](guion_escenas.md) | **v1.0** — 22 escenas con bloqueo, cámara, textos, banderas y aceptación |
-| [checklist_biblia.md](checklist_biblia.md) | Checklist de diseño por acto; pendientes de duración y rendimiento |
+| [checklist_biblia.md](checklist_biblia.md) | Checklist de diseño por acto; pendientes de duración y arte/audio |
 
 ## 6. Estado de construcción
 

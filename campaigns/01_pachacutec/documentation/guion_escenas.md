@@ -1,6 +1,6 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
-- **Versión:** 1.2 — 2026-11-16
+- **Versión:** 1.3 — 2026-11-16
 - **Estado:** arco jugable en gris; sin deudas de escena.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
 - **Uso:** este documento manda sobre la puesta en escena. Las claves de texto viven en `localization/pachacutec_texts.csv`; las banderas, en `CampaignState`.
@@ -1124,12 +1124,13 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 
 1. **Duración:** no hay partida humana cronometrada; la suma de escenas es una estimación.
 2. **Arte y audio:** el arco está en gris; faltan modelos, texturas, animaciones y sonido por acto.
-3. **Rendimiento:** falta la medición reproducible en perfil Medio.
-4. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
+3. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
 
 **Cerradas en v1.1:** I.3 (punto junto al fuego), II.1 (línea del inca que huyó), II.2 (descanso duplicado), II.3 (`distraccion_cuerda` y q'ipi), III.3 (coste en la última oleada), IV.3 (curaca vecino, Anca testifica, `maiz_repartido`), V.1 (verbos y habilidades del acto I) y los rótulos de nombre.
 
 **Cerradas en v1.2:** combate con honda, porra y escudo; munición de piedras; viñeta de salud; respiración; sin barra fija de estado.
+
+**Cerradas en v1.3:** rendimiento en Medio; las tres pasadas por acto dan mediana ≥ 60 FPS (Cusco 62,2) con la escala 3D al 0,70 y SSAO.
 
 ## 12. Registro de cambios
 
@@ -1138,3 +1139,4 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 | 1.0 | 2026-11-16 | Primera ficha de escenas de la campaña 01: 22 escenas, matriz de banderas, finales, duración y cobertura de pruebas. |
 | 1.1 | 2026-11-16 | Se cierran las 7 escenas parciales y las deudas de escena: duda junto al fuego, línea del inca, campamento sin duplicado, coste en la última oleada, vecino y Anca en la asamblea, `maiz_repartido` en el cierre, verbos y habilidades de la obra, y rótulos de nombre. |
 | 1.2 | 2026-11-16 | Se cierra la deuda de sistema de combate/HUD: honda, porra y escudo, munición de piedras, viñeta de salud, respiración y sin barra fija de estado. |
+| 1.3 | 2026-11-16 | Se cierra el rendimiento en Medio: tres pasadas por acto y mediana ≥ 60 FPS, con la escala 3D al 0,70 y SSAO. La duración humana sigue pendiente. |
