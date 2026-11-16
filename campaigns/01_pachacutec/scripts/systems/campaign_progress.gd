@@ -85,6 +85,20 @@ static func get_oficio() -> StringName:
 	return StringName(str(CampaignState.get_data(OFICIO_KEY, "")))
 
 
+## Clave de la entrada de diario que explica el oficio elegido.
+static func oficio_body_key(oficio: StringName) -> StringName:
+	match oficio:
+		&"agua":
+			return &"PCH_OFICIO_AGUA"
+		&"maiz":
+			return &"PCH_OFICIO_MAIZ"
+		&"telar":
+			return &"PCH_OFICIO_TELAR"
+		&"pirca":
+			return &"PCH_OFICIO_PIRCA"
+	return &"PCH_OFICIO_NONE"
+
+
 ## Copia completa del estado del mundo.
 static func snapshot(world: Node) -> Dictionary:
 	var data: Dictionary = {}

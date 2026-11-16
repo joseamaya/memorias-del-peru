@@ -654,7 +654,9 @@ Cada misión debe especificar:
 - Consecuencias.
 - Información histórica que aporta.
 
-El guion de la campaña 01 se construye sobre la [biblia de la campaña](../campaigns/01_pachacutec/documentation/biblia_campana.md), que ya fija actos, sistemas y banderas.
+Además, cada campaña en desarrollo mantiene un **guion de escenas** (`campaigns/<campaña>/documentation/guion_escenas.md`) que baja cada misión a lugar, momento, personajes presentes, bloqueo, cámara, textos, banderas, consecuencias y criterio de aceptación. Se redacta con la [plantilla de guion de escena](10_plantilla_guion_de_escena.md). Las campañas futuras no escriben este documento hasta que su etapa se abra.
+
+El guion de la campaña 01 se construye sobre la [biblia de la campaña](../campaigns/01_pachacutec/documentation/biblia_campana.md), que ya fija actos, sistemas y banderas. Su guion de escenas está en [guion_escenas.md](../campaigns/01_pachacutec/documentation/guion_escenas.md).
 
 ---
 

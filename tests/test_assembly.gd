@@ -47,7 +47,6 @@ func test_assembly() -> bool:
 	world.call("_on_dialogue_advanced")
 	ok = ok and world.get("_assembly_done") == true and hud.is_end_card_visible()
 	ok = ok and CampaignState.get_flag(&"ofrecio") == 1
-	ok = ok and CampaignState.get_flag(&"apoyo_comitiva") == 1
 	hud.hide_dialogue()
 	hud.clear_subtitle()
 	world.free()

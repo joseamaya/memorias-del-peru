@@ -20,6 +20,7 @@ func test_act_one_tasks() -> bool:
 	var player: PlayerFPS = world.get_node_or_null("PlayerFPS") as PlayerFPS
 	var hud: PlayerHud = world.get_node_or_null("UILayer/HUD") as PlayerHud
 	var inventory: Inventory = player.get_node_or_null("Inventory") as Inventory
+	var journal: Journal = player.get_node_or_null("Journal") as Journal
 	var agua: TaskPoint = world.get_node_or_null("TaskAgua") as TaskPoint
 	var maiz: TaskPoint = world.get_node_or_null("TaskMaiz") as TaskPoint
 	var telar: TaskPoint = world.get_node_or_null("TaskTelar") as TaskPoint
@@ -35,6 +36,13 @@ func test_act_one_tasks() -> bool:
 	telar.interact(player)
 	ok = ok and inventory.has(&"agua") and inventory.has(&"maiz") and inventory.has(&"manta")
 	ok = ok and agua.is_done() and maiz.is_done() and telar.is_done()
+	var oficio_entry: JournalEntry = null
+	if journal != null:
+		oficio_entry = journal.get_entry(&"oficio")
+	ok = ok and oficio_entry != null
+	ok = ok and oficio_entry != null and oficio_entry.body_key \
+		== CampaignProgress.oficio_body_key(&"agua")
+	ok = ok and hud.hint_label.text == tr("PCH_TASK_DONE") % 3
 	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_MESSENGER")
 	# El cuarto encargo sigue disponible, pero ya no hace falta.
 	ok = ok and pirca.is_available()

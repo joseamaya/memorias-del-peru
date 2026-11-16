@@ -116,6 +116,8 @@
 
 **Precondiciones:** Fase 3 cerrada.
 
+**Bloques 4.1–4.5 — Cierre jugable, puesta en escena y alineación con la biblia (en curso):** el campamento reparte sus opciones en dos páginas, el resaltado no ilumina la escena entera, el diario se navega con teclado y puntero, las tarjetas de fin aceptan E/Intro/R y bloquean al jugador, y la defensa muestra «Sostén la plaza». Cusi recibe en la puerta y se traslada al santuario, las preparaciones tienen puesto visible, la trampa tiene al curaca vecino y es obligatoria antes de la defensa, las cuentas se hacen en casas reales y varían con el coste, y el oficio queda anotado en el diario. El costo de Anca y del hijo de Puma se escenifica, Anca consume provisiones o reduce el aliento máximo, la casa de Rumi está al este, la posguerra tiene heridos y luz fría, la asamblea paga maíz, apoyo al curaca y aliados, los mensajeros de IV.4 y V.2 aparecen, la familia se reúne en el cierre y la obra del acto V marca el oficio. La campaña 01 cuenta con guion de escenas, matriz de banderas y criterios de aceptación por escena; no quedan escenas parciales y solo el HUD/combate sigue como deuda de sistema. Queda la partida humana cronometrada, el arte/audio y la medición de rendimiento.
+
 **Entregables:**
 
 | # | Entregable | Descripción |

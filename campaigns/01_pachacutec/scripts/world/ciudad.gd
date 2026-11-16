@@ -213,6 +213,7 @@ var _defense_active: bool = false
 var _defense_requested: bool = false
 var _wave: int = 0
 var _trap_resolved: bool = false
+var _cost_applied: bool = false
 var _completed: bool = false
 var _dead: bool = false
 var _blocking: bool = false
@@ -221,8 +222,18 @@ var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 var _ally_visuals: Dictionary[int, bool] = {}
 var _recruit_visuals: Array[CharacterModelVisual] = []
+var _arrival_point: CampPoint = null
+var _cusi_point: CampPoint = null
+var _trap_point: CampPoint = null
+var _vespera_point: CampPoint = null
+var _prep_points: Array[CampPoint] = []
+var _recruit_points: Array[CampPoint] = []
 var _cusi_visual: CharacterModelVisual = null
+var _trap_visual: CharacterModelVisual = null
 var _vespera_visual: CharacterModelVisual = null
+var _anca_visual: CharacterModelVisual = null
+var _young_visual: CharacterModelVisual = null
+var _cusi_move_pending: bool = false
 ## Orientación de reposo de cada figura que no es multitud (Cusi, reclutas,
 ## aliados): al acercarse el jugador, giran la cabeza/cuerpo y luego vuelven.
 var _idle_visual_home: Dictionary[CharacterModelVisual, float] = {}
@@ -254,6 +265,10 @@ func _ready() -> void:
 	_bind_environment()
 	hint_label.text = ""
 	hud.show_subtitle(tr("PCH_CIUDAD_ARRIVAL"), 0.0)
+	if CampaignState.has_flag(&"mensaje_entregado"):
+		hud.show_objective(tr("PCH_OBJ_RECRUIT"))
+	else:
+		hud.show_objective(tr("PCH_CIUDAD_TALK_MESSAGE"))
 	_update_status()
 	CampaignProgress.save_checkpoint(self, player.global_position)
 	SessionLog.mark(&"act", "cusco")
@@ -323,6 +338,9 @@ func _physics_process(_delta: float) -> void:
 			_wave += 1
 			_spawn_wave()
 			hud.show_subtitle(tr("PCH_CIUDAD_WAVE") % _wave, 0.0)
+			if _wave == DEFENSE_WAVES:
+				# El coste cae al empezar la última oleada, no después de la batalla.
+				_apply_defense_cost()
 		else:
 			_finish_defense()
 	_update_status()
@@ -357,20 +375,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			_blocking = mouse.pressed
 			get_viewport().set_input_as_handled()
 			return
-	if event is InputEventKey:
-		var key: InputEventKey = event as InputEventKey
-		if key.pressed and not key.echo and key.keycode == KEY_R:
-			if _completed:
-				CampaignProgress.save(self)
-				get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/llacta_act4.tscn")
-			elif _dead:
-				CampaignProgress.request_respawn()
-				get_tree().reload_current_scene()
-			return
-		if key.pressed and not key.echo and key.keycode == KEY_ESCAPE and _completed:
-			var manager: Node = get_node_or_null("/root/GameManager")
-			if manager != null:
-				manager.call("request_quit")
+	if _completed and _advance_requested(event):
+		get_viewport().set_input_as_handled()
+		CampaignProgress.save(self)
+		get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/llacta_act4.tscn")
+		return
+	if _dead and _retry_requested(event):
+		get_viewport().set_input_as_handled()
+		CampaignProgress.request_respawn()
+		get_tree().reload_current_scene()
 
 
 func _attack() -> void:
@@ -408,6 +421,8 @@ func _setup_arrival() -> void:
 	point.prompt_key = &"PCH_CIUDAD_TALK_MESSAGE"
 	body.position = ARRIVAL_POSITION
 	add_child(point)
+	_arrival_point = point
+	point.set_available(not CampaignState.has_flag(&"mensaje_entregado"))
 	point.requested.connect(_on_arrival_requested)
 
 
@@ -420,7 +435,7 @@ func _on_arrival_requested() -> void:
 		hud.show_subtitle(tr("PCH_CIUDAD_MESSAGE_AGAIN"), 0.0)
 		return
 	if dialogue.start(_build_arrival_dialogue()):
-		player.begin_dialogue(null)
+		player.begin_dialogue(_cusi_visual)
 
 
 func _build_arrival_dialogue() -> DialogueGraph:
@@ -472,6 +487,9 @@ func _setup_preparation() -> void:
 		point.prompt_key = PREP_PROMPTS[index]
 		body.position = PREP_POSITIONS[index]
 		add_child(point)
+		var prop: Node3D = _build_prep_prop(index, PREP_POSITIONS[index])
+		point.highlight_target = prop
+		_prep_points.append(point)
 		point.requested.connect(_on_prep_requested.bind(index))
 
 
@@ -498,6 +516,75 @@ func _on_prep_requested(index: int) -> void:
 	hud.show_objective(tr("PCH_OBJ_DEFENSE"))
 
 
+## Puesto de trabajo visible de cada preparación. El oficio decide si responde;
+## el prop existe siempre para que el jugador vea qué se hace en cada sitio.
+func _build_prep_prop(index: int, at: Vector3) -> Node3D:
+	var root: Node3D = Node3D.new()
+	root.name = "PrepProp%d" % index
+	root.position = Vector3(at.x, _height_at(at.x, at.z), at.z)
+	add_child(root)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.ROCK, Color(0.52, 0.50, 0.47, 1.0))
+	var wood: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.WOOD, Color(0.38, 0.27, 0.18, 1.0))
+	var fabric: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.FABRIC, Color(0.52, 0.30, 0.22, 1.0))
+	var soil: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.SOIL, Color(0.45, 0.34, 0.22, 1.0))
+	match index:
+		0:
+			_add_block(root, "WallWest", Vector3(-0.8, 0.5, 0.0),
+				Vector3(1.0, 1.0, 0.45), stone, false)
+			_add_block(root, "WallEast", Vector3(0.8, 0.5, 0.0),
+				Vector3(1.0, 1.0, 0.45), stone, false)
+			_add_block(root, "LooseStone", Vector3(0.0, 0.15, 0.7),
+				Vector3(0.35, 0.3, 0.35), stone, false)
+		1:
+			_add_block(root, "Metate", Vector3(0.0, 0.18, 0.0),
+				Vector3(0.9, 0.16, 0.5), stone, false)
+			_add_block(root, "HandStone", Vector3(0.15, 0.32, 0.0),
+				Vector3(0.35, 0.18, 0.22), stone, false)
+			_add_cylinder_prop(root, "Basket", Vector3(-0.6, 0.2, 0.15),
+				0.22, 0.4, soil)
+		2:
+			_add_model_prop(root, "JarWest", MODEL_PROP_JAR,
+				Vector3(-0.45, 0.0, 0.15), 0.4)
+			_add_model_prop(root, "JarEast", MODEL_PROP_JAR,
+				Vector3(0.45, 0.0, 0.1), -0.6)
+			_add_cylinder_prop(root, "Basin", Vector3(0.0, 0.12, -0.55),
+				0.45, 0.24, stone)
+		_:
+			_add_block(root, "Table", Vector3(0.0, 0.35, 0.0),
+				Vector3(0.9, 0.7, 0.5), wood, false)
+			_add_block(root, "Cloth", Vector3(0.0, 0.72, 0.05),
+				Vector3(0.75, 0.04, 0.4), fabric, false)
+			_add_block(root, "Frame", Vector3(0.0, 0.55, -0.2),
+				Vector3(0.9, 0.05, 0.05), wood, false)
+	return root
+
+
+func _add_cylinder_prop(
+	parent: Node3D,
+	node_name: String,
+	at: Vector3,
+	radius: float,
+	height: float,
+	material: Material
+) -> MeshInstance3D:
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = node_name
+	var cylinder: CylinderMesh = CylinderMesh.new()
+	cylinder.top_radius = radius
+	cylinder.bottom_radius = radius
+	cylinder.height = height
+	cylinder.radial_segments = 12
+	mesh_instance.mesh = cylinder
+	mesh_instance.material_override = material
+	mesh_instance.position = at
+	parent.add_child(mesh_instance)
+	return mesh_instance
+
+
 ## III.2: el santuario o la orden; no se puede hacer todo.
 func _setup_trap() -> void:
 	var instance: Node = (load(CAMP_SCENE) as PackedScene).instantiate()
@@ -510,6 +597,10 @@ func _setup_trap() -> void:
 	point.prompt_key = &"PCH_CIUDAD_TRAP"
 	body.position = TRAP_POSITION
 	add_child(point)
+	_trap_point = point
+	_trap_visual = _add_visual_npc(
+		Vector3(TRAP_POSITION.x, 0.0, TRAP_POSITION.z), &"curaca", 0)
+	point.highlight_target = _trap_visual
 	point.requested.connect(_on_trap_requested)
 
 
@@ -522,7 +613,7 @@ func _on_trap_requested() -> void:
 		hud.show_subtitle(tr("PCH_CIUDAD_TRAP_AGAIN"), 0.0)
 		return
 	if dialogue.start(_build_trap_dialogue()):
-		player.begin_dialogue(null)
+		player.begin_dialogue(_trap_visual)
 
 
 func _build_trap_dialogue() -> DialogueGraph:
@@ -576,10 +667,13 @@ func _setup_recruitment() -> void:
 		point.prompt_key = RECRUIT_PROMPTS[index]
 		body.position = RECRUIT_POSITIONS[index]
 		add_child(point)
+		_recruit_points.append(point)
 		point.requested.connect(_on_recruit_requested.bind(index))
-		_recruit_visuals.append(_add_visual_npc(
+		var visual: CharacterModelVisual = _add_visual_npc(
 			Vector3(RECRUIT_POSITIONS[index].x, 0.0, RECRUIT_POSITIONS[index].z),
-			RECRUIT_ROLES[index], index))
+			RECRUIT_ROLES[index], index)
+		point.highlight_target = visual
+		_recruit_visuals.append(visual)
 
 
 func _setup_cusi() -> void:
@@ -593,8 +687,16 @@ func _setup_cusi() -> void:
 	point.prompt_key = &"PCH_CIUDAD_TALK_CUSI"
 	body.position = CUSI_POSITION
 	add_child(point)
+	_cusi_point = point
 	point.requested.connect(_on_cusi_requested)
-	_cusi_visual = _add_visual_npc(Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z), &"curaca", 0)
+	var delivered: bool = CampaignState.has_flag(&"mensaje_entregado")
+	var cusi_at: Vector3 = CUSI_POSITION if delivered else ARRIVAL_POSITION
+	_cusi_visual = _add_visual_npc(
+		Vector3(cusi_at.x, 0.0, cusi_at.z), &"curaca", 0)
+	point.highlight_target = _cusi_visual
+	point.set_available(delivered)
+	if _arrival_point != null:
+		_arrival_point.highlight_target = _cusi_visual
 
 
 ## Diario del acto III: guarda la leyenda de los pururaucas como Memoria.
@@ -604,6 +706,10 @@ func _setup_journal() -> void:
 	player.add_child(journal)
 	hud.journal_closed.connect(_on_journal_closed)
 	journal.add_quest(&"defensa", &"PCH_Q_DEFENSA_TITLE", &"PCH_Q_DEFENSA_BODY")
+	var oficio: StringName = CampaignProgress.get_oficio()
+	if oficio != &"" and not journal.has(&"oficio"):
+		journal.add_quest(&"oficio", &"PCH_Q_OFICIO_TITLE",
+			CampaignProgress.oficio_body_key(oficio))
 
 
 ## Víspera opcional: un viejo cuenta la leyenda antes de la defensa.
@@ -618,9 +724,11 @@ func _setup_vespera() -> void:
 	point.prompt_key = &"PCH_CIUDAD_TALK_VESPERA"
 	body.position = VESPERA_POSITION
 	add_child(point)
+	_vespera_point = point
 	point.requested.connect(_on_vespera_requested)
 	_vespera_visual = _add_visual_npc(
 		Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), &"villager", 2)
+	point.highlight_target = _vespera_visual
 
 
 func _on_vespera_requested() -> void:
@@ -844,7 +952,13 @@ func _start_defense() -> void:
 		return
 	_defense_active = true
 	_defense_requested = false
+	_cost_applied = false
 	_wave = 1
+	_disable_interactions_for_defense()
+	if CampaignState.has_flag(&"herido_salvado"):
+		_anca_visual = _add_visual_npc(Vector3(-3.0, 0.0, -8.0), &"villager", 1)
+	elif CampaignState.has_flag(&"aliado_2") and ally_count() < 2:
+		_young_visual = _add_visual_npc(Vector3(3.0, 0.0, -8.0), &"villager", 2)
 	CampaignProgress.save_checkpoint(self, player.global_position)
 	_start_drum()
 	_retreat_crowd()
@@ -852,13 +966,32 @@ func _start_defense() -> void:
 	SessionLog.mark(&"defense_start", "aliados=%d" % ally_count())
 	_spawn_wave()
 	hud.show_subtitle(tr("PCH_CIUDAD_DEFENSE"), 0.0)
+	hud.show_objective(tr("PCH_OBJ_HOLD"))
 	_update_status()
+
+
+## Durante la defensa no se ofrecen preparaciones, reclutas ni la trampa: sus
+## manejadores ya la rechazan, pero el HUD no debe mostrar una acción muerta.
+func _disable_interactions_for_defense() -> void:
+	for point: CampPoint in _prep_points:
+		point.set_available(false)
+	for point: CampPoint in _recruit_points:
+		point.set_available(false)
+	if _trap_point != null:
+		_trap_point.set_available(false)
+	if _vespera_point != null:
+		_vespera_point.set_available(false)
+	if _cusi_point != null:
+		_cusi_point.set_available(false)
 
 
 ## Cada oleada trae menos enemigos si el jugador reclutó y preparó la defensa.
 func _spawn_wave() -> void:
 	var prepared: int = 1 if CampaignState.has_flag(&"preparacion_hecha") else 0
-	var count: int = maxi(1, 4 - ally_count() - prepared - (_wave - 1))
+	# Cruzar el paso con la columna evita un enemigo en la primera oleada; si
+	# la bandera falta (partida de prueba), la plaza trae uno más.
+	var crossed: int = 1 if CampaignState.has_flag(&"paso_cruzado") else 0
+	var count: int = maxi(1, 5 - ally_count() - prepared - crossed - (_wave - 1))
 	for index: int in range(count):
 		var enemy: AmbushEnemy = AmbushEnemy.new()
 		enemy.name = "Defender%d_%d" % [_wave, index + 1]
@@ -1038,20 +1171,41 @@ func _play_if_needed(visual: CharacterModelVisual, clip: StringName) -> void:
 		visual.play(clip)
 
 
+## El costo se ve: el defensor con nombre cae en la plaza mientras se compone
+## el epílogo. La tarjeta lo recuerda; la animación lo muestra.
+func _play_cost_fall(visual: CharacterModelVisual, text_key: StringName) -> void:
+	if visual != null:
+		visual.play(&"death")
+	if hud != null:
+		hud.show_subtitle(tr(String(text_key)), 0.0)
+	SessionLog.mark(&"cost_fall", String(text_key))
+
+
+## El coste con nombre se decide al llegar la última oleada. La tarjeta del
+## epílogo lo recuerda, pero la caída ya se vio en la plaza.
+func _apply_defense_cost() -> void:
+	if _cost_applied:
+		return
+	_cost_applied = true
+	if CampaignState.has_flag(&"herido_salvado"):
+		CampaignState.set_flag(&"costo_anca", 1)
+		_play_cost_fall(_anca_visual, &"PCH_CIUDAD_COST_ANCA")
+	elif CampaignState.has_flag(&"aliado_2") and ally_count() < 2:
+		CampaignState.set_flag(&"costo_joven", 1)
+		_play_cost_fall(_young_visual, &"PCH_CIUDAD_COST_JOVEN")
+	else:
+		CampaignState.set_flag(&"sin_costo", 1)
+	if character != null and (CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")):
+		character.change_morale(-15.0)
+
+
 func _finish_defense() -> void:
 	if _completed:
 		return
 	_completed = true
 	_defense_active = false
 	_stop_drum()
-	if CampaignState.has_flag(&"herido_salvado"):
-		CampaignState.set_flag(&"costo_anca", 1)
-	elif ally_count() < 2:
-		CampaignState.set_flag(&"costo_joven", 1)
-	else:
-		CampaignState.set_flag(&"sin_costo", 1)
-	if character != null and (CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")):
-		character.change_morale(-15.0)
+	_apply_defense_cost()
 	var epilogue: String = tr("PCH_CIUDAD_COUNTER") + " " + tr("PCH_CIUDAD_EPILOGUE")
 	if CampaignState.has_flag(&"costo_anca"):
 		epilogue += " " + tr("PCH_CIUDAD_COST_ANCA")
@@ -1069,10 +1223,30 @@ func _finish_defense() -> void:
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SPARED")
 	if journal != null:
 		journal.complete_quest(&"defensa")
-		journal.add_memory(&"mem_cusco", &"PCH_ST_PLAZA_TITLE", &"PCH_ST_PLAZA_BODY", &"A", &"PCH_ST_PLAZA_SOURCE")
+		journal.add_memory(&"mem_cusco", &"PCH_ST_CUSCO_TITLE", &"PCH_ST_CUSCO_BODY", &"A", &"PCH_ST_CUSCO_SOURCE")
 	CampaignProgress.save(self)
 	hud.show_end_card(tr("PCH_CIUDAD_END_TITLE"), tr("PCH_CIUDAD_END_HINT"), epilogue)
 	SessionLog.mark(&"defense_end", "salud=%d aliados=%d" % [int(character.get_health()), ally_count()])
+
+
+## E, Intro o R continúan desde la tarjeta de fin.
+static func _advance_requested(event: InputEvent) -> bool:
+	if event.is_action_pressed("interact"):
+		return true
+	if not (event is InputEventKey):
+		return false
+	var key: InputEventKey = event as InputEventKey
+	if not key.pressed or key.echo:
+		return false
+	return key.keycode == KEY_R or key.keycode == KEY_ENTER or key.keycode == KEY_KP_ENTER
+
+
+## Solo R reintenta tras caer.
+static func _retry_requested(event: InputEvent) -> bool:
+	if not (event is InputEventKey):
+		return false
+	var key: InputEventKey = event as InputEventKey
+	return key.pressed and not key.echo and key.keycode == KEY_R
 
 
 ## Aplica el perfil gráfico al cielo y al sol del Cusco, como en la llacta y el
@@ -1219,8 +1393,33 @@ func _on_dialogue_choice(index: int) -> void:
 func _on_dialogue_finished() -> void:
 	hud.hide_dialogue()
 	player.end_dialogue()
+	if _cusi_move_pending:
+		_cusi_move_pending = false
+		_move_cusi_to_sanctuary()
 	if _defense_requested:
+		_defense_requested = false
+		if not _can_start_defense():
+			hud.show_subtitle(tr("PCH_CIUDAD_TRAP_FIRST"), 0.0)
+			hud.show_objective(tr("PCH_CIUDAD_TRAP"))
+			return
 		_start_defense()
+
+
+## La trampa es una decisión previa: no se puede empezar la defensa sin ella.
+func _can_start_defense() -> bool:
+	return CampaignState.has_flag(&"trampa_resuelta")
+
+
+## Cusi recibe el mensaje en la puerta y luego vuelve al santuario. Así la
+## llegada tiene un interlocutor visible y el santuario no queda vacío.
+func _move_cusi_to_sanctuary() -> void:
+	if _cusi_visual != null:
+		_cusi_visual.global_position = Vector3(CUSI_POSITION.x, 0.0, CUSI_POSITION.z)
+		_cusi_visual.look_at(Vector3(0.0, 0.0, 28.0), Vector3.UP)
+	if _arrival_point != null:
+		_arrival_point.set_available(false)
+	if _cusi_point != null:
+		_cusi_point.set_available(true)
 
 
 func _on_dialogue_flag(key: StringName, value: int) -> void:
@@ -1229,6 +1428,9 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 		_defense_requested = true
 		return
 	if key == &"mensaje_entregado" and value != 0:
+		# Cusi se mueve al santuario cuando la conversación termina: moverlo
+		# mientras la cámara lo enfoca daría un salto visible.
+		_cusi_move_pending = true
 		hud.show_objective(tr("PCH_OBJ_RECRUIT"))
 		return
 	if key == &"preparacion_hecha" and value != 0:

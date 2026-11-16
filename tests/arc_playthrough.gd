@@ -93,6 +93,7 @@ func _act_two() -> bool:
 	camp.call("interact", player)
 	ok = ok and hud.call("is_dialogue_open") == true
 	_choose(hud, 2)
+	_choose(hud, 0)
 	paso.call("_on_dialogue_advanced")
 	ok = ok and _flag(&"descanso")
 	paso.call("_on_sneak_requested")
@@ -150,6 +151,13 @@ func _act_three() -> bool:
 		_choose(hud, 0)
 		ciudad.call("_on_dialogue_advanced")
 	ok = ok and ciudad.call("ally_count") == 3
+	var trap: Node = ciudad.get_node_or_null("TrapPoint")
+	if trap == null:
+		return false
+	trap.call("interact", player)
+	_choose(hud, 0)
+	ciudad.call("_on_dialogue_advanced")
+	ok = ok and _flag(&"trampa_resuelta")
 	var cusi: Node = ciudad.get_node_or_null("CusiPoint")
 	if cusi == null:
 		return false
@@ -212,7 +220,7 @@ func _act_five() -> bool:
 	if player == null or hud == null:
 		return false
 	var ok: bool = true
-	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar"]:
+	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar", "RebuildCasa"]:
 		var task: Node = world.get_node_or_null(task_name)
 		if task == null:
 			ok = false

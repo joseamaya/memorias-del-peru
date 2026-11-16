@@ -28,11 +28,27 @@ func _ready() -> void:
 
 
 ## Mallas que se resaltan para [param interactable].
+##
+## Prioridad: el nodo declarado en [member Interactable.highlight_target], las
+## mallas propias del interactuable y, solo si el interactuable lo permite, las
+## de su padre. Un punto de conversación cuelga del mundo: sin esta regla,
+## enfocarlo iluminaba todas las mallas de la escena.
 static func meshes_for(interactable: Node) -> Array[MeshInstance3D]:
-	var found: Array[MeshInstance3D] = _meshes_under(interactable)
-	if found.is_empty() and interactable != null and interactable.get_parent() != null:
-		found = _meshes_under(interactable.get_parent())
-	return found
+	if interactable is Interactable:
+		var target: Interactable = interactable as Interactable
+		var found: Array[MeshInstance3D] = []
+		if target.highlight_target != null:
+			found = _meshes_under(target.highlight_target)
+		if found.is_empty():
+			found = _meshes_under(interactable)
+		if found.is_empty() and target.highlight_parent_if_empty \
+				and interactable.get_parent() != null:
+			found = _meshes_under(interactable.get_parent())
+		return found
+	var fallback: Array[MeshInstance3D] = _meshes_under(interactable)
+	if fallback.is_empty() and interactable != null and interactable.get_parent() != null:
+		fallback = _meshes_under(interactable.get_parent())
+	return fallback
 
 
 ## Resalta [param interactable] y quita el resalte anterior.

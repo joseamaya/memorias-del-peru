@@ -74,6 +74,13 @@ const CHARACTER_MODELS: Dictionary[String, String] = {
 	"Habitante3": "pch_npc_villager_c.glb",
 	"Anca": "pch_npc_villager_b.glb",
 	"Mensajero": "pch_npc_messenger.glb",
+	"HijoPuma": "pch_npc_villager_c.glb",
+	"CuracaVecino": "pch_npc_curaca.glb",
+	"Herido1": "pch_npc_villager.glb",
+	"Herido2": "pch_npc_villager_b.glb",
+	"Comitiva1": "pch_npc_villager.glb",
+	"Comitiva2": "pch_npc_villager_b.glb",
+	"Comitiva3": "pch_npc_villager_c.glb",
 }
 ## Altura visible de cada papel, en metros.
 const CHARACTER_HEIGHTS: Dictionary[String, float] = {
@@ -86,8 +93,31 @@ const CHARACTER_HEIGHTS: Dictionary[String, float] = {
 	"Habitante3": 1.50,
 	"Anca": 1.58,
 	"Mensajero": 1.60,
+	"HijoPuma": 1.55,
+	"CuracaVecino": 1.64,
+	"Herido1": 1.52,
+	"Herido2": 1.55,
+	"Comitiva1": 1.56,
+	"Comitiva2": 1.58,
+	"Comitiva3": 1.54,
 }
 const NPC_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/npc_actor.tscn"
+## Rótulo del personaje cuando habla por un [TalkPoint]. Los nombres de los
+## personajes ficticios viven en la tabla de localización.
+const NPC_NAME_KEYS: Dictionary[String, StringName] = {
+	"Habitante1": &"PCH_NAME_MADRE",
+	"Habitante2": &"PCH_NAME_HERMANO",
+	"Habitante3": &"PCH_NPC_SISA",
+	"Curaca": &"PCH_NPC_CURACA",
+	"Principal2": &"PCH_NPC_PUMA",
+	"HijoPuma": &"PCH_NAME_HIJO_PUMA",
+	"Tejedora": &"PCH_NPC_WEAVER",
+	"Agricultor": &"PCH_NPC_FARMER",
+	"Anca": &"PCH_NPC_ANCA",
+	"CuracaVecino": &"PCH_NPC_CURACA_VECINO",
+	"Herido1": &"PCH_NAME_WOUNDED",
+	"Herido2": &"PCH_NAME_WOUNDED",
+}
 const MODEL_LOOM: String = "pch_loom.glb"
 const FIRE_PIT_POSITION: Vector3 = Vector3(-6.0, 0.0, 7.0)
 const LOOM_POSITION: Vector3 = Vector3(-10.0, 0.0, 6.2)
@@ -104,10 +134,15 @@ const TASK_ITEM_IDS: Array[StringName] = [&"agua", &"maiz", &"manta", &"cuerda"]
 const TASK_ITEM_KEYS: Array[StringName] = [
 	&"PCH_ITEM_AGUA", &"PCH_ITEM_MAIZ", &"PCH_ITEM_MANTA", &"PCH_ITEM_CUERDA",
 ]
+## Casas que se visitan en IV.2: este, oeste y sur de la plaza. La casa del
+## este es la quinta vivienda: la cuarta es el hogar de Rumi.
+const ACCOUNT_HOUSES: Array[int] = [4, 0, 7]
+## Posición de respaldo delante de cada casa; se recalcula desde el nodo real
+## para respetar giro y escala.
 const ACCOUNT_POSITIONS: Array[Vector3] = [
-	Vector3(-19.0, 0.9, 9.5),
-	Vector3(19.0, 0.9, 11.5),
-	Vector3(0.0, 0.9, 16.0),
+	Vector3(21.5, 0.9, 10.5),
+	Vector3(-15.0, 0.9, 9.8),
+	Vector3(8.6, 0.9, -17.0),
 ]
 const ACCOUNT_PROMPTS: Array[StringName] = [
 	&"PCH_ACCOUNT_1", &"PCH_ACCOUNT_2", &"PCH_ACCOUNT_3",
@@ -131,6 +166,10 @@ const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0, 5.4, 3.8]
 const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7, -2.5, -1.5]
 const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
 const PROP_WALL_GAP: float = 0.45
+## Casa de Rumi: la cuarta vivienda, al este de la plaza (biblia §2.1). Su
+## fachada mira a la plaza y la cámara de cierre tiene el camino despejado.
+const HOME_HOUSE_INDEX: int = 3
+const HOME_DOOR_OFFSET: float = 3.5
 
 const CORRALS: Array[Array] = [
 	[Vector3(-31.0, 0.0, -12.0), Vector2(7.0, 5.5), Vector3.RIGHT],
@@ -166,9 +205,12 @@ var dialogue: DialogueRunner = null
 var _tasks_done: Dictionary[StringName, bool] = {}
 var _oficio: StringName = &""
 var _curaca: NpcActor = null
+var _puma: NpcActor = null
+var _messenger_actor: NpcActor = null
 var _assembly_started: bool = false
 var _assembly_done: bool = false
 var _assembly_choice: StringName = &""
+var _assembly_speaker_key: StringName = &""
 var _messenger_seen: bool = false
 var _messenger_spawned: bool = false
 var _duda_started: bool = false
@@ -177,6 +219,7 @@ var _act_four_done: bool = false
 var _act_five_done: bool = false
 var _rebuild_done: Dictionary[StringName, bool] = {}
 var _five_done_keys: Array[StringName] = []
+var _home_absence_nodes: Array[Node3D] = []
 var _dialogue_speaker: StringName = &""
 var _dialogue_text: StringName = &""
 var _dialogue_choices: Array[StringName] = []
@@ -210,6 +253,8 @@ func _ready() -> void:
 		5:
 			_setup_act_five()
 			hud.show_objective(tr("PCH_OBJ_REBUILD"))
+	if act == 1 and not CampaignState.has_flag(&"intro_vista"):
+		_show_intro()
 	_setup_footsteps()
 	_setup_ambience()
 	environment_controller.bind(world_environment, sun)
@@ -542,12 +587,21 @@ func _build_cast() -> void:
 	var npcs: Node3D = Node3D.new()
 	npcs.name = "NPCs"
 	($Llacta as Node3D).add_child(npcs)
-	var mother: NpcActor = _add_npc(npcs, "Habitante1", Vector3(9.0, 0.0, 4.0), Color(0.48, 0.36, 0.28, 1.0))
-	var sibling: NpcActor = _add_npc(npcs, "Habitante2", Vector3(11.0, 0.0, -1.0), Color(0.42, 0.33, 0.26, 1.0))
+	var mother: NpcActor = _add_npc(npcs, "Habitante1",
+		_home_family_position(1.0), Color(0.48, 0.36, 0.28, 1.0))
+	var sibling: NpcActor = _add_npc(npcs, "Habitante2",
+		_home_family_position(-1.0), Color(0.42, 0.33, 0.26, 1.0))
 	var sisa: NpcActor = _add_npc(npcs, "Habitante3", Vector3(7.0, 0.0, 8.0), Color(0.52, 0.4, 0.3, 1.0))
 	var curaca: NpcActor = _add_npc(npcs, "Curaca", Vector3(-7.0, 0.0, -3.0), Color(0.72, 0.55, 0.45, 1.0))
 	_curaca = curaca
 	var puma: NpcActor = _add_npc(npcs, "Principal2", Vector3(-8.6, 0.0, 0.7), Color(0.5, 0.4, 0.3, 1.0))
+	_puma = puma
+	var puma_son: NpcActor = _add_npc(npcs, "HijoPuma", Vector3(-6.2, 0.0, 1.8), Color(0.46, 0.36, 0.28, 1.0))
+	if act == 4:
+		var vecino: NpcActor = _add_npc(npcs, "CuracaVecino", Vector3(5.2, 0.0, -2.2), Color(0.66, 0.5, 0.4, 1.0))
+		if vecino != null:
+			vecino.watch_target = player
+			_add_talk(vecino, &"PCH_TALK_VECINO_4")
 	var weaver: NpcActor = _add_npc(npcs, "Tejedora", Vector3(-10.0, 0.0, 6.2), Color(0.62, 0.38, 0.3, 1.0))
 	var farmer: NpcActor = _add_npc(npcs, "Agricultor", Vector3(36.5, 0.8, -3.0), Color(0.45, 0.35, 0.25, 1.0))
 	for actor: Node in npcs.get_children():
@@ -571,6 +625,7 @@ func _build_cast() -> void:
 		"sisa": &"PCH_TALK_SISA",
 		"curaca": &"PCH_TALK_CURACA",
 		"puma": &"PCH_TALK_PUMA",
+		"hijo": &"PCH_TALK_HIJO_PUMA",
 	}
 	if act == 4:
 		lines = {
@@ -579,22 +634,39 @@ func _build_cast() -> void:
 			"sisa": &"PCH_TALK_SISA_4",
 			"curaca": &"PCH_TALK_CURACA_4",
 			"puma": &"PCH_TALK_PUMA_4" if CampaignState.has_flag(&"costo_joven") else &"PCH_TALK_PUMA_4_NO_COST",
+			"hijo": &"PCH_TALK_HIJO_PUMA_4",
 		}
 		if CampaignState.has_flag(&"puma_reconciliado"):
-			lines["puma"] = &"PCH_TALK_PUMA_4_RECONCILED"
+			if CampaignState.has_flag(&"costo_joven"):
+				lines["puma"] = &"PCH_TALK_PUMA_4_RECONCILED_COST"
+			else:
+				lines["puma"] = &"PCH_TALK_PUMA_4_RECONCILED"
 	elif act == 5:
 		lines = {
 			"mother": &"PCH_TALK_MADRE_5",
 			"sibling": &"PCH_TALK_HERMANO_5",
 			"sisa": &"PCH_TALK_SISA_5",
 			"curaca": &"PCH_TALK_CURACA_5",
-			"puma": &"PCH_TALK_PUMA_5",
+			"puma": &"PCH_TALK_PUMA_5" if CampaignState.has_flag(&"costo_joven") else &"PCH_TALK_PUMA_5_LIVE",
+			"hijo": &"PCH_TALK_HIJO_PUMA_5",
 		}
+		if CampaignState.has_flag(&"puma_reconciliado") \
+				and not CampaignState.has_flag(&"costo_joven"):
+			lines["puma"] = &"PCH_TALK_PUMA_5_RECONCILED"
+		if CampaignState.get_flag(&"confianza_sisa") >= 2:
+			lines["sisa"] = &"PCH_TALK_SISA_5_ALTA"
+		elif CampaignState.get_flag(&"confianza_sisa") == 0:
+			lines["sisa"] = &"PCH_TALK_SISA_5_BAJA"
 	_add_talk(mother, lines["mother"])
 	_add_talk(sibling, lines["sibling"])
 	_add_talk(sisa, lines["sisa"])
 	_add_talk(curaca, lines["curaca"])
 	_add_talk(puma, lines["puma"])
+	if act >= 4 and CampaignState.has_flag(&"costo_joven"):
+		# El hijo de Puma cayó en la defensa: no puede estar en la llacta.
+		puma_son.queue_free()
+	else:
+		_add_talk(puma_son, lines["hijo"])
 	_add_talk(weaver, &"PCH_TALK_WEAVER")
 	_add_talk(farmer, &"PCH_TALK_FARMER")
 	if act == 4 and CampaignState.has_flag(&"herido_dejado") \
@@ -603,6 +675,26 @@ func _build_cast() -> void:
 		if anca != null:
 			anca.watch_target = player
 			_add_talk(anca, &"PCH_TALK_ANCA_4")
+	if act == 4:
+		# Heridos junto a los muros caídos: la posguerra no es solo un texto.
+		var wounded_one: NpcActor = _add_npc(
+			npcs, "Herido1", Vector3(-18.5, 0.0, 10.5), Color(0.44, 0.34, 0.27, 1.0))
+		var wounded_two: NpcActor = _add_npc(
+			npcs, "Herido2", Vector3(18.5, 0.0, 12.5), Color(0.4, 0.32, 0.26, 1.0))
+		for wounded: NpcActor in [wounded_one, wounded_two]:
+			if wounded != null:
+				wounded.watch_target = player
+				wounded.set_idle_animation(&"tired")
+				wounded.face(_plaza_center_flat(), true)
+				_add_talk(wounded, &"PCH_TALK_WOUNDED")
+	if act == 5 and CampaignState.has_flag(&"herido_dejado") \
+			and not CampaignState.has_flag(&"costo_anca"):
+		var home: Vector3 = _home_door_position()
+		var anca_five: NpcActor = _add_npc(npcs, "Anca",
+			Vector3(home.x - 1.8, 0.0, home.z + 1.2), Color(0.45, 0.35, 0.3, 1.0))
+		if anca_five != null:
+			anca_five.watch_target = player
+			_add_talk(anca_five, &"PCH_TALK_ANCA_5")
 
 
 ## Crea un personaje con su modelo y su bloqueo de respaldo.
@@ -656,8 +748,15 @@ func _add_talk(actor: NpcActor, line_key: StringName) -> TalkPoint:
 
 
 func _on_npc_spoke(actor: Node3D, line_key: StringName) -> void:
+	var prefix: String = ""
+	var raw: Variant = NPC_NAME_KEYS.get(String(actor.name), &"")
+	var key: StringName = &""
+	if raw is StringName:
+		key = raw
+	if key != &"":
+		prefix = tr(String(key)) + ": "
 	if hud != null:
-		hud.show_subtitle(tr(String(line_key)), 0.0)
+		hud.show_subtitle(prefix + tr(String(line_key)), 0.0)
 	var npc: NpcActor = actor as NpcActor
 	if npc == null:
 		return
@@ -700,8 +799,30 @@ func _setup_act_four() -> void:
 	if journal != null:
 		journal.add_quest(&"cuentas", &"PCH_Q_CUENTAS_TITLE", &"PCH_Q_CUENTAS_BODY")
 	for index: int in range(ACCOUNT_POSITIONS.size()):
-		_add_request_point("Account%d" % index, ACCOUNT_POSITIONS[index], ACCOUNT_PROMPTS[index],
-			_on_account_requested.bind(index))
+		var at: Vector3 = ACCOUNT_POSITIONS[index]
+		var house: Node3D = get_node_or_null(
+			"Llacta/Houses/House%02d" % (ACCOUNT_HOUSES[index] + 1)) as Node3D
+		if house != null:
+			at = house.to_global(Vector3(0.0, 0.9, -3.5))
+			_add_absentee_cloth(house)
+		_add_request_point("Account%d" % index, at, ACCOUNT_PROMPTS[index],
+			_on_account_requested.bind(index), house)
+
+
+## Paño oscuro en la puerta de la casa que ya no responde. Da un ancla visible
+## a la cuenta y evita que el jugador llame a una caja invisible en la plaza.
+func _add_absentee_cloth(house: Node3D) -> void:
+	var fabric: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.FABRIC, Color(0.32, 0.28, 0.23, 1.0))
+	var cloth: MeshInstance3D = MeshInstance3D.new()
+	cloth.name = "AbsenteeCloth"
+	var box: BoxMesh = BoxMesh.new()
+	box.size = Vector3(1.0, 1.7, 0.06)
+	cloth.mesh = box
+	cloth.material_override = fabric
+	cloth.position = Vector3(0.0, 0.95, -3.08)
+	cloth.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	house.add_child(cloth)
 
 
 func _on_account_requested(index: int) -> void:
@@ -711,13 +832,28 @@ func _on_account_requested(index: int) -> void:
 		return
 	_accounts_done[StringName("account_%d" % index)] = true
 	if hud != null:
-		hud.show_subtitle(tr(String(ACCOUNT_TEXTS[index])), 0.0)
+		hud.show_subtitle(tr(String(_account_text(index))), 0.0)
 		hud.show_hint(tr("PCH_ACCOUNT_DONE") % _accounts_done.size(), 3.0)
 	SessionLog.mark(&"account", str(index))
 	if _accounts_done.size() >= 3 and hud != null:
 		hud.show_objective(tr("PCH_OBJ_ASSEMBLY"))
 		if journal != null:
 			journal.complete_quest(&"cuentas")
+		CampaignProgress.save_checkpoint(self, player.global_position)
+
+
+## Texto de la cuenta según las banderas del acto III. La casa del sur no puede
+## decir siempre que perdió un hijo: con `sin_costo` no cayó nadie con nombre.
+func _account_text(index: int) -> StringName:
+	if index == 1 and CampaignState.has_flag(&"scout_spared"):
+		return &"PCH_ACCOUNT_2_TEXT_SPARED"
+	if index != 2:
+		return ACCOUNT_TEXTS[index]
+	if CampaignState.has_flag(&"costo_anca"):
+		return &"PCH_ACCOUNT_3_TEXT_ANCA"
+	if CampaignState.has_flag(&"costo_joven"):
+		return &"PCH_ACCOUNT_3_TEXT"
+	return &"PCH_ACCOUNT_3_TEXT_NO_COST"
 
 
 ## La asamblea del acto: en I decide quién va; en IV, qué se dice de los que no volvieron.
@@ -725,13 +861,42 @@ func _start_assembly() -> void:
 	if _assembly_started or dialogue == null:
 		return
 	_assembly_started = true
+	if act == 1 or act == 4:
+		_stage_assembly_cast()
+	var entry_anca: bool = act == 4 and CampaignState.has_flag(&"herido_dejado") \
+		and not CampaignState.has_flag(&"costo_anca")
+	if entry_anca:
+		_assembly_speaker_key = &"PCH_NPC_ANCA"
+	elif act == 4:
+		_assembly_speaker_key = &"PCH_NPC_PUMA"
+	else:
+		_assembly_speaker_key = &"PCH_NPC_CURACA"
 	var graph: DialogueGraph = _build_act_four_assembly() if act == 4 else _build_act_one_assembly()
+	# Las condiciones FLAG del diálogo (maíz guardado, apoyo al curaca) viven en
+	# CampaignState, no en el runner: se copian sin disparar efectos.
+	dialogue.seed_flags(CampaignState.get_flags())
 	if not dialogue.start(graph):
 		return
-	if _curaca != null and _curaca.turn_body_to_talk:
-		_curaca.face(player.global_position)
-		_curaca.perform(&"talk", TALK_HOLD_SECONDS)
-	player.begin_dialogue(_curaca)
+	# En IV abre Puma o Anca; en I, el curaca. La cámara debe mirar a quien habla.
+	var speaker: NpcActor = _speaker_npc(_assembly_speaker_key)
+	if speaker != null and speaker.turn_body_to_talk:
+		speaker.face(player.global_position)
+		speaker.perform(&"talk", TALK_HOLD_SECONDS)
+	player.begin_dialogue(speaker)
+
+
+## Personaje que corresponde a una clave de hablante de la asamblea.
+func _speaker_npc(key: StringName) -> NpcActor:
+	match key:
+		&"PCH_NPC_ANCA":
+			return get_node_or_null("Llacta/NPCs/Anca") as NpcActor
+		&"PCH_NPC_PUMA":
+			return _puma
+		&"PCH_NPC_CURACA", &"PCH_NPC_AYLLUS":
+			return _curaca
+		&"PCH_NPC_CURACA_VECINO":
+			return get_node_or_null("Llacta/NPCs/CuracaVecino") as NpcActor
+	return null
 
 
 func _build_act_one_assembly() -> DialogueGraph:
@@ -775,11 +940,13 @@ func _build_act_one_assembly() -> DialogueGraph:
 
 func _build_act_four_assembly() -> DialogueGraph:
 	var graph: DialogueGraph = DialogueGraph.new()
-	graph.entry_id = &"start"
+	var anca_alive: bool = CampaignState.has_flag(&"herido_dejado") \
+		and not CampaignState.has_flag(&"costo_anca")
+	graph.entry_id = &"anca" if anca_alive else &"start"
 	var start: DialogueNode = DialogueNode.new()
 	start.id = &"start"
 	start.speaker_key = &"PCH_NPC_PUMA"
-	start.text_key = &"PCH_ASM4_ASK_COST" if _has_cost() else &"PCH_ASM4_ASK"
+	start.text_key = _assembly_ask_key()
 	start.next_id = &"end"
 	var speak: DialogueChoice = DialogueChoice.new()
 	speak.text_key = &"PCH_ASM4_SPEAK"
@@ -787,6 +954,9 @@ func _build_act_four_assembly() -> DialogueGraph:
 	var silence: DialogueChoice = DialogueChoice.new()
 	silence.text_key = &"PCH_ASM4_SILENCE"
 	silence.next_id = &"silence"
+	var more: DialogueChoice = DialogueChoice.new()
+	more.text_key = &"PCH_ASM4_MORE"
+	more.next_id = &"more"
 	var choices: Array[DialogueChoice] = [speak]
 	if CampaignState.has_flag(&"apoyo_puma") or CampaignState.has_flag(&"costo_joven"):
 		var reconcile: DialogueChoice = DialogueChoice.new()
@@ -798,9 +968,16 @@ func _build_act_four_assembly() -> DialogueGraph:
 		word.text_key = &"PCH_ASM4_PALABRA"
 		word.next_id = &"palabra"
 		choices.append(word)
-	choices.append(silence)
+	choices.append(more)
 	start.choices = choices
 	var nodes: Array[DialogueNode] = [start]
+	if anca_alive:
+		var testimony: DialogueNode = DialogueNode.new()
+		testimony.id = &"anca"
+		testimony.speaker_key = &"PCH_NPC_ANCA"
+		testimony.text_key = &"PCH_ASM4_ANCA_TESTIMONY"
+		testimony.next_id = &"start"
+		nodes.append(testimony)
 	var speak_key: StringName = &"PCH_ASM4_SPEAK_ANSWER"
 	if CampaignState.has_flag(&"costo_anca"):
 		speak_key = &"PCH_ASM4_SPEAK_ANCA"
@@ -818,15 +995,77 @@ func _build_act_four_assembly() -> DialogueGraph:
 	word_node.effects = _effects([_flag_effect(&"hablo_en_asamblea"),
 		_reputation_effect(&"llacta", 1), _reputation_effect(&"cusco", 1)])
 	nodes.append(word_node)
-	var silence_node: DialogueNode = _answer_node(&"silence", &"PCH_NPC_CURACA", &"PCH_ASM4_SILENCE_ANSWER")
+	var silence_key: StringName = &"PCH_ASM4_SILENCE_ANSWER"
+	if CampaignState.has_flag(&"apoyo_silencio"):
+		silence_key = &"PCH_ASM4_SILENCE_ANSWER_SILENCIO"
+	var silence_node: DialogueNode = _answer_node(&"silence", &"PCH_NPC_CURACA", silence_key)
 	silence_node.effects = _effects([_flag_effect(&"asamblea_silencio")])
 	nodes.append(silence_node)
+
+	var maize: DialogueChoice = DialogueChoice.new()
+	maize.text_key = &"PCH_ASM4_MAIZE"
+	maize.next_id = &"maize"
+	var maize_condition: DialogueCondition = DialogueCondition.new()
+	maize_condition.kind = DialogueCondition.Kind.FLAG
+	maize_condition.key = &"maiz_guardado"
+	maize_condition.minimum = 1
+	maize.conditions = _conditions([maize_condition])
+	var curaca_choice: DialogueChoice = DialogueChoice.new()
+	curaca_choice.text_key = &"PCH_ASM4_CURACA"
+	curaca_choice.next_id = &"curaca"
+	var curaca_condition: DialogueCondition = DialogueCondition.new()
+	curaca_condition.kind = DialogueCondition.Kind.FLAG
+	curaca_condition.key = &"apoyo_curaca"
+	curaca_condition.minimum = 1
+	curaca_choice.conditions = _conditions([curaca_condition])
+	var more_node: DialogueNode = DialogueNode.new()
+	more_node.id = &"more"
+	more_node.speaker_key = &"PCH_NPC_CURACA"
+	more_node.text_key = &"PCH_ASM4_MORE_TEXT"
+	var vecino_choice: DialogueChoice = DialogueChoice.new()
+	vecino_choice.text_key = &"PCH_ASM4_VECINO"
+	vecino_choice.next_id = &"vecino"
+	vecino_choice.once = true
+	var more_choices: Array[DialogueChoice] = [maize, curaca_choice, vecino_choice, silence]
+	more_node.choices = more_choices
+	nodes.append(more_node)
+	var vecino_node: DialogueNode = _answer_node(&"vecino", &"PCH_NPC_CURACA_VECINO", &"PCH_ASM4_VECINO_ANSWER")
+	vecino_node.next_id = &"more"
+	nodes.append(vecino_node)
+	var maize_node: DialogueNode = _answer_node(&"maize", &"PCH_NPC_AYLLUS", &"PCH_ASM4_MAIZE_ANSWER")
+	maize_node.effects = _effects([_flag_effect(&"hablo_en_asamblea"),
+		_flag_effect(&"maiz_repartido"), _reputation_effect(&"llacta", 1)])
+	nodes.append(maize_node)
+	var curaca_node: DialogueNode = _answer_node(&"curaca", &"PCH_NPC_CURACA", &"PCH_ASM4_CURACA_ANSWER")
+	curaca_node.effects = _effects([_flag_effect(&"hablo_en_asamblea"),
+		_flag_effect(&"puma_reconciliado"), _reputation_effect(&"llacta", 1)])
+	nodes.append(curaca_node)
 	graph.nodes = nodes
 	return graph
 
 
 func _has_cost() -> bool:
 	return CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")
+
+
+## Alianzas que llegaron al Cusco; la asamblea las reconoce si son tres.
+func _ally_count() -> int:
+	var count: int = 0
+	for index: int in range(3):
+		if CampaignState.has_flag(StringName("aliado_%d" % index)):
+			count += 1
+	return count
+
+
+## Apertura de la asamblea: cambia con el coste y con los aliados traídos.
+func _assembly_ask_key() -> StringName:
+	if CampaignState.has_flag(&"costo_anca"):
+		return &"PCH_ASM4_ASK_ANCA"
+	if CampaignState.has_flag(&"costo_joven"):
+		return &"PCH_ASM4_ASK_JOVEN"
+	if _ally_count() >= 3:
+		return &"PCH_ASM4_ASK_MANY"
+	return &"PCH_ASM4_ASK"
 
 
 func _answer_node(node_id: StringName, speaker_key: StringName, text_key: StringName) -> DialogueNode:
@@ -841,6 +1080,11 @@ func _on_dialogue_line(speaker_key: StringName, text_key: StringName) -> void:
 	_dialogue_speaker = speaker_key
 	_dialogue_text = text_key
 	_dialogue_choices.clear()
+	if _assembly_started and speaker_key != _assembly_speaker_key:
+		_assembly_speaker_key = speaker_key
+		var target: NpcActor = _speaker_npc(speaker_key)
+		if target != null:
+			player.begin_dialogue(target)
 	if hud != null:
 		var empty: Array[String] = []
 		hud.show_dialogue(tr(String(speaker_key)), tr(String(text_key)), empty)
@@ -902,12 +1146,6 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 func _end_act_one() -> void:
 	_assembly_done = true
 	CampaignState.set_flag(&"ofrecio", 1)
-	if _assembly_choice == &"asm_go":
-		CampaignState.set_flag(&"apoyo_comitiva", 1)
-	elif _assembly_choice == &"asm_together":
-		CampaignState.set_flag(&"apoyo_llacta", 1)
-	else:
-		CampaignState.set_flag(&"apoyo_duda", 1)
 	if _assembly_choice == &"asm_together":
 		CampaignState.set_flag(&"confianza_sisa", 2)
 	elif _assembly_choice == &"asm_go":
@@ -916,8 +1154,25 @@ func _end_act_one() -> void:
 		CampaignState.set_flag(&"confianza_sisa", 0)
 	SessionLog.mark(&"act_one_end", String(_assembly_choice))
 	CampaignProgress.save(self)
+	_spawn_departure_column()
 	if hud != null:
-		hud.show_end_card(tr("PCH_END_TITLE"), tr("PCH_END_HINT"))
+		var body: String = tr("PCH_NARR_CLOSING_1") + " " + tr("PCH_NARR_CLOSING_2")
+		hud.show_end_card(tr("PCH_END_TITLE"), tr("PCH_END_HINT"), body)
+
+
+## La columna sale al amanecer: tres figuras en el camino del norte. La tarjeta
+## de fin cuenta lo que la escena muestra.
+func _spawn_departure_column() -> void:
+	var npcs: Node3D = get_node_or_null("Llacta/NPCs") as Node3D
+	if npcs == null:
+		return
+	var north: Vector3 = Vector3(0.0, 0.0, -40.0)
+	var first: NpcActor = _add_npc(npcs, "Comitiva1", Vector3(0.0, 0.0, -18.0), Color(0.48, 0.38, 0.28, 1.0))
+	var second: NpcActor = _add_npc(npcs, "Comitiva2", Vector3(1.6, 0.0, -20.0), Color(0.48, 0.38, 0.28, 1.0))
+	var third: NpcActor = _add_npc(npcs, "Comitiva3", Vector3(-1.6, 0.0, -20.0), Color(0.48, 0.38, 0.28, 1.0))
+	for actor: NpcActor in [first, second, third]:
+		if actor != null:
+			actor.face(north, true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -934,32 +1189,50 @@ func _unhandled_input(event: InputEvent) -> void:
 			player.set_controls_locked(true)
 		get_viewport().set_input_as_handled()
 		return
-	if not (event is InputEventKey):
-		return
-	var key: InputEventKey = event as InputEventKey
-	if not key.pressed or key.echo or key.keycode != KEY_R:
+	if not _advance_requested(event):
 		return
 	if act == 1 and _assembly_done:
+		get_viewport().set_input_as_handled()
 		CampaignProgress.save(self)
 		get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/paso.tscn")
 	elif act == 4 and _act_four_done:
+		get_viewport().set_input_as_handled()
 		CampaignProgress.save(self)
 		get_tree().change_scene_to_file("res://campaigns/01_pachacutec/scenes/world/llacta_act5.tscn")
 	elif act == 5 and _act_five_done:
+		get_viewport().set_input_as_handled()
 		get_tree().change_scene_to_file("res://core/ui/title_screen.tscn")
+
+
+## Acepta E, Intro o R para cerrar la tarjeta de fin. E es la tecla que el
+## jugador ya usa para avanzar; R queda como atajo documentado.
+static func _advance_requested(event: InputEvent) -> bool:
+	if event.is_action_pressed("interact"):
+		return true
+	if not (event is InputEventKey):
+		return false
+	var key: InputEventKey = event as InputEventKey
+	if not key.pressed or key.echo:
+		return false
+	return key.keycode == KEY_R or key.keycode == KEY_ENTER or key.keycode == KEY_KP_ENTER
 
 
 ## Cierra el acto IV: la asamblea, la muerte de Viracocha y el regreso a la casa.
 func _end_act_four() -> void:
+	if _act_four_done:
+		return
 	_act_four_done = true
 	CampaignState.set_flag(&"viracocha_muerto", 1)
 	if _assembly_choice == &"hablo_en_asamblea":
 		CampaignState.set_flag(&"hablo_en_asamblea", 1)
 	else:
 		CampaignState.set_flag(&"asamblea_silencio", 1)
+	# El mensajero del Cusco llega a la plaza; la tarjeta cierra con la noticia.
+	_spawn_cusco_messenger(Vector3(3.5, 0.0, 3.5))
 	SessionLog.mark(&"act_four_end")
 	CampaignProgress.save(self)
 	if hud != null:
+		hud.show_subtitle(tr("PCH_ASM4_NEWS"), 0.0)
 		hud.show_end_card(tr("PCH_END4_TITLE"), tr("PCH_END4_HINT"), tr("PCH_ASM4_NEWS"))
 
 
@@ -968,10 +1241,22 @@ func _setup_act_five() -> void:
 	var packed: PackedScene = load(TASK_SCENE) as PackedScene
 	if packed == null:
 		return
-	var ids: Array[StringName] = [&"pirca", &"terraza", &"acequia", &"telar"]
-	var prompts: Array[StringName] = [&"PCH_REBUILD_PIRCA", &"PCH_REBUILD_TERRAZA", &"PCH_REBUILD_ACEQUIA", &"PCH_REBUILD_TELAR"]
-	var points: Array[Vector3] = [Vector3(-27.5, 0.0, -12.0), Vector3(34.0, 0.8, -3.0), Vector3(14.0, 0.0, 8.0), Vector3(-10.0, 0.0, 6.2)]
-	var done_keys: Array[StringName] = [&"PCH_REBUILD_PIRCA_DONE", &"PCH_REBUILD_TERRAZA_DONE", &"PCH_REBUILD_ACEQUIA_DONE", &"PCH_REBUILD_TELAR_DONE"]
+	var home: Vector3 = _home_door_position()
+	var ids: Array[StringName] = [&"pirca", &"terraza", &"acequia", &"telar", &"casa"]
+	var prompts: Array[StringName] = [
+		&"PCH_REBUILD_PIRCA", &"PCH_REBUILD_TERRAZA", &"PCH_REBUILD_ACEQUIA",
+		&"PCH_REBUILD_TELAR", &"PCH_REBUILD_CASA",
+	]
+	var points: Array[Vector3] = [
+		Vector3(-27.5, 0.0, -12.0), Vector3(34.0, 0.8, -3.0),
+		Vector3(14.0, 0.0, 8.0), Vector3(-10.0, 0.0, 6.2),
+		Vector3(home.x, 0.0, home.z),
+	]
+	var done_keys: Array[StringName] = [
+		&"PCH_REBUILD_PIRCA_DONE", &"PCH_REBUILD_TERRAZA_DONE",
+		&"PCH_REBUILD_ACEQUIA_DONE", &"PCH_REBUILD_TELAR_DONE",
+		&"PCH_REBUILD_CASA_DONE",
+	]
 	_five_done_keys = done_keys
 	for index: int in range(ids.size()):
 		var instance: Node = packed.instantiate()
@@ -985,7 +1270,8 @@ func _setup_act_five() -> void:
 		task.prompt_key = prompts[index]
 		var point: Vector3 = points[index]
 		body.position = Vector3(point.x, _height_at(point.x, point.z) + 0.9, point.z)
-		_add_task_marker(task)
+		if task.task_id != &"casa":
+			_add_task_marker(task)
 		add_child(task)
 		task.completed.connect(_on_rebuild_completed)
 
@@ -1008,14 +1294,56 @@ func _on_rebuild_completed(task_id: StringName) -> void:
 	if _rebuild_done.has(task_id):
 		return
 	_rebuild_done[task_id] = true
-	var index: int = [&"pirca", &"terraza", &"acequia", &"telar"].find(task_id)
+	var index: int = [&"pirca", &"terraza", &"acequia", &"telar", &"casa"].find(task_id)
 	if hud != null and index >= 0:
 		hud.show_hint(tr("PCH_REBUILD_DONE") % _rebuild_done.size(), 3.0)
-		hud.show_subtitle(tr(String(_five_done_keys[index])), 0.0)
+		var subtitle: String = tr(String(_five_done_keys[index]))
+		var own: bool = _is_oficio_work(task_id)
+		if character != null:
+			character.register_skill_use(_rebuild_skill(task_id), 2)
+		if own:
+			subtitle += " " + tr("PCH_REBUILD_OWN")
+			CampaignState.set_flag(&"obra_oficio", 1)
+			if character != null:
+				character.register_skill_use(&"oficio", 3)
+				character.change_morale(5.0)
+		else:
+			subtitle += " " + tr("PCH_REBUILD_ALLIES")
+		hud.show_subtitle(subtitle, 0.0)
 	SessionLog.mark(&"rebuild", String(task_id))
 	_show_rebuild(task_id)
-	if _rebuild_done.size() >= 4:
+	if _rebuild_done.size() >= 5:
 		_finish_act_five()
+
+
+## Habilidad que ejercita cada obra, con los mismos verbos del acto I.
+static func _rebuild_skill(task_id: StringName) -> StringName:
+	match task_id:
+		&"pirca", &"acequia":
+			return &"monte"
+		&"terraza", &"casa":
+			return &"oficio"
+		&"telar":
+			return &"palabra"
+	return &"oficio"
+
+
+## ¿La obra corresponde al oficio que Rumi fijó en el acto I? El oficio no
+## bloquea las demás obras (las cubren los aliados), pero deja su marca.
+static func _is_oficio_work(task_id: StringName) -> bool:
+	var oficio: StringName = CampaignProgress.get_oficio()
+	if oficio == &"":
+		return false
+	match task_id:
+		&"pirca", &"casa":
+			return oficio == &"pirca"
+		&"terraza":
+			return oficio == &"maiz"
+		&"acequia":
+			return oficio == &"agua"
+		&"telar":
+			return oficio == &"telar"
+	return false
 
 
 ## Deja una pieza visible de la obra: el jugador ve lo que reconstruyó.
@@ -1037,6 +1365,17 @@ func _show_rebuild(task_id: StringName) -> void:
 		&"telar":
 			var wood: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.WOOD, Color(0.38, 0.27, 0.18, 1.0))
 			_add_box_body(parent, "RebuiltTelar", LOOM_POSITION + Vector3(0.0, 0.25, 0.0), Vector3(1.2, 0.5, 0.5), wood, 0)
+		&"casa":
+			_repair_home()
+
+
+## Quita el paño y las piedras de la casa y enciende la lumbre del umbral.
+func _repair_home() -> void:
+	for node: Node3D in _home_absence_nodes:
+		if is_instance_valid(node):
+			node.queue_free()
+	_home_absence_nodes.clear()
+	_add_home_repaired()
 
 
 func _finish_act_five() -> void:
@@ -1050,10 +1389,70 @@ func _finish_act_five() -> void:
 	elif CampaignState.has_flag(&"asamblea_silencio") \
 			and (CampaignState.has_flag(&"costo_anca") or CampaignState.has_flag(&"costo_joven")):
 		final_key = &"PCH_FINAL_VACIA"
-	var body: String = tr("PCH_END5_NAME") + "\n\n" + tr(String(final_key))
+	var parts: Array[String] = []
+	if CampaignState.has_flag(&"viracocha_muerto"):
+		parts.append(tr("PCH_END5_NAME"))
+	else:
+		parts.append(tr("PCH_END5_NO_NEWS"))
+	var closing: String = tr(String(final_key))
+	if CampaignState.has_flag(&"casa_reconstruida"):
+		closing += " " + tr("PCH_FINAL_CASA")
+	if CampaignState.has_flag(&"obra_oficio"):
+		closing += " " + tr("PCH_REBUILD_OWN")
+	if CampaignState.has_flag(&"santuario_protegido"):
+		closing += " " + tr("PCH_FINAL_SANTUARIO")
+	elif CampaignState.has_flag(&"orden_llevada"):
+		closing += " " + tr("PCH_FINAL_ORDEN")
+	if CampaignState.has_flag(&"maiz_repartido"):
+		closing += " " + tr("PCH_FINAL_MAIZ")
+	parts.append(closing)
+	parts.append(tr("PCH_END5_FAMILY"))
+	var body: String = "\n\n".join(parts)
 	SessionLog.mark(&"act_five_end", String(final_key))
+	# El cierre se ve sobre la casa, no sobre una plaza cualquiera.
+	var door: Vector3 = _home_door_position()
+	var house: Node3D = _home_house()
+	var outward: Vector3 = Vector3.FORWARD
+	if house != null:
+		outward = door - house.global_position
+	outward.y = 0.0
+	outward = outward.normalized()
+	var tangent: Vector3 = Vector3(-outward.z, 0.0, outward.x)
+	var camera_position: Vector3 = door + outward * 4.2
+	camera_position.y = 0.05
+	player.global_position = camera_position
+	player.rotation.y = atan2(-(door.x - camera_position.x), -(door.z - camera_position.z))
+	player.head.rotation.x = 0.0
+	_stage_home_cast()
+	_spawn_cusco_messenger(door + outward * 2.0 + tangent * 2.2)
 	if hud != null:
+		hud.show_subtitle(tr("PCH_END5_MESSENGER"), 0.0)
 		hud.show_end_card(tr("PCH_END5_TITLE"), tr("PCH_END5_HINT"), body)
+
+
+## Tarjetas de apertura: mundo, época, nota histórica y controles. Se muestran
+## una sola vez por campaña; el jugador las pasa con E.
+func _show_intro() -> void:
+	var cards: IntroCards = IntroCards.new()
+	cards.name = "IntroCards"
+	$UILayer.add_child(cards)
+	var texts: Array[String] = [
+		tr("PCH_CAMPAIGN_SUBTITLE"),
+		tr("PCH_INTRO_1"),
+		tr("PCH_INTRO_2"),
+		tr("PCH_INTRO_3"),
+		tr("PCH_INTRO_NOTE"),
+	]
+	cards.play(texts, tr("PCH_INTRO_HINT"))
+	cards.finished.connect(_on_intro_finished)
+	player.set_controls_locked(true)
+	CampaignState.set_flag(&"intro_vista", 1)
+
+
+func _on_intro_finished() -> void:
+	player.set_controls_locked(false)
+	if hud != null:
+		hud.show_subtitle(tr("PCH_NARR_OPENING"), 0.0)
 
 
 func _setup_act_one() -> void:
@@ -1089,11 +1488,17 @@ func _setup_act_one() -> void:
 		journal.add_memory(&"mem_plaza", &"PCH_ST_PLAZA_TITLE", &"PCH_ST_PLAZA_BODY", &"A", &"PCH_ST_PLAZA_SOURCE")
 	if hud != null:
 		hud.show_subtitle(tr("PCH_NARR_OPENING"), 0.0)
-	_add_request_point("DudaPoint", Vector3(-7.8, 0.9, -1.0), &"PCH_TALK_DUDA", _on_duda_requested)
+	_add_request_point("DudaPoint", Vector3(-6.5, 0.9, 4.2), &"PCH_TALK_DUDA", _on_duda_requested)
 
 
 ## Punto de interacción sin modelo: abre una conversación de la escena.
-func _add_request_point(node_name: String, at: Vector3, prompt_key: StringName, handler: Callable) -> CampPoint:
+func _add_request_point(
+	node_name: String,
+	at: Vector3,
+	prompt_key: StringName,
+	handler: Callable,
+	highlight_target: Node3D = null
+) -> CampPoint:
 	var packed: PackedScene = load(CAMP_SCENE) as PackedScene
 	if packed == null:
 		return null
@@ -1105,6 +1510,7 @@ func _add_request_point(node_name: String, at: Vector3, prompt_key: StringName, 
 		return null
 	point.name = node_name
 	point.prompt_key = prompt_key
+	point.highlight_target = highlight_target
 	body.position = at
 	add_child(point)
 	point.requested.connect(handler)
@@ -1119,7 +1525,7 @@ func _on_duda_requested() -> void:
 		return
 	_duda_started = true
 	if dialogue.start(_build_duda_dialogue()):
-		player.begin_dialogue(_curaca)
+		player.begin_dialogue(_puma if _puma != null else _curaca)
 
 
 func _build_duda_dialogue() -> DialogueGraph:
@@ -1165,6 +1571,7 @@ func _spawn_messenger() -> void:
 	var npcs: Node3D = get_node_or_null("Llacta/NPCs") as Node3D
 	var actor: NpcActor = _add_npc(npcs, "Mensajero", Vector3(-3.0, 0.0, 3.0), Color(0.55, 0.42, 0.32, 1.0))
 	if actor != null:
+		_messenger_actor = actor
 		actor.watch_target = player
 		actor.face(_plaza_center_flat(), true)
 	var point: CampPoint = _add_request_point("MessengerPoint", Vector3(-3.0, 0.9, 3.0), &"PCH_TALK_MESSENGER", _on_messenger_requested)
@@ -1182,7 +1589,7 @@ func _on_messenger_requested() -> void:
 			hud.show_subtitle(tr("PCH_MSG_AGAIN"), 0.0)
 		return
 	if dialogue.start(_build_messenger_dialogue()):
-		player.begin_dialogue(null)
+		player.begin_dialogue(_messenger_actor)
 
 
 func _build_messenger_dialogue() -> DialogueGraph:
@@ -1277,6 +1684,9 @@ func _on_task_completed(task_id: StringName) -> void:
 	if _oficio == &"":
 		_oficio = task_id
 		CampaignProgress.set_oficio(_oficio)
+	if journal != null and _oficio != &"" and not journal.has(&"oficio"):
+		journal.add_quest(&"oficio", &"PCH_Q_OFICIO_TITLE",
+			CampaignProgress.oficio_body_key(_oficio))
 	CampaignProgress.save(self)
 	if hud != null:
 		hud.show_hint(tr("PCH_TASK_DONE") % _tasks_done.size(), 3.0)
@@ -1315,6 +1725,90 @@ static func _skill_for_task(task_id: StringName) -> StringName:
 
 func _plaza_center_flat() -> Vector3:
 	return Vector3(0.0, 0.0, 2.0)
+
+
+## Casa de Rumi, o null si la escena aún no la construyó.
+func _home_house() -> Node3D:
+	return get_node_or_null(
+		"Llacta/Houses/House%02d" % (HOME_HOUSE_INDEX + 1)) as Node3D
+
+
+## Punto delante de la puerta de la casa, a la altura del pecho.
+func _home_door_position() -> Vector3:
+	var house: Node3D = _home_house()
+	if house == null:
+		return Vector3(16.7, 0.9, 7.8)
+	return house.to_global(Vector3(0.0, 0.9, -HOME_DOOR_OFFSET))
+
+
+## Posición de la madre ([param side] = 1) o del hermano (−1) junto al umbral.
+## Se calcula desde la puerta para que la familia siga a la casa si se mueve.
+func _home_family_position(side: float) -> Vector3:
+	var door: Vector3 = _home_door_position()
+	var house: Node3D = _home_house()
+	var outward: Vector3 = Vector3.FORWARD
+	if house != null:
+		outward = door - house.global_position
+	outward.y = 0.0
+	outward = outward.normalized()
+	var tangent: Vector3 = Vector3(-outward.z, 0.0, outward.x)
+	var at: Vector3 = door + outward * 0.7 + tangent * (0.95 * side)
+	at.y = 0.0
+	return at
+
+
+## Coloca a un personaje del elenco en una posición y lo gira hacia [param target].
+func _place_npc(node_name: String, at: Vector3, target: Vector3) -> bool:
+	var npc: NpcActor = get_node_or_null("Llacta/NPCs/" + node_name) as NpcActor
+	if npc == null:
+		return false
+	npc.global_position = Vector3(at.x, 0.0, at.z)
+	npc.face(target, true)
+	return true
+
+
+## Puebla la asamblea: la familia, Sisa, Puma y su hijo rodean la plaza. Sin
+## esto la escena se reduce a un curaca hablando solo.
+func _stage_assembly_cast() -> void:
+	var center: Vector3 = _plaza_center_flat()
+	_place_npc("Habitante1", Vector3(-3.4, 0.0, 3.6), center)
+	_place_npc("Habitante2", Vector3(-2.4, 0.0, 4.6), center)
+	_place_npc("Habitante3", Vector3(3.2, 0.0, 3.2), center)
+	_place_npc("Principal2", Vector3(-4.6, 0.0, -0.6), center)
+	_place_npc("HijoPuma", Vector3(-3.6, 0.0, 0.2), center)
+	if act == 4:
+		_place_npc("CuracaVecino", Vector3(4.6, 0.0, -0.8), center)
+
+
+## Reúne a la familia en el umbral para el cierre del acto V.
+func _stage_home_cast() -> void:
+	var door: Vector3 = _home_door_position()
+	var house: Node3D = _home_house()
+	var outward: Vector3 = Vector3.FORWARD
+	if house != null:
+		outward = door - house.global_position
+	outward.y = 0.0
+	outward = outward.normalized()
+	var tangent: Vector3 = Vector3(-outward.z, 0.0, outward.x)
+	var camera: Vector3 = door + outward * 4.2
+	_place_npc("Habitante1", door + outward * 0.4 + tangent * 2.0, camera)
+	_place_npc("Habitante2", door + outward * 0.4 - tangent * 2.0, camera)
+	_place_npc("Habitante3", door + outward * 1.0 + tangent * 1.5, camera)
+	_place_npc("Principal2", door + outward * 1.0 - tangent * 1.5, camera)
+	_place_npc("HijoPuma", door + outward * 1.6 - tangent * 0.9, camera)
+	_place_npc("Anca", door + outward * 1.6 + tangent * 0.9, camera)
+
+
+## Mensajero de la noticia: acto IV (muerte de Viracocha) y acto V (nombre nuevo).
+func _spawn_cusco_messenger(at: Vector3) -> NpcActor:
+	var npcs: Node3D = get_node_or_null("Llacta/NPCs") as Node3D
+	if npcs == null or npcs.get_node_or_null("Mensajero") != null:
+		return null
+	var actor: NpcActor = _add_npc(npcs, "Mensajero", at, Color(0.55, 0.42, 0.32, 1.0))
+	if actor != null:
+		actor.watch_target = player
+		actor.face(player.global_position, true)
+	return actor
 
 
 func loom_transform() -> Transform3D:
@@ -1390,10 +1884,13 @@ func _apply_act_mood() -> void:
 		return
 	var environment: Environment = world_environment.environment
 	if act == 4:
-		sun.light_energy = 0.95
-		sun.light_color = Color(1.0, 0.78, 0.6, 1.0)
+		sun.light_energy = 0.85
+		sun.light_color = Color(0.76, 0.85, 1.0, 1.0)
 		if environment != null:
-			environment.ambient_light_energy = 0.85
+			environment.ambient_light_energy = 0.75
+			environment.ambient_light_color = Color(0.62, 0.70, 0.84, 1.0)
+			environment.background_energy_multiplier = 0.72
+			environment.fog_light_color = Color(0.60, 0.68, 0.82, 1.0)
 		var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
 		if fire != null:
 			fire.visible = false
@@ -1401,14 +1898,113 @@ func _apply_act_mood() -> void:
 		_add_ruin(Vector3(19.0, 0.0, 11.5), "RuinEast")
 		_add_ruin(Vector3(-33.0, 0.0, 3.0), "RuinNorthWest")
 		_add_ruin(Vector3(33.0, 0.0, -5.0), "RuinNorthEast")
+		_add_home_absence()
+		_add_uncared_field()
 	else:
 		sun.light_energy = 1.35
 		sun.light_color = Color(1.0, 0.87, 0.7, 1.0)
 		if environment != null:
 			environment.ambient_light_energy = 1.0
+			environment.ambient_light_color = Color(0.72, 0.68, 0.61, 1.0)
+			environment.background_energy_multiplier = 1.0
+			environment.fog_light_color = Color(0.66, 0.74, 0.86, 1.0)
 		var fire: Node3D = get_node_or_null("Llacta/CommunityFire") as Node3D
 		if fire != null:
 			fire.visible = true
+		_add_home_absence()
+
+
+## La casa de Rumi en la posguerra: la puerta se cubre con un paño oscuro y
+## quedan piedras caídas en el umbral. No se toca el modelo de la casa.
+func _add_home_absence() -> void:
+	var house: Node3D = _home_house()
+	if house == null:
+		return
+	var fabric: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.FABRIC, Color(0.24, 0.21, 0.17, 1.0))
+	var cloth: MeshInstance3D = MeshInstance3D.new()
+	cloth.name = "HomeAbsenceCloth"
+	var box: BoxMesh = BoxMesh.new()
+	box.size = Vector3(1.1, 1.8, 0.06)
+	cloth.mesh = box
+	cloth.material_override = fabric
+	cloth.position = Vector3(0.0, 0.95, -3.08)
+	cloth.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	house.add_child(cloth)
+	_home_absence_nodes.append(cloth)
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.ROCK, Color(0.45, 0.43, 0.40, 1.0))
+	for offset: Vector3 in [Vector3(-1.35, 0.18, -3.35), Vector3(1.15, 0.14, -3.5)]:
+		var rubble: MeshInstance3D = MeshInstance3D.new()
+		var rubble_box: BoxMesh = BoxMesh.new()
+		rubble_box.size = Vector3(0.55, 0.3, 0.42)
+		rubble.mesh = rubble_box
+		rubble.material_override = stone
+		rubble.position = offset
+		rubble.rotation.y = offset.x
+		house.add_child(rubble)
+		_home_absence_nodes.append(rubble)
+
+
+## La posguerra también se ve en los campos: matas altas y una herramienta
+## abandonada en las terrazas que nadie cuidó.
+func _add_uncared_field() -> void:
+	var grass: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.GRASS, Color(0.33, 0.34, 0.20, 1.0))
+	var spots: Array[Vector3] = [
+		Vector3(33.5, 0.85, -4.0), Vector3(35.0, 0.85, 2.5),
+		Vector3(41.5, 1.65, 1.0), Vector3(43.0, 1.65, -3.0),
+		Vector3(49.5, 2.45, -6.0), Vector3(-29.5, 0.0, -10.0),
+	]
+	for at: Vector3 in spots:
+		var weed: MeshInstance3D = MeshInstance3D.new()
+		var cone: CylinderMesh = CylinderMesh.new()
+		cone.top_radius = 0.0
+		cone.bottom_radius = 0.32
+		cone.height = 0.75
+		cone.radial_segments = 5
+		weed.mesh = cone
+		weed.material_override = grass
+		weed.position = Vector3(at.x, at.y + 0.35, at.z)
+		weed.rotation.y = at.x * 0.3
+		weed.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		($Llacta as Node3D).add_child(weed)
+	var wood: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.WOOD, Color(0.36, 0.26, 0.17, 1.0))
+	var tool: MeshInstance3D = MeshInstance3D.new()
+	var handle: BoxMesh = BoxMesh.new()
+	handle.size = Vector3(0.12, 1.1, 0.12)
+	tool.mesh = handle
+	tool.material_override = wood
+	tool.position = Vector3(32.0, 1.0, 0.0)
+	tool.rotation_degrees = Vector3(0.0, 0.0, 38.0)
+	($Llacta as Node3D).add_child(tool)
+
+
+## La casa en obra: umbral reparado y una luz cálida en la puerta. El jugador
+## ve que la casa volvió a tener hogar, no solo que la tarjeta lo diga.
+func _add_home_repaired() -> void:
+	var house: Node3D = _home_house()
+	if house == null:
+		return
+	var stone: ShaderMaterial = SurfaceMaterials.layer_material(
+		SurfaceMaterials.Layer.STONE, Color(0.58, 0.54, 0.48, 1.0))
+	var threshold: MeshInstance3D = MeshInstance3D.new()
+	threshold.name = "HomeThreshold"
+	var box: BoxMesh = BoxMesh.new()
+	box.size = Vector3(2.0, 0.16, 0.7)
+	threshold.mesh = box
+	threshold.material_override = stone
+	threshold.position = Vector3(0.0, 0.08, -3.05)
+	house.add_child(threshold)
+	var light: OmniLight3D = OmniLight3D.new()
+	light.name = "HomeLight"
+	light.light_color = Color(1.0, 0.66, 0.34, 1.0)
+	light.light_energy = 1.3
+	light.omni_range = 5.0
+	light.shadow_enabled = false
+	light.position = house.to_global(Vector3(0.0, 1.6, -3.1))
+	add_child(light)
 
 
 func _add_ruin(at: Vector3, node_name: String) -> void:

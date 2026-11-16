@@ -6,6 +6,7 @@ const WORLD_PATH: String = "res://campaigns/01_pachacutec/scenes/world/llacta.ts
 
 
 func test_llacta_loads() -> bool:
+	CampaignState.clear()
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	if tree == null:
 		return false
@@ -40,10 +41,12 @@ func test_llacta_loads() -> bool:
 	ok = ok and houses != null and houses.get_child_count() == 8
 	ok = ok and terraces != null and terraces.get_child_count() >= 3
 	ok = ok and corrals != null and corrals.get_child_count() == 2
-	ok = ok and npcs != null and npcs.get_child_count() == 7
+	ok = ok and npcs != null and npcs.get_child_count() == 8
 	ok = ok and tasks == 4
 	ok = ok and boundary != null and boundary.get_child_count() == 4
 	ok = ok and not hud.get_objective_text().is_empty()
 	ok = ok and not hud.get_objective_text().begins_with("PCH_")
+	ok = ok and world.get_node_or_null("UILayer/IntroCards") != null
 	world.free()
+	CampaignState.clear()
 	return ok

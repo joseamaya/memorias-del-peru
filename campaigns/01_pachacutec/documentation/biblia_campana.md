@@ -1,10 +1,11 @@
 # Biblia de la campaña 01 — El despertar del Sol
 
-- **Versión:** 1.0 — 2026-11-15
+- **Versión:** 1.1 — 2026-11-16
 - **Estado:** aprobada para construir
 - **Crónica rectora:** Betanzos. Contraste: Garcilaso y Pachacuti Yamqui
 - **Marco narrativo:** [biblia narrativa general](../../../docs/09_biblia_narrativa.md)
 - **Documentos de apoyo:** [registro histórico](registro_historico.md), [expediente histórico](expediente_historico.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
+- **Puesta en escena:** [guion de escenas](guion_escenas.md)
 
 Este documento manda sobre el contenido de la campaña: actos, misiones, personajes, sistemas, banderas y criterios de cierre.
 
@@ -141,9 +142,9 @@ Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Ho
 | II.5 | La ciudad dividida | Tres grupos dudan | Reclutar y preparar la defensa | Cada grupo pide algo distinto | Aliados 0–3 | PCH-017 |
 | II.6 | La víspera | Noche antes de la batalla | Escuchar, ofrendar, dormir | El miedo | Ánimo y Memoria | PCH-031, 012 |
 
-**La emboscada:** combatir desde las rocas, cruzar por la cornisa con Monte ≥ 2 o distraer con el q'ipi o una piedra. Si el jugador cruza en sigilo, **oye a los exploradores**: están tanteando el camino para la fuerza principal. Esa información abre la opción de convencer al curaca vecino; sin ella hay que pagar con maíz o con Palabra.
+**La emboscada:** combatir desde las rocas, cruzar por la cornisa con Monte ≥ 2 o distraer con el q'ipi o una piedra. Si el jugador ayudó al mensajero en el acto I, el aviso del arroyo abre una ruta de sigilo que no exige Monte. Si el jugador cruza en sigilo, **oye a los exploradores**: están tanteando el camino para la fuerza principal. Esa información abre la opción de convencer al curaca vecino; sin ella hay que pagar con maíz o con Palabra.
 
-**El herido Anca:** cargarlo cuesta aliento durante todo el acto; dejarlo con agua y coca cuesta reputación. Si vive, testifica en el acto IV.
+**El herido Anca:** cargarlo reduce el aliento máximo durante todo el acto II; dejarlo con agua y coca consume las dos provisiones y cuesta reputación. Si vive, deja su testimonio en la llacta.
 
 **El maíz:** conservarlo da un aliado en el Cusco; abandonarlo aligera la huida y cierra esa puerta.
 
@@ -171,6 +172,8 @@ Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Ho
 | III.2 | La trampa | Los chancas rodean el santuario | Protegerlo o llevar la orden | No se puede hacer todo | Variante del epílogo |
 | III.3 | El costo | Cae un defensor con nombre | Seguir luchando | No se puede salvar a todos | `costo_anca` / `costo_joven` |
 | III.4 | La contraofensiva | Cusi dirige | Seguir la orden | La victoria no es del jugador | Fin del acto III |
+
+**La trampa es obligatoria:** la defensa no empieza hasta que el jugador decide sobre el santuario. Cusi lo recuerda si se intenta saltar.
 
 **El costo no es una cinemática.** Si Anca sobrevivió, cae aquí; si no, cae el hijo de Puma cuando los jóvenes se unieron y los aliados son menos de dos. La victoria es fija; el duelo, no.
 
@@ -201,11 +204,11 @@ Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Ho
 
 | # | Misión | Contexto | Objetivo | Conflicto | Consecuencia |
 |---|---|---|---|---|---|
-| V.1 | La obra | Corral, terraza, telar, acequia | Reconstruir con el oficio | Falta gente | `casa_reconstruida` |
+| V.1 | La obra | Corral, terraza, telar, acequia y casa de Rumi | Reconstruir con el oficio | Falta gente | `casa_reconstruida` |
 | V.2 | El nombre | Un mensajero del Cusco | Escuchar la noticia | Es tradición, no decreto | Memoria |
 | V.3 | El cierre | La familia en la casa | Despedir la campaña | Qué decir | Variante final |
 
-**La obra usa los mismos verbos del acto I**, ahora para reconstruir. El círculo se cierra con las manos, no con una batalla.
+**La obra usa los mismos verbos del acto I**, ahora para reconstruir. La obra que coincide con el oficio deja una marca (`obra_oficio`); las demás las cubren los aliados. El círculo se cierra con las manos, no con una batalla.
 
 **El nombre de Pachacútec** se presenta como tradición de los cronistas, no como un acto documentado.
 
@@ -246,7 +249,7 @@ Honda, porra, escudo, piedras, coca, chicha, maíz, agua, hierbas, cuerda, q'ipi
 | II | Paso | 80 × 80 m: zigzag, campamento, cornisa, arroyo, refugio de pirca |
 | II–III | Cusco de 1438 | 150 × 150 m: plaza, 12–14 casas, santuario, muro, terrazas |
 | IV | Llacta de posguerra | Mismo terreno; casas vacías, heridos, asamblea, campos sin cuidar |
-| V | Llacta en obra | Mismo terreno; corral, terraza, telar y acequia reparados |
+| V | Llacta en obra | Mismo terreno; corral, terraza, telar y acequia reparados y casa de Rumi con umbral y lumbre |
 
 El Cusco de 1438 no es la ciudad monumental, posterior a Pachacútec: es el centro de un señorío en consolidación (PCH-022, PCH-027).
 

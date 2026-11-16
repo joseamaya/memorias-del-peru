@@ -43,12 +43,13 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | [expediente_historico.md](expediente_historico.md) | **v1.0** — cronología, lugares, personajes, cultura material, controversias y ficción declarada |
 | [registro_historico.md](registro_historico.md) | 29 fichas verificadas; PCH-025 (armadura acolchada) fuera del juego; PCH-032 a PCH-036 verificadas el 2026-11-15 |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
-| [guion_campana.md](guion_campana.md) | **Cerrado (v1.0)** — 15 secciones, fichas de misión, banderas y finales |
+| [guion_campana.md](guion_campana.md) | **Cerrado (v1.1)** — 15 secciones, fichas de misión, banderas y finales |
+| [guion_escenas.md](guion_escenas.md) | **v1.0** — 22 escenas con bloqueo, cámara, textos, banderas y aceptación |
 | [checklist_biblia.md](checklist_biblia.md) | Checklist de diseño por acto; pendientes de duración y rendimiento |
 
 ## 6. Estado de construcción
 
-La campaña se juega de principio a fin en gris: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cuatro obras y cierra con variantes. El guion está cerrado y las 97 pruebas pasan. Falta el pase de arte y audio, el equilibrio y llevar la duración a 40–50 min.
+La campaña se juega de principio a fin en gris: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cinco obras, incluida la casa de Rumi, y cierra con variantes. El guion y el guion de escenas están cerrados y las 115 pruebas pasan. Falta el pase de arte y audio, el equilibrio y llevar la duración a 40–50 min.
 
 ## 7. Notas de producción
 

@@ -205,6 +205,10 @@ func _set_cinematic_offset(value: float) -> void:
 ## Muestra la tarjeta de fin con un fundido: título, cuerpo opcional y cómo seguir.
 func show_end_card(title: String, hint: String, body: String = "") -> void:
 	clear_subtitle()
+	if player != null:
+		# La tarjeta es modal: sin esto el jugador seguía caminando e
+		# interactuando detrás del fundido y podía disparar otra acción.
+		player.set_controls_locked(true)
 	end_title.text = title
 	end_body.text = body
 	end_body.visible = not body.is_empty()
@@ -394,6 +398,8 @@ func show_journal(journal: Journal) -> void:
 	_refresh_vitals_visibility()
 	_refresh_status_visibility()
 	journal_panel.open(journal)
+	if player != null:
+		player.set_pointer_visible(true)
 	queue_redraw()
 
 
@@ -404,6 +410,8 @@ func hide_journal() -> void:
 	objective_label.visible = not objective_label.text.is_empty()
 	_refresh_vitals_visibility()
 	_refresh_status_visibility()
+	if player != null:
+		player.set_pointer_visible(false)
 	queue_redraw()
 
 

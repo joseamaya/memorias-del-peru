@@ -451,7 +451,7 @@ a la vista.
 ### PCH-035 — La reconstrucción de la casa y las terrazas
 - Tipo: arquitectura / actividad
 - Clasificación: R
-- Uso en el juego: acto V; corral, terraza, telar y acequia reparados
+- Uso en el juego: acto V; corral, terraza, telar, acequia y casa de Rumi reparados
 - Fuentes: PCH-007 (vivienda), PCH-008 (terraza), PCH-021 (corral de pirca) y las fuentes que citan; no hay una referencia específica sobre la reconstrucción tras un conflicto.
 - Discrepancias entre fuentes: —
 - Notas de representación: la obra usa las mismas técnicas documentadas que la construcción inicial; no se inventan herramientas.

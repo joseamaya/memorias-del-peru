@@ -35,6 +35,9 @@ func open(journal: Journal) -> void:
 	_refresh(journal)
 	_open = true
 	visible = true
+	# El jugador abre el diario con el ratón capturado: sin foco, las flechas
+	# no llegan a la lista y solo se podía leer la primera entrada.
+	entry_list.grab_focus()
 
 
 ## Cierra el diario y avisa a quien lo abrió.

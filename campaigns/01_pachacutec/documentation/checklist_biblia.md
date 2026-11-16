@@ -6,24 +6,25 @@
 
 | Acto | ¿Se vive la pregunta? | ¿La decisión tiene consecuencia? | ¿El hecho está clasificado y citado? | Evidencia |
 |---|---|---|---|---|
-| I — La casa que se vacía | Sí: la noticia llega con el mensajero y la asamblea obliga a responder | Sí: recursos, oficio, `apoyo_*`, `confianza_sisa` y `mensajero_ayudado` pagan en II, IV y V | Sí: PCH-007, 011, 015, 016, 019, 021 | `test_act_one_tasks`, `test_assembly`, `test_campaign_progress` |
-| II — El paso y la ciudad dividida | Sí: la marcha, el campamento, la emboscada y el Cusco dividido | Sí: sigilo, herido, maíz, explorador, aliados y preparación | Sí: PCH-022, 024, 026, 027, 028, 030, 031, 036 | `test_paso_sneak`, `test_campaign_progress`, `arc_playthrough` |
-| III — La guerra de los chancas | Sí: la plaza resiste y la trampa obliga a elegir | Sí: `santuario_protegido/orden_llevada`, `costo_anca/costo_joven`, oleadas | Sí: PCH-002, 027, 029 | `test_act_three_cost`, `arc_playthrough` |
-| IV — El precio de la victoria | Sí: el regreso, las cuentas y la asamblea | Sí: `hablo_en_asamblea`, `puma_reconciliado`, `asamblea_silencio`, noticia de Viracocha | Sí: PCH-032, 033 | `test_post_acts`, `test_end_card_body` |
-| V — El nombre nuevo | Sí: la obra cierra el círculo y el nombre llega como tradición | Sí: `casa_reconstruida`, tres variantes de final | Sí: PCH-034, 035 | `test_end_card_body` |
+| I — La casa que se vacía | Sí: la noticia llega con el mensajero y la asamblea obliga a responder; la familia y Puma se colocan en la plaza | Sí: recursos, oficio, `confianza_sisa` y `mensajero_ayudado` pagan en II, IV y V | Sí: PCH-007, 011, 015, 016, 019, 021 | `test_act_one_tasks`, `test_assembly`, `test_campaign_progress` |
+| II — El paso y la ciudad dividida | Sí: la marcha, el campamento, la emboscada y el Cusco dividido | Sí: sigilo, herido, maíz, explorador, aliados y preparación; cargar a Anca reduce el aliento máximo y dejarlo consume agua y coca | Sí: PCH-022, 024, 026, 027, 028, 030, 031, 036 | `test_paso_sneak`, `test_campaign_bible`, `arc_playthrough` |
+| III — La guerra de los chancas | Sí: la plaza resiste y la trampa obliga a elegir antes de la defensa | Sí: `santuario_protegido/orden_llevada`, `costo_anca/costo_joven`, oleadas | Sí: PCH-002, 027, 029 | `test_act_three_cost`, `test_campaign_bible`, `arc_playthrough` |
+| IV — El precio de la victoria | Sí: el regreso, las cuentas variables, la asamblea y el mensajero de la noticia | Sí: `hablo_en_asamblea`, `puma_reconciliado`, `asamblea_silencio`, cuentas según coste, aliados y noticia de Viracocha | Sí: PCH-032, 033 | `test_post_acts`, `test_campaign_bible`, `test_end_card_body` |
+| V — El nombre nuevo | Sí: la obra cierra el círculo, el oficio deja marca y el nombre llega como tradición | Sí: `casa_reconstruida`, `obra_oficio`, `santuario_protegido/orden_llevada` y tres variantes de final | Sí: PCH-034, 035 | `test_end_card_body`, `test_campaign_bible` |
 
 ## Decisiones que se notan
 
 - **Acto I → II:** objetos `agua/maiz/manta/cuerda`, oficio, `confianza_sisa`.
 - **Acto II → III:** `mensaje_chanca`, `herido_salvado/dejado`, `maiz_guardado/abandonado`, `scout_spared`, `aliados`, `preparacion_hecha`.
 - **Acto III → IV:** `costo_anca/costo_joven`, `santuario_protegido/orden_llevada`.
-- **Acto IV → V:** `hablo_en_asamblea`, `puma_reconciliado`, `asamblea_silencio`, `viracocha_muerto`.
+- **Acto IV → V:** `hablo_en_asamblea`, `puma_reconciliado`, `asamblea_silencio`, `viracocha_muerto`, `obra_oficio`.
 
 ## Pendientes que impiden cerrar la Fase 5
 
-- Duración real de 40–50 min: la pasada guionizada dura 74,6 s; falta una partida humana cronometrada y ampliar contenido.
+- Duración real de 40–50 min: la pasada guionizada sigue siendo un recorrido corto; falta una partida humana cronometrada y ampliar contenido.
 - Perfil Medio: 48,4–52,6 FPS, por debajo del objetivo comprometido de 60 FPS.
 - Pase de arte y audio por acto.
 - Prueba de humo manual de los cinco actos.
+- Combate con porra y escudo y HUD sin barra fija: la biblia §3.3 sigue pendiente.
 
-La campaña **pasa la checklist de diseño**; no cumple todavía las métricas de duración y rendimiento de `docs/01`.
+**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena; la única deuda de cumplimiento es la de sistema (HUD/combate) en III.1.** Quedan abiertas la duración, el rendimiento, el arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).

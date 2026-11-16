@@ -9,6 +9,13 @@ extends Node
 ## Acción de mano que representa la interacción (para las manos en primera
 ## persona). `none` la desactiva, como en «Hablar».
 @export var hand_action: StringName = &"reach"
+## Nodo que se resalta al enfocar el interactuable. Si está vacío se buscan
+## mallas dentro del propio interactuable.
+@export var highlight_target: Node3D = null
+## Si el interactuable no tiene mallas propias, resaltar las de su padre. Los
+## puntos de conversación sin visual lo desactivan: su padre es el mundo y el
+## resaltado iluminaría la escena entera.
+@export var highlight_parent_if_empty: bool = true
 
 
 ## Devuelve si el objeto puede usarse ahora. Los objetos que dependen de un

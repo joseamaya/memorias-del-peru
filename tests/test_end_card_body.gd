@@ -46,7 +46,7 @@ func test_end_card_shows_news() -> bool:
 	var five_player: PlayerFPS = five.get_node_or_null("PlayerFPS") as PlayerFPS
 	var five_hud: PlayerHud = five.get_node_or_null("UILayer/HUD") as PlayerHud
 	ok = ok and five_player != null and five_hud != null
-	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar"]:
+	for task_name: String in ["RebuildPirca", "RebuildTerraza", "RebuildAcequia", "RebuildTelar", "RebuildCasa"]:
 		var task: TaskPoint = five.get_node_or_null(task_name) as TaskPoint
 		if task != null:
 			task.interact(five_player)

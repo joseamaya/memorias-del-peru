@@ -106,6 +106,13 @@ func choose(index: int) -> bool:
 	return true
 
 
+## Copia las banderas de campaña al diálogo sin emitir [signal flag_changed].
+## Sirve para que las condiciones FLAG de una conversación vean decisiones
+## tomadas fuera de ella (por ejemplo, el maíz guardado o el apoyo al curaca).
+func seed_flags(flags: Dictionary[StringName, int]) -> void:
+	_flags = flags.duplicate()
+
+
 ## Valor de una bandera; 0 si no existe.
 func get_flag(key: StringName) -> int:
 	return _flags.get(key, 0)

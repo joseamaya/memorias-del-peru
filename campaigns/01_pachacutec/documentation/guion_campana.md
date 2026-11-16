@@ -1,9 +1,10 @@
 # Guion de la campaña 01 — El despertar del Sol
 
-- **Versión:** 1.0 — 2026-11-15
+- **Versión:** 1.1 — 2026-11-16
 - **Estado:** cerrado para construir la Fase 3
 - **Marco:** [biblia de la campaña](biblia_campana.md) y [biblia narrativa general](../../../docs/09_biblia_narrativa.md)
 - **Registro:** [registro histórico](registro_historico.md), [expediente histórico](expediente_historico.md)
+- **Puesta en escena:** [guion de escenas](guion_escenas.md) y [plantilla](../../../docs/10_plantilla_guion_de_escena.md)
 
 Este documento desarrolla las 15 secciones de `docs/09` §10. La biblia manda en el diseño; este guion fija misiones, escenas, banderas y textos. Las claves entre paréntesis son las de `localization/pachacutec_texts.csv`.
 
@@ -169,10 +170,11 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo narrativo:** primer combate y primera información del enemigo.
 - **Objetivo del jugador:** combatir, cruzar en sigilo o distraer.
 - **Personajes:** exploradores chancas, comitiva.
-- **Desarrollo:** el sigilo exige Monte ≥ 2 y permite oír que los exploradores tantean el camino (`mensaje_chanca`). La distracción consume la cuerda si está disponible. El combate es la vía directa.
+- **Desarrollo:** el sigilo exige Monte ≥ 2 y permite oír que los exploradores tantean el camino (`mensaje_chanca`). Si el jugador ayudó al mensajero en el acto I, el aviso del arroyo abre una ruta de sigilo que no exige Monte. La distracción consume la cuerda si está disponible. El combate es la vía directa.
 - **Conflicto:** el herido y la carga de maíz.
 - **Resolución:** combate, sigilo o distracción; después, decisiones sobre Anca, el maíz y el explorador.
 - **Consecuencias:** `paso_cruzado`, `mensaje_chanca`, `herido_salvado/dejado`, `maiz_guardado/abandonado`, `scout_spared`.
+- **Coste del herido:** cargarlo reduce el aliento máximo durante todo el acto II; dejarlo «con agua y coca» consume ambas provisiones y cuesta reputación. El maíz abandonado aligera la huida.
 - **Información histórica:** PCH-024, 030, 036.
 
 #### II.4 La llegada
@@ -231,7 +233,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo narrativo:** elegir entre proteger el recinto o llevar la orden.
 - **Objetivo del jugador:** decidir antes de la defensa.
 - **Personajes:** curaca vecino.
-- **Desarrollo:** `TrapPoint`; dos opciones excluyentes.
+- **Desarrollo:** `TrapPoint`; dos opciones excluyentes. La defensa no empieza hasta que la trampa se resuelve.
 - **Conflicto:** no se puede hacer todo.
 - **Resolución:** `santuario_protegido` u `orden_llevada`; `trampa_resuelta`.
 - **Consecuencias:** variante del epílogo.
@@ -305,7 +307,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo narrativo:** cerrar el orden antiguo.
 - **Objetivo del jugador:** escuchar.
 - **Personajes:** mensajero.
-- **Desarrollo:** la tarjeta de fin muestra la muerte de Viracocha.
+- **Desarrollo:** la tarjeta de fin muestra la muerte de Viracocha; un mensajero del Cusco aparece en la plaza antes del cierre.
 - **Conflicto:** el mundo antiguo ha muerto.
 - **Resolución:** `viracocha_muerto`.
 - **Consecuencias:** acto V.
@@ -315,11 +317,11 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 
 #### V.1 La obra
 
-- **Contexto:** corral, terraza, telar, acequia.
+- **Contexto:** corral, terraza, telar, acequia y casa de Rumi.
 - **Objetivo narrativo:** reconstruir con las manos.
-- **Objetivo del jugador:** completar las cuatro obras.
+- **Objetivo del jugador:** completar las cinco obras, incluida la casa de Rumi.
 - **Personajes:** familia, Puma.
-- **Desarrollo:** cuatro `TaskPoint`; cada obra deja una pieza visible.
+- **Desarrollo:** cinco `TaskPoint`; cada obra deja una pieza visible. La obra que coincide con el oficio deja marca propia; las demás las cubren los aliados.
 - **Conflicto:** falta gente.
 - **Resolución:** `casa_reconstruida`.
 - **Consecuencias:** final.
@@ -331,7 +333,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo narrativo:** escuchar la noticia.
 - **Objetivo del jugador:** terminar la obra.
 - **Personajes:** mensajero, familia.
-- **Desarrollo:** la tarjeta de fin presenta el nombre como tradición.
+- **Desarrollo:** la tarjeta de fin presenta el nombre como tradición. Un mensajero del Cusco llega al umbral antes del cierre.
 - **Conflicto:** es tradición, no decreto.
 - **Resolución:** Memoria y cierre.
 - **Consecuencias:** variante final.
@@ -343,7 +345,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo narrativo:** despedir la campaña.
 - **Objetivo del jugador:** leer el cierre.
 - **Personajes:** Rumi, madre, hermano, Sisa, Puma.
-- **Desarrollo:** tarjeta de fin con la noticia y la variante.
+- **Desarrollo:** tarjeta de fin con la noticia y la variante; la familia se reúne en el umbral antes de la tarjeta.
 - **Conflicto:** qué decir.
 - **Resolución:** una de las tres casas.
 - **Consecuencias:** fin de la campaña.
@@ -386,7 +388,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 | `mensaje_entregado` | II.4 | II.5 (reputación Cusco) |
 | `preparacion_hecha` / `preparacion_*` | II.5 | III.1 (oleadas) |
 | `santuario_protegido/orden_llevada` | III.2 | III.4, V.3 |
-| `costo_anca/costo_joven/sin_costo` | III.3 | IV.3, V.3 |
+| `costo_anca/costo_joven/sin_costo` | III.3 | IV.2–IV.3, V.3 |
 | `hablo_en_asamblea/asamblea_silencio` | IV.3 | IV.4, V.3 |
 | `puma_reconciliado` | IV.3 | V.3 (casa llena) |
 | `viracocha_muerto` | IV.4 | V.2 |

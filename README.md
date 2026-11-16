@@ -10,7 +10,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion y los sistemas de campaña están cerrados; las 97 pruebas pasan. Queda el pase visual, sonoro y la brecha de rendimiento en Medio |
+| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, el guion de escenas y los sistemas de campaña están cerrados; las 115 pruebas pasan. Queda el pase visual, sonoro y la brecha de rendimiento en Medio |
 
 ## Requisitos
 
@@ -25,6 +25,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Izquierda / Derecha | A / D |
 | Correr | Shift izquierdo (mantener) |
 | Interactuar / avanzar diálogo | E |
+| Continuar tras la tarjeta de fin | E o Intro (R como atajo) |
 | Diario | J |
 | Saltar | Espacio (reservado, sin implementar) |
 | Pausa / liberar ratón | Escape |
@@ -56,8 +57,9 @@ Los argumentos `--profile=0..3` eligen perfil gráfico (0 Bajo, 1 Medio, 2 Alto,
 | [docs/07_convenciones_historicas.md](docs/07_convenciones_historicas.md) | Clasificación de contenido histórico y fuentes |
 | [docs/08_entorno_y_rendimiento.md](docs/08_entorno_y_rendimiento.md) | Entorno atmosférico, perfiles gráficos y métricas |
 | [docs/09_biblia_narrativa.md](docs/09_biblia_narrativa.md) | Biblia narrativa de la antología: campañas, actos y reglas de guion |
+| [docs/10_plantilla_guion_de_escena.md](docs/10_plantilla_guion_de_escena.md) | Plantilla reutilizable de guion de escena: bloqueo, cámara, banderas y aceptación |
 | [docs/bitacora.md](docs/bitacora.md) | Registro cronológico de cambios |
-| [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Biblia, expediente y registro histórico de la campaña |
+| [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Biblia, guion, guion de escenas, expediente y registro histórico de la campaña |
 
 ## Validación rápida
 

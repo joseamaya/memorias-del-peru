@@ -25,7 +25,10 @@ func test_journal_panel_entries() -> bool:
 		journal.free()
 		return false
 	panel.open(journal)
+	var list: ItemList = panel.get_node_or_null(
+		"Panel/Margin/VBox/Content/EntryList") as ItemList
 	var ok: bool = panel.is_open() and panel.get_entry_count() == 2
+	ok = ok and list != null and list.has_focus()
 	panel.select_entry(1)
 	ok = ok and panel.get_detail_title() == tr("PCH_ST_TELAR_TITLE")
 	ok = ok and panel.get_detail_text() == tr("PCH_ST_TELAR_BODY")

@@ -80,14 +80,18 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_sandbox_loads` | La escena sandbox instancia y entra al árbol |
 | `test_sandbox_interaction_hud` | El HUD muestra la acción del quero al enfocarlo |
 | `test_localization_tables` | Las claves usadas por Core y campaña existen en sus CSV |
-| `test_llacta_loads` | La llacta carga con terreno, ocho casas, terrazas, corrales, siete personajes, cuatro encargos y límites |
+| `test_llacta_loads` | La llacta carga con terreno, ocho casas, terrazas, corrales, ocho personajes, cuatro encargos y límites |
 | `test_act_one_tasks` | Tres encargos dan agua, maíz y manta, dejan el cuarto disponible y cambian el objetivo |
 | `test_assembly` | El tercer encargo abre la asamblea, la elección deja su bandera y aparece la tarjeta de fin |
-| `test_post_acts` | El acto IV abre la asamblea de posguerra; el acto V completa las cuatro obras y cierra la campaña |
+| `test_post_acts` | El acto IV abre la asamblea de posguerra y el maíz guardado paga; el acto V completa las cinco obras, incluida la casa, y cierra la campaña |
 | `test_campaign_progress` | Recursos, oficio y habilidades del acto I sobreviven al paso al acto II |
 | `test_end_card_body` | La tarjeta de fin muestra la noticia de Viracocha y el nombre nuevo con su variante |
-| `test_act_three_cost` | La defensa tiene tres oleadas y el costo con nombre llega al epílogo |
-| `test_paso_sneak` | El sigilo exige Monte y la cuerda se consume al distraer |
+| `test_act_three_cost` | La defensa tiene tres oleadas; el costo de Anca y el del hijo de Puma llegan al epílogo |
+| `test_paso_sneak` | El sigilo exige Monte o el aviso del mensajero; la cuerda se consume al distraer |
+| `test_camp_dialogue` | El campamento reparte sus seis opciones en dos páginas y no pierde coca ni salida |
+| `test_city_staging` | Cusi recibe en la puerta, la preparación y la trampa tienen ancla y las cuentas están en casas |
+| `test_highlight_scope` | Un punto de conversación sin malla no resalta la escena entera |
+| `test_campaign_bible` | Casa al este, cuentas según el coste, Puma reconciliado con y sin coste, oficio en la obra, coste de Anca, trampa obligatoria, cruce que activa la emboscada y Anca testificando en la asamblea |
 | `test_core_layering` | `core/` no referencia rutas, clases ni recursos de `campaigns/` |
 | `test_checkpoint` | El punto de control restaura salud, aliento, inventario y posición |
 
@@ -134,6 +138,17 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | Del arco | Partida guionizada I→V (`ARCO_OK`) |
 | Duración | Marcas por acto y total; objetivo 40–50 min |
 
+### 3.6. Aceptación de escenas
+
+Cada escena de `campaigns/01_pachacutec/documentation/guion_escenas.md` tiene una lista de aceptación. La prueba puede ser:
+
+- **Estructural:** nodos, puntos, textos y banderas.
+- **De escena:** personajes presentes, bloqueo, cámara, ropa o prop.
+- **De consecuencia:** la bandera se lee donde el guion dice.
+- **Manual:** captura o prueba de humo cuando el arte o el audio son el criterio.
+
+Una escena no se marca `Implementado` si su aceptación no se puede verificar. Las deudas se anotan en la ficha y en la bitácora.
+
 ## 4. Verificación manual
 
 Al cerrar cada acto:
@@ -150,6 +165,12 @@ Al cerrar cada acto:
 | Fecha | Alcance | Comando | Resultado |
 |---|---|---|---|
 | 2026-11-15 | Arco completo I–V, guion, sistemas de campaña y finales | `run_tests.gd` | 97 pruebas, 0 fallos, 0 advertencias |
+| 2026-11-15 | Cierre jugable P0: campamento en dos páginas, resaltado acotado, diario navegable y cierre con E/Intro/R | `run_tests.gd` y `arc_playthrough.gd` | 99 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
+| 2026-11-15 | Puesta en escena 4.2: Cusi en la puerta, preparación visible, trampa con curaca, cuentas en casas y oficio en el diario | `run_tests.gd` y `arc_playthrough.gd` | 100 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
+| 2026-11-16 | Cierre narrativo 4.3: costo de Anca y del hijo de Puma, casa de Rumi, cinco obras, asamblea con maíz y curaca, intro y aviso del mensajero | `run_tests.gd` y `arc_playthrough.gd` | 103 pruebas, 0 fallos, 0 advertencias; `ARCO_OK`; vídeo `build/partida_completa.mp4` |
+| 2026-11-16 | Alineación con la biblia 4.4: casa al este, cuentas variables, Puma con coste, Anca con provisiones y aliento máximo, mensajeros de IV.4/V.2, familia en el cierre, oficio en la obra y trampa obligatoria | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 112 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
+| 2026-11-16 | Guion de escena 4.5: plantilla reutilizable y 22 fichas de la campaña 01 con bloqueo, cámara, banderas, aceptación y deudas | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 113 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
+| 2026-11-16 | Cierre de escenas 4.6: I.3, II.1, II.2, III.3, IV.3 y V.1; banderas muertas, rótulos de nombre, campos sin cuidar y coste en la última oleada | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 115 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

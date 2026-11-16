@@ -67,7 +67,7 @@ No hay metales europeos, rueda de transporte, animales de tiro ni especies intro
 
 ## 6. Actividades cotidianas
 
-- Acarreo de agua y peso (Monte), molienda de maíz (Oficio), tejido (Palabra/Oficio) y pirca (Monte/Oficio): las cuatro tareas del acto I y los cuatro trabajos de reconstrucción del acto V.
+- Acarreo de agua y peso (Monte), molienda de maíz (Oficio), tejido (Palabra/Oficio) y pirca (Monte/Oficio): las cuatro tareas del acto I y los cinco trabajos de reconstrucción del acto V, con la casa de Rumi incluida.
 - Chicha de jora: preparación, servicio y consumo ritual y social (PCH-005).
 - Coca: masticar y compartir; uso ritual y social (PCH-028).
 - Ofrenda a la Pachamama (PCH-012).

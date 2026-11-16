@@ -250,6 +250,16 @@ func is_controls_locked() -> bool:
 	return _controls_locked
 
 
+## Muestra u oculta el puntero para una UI modal (diario) sin cambiar la pausa.
+## Al ocultarlo se recaptura solo si la ventana tiene foco y el juego no está
+## pausado, con la misma regla que el resto del jugador.
+func set_pointer_visible(pointer_visible: bool) -> void:
+	if pointer_visible:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
+		_capture_mouse_if_allowed()
+
+
 ## Empieza un diálogo: bloquea los controles y gira la cámara hacia la cara de
 ## [param target]. Con `null` solo bloquea, para diálogos sin interlocutor.
 func begin_dialogue(target: Node3D = null) -> void:

@@ -4,14 +4,14 @@
 
 **Memorias del Perú** es un RPG histórico en primera persona: exploración, narrativa ambiental, decisiones y combate al servicio de una reconstrucción histórica rigurosa. Es una antología de cuatro campañas; la campaña en desarrollo es *Pachacútec — El despertar del Sol*, estructurada en cinco actos.
 
-La biblia narrativa general es [docs/09](docs/09_biblia_narrativa.md). Manda en lo narrativo; las fases, los sistemas y las pruebas viven en `docs/01`–`08`.
+La biblia narrativa general es [docs/09](docs/09_biblia_narrativa.md). Manda en lo narrativo; las fases, los sistemas y las pruebas viven en `docs/01`–`08`, y la puesta en escena se fija con la [plantilla de guion de escena](docs/10_plantilla_guion_de_escena.md).
 
 La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está al servicio del resultado; si una regla impide un resultado mejor, se simplifica y se anota en la [bitácora](docs/bitacora.md).
 
 ## 2. Fuentes de verdad
 
 1. **Este archivo** (reglas de proceso y prioridad de producto).
-2. **`docs/01`–`09`** (visión, arquitectura, estándares, configuración, plan, pruebas, convenciones, rendimiento y biblia narrativa).
+2. **`docs/01`–`10`** (visión, arquitectura, estándares, configuración, plan, pruebas, convenciones, rendimiento, biblia narrativa y plantilla de guion de escena).
 3. **[`docs/00_especificacion.md`](docs/00_especificacion.md)** — especificación original.
 4. **`campaigns/<campaña>/documentation/`** — prevalece dentro del ámbito de su campaña.
 
