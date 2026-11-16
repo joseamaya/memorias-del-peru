@@ -12,6 +12,6 @@ sdfgi_enabled = false
 shadow_distance = 60.0
 shadow_atlas_size = 2048
 shadow_filter_quality = 2
-render_scale = 0.70
+render_scale = 0.68
 msaa_3d = 0
 screen_space_aa = 1

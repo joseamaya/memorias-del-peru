@@ -8,6 +8,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Rendimiento con cordilleras | Tanda completa de tres pasadas con las montañas nuevas: llacta 87,3, paso 79,8, Cusco 59,4, posguerra 94,3 y obra 85,6 FPS de mediana. El Cusco queda por debajo de 60. Se aligera el shader (variación por vértice, nieve condicional) y la escala de Medio baja de 0,70 a 0,68; la medición final queda pendiente por carga externa | — |
 | Alcance de arte 4.9 | Se corrige el alcance pendiente: el elenco ya tiene reposo, habla, trabajo, caminar, correr, mirada y manto simulado, y la biblia excluye retratos y voces. El arte que falta queda en texturas finas de roca, props de detalle y mezcla de audio escuchada | — |
 | Niveles de audio 4.9 | Se añade `tools/audio_levels.py`, que decodifica cada audio a estéreo y mide duración, pico, RMS y clips. Los 19 archivos están sin clip (picos entre -3,2 y -13,9 dBFS) y sin efectos casi mudos; la escucha por acto sigue pendiente. El primer análisis daba un falso clip en `honda_impacto.wav` por bajar a mono y sumar canales | — |
 | Roca y nieve 4.9 | Las cordilleras ganan estratos por ruido y nieve sobre una línea irregular en las cumbres medias y lejanas; la luz separa sombra fría y sol cálido. La nieve solo aparece en las bandas altas, con umbral y fuerza por material. 118 pruebas; `ARCO_OK` | — |

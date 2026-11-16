@@ -22,6 +22,11 @@ func test_campaign_audio_assets() -> bool:
 	ok = ok and water != null and water.loop_mode == AudioStreamWAV.LOOP_FORWARD
 	var wind: AudioStreamOggVorbis = CampaignAudio.load_loop(CampaignAudio.AMBIENCE_PATH) as AudioStreamOggVorbis
 	ok = ok and wind != null and wind.loop
+	for path: String in [
+		CampaignAudio.FIRE_PATH, CampaignAudio.MURMUR_PATH, CampaignAudio.DRUM_PATH,
+	]:
+		var loop: AudioStreamWAV = CampaignAudio.load_loop(path) as AudioStreamWAV
+		ok = ok and loop != null and loop.loop_mode == AudioStreamWAV.LOOP_FORWARD
 	ok = ok and CampaignAudio.load_streams(CampaignAudio.DIRT_FOOTSTEPS).size() == 3
 	ok = ok and CampaignAudio.load_streams(CampaignAudio.STONE_FOOTSTEPS).size() == 3
 	return ok
