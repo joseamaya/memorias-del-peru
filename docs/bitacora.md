@@ -8,6 +8,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 | Cambio | Detalle | Commit |
 |---|---|---|
+| Medición final 4.10 | Tres pasadas válidas con la escena final (cordilleras, shader aligerado y escala 0,68) y carga 1,8–2,7: llacta 89,4, paso 93,4, Cusco 63,6, posguerra 97,5 y obra 90,5 FPS de mediana. Los cinco actos superan los 60; el Cusco queda en 63,2 en la peor pasada. Con esto se cierra el rendimiento en Medio | — |
 | Rendimiento con cordilleras | Tanda completa de tres pasadas con las montañas nuevas: llacta 87,3, paso 79,8, Cusco 59,4, posguerra 94,3 y obra 85,6 FPS de mediana. El Cusco queda por debajo de 60. Se aligera el shader (variación por vértice, nieve condicional) y la escala de Medio baja de 0,70 a 0,68; la medición final queda pendiente por carga externa | — |
 | Alcance de arte 4.9 | Se corrige el alcance pendiente: el elenco ya tiene reposo, habla, trabajo, caminar, correr, mirada y manto simulado, y la biblia excluye retratos y voces. El arte que falta queda en texturas finas de roca, props de detalle y mezcla de audio escuchada | — |
 | Niveles de audio 4.9 | Se añade `tools/audio_levels.py`, que decodifica cada audio a estéreo y mide duración, pico, RMS y clips. Los 19 archivos están sin clip (picos entre -3,2 y -13,9 dBFS) y sin efectos casi mudos; la escucha por acto sigue pendiente. El primer análisis daba un falso clip en `honda_impacto.wav` por bajar a mono y sumar canales | — |

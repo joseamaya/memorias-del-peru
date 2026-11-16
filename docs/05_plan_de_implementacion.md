@@ -122,7 +122,7 @@
 
 - **4.8 — Duración y equilibrio (abierto).** Falta la partida humana cronometrada. El registro de sesión marca cada acto y `tools/session_duration.py` resume el total; la suma de fichas da 45,5 min y la pasada guionizada 1:42, pero ninguna es una partida real.
 - **4.9 — Arte y audio por acto (abierto, en curso).** El pase visual corrigió las nubes, sustituyó las siluetas planas de montaña por bandas con volumen en la llacta y el Cusco, añadió estratos y nieve en las cumbres y dio más detalle al terreno. El elenco ya tiene reposo, habla, trabajo, caminar, correr y manto simulado; la biblia excluye retratos y voces. Faltan texturas finas de roca, props de detalle y la mezcla de audio.
-- **4.10 — Rendimiento (abierto hasta la medición final).** Tres pasadas de Medio a 1080p con la escena sin cordilleras: llacta 87,2, paso 88,5, Cusco 62,4, posguerra 99,6 y obra 84,0 FPS de mediana. Con las cordilleras con volumen, la tanda completa dio Cusco 59,4 de mediana (rango 55,6–60,9). Se aligeró el shader (variación por vértice y nieve condicional) y la escala 3D de Medio bajó de 0,70 a 0,68, manteniendo el SSAO; falta re-medir. El detalle está en [docs/08](08_entorno_y_rendimiento.md).
+- **4.10 — Rendimiento (cerrado el 2026-11-16).** Medición final de Medio a 1080p con las cordilleras, el shader aligerado y la escala 0,68: llacta 89,4, paso 93,4, Cusco 63,6, posguerra 97,5 y obra 90,5 FPS de mediana. Se mantuvo el SSAO. El Cusco es el acto más ajustado (63,2 en la peor pasada). El detalle está en [docs/08](08_entorno_y_rendimiento.md).
 
 **Entregables:**
 
@@ -139,7 +139,7 @@
 
 **Criterios de aceptación:**
 
-- [ ] ≥ 30 FPS de media en Bajo y ≥ 60 FPS de media en Medio en la GPU integrada de referencia (la última tanda completa con cordilleras da Cusco 59,4 FPS de mediana; falta la medición final con el shader aligerado y la escala 0,68).
+- [x] ≥ 30 FPS de media en Bajo y ≥ 60 FPS de media en Medio en la GPU integrada de referencia (medido el 2026-11-16 con el arte final; Cusco 63,6 FPS de mediana y 63,2 en la peor pasada).
 - [ ] Cada acto tiene su pase visual y sonoro aprobado.
 - [ ] No hay anacronismos visuales ni sonoros sin declarar.
 - [ ] La interfaz y los textos se leen sin esfuerzo.

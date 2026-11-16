@@ -39,10 +39,9 @@ Firma de la revisión humana: ____________________ · Fecha: __________
 ## Pendientes que impiden cerrar la Fase 5
 
 - Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:42) solo sirve como suelo.
-- Rendimiento: falta la medición final de Medio con las cordilleras, el shader aligerado y la escala 0,68; la última tanda dio Cusco 59,4 de mediana.
 - Remate de arte: texturas finas de roca y props de detalle.
 - Audio: mezcla escuchada por acto.
 - Prueba de humo manual de los cinco actos.
 - Revisión histórica humana de PCH-032–036 (tabla anterior).
 
-**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena. El combate y el HUD se cerraron en 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y sin barra fija de estado.** Quedan abiertas la duración, el rendimiento, el remate de arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).
+**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena. El combate y el HUD se cerraron en 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y sin barra fija de estado.** Quedan abiertas la duración, el remate de arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).
