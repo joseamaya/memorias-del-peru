@@ -19,11 +19,30 @@
 - **Acto III → IV:** `costo_anca/costo_joven`, `santuario_protegido/orden_llevada`.
 - **Acto IV → V:** `hablo_en_asamblea`, `puma_reconciliado`, `asamblea_silencio`, `viracocha_muerto`, `obra_oficio`.
 
+## Revisión histórica humana pendiente
+
+Las fichas PCH-032 a PCH-036 están verificadas documentalmente por el agente
+(2026-11-15), pero la Fase 5 exige una revisión humana. Para cerrarla, una
+persona debe contrastar en las ediciones citadas:
+
+| Ficha | Qué comprobar | Fuente principal |
+|---|---|---|
+| PCH-032 | Reparto y autoridad de los ayllus tras la victoria; la asamblea concreta es reconstrucción | Betanzos, I parte, caps. VI–X; Sarmiento, caps. XXV–XXVII; Rostworowski, *Historia del Tahuantinsuyu* (1988) |
+| PCH-033 | Muerte de Viracocha después de la victoria, sin fecha ni lugar únicos | Betanzos, I parte, caps. VI–X; Sarmiento, caps. XXV–XXVII; Garcilaso, lib. V, como contraste |
+| PCH-034 | El nombre nuevo como tradición de los cronistas, no como acto documentado | Betanzos; Sarmiento; Rostworowski, *Pachacútec Inca Yupanqui* (1953) |
+| PCH-035 | Técnicas de reconstrucción tomadas de la vivienda, la terraza y el corral ya documentados | PCH-007, PCH-008 y PCH-021 y sus fuentes |
+| PCH-036 | Reconocimiento previo como reconstrucción sobre el avance chanca documentado | PCH-003, PCH-024 y PCH-030 y sus fuentes |
+
+Firma de la revisión humana: ____________________ · Fecha: __________
+
+
 ## Pendientes que impiden cerrar la Fase 5
 
 - Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:42) solo sirve como suelo.
-- Pase de arte y audio por acto.
+- Rendimiento: falta la medición final de Medio con las cordilleras, el shader aligerado y la escala 0,68; la última tanda dio Cusco 59,4 de mediana.
+- Remate de arte: texturas finas de roca y props de detalle.
+- Audio: mezcla escuchada por acto.
 - Prueba de humo manual de los cinco actos.
-- Verificación histórica humana de PCH-032–036.
+- Revisión histórica humana de PCH-032–036 (tabla anterior).
 
-**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena. El combate y el HUD se cerraron en 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y sin barra fija de estado.** Quedan abiertas la duración, el arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).
+**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena. El combate y el HUD se cerraron en 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y sin barra fija de estado.** Quedan abiertas la duración, el rendimiento, el remate de arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).
