@@ -44,6 +44,12 @@ func _run_tests() -> void:
 	var audio: AudioManagerService = root.get_node_or_null("AudioManager") as AudioManagerService
 	if audio != null:
 		audio.stop_all()
+	# Las escenas de prueba pueden dejar una respiración o un ambiente sonando:
+	# se paran todos los reproductores del árbol antes de esperar al hilo de audio.
+	for node: Node in root.find_children("*", "AudioStreamPlayer", true, false):
+		(node as AudioStreamPlayer).stop()
+	for node: Node in root.find_children("*", "AudioStreamPlayer3D", true, false):
+		(node as AudioStreamPlayer3D).stop()
 	# Deja que el hilo de audio suelte las reproducciones antes de salir.
-	await create_timer(0.2).timeout
+	await create_timer(0.4).timeout
 	quit(1 if failures > 0 else 0)

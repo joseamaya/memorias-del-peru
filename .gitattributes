@@ -1,0 +1,31 @@
+# Normaliza texto a LF; los binarios se marcan para que Git no los trate como texto.
+* text=auto eol=lf
+
+*.gd    text eol=lf
+*.tscn  text eol=lf
+*.tres  text eol=lf
+*.cfg   text eol=lf
+*.godot text eol=lf
+*.md    text eol=lf
+*.csv   text eol=lf
+
+*.glb   binary
+*.gltf  binary
+*.blend binary
+*.wav   binary
+*.ogg   binary
+*.mp3   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.exr   binary
+*.hdr   binary
+*.mp4   binary
+*.webm  binary
+*.ttf   binary
+*.otf   binary
+
+# Git LFS no se ha migrado todavía: los binarios actuales siguen en el historial
+# normal. Al decidir migrar, se hace con `git lfs migrate import` en un commit
+# dedicado y se documenta en la bitácora.

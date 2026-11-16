@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Pruebas y límites
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Descargar Godot
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          mkdir -p ~/godot
+          curl -fsSL -o /tmp/godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
+          chmod +x ~/godot/godot
+
+      - name: Importar el proyecto
+        run: ~/godot/godot --headless --path . --import
+
+      - name: Límites de GDScript
+        run: python3 tools/check_gdscript_limits.py
+
+      - name: Pruebas automatizadas
+        run: |
+          xvfb-run -a ~/godot/godot --headless --path . \
+            --script res://tests/run_tests.gd
+
+      - name: Comportamiento del combate
+        run: |
+          xvfb-run -a ~/godot/godot --headless --path . \
+            --script res://tests/combat_arena_check.gd
+
+  export:
+    name: Exportar ${{ matrix.preset }}
+    needs: [test]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - preset: Linux
+            output: build/linux/memorias-del-peru.x86_64
+          - preset: Windows
+            output: build/windows/memorias-del-peru.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache de Godot y plantillas
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          key: godot-${{ env.GODOT_VERSION }}-stable-templates
+
+      - name: Descargar Godot y plantillas
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          curl -fsSL -o /tmp/godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
+          chmod +x ~/godot/godot
+          curl -fsSL -o /tmp/templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q /tmp/templates.tpz -d /tmp/templates
+          cp /tmp/templates/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      - name: Importar el proyecto
+        run: ~/godot/godot --headless --path . --import
+
+      - name: Exportar ${{ matrix.preset }}
+        run: |
+          mkdir -p "$(dirname '${{ matrix.output }}')"
+          ~/godot/godot --headless --path . --export-release "${{ matrix.preset }}" "${{ matrix.output }}"
+          test -s "${{ matrix.output }}"
+
+      - name: Arrancar el build de Linux
+        if: matrix.preset == 'Linux'
+        run: timeout 60 ./${{ matrix.output }} --headless --quit-after 10
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: memorias-del-peru-${{ matrix.preset }}-${{ github.sha }}
+          path: ${{ matrix.output }}
+          retention-days: 14
