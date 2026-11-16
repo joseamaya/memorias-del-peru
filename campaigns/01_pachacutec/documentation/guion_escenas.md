@@ -1131,7 +1131,7 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 
 **Cerradas en v1.2:** combate con honda, porra y escudo; munición de piedras; viñeta de salud; respiración; sin barra fija de estado.
 
-**Cerradas en v1.3:** rendimiento en Medio; las tres pasadas por acto dan mediana ≥ 60 FPS (Cusco 62,4 tras el pase visual) con la escala 3D al 0,70 y SSAO.
+**Cerradas en v1.3:** rendimiento en Medio con la escena previa a las cordilleras (Cusco 62,4 de mediana, escala 0,70). La tanda con montañas reabrió la medición: ver la deuda 3.
 
 ## 12. Registro de cambios
 

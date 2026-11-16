@@ -139,7 +139,7 @@
 
 **Criterios de aceptación:**
 
-- [x] ≥ 30 FPS de media en Bajo y ≥ 60 FPS de media en Medio en la GPU integrada de referencia (medido el 2026-11-16; Cusco es el acto más ajustado, 62,4 FPS de mediana).
+- [ ] ≥ 30 FPS de media en Bajo y ≥ 60 FPS de media en Medio en la GPU integrada de referencia (la última tanda completa con cordilleras da Cusco 59,4 FPS de mediana; falta la medición final con el shader aligerado y la escala 0,68).
 - [ ] Cada acto tiene su pase visual y sonoro aprobado.
 - [ ] No hay anacronismos visuales ni sonoros sin declarar.
 - [ ] La interfaz y los textos se leen sin esfuerzo.
