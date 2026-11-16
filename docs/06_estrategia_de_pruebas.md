@@ -191,6 +191,7 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-16 | Cierre de escenas 4.6: I.3, II.1, II.2, III.3, IV.3 y V.1; banderas muertas, rótulos de nombre, campos sin cuidar y coste en la última oleada | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 115 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-16 | Combate 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y HUD sin barra fija | `run_tests.gd`, `test_combat_loadout.gd`, `test_hud_combat.gd` y `arc_playthrough.gd` | 117 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-16 | Duración 4.8: marcas de acto en los cinco mundos y resumen automático del registro | `run_tests.gd`, `test_session_acts.gd`, `arc_playthrough.gd` y `tools/session_duration.py` | 118 pruebas, 0 fallos, 0 advertencias; `ARCO_OK`; herramienta validada con registros sintéticos |
+| 2026-11-16 | Rendimiento 4.10: tres pasadas de Medio y ajuste de escala | `measure_performance.tscn` | Bajo y Medio cumplen; Medio: llacta 89,9, paso 88,4, Cusco 62,2, posguerra 91,3, obra 86,6 FPS (mediana) |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

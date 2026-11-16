@@ -64,7 +64,7 @@ Así Core no conoce las escenas de campaña: cada mundo de campaña incluye su c
 | Resolución del atlas de sombras | Baja | Media | Alta | Máxima |
 | SSAO | No | Sí | Sí | Sí |
 | SSIL / SDFGI | No | No | Evaluar | Evaluar |
-| Escala de renderizado 3D | 0.75 | 1.0 | 1.0 | 1.0 |
+| Escala de renderizado 3D | 0.75 | 0.70 | 1.0 | 1.0 |
 | Antialiasing | FXAA | TAA o MSAA 2× | MSAA 4× / TAA | MSAA 4× + TAA |
 
 Implementación de sombras: atlas de 1024 / 2048 / 4096 / 4096 y filtro `SOFT_VERY_LOW` / `SOFT_LOW` / `SOFT_MEDIUM` / `SOFT_HIGH`. La distancia de sombras la aplica el controlador del mundo según el perfil.
@@ -88,7 +88,7 @@ Los valores concretos se fijan tras medir (§4).
 
 | Métrica | Herramienta | Objetivo |
 |---|---|---|
-| FPS medio | Monitor de rendimiento del editor / `Performance` | **Vinculante:** ≥ 30 FPS, perfil Bajo, salida a 1080p, en la referencia con GPU integrada. **Comprometido:** ≥ 60 FPS, perfil Medio, salida a 1080p con el 3D al 83 %, en la misma referencia |
+| FPS medio | Monitor de rendimiento del editor / `Performance` | **Vinculante:** ≥ 30 FPS, perfil Bajo, salida a 1080p, en la referencia con GPU integrada. **Comprometido:** ≥ 60 FPS, perfil Medio, salida a 1080p con el 3D al 70 %, en la misma referencia |
 | FPS del percentil 1 % | Medición en script durante un recorrido fijo | Registrar base; no inferior a 2/3 del FPS medio |
 | Tiempo de frame (CPU/GPU) | Profiler y monitores del editor | Vinculante: < 33,3 ms. Recomendado: < 16,6 ms |
 | Draw calls | `Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME` | Registrar base |
@@ -119,14 +119,16 @@ Consecuencias de que la referencia tenga GPU integrada:
 4. Se registran FPS medio y p1, tiempo de frame, draw calls y memoria de vídeo.
 5. La medición se repite al cerrar cada acto y al cambiar la escena.
 
-**Estado:** medido sobre el arco nuevo el 2026-11-15 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con un proceso nuevo por acto. La herramienta es `tests/scenes/measure_performance.tscn`.
+**Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con un proceso nuevo por acto. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). Las tres pasadas de Medio se hicieron con carga del sistema entre 1,0 y 3,5; las mediciones anteriores, hechas con carga 10–13, quedaron descartadas.
 
-| Acto | Perfil Bajo (3 pasadas, mediana) | Perfil Medio (1 pasada) | Draw calls (Bajo) | Memoria de vídeo (Bajo) |
-|---|---|---|---|---|
-| I — Llacta | 52,7 FPS | 52,1 FPS | 301 | 187,8 MB |
-| II — Paso | 46,6 FPS | 52,6 FPS | 212 | 169,6 MB |
-| III — Cusco | 51,7 FPS | 48,4 FPS | 348 | 214,8 MB |
-| IV — Posguerra | 52,0 FPS | 50,9 FPS | 249 | 188,1 MB |
-| V — Obra | 52,6 FPS | 52,1 FPS | 296 | 183,3 MB |
+| Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |
+|---|---|---|---|---|---|
+| I — Llacta | 52,7 FPS | 89,9 FPS | 80,6–92,8 | 352 | 206,7 MB |
+| II — Paso | 46,6 FPS | 88,4 FPS | 81,1–94,5 | 273 | 201,3 MB |
+| III — Cusco | 51,7 FPS | 62,2 FPS | 58,0–62,6 | 476 | 235,8 MB |
+| IV — Posguerra | 52,0 FPS | 91,3 FPS | 84,7–101,5 | 342 | 229,6 MB |
+| V — Obra | 52,6 FPS | 86,6 FPS | 86,6–88,6 | 363 | 229,0 MB |
 
-El perfil Bajo cumple el objetivo vinculante de ≥ 30 FPS. El perfil Medio no alcanza el objetivo comprometido de ≥ 60 FPS: queda entre 48 y 53 FPS. La Fase 4 sigue abierta hasta cerrar esa brecha o declararla aceptada en la bitácora.
+Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco es el acto más ajustado (62,2 FPS de mediana, 58,0 en la peor pasada) porque concentra 476 draw calls y el SSAO. Para cerrar la brecha se mantuvo el SSAO y se bajó la escala 3D de Medio de 0,83 a 0,70: sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (52–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
+
+El perfil Bajo no se volvió a medir en esta pasada: sus valores son los de la medición del 2026-11-15 y sirven de referencia hasta el pase de arte.
