@@ -119,7 +119,7 @@ Consecuencias de que la referencia tenga GPU integrada:
 4. Se registran FPS medio y p1, tiempo de frame, draw calls y memoria de vídeo.
 5. La medición se repite al cerrar cada acto y al cambiar la escena.
 
-**Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con un proceso nuevo por acto. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla recoge la repetición posterior al pase visual (bloque 4.9), hecha con carga del sistema entre 2,6 y 2,8; las mediciones anteriores, con carga 10–13, quedaron descartadas.
+**Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla recoge la repetición posterior al pase visual (bloque 4.9), hecha con carga del sistema entre 2,6 y 2,8; las mediciones anteriores, con carga 10–13, quedaron descartadas.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |
 |---|---|---|---|---|---|
@@ -132,5 +132,7 @@ Consecuencias de que la referencia tenga GPU integrada:
 Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco es el acto más ajustado (62,4 FPS de mediana, 61,9 en la peor pasada) porque concentra 476 draw calls y el SSAO. Para cerrar la brecha se mantuvo el SSAO y se bajó la escala 3D de Medio de 0,83 a 0,70: sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
 
 Dos avisos de la repetición: la obra del acto V marcó 420 draw calls en la primera pasada y 363 en las dos siguientes, y una de sus pasadas tuvo un p1 de 26,6 FPS por un tirón aislado. La mediana no cambia, pero el acto V queda bajo observación.
+
+**Pendiente:** la re-medición posterior a las cordilleras con volumen (bloque 4.9) no se pudo completar. El equipo estuvo entre carga 30 y 40 por procesos externos en todas las ventanas de medición, y las pasadas contaminadas daban al Cusco entre 53 y 59 FPS. La tabla anterior es la última medición válida; hay que repetirla con el equipo en reposo antes de dar por cerrado el rendimiento con el arte nuevo.
 
 El perfil Bajo no se volvió a medir en esta pasada: sus valores son los de la medición del 2026-11-15 y sirven de referencia hasta el pase de arte.

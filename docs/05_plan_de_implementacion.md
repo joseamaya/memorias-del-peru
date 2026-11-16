@@ -122,7 +122,7 @@
 
 - **4.8 — Duración y equilibrio (abierto).** Falta la partida humana cronometrada. El registro de sesión marca cada acto y `tools/session_duration.py` resume el total; la suma de fichas da 45,5 min y la pasada guionizada 1:42, pero ninguna es una partida real.
 - **4.9 — Arte y audio por acto (abierto, en curso).** El pase visual corrigió las nubes (bordes suaves, sin jirones contra las crestas), sustituyó las siluetas planas de montaña por bandas con volumen en la llacta y el Cusco, y dio más detalle al terreno. Faltan texturas de roca, animaciones de personaje, retratos, props de detalle y la mezcla de audio.
-- **4.10 — Rendimiento (cerrado el 2026-11-16).** Tres pasadas de Medio a 1080p tras el pase visual: llacta 87,2, paso 88,5, Cusco 62,4, posguerra 99,6 y obra 84,0 FPS de mediana. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,70. El detalle está en [docs/08](08_entorno_y_rendimiento.md).
+- **4.10 — Rendimiento (cerrado el 2026-11-16, con re-medición pendiente).** Tres pasadas de Medio a 1080p tras el primer pase visual: llacta 87,2, paso 88,5, Cusco 62,4, posguerra 99,6 y obra 84,0 FPS de mediana. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,70. Las cordilleras con volumen cambiaron la escena después; la re-medición quedó bloqueada por carga externa del equipo y está pendiente. El detalle está en [docs/08](08_entorno_y_rendimiento.md).
 
 **Entregables:**
 

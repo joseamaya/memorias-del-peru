@@ -38,6 +38,9 @@ func _run() -> void:
 	for path: String in ACTS:
 		if not only.is_empty() and not path.contains(only):
 			continue
+		# Cada acto se mide sin las banderas del anterior: el estado de campaña
+		# cambia la puesta en escena y, con él, los draw calls.
+		CampaignState.clear()
 		var packed: PackedScene = load(path) as PackedScene
 		if packed == null:
 			print("PERF_FALLO ", path)
