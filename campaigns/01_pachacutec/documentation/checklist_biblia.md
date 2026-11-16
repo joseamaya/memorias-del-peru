@@ -27,4 +27,4 @@
 - Prueba de humo manual de los cinco actos.
 - Combate con porra y escudo y HUD sin barra fija: la biblia §3.3 sigue pendiente.
 
-**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena; la única deuda de cumplimiento es la de sistema (HUD/combate) en III.1.** Quedan abiertas la duración, el rendimiento, el arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).
+**Las 22 escenas del guion de escenas están implementadas y sin deudas de escena. El combate y el HUD se cerraron en 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y sin barra fija de estado.** Quedan abiertas la duración, el rendimiento, el arte/audio y la verificación humana. La aceptación por escena vive en [guion_escenas.md](guion_escenas.md).

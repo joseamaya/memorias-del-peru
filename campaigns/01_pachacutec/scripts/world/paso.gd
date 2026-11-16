@@ -34,7 +34,6 @@ const ROCK_POSITIONS: Array[Vector3] = [
 	Vector3(15.0, 0.0, -8.0),
 	Vector3(-17.0, 0.0, 12.0),
 ]
-const PLAYER_DAMAGE_BLOCKED: float = 0.3
 const CAMP_SCENE: String = "res://campaigns/01_pachacutec/scenes/objects/camp_point.tscn"
 const CAMP_POSITION: Vector3 = Vector3(-4.0, 0.9, 18.0)
 const DISTRACT_POSITION: Vector3 = Vector3(12.0, 0.9, 6.0)
@@ -73,7 +72,7 @@ var _dialogue_text: StringName = &""
 
 var _enemies: Array[AmbushEnemy] = []
 var _attack_ray: RayCast3D = null
-var _sling: CombatWeapon = null
+var loadout: CombatLoadout = null
 var _ambush_started: bool = false
 var _completed: bool = false
 var _dead: bool = false
@@ -93,6 +92,7 @@ func _ready() -> void:
 	CampaignProgress.apply(self)
 	if CampaignProgress.is_respawn_pending():
 		CampaignProgress.restore_checkpoint(self)
+	_sync_loadout_ammo()
 	if CampaignState.has_flag(&"carga_anca"):
 		_apply_carry_penalty()
 	_setup_camp()
@@ -140,10 +140,12 @@ func apply_player_damage(amount: float) -> void:
 	if _dead or _completed or character == null:
 		return
 	var applied: float = amount
-	if _blocking:
-		applied *= PLAYER_DAMAGE_BLOCKED
-		if player.stamina != null:
-			player.stamina.consume(5.0)
+	if _blocking and loadout != null:
+		var ratio: float = loadout.block_ratio()
+		if ratio > 0.0:
+			applied *= 1.0 - ratio
+			if player.stamina != null:
+				player.stamina.consume(5.0)
 	character.damage(applied)
 	if hud != null:
 		hud.flash_damage()
@@ -172,16 +174,34 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		var mouse: InputEventMouseButton = event as InputEventMouseButton
-		if mouse.button_index == MOUSE_BUTTON_LEFT and mouse.pressed:
-			_attack()
-			get_viewport().set_input_as_handled()
-			return
-		if mouse.button_index == MOUSE_BUTTON_RIGHT:
-			_blocking = mouse.pressed
-			get_viewport().set_input_as_handled()
-			return
+	if event.is_action_pressed("attack"):
+		_attack()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("block"):
+		_blocking = true
+		if loadout != null:
+			loadout.set_blocking(true)
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_released("block"):
+		_blocking = false
+		if loadout != null:
+			loadout.set_blocking(false)
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("weapon_1"):
+		_switch_weapon(CombatLoadout.Slot.SLING)
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("weapon_2"):
+		_switch_weapon(CombatLoadout.Slot.CLUB)
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("weapon_3"):
+		_switch_weapon(CombatLoadout.Slot.SHIELD)
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("journal"):
 		if hud == null or journal == null or dialogue == null or _completed or _dead:
 			return
@@ -211,18 +231,20 @@ func _on_journal_closed() -> void:
 
 
 func _attack() -> void:
-	if not is_ambush_active() or player_combatant == null or _attack_ray == null:
+	if not is_ambush_active() or loadout == null or _attack_ray == null:
 		return
-	if not player_combatant.can_attack():
+	if not loadout.can_attack():
 		return
-	var damage: float = player_combatant.attack(1.0)
+	_attack_ray.target_position = Vector3(0.0, 0.0, -maxf(loadout.range_max(), 0.5))
+	var damage: float = loadout.attack(1.0)
 	if damage <= 0.0:
 		return
-	player_combatant.register_hit()
-	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH, -12.0)
-	var hands: FirstPersonHands = player.get_node_or_null("Head/Camera3D/FirstPersonHands") as FirstPersonHands
-	if hands != null:
-		hands.play(&"attack")
+	loadout.register_hit()
+	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH if loadout.is_ranged()
+		else CampaignAudio.PORRA_PATH, -12.0)
+	var weapon_visual: FirstPersonWeapon = player.get_node_or_null("Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
+	if weapon_visual != null:
+		weapon_visual.play_attack()
 	_attack_ray.force_raycast_update()
 	if not _attack_ray.is_colliding():
 		return
@@ -276,34 +298,36 @@ func _finish_ambush() -> void:
 
 
 func _update_status() -> void:
-	if hud == null or character == null:
+	if hud == null:
 		return
-	# Solo durante la emboscada: fuera de ella el HUD queda limpio.
-	if not _ambush_started or _completed or _dead:
-		hud.set_status("")
-		return
-	hud.set_status(tr("PCH_PASO_COMBAT_STATUS") % alive_enemies())
+	hud.set_status("")
 
 
 func _setup_player_combat() -> void:
 	character = CharacterState.new()
 	character.name = "CharacterState"
 	player.add_child(character)
-	_sling = CombatWeapon.new()
-	_sling.kind = CombatWeapon.Kind.SLING
-	_sling.damage_min = 18.0
-	_sling.damage_max = 32.0
-	_sling.range_min = 3.0
-	_sling.range_max = 28.0
-	_sling.charge_full_seconds = 1.2
-	_sling.stamina_cost = 10.0
-	_sling.cooldown_seconds = 0.8
 	player_combatant = Combatant.new()
 	player_combatant.name = "PlayerCombatant"
 	player_combatant.character = character
-	player_combatant.weapon = _sling
 	player_combatant.stamina = player.stamina
 	player.add_child(player_combatant)
+	loadout = CombatLoadout.new()
+	loadout.name = "CombatLoadout"
+	loadout.character = character
+	loadout.stamina = player.stamina
+	loadout.combatant = player_combatant
+	player.add_child(loadout)
+	loadout.weapon_changed.connect(_on_weapon_changed)
+	loadout.ammo_changed.connect(_on_ammo_changed)
+	loadout.blocking_changed.connect(_on_blocking_changed)
+	if not CampaignState.has_data(&"stones"):
+		CampaignState.set_data(&"stones", CombatLoadout.DEFAULT_STONES)
+	var raw_stones: Variant = CampaignState.get_data(&"stones", CombatLoadout.DEFAULT_STONES)
+	var stones: int = CombatLoadout.DEFAULT_STONES
+	if raw_stones is int:
+		stones = raw_stones
+	loadout.set_ammo(stones)
 	var camera: Camera3D = player.get_node_or_null("Head/Camera3D") as Camera3D
 	if camera != null:
 		_attack_ray = RayCast3D.new()
@@ -312,6 +336,46 @@ func _setup_player_combat() -> void:
 		_attack_ray.collision_mask = 9
 		_attack_ray.enabled = true
 		camera.add_child(_attack_ray)
+	_refresh_weapon_visual(loadout.current_weapon())
+	_on_ammo_changed(loadout.ammo())
+
+
+func _on_weapon_changed(_index: int, weapon: CombatWeapon) -> void:
+	_refresh_weapon_visual(weapon)
+	_on_ammo_changed(loadout.ammo())
+
+
+func _sync_loadout_ammo() -> void:
+	if loadout == null:
+		return
+	var raw: Variant = CampaignState.get_data(&"stones", CombatLoadout.DEFAULT_STONES)
+	var stones: int = CombatLoadout.DEFAULT_STONES
+	if raw is int:
+		stones = raw
+	loadout.set_ammo(stones)
+
+
+func _on_ammo_changed(remaining: int) -> void:
+	CampaignState.set_data(&"stones", remaining)
+	if hud != null and loadout != null:
+		hud.set_ammo(remaining, loadout.is_ranged())
+
+
+func _on_blocking_changed(blocking: bool) -> void:
+	var visual: FirstPersonWeapon = player.get_node_or_null("Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
+	if visual != null:
+		visual.set_blocking(blocking)
+
+
+func _refresh_weapon_visual(weapon: CombatWeapon) -> void:
+	var visual: FirstPersonWeapon = player.get_node_or_null("Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
+	if visual != null and weapon != null:
+		visual.set_weapon(weapon.kind)
+
+
+func _switch_weapon(index: int) -> void:
+	if loadout != null:
+		loadout.switch_to(index)
 
 
 func _setup_inventory_and_dialogue() -> void:

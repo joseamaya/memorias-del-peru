@@ -49,7 +49,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 ## 6. Estado de construcción
 
-La campaña se juega de principio a fin en gris: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cinco obras, incluida la casa de Rumi, y cierra con variantes. El guion y el guion de escenas están cerrados y las 115 pruebas pasan. Falta el pase de arte y audio, el equilibrio y llevar la duración a 40–50 min.
+La campaña se juega de principio a fin en gris: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cinco obras, incluida la casa de Rumi, y cierra con variantes. El guion y el guion de escenas están cerrados y las 117 pruebas pasan. Falta el pase de arte y audio, el equilibrio y llevar la duración a 40–50 min.
 
 ## 7. Notas de producción
 

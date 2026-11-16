@@ -102,6 +102,13 @@ func _act_two() -> void:
 	if player == null or hud == null or camp == null:
 		paso.free()
 		return
+	# Muestra las tres armas y la munición antes de la emboscada.
+	paso.call("_switch_weapon", 1)
+	await _wait(0.8)
+	paso.call("_switch_weapon", 2)
+	await _wait(0.8)
+	paso.call("_switch_weapon", 0)
+	await _wait(0.6)
 	var sisa: Node = paso.get_node_or_null("SisaPoint")
 	if sisa != null:
 		sisa.call("interact", player)

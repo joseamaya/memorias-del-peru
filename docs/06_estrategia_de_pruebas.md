@@ -104,11 +104,13 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_dialogue` | Nodos, condiciones por bandera, objeto, habilidad y reputación |
 | `test_journal` | Encargos y entradas de Memoria con sello y fuente |
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
+| `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
 | `test_campaign_state` | Banderas entre escenas |
 | `test_dialogue_panel` | Panel de diálogo y opciones |
 | `test_journal_panel` | Diario y detalle de entradas |
 | `test_hud_objective` | Línea de objetivo |
 | `test_hud_hint` | Aviso contextual |
+| `test_hud_combat` | Viñeta de salud y munición visible solo con la honda |
 | `test_intro_cards` | Tarjetas de introducción |
 | `test_session_log` | Registro de sesión y marcas |
 
@@ -171,6 +173,7 @@ Al cerrar cada acto:
 | 2026-11-16 | Alineación con la biblia 4.4: casa al este, cuentas variables, Puma con coste, Anca con provisiones y aliento máximo, mensajeros de IV.4/V.2, familia en el cierre, oficio en la obra y trampa obligatoria | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 112 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-16 | Guion de escena 4.5: plantilla reutilizable y 22 fichas de la campaña 01 con bloqueo, cámara, banderas, aceptación y deudas | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 113 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-16 | Cierre de escenas 4.6: I.3, II.1, II.2, III.3, IV.3 y V.1; banderas muertas, rótulos de nombre, campos sin cuidar y coste en la última oleada | `run_tests.gd`, `test_campaign_bible.gd` y `arc_playthrough.gd` | 115 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
+| 2026-11-16 | Combate 4.7: honda, porra y escudo, munición, viñeta de salud, respiración y HUD sin barra fija | `run_tests.gd`, `test_combat_loadout.gd`, `test_hud_combat.gd` y `arc_playthrough.gd` | 117 pruebas, 0 fallos, 0 advertencias; `ARCO_OK` |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

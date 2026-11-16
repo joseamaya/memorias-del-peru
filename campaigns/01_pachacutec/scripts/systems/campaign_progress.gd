@@ -134,6 +134,7 @@ static func snapshot(world: Node) -> Dictionary:
 		if local_oficio != &"":
 			oficio = local_oficio
 	data["oficio"] = oficio
+	data["stones"] = _as_int(CampaignState.get_data(&"stones", 0))
 	return data
 
 
@@ -172,6 +173,8 @@ static func _apply_data(world: Node, data: Dictionary, replace_inventory: bool) 
 		set_oficio(oficio)
 		if world is Llacta:
 			(world as Llacta).set_oficio(oficio)
+	if data.has("stones"):
+		CampaignState.set_data(&"stones", _as_int(data.get("stones", 0)))
 
 
 static func _restore_stamina(stamina: StaminaComponent, target: float) -> void:

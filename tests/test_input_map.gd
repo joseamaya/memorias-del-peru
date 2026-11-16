@@ -13,6 +13,11 @@ func test_input_map() -> bool:
 		&"jump",
 		&"pause",
 		&"journal",
+		&"attack",
+		&"block",
+		&"weapon_1",
+		&"weapon_2",
+		&"weapon_3",
 	]
 	for action: StringName in actions:
 		if not InputMap.has_action(action):

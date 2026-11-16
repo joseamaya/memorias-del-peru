@@ -18,6 +18,7 @@ Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licenc
 | `honda_zumbido.wav` | Zumbido de la honda al atacar | Autoría propia del proyecto | Síntesis con Python/NumPy: ruido de banda 500–4000 Hz y silbido descendente de 1200 a 200 Hz | Propia | 2026-11-14 |
 | `honda_impacto.wav` | Impacto de la honda | Autoría propia del proyecto | Síntesis con Python/NumPy: seno grave de 110 Hz con caída y ruido de ataque | Propia | 2026-11-14 |
 | `golpe_porra.wav` | Golpe de la porra chanca | Autoría propia del proyecto | Síntesis con Python/NumPy: seno grave de 70 Hz con caída y ruido de ataque | Propia | 2026-11-14 |
+| `respiracion.wav` | Respiración del jugador según el aliento | Autoría propia del proyecto | Síntesis con Python/NumPy (`tools/synthesize_audio.py`): ruido de banda 180–1400 Hz con dos envolventes, inhalación y exhalación | Propia | 2026-11-16 |
 | `musica_intro_over_the_andes.ogg` | Música de la introducción (ADR-0029) | u_98673jp944 | Pixabay, «Over The Andes»: https://pixabay.com/music/main-title-over-the-andes-339710/. **Generada con IA** según la propia página | Pixabay Content License (uso comercial, sin atribución obligatoria; prohíbe redistribuirla sola) | 2026-11-12 |
 
 Los originales se descargaron con la cuenta del responsable del proyecto el 2026-11-11 y **no se versionan**: son WAV de 48–96 kHz que pesan hasta 66 MB. Lo que entra en el juego es una versión procesada con ffmpeg y Python:

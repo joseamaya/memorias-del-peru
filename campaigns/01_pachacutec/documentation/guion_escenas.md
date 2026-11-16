@@ -1,7 +1,7 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
-- **Versión:** 1.1 — 2026-11-16
-- **Estado:** arco jugable en gris; las deudas de sistema se marcan en la ficha.
+- **Versión:** 1.2 — 2026-11-16
+- **Estado:** arco jugable en gris; sin deudas de escena.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
 - **Uso:** este documento manda sobre la puesta en escena. Las claves de texto viven en `localization/pachacutec_texts.csv`; las banderas, en `CampaignState`.
 
@@ -32,7 +32,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 | II.4 | La llegada | II | 1,5 min | Implementado | Sí |
 | II.5 | La ciudad dividida | II | 2,5 min | Implementado | Sí |
 | II.6 | La víspera | II | 1,5 min | Implementado | Sí |
-| III.1 | La entrada | III | 4 min | Implementado | Sí, con deuda de sistema |
+| III.1 | La entrada | III | 4 min | Implementado | Sí |
 | III.2 | La trampa | III | 2 min | Implementado | Sí |
 | III.3 | El costo | III | 2 min | Implementado | Sí |
 | III.4 | La contraofensiva | III | 1 min | Implementado | Sí |
@@ -44,7 +44,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 | V.2 | El nombre | V | 1 min | Implementado | Sí |
 | V.3 | El cierre | V | 1,5 min | Implementado | Sí |
 
-**Resultado:** 22/22 escenas implementadas; 21/22 sin deuda de escena. La única deuda de cumplimiento que queda es la de **III.1**, y es de sistema: HUD fijo y combate incompleto. **0 parciales.**
+**Resultado:** 22/22 escenas implementadas y **22/22 sin deuda de escena**. El combate y el HUD se cerraron en 4.7. **0 parciales.**
 
 **Total objetivo:** 43–50 min. **Medido:** no verificado; la pasada guionizada dura 1:42.
 
@@ -573,7 +573,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 **Cámara y sonido:**
 - Tambor de batalla; sin diálogo durante las oleadas.
-- HUD de estado con salud, aliados y enemigos.
+- **HUD:** viñeta de salud, respiración y munición en la mano; sin barra fija de estado.
 
 **Textos:**
 - `PCH_CIUDAD_DEFENSE`, `PCH_CIUDAD_WAVE`, `PCH_CIUDAD_STATUS`.
@@ -598,7 +598,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - [ ] La defensa no empieza sin `trampa_resuelta`.
 
 **Ficha histórica:** PCH-029 · H (tradición).  
-**Deuda de sistema:** el HUD fijo contradice la biblia §3.3; el combate solo usa honda. No es una deuda de la escena, sino del sistema de combate.
+**Deuda:** ninguna.
 
 ## III.2 · La trampa
 
@@ -1108,7 +1108,7 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 | II.4 | `test_city_staging` |
 | II.5 | `test_city_staging`, `arc_playthrough` |
 | II.6 | `arc_playthrough`; falta prueba específica |
-| III.1 | `test_act_three_cost` |
+| III.1 | `test_act_three_cost`, `test_combat_loadout`, `test_hud_combat` |
 | III.2 | `test_campaign_bible::test_trap_is_required_for_defense` |
 | III.3 | `test_act_three_cost` |
 | III.4 | `test_end_card_body` |
@@ -1122,17 +1122,19 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 
 ## 11. Deudas y pendientes
 
-1. **Combate:** la biblia §3.3 pide honda, porra, escudo y HUD sin barra fija; el juego usa honda y bloqueo con HUD de estado. Es la deuda de sistema de III.1.
-2. **Duración:** no hay partida humana cronometrada; la suma de escenas es una estimación.
-3. **Arte y audio:** el arco está en gris; faltan modelos, texturas, animaciones y sonido por acto.
-4. **Rendimiento:** falta la medición reproducible en perfil Medio.
-5. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
+1. **Duración:** no hay partida humana cronometrada; la suma de escenas es una estimación.
+2. **Arte y audio:** el arco está en gris; faltan modelos, texturas, animaciones y sonido por acto.
+3. **Rendimiento:** falta la medición reproducible en perfil Medio.
+4. **Verificación histórica:** PCH-032–036 tienen revisión documental del agente, no humana.
 
 **Cerradas en v1.1:** I.3 (punto junto al fuego), II.1 (línea del inca que huyó), II.2 (descanso duplicado), II.3 (`distraccion_cuerda` y q'ipi), III.3 (coste en la última oleada), IV.3 (curaca vecino, Anca testifica, `maiz_repartido`), V.1 (verbos y habilidades del acto I) y los rótulos de nombre.
+
+**Cerradas en v1.2:** combate con honda, porra y escudo; munición de piedras; viñeta de salud; respiración; sin barra fija de estado.
 
 ## 12. Registro de cambios
 
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-16 | Primera ficha de escenas de la campaña 01: 22 escenas, matriz de banderas, finales, duración y cobertura de pruebas. |
-| 1.1 | 2026-11-16 | Se cierran las 7 escenas parciales y las deudas de escena: duda junto al fuego, línea del inca, campamento sin duplicado, coste en la última oleada, vecino y Anca en la asamblea, `maiz_repartido` en el cierre, verbos y habilidades de la obra, y rótulos de nombre. Solo queda la deuda de sistema de combate/HUD. |
+| 1.1 | 2026-11-16 | Se cierran las 7 escenas parciales y las deudas de escena: duda junto al fuego, línea del inca, campamento sin duplicado, coste en la última oleada, vecino y Anca en la asamblea, `maiz_repartido` en el cierre, verbos y habilidades de la obra, y rótulos de nombre. |
+| 1.2 | 2026-11-16 | Se cierra la deuda de sistema de combate/HUD: honda, porra y escudo, munición de piedras, viñeta de salud, respiración y sin barra fija de estado. |

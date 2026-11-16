@@ -45,6 +45,12 @@ Se usan **teclas físicas** (`physical_keycode`) para que WASD conserve su posic
 | `interact` | E (física) | En uso |
 | `jump` | Espacio | Reservado: sin lógica |
 | `pause` | Escape | Procesado por `GameManager` |
+| `journal` | J | Abre y cierra el diario |
+| `attack` | Ratón izquierdo | Honda, porra o escudo según el arma activa |
+| `block` | Ratón derecho | Solo el escudo reduce daño |
+| `weapon_1` | 1 | Honda |
+| `weapon_2` | 2 | Porra |
+| `weapon_3` | 3 | Escudo |
 
 Zona muerta: valor por defecto (0.5) — irrelevante para teclado, se revisará al añadir mando.
 

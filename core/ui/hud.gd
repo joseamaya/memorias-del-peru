@@ -51,6 +51,8 @@ signal journal_closed
 @onready var health_label: Label = $HealthLabel
 @onready var stamina_bar: ProgressBar = $StaminaBar
 @onready var status_label: Label = $StatusLabel
+@onready var health_vignette: ColorRect = $HealthVignette
+@onready var ammo_label: Label = $AmmoLabel
 @onready var damage_flash: ColorRect = $DamageFlash
 @onready var cinematic_top: ColorRect = $CinematicTop
 @onready var cinematic_bottom: ColorRect = $CinematicBottom
@@ -81,6 +83,9 @@ var _cinematic: bool = false
 var _reticle_focused: bool = false
 var _exploration_visible: bool = true
 var _cinematic_tween: Tween = null
+var _ammo_sling: bool = false
+var _ammo_remaining: int = 0
+var _vignette_base: float = 0.0
 
 
 func _ready() -> void:
@@ -99,6 +104,8 @@ func _ready() -> void:
 	if stamina_caption != null:
 		stamina_caption.visible = false
 	status_label.visible = false
+	ammo_label.visible = false
+	_set_vignette(0.0)
 	pause_panel.visible = false
 	end_panel.visible = false
 	cinematic_top.visible = true
@@ -171,6 +178,7 @@ func set_cinematic(active: bool) -> void:
 	_refresh_interaction_visibility()
 	_refresh_vitals_visibility()
 	_refresh_status_visibility()
+	_refresh_ammo_visibility()
 	objective_label.visible = not active and not objective_label.text.is_empty()
 	if _cinematic_tween != null and _cinematic_tween.is_valid():
 		_cinematic_tween.kill()
@@ -186,11 +194,41 @@ func is_cinematic() -> bool:
 	return _cinematic
 
 
-## Destello breve al recibir daño. No bloquea la vista y se apaga solo.
+## Destello breve al recibir daño. La viñeta de salud pulsa y vuelve a su base.
 func flash_damage() -> void:
 	damage_flash.color = Color(0.55, 0.08, 0.05, 0.34)
 	var tween: Tween = create_tween()
 	tween.tween_property(damage_flash, "color:a", 0.0, 0.45).set_trans(Tween.TRANS_QUAD)
+	var vignette_tween: Tween = create_tween()
+	vignette_tween.tween_method(_set_vignette,
+		clampf(_vignette_base + 0.32, 0.0, 1.0), _vignette_base, 0.55) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## Fuerza de la viñeta de salud (0–1), para pruebas y ajustes.
+func vignette_strength() -> float:
+	if health_vignette == null or health_vignette.material == null:
+		return 0.0
+	var shader_material: ShaderMaterial = health_vignette.material as ShaderMaterial
+	if shader_material == null:
+		return 0.0
+	var raw: Variant = shader_material.get_shader_parameter("strength")
+	if raw is float:
+		return raw
+	return 0.0
+
+
+## Munición visible junto a la mano. La honda es la única que gasta piedras.
+func set_ammo(remaining: int, sling: bool) -> void:
+	_ammo_remaining = remaining
+	_ammo_sling = sling
+	ammo_label.text = tr("UI_AMMO_STONES") % remaining
+	_refresh_ammo_visibility()
+
+
+## Indica si la munición está a la vista.
+func is_ammo_visible() -> bool:
+	return ammo_label.visible
 
 
 func _current_cinematic_offset() -> float:
@@ -222,8 +260,10 @@ func show_end_card(title: String, hint: String, body: String = "") -> void:
 	health_label.visible = false
 	stamina_bar.visible = false
 	status_label.visible = false
+	ammo_label.visible = false
 	objective_label.visible = false
 	damage_flash.color = Color(0.55, 0.08, 0.05, 0.0)
+	_set_vignette(0.0)
 	_apply_end_fade()
 	queue_redraw()
 
@@ -531,6 +571,8 @@ func _on_stamina_changed(current: float, maximum: float) -> void:
 func _on_health_changed(current: float, maximum: float) -> void:
 	health_bar.max_value = maximum
 	health_bar.value = current
+	_vignette_base = clampf(1.0 - current / maxf(maximum, 1.0), 0.0, 1.0) * 0.85
+	_set_vignette(_vignette_base)
 	_refresh_vitals_visibility()
 
 
@@ -541,12 +583,12 @@ func _refresh_interaction_visibility() -> void:
 	interaction_key.visible = visible_now
 
 
-## Salud y estamina aparecen cuando no están llenas o durante el combate.
+## La salud se lee en la viñeta; la estamina, en la barra que solo aparece
+## cuando baja. La barra de salud fija se retiró para cumplir la biblia §3.3.
 func _refresh_vitals_visibility() -> void:
 	var can_show: bool = _exploration_visible and not _cinematic
-	var health_active: bool = _character != null and _character.get_health() < _character.get_max_health()
-	health_bar.visible = can_show and (health_active or _status_visible)
-	health_label.visible = health_bar.visible
+	health_bar.visible = false
+	health_label.visible = false
 	var stamina_active: bool = stamina != null and stamina.get_current() < stamina.get_maximum()
 	stamina_bar.visible = can_show and stamina_active
 	var stamina_label: Label = get_node_or_null("StaminaLabel") as Label
@@ -556,3 +598,15 @@ func _refresh_vitals_visibility() -> void:
 
 func _refresh_status_visibility() -> void:
 	status_label.visible = _status_visible and _exploration_visible and not _cinematic
+
+
+func _refresh_ammo_visibility() -> void:
+	ammo_label.visible = _exploration_visible and not _cinematic and _ammo_sling
+
+
+func _set_vignette(value: float) -> void:
+	if health_vignette == null or health_vignette.material == null:
+		return
+	var shader_material: ShaderMaterial = health_vignette.material as ShaderMaterial
+	if shader_material != null:
+		shader_material.set_shader_parameter("strength", clampf(value, 0.0, 1.0))

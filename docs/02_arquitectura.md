@@ -229,8 +229,8 @@ Estos módulos viven en `core/` y no conocen la campaña; la campaña los compon
 | Inventario | `core/systems/inventory/inventory.gd` y `item_definition.gd` | Ocho huecos y tres equipados; `add`, `remove`, `count`, `has`, `use`; señal `changed`. Sin peso ni loot aleatorio |
 | Diálogo | `core/systems/dialogue/dialogue_runner.gd` | Nodos con texto, opciones, condiciones y efectos; no conoce la UI: emite `line_shown` y `choices_shown`, recibe la opción elegida |
 | Diario | `core/systems/journal/journal.gd` | Encargos y «Memoria»; añade entradas con clave de texto, sello H/A/R/N y fuente; señal `changed` |
-| Combate | `core/systems/combat/` | Honda con carga y proyectil, porra y escudo, enemigos con moral; sin HUD |
-| Puntos de control | `campaigns/<campaña>/scripts/systems/campaign_progress.gd` sobre `CampaignState` | Estado en memoria al empezar cada acto y a mitad del II y III; salud, aliento, ánimo, inventario, oficio, diario y posición; sin guardado completo |
+| Combate | `core/systems/combat/` | `CombatLoadout` con honda, porra y escudo; honda con carga y munición de piedras, porra corta y escudo con bloqueo; enemigos con moral; la UI lee viñeta y munición |
+| Puntos de control | `campaigns/<campaña>/scripts/systems/campaign_progress.gd` sobre `CampaignState` | Estado en memoria al empezar cada acto y a mitad del II, III y IV; salud, aliento, ánimo, inventario, oficio, diario, munición y posición; sin guardado completo |
 
 Reglas:
 

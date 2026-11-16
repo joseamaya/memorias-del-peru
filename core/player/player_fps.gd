@@ -238,6 +238,9 @@ func try_interact() -> void:
 ## jugador sin apagar su física ni el mundo.
 func set_controls_locked(locked: bool) -> void:
 	_controls_locked = locked
+	var weapon: FirstPersonWeapon = get_node_or_null("Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
+	if weapon != null:
+		weapon.visible = not locked
 	if locked:
 		velocity.x = 0.0
 		velocity.z = 0.0

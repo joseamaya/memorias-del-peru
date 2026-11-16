@@ -13,6 +13,7 @@ func test_campaign_audio_assets() -> bool:
 		CampaignAudio.WHOOSH_PATH,
 		CampaignAudio.IMPACT_PATH,
 		CampaignAudio.PORRA_PATH,
+		BreathingAudio.STREAM_PATH,
 	]
 	var ok: bool = true
 	for path: String in paths:

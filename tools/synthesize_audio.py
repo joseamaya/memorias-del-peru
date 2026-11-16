@@ -127,6 +127,17 @@ def whoosh() -> np.ndarray:
     return normalize(samples, -16.0)
 
 
+def breath() -> np.ndarray:
+    duration = 2.2
+    n = int(SR * duration)
+    t = np.arange(n) / SR
+    noise = bandpass(RNG.normal(0.0, 1.0, n), 180.0, 1400.0)
+    inhale = np.exp(-((t - 0.45) / 0.18) ** 2)
+    exhale = np.exp(-((t - 1.45) / 0.28) ** 2)
+    samples = noise * (inhale * 0.8 + exhale * 0.6)
+    return normalize(samples, -24.0)
+
+
 def impact(duration: float, base: float, rms_db: float) -> np.ndarray:
     n = int(SR * duration)
     t = np.arange(n) / SR
@@ -144,6 +155,7 @@ def main() -> None:
     write("honda_zumbido.wav", whoosh())
     write("honda_impacto.wav", impact(0.25, 110.0, -12.0))
     write("golpe_porra.wav", impact(0.3, 70.0, -12.0))
+    write("respiracion.wav", breath())
 
 
 if __name__ == "__main__":
