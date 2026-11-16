@@ -1,7 +1,7 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
 - **Versión:** 1.4 — 2026-11-16
-- **Estado:** arco jugable en gris; sin deudas de escena.
+- **Estado:** arco jugable con blockout y materiales propios; sin deudas de escena.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
 - **Uso:** este documento manda sobre la puesta en escena. Las claves de texto viven en `localization/pachacutec_texts.csv`; las banderas, en `CampaignState`.
 
@@ -1130,7 +1130,7 @@ La pasada guionizada de `build/partida_completa.mp4` dura 1:42 y sirve para revi
 
 **Cerradas en v1.2:** combate con honda, porra y escudo; munición de piedras; viñeta de salud; respiración; sin barra fija de estado.
 
-**Cerradas en v1.3:** rendimiento en Medio; las tres pasadas por acto dan mediana ≥ 60 FPS (Cusco 62,2) con la escala 3D al 0,70 y SSAO.
+**Cerradas en v1.3:** rendimiento en Medio; las tres pasadas por acto dan mediana ≥ 60 FPS (Cusco 62,4 tras el pase visual) con la escala 3D al 0,70 y SSAO.
 
 ## 12. Registro de cambios
 

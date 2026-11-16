@@ -119,16 +119,18 @@ Consecuencias de que la referencia tenga GPU integrada:
 4. Se registran FPS medio y p1, tiempo de frame, draw calls y memoria de vídeo.
 5. La medición se repite al cerrar cada acto y al cambiar la escena.
 
-**Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con un proceso nuevo por acto. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). Las tres pasadas de Medio se hicieron con carga del sistema entre 1,0 y 3,5; las mediciones anteriores, hechas con carga 10–13, quedaron descartadas.
+**Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con un proceso nuevo por acto. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla recoge la repetición posterior al pase visual (bloque 4.9), hecha con carga del sistema entre 2,6 y 2,8; las mediciones anteriores, con carga 10–13, quedaron descartadas.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |
 |---|---|---|---|---|---|
-| I — Llacta | 52,7 FPS | 89,9 FPS | 80,6–92,8 | 352 | 206,7 MB |
-| II — Paso | 46,6 FPS | 88,4 FPS | 81,1–94,5 | 273 | 201,3 MB |
-| III — Cusco | 51,7 FPS | 62,2 FPS | 58,0–62,6 | 476 | 235,8 MB |
-| IV — Posguerra | 52,0 FPS | 91,3 FPS | 84,7–101,5 | 342 | 229,6 MB |
-| V — Obra | 52,6 FPS | 86,6 FPS | 86,6–88,6 | 363 | 229,0 MB |
+| I — Llacta | 52,7 FPS | 87,2 FPS | 84,8–89,6 | 352 | 207,3 MB |
+| II — Paso | 46,6 FPS | 88,5 FPS | 86,8–89,2 | 273 | 201,9 MB |
+| III — Cusco | 51,7 FPS | 62,4 FPS | 61,9–62,4 | 476 | 235,8 MB |
+| IV — Posguerra | 52,0 FPS | 99,6 FPS | 92,9–102,2 | 343 | 230,2 MB |
+| V — Obra | 52,6 FPS | 84,0 FPS | 77,4–87,6 | 363 | 229,6 MB |
 
-Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco es el acto más ajustado (62,2 FPS de mediana, 58,0 en la peor pasada) porque concentra 476 draw calls y el SSAO. Para cerrar la brecha se mantuvo el SSAO y se bajó la escala 3D de Medio de 0,83 a 0,70: sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (52–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
+Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco es el acto más ajustado (62,4 FPS de mediana, 61,9 en la peor pasada) porque concentra 476 draw calls y el SSAO. Para cerrar la brecha se mantuvo el SSAO y se bajó la escala 3D de Medio de 0,83 a 0,70: sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
+
+Dos avisos de la repetición: la obra del acto V marcó 420 draw calls en la primera pasada y 363 en las dos siguientes, y una de sus pasadas tuvo un p1 de 26,6 FPS por un tirón aislado. La mediana no cambia, pero el acto V queda bajo observación.
 
 El perfil Bajo no se volvió a medir en esta pasada: sus valores son los de la medición del 2026-11-15 y sirven de referencia hasta el pase de arte.
