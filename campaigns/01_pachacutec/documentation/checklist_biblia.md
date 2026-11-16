@@ -38,7 +38,7 @@ Firma de la revisión humana: ____________________ · Fecha: __________
 
 ## Pendientes que impiden cerrar la Fase 5
 
-- Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:42) solo sirve como suelo.
+- Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:58) solo sirve como suelo.
 - Remate de arte: texturas finas de roca y props de detalle.
 - Audio: mezcla escuchada por acto.
 - Prueba de humo manual de los cinco actos.

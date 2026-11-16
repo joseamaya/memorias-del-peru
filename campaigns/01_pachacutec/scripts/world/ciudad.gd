@@ -416,9 +416,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _attack() -> void:
 	if not is_ambush_active() or loadout == null or _attack_ray == null:
 		return
-	_pending_damage = loadout.attack(1.0)
-	if _pending_damage <= 0.0:
+	var damage: float = loadout.attack(1.0)
+	if damage <= 0.0:
 		return
+	_pending_damage = damage
 	CampaignAudio.play_sfx(CampaignAudio.WHOOSH_PATH if loadout.is_ranged()
 		else CampaignAudio.PORRA_PATH, -12.0)
 

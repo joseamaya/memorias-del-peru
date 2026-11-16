@@ -38,7 +38,7 @@ en el `.tscn`.
 | II — Paso | `paleta_paso.tres` | `#FFDBB3` · 1,20 · −20° | `#ABB3BF` · 0,90 | `#A3B8D1` · 0,0030 | Altura fría, aire fino, piedra y viento |
 | III — Cusco | `paleta_ciudad.tres` | `#FFD1A8` · 1,08 · −28° | `#B3A899` · 0,86 | `#A8B3C7` · 0,0024 | Tarde de defensa, luz rasante, humo |
 | IV — Posguerra | `paleta_posguerra.tres` | `#C2D9FF` · 0,85 · −22° | `#9EB3D6` · 0,75 | `#99ADD1` · 0,0022 | Frío, humedad, ausencia |
-| V — Obra | `paleta_obra.tres` | `#FFDEB3` · 1,35 · −18° | `#BDB39E` · 1,00 | `#ADBDD6` · 0,0016 | Amanecer que vuelve, polvo de obra |
+| V — Obra | `paleta_obra.tres` | `#FFDEB3` · 1,25 · −18° | `#BDB39E` · 0,95 | `#ADBDD6` · 0,0016 | Amanecer que vuelve, polvo de obra |
 
 **Cielo:** Rayleigh `#4D80E6` (I, III, V), `#5785DB` (II), `#577AB3` (IV); suelo del
 cielo `#2E2921` (I, V), `#292621` (II), `#2E2921` (III), `#24262A` (IV). La turbidez sube

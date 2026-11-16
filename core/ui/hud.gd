@@ -22,7 +22,7 @@ const SUBTITLE_GAP: float = 0.3
 const QUEUE_LIMIT: int = 4
 ## Fundido de la tarjeta de fin y opacidad final del fondo.
 const END_FADE: float = 2.0
-const END_ALPHA: float = 0.85
+const END_ALPHA: float = 0.93
 ## Fundidos del rótulo de lugar.
 const TITLE_FADE_IN: float = 0.8
 const TITLE_FADE_OUT: float = 1.2

@@ -125,8 +125,16 @@ func _act_two() -> void:
 	await _wait(1.0)
 	paso.call("_on_sneak_requested")
 	await _wait(0.8)
+	# El vídeo enseña el combate: aunque el sigilo esté disponible, la
+	# emboscada se resuelve peleando.
+	paso.set("_sneak", false)
 	paso.call("_start_ambush")
-	await _wait(1.5)
+	await _wait(0.5)
+	player.global_position = Vector3(0.0, 0.05, 1.0)
+	player.rotation.y = 0.0
+	print("REC_COMBAT_A2_START frame=", Engine.get_frames_drawn())
+	await _fight(paso, player, 4.0)
+	print("REC_COMBAT_A2_END frame=", Engine.get_frames_drawn())
 	for index: int in range(1, 5):
 		var enemy: Node = paso.get_node_or_null("Ambusher%d" % index)
 		if enemy != null:
@@ -188,7 +196,15 @@ func _act_three() -> void:
 		_choose(hud, 0)
 		ciudad.call("_on_dialogue_advanced")
 	await _wait(1.5)
-	for _wave: int in range(3):
+	# El vídeo se coloca en el centro de la plaza para que las oleadas se vean
+	# de cerca; la lógica de la defensa no cambia.
+	player.global_position = Vector3(0.0, 0.05, 0.0)
+	player.rotation.y = 0.0
+	for wave: int in range(3):
+		await _wait(0.6)
+		print("REC_COMBAT_A3_WAVE%d_START frame=" % wave, Engine.get_frames_drawn())
+		await _fight(ciudad, player, 3.0)
+		print("REC_COMBAT_A3_WAVE%d_END frame=" % wave, Engine.get_frames_drawn())
 		for child: Node in ciudad.get_children():
 			if child is AmbushEnemy and (child as AmbushEnemy).is_alive():
 				child.call("take_hit", 200.0)
@@ -306,3 +322,55 @@ func _choose_last(hud: Node) -> void:
 	var panel: DialoguePanel = hud.get_node_or_null("DialoguePanel") as DialoguePanel
 	if panel != null:
 		panel.emit_signal("choice_selected", panel.get_choice_count() - 1)
+
+
+## Combate real para el vídeo: encara al enemigo más cercano y ataca con el
+## arma activa. No mata a nadie: deja que se vean anticipación, impacto,
+## hitstop y fichas antes de que el guion resuelva la escena.
+func _fight(world: Node, player: Node3D, seconds: float) -> void:
+	var hud: Node = world.get_node_or_null("UILayer/HUD")
+	if hud != null and hud.has_method("clear_subtitle"):
+		hud.call("clear_subtitle")
+	var loadout: CombatLoadout = player.get_node_or_null("CombatLoadout") as CombatLoadout
+	if loadout == null:
+		return
+	# La partida guionizada no recoge piedras: sin munición el vídeo mostraría
+	# un arma que no ataca.
+	loadout.set_ammo(24)
+	var character: CharacterState = player.get_node_or_null("CharacterState") as CharacterState
+	if character != null:
+		character.heal(100.0)
+	var head: Node3D = player.get_node_or_null("Head") as Node3D
+	if head != null:
+		# El rayo sale del centro de la cámara; sin inclinarla, pasa por encima
+		# del cuerpo del chanca y el golpe no conecta.
+		head.rotation.x = -0.18
+	var elapsed: float = 0.0
+	while elapsed < seconds:
+		var enemy: AmbushEnemy = _nearest_enemy(world, player)
+		if enemy == null:
+			break
+		var to_enemy: Vector3 = enemy.global_position - player.global_position
+		to_enemy.y = 0.0
+		if to_enemy.length() > 0.05:
+			player.rotation.y = atan2(-to_enemy.x, -to_enemy.z)
+		# Se llama al ataque de la escena, no al loadout: la escena guarda el
+		# daño pendiente y resuelve el rayo en la ventana activa.
+		if world.has_method("_attack"):
+			world.call("_attack")
+		await _wait(0.25)
+		elapsed += 0.25
+
+
+func _nearest_enemy(world: Node, player: Node3D) -> AmbushEnemy:
+	var best: AmbushEnemy = null
+	var best_distance: float = INF
+	for child: Node in world.get_children():
+		var enemy: AmbushEnemy = child as AmbushEnemy
+		if enemy == null or not enemy.is_alive():
+			continue
+		var distance: float = player.global_position.distance_to(enemy.global_position)
+		if distance < best_distance:
+			best_distance = distance
+			best = enemy
+	return best

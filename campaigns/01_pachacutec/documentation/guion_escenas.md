@@ -46,7 +46,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 **Resultado:** 22/22 escenas implementadas y **22/22 sin deuda de escena**. El combate y el HUD se cerraron en 4.7. **0 parciales.**
 
-**Total objetivo:** 43–50 min. **Medido:** pendiente de partida humana. La suma de las 22 fichas da 45,5 min y la pasada guionizada dura 1:42; ninguna de las dos sustituye a una partida real. El protocolo y el resumen automático están listos en [docs/06 §4](../../../docs/06_estrategia_de_pruebas.md): `godot --path . -- --session PCH-DUR-1` y `python3 tools/session_duration.py PCH-DUR-1`.
+**Total objetivo:** 43–50 min. **Medido:** pendiente de partida humana. La suma de las 22 fichas da 45,5 min y la pasada guionizada dura 1:58; ninguna de las dos sustituye a una partida real. El protocolo y el resumen automático están listos en [docs/06 §4](../../../docs/06_estrategia_de_pruebas.md): `godot --path . -- --session PCH-DUR-1` y `python3 tools/session_duration.py PCH-DUR-1`.
 
 ---
 
@@ -1091,7 +1091,7 @@ Prioridad: primero «llena», después «vacía», después «en pie». La tarje
 | V | 6–7 min | 6 min | No verificado |
 | **Total** | **43–50 min** | **45,5 min** | **No verificado** |
 
-La pasada guionizada de `build/partida_completa.mp4` dura 1:45 y sirve para revisar el arco, no para acreditar duración.
+La pasada guionizada de `build/partida_completa_actual.mp4` dura 1:58 y sirve para revisar el arco, no para acreditar duración.
 
 ## 10. Cobertura de pruebas
 
