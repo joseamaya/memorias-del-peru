@@ -161,6 +161,7 @@ Al cerrar cada acto:
 4. Escuchar el ambiente y comprobar que no hay cortes ni bucles rotos.
 5. Verificar que las decisiones tomadas se notan en el acto siguiente.
 6. Anotar la duración con `--session <código>`.
+7. Antes de la escucha, medir los niveles con `python3 tools/audio_levels.py`: picos por debajo de -0,5 dBFS, sin clips y sin efectos casi mudos.
 
 ### Duración de la partida
 

@@ -89,4 +89,10 @@ godot --path . -- --session PCH-DUR-1
 python3 tools/session_duration.py PCH-DUR-1
 ```
 
+Niveles de audio (picos, RMS y clips antes de escuchar):
+
+```bash
+python3 tools/audio_levels.py
+```
+
 Detalles en [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md).
