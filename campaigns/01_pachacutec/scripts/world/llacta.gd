@@ -31,20 +31,18 @@ const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
 const CLOUD_DOME_RADIUS: float = 420.0
 const CLOUD_DOME_SEGMENTS: int = 64
 const CLOUD_DOME_RINGS: int = 32
-const DISTANT_NEAR_RADIUS: float = 210.0
-const DISTANT_MID_RADIUS: float = 270.0
-const DISTANT_FAR_RADIUS: float = 330.0
-const DISTANT_SEGMENTS: int = 160
-const DISTANT_BOTTOM: float = -10.0
-const DISTANT_NEAR_BASE: float = 28.0
-const DISTANT_NEAR_AMPLITUDE: float = 34.0
-const DISTANT_MID_BASE: float = 44.0
-const DISTANT_MID_AMPLITUDE: float = 52.0
-const DISTANT_FAR_BASE: float = 62.0
-const DISTANT_FAR_AMPLITUDE: float = 60.0
-const DISTANT_NEAR_COLOR: Color = Color(0.27, 0.31, 0.37, 1.0)
-const DISTANT_MID_COLOR: Color = Color(0.30, 0.34, 0.40, 1.0)
-const DISTANT_FAR_COLOR: Color = Color(0.33, 0.37, 0.43, 1.0)
+const DISTANT_NEAR_INNER: float = 100.0
+const DISTANT_NEAR_OUTER: float = 250.0
+const DISTANT_NEAR_AMPLITUDE: float = 72.0
+const DISTANT_NEAR_COLOR: Color = Color(0.35, 0.38, 0.43, 1.0)
+const DISTANT_MID_INNER: float = 190.0
+const DISTANT_MID_OUTER: float = 340.0
+const DISTANT_MID_AMPLITUDE: float = 110.0
+const DISTANT_MID_COLOR: Color = Color(0.39, 0.43, 0.49, 1.0)
+const DISTANT_FAR_INNER: float = 280.0
+const DISTANT_FAR_OUTER: float = 470.0
+const DISTANT_FAR_AMPLITUDE: float = 130.0
+const DISTANT_FAR_COLOR: Color = Color(0.42, 0.46, 0.52, 1.0)
 
 const AMBIENCE_PATH: String = "res://shared_assets/audio/ambiente_viento_andes.ogg"
 const FOOTSTEP_PATHS: Array[String] = [
@@ -445,53 +443,26 @@ func _build_dust() -> void:
 
 
 func _build_distant_ranges() -> void:
-	_build_range("DistantRangeNear", DISTANT_NEAR_RADIUS, DISTANT_NEAR_BASE,
-		DISTANT_NEAR_AMPLITUDE, DISTANT_NEAR_COLOR)
-	_build_range("DistantRangeMid", DISTANT_MID_RADIUS, DISTANT_MID_BASE,
-		DISTANT_MID_AMPLITUDE, DISTANT_MID_COLOR)
-	_build_range("DistantRangeFar", DISTANT_FAR_RADIUS, DISTANT_FAR_BASE,
-		DISTANT_FAR_AMPLITUDE, DISTANT_FAR_COLOR)
+	_build_range("DistantRangeNear", DISTANT_NEAR_INNER, DISTANT_NEAR_OUTER,
+		DISTANT_NEAR_AMPLITUDE, 1.0, DISTANT_NEAR_COLOR)
+	_build_range("DistantRangeMid", DISTANT_MID_INNER, DISTANT_MID_OUTER,
+		DISTANT_MID_AMPLITUDE, 2.0, DISTANT_MID_COLOR)
+	_build_range("DistantRangeFar", DISTANT_FAR_INNER, DISTANT_FAR_OUTER,
+		DISTANT_FAR_AMPLITUDE, 3.0, DISTANT_FAR_COLOR)
 
 
-func _build_range(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
-	var surface: SurfaceTool = SurfaceTool.new()
-	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for index: int in range(DISTANT_SEGMENTS):
-		var angle0: float = TAU * float(index) / float(DISTANT_SEGMENTS)
-		var angle1: float = TAU * float(index + 1) / float(DISTANT_SEGMENTS)
-		var height0: float = _distant_height(angle0, base_height, amplitude)
-		var height1: float = _distant_height(angle1, base_height, amplitude)
-		var bottom0: Vector3 = Vector3(cos(angle0) * radius, DISTANT_BOTTOM, sin(angle0) * radius)
-		var bottom1: Vector3 = Vector3(cos(angle1) * radius, DISTANT_BOTTOM, sin(angle1) * radius)
-		var top0: Vector3 = Vector3(cos(angle0) * radius, height0, sin(angle0) * radius)
-		var top1: Vector3 = Vector3(cos(angle1) * radius, height1, sin(angle1) * radius)
-		surface.add_vertex(bottom0)
-		surface.add_vertex(bottom1)
-		surface.add_vertex(top1)
-		surface.add_vertex(bottom0)
-		surface.add_vertex(top1)
-		surface.add_vertex(top0)
-	var material: ShaderMaterial = ShaderMaterial.new()
-	material.shader = load("res://shared_assets/materials/range_shade.gdshader") as Shader
-	material.set_shader_parameter("ridge_color", color)
-	material.set_shader_parameter("base_darkness", 0.18)
-	material.set_shader_parameter("top_height", base_height + amplitude)
-	var range_node: MeshInstance3D = MeshInstance3D.new()
-	range_node.name = node_name
-	range_node.mesh = surface.commit()
-	range_node.material_override = material
-	range_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	range_node.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
-	add_child(range_node)
+## Construye una banda de montaña con volumen (ver [DistantRange]).
+func _build_range(node_name: String, inner: float, outer: float, amplitude: float,
+		seed_value: float, color: Color) -> void:
+	DistantRange.build(self, node_name, inner, outer, amplitude, seed_value, color,
+		_sun_direction())
 
 
-static func _distant_height(angle: float, base_height: float, amplitude: float) -> float:
-	var ridge: float = 0.5 + 0.5 * sin(angle * 5.0 + 0.4) * sin(angle * 9.0 - 0.9)
-	ridge = pow(maxf(ridge, 0.0), 0.65)
-	# Detalle de cresta suave: las frecuencias altas producían un serrucho que
-	# a contraluz se leía como un recorte de papel.
-	var detail: float = 0.08 * sin(angle * 17.0 + 1.7) + 0.04 * sin(angle * 29.0 - 0.3) + 0.02 * sin(angle * 47.0 + 0.5)
-	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
+func _sun_direction() -> Vector3:
+	var direction: Vector3 = Vector3(0.3, 0.8, 0.5).normalized()
+	if sun != null:
+		direction = sun.global_transform.basis.z.normalized()
+	return direction
 
 
 static func relief_height_at(x: float, z: float) -> float:

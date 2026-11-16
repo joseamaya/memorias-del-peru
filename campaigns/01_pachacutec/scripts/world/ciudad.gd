@@ -1597,51 +1597,18 @@ func _build_city() -> void:
 ## Cordilleras que cierran el valle. Son siluetas sin colisión ni sombra, con
 ## el pie desvanecido en bruma: sin ellas el terreno termina en una línea recta.
 func _build_distant_hills() -> void:
-	# Tres anillos: el más cercano cierra el valle, los otros dan profundidad.
-	_add_hill_ring("HillsMid", 105.0, 12.0, 9.0, Color(0.32, 0.35, 0.31, 1.0))
-	_add_hill_ring("HillsNear", 175.0, 26.0, 16.0, Color(0.30, 0.33, 0.36, 1.0))
-	_add_hill_ring("HillsFar", 250.0, 50.0, 28.0, Color(0.36, 0.40, 0.46, 1.0))
-
-
-func _add_hill_ring(node_name: String, radius: float, base_height: float, amplitude: float, color: Color) -> void:
-	const SEGMENTS: int = 128
-	var surface: SurfaceTool = SurfaceTool.new()
-	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for index: int in range(SEGMENTS):
-		var angle0: float = TAU * float(index) / float(SEGMENTS)
-		var angle1: float = TAU * float(index + 1) / float(SEGMENTS)
-		var height0: float = _hill_height(angle0, base_height, amplitude)
-		var height1: float = _hill_height(angle1, base_height, amplitude)
-		var bottom0: Vector3 = Vector3(cos(angle0) * radius, -6.0, sin(angle0) * radius)
-		var bottom1: Vector3 = Vector3(cos(angle1) * radius, -6.0, sin(angle1) * radius)
-		var top0: Vector3 = Vector3(cos(angle0) * radius, height0, sin(angle0) * radius)
-		var top1: Vector3 = Vector3(cos(angle1) * radius, height1, sin(angle1) * radius)
-		# El terreno tapa el pie de la silueta: no hace falta degradado alfa.
-		surface.add_vertex(bottom0)
-		surface.add_vertex(bottom1)
-		surface.add_vertex(top1)
-		surface.add_vertex(bottom0)
-		surface.add_vertex(top1)
-		surface.add_vertex(top0)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = color
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.disable_fog = false
-	var ring: MeshInstance3D = MeshInstance3D.new()
-	ring.name = node_name
-	ring.mesh = surface.commit()
-	ring.material_override = material
-	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	ring.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
-	add_child(ring)
-
-
-static func _hill_height(angle: float, base_height: float, amplitude: float) -> float:
-	var ridge: float = 0.5 + 0.5 * sin(angle * 4.0 + 1.1) * sin(angle * 7.0 - 0.6)
-	ridge = pow(maxf(ridge, 0.0), 0.7)
-	var detail: float = 0.08 * sin(angle * 19.0 + 0.8) + 0.04 * sin(angle * 31.0 + 1.9)
-	return base_height + amplitude * clampf(ridge + detail, 0.0, 1.0)
+	# Bandas con volumen: la más cercana cierra el valle y las otras dan
+	# profundidad. Comparten el generador de la llacta.
+	var sun_direction: Vector3 = Vector3(0.3, 0.8, 0.5)
+	var light: DirectionalLight3D = get_node_or_null("Sun") as DirectionalLight3D
+	if light != null:
+		sun_direction = light.global_transform.basis.z
+	DistantRange.build(self, "HillsNear", 110.0, 200.0, 55.0, 4.0,
+		Color(0.32, 0.35, 0.31, 1.0), sun_direction)
+	DistantRange.build(self, "HillsMid", 170.0, 280.0, 70.0, 5.0,
+		Color(0.31, 0.34, 0.37, 1.0), sun_direction)
+	DistantRange.build(self, "HillsFar", 240.0, 380.0, 85.0, 6.0,
+		Color(0.36, 0.40, 0.46, 1.0), sun_direction)
 
 
 ## Piedras sueltas: el suelo plano de la plaza se leía como una alfombra.
