@@ -8,7 +8,7 @@ conserva el porqué para no repetir pruebas ya hechas.
 |---|---|---|---|
 | 2026-11-16 | `combat_loadout.gd` | Honda: anticipación 0,30 s, activa 0,10 s, recuperación 0,40 s; porra: 0,22 / 0,14 / 0,34; parry 0,15 s; bloqueo 70 % y 5 de aliento | Primer pase de sensación: el ataque instantáneo no se leía. Los tiempos separan anticipación, impacto y recuperación; la honda queda más lenta y la porra más seca. Valores iniciales, pendientes de probar con mando y teclado |
 | 2026-11-16 | `combat_loadout.gd` | Hitstop 0,055 s a `time_scale` 0,05; golpe de cámara −1,8° al acertar y −1,4° al recibir | El impacto necesita peso. El hitstop es breve para no cortar el ritmo; el golpe de cámara se recupera en 0,16 s |
-| 2026-11-16 | `ambush_enemy.gd` | Anticipación 0,45 s con esfera de aviso; ficha de ataque máximo 2; separación 1,4 m; amago al no recibir ficha | Sin aviso, el golpe enemigo era impredecible; sin fichas, los cuatro chancas golpeaban a la vez. El aviso se ve y suena antes del impacto |
+| 2026-11-16 | `ambush_enemy.gd` | Anticipación 0,45 s con esfera y signo «!» de aviso; ficha de ataque máximo 2; separación 1,4 m; amago al no recibir ficha | Sin aviso, el golpe enemigo era impredecible; sin fichas, los cuatro chancas golpeaban a la vez. El aviso se ve y suena antes del impacto; la esfera sola se perdía con el enemigo de espaldas |
 | 2026-11-16 | `ambush_enemy.gd` | El cuerpo derribado desactiva colisión | El bot de la arena descubrió que el cadáver seguía bloqueando el rayo: después de matar al primero, los demás quedaban detrás y el combate se atascaba |
 
 ## Invariantes

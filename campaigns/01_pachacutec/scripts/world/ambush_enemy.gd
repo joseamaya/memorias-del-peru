@@ -248,24 +248,38 @@ func _strafe(delta: float, distance: float) -> void:
 
 func _build_telegraph() -> void:
 	var mesh: SphereMesh = SphereMesh.new()
-	mesh.radius = 0.075
-	mesh.height = 0.15
-	mesh.radial_segments = 6
-	mesh.rings = 3
+	mesh.radius = 0.07
+	mesh.height = 0.14
+	mesh.radial_segments = 8
+	mesh.rings = 4
 	var material: StandardMaterial3D = StandardMaterial3D.new()
 	material.albedo_color = Color(1.0, 0.58, 0.16, 1.0)
 	material.emission_enabled = true
 	material.emission = Color(1.0, 0.38, 0.08, 1.0)
-	material.emission_energy_multiplier = 2.2
+	material.emission_energy_multiplier = 2.4
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_telegraph = MeshInstance3D.new()
 	_telegraph.name = "AttackTelegraph"
 	_telegraph.mesh = mesh
 	_telegraph.material_override = material
-	_telegraph.position = Vector3(0.0, 2.08, 0.0)
+	_telegraph.position = Vector3(0.0, 2.10, 0.0)
 	_telegraph.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_telegraph.visible = false
 	add_child(_telegraph)
+	# El signo se lee de lejos y con el enemigo de espaldas; la esfera sola se
+	# perdía entre el pelo y el fondo.
+	var mark: Label3D = Label3D.new()
+	mark.name = "Warning"
+	mark.text = "!"
+	mark.font_size = 64
+	mark.pixel_size = 0.0026
+	mark.position = Vector3(0.0, 0.13, 0.0)
+	mark.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	mark.no_depth_test = true
+	mark.modulate = Color(1.0, 0.64, 0.20, 1.0)
+	mark.outline_size = 18
+	mark.outline_modulate = Color(0.12, 0.06, 0.02, 0.95)
+	_telegraph.add_child(mark)
 
 
 func _set_telegraph(value: bool) -> void:

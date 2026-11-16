@@ -220,7 +220,7 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-16 | Medición final de Medio con cordilleras, shader aligerado y escala 0,68 | `measure_performance.tscn` | Carga 1,8–2,7; 3 pasadas; llacta 89,4, paso 93,4, Cusco 63,6, posguerra 97,5, obra 90,5 FPS (mediana); los cinco actos ≥ 60 |
 | 2026-11-16 | Medición final del perfil Bajo con el arte nuevo | `measure_performance.tscn` | Carga 1,6–3,8; 3 pasadas; llacta 102,4, paso 102,0, Cusco 74,2, posguerra 124,5, obra 105,3 FPS (mediana); mínimo 73,8 |
 | 2026-11-16 | Paletas por acto y guía visual 4.9 | `run_tests.gd`, `test_palette_tuning.gd` y `capture_palettes.tscn` | 121 pruebas, 0 fallos; cinco capturas generadas y revisadas; `ARCO_OK` |
-| 2026-11-16 | Sensación de combate 4.11: fases del golpe, parry, hitstop, cámara, telegrafía y fichas | `run_tests.gd`, `test_combat_feel.gd` y `combat_arena_check.gd` | 125 pruebas, 0 fallos; arena 3 enemigos resueltos con ≤ 2 atacantes; `ARCO_OK` |
+| 2026-11-16 | Sensación de combate 4.11: fases del golpe, parry, hitstop, cámara, telegrafía y fichas | `run_tests.gd`, `test_combat_feel.gd` y `combat_arena_check.gd` | 126 pruebas, 0 fallos; arena 3 enemigos resueltos con ≤ 2 atacantes; `ARCO_OK` |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

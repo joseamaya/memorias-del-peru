@@ -48,6 +48,21 @@ func test_attack_has_windup_active_recovery() -> bool:
 	return ok
 
 
+func test_frame_spike_still_lands_the_hit() -> bool:
+	var loadout: CombatLoadout = _make_loadout()
+	loadout.switch_to(CombatLoadout.Slot.CLUB)
+	var active: Array[int] = [0]
+	loadout.attack_active.connect(func(_weapon: CombatWeapon) -> void: active[0] += 1)
+	var damage: float = loadout.attack(1.0)
+	var ok: bool = damage > 0.0
+	# Un tirón de frame salta la ventana activa: el golpe ocurrió y debe emitirse.
+	loadout.advance(2.0)
+	ok = ok and active[0] == 1
+	ok = ok and not loadout.is_attacking()
+	loadout.free()
+	return ok
+
+
 func test_parry_and_block_resolve_damage() -> bool:
 	var loadout: CombatLoadout = _make_loadout()
 	loadout.switch_to(CombatLoadout.Slot.SHIELD)

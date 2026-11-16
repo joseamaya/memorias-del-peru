@@ -40,14 +40,10 @@ jobs:
         run: python3 tools/check_gdscript_limits.py
 
       - name: Pruebas automatizadas
-        run: |
-          xvfb-run -a ~/godot/godot --headless --path . \
-            --script res://tests/run_tests.gd
+        run: ~/godot/godot --headless --path . --script res://tests/run_tests.gd
 
       - name: Comportamiento del combate
-        run: |
-          xvfb-run -a ~/godot/godot --headless --path . \
-            --script res://tests/combat_arena_check.gd
+        run: ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd
 
   export:
     name: Exportar ${{ matrix.preset }}
