@@ -146,6 +146,13 @@ originales quedan ocultos y sus colisiones siguen activas. La medición se hizo 
 6–16: falta repetirla en un equipo descargado. El siguiente límite es la multitud/LOD y
 la memoria de la geometría fusionada, no la estática.
 
+**Piloto híbrido Rocketbox (2026-11-17).** El modo `--visual-set=rocketbox`
+sustituye solo a Sisa (cuerpo/ropa Quaternius + cabeza Rocketbox). La llacta
+mide **298 draw calls y 223,1 MB** y el Cusco **328 y 225,2 MB**; el resto del
+set Q no se activa en este modo, así que la cifra no es comparable con el set
+Quaternius completo (349/245 MB). La pasada se hizo con carga 2,0–2,2 y FPS de
+39,3/38,2, no concluyentes. El presupuesto de 350 se cumple.
+
 **Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |

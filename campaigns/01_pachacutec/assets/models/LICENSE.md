@@ -86,3 +86,21 @@ se embeben: `QuaterniusMaterials` las carga desde
 El detalle de la procedencia, las texturas reducidas y los packs descartados
 está en `shared_assets/characters/quaternius/LICENSE.md`. La versión Source de
 pago no se usó.
+
+## Set híbrido Rocketbox (`pch_npc_sisa_rb.glb`)
+
+`pch_npc_sisa_rb.glb` es el piloto del set híbrido: cuerpo, ropa, esqueleto y
+clips Quaternius con la cabeza realista Rocketbox del elenco anterior. Se genera
+con `../blender/pch_rocketbox_heads.py`, que lee `pch_npc_sisa_q.glb` y no lo
+modifica. El set Quaternius sigue disponible y no se sobrescribe.
+
+| Parte | Origen | Licencia | Añadido |
+|---|---|---|---|
+| Cuerpo, ropa, esqueleto y clips | Quaternius UBC/UAL1/UAL2, los mismos del set `_q` | CC0 1.0 | 2026-11-17 |
+| Cabeza, ojos, cejas y pelo | Microsoft Rocketbox Avatar Library, https://github.com/microsoft/Microsoft-Rocketbox; donante `pch_npc_weaver.glb` | MIT | 2026-11-17 |
+| Textura de cara Q del cuerpo | `shared_assets/characters/quaternius/faces/pch_face_sisa.png`; reconstrucción (R) | CC0 1.0 (base) + propia | 2026-11-17 |
+| Atlas textil de la ropa | Generado por `pch_quaternius.py`; reconstrucción (R) | Propia | 2026-11-17 |
+
+La cabeza Rocketbox es un escaneo teñido, **no un retrato andino** ni una
+reconstrucción antropológica. El aviso MIT completo está en la sección de
+Rocketbox de este mismo archivo.

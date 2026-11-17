@@ -240,6 +240,18 @@ parentado al hueso `Head`, los pesos del cuello y el material de piel. Si el
 injerto no convence, la alternativa es un **cuerpo MakeHuman completo** con los
 textiles nuevos o esculpir la UBC. La decisión queda abierta.
 
+## 6.2 Set híbrido Rocketbox (piloto)
+
+La vía que sí conserva la ropa que ya funcionaba es un **set híbrido aparte**:
+cuerpo, ropa, esqueleto y clips Quaternius + cabeza Rocketbox realista. El
+piloto sustituye solo a Sisa (`Habitante3`); el set Quaternius sigue intacto y
+`--visual-set=quaternius` carga los GLB originales. Se activa con
+`--visual-set=rocketbox`. La cabeza se escala por la anchura de la cara en la
+línea de ojos, se apoya en el cuello y queda rígida al hueso `Head`; la cinta Q
+se retira porque estaba modelada para el cráneo UBC. Detalle, capturas,
+rendimiento y límites en
+[personajes_rocketbox.md](personajes_rocketbox.md).
+
 ## 7. Pruebas
 
 ```bash
@@ -250,7 +262,7 @@ godot --headless --path . --script res://tests/arc_playthrough.gd -- --visual-se
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados de la entrega: **131 pruebas, 0 fallos**; arena con el set anterior
+Resultados de la entrega: **134 pruebas, 0 fallos**; arena con el set anterior
 y con el set Quaternius (`resolved=3`, `max_attackers=1`); `ARCO_OK` con el set
 Quaternius; importación sin errores ni advertencias de `res://`. Las pruebas
 recorren los diez modelos y las diez texturas de cara.
@@ -258,8 +270,9 @@ recorren los diez modelos y las diez texturas de cara.
 Las pruebas nuevas son `test_quaternius_characters.gd` (altura, base, ausencia
 de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`,
 `work` y `hit` de UAL2; texturas de cara de 1024, piel con rugosidad y cejas
-propias) y `test_first_person_hands.gd` (malla de la mano y gesto de
-interacción).
+propias), `test_rocketbox_characters.gd` (catálogo híbrido sin tocar el de
+Quaternius, cabeza `HeadRB` ligada al esqueleto, materiales y clips) y
+`test_first_person_hands.gd` (malla de la mano y gesto de interacción).
 
 ## 8. Recomendación
 

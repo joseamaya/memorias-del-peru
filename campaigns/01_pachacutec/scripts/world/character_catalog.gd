@@ -4,8 +4,13 @@ extends RefCounted
 ##
 ## El juego sigue usando los modelos MakeHuman/Rocketbox por defecto. Con
 ## `-- --visual-set=quaternius` (o `PCH_VISUAL_SET=quaternius`) se sustituyen
-## solo los papeles del prototipo. Así se comparan ambos sets sin borrar los
-## anteriores ni duplicar las escenas.
+## los papeles del prototipo Quaternius. Con `--visual-set=rocketbox` se usa
+## el set híbrido: cuerpo y ropa Quaternius con cabeza Rocketbox realista.
+## Ningún set alternativo sobrescribe a los demás.
+
+const ROCKETBOX_MODELS: Dictionary[String, String] = {
+	"Habitante3": "pch_npc_sisa_rb.glb",
+}
 
 const QUATERNIUS_MODELS: Dictionary[String, String] = {
 	"Mensajero": "pch_npc_mensajero_q.glb",
@@ -24,20 +29,36 @@ const QUATERNIUS_MODELS: Dictionary[String, String] = {
 }
 
 
-## Verdadero si la partida pidió el set Quaternius. No cambia el valor por
-## defecto: una partida normal sigue viendo el elenco anterior.
-static func enabled() -> bool:
-	if OS.get_environment("PCH_VISUAL_SET") == "quaternius":
-		return true
+## Set visual pedido por la partida: "legacy", "quaternius" o "rocketbox".
+## No cambia el valor por defecto: una partida normal sigue viendo el elenco
+## anterior.
+static func mode() -> String:
+	var requested: String = OS.get_environment("PCH_VISUAL_SET")
+	if requested == "quaternius" or requested == "rocketbox":
+		return requested
 	for argument: String in OS.get_cmdline_user_args():
-		if argument == "--visual-set=quaternius" or argument == "visual-set=quaternius":
-			return true
-	return false
+		if argument.begins_with("--visual-set="):
+			var value: String = argument.trim_prefix("--visual-set=")
+			if value == "quaternius" or value == "rocketbox":
+				return value
+		elif argument.begins_with("visual-set="):
+			var value: String = argument.trim_prefix("visual-set=")
+			if value == "quaternius" or value == "rocketbox":
+				return value
+	return "legacy"
 
 
-## Modelo de [param role]; si no hay variante Quaternius, conserva el anterior.
+## Verdadero si la partida pidió cualquier set alternativo.
+static func enabled() -> bool:
+	return mode() != "legacy"
+
+
+## Modelo de [param role]; si no hay variante del set pedido, conserva el
+## anterior.
 static func model_for(role: String, legacy: String) -> String:
-	if enabled() and QUATERNIUS_MODELS.has(role):
+	if mode() == "rocketbox" and ROCKETBOX_MODELS.has(role):
+		return ROCKETBOX_MODELS[role]
+	if mode() == "quaternius" and QUATERNIUS_MODELS.has(role):
 		return QUATERNIUS_MODELS[role]
 	return legacy
 
@@ -45,3 +66,8 @@ static func model_for(role: String, legacy: String) -> String:
 ## Verdadero si [param file_name] pertenece al prototipo Quaternius.
 static func is_quaternius_file(file_name: String) -> bool:
 	return file_name.ends_with("_q.glb") or file_name == "pch_npc_chanca_q.glb"
+
+
+## Verdadero si [param file_name] pertenece al set híbrido Rocketbox.
+static func is_rocketbox_file(file_name: String) -> bool:
+	return file_name.ends_with("_rb.glb")
