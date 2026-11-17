@@ -40,7 +40,7 @@ Firma de la revisión humana: ____________________ · Fecha: __________
 
 - Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:58) solo sirve como suelo.
 - Remate de arte: texturas finas de roca y props de detalle.
-- Prototipo Quaternius: cuerpos re-proporcionados, caras con textura de 1024, cejas propias, mujer mayor, hombre joven, familia de la llacta, mano en primera persona y Cusco bajo el presupuesto de draw calls hechos. Faltan base infantil para HijoPuma, LOD/migración del resto de la multitud, articulación por dedo y medición limpia; no se sustituye el elenco hasta cerrarlo.
+- Prototipo Quaternius: cuerpos re-proporcionados, caras con textura de 1024, textiles andinos embebidos, cuello alto, tupu, mujer mayor, hombre joven, familia de la llacta, mano en primera persona y Cusco en 349/350 hechos. Faltan una base facial con más rango andino (o esculpir la UBC), base infantil para HijoPuma, LOD del Cusco, articulación por dedo y medición limpia; no se sustituye el elenco hasta cerrarlo.
 - Audio: mezcla escuchada por acto.
 - Prueba de humo manual de los cinco actos.
 - Revisión histórica humana de PCH-032–036 (tabla anterior).

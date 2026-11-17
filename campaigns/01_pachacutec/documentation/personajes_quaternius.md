@@ -58,9 +58,11 @@ El valor por defecto es el elenco anterior. El catálogo vive en
   `idle_b`, `work` y `hit` vienen de UAL2; el resto de UAL1.
 - Los GLB salen **sin animaciones**; `QuaterniusClips` copia los clips una vez
   y los añade al `AnimationPlayer` de cada personaje.
-- **19,5 k triángulos** por personaje; 5–6 mallas; **GLB de 1–1,6 MB**.
-- Los GLB **no embeben texturas**. `QuaterniusMaterials` (separado de
-  `SurfaceMaterials`) carga una sola vez las texturas y comparte materiales:
+- **19,5 k triángulos** por personaje; 5–7 mallas; **GLB de 1,4–2,1 MB**.
+- Los GLB **embeben el atlas textil de la ropa** (768×1024 por personaje): es
+  lo que da las franjas, rombos y cenefas. Las texturas de cuerpo, cara, pelo y
+  ojos **no** se embeben: `QuaterniusMaterials` las carga una sola vez y
+  comparte materiales:
   - piel por personaje, 1024 px, con normal y rugosidad de 1024 px:
     `pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`,
     `pch.body_anciana`, `pch.body_joven`, `pch.body_madre`, `pch.body_hermano`,
@@ -77,9 +79,16 @@ El valor por defecto es el elenco anterior. El catálogo vive en
   clara, Mensajero medio, Curaca y Chanca oscuros); ya no se multiplica una
   albedo clara por un tinte que aplastaba el contraste.
 - **Cara:** los diez comparten la topología UBC, pero cambian mandíbula,
-  pómulos, nariz, cejas (grosor y ángulo), labios, ojeras y líneas de edad. El
-  Curaca y la mujer mayor suman mejillas hundidas y papada; Sisa y el joven,
-  cejas más finas y labios llenos. No hay blendshapes ni sincronía labial.
+  pómulos, nariz (más ancha), labios (más llenos), cejas (grosor y ángulo),
+  ojeras y líneas de edad. El pliegue epicántico se pinta en la textura y la
+  sombra de ojos se suavizó. El Curaca y la mujer mayor suman mejillas
+  hundidas y papada; Sisa y el joven, cejas más finas y labios llenos. La base
+  sigue siendo UBC: no hay blendshapes ni sincronía labial.
+- **Textiles:** túnica de cuello alto con abertura estrecha, franjas
+  verticales, lliclla/manto con cenefas, rombos y zigzag, faja con rombos,
+  tupu de cobre con disco y alfiler, y chuspa con correa cruzada. El textil se
+  pinta por personaje (reconstrucción R sobre PCH-017/018); no es una copia de
+  una pieza concreta.
 - **Rasgos andinos (R):** pómulos anchos, nariz recta y algo ancha, labios
   llenos, pelo negro liso y piel media/oscura. La mujer mayor lleva canas,
   trenzas, anacu y lliclla; el joven, unku sencillo, faja y chuspa. La familia
@@ -90,24 +99,23 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada con la familia de la llacta (carga 5,2; no es una medición limpia):
+Última pasada con los textiles y el tupu (carga 14,4; no es una medición limpia):
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
-| Llacta | Quaternius | 64,8 | 300 | 209 MB |
+| Llacta | Quaternius | 84,1 | 310 | 225 MB |
 | Cusco | anterior | — | 328 | 225 MB |
-| Cusco | Quaternius | 54,0 | 343 | 233 MB |
+| Cusco | Quaternius | 61,0 | 349 | 245 MB |
 
-`StaticMeshBatch` fusiona casas, props, mercado, mobiliario, puerta, remates de
-muro, terrazas, santuario y vegetación por material/tinte. El Cusco queda en
-**343 draw calls** y la llacta en **300** con la familia; ambos por debajo del
-presupuesto de 350. El set Quaternius cuesta **+15 draw calls** frente al
-anterior (343 frente a 328) con la misma estática fusionada. La memoria sube
-~8 MB por la copia de los vértices fusionados; los originales quedan ocultos.
-Los FPS se midieron con carga 5,2–16 y mucha varianza (54–69 en el Cusco): falta
-repetir la medición en un equipo descargado. Solo **3 de los 10 puestos** de la
-multitud usan Quaternius (mensajero + mujer mayor + joven); el resto sigue con
-el elenco anterior.
+`StaticMeshBatch` fusiona la estática. El Cusco queda en **349 draw calls** y la
+llacta en **310**; el Cusco está **a un draw call del presupuesto de 350**. El
+set Quaternius cuesta **+21 draw calls** frente al anterior (349 frente a 328)
+por los textiles, el tupu y las mallas extra. La memoria sube ~20 MB: los
+atlas textiles de la ropa y las texturas de cara. Los FPS se midieron con carga
+14,4 y mucha varianza (61,0 en el Cusco): falta repetir la medición en un
+equipo descargado. Solo **3 de los 10 puestos** de la multitud usan Quaternius
+(mensajero + mujer mayor + joven); el resto sigue con el elenco anterior. El
+margen del Cusco ya no admite más personajes sin LOD o sin reducir estática.
 
 ## 4. Dirección artística
 
@@ -188,10 +196,11 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
 - Los cuerpos se estrecharon y las cabezas varían, pero siguen siendo atléticos
   bajo la ropa. El estándar no trae cuerpos regular/teen; el Source de pago no
   se usa.
-- Las diez caras comparten la topología base. La textura de 1024 y los
-  ajustes de mandíbula, pómulos, nariz, cejas, labios y edad ya las separan,
-  pero no hay caras esculpidas ni blendshapes. La familia de la llacta ya usa
-  el set; el resto de la multitud sigue con el elenco anterior.
+- Las diez caras comparten la topología base. La textura de 1024, la nariz
+  más ancha, los labios más llenos y el pliegue epicántico las acercan, pero
+  siguen siendo caras UBC estilizadas; si no alcanza, el siguiente paso es una
+  base facial con más rango (MakeHuman u otra) o esculpir la UBC. La familia de
+  la llacta ya usa el set; el resto de la multitud sigue con el elenco anterior.
 - **HijoPuma** sigue con el elenco anterior: el estándar gratuito de UBC solo
   trae cuerpos adultos y escalar uno a 1,35 m daría un adulto bajito, no un
   niño. Queda pendiente una base infantil.
@@ -208,9 +217,10 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
   manto no se mece como el anterior.
 - Multitud del Cusco: solo tres puestos usan Quaternius; el resto no se
   sustituye hasta cerrar la estática y la medición.
-- El Cusco ya está por debajo del presupuesto de 350 draw calls (343). La
-  memoria sube ~8 MB por la geometría fusionada; si molesta, se pueden liberar
-  los originales ocultos o hornear las casas en Blender.
+- El Cusco está en 349/350: cualquier personaje o prop nuevo lo pasa. El
+  siguiente paso es LOD/reducir estática antes de migrar el resto de la
+  multitud. La memoria sube ~20 MB por los atlas textiles y las texturas de
+  cara; si molesta, se pueden comprimir más o compartir atlases.
 
 ## 7. Pruebas
 
@@ -242,7 +252,9 @@ ropa es más simple que la anterior y el cuerpo sigue siendo heroico; por eso
 
 Siguiente lote, en este orden:
 
-1. Decidir el LOD o la reducción de la multitud del Cusco para migrar los 10
-   puestos sin volver a pasar de 350 draw calls.
-2. Añadir articulación o poses por dedo a la mano en primera persona.
-3. Medición limpia y validaciones humanas.
+1. Decidir el LOD o la reducción de la multitud del Cusco: 349/350 no admite
+   más personajes.
+2. Decidir la cara: mantener la UBC con estos ajustes o cambiar a una base con
+   más rango andino (MakeHuman u otra).
+3. Añadir articulación o poses por dedo a la mano en primera persona.
+4. Medición limpia y validaciones humanas.

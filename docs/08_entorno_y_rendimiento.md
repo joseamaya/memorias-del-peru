@@ -137,8 +137,10 @@ porque el coste es de relleno, no de CPU.
 
 **Actualización 2026-11-17:** `StaticMeshBatch` fusiona por material/tinte casas,
 props, mercado, mobiliario, puerta, remates de muro, terrazas, santuario y vegetación
-del Cusco y la llacta. El Cusco queda en **343 draw calls con Quaternius** (328 con el
-elenco anterior) y 233/225 MB; la llacta queda en **300** con Quaternius y la familia. El presupuesto
+del Cusco y la llacta. El Cusco queda en **349 draw calls con Quaternius** (328 con el
+elenco anterior) y 245/225 MB; la llacta queda en **310** con Quaternius, la familia y
+los textiles. El Cusco está a un draw call del presupuesto: no admite más personajes sin
+LOD o sin reducir estática. El presupuesto
 de 350 se cumple. La memoria sube ~8 MB por la copia de vértices fusionados; los
 originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con carga
 6–16: falta repetirla en un equipo descargado. El siguiente límite es la multitud/LOD y
@@ -155,10 +157,10 @@ la memoria de la geometría fusionada, no la estática.
 | V — Obra | 105,3 FPS | 90,5 FPS | 82,9–93,2 | 362 | 225,5 MB |
 
 La tabla es la línea base del 2026-11-16. La fusión de estática del 2026-11-17 deja el
-Cusco en 343 draw calls con Quaternius (328 con el elenco anterior) y la llacta en 300;
+Cusco en 349 draw calls con Quaternius (328 con el elenco anterior) y la llacta en 310;
 los FPS de la pasada nueva están en
 [personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
 
-Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática baja a 343 draw calls (328 legacy). Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
+Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy). Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
 
 El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En Bajo, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.

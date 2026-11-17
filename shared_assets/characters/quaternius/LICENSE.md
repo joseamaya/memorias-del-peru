@@ -41,6 +41,7 @@ La versión **Source** de pago **no se ha usado**. El estándar gratuito solo in
 - Materiales de cuerpo por personaje (`pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero` y `pch.body_chanca`), cejas propias (`pch.brow_*`), pelo (`pch.hair_*`), ojos (`pch.eye`) y ropa (`pch_cloth`). `QuaterniusMaterials` los reconoce.
 - Cuerpos girados 180° en el generador para que miren hacia −Z, como el resto del elenco.
 - Sin animaciones dentro del GLB: `QuaterniusClips` añade los clips de UAL1/UAL2 en el juego.
+- Los GLB incluyen un **atlas textil de ropa** por personaje, pintado por `pch_people.py` a partir de la ropa y la paleta; es autoría propia (R). Las texturas de cuerpo, cara, pelo y ojos siguen compartidas fuera del GLB.
 
 ## Packs evaluados y no usados
 

@@ -19,9 +19,10 @@ Convenciones:
 - 1 unidad = 1 metro, pies en el suelo, frente hacia -Z de Godot.
 - La ropa lleva clase de superficie y coordenadas de tejido para el shader
   `pch_cloth`, igual que `pch_people.py`.
-- Los materiales se llaman `pch.body_<tono>_<m|f>`, `pch.hair_<color>_<m|f>`,
-  `pch.eye` y `pch_cloth`. `SurfaceMaterials` carga las texturas compartidas de
-  `shared_assets/characters/quaternius/base/`: el GLB no las embebe.
+- Los materiales se llaman `pch.body_<personaje>`, `pch.hair_<color>_<m|f>`,
+  `pch.eye`, `pch_cloth` y `pch_tupu`. El GLB **sí** embebe el atlas textil de
+  la ropa (`pch_cloth`); las texturas de cuerpo, cara, pelo y ojos se cargan
+  compartidas desde `shared_assets/characters/quaternius/base/` y `faces/`.
 """
 
 import argparse
@@ -55,7 +56,9 @@ from pch_dressed import (  # noqa: E402
 	ellipsoid,
 	make_material,
 	parent_to_armature,
+	paint_textile,
 	ring_points,
+	set_cloth_texture,
 	setup_cloth_material,
 	smooth,
 	srgb,
@@ -76,6 +79,7 @@ SPECS = {
 		manto="wool_cream", head_cloth="wool_brown", chuspa="wool_cream",
 		headband=None, width=0.90, head_scale=(0.96, 1.00, 1.02),
 		skin="pch.body_mid", face=(0.98, 1.00, 1.00), brow=(0.96, 0.82), brow_drop=-0.001, brow_angle=2.5, age=0.3,
+		vstripes=True, nose_width=1.10, lip_volume=1.10,
 		notes="mensajero de viaje, sin insignias",
 	),
 	"pch_npc_sisa_q": dict(
@@ -84,6 +88,7 @@ SPECS = {
 		lliclla="wool_cream", lliclla_stripe="wool_red", belt="wool_red",
 		headband="wool_red", braids=True, width=0.98, head_scale=(0.97, 0.99, 1.00),
 		skin="pch.body_light", face=(0.94, 0.98, 0.98), brow=(0.88, 0.48), brow_drop=-0.005, brow_angle=3.0, age=0.0,
+		vstripes=True, nose_width=1.10, lip_volume=1.15,
 		notes="joven de la llacta, anacu y lliclla con trenzas",
 	),
 	"pch_npc_curaca_q": dict(
@@ -93,6 +98,7 @@ SPECS = {
 		manto="wool_red", headband="wool_ochre", chuspa="wool_blue",
 		width=0.88, head_scale=(1.03, 1.00, 0.98),
 		skin="pch.body_dark", face=(1.04, 1.02, 1.02), brow=(1.00, 1.00), age=0.9,
+		vstripes=True, nose_width=1.12, lip_volume=1.10,
 		notes="autoridad local, franja de t'oqapu y manto teñido",
 	),
 	"pch_npc_chanca_q": dict(
@@ -101,6 +107,7 @@ SPECS = {
 		manto="wool_grey", headband="wool_blue", chuspa="wool_red",
 		width=1.02, head_scale=(1.05, 1.02, 1.03), dark_clothes=True,
 		skin="pch.body_dark", face=(1.06, 1.04, 1.04), brow=(1.06, 1.08), brow_drop=-0.001, brow_angle=-2.0, age=0.4,
+		vstripes=True, nose_width=1.12, lip_volume=1.10,
 		notes="explorador chanca, sin metal",
 	),
 	# Arquetipos de multitud. La identidad andina se construye con pómulos
@@ -112,6 +119,7 @@ SPECS = {
 		lliclla="wool_brown", lliclla_stripe="wool_cream", belt="wool_dark",
 		braids=True, width=1.02, head_scale=(1.02, 1.00, 0.98),
 		skin="pch.body_dark", face=(1.04, 1.05, 1.06), brow=(0.95, 0.90), age=1.0,
+		vstripes=True, nose_width=1.12, lip_volume=1.10,
 		notes="mujer mayor de la comunidad, trenzas canosas y lliclla",
 	),
 	"pch_npc_joven_q": dict(
@@ -120,6 +128,7 @@ SPECS = {
 		manto="wool_cream", chuspa="wool_ochre",
 		width=0.94, head_scale=(1.00, 1.02, 1.00),
 		skin="pch.body_mid", face=(1.03, 1.04, 1.07), brow=(0.98, 0.95), age=0.0,
+		vstripes=True, nose_width=1.10, lip_volume=1.10,
 		notes="joven de la comunidad, unku sencillo y chuspa",
 	),
 	# Familia de Rumi. Rasgos y ropa son reconstrucción (R); los personajes
@@ -131,6 +140,7 @@ SPECS = {
 		lliclla="wool_cream", lliclla_stripe="wool_red", belt="wool_red",
 		headband="wool_cream", braids=True, width=1.00, head_scale=(1.01, 1.00, 0.99),
 		skin="pch.body_mid", face=(1.03, 1.04, 1.05), brow=(0.95, 0.75), age=0.55,
+		vstripes=True, nose_width=1.12, lip_volume=1.15,
 		notes="madre de Rumi y Sisa, anacu y lliclla",
 	),
 	"pch_npc_hermano_q": dict(
@@ -139,6 +149,7 @@ SPECS = {
 		manto="wool_grey", chuspa="wool_cream",
 		width=0.93, head_scale=(1.00, 1.01, 1.00),
 		skin="pch.body_mid", face=(1.02, 1.03, 1.05), brow=(0.98, 0.92), age=0.0,
+		vstripes=True, nose_width=1.10, lip_volume=1.10,
 		notes="hermano de Rumi, unku sencillo y chuspa",
 	),
 	"pch_npc_puma_q": dict(
@@ -147,6 +158,7 @@ SPECS = {
 		manto="wool_brown", headband="wool_dark", chuspa="wool_blue",
 		width=0.99, head_scale=(1.03, 1.02, 1.01),
 		skin="pch.body_dark", face=(1.04, 1.04, 1.06), brow=(1.02, 1.00), age=0.4,
+		vstripes=True, nose_width=1.12, lip_volume=1.10,
 		notes="autoridad comunal aliada, sin insignias del curaca",
 	),
 	"pch_npc_anca_q": dict(
@@ -155,6 +167,7 @@ SPECS = {
 		lliclla="wool_red", lliclla_stripe="wool_cream", belt="wool_dark",
 		headband="wool_red", braids=True, width=0.98, head_scale=(1.01, 1.00, 0.99),
 		skin="pch.body_mid", face=(1.03, 1.04, 1.04), brow=(0.94, 0.78), age=0.3,
+		vstripes=True, nose_width=1.10, lip_volume=1.15,
 		notes="mujer de la comunidad, anacu, lliclla y tupu",
 	),
 }
@@ -213,11 +226,21 @@ def band_color(spec: dict, point: Vector) -> tuple:
 
 
 def tunic_face(body: BodyInfo, verts: tuple) -> bool:
+	"""Túnica con cuello alto y abertura frontal estrecha.
+
+	La copia del cuerpo sube hasta 1,56 m para cubrir los hombros; se recorta
+	un hueco alrededor del cuello y una abertura vertical en el pecho. Así
+	desaparece el escote ancho que dejaba ver el hombro y la manga separada.
+	"""
 	for index in verts:
 		point = body.points[index]
-		if point.z < 0.94 or point.z > 1.52:
+		if point.z < 0.94 or point.z > 1.56:
 			return False
 		if abs(point.x) > 0.74:
+			return False
+		if point.z > 1.51 and abs(point.x) < 0.075 and abs(point.y) < 0.075:
+			return False
+		if point.z > 1.48 and abs(point.x) < 0.012 and point.y < -0.07:
 			return False
 	return True
 
@@ -471,20 +494,41 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict, hair_material_na
 					base,
 					[(col, row), (col + 1, row), (col + 1, row + 1), (col, row + 1)],
 				)
-		# Tupu: alfiler de cobre que prende la lliclla al pecho.
-		garment.piece = TEXTILE_PIECES["belt"]
-		garment.box(
-			Vector((0.0, -0.240, 1.30)), (0.075, 0.018, 0.075),
-			Matrix.Identity(3), color("copper"), {"spine_03": 1.0},
-		)
 
 	# Chuspa en la cadera derecha.
 	if spec.get("chuspa"):
 		garment.piece = TEXTILE_PIECES["bag"]
 		garment.box(
-			Vector((0.235, -0.04, 0.88)), (0.12, 0.07, 0.17),
+			Vector((0.235, -0.04, 0.88)), (0.12, 0.05, 0.17),
 			Matrix.Identity(3), color(spec["chuspa"]),
 			{"pelvis": 1.0},
+		)
+		# Correa de la chuspa, cruzada al pecho.
+		strap_points = [
+			Vector((-0.10, -0.145, 1.42)),
+			Vector((0.02, -0.185, 1.24)),
+			Vector((0.14, -0.145, 1.06)),
+			Vector((0.235, -0.045, 0.98)),
+		]
+		strap_rings = []
+		for index, point in enumerate(strap_points):
+			ahead = strap_points[min(index + 1, len(strap_points) - 1)]
+			behind = strap_points[max(index - 1, 0)]
+			direction = (ahead - behind).normalized()
+			across = direction.cross(Vector((0.0, 0.0, 1.0)))
+			if across.length < 0.01:
+				across = direction.cross(Vector((0.0, 1.0, 0.0)))
+			across.normalize()
+			up = across.cross(direction).normalized()
+			radius = 0.012
+			strap_rings.append([
+				point + across * math.cos(angle) * radius + up * math.sin(angle) * radius
+				for angle in [2.0 * math.pi * k / 8.0 for k in range(8)]
+			])
+		garment.tube(
+			strap_rings,
+			lambda _segment, _row: color(spec["chuspa"]),
+			mantle_weights,
 		)
 
 	# Sandalias: suela y dos tiras por pie.
@@ -526,6 +570,15 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict, hair_material_na
 				)
 
 	clothes = garment.to_object("Clothes", bpy.context.scene.collection, armature)
+	# El tupu es metal, no tela: disco y alfiler con material propio.
+	if female and spec.get("lliclla"):
+		tupu_material = bpy.data.materials.get("pch_tupu")
+		if tupu_material is None:
+			tupu_material = make_material("pch_tupu", color("copper"), 0.28, 0.85)
+		ellipsoid("TupuDisc", Vector((0.0, -0.245, 1.30)), (0.040, 0.012, 0.040),
+			tupu_material, armature, {"spine_03": 1.0}, segments=16, rings=6)
+		box("TupuPin", Vector((0.0, -0.258, 1.30)), (0.010, 0.018, 0.075),
+			tupu_material, armature, {"spine_03": 1.0})
 	setup_cloth_material()
 	# Solo suavizado: la copia del cuerpo ya trae detalle y no queremos
 	# duplicar triángulos con subdivisión.
@@ -669,13 +722,15 @@ def shape_face(spec: dict) -> None:
 	if not isinstance(face, (tuple, list)) or len(face) != 3:
 		return
 	jaw, cheek, nose = float(face[0]), float(face[1]), float(face[2])
-	if abs(jaw - 1.0) < 0.001 and abs(cheek - 1.0) < 0.001 and abs(nose - 1.0) < 0.001:
-		return
+	nose_width = float(spec.get("nose_width", 1.0))
+	lip_volume = float(spec.get("lip_volume", 1.0))
 	for obj in bpy.data.objects:
 		if obj.type != "MESH" or obj.name.startswith("Icosphere"):
 			continue
 		is_body = obj.name == "Body"
 		for vertex in obj.data.vertices:
+			x = vertex.co.x
+			y = vertex.co.y
 			z = vertex.co.z
 			if 1.58 < z < 1.70:
 				t = math.sin(math.pi * (z - 1.58) / 0.12)
@@ -683,15 +738,26 @@ def shape_face(spec: dict) -> None:
 			if 1.66 < z < 1.76:
 				t = math.sin(math.pi * (z - 1.66) / 0.10)
 				vertex.co.x *= 1.0 + (cheek - 1.0) * t
-				if is_body and vertex.co.y < -0.02:
+				if is_body and y < -0.02:
 					vertex.co.y *= 1.0 + (nose - 1.0) * t
+			# Nariz más ancha: solo el caballete y la punta frontal.
+			if is_body and 1.65 < z < 1.72 and abs(x) < 0.028 and y < -0.075:
+				t = math.sin(math.pi * (z - 1.65) / 0.07)
+				vertex.co.x *= 1.0 + (nose_width - 1.0) * t
+			# Labios más llenos: se empujan hacia fuera en la boca frontal.
+			if 1.625 < z < 1.665 and abs(x) < 0.040 and y < -0.095:
+				t = math.sin(math.pi * (z - 1.625) / 0.040)
+				vertex.co.y -= (lip_volume - 1.0) * 0.006 * t
 		obj.data.update()
 
 
 def strip_textures() -> None:
-	"""Quita las texturas del GLB: el juego las comparte desde `base/`."""
+	"""Quita las texturas de cuerpo, pelo y ojos. El textil de la ropa se
+	conserva: es un atlas por personaje y el juego lo necesita en el GLB."""
 	for material in bpy.data.materials:
 		if not material.use_nodes:
+			continue
+		if material.name.startswith("pch_cloth"):
 			continue
 		for node in list(material.node_tree.nodes):
 			if node.type == "TEX_IMAGE":
@@ -724,8 +790,16 @@ def build_character(spec: dict, name: str, out_dir: str):
 			if obj.type == "MESH" and obj.name.startswith("Eyebrow"):
 				obj.data.materials.clear()
 				obj.data.materials.append(grey_material)
-	# Ropa.
+	# Ropa y textil pintado. El textil va embebido en el GLB; las texturas de
+	# cuerpo, pelo y ojos siguen compartidas desde `base/` y `faces/`.
 	clothes = build_clothes(body, armature, spec, hair_name)
+	dims = {
+		"waist": WAIST_Z,
+		"shoulder": SHOULDER_Z,
+		"bottom": 0.12 if spec["garment"] == "anacu" else 0.56,
+		"knee": 0.50,
+	}
+	set_cloth_texture(paint_textile(spec, dims, seed=sum(ord(c) for c in name)))
 	# Las trenzas se unen al pelo para no añadir una malla por cuenta.
 	braids = [obj for obj in bpy.data.objects if obj.type == "MESH" and obj.name.startswith("Braid")]
 	if hair is not None and braids:
@@ -772,7 +846,7 @@ def build_character(spec: dict, name: str, out_dir: str):
 		export_lights=False,
 		export_extras=True,
 		export_vertex_color="ACTIVE",
-		export_image_format="NONE",
+		export_image_format="AUTO",
 	)
 	print("EXPORTED", path)
 	return path

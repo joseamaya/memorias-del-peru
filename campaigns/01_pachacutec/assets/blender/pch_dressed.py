@@ -52,6 +52,8 @@ BodyInfo = _PEOPLE["BodyInfo"]
 Garment = _PEOPLE["Garment"]
 TEXTILE_PIECES = _PEOPLE["TEXTILE_PIECES"]
 _linear = _PEOPLE["_linear"]
+paint_textile = _PEOPLE["paint_textile"]
+set_cloth_texture = _PEOPLE["set_cloth_texture"]
 
 # Altura del cuello y de la cabeza. UAL1 mide 1,83 m; la cabeza empieza en
 # 1,57 y termina en 1,84. La cara mira hacia -Y en Blender (frente de UAL1).

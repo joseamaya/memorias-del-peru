@@ -226,6 +226,17 @@ def paint_character(name: str, config: dict, source: Path, out_dir: Path) -> Pat
 				(SIZE * 0.026, SIZE * 0.022), (150, 92, 64), int(38 * config["sun"]))
 	base = composite_layer(base, layer, mask)
 
+	# Pómulo: una luz suave que separa el hueso de la mejilla.
+	layer = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+	for cheek in (cheek_l, cheek_r):
+		ellipse(layer, (cheek[0] - SIZE * 0.006, cheek[1] + SIZE * 0.012),
+			(SIZE * 0.028, SIZE * 0.014), (232, 196, 172), 28)
+		# Fosas nasales: dos sombras pequeñas en la base de la nariz.
+		for side in (-1.0, 1.0):
+			ellipse(layer, (nose[0] + side * SIZE * 0.007, nose[1] + SIZE * 0.004),
+				(SIZE * 0.0028, SIZE * 0.0022), (92, 60, 46), 90)
+	base = composite_layer(base, layer, mask)
+
 	# Labios: forma y línea de la boca. El color se mezcla con la albedo.
 	layer = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
 	full = config["lips"] == "full"
@@ -252,6 +263,12 @@ def paint_character(name: str, config: dict, source: Path, out_dir: Path) -> Pat
 		ellipse(layer, (eye[0], eye[1] - SIZE * 0.014), (SIZE * 0.021, SIZE * 0.0060),
 			(102, 68, 54), int(8 + 100 * age))
 	if age > 0.4:
+		# Pliegue epicántico: una línea corta desde el lagrimal hacia arriba.
+		for eye, side in ((eye_l, 1.0), (eye_r, -1.0)):
+			inner_x = eye[0] + side * SIZE * 0.012
+			crease(layer, [(inner_x, eye[1] + SIZE * 0.004),
+				(inner_x + side * SIZE * 0.006, eye[1] + SIZE * 0.014)],
+				(92, 62, 48), 110, 2)
 		for eye, side in ((eye_l, -1.0), (eye_r, 1.0)):
 			for index in range(4):
 				start_x = eye[0] + side * SIZE * 0.021

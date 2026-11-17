@@ -78,6 +78,15 @@ func test_quaternius_faces() -> bool:
 		elif skin.roughness_texture == null:
 			printerr(file_name, ": la piel no usa el mapa de rugosidad")
 			ok = false
+		var clothes: MeshInstance3D = model.find_child("Clothes", true, false) as MeshInstance3D
+		if clothes == null:
+			printerr(file_name, ": falta Clothes")
+			ok = false
+		else:
+			var cloth_material: BaseMaterial3D = clothes.mesh.surface_get_material(0) as BaseMaterial3D
+			if cloth_material == null or cloth_material.albedo_texture == null:
+				printerr(file_name, ": la ropa no trae el textil embebido")
+				ok = false
 		var brows: MeshInstance3D = model.find_child("Eyebrows", true, false) as MeshInstance3D
 		if brows == null:
 			printerr(file_name, ": faltan las cejas")

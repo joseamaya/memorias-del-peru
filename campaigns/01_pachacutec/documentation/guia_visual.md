@@ -162,6 +162,10 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
   manto y chuspa; Puma como autoridad comunal con manto y chuspa, sin t’oqapu;
   Anca con anacu, lliclla y tupu. HijoPuma sigue con el elenco anterior hasta
   tener una base infantil.
+- **Textiles:** túnica de cuello alto y abertura estrecha, franjas verticales,
+  cenefas de rombos y zigzag en llicllas y mantos, faja con rombos, tupu de
+  cobre y chuspa con correa. Los diseños son reconstrucción (R) sobre
+  PCH-017/018; no copian una pieza concreta.
 - **Rumi:** joven, unku y manto; la mano en primera persona lleva manga de
   unku y bocamanga. La malla ya sustituye al bloqueo; falta articulación fina
   de los dedos.

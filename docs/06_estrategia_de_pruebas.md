@@ -237,4 +237,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 
 | 2026-11-17 | Familia de la llacta con caras y ropa propias | `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 131 pruebas, 0 fallos; diez modelos y diez caras; llacta 300 draw calls y 209 MB; Cusco 343 y 233 MB |
 
+| 2026-11-17 | Textiles andinos, cuello alto y tupu de metal | `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 131 pruebas, 0 fallos; diez atlas textiles embebidos; llacta 310 draw calls y 225 MB; Cusco 349 y 245 MB; Cusco a un draw call del presupuesto |
+
 Cada entrega añade una fila con el alcance, el comando y el resultado.

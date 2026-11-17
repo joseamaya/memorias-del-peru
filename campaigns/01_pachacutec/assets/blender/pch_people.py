@@ -520,6 +520,13 @@ class TextileCanvas:
 		a, b = self._rows(z0, z1)
 		self.column(piece)[a:b] = WOOL[color]
 
+	def vstripes(self, piece, colors, count):
+		"""Franjas verticales de urdimbre en toda la pieza."""
+		col = self.column(piece)
+		width = self.width
+		for x in range(width):
+			col[:, x] = WOOL[colors[(x * count // width) % len(colors)]]
+
 	def stripes(self, piece, z0, z1, colors, count):
 		"""Franjas horizontales iguales entre z0 y z1."""
 		a, b = self._rows(z0, z1)
@@ -630,6 +637,10 @@ def paint_textile(spec, dims, seed):
 	band = spec.get("band", "wool_dark")
 	alt = spec.get("band_alt", "wool_cream")
 	canvas.fill(garment, body)
+	if spec.get("vstripes"):
+		canvas.vstripes(garment, [body, band, body, "wool_cream"], 6)
+		waist = dims["waist"]
+		canvas.diamonds(garment, waist + 0.06, waist + 0.14, body, band, "wool_cream", count=4)
 	if spec["garment"] == "unku":
 		hem = dims["bottom"]
 		canvas.band(garment, hem, hem + 0.012, "wool_dark")
