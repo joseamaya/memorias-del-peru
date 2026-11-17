@@ -49,25 +49,32 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Los GLB salen **sin animaciones**; `QuaterniusClips` copia los clips una vez
   y los añade al `AnimationPlayer` de cada personaje.
 - **19,5 k triángulos** por personaje; 5–6 mallas; texturas de 512 px (ojos de
-  256 px); materiales `pch.body`, `pch.hair`, `pch.hair_grey`, `pch.eye` y
-  `pch_cloth`.
+  256 px); materiales `pch.body_light/mid/dark`, `pch.hair`, `pch.hair_grey`,
+  `pch.eye` y `pch_cloth`.
+- **Re-proporcionado:** cada cuerpo se estrecha en X y se le da una cabeza
+  distinta (ancho, profundidad y mandíbula) antes de hornear la escala. No hay
+  nodos con escala: el GLB pasa `AssetValidation`.
+- **Piel:** tres tintes (`light`, `mid`, `dark`) para que el elenco no comparta
+  el mismo tono. Sisa usa `light`, Mensajero `mid`, Curaca y Chanca `dark`.
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Medición local con carga 1,4–1,7, misma sesión para ambos sets:
+Última pasada local con carga 1,2–1,4, misma sesión para ambos sets:
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
-| Llacta | anterior | 123,0 | 336 | 195 MB |
-| Llacta | Quaternius | 117,6 | 341 | 209 MB |
-| Cusco | anterior | 78,4 | 484 | 211 MB |
-| Cusco | Quaternius | 77,4 | 494 | 203 MB |
+| Llacta | anterior | 105,4 | 336 | 195 MB |
+| Llacta | Quaternius | 98,3 | 341 | 209 MB |
+| Cusco | anterior | 65,1 | 481 | 211 MB |
+| Cusco | Quaternius | 71,6 | 491 | 203 MB |
 
-El coste es de **+5 draw calls** en la llacta y **+10** en el Cusco; ambos actos
-siguen por encima de 60 FPS y el Cusco pierde ~1 FPS. Las texturas de 512 px
-hacen que el Cusco no gane memoria. Aun así, el set completo —multitud
-incluida— no cabe en el presupuesto de 350 draw calls: no se sustituye la
-multitud del Cusco.
+El coste es de **+5 draw calls** en la llacta y **+10** en el Cusco. La llacta
+pierde ~7 FPS; el Cusco se movió entre 65 y 72 FPS según la pasada, siempre por
+encima de 60. La variación entre sesiones es alta (pasadas anteriores dieron
+117,6/77,4): hay que repetir la medición en un equipo descargado antes de
+cerrar el set completo. Las texturas de 512 px hacen que el Cusco no gane
+memoria. Aun así, el set completo —multitud incluida— no cabe en el
+presupuesto de 350 draw calls: no se sustituye la multitud del Cusco.
 
 ## 4. Dirección artística
 
@@ -129,12 +136,16 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
 
 **Falta:**
 
-- Re-proporcionar los cuerpos gratuitos: siguen siendo “superhero” bajo la
-  ropa. El estándar no trae cuerpos regular/teen; el Source de pago no se usa.
-- Variantes de rostro: solo hay dos caras base. Hay que esculpir mandíbula,
-  nariz, pómulos y arrugas para que el elenco no sea clonado.
+- Los cuerpos se estrecharon y las cabezas varían, pero siguen siendo atléticos
+  bajo la ropa. El estándar no trae cuerpos regular/teen; el Source de pago no
+  se usa.
+- Las cuatro caras comparten la topología base. Hay variación de cráneo,
+  mandíbula, pómulos y piel, pero faltan arrugas, narices y bocas esculpidas
+  para que el elenco no se lea como variantes del mismo rostro.
 - Manos y antebrazos en primera persona: el jugador sigue viendo el bloqueo
-  anterior. No se tocó en este prototipo.
+  anterior. Se intentó un recorte estático de la mano UBC, pero el encuadre y
+  la deformación del antebrazo no pasaron la prueba; se descartó y no se
+  versiona. Queda pendiente un viewmodel dedicado.
 - Expresiones faciales y labios: UBC no trae blendshapes; el juego ya usa
   gestos de cuerpo y cabeza. No hay sincronía labial.
 - Muelles de manto: la ropa nueva se pesa al torso, no a cadenas `Cape_*`; el
@@ -173,8 +184,9 @@ ropa es más simple que la anterior y el cuerpo sigue siendo heroico; por eso
 
 Siguiente lote, en este orden:
 
-1. Re-proporcionar los dos cuerpos y crear 4–6 variantes de cara.
-2. Cerrar la medición del Cusco en un equipo descargado y compartir texturas.
+1. Cerrar la variación de caras con arrugas, nariz y boca; el cráneo y la piel
+   ya varían.
+2. Compartir texturas y cerrar la medición del Cusco.
 3. Integrar UAL2 para combate y oficios.
 4. Resolver manos en primera persona.
 5. Solo entonces, migrar el resto del elenco.

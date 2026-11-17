@@ -186,11 +186,16 @@ static func apply_to_model(root: Node) -> int:
 				# aspecto de cera o de barro.
 				mesh_instance.set_surface_override_material(surface, _skin(material as BaseMaterial3D))
 				touched = true
-			elif material is BaseMaterial3D and material.resource_name == "pch.body":
+			elif material is BaseMaterial3D and material.resource_name.begins_with("pch.body"):
 				# Piel Quaternius: la textura es clara; el tinte la lleva al
 				# moreno de la sierra sin perder labios, ojos ni detalle.
+				var skin_tint: Color = Color(0.72, 0.55, 0.42, 1.0)
+				if material.resource_name.ends_with("_light"):
+					skin_tint = Color(0.80, 0.62, 0.48, 1.0)
+				elif material.resource_name.ends_with("_dark"):
+					skin_tint = Color(0.62, 0.46, 0.35, 1.0)
 				mesh_instance.set_surface_override_material(
-					surface, _skin(material as BaseMaterial3D, Color(0.72, 0.55, 0.42, 1.0)))
+					surface, _skin(material as BaseMaterial3D, skin_tint))
 				touched = true
 			elif material is BaseMaterial3D and material.resource_name.begins_with("pch.eye"):
 				var q_eyes: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D

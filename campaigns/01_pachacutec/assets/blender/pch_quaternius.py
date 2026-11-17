@@ -73,13 +73,16 @@ SPECS = {
 		gender="male", hair="Hair_SimpleParted", beard=False,
 		garment="unku", body="wool_brown", band="wool_dark",
 		manto="wool_cream", head_cloth="wool_brown", chuspa="wool_cream",
-		headband=None, width=0.95, notes="mensajero de viaje, sin insignias",
+		headband=None, width=0.90, head_scale=(0.96, 1.00, 1.02),
+		skin="pch.body_mid", face=(0.98, 1.00, 1.00),
+		notes="mensajero de viaje, sin insignias",
 	),
 	"pch_npc_sisa_q": dict(
 		gender="female", hair="Hair_Long", beard=False,
 		garment="anacu", body="wool_brown", band="wool_ochre",
 		lliclla="wool_cream", lliclla_stripe="wool_red", belt="wool_red",
-		headband="wool_red", braids=True, width=1.0,
+		headband="wool_red", braids=True, width=0.98, head_scale=(0.97, 0.99, 1.00),
+		skin="pch.body_light", face=(0.94, 0.98, 0.98),
 		notes="joven de la llacta, anacu y lliclla con trenzas",
 	),
 	"pch_npc_curaca_q": dict(
@@ -87,13 +90,17 @@ SPECS = {
 		garment="unku", body="wool_cream", band="wool_red",
 		band_style="tocapu", band_alt="wool_dark",
 		manto="wool_red", headband="wool_ochre", chuspa="wool_blue",
-		width=0.92, notes="autoridad local, franja de t'oqapu y manto teñido",
+		width=0.88, head_scale=(1.03, 1.00, 0.98),
+		skin="pch.body_dark", face=(1.04, 1.02, 1.02),
+		notes="autoridad local, franja de t'oqapu y manto teñido",
 	),
 	"pch_npc_chanca_q": dict(
 		gender="male", hair="Hair_SimpleParted", beard=False,
 		garment="unku", body="wool_dark", band="wool_blue",
 		manto="wool_grey", headband="wool_blue", chuspa="wool_red",
-		width=1.0, dark_clothes=True, notes="explorador chanca, sin metal",
+		width=1.02, head_scale=(1.05, 1.02, 1.03), dark_clothes=True,
+		skin="pch.body_dark", face=(1.06, 1.04, 1.04),
+		notes="explorador chanca, sin metal",
 	),
 }
 
@@ -480,16 +487,90 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict):
 	return clothes
 
 
-def prepare_body_materials(body: bpy.types.Object):
+def prepare_body_materials(body: bpy.types.Object, skin_name: str = "pch.body"):
 	for slot in body.material_slots:
 		if slot.material is not None:
-			slot.material.name = "pch.body"
+			slot.material.name = skin_name
+
+
+def apply_width(armature, width: float) -> None:
+	"""Estrecha o ensancha el cuerpo entero y hornea la escala.
+
+	Se aplica a la armadura y a todas las mallas: así el GLB no lleva nodos con
+	escala (lo exige `AssetValidation`) y las animaciones siguen funcionando
+	sobre el mismo rig.
+	"""
+	if abs(width - 1.0) < 0.001:
+		return
+	armature.scale = (width, 1.0, 1.0)
+	bpy.ops.object.select_all(action="DESELECT")
+	armature.select_set(True)
+	for obj in bpy.data.objects:
+		if obj.type == "MESH" and not obj.name.startswith("Icosphere"):
+			obj.select_set(True)
+	bpy.context.view_layer.objects.active = armature
+	bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+
+
+def shape_head(spec: dict) -> None:
+	"""Da una proporción de cabeza distinta a cada papel.
+
+	No sustituye una cara esculpida: es una variación de silueta para que los
+	cuatro personajes no compartan exactamente el mismo cráneo. Se aplica a
+	 cuerpo, ojos, cejas, pelo, barba y tocado.
+	"""
+	scale = spec.get("head_scale", (1.0, 1.0, 1.0))
+	if not isinstance(scale, (tuple, list)) or len(scale) != 3:
+		return
+	hx, hy, hz = float(scale[0]), float(scale[1]), float(scale[2])
+	if abs(hx - 1.0) < 0.001 and abs(hy - 1.0) < 0.001 and abs(hz - 1.0) < 0.001:
+		return
+	center = Vector((0.0, 0.0, 1.70))
+	for obj in bpy.data.objects:
+		if obj.type != "MESH" or obj.name.startswith("Icosphere"):
+			continue
+		for vertex in obj.data.vertices:
+			if vertex.co.z <= 1.60:
+				continue
+			vertex.co.x *= hx
+			vertex.co.y *= hy
+			vertex.co.z = center.z + (vertex.co.z - center.z) * hz
+		obj.data.update()
+
+
+def shape_face(spec: dict) -> None:
+	"""Variación suave de mandíbula, pómulos y profundidad de nariz.
+
+	No es una cara esculpida: es una licencia artística (R) para que los cuatro
+	papeles no compartan el mismo cráneo. Mantiene los ojos y el pelo alineados.
+	"""
+	face = spec.get("face", (1.0, 1.0, 1.0))
+	if not isinstance(face, (tuple, list)) or len(face) != 3:
+		return
+	jaw, cheek, nose = float(face[0]), float(face[1]), float(face[2])
+	if abs(jaw - 1.0) < 0.001 and abs(cheek - 1.0) < 0.001 and abs(nose - 1.0) < 0.001:
+		return
+	for obj in bpy.data.objects:
+		if obj.type != "MESH" or obj.name.startswith("Icosphere"):
+			continue
+		is_body = obj.name == "Body"
+		for vertex in obj.data.vertices:
+			z = vertex.co.z
+			if 1.58 < z < 1.70:
+				t = math.sin(math.pi * (z - 1.58) / 0.12)
+				vertex.co.x *= 1.0 + (jaw - 1.0) * t
+			if 1.66 < z < 1.76:
+				t = math.sin(math.pi * (z - 1.66) / 0.10)
+				vertex.co.x *= 1.0 + (cheek - 1.0) * t
+				if is_body and vertex.co.y < -0.02:
+					vertex.co.y *= 1.0 + (nose - 1.0) * t
+		obj.data.update()
 
 
 def build_character(spec: dict, name: str, out_dir: str):
 	clear_scene()
 	armature, body = import_ubc(spec["gender"])
-	prepare_body_materials(body)
+	prepare_body_materials(body, str(spec.get("skin", "pch.body")))
 	# Peinado y barba.
 	grey = bool(spec.get("hair_grey", False))
 	hair_name = "pch.hair_grey" if grey else "pch.hair"
@@ -511,6 +592,9 @@ def build_character(spec: dict, name: str, out_dir: str):
 		bpy.context.view_layer.objects.active = hair
 		bpy.ops.object.join()
 		hair.name = "Hair"
+	apply_width(armature, float(spec.get("width", 1.0)))
+	shape_head(spec)
+	shape_face(spec)
 	# Orientación del proyecto: el frente mira a -Z de Godot. El importador
 	# deja la armadura en modo cuaternión; hay que cambiarlo para que el giro
 	# se exporte.
