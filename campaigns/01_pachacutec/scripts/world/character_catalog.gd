@@ -13,6 +13,8 @@ const QUATERNIUS_MODELS: Dictionary[String, String] = {
 	"Curaca": "pch_npc_curaca_q.glb",
 	"CuracaVecino": "pch_npc_curaca_q.glb",
 	"Chanca": "pch_npc_chanca_q.glb",
+	"anciana": "pch_npc_anciana_q.glb",
+	"joven": "pch_npc_joven_q.glb",
 	"curaca": "pch_npc_curaca_q.glb",
 	"messenger": "pch_npc_mensajero_q.glb",
 }

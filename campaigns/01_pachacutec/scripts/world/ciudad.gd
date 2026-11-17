@@ -75,9 +75,9 @@ const CROWD_POSITIONS: Array[Vector3] = [
 ]
 const CROWD_ROLES: Array[StringName] = [
 	&"villager", &"weaver", &"farmer", &"villager", &"messenger",
-	&"villager", &"farmer", &"weaver", &"villager", &"messenger",
+	&"villager", &"farmer", &"weaver", &"anciana", &"joven",
 ]
-const CROWD_VARIANTS: Array[int] = [0, 0, 0, 1, 0, 2, 1, 1, 2, 2]
+const CROWD_VARIANTS: Array[int] = [0, 0, 0, 1, 0, 2, 1, 1, 1, 2]
 ## Destinos de la multitud cuando empieza la defensa: junto a las casas, fuera
 ## de la plaza y de la línea de choque.
 const CROWD_SAFE_POSITIONS: Array[Vector3] = [
@@ -109,7 +109,7 @@ const CROWD_ACTIVITY_MAX: float = 9.0
 ## descanso. Los índices se corresponden con [constant CROWD_POSITIONS].
 const CROWD_ACTIVITIES: Array[StringName] = [
 	&"idle_b", &"talk", &"talk", &"idle_b", &"talk",
-	&"talk", &"idle_b", &"talk", &"talk", &"tired",
+	&"talk", &"idle_b", &"talk", &"talk", &"idle_b",
 ]
 ## Parejas que conversan de frente: índices en [constant CROWD_POSITIONS].
 const CROWD_PAIRS: Array[Vector2i] = [Vector2i(7, 8)]

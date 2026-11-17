@@ -103,6 +103,25 @@ SPECS = {
 		skin="pch.body_dark", face=(1.06, 1.04, 1.04), brow=(1.06, 1.08), brow_drop=-0.001, brow_angle=-2.0, age=0.4,
 		notes="explorador chanca, sin metal",
 	),
+	# Arquetipos de multitud. La identidad andina se construye con pómulos
+	# anchos, nariz recta, labios llenos, pelo negro liso y piel media/oscura;
+	# no son retratos ni una reconstrucción antropológica.
+	"pch_npc_anciana_q": dict(
+		gender="female", hair="Hair_Long", beard=False, hair_grey=True,
+		garment="anacu", body="wool_grey", band="wool_dark",
+		lliclla="wool_brown", lliclla_stripe="wool_cream", belt="wool_dark",
+		braids=True, width=1.02, head_scale=(1.02, 1.00, 0.98),
+		skin="pch.body_dark", face=(1.04, 1.05, 1.06), brow=(0.95, 0.90), age=1.0,
+		notes="mujer mayor de la comunidad, trenzas canosas y lliclla",
+	),
+	"pch_npc_joven_q": dict(
+		gender="male", hair="Hair_SimpleParted", beard=False,
+		garment="unku", body="wool_brown", band="wool_red",
+		manto="wool_cream", chuspa="wool_ochre",
+		width=0.94, head_scale=(1.00, 1.02, 1.00),
+		skin="pch.body_mid", face=(1.03, 1.04, 1.07), brow=(0.98, 0.95), age=0.0,
+		notes="joven de la comunidad, unku sencillo y chuspa",
+	),
 }
 
 # Huesos de UBC usados por la ropa.
@@ -555,11 +574,11 @@ def shape_age(spec: dict) -> None:
 		z = vertex.co.z
 		# Mejillas hundidas: solo la cara frontal, sin tocar orejas ni cuello.
 		if 1.640 < z < 1.688 and 0.030 < abs(x) < 0.068 and y < -0.045:
-			vertex.co.y += 0.0022 * age
+			vertex.co.y += 0.0032 * age
 		# Papada: la mandíbula cede hacia fuera y hacia abajo.
 		if 1.600 < z < 1.646 and 0.018 < abs(x) < 0.058 and y < -0.075:
-			vertex.co.x *= 1.0 + 0.030 * age
-			vertex.co.z -= 0.0018 * age
+			vertex.co.x *= 1.0 + 0.040 * age
+			vertex.co.z -= 0.0028 * age
 	body.data.update()
 
 

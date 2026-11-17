@@ -88,6 +88,17 @@ CHARACTERS = {
 		gender="male", tone=(0.80, 0.74, 0.70), age=0.4,
 		lips="thin", blush=0.08, sun=0.9, beard_shadow=0.0,
 	),
+	# Arquetipos de multitud: mujer mayor y hombre joven. Pómulos anchos,
+	# nariz recta, labios llenos y piel media/oscura; reconstrucción (R).
+	"pch_npc_anciana_q": dict(
+		gender="female", tone=(0.84, 0.76, 0.70), age=1.0,
+		lips="thin", blush=0.10, sun=1.0, beard_shadow=0.0,
+		forehead_shift=0.060,
+	),
+	"pch_npc_joven_q": dict(
+		gender="male", tone=(0.90, 0.82, 0.76), age=0.0,
+		lips="normal", blush=0.25, sun=0.7, beard_shadow=0.0,
+	),
 }
 
 SIZE = 2048
@@ -128,6 +139,15 @@ def ellipse(layer: Image.Image, center: tuple, radius: tuple, color: tuple, alph
 def line(layer: Image.Image, points: list, color: tuple, alpha: int, width: int) -> None:
 	draw = ImageDraw.Draw(layer, "RGBA")
 	draw.line([(x, y) for x, y in points], fill=(*color, alpha), width=width, joint="curve")
+
+
+def crease(layer: Image.Image, points: list, color: tuple, alpha: int,
+		width: int, highlight: bool = True) -> None:
+	"""Surco oscuro con una luz fina encima: la arruga se lee, no es una raya."""
+	line(layer, points, color, alpha, width)
+	if highlight:
+		lifted = [(x, y - max(2.0, width * 0.8)) for x, y in points]
+		line(layer, lifted, (214, 178, 154), int(alpha * 0.35), max(1, width - 1))
 
 
 def arc(layer: Image.Image, x0: float, x1: float, y: float, bend: float,
@@ -212,37 +232,57 @@ def paint_character(name: str, config: dict, source: Path, out_dir: Path) -> Pat
 		ellipse(layer, (eye[0], eye[1] + SIZE * 0.010), (SIZE * 0.024, SIZE * 0.009),
 			(112, 76, 58), int(18 + 56 * age))
 		ellipse(layer, (eye[0], eye[1] - SIZE * 0.014), (SIZE * 0.021, SIZE * 0.0060),
-			(102, 68, 54), int(8 + 68 * age))
+			(102, 68, 54), int(8 + 100 * age))
 	if age > 0.4:
 		for eye, side in ((eye_l, -1.0), (eye_r, 1.0)):
 			for index in range(4):
 				start_x = eye[0] + side * SIZE * 0.021
 				start_y = eye[1] + SIZE * (0.004 - 0.0032 * index)
-				line(layer, [(start_x, start_y),
+				crease(layer, [(start_x, start_y),
 					(start_x + side * SIZE * 0.011, start_y + SIZE * (0.004 - 0.0032 * index))],
-					(84, 56, 44), int(170 * age), 2)
+					(74, 48, 38), int(190 * age), 2)
 	base = composite_layer(base, layer, mask)
 
 	# Frente y surcos: solo cuando la edad lo pide.
 	if age > 0.35:
 		layer = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+		shift = float(config.get("forehead_shift", 0.0))
 		for index, offset in enumerate((0.010, 0.022, 0.034, 0.046)):
 			width = SIZE * (0.064 - 0.005 * index)
-			arc(layer, forehead[0] - width * 0.5, forehead[0] + width * 0.5,
-				forehead[1] - SIZE * offset, SIZE * 0.0026,
-				(78, 52, 40), int(220 * age), 4)
+			y = forehead[1] + SIZE * shift - SIZE * offset
+			points = []
+			for step in range(17):
+				t = float(step) / 16.0
+				x = forehead[0] - width * 0.5 + width * t
+				points.append((x, y - SIZE * 0.0026 * (1.0 - 4.0 * (t - 0.5) ** 2)))
+			crease(layer, points, (58, 38, 32), int(255 * age), 5)
 		for side in (-1.0, 1.0):
 			start = (nose[0] + side * SIZE * 0.008, nose[1] - SIZE * 0.004)
 			end = (mouth[0] + side * SIZE * 0.018, mouth[1] + SIZE * 0.004)
 			mid = ((start[0] + end[0]) * 0.5 + side * SIZE * 0.006,
 				(start[1] + end[1]) * 0.5)
-			line(layer, [start, mid, end], (76, 50, 38), int(200 * age), 4)
+			crease(layer, [start, mid, end], (66, 42, 34), int(230 * age), 4)
+		# Entrecejo: dos surcos verticales entre las cejas, no en la frente alta.
+		for side in (-1.0, 1.0):
+			x = mouth[0] + side * SIZE * 0.009
+			y0 = eye_l[1] - SIZE * 0.040
+			y1 = eye_l[1] - SIZE * 0.010
+			crease(layer, [(x, y0), (x + side * SIZE * 0.002, y1)],
+				(64, 42, 34), int(200 * age), 3)
+		if age > 0.7:
+			# Mandíbula y mentón: la piel cede con la edad.
+			for side in (-1.0, 1.0):
+				ellipse(layer, (chin[0] + side * SIZE * 0.030, chin[1] + SIZE * 0.012),
+					(SIZE * 0.024, SIZE * 0.014), (74, 50, 40), int(80 * age))
+			arc(layer, mouth[0] - SIZE * 0.020, mouth[0] + SIZE * 0.020,
+				chin[1] - SIZE * 0.004, -SIZE * 0.0018,
+				(74, 50, 40), int(150 * age), 3)
 		# Manchas de sol pequeñas, con semilla fija para que sea reproducible.
 		rng = random.Random(1438 + len(name))
-		for _ in range(int(10 * config["sun"])):
+		for _ in range(int(14 * config["sun"])):
 			cx = rng.uniform(0.115, 0.260) * SIZE
 			cy = rng.uniform(0.790, 0.900) * SIZE
-			radius = rng.uniform(1.2, 2.6) * SIZE / 2048.0
+			radius = rng.uniform(1.4, 4.0 if config["sun"] > 0.8 else 2.8) * SIZE / 2048.0
 			ellipse(layer, (cx, cy), (radius, radius), (120, 82, 60),
 				rng.randint(24, 54))
 		base = composite_layer(base, layer, mask)

@@ -16,6 +16,8 @@ elenco anterior:
 | Sisa (`Habitante3`) | `pch_npc_sisa_q.glb` | Llacta | Mujer joven, anacu, lliclla, trenzas, habla |
 | Curaca | `pch_npc_curaca_q.glb` | Llacta y Cusco | Autoridad, t’oqapu, manto, edad |
 | Chanca | `pch_npc_chanca_q.glb` | Paso | Combate, porra, impacto, muerte |
+| Mujer mayor | `pch_npc_anciana_q.glb` | Multitud del Cusco | Arquetipo andino, canas, trenzas, anacu y lliclla |
+| Hombre joven | `pch_npc_joven_q.glb` | Multitud del Cusco | Arquetipo andino, unku sencillo y chuspa |
 
 El resto del elenco sigue con los modelos MakeHuman/Rocketbox. El set se
 activa con una bandera, no con un reemplazo masivo:
@@ -56,7 +58,8 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Los GLB **no embeben texturas**. `QuaterniusMaterials` (separado de
   `SurfaceMaterials`) carga una sola vez las texturas y comparte materiales:
   - piel por personaje, 1024 px, con normal y rugosidad de 1024 px:
-    `pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`;
+    `pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`,
+    `pch.body_anciana` y `pch.body_joven`;
   - cejas propias, más suaves que el pelo: `pch.brow_dark_<m|f>` y
     `pch.brow_grey_<m|f>`;
   - pelo `pch.hair_dark/grey_<m|f>`, ojos `pch.eye` y ropa `pch_cloth`.
@@ -68,27 +71,32 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - **Piel:** el tono va horneado en la textura de cada personaje (Sisa más
   clara, Mensajero medio, Curaca y Chanca oscuros); ya no se multiplica una
   albedo clara por un tinte que aplastaba el contraste.
-- **Cara:** las cuatro comparten la topología UBC, pero cambian mandíbula,
+- **Cara:** los seis comparten la topología UBC, pero cambian mandíbula,
   pómulos, nariz, cejas (grosor y ángulo), labios, ojeras y líneas de edad. El
-  Curaca suma mejillas hundidas y papada; Sisa, cejas más finas y labios llenos.
-  No hay blendshapes ni sincronía labial.
+  Curaca y la mujer mayor suman mejillas hundidas y papada; Sisa y el joven,
+  cejas más finas y labios llenos. No hay blendshapes ni sincronía labial.
+- **Rasgos andinos (R):** pómulos anchos, nariz recta y algo ancha, labios
+  llenos, pelo negro liso y piel media/oscura. La mujer mayor lleva canas,
+  trenzas, anacu y lliclla; el joven, unku sencillo, faja y chuspa. No son
+  retratos ni una reconstrucción antropológica: son arquetipos estilizados
+  sobre UBC para que la multitud no repita el mismo rostro.
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada con las caras nuevas (carga 9,5, equipo ocupado; no es una
-medición limpia):
+Última pasada con los dos arquetipos en la multitud del Cusco (carga 2,7):
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
 | Llacta | Quaternius | 111,0 | 341 | 214 MB |
-| Cusco | Quaternius | 71,7 | 492 | 204 MB |
+| Cusco | anterior | 73,0 | 480 | 211 MB |
+| Cusco | Quaternius | 69,1 | 494 | 219 MB |
 
-La pasada anterior, con carga 3,5–3,9, dio 114,8 FPS en la llacta y 73,1 en el
-Cusco. Las caras añaden ~2 MB de vídeo gracias a la compresión VRAM; el coste
-en draw calls no cambia (**+5** en la llacta y **+8** en el Cusco). La variación
-entre sesiones sigue siendo alta: falta repetir la medición en un equipo
-descargado. Aun así, el set completo —multitud incluida— no cabe en el
-presupuesto de 350 draw calls: no se sustituye la multitud del Cusco.
+Los dos arquetipos añaden **+14 draw calls** y ~8 MB frente al elenco anterior
+en el Cusco; la llacta no los usa y conserva 341 draw calls. El Cusco sigue por
+encima del presupuesto de 350: solo **3 de los 10 puestos** de la multitud usan
+Quaternius (mensajero + mujer mayor + joven); el resto sigue con el elenco
+anterior hasta resolver la estática y el LOD. La medición es de una sola pasada
+con carga 2,7; falta repetirla en un equipo descargado.
 
 ## 4. Dirección artística
 
@@ -122,6 +130,11 @@ paleta:
 | Curaca de cerca | ![Curaca de cerca](img/personajes/curaca_close_q.png) |
 | Mensajero | ![Mensajero](img/personajes/mensajero_q.png) |
 | Chanca | ![Chanca](img/personajes/chanca_q.png) |
+| Mujer mayor | ![Mujer mayor](img/personajes/anciana_q.png) |
+| Mujer mayor de cerca | ![Mujer mayor de cerca](img/personajes/anciana_close_q.png) |
+| Hombre joven | ![Hombre joven](img/personajes/joven_q.png) |
+| Hombre joven de cerca | ![Hombre joven de cerca](img/personajes/joven_close_q.png) |
+| Mujer mayor en la multitud del Cusco | ![Multitud](img/personajes/crowd_anciana_q.png) |
 | Mano en primera persona | ![Mano](img/personajes/mano_q.png) |
 
 Comparación con el elenco anterior:
@@ -156,10 +169,10 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
 - Los cuerpos se estrecharon y las cabezas varían, pero siguen siendo atléticos
   bajo la ropa. El estándar no trae cuerpos regular/teen; el Source de pago no
   se usa.
-- Las cuatro caras comparten la topología base. La textura de 1024 y los
+- Las seis caras comparten la topología base. La textura de 1024 y los
   ajustes de mandíbula, pómulos, nariz, cejas, labios y edad ya las separan,
-  pero no hay caras esculpidas ni blendshapes. Faltan dos arquetipos para la
-  multitud: mujer mayor y hombre joven.
+  pero no hay caras esculpidas ni blendshapes. La mujer mayor y el hombre joven
+  ya existen; el resto de la multitud sigue con el elenco anterior.
 - El pelo, la barba y las cejas son mallas UBC con textura compartida; a
   distancia se leen bien, de cerca siguen siendo geométricos.
 - Mano en primera persona: se sustituyó el bloqueo por una malla propia
@@ -171,8 +184,8 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
   gestos de cuerpo y cabeza. No hay sincronía labial.
 - Muelles de manto: la ropa nueva se pesa al torso, no a cadenas `Cape_*`; el
   manto no se mece como el anterior.
-- Multitud del Cusco y el resto del elenco: no se sustituyen hasta cerrar la
-  medición y las variantes de cara.
+- Multitud del Cusco: solo tres puestos usan Quaternius; el resto no se
+  sustituye hasta cerrar la estática y la medición.
 - El Cusco sigue por encima del presupuesto de 350 draw calls; la solución
   pasa por LOD/multitud o por dejar la multitud con el elenco anterior.
 
@@ -188,7 +201,8 @@ python3 tools/check_gdscript_limits.py
 
 Resultados de la entrega: **131 pruebas, 0 fallos**; arena con el set anterior
 y con el set Quaternius (`resolved=3`, `max_attackers=1`); `ARCO_OK` con el set
-Quaternius; importación sin errores ni advertencias de `res://`.
+Quaternius; importación sin errores ni advertencias de `res://`. Las pruebas
+recorren los seis modelos y las seis texturas de cara.
 
 Las pruebas nuevas son `test_quaternius_characters.gd` (altura, base, ausencia
 de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`,
@@ -205,7 +219,6 @@ ropa es más simple que la anterior y el cuerpo sigue siendo heroico; por eso
 
 Siguiente lote, en este orden:
 
-1. Añadir dos arquetipos de multitud: mujer mayor y hombre joven.
-2. Cerrar la medición del Cusco y decidir la multitud.
-3. Añadir articulación o poses por dedo a la mano en primera persona.
-4. Solo entonces, migrar el resto del elenco.
+1. Cerrar la medición del Cusco y decidir la multitud: fusionar estática o LOD.
+2. Añadir articulación o poses por dedo a la mano en primera persona.
+3. Solo entonces, migrar el resto del elenco.

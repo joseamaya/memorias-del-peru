@@ -156,6 +156,8 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
   chuspa. Sin orejeras, vara, oro ni metales.
 - **Chancas:** unku oscuro, manto pesado, porra, honda y escudo; acento teal
   `#296B85`; sin máscaras ni plumas inventadas.
+- **Multitud:** mujer mayor con canas, trenzas, anacu y lliclla; hombre joven
+  con pelo negro liso, unku sencillo y chuspa. Son arquetipos, no retratos.
 - **Rumi:** joven, unku y manto; la mano en primera persona lleva manga de
   unku y bocamanga. La malla ya sustituye al bloqueo; falta articulación fina
   de los dedos.
@@ -165,9 +167,11 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
 Los rostros UBC son estilizados y **no son retratos**. Cada personaje tiene una
 textura de cara de 1024 derivada de UBC: tono de piel horneado, labios, ojeras,
 grano y líneas de edad. El Curaca envejece con surcos, mejillas hundidas y
-papada; Sisa lleva cejas finas y labios llenos. Sin blendshapes no hay
-expresiones faciales ni sincronía labial; la emoción la llevan el cuerpo, la
-cabeza y la voz escrita.
+papada; Sisa lleva cejas finas y labios llenos. La mujer mayor y el hombre joven
+buscan rasgos andinos —pómulos anchos, nariz recta, labios llenos, pelo negro
+liso y piel media/oscura— sin caricatura. Sin blendshapes no hay expresiones
+faciales ni sincronía labial; la emoción la llevan el cuerpo, la cabeza y la voz
+escrita.
 
 La ropa y los tocados son reconstrucción (R) sobre PCH-017, PCH-018 y PCH-024.
 El prototipo completo, sus capturas y sus límites viven en

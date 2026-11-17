@@ -66,8 +66,10 @@ Los recursos originales de MakeHuman, de CMU y de Rocketbox no se versionan: se 
 ## Prototipo Quaternius (`pch_npc_*_q.glb`)
 
 Los modelos `pch_npc_mensajero_q.glb`, `pch_npc_sisa_q.glb`,
-`pch_npc_curaca_q.glb` y `pch_npc_chanca_q.glb` son el prototipo de la
-renovación visual. Se generan con `../blender/pch_quaternius.py`.
+`pch_npc_curaca_q.glb`, `pch_npc_chanca_q.glb`, `pch_npc_anciana_q.glb` y
+`pch_npc_joven_q.glb` son el prototipo de la renovación visual. Los dos últimos
+son arquetipos de multitud (mujer mayor y hombre joven). Se generan con
+`../blender/pch_quaternius.py`.
 
 | Parte | Origen | Licencia | Añadido |
 |---|---|---|---|

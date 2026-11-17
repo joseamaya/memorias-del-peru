@@ -6,7 +6,7 @@
 - `base/Superhero_Female_FullBody.gltf` y `.bin`
 - Texturas de piel, ojos y pelo de la carpeta `base/`
 - `faces/source/T_Superhero_Male_Dark.png` y `faces/source/T_Superhero_Female_Dark_BaseColor.png`: albedo 2048 original de UBC, conservada para reproducir las caras
-- `faces/pch_face_*.png`: albedo 1024 por personaje, derivada con `tools/build_face_textures.py`
+- `faces/pch_face_*.png`: seis albedo de 1024 (Mensajero, Sisa, Curaca, Chanca, mujer mayor y hombre joven), derivadas con `tools/build_face_textures.py`
 - `faces/T_Superhero_*_Normal.png` y `faces/T_Superhero_*_Roughness.png`: normal y rugosidad a 1024, reducidas del original
 - `hair/Hair_SimpleParted.gltf`, `Hair_Long.gltf`, `Hair_Buns.gltf` y `Hair_Beard.gltf` con sus `.bin`
 - Los clips de **UAL1** que ya viven en `shared_assets/characters/mannequin/ual1_standard.glb` (ver su `LICENSE.md`).
@@ -29,7 +29,7 @@
 - **Origen:** https://quaternius.com/packs/universalbasecharacters.html
 - **Descarga:** `Universal Base Characters[Standard].zip` (122 MB), descargado el 2026-11-16
 - **Licencia:** [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
-- **Uso:** cuerpo, cara, ojos, manos, pelo y barba de los personajes del prototipo. La ropa, trenzas, cintas, fajas, chuspas y sandalias son autoría propia, generadas por `campaigns/01_pachacutec/assets/blender/pch_quaternius.py`.
+- **Uso:** cuerpo, cara, ojos, manos, pelo y barba de los seis personajes del prototipo (cuatro papeles y dos arquetipos de multitud). La ropa, trenzas, cintas, fajas, chuspas y sandalias son autoría propia, generadas por `campaigns/01_pachacutec/assets/blender/pch_quaternius.py`.
 
 La versión **Source** de pago **no se ha usado**. El estándar gratuito solo incluye dos cuerpos (hombre y mujer “superhero”); los cuerpos regular/teen, los 20 peinados y los shaders de personalización quedan fuera. No se versionan los ZIP originales: solo los archivos usados.
 

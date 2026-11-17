@@ -19,6 +19,8 @@ const FACE_SET: Dictionary[String, Dictionary] = {
 	"pch.body_curaca": {"texture": "pch_face_curaca.png", "male": true},
 	"pch.body_mensajero": {"texture": "pch_face_mensajero.png", "male": true},
 	"pch.body_chanca": {"texture": "pch_face_chanca.png", "male": true},
+	"pch.body_anciana": {"texture": "pch_face_anciana.png", "male": false},
+	"pch.body_joven": {"texture": "pch_face_joven.png", "male": true},
 }
 
 static var _cache: Dictionary[String, Material] = {}
@@ -90,7 +92,7 @@ static func get_material(name: String) -> Material:
 			return null
 		material = StandardMaterial3D.new()
 		material.albedo_texture = albedo
-		material.albedo_color = Color(0.66, 0.62, 0.56, 1.0) if grey else Color(0.34, 0.25, 0.18, 1.0)
+		material.albedo_color = Color(0.86, 0.82, 0.76, 1.0) if grey else Color(0.34, 0.25, 0.18, 1.0)
 		material.normal_enabled = normal != null
 		material.normal_texture = normal
 		material.roughness = 0.90
@@ -110,7 +112,7 @@ static func get_material(name: String) -> Material:
 			return null
 		material = StandardMaterial3D.new()
 		material.albedo_texture = albedo
-		material.albedo_color = Color(0.62, 0.58, 0.52, 1.0) if grey else Color(0.20, 0.15, 0.11, 1.0)
+		material.albedo_color = Color(0.82, 0.78, 0.72, 1.0) if grey else Color(0.20, 0.15, 0.11, 1.0)
 		material.normal_enabled = normal != null
 		material.normal_texture = normal
 		material.roughness = 0.82

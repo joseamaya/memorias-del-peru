@@ -10,18 +10,23 @@ const MODELS: Array[String] = [
 	"pch_npc_sisa_q.glb",
 	"pch_npc_curaca_q.glb",
 	"pch_npc_chanca_q.glb",
+	"pch_npc_anciana_q.glb",
+	"pch_npc_joven_q.glb",
 ]
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 const FACE_DIR: String = "res://shared_assets/characters/quaternius/faces/"
 const FACE_TEXTURES: Array[String] = [
 	"pch_face_mensajero.png", "pch_face_sisa.png",
 	"pch_face_curaca.png", "pch_face_chanca.png",
+	"pch_face_anciana.png", "pch_face_joven.png",
 ]
 const BODY_MATERIALS: Dictionary[String, String] = {
 	"pch_npc_mensajero_q.glb": "pch.body_mensajero",
 	"pch_npc_sisa_q.glb": "pch.body_sisa",
 	"pch_npc_curaca_q.glb": "pch.body_curaca",
 	"pch_npc_chanca_q.glb": "pch.body_chanca",
+	"pch_npc_anciana_q.glb": "pch.body_anciana",
+	"pch_npc_joven_q.glb": "pch.body_joven",
 }
 const REQUIRED_CLIPS: Array[StringName] = [
 	&"idle", &"walk", &"run", &"talk", &"attack", &"hit", &"death",

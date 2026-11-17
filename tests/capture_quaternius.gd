@@ -6,11 +6,14 @@ extends Node
 ##
 ## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
 ## `..._curaca.png`, `..._curaca_close.png`, `..._rostro.png`, `..._mensajero.png`,
-## `..._chanca.png` y `..._mano.png`. Fija el acto I limpio y sin la vista de
-## introducción para que la cámara de captura no la sustituya la del jugador.
-## No es una prueba: es la referencia visual del prototipo.
+## `..._chanca.png`, `..._mano.png`, `..._anciana.png`, `..._joven.png` y sus
+## versiones `_close`, además de `..._crowd_anciana.png` en el Cusco. Fija el
+## acto I limpio y sin la vista de introducción para que la cámara de captura no
+## la sustituya la del jugador. No es una prueba: es la referencia visual.
 
 const LLACTA: String = "res://campaigns/01_pachacutec/scenes/world/llacta.tscn"
+const CIUDAD: String = "res://campaigns/01_pachacutec/scenes/world/ciudad.tscn"
+const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 const PASO: String = "res://campaigns/01_pachacutec/scenes/world/paso.tscn"
 const SETTLE_FRAMES: int = 90
 
@@ -41,6 +44,10 @@ func _capture() -> void:
 	await _shot(camera, Vector3(7.0, 1.42, 7.45), Vector3(7.0, 1.38, 8.0), prefix + "_sisa_close")
 	await _shot(camera, Vector3(-6.4, 1.5, -6.6), Vector3(-7.0, 1.15, -3.0), prefix + "_curaca")
 	await _shot(camera, Vector3(-6.9, 1.58, -3.68), Vector3(-7.0, 1.55, -3.0), prefix + "_curaca_close")
+	# Arquetipos de multitud: se muestran aparte para no depender de que la
+	# escena los tenga colocados. El visual ajusta la altura y los materiales.
+	await _showcase(MODEL_DIR + "pch_npc_anciana_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_anciana")
+	await _showcase(MODEL_DIR + "pch_npc_joven_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_joven")
 	await _shot(camera, Vector3(-2.4, 1.5, 0.2), Vector3(-3.0, 1.15, 3.0), prefix + "_mensajero")
 	await _shot(camera, Vector3(1.0, 1.65, 14.0), Vector3(0.0, 1.0, 4.0), prefix + "_llacta")
 	# Mano en primera persona: se usa la cámara del jugador.
@@ -55,6 +62,21 @@ func _capture() -> void:
 			await _frames(7)
 			_save(prefix + "_mano")
 	llacta.queue_free()
+	await _frames(3)
+
+	# Cusco: los dos arquetipos ocupan dos puestos de la multitud. La captura
+	# confirma que el catálogo los coloca y que la ropa se lee en la plaza.
+	var ciudad: Node = (load(CIUDAD) as PackedScene).instantiate()
+	add_child(ciudad)
+	await _frames(60)
+	_hide_ui(ciudad)
+	var ciudad_camera: Camera3D = Camera3D.new()
+	ciudad_camera.name = "CiudadCaptureCamera"
+	ciudad_camera.fov = 45.0
+	add_child(ciudad_camera)
+	ciudad_camera.current = true
+	await _shot(ciudad_camera, Vector3(-0.5, 1.45, 7.4), Vector3(-3.6, 1.25, 7.4), prefix + "_crowd_anciana")
+	ciudad.queue_free()
 	await _frames(3)
 
 	var paso: Node = (load(PASO) as PackedScene).instantiate()
@@ -82,6 +104,27 @@ func _capture() -> void:
 		manager.call("request_quit", 0)
 	else:
 		get_tree().quit()
+
+
+func _showcase(model_path: String, at: Vector3, slug: String) -> void:
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
+	visual.name = "Showcase_" + slug
+	visual.model_path = model_path
+	visual.target_height = 1.58
+	visual.height_variation = 0.0
+	visual.position = at
+	add_child(visual)
+	await _frames(20)
+	var camera: Camera3D = Camera3D.new()
+	camera.name = "ShowcaseCamera"
+	camera.fov = 42.0
+	add_child(camera)
+	camera.current = true
+	await _shot(camera, at + Vector3(0.0, 1.42, -2.3), at + Vector3(0.0, 1.20, 0.0), slug)
+	await _shot(camera, at + Vector3(0.0, 1.42, -1.15), at + Vector3(0.0, 1.20, 0.0), slug + "_close")
+	camera.queue_free()
+	visual.queue_free()
+	await _frames(3)
 
 
 func _save(slug: String) -> void:
