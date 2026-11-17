@@ -222,6 +222,24 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
   multitud. La memoria sube ~20 MB por los atlas textiles y las texturas de
   cara; si molesta, se pueden comprimir más o compartir atlases.
 
+## 6.1 Prototipo de cabeza MakeHuman (no integrado)
+
+La ropa ya lee andina, pero la cara UBC sigue siendo el techo. Se probó un
+injerto de cabeza MakeHuman (MPFB2) sobre el cuerpo de Sisa. El pipeline
+funciona en Blender 5.3 con `BLENDER_USER_RESOURCES` de 5.2, pero el primer
+resultado **no es utilizable**: la cabeza queda pequeña y hundida en el cuello,
+el paño de cabeza flota y la piel sale pálida. El banco de pruebas es
+`assets/blender/pch_mh_head_proto.py`; **no se integra en el juego**.
+
+| Injerto fallido | Cuerpo completo |
+|---|---|
+| ![Cabeza MakeHuman](img/personajes/mh_head_proto_face.png) | ![Cuerpo](img/personajes/mh_head_proto_full.png) |
+
+Antes de repetirlo hay que resolver la escala evaluada del cuerpo MakeHuman, el
+parentado al hueso `Head`, los pesos del cuello y el material de piel. Si el
+injerto no convence, la alternativa es un **cuerpo MakeHuman completo** con los
+textiles nuevos o esculpir la UBC. La decisión queda abierta.
+
 ## 7. Pruebas
 
 ```bash

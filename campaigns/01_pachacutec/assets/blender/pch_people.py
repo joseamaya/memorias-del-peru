@@ -112,13 +112,25 @@ MOUTH_TARGETS = (
 
 def mpfb():
 	"""Activa MPFB2 y devuelve sus servicios (falla con un mensaje claro)."""
+	module = "bl_ext.user_default.mpfb"
 	try:
-		bpy.ops.preferences.addon_enable(module="bl_ext.user_default.mpfb")
-		from bl_ext.user_default.mpfb.services.humanservice import HumanService
-		from bl_ext.user_default.mpfb.services.targetservice import TargetService
-	except Exception as error:  # noqa: BLE001 - se informa y se sale
-		raise SystemExit("MPFB2 no está instalado en BLENDER_USER_RESOURCES (ADR-0016): %s" % error)
-	data = os.path.join(bpy.utils.extension_path_user("bl_ext.user_default.mpfb"), "data")
+		bpy.ops.preferences.addon_enable(module=module)
+	except Exception:  # noqa: BLE001 - la extensión oficial usa otro módulo
+		module = "bl_ext.blender_org.mpfb"
+		try:
+			bpy.ops.preferences.addon_enable(module=module)
+		except Exception as error:  # noqa: BLE001
+			raise SystemExit("MPFB2 no está instalado en BLENDER_USER_RESOURCES (ADR-0016): %s" % error)
+	try:
+		if module == "bl_ext.blender_org.mpfb":
+			from bl_ext.blender_org.mpfb.services.humanservice import HumanService
+			from bl_ext.blender_org.mpfb.services.targetservice import TargetService
+		else:
+			from bl_ext.user_default.mpfb.services.humanservice import HumanService
+			from bl_ext.user_default.mpfb.services.targetservice import TargetService
+	except Exception as error:  # noqa: BLE001
+		raise SystemExit("MPFB2 no se pudo importar: %s" % error)
+	data = os.path.join(bpy.utils.extension_path_user(module), "data")
 	if not os.path.isdir(os.path.join(data, "proxymeshes")):
 		raise SystemExit("Faltan los recursos de MakeHuman en %s (ADR-0016)" % data)
 	return HumanService, TargetService, data
