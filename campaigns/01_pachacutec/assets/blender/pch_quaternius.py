@@ -75,7 +75,7 @@ SPECS = {
 		garment="unku", body="wool_brown", band="wool_dark",
 		manto="wool_cream", head_cloth="wool_brown", chuspa="wool_cream",
 		headband=None, width=0.90, head_scale=(0.96, 1.00, 1.02),
-		skin="pch.body_mid", face=(0.98, 1.00, 1.00),
+		skin="pch.body_mid", face=(0.98, 1.00, 1.00), brow=(0.96, 0.82), brow_drop=-0.001, brow_angle=2.5, age=0.3,
 		notes="mensajero de viaje, sin insignias",
 	),
 	"pch_npc_sisa_q": dict(
@@ -83,7 +83,7 @@ SPECS = {
 		garment="anacu", body="wool_brown", band="wool_ochre",
 		lliclla="wool_cream", lliclla_stripe="wool_red", belt="wool_red",
 		headband="wool_red", braids=True, width=0.98, head_scale=(0.97, 0.99, 1.00),
-		skin="pch.body_light", face=(0.94, 0.98, 0.98),
+		skin="pch.body_light", face=(0.94, 0.98, 0.98), brow=(0.88, 0.48), brow_drop=-0.005, brow_angle=3.0, age=0.0,
 		notes="joven de la llacta, anacu y lliclla con trenzas",
 	),
 	"pch_npc_curaca_q": dict(
@@ -92,7 +92,7 @@ SPECS = {
 		band_style="tocapu", band_alt="wool_dark",
 		manto="wool_red", headband="wool_ochre", chuspa="wool_blue",
 		width=0.88, head_scale=(1.03, 1.00, 0.98),
-		skin="pch.body_dark", face=(1.04, 1.02, 1.02),
+		skin="pch.body_dark", face=(1.04, 1.02, 1.02), brow=(1.00, 1.00), age=0.9,
 		notes="autoridad local, franja de t'oqapu y manto teñido",
 	),
 	"pch_npc_chanca_q": dict(
@@ -100,7 +100,7 @@ SPECS = {
 		garment="unku", body="wool_dark", band="wool_blue",
 		manto="wool_grey", headband="wool_blue", chuspa="wool_red",
 		width=1.02, head_scale=(1.05, 1.02, 1.03), dark_clothes=True,
-		skin="pch.body_dark", face=(1.06, 1.04, 1.04),
+		skin="pch.body_dark", face=(1.06, 1.04, 1.04), brow=(1.06, 1.08), brow_drop=-0.001, brow_angle=-2.0, age=0.4,
 		notes="explorador chanca, sin metal",
 	),
 }
@@ -197,6 +197,14 @@ def import_ubc(gender: str):
 			material.name = "pch.eye"
 		elif material.name.startswith("MI_Hair"):
 			material.name = "pch.hair_dark" + suffix
+	# Las cejas comparten malla con el pelo, pero no deben ser tan oscuras:
+	# un material propio les da un tono más suave y las separa del cabello.
+	eyebrows = bpy.data.objects.get("Eyebrows")
+	if eyebrows is not None and eyebrows.data.materials:
+		brow = eyebrows.data.materials[0].copy()
+		brow.name = "pch.brow_dark" + suffix
+		eyebrows.data.materials.clear()
+		eyebrows.data.materials.append(brow)
 	armature.name = "Armature"
 	body.name = "Body"
 	return armature, body
@@ -477,12 +485,10 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict, hair_material_na
 	return clothes
 
 
-def prepare_body_materials(body: bpy.types.Object, skin_name: str = "pch.body_mid",
-		gender: str = "male"):
-	suffix = "_m" if gender == "male" else "_f"
+def prepare_body_materials(body: bpy.types.Object, material_name: str) -> None:
 	for slot in body.material_slots:
 		if slot.material is not None:
-			slot.material.name = skin_name + suffix
+			slot.material.name = material_name
 
 
 def apply_width(armature, width: float) -> None:
@@ -530,6 +536,75 @@ def shape_head(spec: dict) -> None:
 		obj.data.update()
 
 
+def shape_age(spec: dict) -> None:
+	"""Envejece la cara con volumen, no solo con textura.
+
+	Hunde un poco las mejillas y adelanta la papada. Las arrugas finas van en
+	la textura (`tools/build_face_textures.py`); aquí solo se busca la silueta
+	del hombre mayor. Es reconstrucción (R), no un retrato.
+	"""
+	age = float(spec.get("age", 0.0))
+	if age < 0.05:
+		return
+	body = bpy.data.objects.get("Body")
+	if body is None:
+		return
+	for vertex in body.data.vertices:
+		x = vertex.co.x
+		y = vertex.co.y
+		z = vertex.co.z
+		# Mejillas hundidas: solo la cara frontal, sin tocar orejas ni cuello.
+		if 1.640 < z < 1.688 and 0.030 < abs(x) < 0.068 and y < -0.045:
+			vertex.co.y += 0.0022 * age
+		# Papada: la mandíbula cede hacia fuera y hacia abajo.
+		if 1.600 < z < 1.646 and 0.018 < abs(x) < 0.058 and y < -0.075:
+			vertex.co.x *= 1.0 + 0.030 * age
+			vertex.co.z -= 0.0018 * age
+	body.data.update()
+
+
+def shape_brows(spec: dict) -> None:
+	"""Afina o engrosa las cejas sin tocar el resto de la cara.
+
+	Las cejas son mallas independientes de UBC. La escala se aplica alrededor
+	de su centro para que Sisa no comparta la ceja ancha del Curaca.
+	"""
+	scale = spec.get("brow", (1.0, 1.0))
+	if not isinstance(scale, (tuple, list)) or len(scale) != 2:
+		return
+	sx, sz = float(scale[0]), float(scale[1])
+	drop = float(spec.get("brow_drop", 0.0))
+	angle = math.radians(float(spec.get("brow_angle", 0.0)))
+	if (abs(sx - 1.0) < 0.001 and abs(sz - 1.0) < 0.001
+			and abs(drop) < 0.001 and abs(angle) < 0.0001):
+		return
+	for obj in bpy.data.objects:
+		if obj.type != "MESH" or not obj.name.startswith("Eyebrow"):
+			continue
+		# Cada ceja se escala alrededor de su propio centro: escalar las dos
+		# juntas las junta y convierte a Sisa en un ceño fruncido.
+		for side in (-1.0, 1.0):
+			group = [vertex for vertex in obj.data.vertices
+				if (vertex.co.x < 0.0) == (side < 0.0)]
+			if not group:
+				continue
+			xs = [vertex.co.x for vertex in group]
+			zs = [vertex.co.z for vertex in group]
+			center_x = (min(xs) + max(xs)) * 0.5
+			center_z = (min(zs) + max(zs)) * 0.5
+			# La ceja base de UBC cae hacia la nariz. Un giro pequeño sube el
+			# extremo interior y abre la expresión sin cambiar la malla.
+			theta = angle if side < 0.0 else -angle
+			cos_a = math.cos(theta)
+			sin_a = math.sin(theta)
+			for vertex in group:
+				local_x = (vertex.co.x - center_x) * sx
+				local_z = (vertex.co.z - center_z) * sz
+				vertex.co.x = center_x + local_x * cos_a - local_z * sin_a
+				vertex.co.z = center_z + local_x * sin_a + local_z * cos_a + drop
+		obj.data.update()
+
+
 def shape_face(spec: dict) -> None:
 	"""Variación suave de mandíbula, pómulos y profundidad de nariz.
 
@@ -572,7 +647,11 @@ def strip_textures() -> None:
 def build_character(spec: dict, name: str, out_dir: str):
 	clear_scene()
 	armature, body = import_ubc(spec["gender"])
-	prepare_body_materials(body, str(spec.get("skin", "pch.body_mid")), str(spec["gender"]))
+	# La textura de rostro es propia de cada papel: el nombre del material la
+	# elige en `SurfaceMaterials` (`pch.body_sisa`, `pch.body_curaca`...).
+	body_material = str(spec.get("body_material",
+		"pch.body_" + name.replace("pch_npc_", "").replace("_q", "")))
+	prepare_body_materials(body, body_material)
 	# Peinado y barba.
 	grey = bool(spec.get("hair_grey", False))
 	gender_suffix = "_m" if str(spec["gender"]) == "male" else "_f"
@@ -584,9 +663,11 @@ def build_character(spec: dict, name: str, out_dir: str):
 			# Barba canosa para la autoridad; el material se comparte con el pelo.
 			beard.name = "Beard"
 	if grey:
-		grey_material = bpy.data.materials.get("pch.hair_grey" + gender_suffix)
+		grey_material = bpy.data.materials.get("pch.brow_grey" + gender_suffix)
+		if grey_material is None:
+			grey_material = bpy.data.materials.new("pch.brow_grey" + gender_suffix)
 		for obj in bpy.data.objects:
-			if obj.type == "MESH" and obj.name.startswith("Eyebrow") and grey_material is not None:
+			if obj.type == "MESH" and obj.name.startswith("Eyebrow"):
 				obj.data.materials.clear()
 				obj.data.materials.append(grey_material)
 	# Ropa.
@@ -601,9 +682,11 @@ def build_character(spec: dict, name: str, out_dir: str):
 		bpy.context.view_layer.objects.active = hair
 		bpy.ops.object.join()
 		hair.name = "Hair"
+	shape_brows(spec)
 	apply_width(armature, float(spec.get("width", 1.0)))
 	shape_head(spec)
 	shape_face(spec)
+	shape_age(spec)
 	# Orientación del proyecto: el frente mira a -Z de Godot. El importador
 	# deja la armadura en modo cuaternión; hay que cambiarlo para que el giro
 	# se exporte.

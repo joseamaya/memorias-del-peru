@@ -162,7 +162,13 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
 - **Evitar:** armaduras de fantasía, hombreras, capuchas, tabardos, penachos y
   cualquier forma que diga “medieval europeo”.
 
-Los rostros UBC son estilizados y **no son retratos**. La ropa y los tocados
-son reconstrucción (R) sobre PCH-017, PCH-018 y PCH-024. El prototipo completo,
-sus capturas y sus límites viven en
+Los rostros UBC son estilizados y **no son retratos**. Cada personaje tiene una
+textura de cara de 1024 derivada de UBC: tono de piel horneado, labios, ojeras,
+grano y líneas de edad. El Curaca envejece con surcos, mejillas hundidas y
+papada; Sisa lleva cejas finas y labios llenos. Sin blendshapes no hay
+expresiones faciales ni sincronía labial; la emoción la llevan el cuerpo, la
+cabeza y la voz escrita.
+
+La ropa y los tocados son reconstrucción (R) sobre PCH-017, PCH-018 y PCH-024.
+El prototipo completo, sus capturas y sus límites viven en
 [personajes_quaternius.md](personajes_quaternius.md).

@@ -4,9 +4,11 @@ extends Node
 ##   godot --path . --resolution 1280x720 res://tests/scenes/capture_quaternius.tscn \
 ##       -- --visual-set=quaternius
 ##
-## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._curaca.png`,
-## `..._mensajero.png` y `..._chanca.png`. No es una prueba: es la referencia
-## visual del prototipo.
+## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
+## `..._curaca.png`, `..._curaca_close.png`, `..._rostro.png`, `..._mensajero.png`,
+## `..._chanca.png` y `..._mano.png`. Fija el acto I limpio y sin la vista de
+## introducción para que la cámara de captura no la sustituya la del jugador.
+## No es una prueba: es la referencia visual del prototipo.
 
 const LLACTA: String = "res://campaigns/01_pachacutec/scenes/world/llacta.tscn"
 const PASO: String = "res://campaigns/01_pachacutec/scenes/world/paso.tscn"
@@ -18,6 +20,10 @@ func _ready() -> void:
 
 
 func _capture() -> void:
+	# La captura debe ser reproducible: acto I limpio y sin la vista de intro,
+	# que mueve la cámara del jugador y tapa la cámara de captura.
+	CampaignState.clear()
+	CampaignState.set_flag(&"intro_vista")
 	var prefix: String = "quaternius" if CharacterCatalog.enabled() else "legacy"
 	var llacta: Node = (load(LLACTA) as PackedScene).instantiate()
 	add_child(llacta)
@@ -31,8 +37,10 @@ func _capture() -> void:
 	add_child(camera)
 	camera.current = true
 	await _shot(camera, Vector3(7.6, 1.5, 5.2), Vector3(7.0, 1.15, 8.0), prefix + "_sisa")
-	await _shot(camera, Vector3(7.0, 1.66, 6.4), Vector3(7.0, 1.62, 8.0), prefix + "_rostro")
+	await _shot(camera, Vector3(7.0, 1.42, 6.4), Vector3(7.0, 1.38, 8.0), prefix + "_rostro")
+	await _shot(camera, Vector3(7.0, 1.42, 7.45), Vector3(7.0, 1.38, 8.0), prefix + "_sisa_close")
 	await _shot(camera, Vector3(-6.4, 1.5, -6.6), Vector3(-7.0, 1.15, -3.0), prefix + "_curaca")
+	await _shot(camera, Vector3(-6.9, 1.58, -3.68), Vector3(-7.0, 1.55, -3.0), prefix + "_curaca_close")
 	await _shot(camera, Vector3(-2.4, 1.5, 0.2), Vector3(-3.0, 1.15, 3.0), prefix + "_mensajero")
 	await _shot(camera, Vector3(1.0, 1.65, 14.0), Vector3(0.0, 1.0, 4.0), prefix + "_llacta")
 	# Mano en primera persona: se usa la cámara del jugador.

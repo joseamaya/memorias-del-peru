@@ -72,11 +72,13 @@ renovación visual. Se generan con `../blender/pch_quaternius.py`.
 | Parte | Origen | Licencia | Añadido |
 |---|---|---|---|
 | Cuerpo, cara, ojos, manos y peinados | Universal Base Characters (Standard gratuito), Quaternius, https://quaternius.com/packs/universalbasecharacters.html | CC0 1.0 | 2026-11-16 |
+| Texturas de cara por personaje | Derivadas de UBC por `tools/build_face_textures.py`; tono, labios y líneas de edad son reconstrucción (R) | CC0 1.0 (base) + propia | 2026-11-17 |
 | Ropa, trenzas, cintas, faja, chuspa, tupu y sandalias | Autoría propia, generada por `pch_quaternius.py` | Propia | 2026-11-16 |
-| Clips de locomoción, conversación y combate | UAL1, `shared_assets/characters/mannequin/ual1_standard.glb` | CC0 1.0 | 2026-11-16 |
+| Clips de locomoción, conversación y combate | UAL1 y UAL2, `shared_assets/characters/mannequin/ual1_standard.glb` y `shared_assets/characters/quaternius/animations/UAL2_Prototype.glb` | CC0 1.0 | 2026-11-17 |
 
-Los GLB no incluyen las texturas: `SurfaceMaterials` las carga desde
-`shared_assets/characters/quaternius/base/` y las comparte entre personajes.
+Los GLB no incluyen las texturas: `QuaterniusMaterials` carga desde
+`shared_assets/characters/quaternius/base/` y `faces/`, y las comparte entre
+personajes.
 El detalle de la procedencia, las texturas reducidas y los packs descartados
 está en `shared_assets/characters/quaternius/LICENSE.md`. La versión Source de
 pago no se usó.

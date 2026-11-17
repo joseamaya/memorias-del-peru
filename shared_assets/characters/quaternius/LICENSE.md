@@ -5,6 +5,9 @@
 - `base/Superhero_Male_FullBody.gltf` y `.bin`
 - `base/Superhero_Female_FullBody.gltf` y `.bin`
 - Texturas de piel, ojos y pelo de la carpeta `base/`
+- `faces/source/T_Superhero_Male_Dark.png` y `faces/source/T_Superhero_Female_Dark_BaseColor.png`: albedo 2048 original de UBC, conservada para reproducir las caras
+- `faces/pch_face_*.png`: albedo 1024 por personaje, derivada con `tools/build_face_textures.py`
+- `faces/T_Superhero_*_Normal.png` y `faces/T_Superhero_*_Roughness.png`: normal y rugosidad a 1024, reducidas del original
 - `hair/Hair_SimpleParted.gltf`, `Hair_Long.gltf`, `Hair_Buns.gltf` y `Hair_Beard.gltf` con sus `.bin`
 - Los clips de **UAL1** que ya viven en `shared_assets/characters/mannequin/ual1_standard.glb` (ver su `LICENSE.md`).
 - `animations/UAL2_Prototype.glb`: 11 clips de **Universal Animation Library 2 (Standard gratuito)**, Quaternius, CC0. Se extraen con `pch_ual2_library.py`; no se versiona el paquete completo de 18 MB.
@@ -32,17 +35,17 @@ La versión **Source** de pago **no se ha usado**. El estándar gratuito solo in
 
 ## Transformaciones propias
 
-- Texturas reducidas a 512 px (ojos a 256 px) para el presupuesto de memoria del juego.
+- Albedo de piel reducida a 512 px en `base/` (ojos a 256 px) para el presupuesto de memoria del juego.
+- Caras nuevas: la albedo 2048 de UBC se pinta por personaje en el espacio UV de la cabeza (tono, labios, ojeras, líneas de edad y grano) y se guarda a 1024 px. El normal y la rugosidad bajan a 1024 px. Las texturas se importan con compresión VRAM y mipmaps.
 - Referencias de textura corregidas: el glTF gratuito pedía `T_Hair_1_Normal_png.png` y `T_Eye_Normal_png.png`; los archivos reales son `T_Hair_1_Normal.png` y `T_Eye_Normal.png`.
-- Materiales renombrados a `pch.body`, `pch.hair`, `pch.hair_grey` y `pch.eye` para que `SurfaceMaterials` los reconozca.
+- Materiales de cuerpo por personaje (`pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero` y `pch.body_chanca`), cejas propias (`pch.brow_*`), pelo (`pch.hair_*`), ojos (`pch.eye`) y ropa (`pch_cloth`). `QuaterniusMaterials` los reconoce.
 - Cuerpos girados 180° en el generador para que miren hacia −Z, como el resto del elenco.
-- Sin animaciones dentro del GLB: `QuaterniusClips` añade los clips de UAL1 en el juego.
+- Sin animaciones dentro del GLB: `QuaterniusClips` añade los clips de UAL1/UAL2 en el juego.
 
 ## Packs evaluados y no usados
 
-- **Universal Animation Library 2 (Standard gratuito):** se verificó su compatibilidad de 65 huesos, pero el prototipo usa UAL1 para no duplicar una librería de 18 MB. Queda como fuente para una fase posterior.
 - **Ultimate Animated Character Pack:** descartado. Es de 2019, no trae glTF ni un rig humanoid compartido y su estilo no encaja con la base UBC.
 
 ## Aviso
 
-Los rostros de UBC son una base estilizada, **no retratos andinos**. La identidad histórica la aportan la ropa, el pelo, la paleta y los accesorios, documentados como reconstrucción (R) en PCH-017, PCH-018 y PCH-024. No se presentan como documentos ni como retratos de personas concretas.
+Los rostros de UBC son una base estilizada, **no retratos andinos**. Las texturas de cara por personaje son reconstrucción (R): no hay retratos, tonos de piel ni rasgos documentados para estos personajes concretos. La identidad histórica la aportan la ropa, el pelo, la paleta y los accesorios, documentados como reconstrucción (R) en PCH-017, PCH-018 y PCH-024. No se presentan como documentos ni como retratos de personas concretas.

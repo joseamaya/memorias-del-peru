@@ -229,4 +229,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 
 | 2026-11-17 | UAL2 compacto y texturas compartidas del prototipo | `run_tests.gd`, `combat_arena_check.gd` y `measure_performance.tscn --visual-set=quaternius` | 130 pruebas, 0 fallos; 11 clips UAL2; GLB 1–1,6 MB; llacta 114,8 y Cusco 73,1 FPS; +5/+8 draw calls |
 
+| 2026-11-17 | Caras Quaternius con textura propia y cejas separadas | `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn --visual-set=quaternius` | 131 pruebas, 0 fallos; texturas 1024 con rugosidad; 111,0/71,7 FPS con carga 9,5; +2 MB de vídeo |
+
 Cada entrega añade una fila con el alcance, el comando y el resultado.

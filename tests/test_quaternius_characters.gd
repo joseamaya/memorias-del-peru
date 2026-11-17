@@ -12,9 +12,68 @@ const MODELS: Array[String] = [
 	"pch_npc_chanca_q.glb",
 ]
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
+const FACE_DIR: String = "res://shared_assets/characters/quaternius/faces/"
+const FACE_TEXTURES: Array[String] = [
+	"pch_face_mensajero.png", "pch_face_sisa.png",
+	"pch_face_curaca.png", "pch_face_chanca.png",
+]
+const BODY_MATERIALS: Dictionary[String, String] = {
+	"pch_npc_mensajero_q.glb": "pch.body_mensajero",
+	"pch_npc_sisa_q.glb": "pch.body_sisa",
+	"pch_npc_curaca_q.glb": "pch.body_curaca",
+	"pch_npc_chanca_q.glb": "pch.body_chanca",
+}
 const REQUIRED_CLIPS: Array[StringName] = [
 	&"idle", &"walk", &"run", &"talk", &"attack", &"hit", &"death",
 ]
+
+
+func test_quaternius_faces() -> bool:
+	var ok: bool = true
+	for file_name: String in FACE_TEXTURES:
+		var texture: Texture2D = load(FACE_DIR + file_name) as Texture2D
+		if texture == null:
+			printerr("No carga la cara ", file_name)
+			ok = false
+		elif texture.get_width() != 1024 or texture.get_height() != 1024:
+			printerr(file_name, ": tamaño inesperado ", texture.get_size())
+			ok = false
+	for file_name: String in BODY_MATERIALS:
+		var packed: PackedScene = load(MODEL_DIR + file_name) as PackedScene
+		var model: Node3D = packed.instantiate() as Node3D
+		var body: MeshInstance3D = model.find_child("Body", true, false) as MeshInstance3D
+		if body == null:
+			printerr(file_name, ": falta Body")
+			ok = false
+			model.free()
+			continue
+		var source: BaseMaterial3D = body.mesh.surface_get_material(0) as BaseMaterial3D
+		var expected: String = BODY_MATERIALS[file_name]
+		if source == null:
+			printerr(file_name, ": el cuerpo no trae material")
+			ok = false
+		elif source.resource_name != expected:
+			printerr(file_name, ": material de cuerpo ", source.resource_name)
+			ok = false
+		SurfaceMaterials.apply_to_model(model)
+		var skin: StandardMaterial3D = body.get_surface_override_material(0) as StandardMaterial3D
+		if skin == null or skin.albedo_texture == null or skin.albedo_texture.get_width() != 1024:
+			printerr(file_name, ": la piel no usa la textura de cara")
+			ok = false
+		elif skin.roughness_texture == null:
+			printerr(file_name, ": la piel no usa el mapa de rugosidad")
+			ok = false
+		var brows: MeshInstance3D = model.find_child("Eyebrows", true, false) as MeshInstance3D
+		if brows == null:
+			printerr(file_name, ": faltan las cejas")
+			ok = false
+		else:
+			var brow_material: BaseMaterial3D = brows.mesh.surface_get_material(0) as BaseMaterial3D
+			if brow_material == null or not brow_material.resource_name.begins_with("pch.brow_"):
+				printerr(file_name, ": material de cejas inesperado")
+				ok = false
+		model.free()
+	return ok
 
 
 func test_quaternius_assets() -> bool:

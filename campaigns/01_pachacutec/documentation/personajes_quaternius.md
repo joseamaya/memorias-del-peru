@@ -1,6 +1,6 @@
 # Personajes Quaternius — prototipo visual
 
-**Estado:** prototipo funcional · 2026-11-16 · Fase 4.9.
+**Estado:** prototipo funcional · 2026-11-17 · Fase 4.9.
 **Manda:** [docs/09](../../../docs/09_biblia_narrativa.md) en lo narrativo,
 [docs/07](../../../docs/07_convenciones_historicas.md) en lo histórico y la
 [guía visual](guia_visual.md) en lo visual.
@@ -32,6 +32,10 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - **Cuerpo, cara, ojos, manos y peinados:** Universal Base Characters
   (Standard gratuito), Quaternius, CC0 1.0. ZIP de 122 MB descargado el
   2026-11-16. Solo se usan los dos cuerpos del estándar y cuatro peinados.
+- **Texturas de rostro:** derivadas de las albedo 2048 de UBC (CC0) con
+  `tools/build_face_textures.py`. El tono, los labios, las ojeras, las líneas
+  de edad y el grano de piel se hornean por personaje. Son reconstrucción (R):
+  no hay retratos ni tonos documentados.
 - **Clips:** UAL1, Quaternius, CC0 1.0, ya versionado en
   `shared_assets/characters/mannequin/ual1_standard.glb`.
 - **Ropa, trenzas, cintas, faja, chuspa, tupu y sandalias:** autoría propia,
@@ -49,33 +53,42 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Los GLB salen **sin animaciones**; `QuaterniusClips` copia los clips una vez
   y los añade al `AnimationPlayer` de cada personaje.
 - **19,5 k triángulos** por personaje; 5–6 mallas; **GLB de 1–1,6 MB**.
-- Los GLB **no embeben texturas**. `SurfaceMaterials` carga una sola vez las
-  texturas de 512 px (ojos de 256 px) desde `base/` y comparte materiales:
-  `pch.body_light/mid/dark_<m|f>`, `pch.hair_dark/grey_<m|f>`, `pch.eye` y
-  `pch_cloth`.
+- Los GLB **no embeben texturas**. `QuaterniusMaterials` (separado de
+  `SurfaceMaterials`) carga una sola vez las texturas y comparte materiales:
+  - piel por personaje, 1024 px, con normal y rugosidad de 1024 px:
+    `pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`;
+  - cejas propias, más suaves que el pelo: `pch.brow_dark_<m|f>` y
+    `pch.brow_grey_<m|f>`;
+  - pelo `pch.hair_dark/grey_<m|f>`, ojos `pch.eye` y ropa `pch_cloth`.
+  Las texturas de piel se importan con compresión VRAM y mipmaps: el set
+  completo suma ~2 MB de vídeo frente a la pasada anterior.
 - **Re-proporcionado:** cada cuerpo se estrecha en X y se le da una cabeza
   distinta (ancho, profundidad y mandíbula) antes de hornear la escala. No hay
   nodos con escala: el GLB pasa `AssetValidation`.
-- **Piel:** tres tintes (`light`, `mid`, `dark`) para que el elenco no comparta
-  el mismo tono. Sisa usa `light`, Mensajero `mid`, Curaca y Chanca `dark`.
+- **Piel:** el tono va horneado en la textura de cada personaje (Sisa más
+  clara, Mensajero medio, Curaca y Chanca oscuros); ya no se multiplica una
+  albedo clara por un tinte que aplastaba el contraste.
+- **Cara:** las cuatro comparten la topología UBC, pero cambian mandíbula,
+  pómulos, nariz, cejas (grosor y ángulo), labios, ojeras y líneas de edad. El
+  Curaca suma mejillas hundidas y papada; Sisa, cejas más finas y labios llenos.
+  No hay blendshapes ni sincronía labial.
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada local con UAL2 y texturas compartidas, carga 3,5–3,9:
+Última pasada con las caras nuevas (carga 9,5, equipo ocupado; no es una
+medición limpia):
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
-| Llacta | anterior | 105,4 | 336 | 195 MB |
-| Llacta | Quaternius | 114,8 | 341 | 212 MB |
-| Cusco | anterior | 76,2 | 484 | 211 MB |
-| Cusco | Quaternius | 73,1 | 492 | 202 MB |
+| Llacta | Quaternius | 111,0 | 341 | 214 MB |
+| Cusco | Quaternius | 71,7 | 492 | 204 MB |
 
-El coste es de **+5 draw calls** en la llacta y **+8** en el Cusco. La llacta
-gana FPS en esta pasada; el Cusco pierde ~3 FPS y la memoria baja ~9 MB. La
-variación entre sesiones es alta: hay que repetir la medición en un equipo
-descargado antes de cerrar el set completo. Aun así, el set completo —multitud
-incluida— no cabe en el presupuesto de 350 draw calls: no se sustituye la
-multitud del Cusco.
+La pasada anterior, con carga 3,5–3,9, dio 114,8 FPS en la llacta y 73,1 en el
+Cusco. Las caras añaden ~2 MB de vídeo gracias a la compresión VRAM; el coste
+en draw calls no cambia (**+5** en la llacta y **+8** en el Cusco). La variación
+entre sesiones sigue siendo alta: falta repetir la medición en un equipo
+descargado. Aun así, el set completo —multitud incluida— no cabe en el
+presupuesto de 350 draw calls: no se sustituye la multitud del Cusco.
 
 ## 4. Dirección artística
 
@@ -103,8 +116,10 @@ paleta:
 | Personaje | Captura |
 |---|---|
 | Sisa | ![Sisa](img/personajes/sisa_q.png) |
+| Sisa de cerca | ![Sisa de cerca](img/personajes/sisa_close_q.png) |
 | Rostro de Sisa | ![Rostro](img/personajes/rostro_q.png) |
 | Curaca | ![Curaca](img/personajes/curaca_q.png) |
+| Curaca de cerca | ![Curaca de cerca](img/personajes/curaca_close_q.png) |
 | Mensajero | ![Mensajero](img/personajes/mensajero_q.png) |
 | Chanca | ![Chanca](img/personajes/chanca_q.png) |
 | Mano en primera persona | ![Mano](img/personajes/mano_q.png) |
@@ -141,9 +156,12 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
 - Los cuerpos se estrecharon y las cabezas varían, pero siguen siendo atléticos
   bajo la ropa. El estándar no trae cuerpos regular/teen; el Source de pago no
   se usa.
-- Las cuatro caras comparten la topología base. Hay variación de cráneo,
-  mandíbula, pómulos y piel, pero faltan arrugas, narices y bocas esculpidas
-  para que el elenco no se lea como variantes del mismo rostro.
+- Las cuatro caras comparten la topología base. La textura de 1024 y los
+  ajustes de mandíbula, pómulos, nariz, cejas, labios y edad ya las separan,
+  pero no hay caras esculpidas ni blendshapes. Faltan dos arquetipos para la
+  multitud: mujer mayor y hombre joven.
+- El pelo, la barba y las cejas son mallas UBC con textura compartida; a
+  distancia se leen bien, de cerca siguen siendo geométricos.
 - Mano en primera persona: se sustituyó el bloqueo por una malla propia
   (antebrazo, palma, cuatro dedos de tres falanges, pulgar, manga y bocamanga)
   que usa el mismo tween de interacción. No tiene animación por dedo ni
@@ -168,14 +186,15 @@ godot --headless --path . --script res://tests/arc_playthrough.gd -- --visual-se
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados de la entrega: **130 pruebas, 0 fallos**; arena con el set anterior
+Resultados de la entrega: **131 pruebas, 0 fallos**; arena con el set anterior
 y con el set Quaternius (`resolved=3`, `max_attackers=1`); `ARCO_OK` con el set
 Quaternius; importación sin errores ni advertencias de `res://`.
 
 Las pruebas nuevas son `test_quaternius_characters.gd` (altura, base, ausencia
 de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`,
-`work` y `hit` de UAL2) y `test_first_person_hands.gd` (malla de la mano y gesto
-de interacción).
+`work` y `hit` de UAL2; texturas de cara de 1024, piel con rugosidad y cejas
+propias) y `test_first_person_hands.gd` (malla de la mano y gesto de
+interacción).
 
 ## 8. Recomendación
 
@@ -186,8 +205,7 @@ ropa es más simple que la anterior y el cuerpo sigue siendo heroico; por eso
 
 Siguiente lote, en este orden:
 
-1. Cerrar la variación de caras con arrugas, nariz y boca; el cráneo y la piel
-   ya varían.
+1. Añadir dos arquetipos de multitud: mujer mayor y hombre joven.
 2. Cerrar la medición del Cusco y decidir la multitud.
 3. Añadir articulación o poses por dedo a la mano en primera persona.
 4. Solo entonces, migrar el resto del elenco.
