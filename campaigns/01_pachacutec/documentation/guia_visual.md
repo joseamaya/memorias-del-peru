@@ -140,3 +140,28 @@ acto.
   perfil Medio; el Bajo puede quedar más plano.
 - La legibilidad de los acentos de facción en combate con varias unidades: se revisa en
   la partida humana.
+
+## 10. Personajes
+
+La identidad de un personaje no viene de la resolución del cuerpo, sino de la
+**ropa, el pelo, la paleta y la silueta**. El prototipo Quaternius usa cuerpos
+UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
+
+- **Comunidad:** unku o anacu, manto o lliclla, faja, chuspa y ojotas. Lana
+  crema, marrón y gris; franjas rojas y ocres. Nada de telas entalladas con
+  botones, capuchas ni botas.
+- **Mujeres:** anacu hasta el tobillo, lliclla prendida con tupu, pelo largo o
+  trenzado y cinta. El peinado moderno se evita o se declara.
+- **Autoridades:** unku crema con franja de t’oqapu, manto teñido, cinta y
+  chuspa. Sin orejeras, vara, oro ni metales.
+- **Chancas:** unku oscuro, manto pesado, porra, honda y escudo; acento teal
+  `#296B85`; sin máscaras ni plumas inventadas.
+- **Rumi:** joven, unku y manto; la mano en primera persona lleva manga de
+  unku. La mejora de esa mano queda pendiente.
+- **Evitar:** armaduras de fantasía, hombreras, capuchas, tabardos, penachos y
+  cualquier forma que diga “medieval europeo”.
+
+Los rostros UBC son estilizados y **no son retratos**. La ropa y los tocados
+son reconstrucción (R) sobre PCH-017, PCH-018 y PCH-024. El prototipo completo,
+sus capturas y sus límites viven en
+[personajes_quaternius.md](personajes_quaternius.md).

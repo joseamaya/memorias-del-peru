@@ -1373,7 +1373,7 @@ func _character_model_for(role: StringName, variant: int) -> String:
 func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> CharacterModelVisual:
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Visual"
-	visual.model_path = MODEL_DIR + _character_model_for(role, variant)
+	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), _character_model_for(role, variant))
 	visual.position = at
 	add_child(visual)
 	visual.look_at(Vector3(0.0, at.y, 28.0), Vector3.UP)
@@ -2298,7 +2298,7 @@ func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName
 		spawn_at = CROWD_VENDORS[index]
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Crowd%02d" % index
-	visual.model_path = MODEL_DIR + _character_model_for(role, variant)
+	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), _character_model_for(role, variant))
 	visual.position = spawn_at
 	visual.scale = Vector3.ONE * (0.96 + 0.02 * float(index % 5))
 	parent.add_child(visual)

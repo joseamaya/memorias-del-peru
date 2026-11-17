@@ -16,3 +16,7 @@ Thumbs.db
 *.tmp
 .vscode/
 .idea/
+
+# Caché de Python de los generadores de Blender
+__pycache__/
+*.pyc

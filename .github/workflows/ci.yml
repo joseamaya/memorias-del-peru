@@ -45,6 +45,11 @@ jobs:
       - name: Comportamiento del combate
         run: ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd
 
+      - name: Prototipo Quaternius
+        run: |
+          ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd -- --visual-set=quaternius
+          ~/godot/godot --headless --path . --script res://tests/arc_playthrough.gd -- --visual-set=quaternius
+
       - name: Arco completo
         run: ~/godot/godot --headless --path . --script res://tests/arc_playthrough.gd
 

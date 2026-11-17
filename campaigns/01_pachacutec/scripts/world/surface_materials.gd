@@ -186,6 +186,28 @@ static func apply_to_model(root: Node) -> int:
 				# aspecto de cera o de barro.
 				mesh_instance.set_surface_override_material(surface, _skin(material as BaseMaterial3D))
 				touched = true
+			elif material is BaseMaterial3D and material.resource_name == "pch.body":
+				# Piel Quaternius: la textura es clara; el tinte la lleva al
+				# moreno de la sierra sin perder labios, ojos ni detalle.
+				mesh_instance.set_surface_override_material(
+					surface, _skin(material as BaseMaterial3D, Color(0.72, 0.55, 0.42, 1.0)))
+				touched = true
+			elif material is BaseMaterial3D and material.resource_name.begins_with("pch.eye"):
+				var q_eyes: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
+				q_eyes.roughness = 0.22
+				q_eyes.metallic_specular = 0.45
+				mesh_instance.set_surface_override_material(surface, q_eyes)
+				touched = true
+			elif material is BaseMaterial3D and (material.resource_name.begins_with("pch.hair") or material.resource_name.begins_with("MI_Hair")):
+				var q_hair: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
+				q_hair.albedo_color = Color(0.20, 0.15, 0.11, 1.0)
+				if material.resource_name.begins_with("pch.hair_grey"):
+					q_hair.albedo_color = Color(0.62, 0.58, 0.52, 1.0)
+				q_hair.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+				q_hair.alpha_scissor_threshold = HAIR_ALPHA_SCISSOR
+				q_hair.cull_mode = BaseMaterial3D.CULL_DISABLED
+				mesh_instance.set_surface_override_material(surface, q_hair)
+				touched = true
 			elif material is BaseMaterial3D and material.resource_name.ends_with(".low-poly"):
 				# Ojos: húmedos, con reflejo; sin él la mirada parece muerta,
 				# pero demasiado brillo la vuelve de muñeca.
@@ -208,9 +230,9 @@ static func apply_to_model(root: Node) -> int:
 	return changed
 
 
-static func _skin(material: BaseMaterial3D) -> BaseMaterial3D:
+static func _skin(material: BaseMaterial3D, tint: Color = Color(1.0, 0.94, 0.88, 1.0)) -> BaseMaterial3D:
 	var skin: BaseMaterial3D = material.duplicate() as BaseMaterial3D
-	skin.albedo_color = Color(1.0, 0.94, 0.88, 1.0)
+	skin.albedo_color = tint
 	# Piel de museo: mate, sin el brillo de cera que delata a un maniquí, pero
 	# con algo más de dispersión y menos borde: la cara deja de verse de yeso
 	# bajo el sol fuerte del mediodía andino.

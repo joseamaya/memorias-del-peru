@@ -48,8 +48,9 @@ func _ready() -> void:
 	collision_mask = 9
 	_visual = CharacterModelVisual.new()
 	_visual.name = "Visual"
-	_visual.model_path = MODEL_PATH
-	_visual.dark_clothes = true
+	var q_model: String = CharacterCatalog.model_for("Chanca", "")
+	_visual.model_path = MODEL_PATH if q_model.is_empty() else MODEL_PATH.get_base_dir() + "/" + q_model
+	_visual.dark_clothes = q_model.is_empty()
 	_visual.porra = true
 	# El chanca es el único que corre hacia el jugador: algo más alto que la
 	# aldea y sin variación, para que los cuatro se lean como un grupo.

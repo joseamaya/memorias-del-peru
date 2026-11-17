@@ -57,8 +57,10 @@ func _ready() -> void:
 	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
 	if _skeleton != null:
 		_head_index = _skeleton.find_bone("Head")
-	_player = _model.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	if _player != null:
+	var quaternius: bool = QuaterniusClips.is_quaternius(_model)
+	_player = QuaterniusClips.player_for(
+		_model, _model.find_child("AnimationPlayer", true, false) as AnimationPlayer)
+	if _player != null and not quaternius:
 		_add_combat_clips()
 	if _player != null and _player.has_animation(idle_clip):
 		_player.play(idle_clip)
@@ -183,7 +185,21 @@ func current_animation() -> StringName:
 
 
 func _darken_clothes() -> void:
-	var clothes: MeshInstance3D = _model.find_child("clothes", true, false) as MeshInstance3D
+	var clothes: MeshInstance3D = null
+	for node: Node in _model.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		if mesh_instance == null or mesh_instance.mesh == null:
+			continue
+		if mesh_instance.name.to_lower().contains("cloth"):
+			clothes = mesh_instance
+			break
+		for surface: int in range(mesh_instance.mesh.get_surface_count()):
+			var candidate: Material = mesh_instance.get_active_material(surface)
+			if candidate != null and candidate.resource_name.begins_with("pch_cloth"):
+				clothes = mesh_instance
+				break
+		if clothes != null:
+			break
 	if clothes == null or clothes.mesh == null:
 		return
 	# Oscurece con el tinte del shader de tela en lugar de un material plano:
@@ -250,6 +266,8 @@ func _build_porra() -> void:
 	if _skeleton == null:
 		return
 	_hand_index = _skeleton.find_bone("RightHand")
+	if _hand_index < 0:
+		_hand_index = _skeleton.find_bone("hand_r")
 	if _hand_index < 0:
 		return
 	_porra_pivot = Node3D.new()

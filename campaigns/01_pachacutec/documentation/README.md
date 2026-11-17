@@ -45,12 +45,13 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
 | [guion_campana.md](guion_campana.md) | **Cerrado (v1.1)** — 15 secciones, fichas de misión, banderas y finales |
 | [guion_escenas.md](guion_escenas.md) | **v1.0** — 22 escenas con bloqueo, cámara, textos, banderas y aceptación |
-| [guia_visual.md](guia_visual.md) | Idea visual, paleta por acto, escala, formas y capturas de referencia |
+| [guia_visual.md](guia_visual.md) | Idea visual, paleta por acto, escala, formas, personajes y capturas de referencia |
+| [personajes_quaternius.md](personajes_quaternius.md) | Prototipo visual Quaternius: packs, rig, arte, capturas, límites y recomendación |
 | [checklist_biblia.md](checklist_biblia.md) | Checklist de diseño por acto; pendientes de duración y arte/audio |
 
 ## 6. Estado de construcción
 
-La campaña se juega de principio a fin con blockout y materiales propios: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cinco obras, incluida la casa de Rumi, y cierra con variantes. El guion y el guion de escenas están cerrados y las 126 pruebas pasan. El combate tiene fases de golpe, parry, hitstop, aviso enemigo y fichas de ataque; la guía visual fija la paleta de los cinco actos. Falta rematar el pase de arte (texturas finas de roca y props), la mezcla de audio escuchada, el equilibrio y la partida humana cronometrada.
+La campaña se juega de principio a fin con blockout y materiales propios: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El acto I tiene intro, elenco, encargos con recursos, duda, mensajero y asamblea; el II añade marcha, campamento, emboscada, llegada y preparación; el III tiene trampa, tres oleadas y costo con nombre; el IV añade cuentas y asamblea con Palabra; el V reconstruye cinco obras, incluida la casa de Rumi, y cierra con variantes. El guion y el guion de escenas están cerrados y las 129 pruebas pasan. El combate tiene fases de golpe, parry, hitstop, aviso enemigo y fichas de ataque; la guía visual fija la paleta de los cinco actos. Hay un prototipo Quaternius de cuatro personajes, activable con `-- --visual-set=quaternius`, que mejora cara y manos pero todavía no sustituye al elenco. Falta rematar el pase de arte (texturas finas de roca y props), la mezcla de audio escuchada, el equilibrio y la partida humana cronometrada.
 
 ## 7. Notas de producción
 

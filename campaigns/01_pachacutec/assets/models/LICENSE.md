@@ -62,3 +62,19 @@ Proceso descrito en [ADR-0016](../../../../docs/adr/0016-personajes-realistas-ma
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Los recursos originales de MakeHuman, de CMU y de Rocketbox no se versionan: se descargan para regenerar (ver la cabecera de `pch_people.py`).
+
+## Prototipo Quaternius (`pch_npc_*_q.glb`)
+
+Los modelos `pch_npc_mensajero_q.glb`, `pch_npc_sisa_q.glb`,
+`pch_npc_curaca_q.glb` y `pch_npc_chanca_q.glb` son el prototipo de la
+renovación visual. Se generan con `../blender/pch_quaternius.py`.
+
+| Parte | Origen | Licencia | Añadido |
+|---|---|---|---|
+| Cuerpo, cara, ojos, manos y peinados | Universal Base Characters (Standard gratuito), Quaternius, https://quaternius.com/packs/universalbasecharacters.html | CC0 1.0 | 2026-11-16 |
+| Ropa, trenzas, cintas, faja, chuspa, tupu y sandalias | Autoría propia, generada por `pch_quaternius.py` | Propia | 2026-11-16 |
+| Clips de locomoción, conversación y combate | UAL1, `shared_assets/characters/mannequin/ual1_standard.glb` | CC0 1.0 | 2026-11-16 |
+
+El detalle de la procedencia, las texturas reducidas y los packs descartados
+está en `shared_assets/characters/quaternius/LICENSE.md`. La versión Source de
+pago no se usó.

@@ -709,7 +709,7 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 		slot_parent = body_mesh
 		slot_offset = -body_mesh.position
 	var no_collisions: Array[Node] = []
-	var files: Array[String] = [CHARACTER_MODELS[node_name]]
+	var files: Array[String] = [CharacterCatalog.model_for(node_name, CHARACTER_MODELS[node_name])]
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, files, blockout, no_collisions)
 	slot.use_model_collision = false
 	actor.preserve_materials = true

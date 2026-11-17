@@ -155,9 +155,9 @@ func _ready() -> void:
 func set_model(model: Node3D) -> void:
 	if model == null:
 		return
-	_animation_player = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	if _animation_player == null:
-		return
+	_animation_player = QuaterniusClips.player_for(
+		model, model.find_child("AnimationPlayer", true, false) as AnimationPlayer)
+	if _animation_player == null: return
 	_fit_model(model)
 	_mannequin = _animation_player.has_animation(&"Idle")
 	_prepare_loops(_animation_player, _mannequin)

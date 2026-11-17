@@ -146,6 +146,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_campaign_audio` | Recursos de audio de la campaña y bucles |
 | `test_model_validator` | Validación de modelos |
+| `test_quaternius_characters` | Rig de 65 huesos, clips lógicos y `NpcActor` con el prototipo Quaternius |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
 | `test_title_screen` | La portada traduce sus textos y, sin campaña, deshabilita Comenzar |
 
@@ -222,5 +223,7 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-16 | Paletas por acto y guía visual 4.9 | `run_tests.gd`, `test_palette_tuning.gd` y `capture_palettes.tscn` | 121 pruebas, 0 fallos; cinco capturas generadas y revisadas; `ARCO_OK` |
 | 2026-11-16 | Sensación de combate 4.11: fases del golpe, parry, hitstop, cámara, telegrafía y fichas | `run_tests.gd`, `test_combat_feel.gd` y `combat_arena_check.gd` | 126 pruebas, 0 fallos; arena 3 enemigos resueltos con ≤ 2 atacantes; `ARCO_OK` |
 | 2026-11-15 | Rendimiento por acto, perfil Bajo y Medio | `measure_performance.tscn` | Bajo ≥ 46,6 FPS; Medio 48,4–52,6 FPS |
+| 2026-11-16 | Prototipo Quaternius: 4 cuerpos UBC, ropa propia, clips UAL1 y catálogo legacy/quaternius | `run_tests.gd`, `combat_arena_check.gd` y `arc_playthrough.gd -- --visual-set=quaternius` | 129 pruebas, 0 fallos; arena 3 resueltos con ≤ 2 atacantes; `ARCO_OK`; importación sin errores |
+| 2026-11-16 | Rendimiento del prototipo Quaternius en llacta y Cusco | `measure_performance.tscn -- --act=llacta.tscn` y `--act=ciudad.tscn` con y sin `--visual-set=quaternius` | Carga 1,4–1,7; llacta 123,0 → 117,6 y Cusco 78,4 → 77,4 FPS; +5/+10 draw calls; ambos > 60 |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

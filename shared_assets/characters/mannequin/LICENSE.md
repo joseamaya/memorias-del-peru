@@ -8,4 +8,8 @@
 - **Uso:** maniquí de prototipo para los personajes del juego. 43 animaciones sin root motion: locomoción, conversación, trabajo de rodillas, ataque, golpe y muerte.
 - **Nota:** el `ual1_bone_map.tres` es propio, generado con el `SkeletonProfileHumanoid` de Godot para retargeting futuro.
 
-Queda como respaldo del elenco: ningún personaje en escena lo usa. El acto I, la multitud del Cusco, el campamento y los chancas del acto II y los NPC con nombre del acto III usan los modelos MakeHuman/Rocketbox ya versionados. Se conserva por si hace falta una figura de fondo o un prototipo rápido.
+Queda como respaldo del elenco. Desde 2026-11-16, `QuaterniusClips` usa sus
+clips para los cuerpos UBC del prototipo (`pch_npc_*_q.glb`). El elenco por
+defecto —acto I, multitud del Cusco, campamento y chancas— sigue usando los
+modelos MakeHuman/Rocketbox ya versionados. Se conserva también como figura de
+fondo o prototipo rápido.
