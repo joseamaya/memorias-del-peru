@@ -233,4 +233,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 
 | 2026-11-17 | Arquetipos andinos de multitud (mujer mayor y hombre joven) | `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` (Cusco) | 131 pruebas, 0 fallos; seis modelos y seis caras; Cusco 69,1 FPS con 494 draw calls y 219 MB; +14 draw calls frente al elenco anterior |
 
+| 2026-11-17 | Fusión de estática del Cusco y la llacta | `run_tests.gd`, `capture_quaternius.tscn`, `measure_performance.tscn` y capturas de santuario/mercado | 131 pruebas, 0 fallos; Cusco 343 draw calls (328 legacy) y 233 MB; llacta 297 y 217 MB; presupuesto de 350 cumplido; +8 MB por la geometría fusionada |
+
 Cada entrega añade una fila con el alcance, el comando y el resultado.

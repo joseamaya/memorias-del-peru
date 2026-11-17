@@ -515,7 +515,7 @@ func _build_llacta() -> void:
 	if terrain_mesh != null and terrain_mesh.material_override is ShaderMaterial:
 		SurfaceMaterials.set_overlay_areas(terrain_mesh.material_override as ShaderMaterial, ground_areas)
 
-	var houses: Node3D = Node3D.new()
+	var houses: StaticMeshBatch = StaticMeshBatch.new()
 	houses.name = "Houses"
 	llacta.add_child(houses)
 	var positions: Array[Vector3] = [
@@ -542,7 +542,7 @@ func _build_llacta() -> void:
 	add_child(wind)
 
 	_add_community_fire(llacta)
-	var corrals: Node3D = Node3D.new()
+	var corrals: StaticMeshBatch = StaticMeshBatch.new()
 	corrals.name = "Corrals"
 	llacta.add_child(corrals)
 	for index: int in range(CORRALS.size()):
@@ -552,7 +552,7 @@ func _build_llacta() -> void:
 		var corral_entrance: Vector3 = corral[2]
 		_add_corral(corrals, "Corral%02d" % (index + 1), corral_center, corral_size, corral_entrance)
 
-	var terraces: Node3D = Node3D.new()
+	var terraces: StaticMeshBatch = StaticMeshBatch.new()
 	terraces.name = "Terraces"
 	llacta.add_child(terraces)
 	_add_terrace(terraces, "Terrace01", 34.0, 0.0, 0.8, stone)

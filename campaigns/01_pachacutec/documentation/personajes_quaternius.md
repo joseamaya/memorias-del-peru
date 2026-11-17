@@ -83,20 +83,24 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada con los dos arquetipos en la multitud del Cusco (carga 2,2–2,7):
+Última pasada con la estática fusionada (carga 6–16; no es una medición limpia):
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
-| Llacta | Quaternius | 108,5 | 341 | 214 MB |
-| Cusco | anterior | 73,0 | 480 | 211 MB |
-| Cusco | Quaternius | 69,1 | 494 | 219 MB |
+| Llacta | Quaternius | 89,2 | 297 | 217 MB |
+| Cusco | anterior | — | 328 | 225 MB |
+| Cusco | Quaternius | 67,0 | 343 | 233 MB |
 
-Los dos arquetipos añaden **+14 draw calls** y ~8 MB frente al elenco anterior
-en el Cusco; la llacta no los usa y conserva 341 draw calls. El Cusco sigue por
-encima del presupuesto de 350: solo **3 de los 10 puestos** de la multitud usan
-Quaternius (mensajero + mujer mayor + joven); el resto sigue con el elenco
-anterior hasta resolver la estática y el LOD. La medición es de una sola pasada
-con carga 2,7; falta repetirla en un equipo descargado.
+`StaticMeshBatch` fusiona casas, props, mercado, mobiliario, puerta, remates de
+muro, terrazas, santuario y vegetación por material/tinte. El Cusco baja de
+**494 a 343 draw calls** y la llacta de **341 a 297**; el Cusco queda **por
+debajo del presupuesto de 350**. El set Quaternius cuesta **+15 draw calls**
+frente al anterior (343 frente a 328), no +14: la comparación es con la misma
+estática fusionada. La memoria sube ~8 MB por la copia de los vértices
+fusionados; los originales quedan ocultos. Los FPS se midieron con carga alta
+(6–16) y mucha varianza: falta repetir la medición en un equipo descargado.
+Solo **3 de los 10 puestos** de la multitud usan Quaternius (mensajero + mujer
+mayor + joven); el resto sigue con el elenco anterior.
 
 ## 4. Dirección artística
 
@@ -186,8 +190,9 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
   manto no se mece como el anterior.
 - Multitud del Cusco: solo tres puestos usan Quaternius; el resto no se
   sustituye hasta cerrar la estática y la medición.
-- El Cusco sigue por encima del presupuesto de 350 draw calls; la solución
-  pasa por LOD/multitud o por dejar la multitud con el elenco anterior.
+- El Cusco ya está por debajo del presupuesto de 350 draw calls (343). La
+  memoria sube ~8 MB por la geometría fusionada; si molesta, se pueden liberar
+  los originales ocultos o hornear las casas en Blender.
 
 ## 7. Pruebas
 

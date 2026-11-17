@@ -132,9 +132,17 @@ godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
 
 **Línea base del Cusco (2026-11-16):** 488 draw calls, 1,48 M primitivas, 250 mallas,
 1 luz con sombra, 211 MB de vídeo. El presupuesto de la referencia es ≤ 350 draw calls y
-≤ 1,2 M primitivas; el Cusco lo supera. La mediana de FPS sigue por encima de 60 porque
-el coste es de relleno, no de CPU. La siguiente optimización debe fusionar geometría
-estática de casas y muros por material, no bajar más la escala.
+≤ 1,2 M primitivas; el Cusco lo superaba. La mediana de FPS seguía por encima de 60
+porque el coste es de relleno, no de CPU.
+
+**Actualización 2026-11-17:** `StaticMeshBatch` fusiona por material/tinte casas,
+props, mercado, mobiliario, puerta, remates de muro, terrazas, santuario y vegetación
+del Cusco y la llacta. El Cusco queda en **343 draw calls con Quaternius** (328 con el
+elenco anterior) y 233/225 MB; la llacta queda en **297** con Quaternius. El presupuesto
+de 350 se cumple. La memoria sube ~8 MB por la copia de vértices fusionados; los
+originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con carga
+6–16: falta repetirla en un equipo descargado. El siguiente límite es la multitud/LOD y
+la memoria de la geometría fusionada, no la estática.
 
 **Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
@@ -146,6 +154,11 @@ estática de casas y muros por material, no bajar más la escala.
 | IV — Posguerra | 124,5 FPS | 97,5 FPS | 90,9–101,6 | 342 | 226,1 MB |
 | V — Obra | 105,3 FPS | 90,5 FPS | 82,9–93,2 | 362 | 225,5 MB |
 
-Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco es el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentra 476 draw calls y el SSAO. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
+La tabla es la línea base del 2026-11-16. La fusión de estática del 2026-11-17 deja el
+Cusco en 343 draw calls con Quaternius (328 con el elenco anterior) y la llacta en 297;
+los FPS de la pasada nueva están en
+[personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
+
+Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática baja a 343 draw calls (328 legacy). Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
 
 El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En Bajo, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.

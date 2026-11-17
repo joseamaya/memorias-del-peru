@@ -1792,7 +1792,7 @@ func _add_overlay_box(box_name: String, at: Vector3, size: Vector3) -> MeshInsta
 ## Santuario modesto al sol: tres gradas de piedra y una capilla de ichu. No es
 ## la ciudad monumental posterior a Pachacútec (PCH-022).
 func _build_sanctuary() -> void:
-	var sanctuary: Node3D = Node3D.new()
+	var sanctuary: StaticMeshBatch = StaticMeshBatch.new()
 	sanctuary.name = "Sanctuary"
 	add_child(sanctuary)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
@@ -1853,7 +1853,7 @@ func _add_sanctuary_pirca(
 ## Catorce viviendas de piedra y ichu con los modelos definitivos, sus props y
 ## colisión. El modelo oculta el bloqueo y conserva la colisión si la trae.
 func _build_houses() -> void:
-	var houses: Node3D = Node3D.new()
+	var houses: StaticMeshBatch = StaticMeshBatch.new()
 	houses.name = "Houses"
 	add_child(houses)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
@@ -2005,7 +2005,7 @@ func _build_walls() -> void:
 ## Portón sur: dos postes de piedra y un dintel de madera. No hay hoja de
 ## puerta; el hueco queda abierto para entrar y salir de la ciudad.
 func _build_gate() -> void:
-	var gate: Node3D = Node3D.new()
+	var gate: StaticMeshBatch = StaticMeshBatch.new()
 	gate.name = "Gate"
 	add_child(gate)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
@@ -2019,7 +2019,7 @@ func _build_gate() -> void:
 ## Remate de la muralla: una faja de piedra sobre las dos caras de pirca. Sin
 ## ella, el muro se ve hueco desde fuera y desde la plaza.
 func _build_wall_caps() -> void:
-	var caps: Node3D = Node3D.new()
+	var caps: StaticMeshBatch = StaticMeshBatch.new()
 	caps.name = "WallCaps"
 	add_child(caps)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
@@ -2038,7 +2038,7 @@ func _build_wall_caps() -> void:
 ## Bancos de piedra y props de plaza: le dan escala y un uso cotidiano al
 ## espacio abierto, sin añadir edificios nuevos.
 func _build_plaza_furniture() -> void:
-	var furniture: Node3D = Node3D.new()
+	var furniture: StaticMeshBatch = StaticMeshBatch.new()
 	furniture.name = "PlazaFurniture"
 	add_child(furniture)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
@@ -2060,7 +2060,7 @@ func _build_plaza_furniture() -> void:
 ## La geometría es la misma de las casas (postes de madera, techo de ichu), sin
 ## modelos nuevos.
 func _build_market() -> void:
-	var market: Node3D = Node3D.new()
+	var market: StaticMeshBatch = StaticMeshBatch.new()
 	market.name = "Market"
 	add_child(market)
 	# Al norte de la plaza: en el eje sur quedaban en medio del camino de
@@ -2105,7 +2105,7 @@ func _add_stall(parent: Node3D, index: int, at: Vector3, yaw: float) -> Node3D:
 ## Altar y cántaros del santuario: el recinto se lee como lugar de ofrenda y no
 ## como un pedestal vacío.
 func _build_sanctuary_props() -> void:
-	var props: Node3D = Node3D.new()
+	var props: StaticMeshBatch = StaticMeshBatch.new()
 	props.name = "SanctuaryProps"
 	add_child(props)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT)
@@ -2117,7 +2117,7 @@ func _build_sanctuary_props() -> void:
 ## Matas de ichu junto a los muros: rompen la tierra desnuda sin invadir la
 ## plaza, los caminos ni las casas.
 func _build_vegetation() -> void:
-	var vegetation: Node3D = Node3D.new()
+	var vegetation: StaticMeshBatch = StaticMeshBatch.new()
 	vegetation.name = "Vegetation"
 	add_child(vegetation)
 	var clumps: Array[Array] = [
@@ -2182,7 +2182,7 @@ func _add_model_prop(
 ## Terrazas de cultivo al este del muro: tres fajas de tierra sostenidas por
 ## pirca, visibles por encima de la muralla.
 func _build_terraces() -> void:
-	var terraces: Node3D = Node3D.new()
+	var terraces: StaticMeshBatch = StaticMeshBatch.new()
 	terraces.name = "Terraces"
 	add_child(terraces)
 	var stone: ShaderMaterial = SurfaceMaterials.layer_material(SurfaceMaterials.Layer.STONE, STONE_TINT, true)
