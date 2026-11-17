@@ -83,11 +83,11 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada con los dos arquetipos en la multitud del Cusco (carga 2,7):
+Última pasada con los dos arquetipos en la multitud del Cusco (carga 2,2–2,7):
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
-| Llacta | Quaternius | 111,0 | 341 | 214 MB |
+| Llacta | Quaternius | 108,5 | 341 | 214 MB |
 | Cusco | anterior | 73,0 | 480 | 211 MB |
 | Cusco | Quaternius | 69,1 | 494 | 219 MB |
 
