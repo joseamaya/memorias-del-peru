@@ -122,6 +122,41 @@ SPECS = {
 		skin="pch.body_mid", face=(1.03, 1.04, 1.07), brow=(0.98, 0.95), age=0.0,
 		notes="joven de la comunidad, unku sencillo y chuspa",
 	),
+	# Familia de Rumi. Rasgos y ropa son reconstrucción (R); los personajes
+	# concretos son ficción (N). La madre y el hermano comparten la llacta;
+	# Puma y Anca aparecen en la asamblea y la posguerra.
+	"pch_npc_madre_q": dict(
+		gender="female", hair="Hair_Long", beard=False,
+		garment="anacu", body="wool_brown", band="wool_dark",
+		lliclla="wool_cream", lliclla_stripe="wool_red", belt="wool_red",
+		headband="wool_cream", braids=True, width=1.00, head_scale=(1.01, 1.00, 0.99),
+		skin="pch.body_mid", face=(1.03, 1.04, 1.05), brow=(0.95, 0.75), age=0.55,
+		notes="madre de Rumi y Sisa, anacu y lliclla",
+	),
+	"pch_npc_hermano_q": dict(
+		gender="male", hair="Hair_SimpleParted", beard=False,
+		garment="unku", body="wool_brown", band="wool_ochre",
+		manto="wool_grey", chuspa="wool_cream",
+		width=0.93, head_scale=(1.00, 1.01, 1.00),
+		skin="pch.body_mid", face=(1.02, 1.03, 1.05), brow=(0.98, 0.92), age=0.0,
+		notes="hermano de Rumi, unku sencillo y chuspa",
+	),
+	"pch_npc_puma_q": dict(
+		gender="male", hair="Hair_SimpleParted", beard=False,
+		garment="unku", body="wool_cream", band="wool_red",
+		manto="wool_brown", headband="wool_dark", chuspa="wool_blue",
+		width=0.99, head_scale=(1.03, 1.02, 1.01),
+		skin="pch.body_dark", face=(1.04, 1.04, 1.06), brow=(1.02, 1.00), age=0.4,
+		notes="autoridad comunal aliada, sin insignias del curaca",
+	),
+	"pch_npc_anca_q": dict(
+		gender="female", hair="Hair_Long", beard=False,
+		garment="anacu", body="wool_brown", band="wool_dark",
+		lliclla="wool_red", lliclla_stripe="wool_cream", belt="wool_dark",
+		headband="wool_red", braids=True, width=0.98, head_scale=(1.01, 1.00, 0.99),
+		skin="pch.body_mid", face=(1.03, 1.04, 1.04), brow=(0.94, 0.78), age=0.3,
+		notes="mujer de la comunidad, anacu, lliclla y tupu",
+	),
 }
 
 # Huesos de UBC usados por la ropa.

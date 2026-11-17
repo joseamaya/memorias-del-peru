@@ -99,6 +99,24 @@ CHARACTERS = {
 		gender="male", tone=(0.90, 0.82, 0.76), age=0.0,
 		lips="normal", blush=0.25, sun=0.7, beard_shadow=0.0,
 	),
+	"pch_npc_madre_q": dict(
+		gender="female", tone=(0.93, 0.85, 0.78), age=0.55,
+		lips="normal", blush=0.32, sun=0.5, beard_shadow=0.0,
+		forehead_shift=0.040,
+	),
+	"pch_npc_hermano_q": dict(
+		gender="male", tone=(0.93, 0.85, 0.79), age=0.0,
+		lips="normal", blush=0.20, sun=0.6, beard_shadow=0.0,
+	),
+	"pch_npc_puma_q": dict(
+		gender="male", tone=(0.88, 0.80, 0.74), age=0.4,
+		lips="normal", blush=0.12, sun=0.8, beard_shadow=0.0,
+	),
+	"pch_npc_anca_q": dict(
+		gender="female", tone=(0.95, 0.87, 0.80), age=0.3,
+		lips="full", blush=0.40, sun=0.4, beard_shadow=0.0,
+		forehead_shift=0.020,
+	),
 }
 
 SIZE = 2048

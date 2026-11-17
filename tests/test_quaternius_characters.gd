@@ -12,6 +12,10 @@ const MODELS: Array[String] = [
 	"pch_npc_chanca_q.glb",
 	"pch_npc_anciana_q.glb",
 	"pch_npc_joven_q.glb",
+	"pch_npc_madre_q.glb",
+	"pch_npc_hermano_q.glb",
+	"pch_npc_puma_q.glb",
+	"pch_npc_anca_q.glb",
 ]
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 const FACE_DIR: String = "res://shared_assets/characters/quaternius/faces/"
@@ -19,6 +23,8 @@ const FACE_TEXTURES: Array[String] = [
 	"pch_face_mensajero.png", "pch_face_sisa.png",
 	"pch_face_curaca.png", "pch_face_chanca.png",
 	"pch_face_anciana.png", "pch_face_joven.png",
+	"pch_face_madre.png", "pch_face_hermano.png",
+	"pch_face_puma.png", "pch_face_anca.png",
 ]
 const BODY_MATERIALS: Dictionary[String, String] = {
 	"pch_npc_mensajero_q.glb": "pch.body_mensajero",
@@ -27,6 +33,10 @@ const BODY_MATERIALS: Dictionary[String, String] = {
 	"pch_npc_chanca_q.glb": "pch.body_chanca",
 	"pch_npc_anciana_q.glb": "pch.body_anciana",
 	"pch_npc_joven_q.glb": "pch.body_joven",
+	"pch_npc_madre_q.glb": "pch.body_madre",
+	"pch_npc_hermano_q.glb": "pch.body_hermano",
+	"pch_npc_puma_q.glb": "pch.body_puma",
+	"pch_npc_anca_q.glb": "pch.body_anca",
 }
 const REQUIRED_CLIPS: Array[StringName] = [
 	&"idle", &"walk", &"run", &"talk", &"attack", &"hit", &"death",

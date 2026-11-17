@@ -21,6 +21,10 @@ const FACE_SET: Dictionary[String, Dictionary] = {
 	"pch.body_chanca": {"texture": "pch_face_chanca.png", "male": true},
 	"pch.body_anciana": {"texture": "pch_face_anciana.png", "male": false},
 	"pch.body_joven": {"texture": "pch_face_joven.png", "male": true},
+	"pch.body_madre": {"texture": "pch_face_madre.png", "male": false},
+	"pch.body_hermano": {"texture": "pch_face_hermano.png", "male": true},
+	"pch.body_puma": {"texture": "pch_face_puma.png", "male": true},
+	"pch.body_anca": {"texture": "pch_face_anca.png", "male": false},
 }
 
 static var _cache: Dictionary[String, Material] = {}

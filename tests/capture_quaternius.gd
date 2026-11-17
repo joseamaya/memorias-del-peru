@@ -6,7 +6,8 @@ extends Node
 ##
 ## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
 ## `..._curaca.png`, `..._curaca_close.png`, `..._rostro.png`, `..._mensajero.png`,
-## `..._chanca.png`, `..._mano.png`, `..._anciana.png`, `..._joven.png` y sus
+## `..._chanca.png`, `..._mano.png`, `..._anciana.png`, `..._joven.png`,
+## `..._madre.png`, `..._hermano.png`, `..._puma.png`, `..._anca.png` y sus
 ## versiones `_close`, además de `..._crowd_anciana.png` en el Cusco. Fija el
 ## acto I limpio y sin la vista de introducción para que la cámara de captura no
 ## la sustituya la del jugador. No es una prueba: es la referencia visual.
@@ -48,6 +49,10 @@ func _capture() -> void:
 	# escena los tenga colocados. El visual ajusta la altura y los materiales.
 	await _showcase(MODEL_DIR + "pch_npc_anciana_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_anciana")
 	await _showcase(MODEL_DIR + "pch_npc_joven_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_joven")
+	await _showcase(MODEL_DIR + "pch_npc_madre_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_madre")
+	await _showcase(MODEL_DIR + "pch_npc_hermano_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_hermano")
+	await _showcase(MODEL_DIR + "pch_npc_puma_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_puma")
+	await _showcase(MODEL_DIR + "pch_npc_anca_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_anca")
 	await _shot(camera, Vector3(-2.4, 1.5, 0.2), Vector3(-3.0, 1.15, 3.0), prefix + "_mensajero")
 	await _shot(camera, Vector3(1.0, 1.65, 14.0), Vector3(0.0, 1.0, 4.0), prefix + "_llacta")
 	# Mano en primera persona: se usa la cámara del jugador.

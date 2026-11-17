@@ -158,6 +158,10 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
   `#296B85`; sin máscaras ni plumas inventadas.
 - **Multitud:** mujer mayor con canas, trenzas, anacu y lliclla; hombre joven
   con pelo negro liso, unku sencillo y chuspa. Son arquetipos, no retratos.
+- **Familia de Rumi:** madre con anacu, lliclla y paño; hermano joven con unku,
+  manto y chuspa; Puma como autoridad comunal con manto y chuspa, sin t’oqapu;
+  Anca con anacu, lliclla y tupu. HijoPuma sigue con el elenco anterior hasta
+  tener una base infantil.
 - **Rumi:** joven, unku y manto; la mano en primera persona lleva manga de
   unku y bocamanga. La malla ya sustituye al bloqueo; falta articulación fina
   de los dedos.

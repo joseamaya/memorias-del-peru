@@ -138,7 +138,7 @@ porque el coste es de relleno, no de CPU.
 **Actualización 2026-11-17:** `StaticMeshBatch` fusiona por material/tinte casas,
 props, mercado, mobiliario, puerta, remates de muro, terrazas, santuario y vegetación
 del Cusco y la llacta. El Cusco queda en **343 draw calls con Quaternius** (328 con el
-elenco anterior) y 233/225 MB; la llacta queda en **297** con Quaternius. El presupuesto
+elenco anterior) y 233/225 MB; la llacta queda en **300** con Quaternius y la familia. El presupuesto
 de 350 se cumple. La memoria sube ~8 MB por la copia de vértices fusionados; los
 originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con carga
 6–16: falta repetirla en un equipo descargado. El siguiente límite es la multitud/LOD y
@@ -155,7 +155,7 @@ la memoria de la geometría fusionada, no la estática.
 | V — Obra | 105,3 FPS | 90,5 FPS | 82,9–93,2 | 362 | 225,5 MB |
 
 La tabla es la línea base del 2026-11-16. La fusión de estática del 2026-11-17 deja el
-Cusco en 343 draw calls con Quaternius (328 con el elenco anterior) y la llacta en 297;
+Cusco en 343 draw calls con Quaternius (328 con el elenco anterior) y la llacta en 300;
 los FPS de la pasada nueva están en
 [personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
 

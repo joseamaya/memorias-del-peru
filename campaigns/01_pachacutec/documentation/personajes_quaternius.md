@@ -18,6 +18,10 @@ elenco anterior:
 | Chanca | `pch_npc_chanca_q.glb` | Paso | Combate, porra, impacto, muerte |
 | Mujer mayor | `pch_npc_anciana_q.glb` | Multitud del Cusco | Arquetipo andino, canas, trenzas, anacu y lliclla |
 | Hombre joven | `pch_npc_joven_q.glb` | Multitud del Cusco | Arquetipo andino, unku sencillo y chuspa |
+| Madre (`Habitante1`) | `pch_npc_madre_q.glb` | Llacta | Mujer adulta, anacu, lliclla y paño de cabeza |
+| Hermano (`Habitante2`) | `pch_npc_hermano_q.glb` | Llacta | Joven, unku, manto y chuspa |
+| Puma (`Principal2`) | `pch_npc_puma_q.glb` | Llacta y asamblea | Autoridad comunal, manto y chuspa, sin t’oqapu |
+| Anca (`Anca`) | `pch_npc_anca_q.glb` | Llacta (actos IV–V) | Mujer adulta, anacu, lliclla y tupu |
 
 El resto del elenco sigue con los modelos MakeHuman/Rocketbox. El set se
 activa con una bandera, no con un reemplazo masivo:
@@ -59,7 +63,8 @@ El valor por defecto es el elenco anterior. El catálogo vive en
   `SurfaceMaterials`) carga una sola vez las texturas y comparte materiales:
   - piel por personaje, 1024 px, con normal y rugosidad de 1024 px:
     `pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`,
-    `pch.body_anciana` y `pch.body_joven`;
+    `pch.body_anciana`, `pch.body_joven`, `pch.body_madre`, `pch.body_hermano`,
+    `pch.body_puma` y `pch.body_anca`;
   - cejas propias, más suaves que el pelo: `pch.brow_dark_<m|f>` y
     `pch.brow_grey_<m|f>`;
   - pelo `pch.hair_dark/grey_<m|f>`, ojos `pch.eye` y ropa `pch_cloth`.
@@ -71,36 +76,38 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - **Piel:** el tono va horneado en la textura de cada personaje (Sisa más
   clara, Mensajero medio, Curaca y Chanca oscuros); ya no se multiplica una
   albedo clara por un tinte que aplastaba el contraste.
-- **Cara:** los seis comparten la topología UBC, pero cambian mandíbula,
+- **Cara:** los diez comparten la topología UBC, pero cambian mandíbula,
   pómulos, nariz, cejas (grosor y ángulo), labios, ojeras y líneas de edad. El
   Curaca y la mujer mayor suman mejillas hundidas y papada; Sisa y el joven,
   cejas más finas y labios llenos. No hay blendshapes ni sincronía labial.
 - **Rasgos andinos (R):** pómulos anchos, nariz recta y algo ancha, labios
   llenos, pelo negro liso y piel media/oscura. La mujer mayor lleva canas,
-  trenzas, anacu y lliclla; el joven, unku sencillo, faja y chuspa. No son
-  retratos ni una reconstrucción antropológica: son arquetipos estilizados
-  sobre UBC para que la multitud no repita el mismo rostro.
+  trenzas, anacu y lliclla; el joven, unku sencillo, faja y chuspa. La familia
+  de Rumi —madre, hermano, Puma y Anca— comparte esos criterios con ropa y
+  edades distintas; Puma lleva manto y chuspa sin las insignias del curaca. No
+  son retratos ni una reconstrucción antropológica: son personajes estilizados
+  sobre UBC.
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada con la estática fusionada (carga 6–16; no es una medición limpia):
+Última pasada con la familia de la llacta (carga 5,2; no es una medición limpia):
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
-| Llacta | Quaternius | 89,2 | 297 | 217 MB |
+| Llacta | Quaternius | 64,8 | 300 | 209 MB |
 | Cusco | anterior | — | 328 | 225 MB |
-| Cusco | Quaternius | 67,0 | 343 | 233 MB |
+| Cusco | Quaternius | 54,0 | 343 | 233 MB |
 
 `StaticMeshBatch` fusiona casas, props, mercado, mobiliario, puerta, remates de
-muro, terrazas, santuario y vegetación por material/tinte. El Cusco baja de
-**494 a 343 draw calls** y la llacta de **341 a 297**; el Cusco queda **por
-debajo del presupuesto de 350**. El set Quaternius cuesta **+15 draw calls**
-frente al anterior (343 frente a 328), no +14: la comparación es con la misma
-estática fusionada. La memoria sube ~8 MB por la copia de los vértices
-fusionados; los originales quedan ocultos. Los FPS se midieron con carga alta
-(6–16) y mucha varianza: falta repetir la medición en un equipo descargado.
-Solo **3 de los 10 puestos** de la multitud usan Quaternius (mensajero + mujer
-mayor + joven); el resto sigue con el elenco anterior.
+muro, terrazas, santuario y vegetación por material/tinte. El Cusco queda en
+**343 draw calls** y la llacta en **300** con la familia; ambos por debajo del
+presupuesto de 350. El set Quaternius cuesta **+15 draw calls** frente al
+anterior (343 frente a 328) con la misma estática fusionada. La memoria sube
+~8 MB por la copia de los vértices fusionados; los originales quedan ocultos.
+Los FPS se midieron con carga 5,2–16 y mucha varianza (54–69 en el Cusco): falta
+repetir la medición en un equipo descargado. Solo **3 de los 10 puestos** de la
+multitud usan Quaternius (mensajero + mujer mayor + joven); el resto sigue con
+el elenco anterior.
 
 ## 4. Dirección artística
 
@@ -139,6 +146,14 @@ paleta:
 | Hombre joven | ![Hombre joven](img/personajes/joven_q.png) |
 | Hombre joven de cerca | ![Hombre joven de cerca](img/personajes/joven_close_q.png) |
 | Mujer mayor en la multitud del Cusco | ![Multitud](img/personajes/crowd_anciana_q.png) |
+| Madre | ![Madre](img/personajes/madre_q.png) |
+| Madre de cerca | ![Madre de cerca](img/personajes/madre_close_q.png) |
+| Hermano | ![Hermano](img/personajes/hermano_q.png) |
+| Hermano de cerca | ![Hermano de cerca](img/personajes/hermano_close_q.png) |
+| Puma | ![Puma](img/personajes/puma_q.png) |
+| Puma de cerca | ![Puma de cerca](img/personajes/puma_close_q.png) |
+| Anca | ![Anca](img/personajes/anca_q.png) |
+| Anca de cerca | ![Anca de cerca](img/personajes/anca_close_q.png) |
 | Mano en primera persona | ![Mano](img/personajes/mano_q.png) |
 
 Comparación con el elenco anterior:
@@ -173,10 +188,13 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
 - Los cuerpos se estrecharon y las cabezas varían, pero siguen siendo atléticos
   bajo la ropa. El estándar no trae cuerpos regular/teen; el Source de pago no
   se usa.
-- Las seis caras comparten la topología base. La textura de 1024 y los
+- Las diez caras comparten la topología base. La textura de 1024 y los
   ajustes de mandíbula, pómulos, nariz, cejas, labios y edad ya las separan,
-  pero no hay caras esculpidas ni blendshapes. La mujer mayor y el hombre joven
-  ya existen; el resto de la multitud sigue con el elenco anterior.
+  pero no hay caras esculpidas ni blendshapes. La familia de la llacta ya usa
+  el set; el resto de la multitud sigue con el elenco anterior.
+- **HijoPuma** sigue con el elenco anterior: el estándar gratuito de UBC solo
+  trae cuerpos adultos y escalar uno a 1,35 m daría un adulto bajito, no un
+  niño. Queda pendiente una base infantil.
 - El pelo, la barba y las cejas son mallas UBC con textura compartida; a
   distancia se leen bien, de cerca siguen siendo geométricos.
 - Mano en primera persona: se sustituyó el bloqueo por una malla propia
@@ -207,7 +225,7 @@ python3 tools/check_gdscript_limits.py
 Resultados de la entrega: **131 pruebas, 0 fallos**; arena con el set anterior
 y con el set Quaternius (`resolved=3`, `max_attackers=1`); `ARCO_OK` con el set
 Quaternius; importación sin errores ni advertencias de `res://`. Las pruebas
-recorren los seis modelos y las seis texturas de cara.
+recorren los diez modelos y las diez texturas de cara.
 
 Las pruebas nuevas son `test_quaternius_characters.gd` (altura, base, ausencia
 de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`,
@@ -224,6 +242,7 @@ ropa es más simple que la anterior y el cuerpo sigue siendo heroico; por eso
 
 Siguiente lote, en este orden:
 
-1. Cerrar la medición del Cusco y decidir la multitud: fusionar estática o LOD.
+1. Decidir el LOD o la reducción de la multitud del Cusco para migrar los 10
+   puestos sin volver a pasar de 350 draw calls.
 2. Añadir articulación o poses por dedo a la mano en primera persona.
-3. Solo entonces, migrar el resto del elenco.
+3. Medición limpia y validaciones humanas.
