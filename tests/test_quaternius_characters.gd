@@ -46,6 +46,17 @@ func test_quaternius_assets() -> bool:
 			if player == null or not player.has_animation(clip):
 				printerr(file_name, ": falta el clip ", clip)
 				ok = false
+		if player != null:
+			# UAL2 sustituye idle alterno, trabajo y reacción al golpe.
+			if not player.has_animation(&"idle_b") or player.get_animation(&"idle_b").length < 2.5:
+				printerr(file_name, ": idle_b no viene de UAL2")
+				ok = false
+			if not player.has_animation(&"work") or player.get_animation(&"work").length < 2.7:
+				printerr(file_name, ": work no viene de UAL2")
+				ok = false
+			if not player.has_animation(&"hit") or player.get_animation(&"hit").length < 0.8:
+				printerr(file_name, ": hit no viene de UAL2")
+				ok = false
 		var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
 		if meshes.size() > 7:
 			printerr(file_name, ": demasiadas mallas ", meshes.size())

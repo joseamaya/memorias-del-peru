@@ -75,6 +75,8 @@ renovación visual. Se generan con `../blender/pch_quaternius.py`.
 | Ropa, trenzas, cintas, faja, chuspa, tupu y sandalias | Autoría propia, generada por `pch_quaternius.py` | Propia | 2026-11-16 |
 | Clips de locomoción, conversación y combate | UAL1, `shared_assets/characters/mannequin/ual1_standard.glb` | CC0 1.0 | 2026-11-16 |
 
+Los GLB no incluyen las texturas: `SurfaceMaterials` las carga desde
+`shared_assets/characters/quaternius/base/` y las comparte entre personajes.
 El detalle de la procedencia, las texturas reducidas y los packs descartados
 está en `shared_assets/characters/quaternius/LICENSE.md`. La versión Source de
 pago no se usó.

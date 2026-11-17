@@ -43,14 +43,16 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 
 ## 3. Rig y rendimiento
 
-- **65 huesos**, los mismos de UAL1/UAL2. El prototipo usa UAL1: `idle`,
-  `idle_b`, `walk`, `run`, `talk`, `work`, `weave`, `tired`, `attack`, `hit`
-  y `death`.
+- **65 huesos**, los mismos de UAL1/UAL2. `QuaterniusClips` combina UAL1
+  (`idle`, `walk`, `run`, `talk`, `attack`, `death`) con 11 clips de UAL2:
+  `idle_b`, `work` y `hit` vienen de UAL2; el resto de UAL1.
 - Los GLB salen **sin animaciones**; `QuaterniusClips` copia los clips una vez
   y los añade al `AnimationPlayer` de cada personaje.
-- **19,5 k triángulos** por personaje; 5–6 mallas; texturas de 512 px (ojos de
-  256 px); materiales `pch.body_light/mid/dark`, `pch.hair`, `pch.hair_grey`,
-  `pch.eye` y `pch_cloth`.
+- **19,5 k triángulos** por personaje; 5–6 mallas; **GLB de 1–1,6 MB**.
+- Los GLB **no embeben texturas**. `SurfaceMaterials` carga una sola vez las
+  texturas de 512 px (ojos de 256 px) desde `base/` y comparte materiales:
+  `pch.body_light/mid/dark_<m|f>`, `pch.hair_dark/grey_<m|f>`, `pch.eye` y
+  `pch_cloth`.
 - **Re-proporcionado:** cada cuerpo se estrecha en X y se le da una cabeza
   distinta (ancho, profundidad y mandíbula) antes de hornear la escala. No hay
   nodos con escala: el GLB pasa `AssetValidation`.
@@ -59,22 +61,21 @@ El valor por defecto es el elenco anterior. El catálogo vive en
 - Orientación: frente hacia −Z, pies en el suelo, sin escala de nodo; el
   `ModelSlot.fit_height` sigue ajustando la altura de cada papel.
 
-Última pasada local con carga 1,2–1,4, misma sesión para ambos sets:
+Última pasada local con UAL2 y texturas compartidas, carga 3,5–3,9:
 
 | Escena | Set | FPS medio | Draw calls | Memoria de vídeo |
 |---|---|---|---|---|
 | Llacta | anterior | 105,4 | 336 | 195 MB |
-| Llacta | Quaternius | 98,3 | 341 | 209 MB |
-| Cusco | anterior | 65,1 | 481 | 211 MB |
-| Cusco | Quaternius | 71,6 | 491 | 203 MB |
+| Llacta | Quaternius | 114,8 | 341 | 212 MB |
+| Cusco | anterior | 76,2 | 484 | 211 MB |
+| Cusco | Quaternius | 73,1 | 492 | 202 MB |
 
-El coste es de **+5 draw calls** en la llacta y **+10** en el Cusco. La llacta
-pierde ~7 FPS; el Cusco se movió entre 65 y 72 FPS según la pasada, siempre por
-encima de 60. La variación entre sesiones es alta (pasadas anteriores dieron
-117,6/77,4): hay que repetir la medición en un equipo descargado antes de
-cerrar el set completo. Las texturas de 512 px hacen que el Cusco no gane
-memoria. Aun así, el set completo —multitud incluida— no cabe en el
-presupuesto de 350 draw calls: no se sustituye la multitud del Cusco.
+El coste es de **+5 draw calls** en la llacta y **+8** en el Cusco. La llacta
+gana FPS en esta pasada; el Cusco pierde ~3 FPS y la memoria baja ~9 MB. La
+variación entre sesiones es alta: hay que repetir la medición en un equipo
+descargado antes de cerrar el set completo. Aun así, el set completo —multitud
+incluida— no cabe en el presupuesto de 350 draw calls: no se sustituye la
+multitud del Cusco.
 
 ## 4. Dirección artística
 
@@ -152,12 +153,10 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
   gestos de cuerpo y cabeza. No hay sincronía labial.
 - Muelles de manto: la ropa nueva se pesa al torso, no a cadenas `Cape_*`; el
   manto no se mece como el anterior.
-- UAL2: se verificó su compatibilidad de 65 huesos, pero no se integró; el
-  prototipo usa UAL1.
 - Multitud del Cusco y el resto del elenco: no se sustituyen hasta cerrar la
   medición y las variantes de cara.
-- Texturas compartidas: cada GLB embebe sus texturas. Para el elenco completo
-  hay que pasar a una carpeta común o a materiales compartidos.
+- El Cusco sigue por encima del presupuesto de 350 draw calls; la solución
+  pasa por LOD/multitud o por dejar la multitud con el elenco anterior.
 
 ## 7. Pruebas
 
@@ -174,8 +173,9 @@ y con el set Quaternius (`resolved=3`, `max_attackers=1`); `ARCO_OK` con el set
 Quaternius; importación sin errores ni advertencias de `res://`.
 
 Las pruebas nuevas son `test_quaternius_characters.gd` (altura, base, ausencia
-de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips) y
-`test_first_person_hands.gd` (malla de la mano y gesto de interacción).
+de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`,
+`work` y `hit` de UAL2) y `test_first_person_hands.gd` (malla de la mano y gesto
+de interacción).
 
 ## 8. Recomendación
 
@@ -188,7 +188,6 @@ Siguiente lote, en este orden:
 
 1. Cerrar la variación de caras con arrugas, nariz y boca; el cráneo y la piel
    ya varían.
-2. Compartir texturas y cerrar la medición del Cusco.
-3. Integrar UAL2 para combate y oficios.
-4. Añadir articulación o poses por dedo a la mano en primera persona.
-5. Solo entonces, migrar el resto del elenco.
+2. Cerrar la medición del Cusco y decidir la multitud.
+3. Añadir articulación o poses por dedo a la mano en primera persona.
+4. Solo entonces, migrar el resto del elenco.

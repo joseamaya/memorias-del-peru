@@ -11,6 +11,9 @@ extends RefCounted
 ## No conoce campañas ni escenas.
 
 const SOURCE_PATH: String = "res://shared_assets/characters/mannequin/ual1_standard.glb"
+## Librería compacta extraída de UAL2 Standard: idle alterno, trabajo y
+## reacción al golpe. El archivo se genera con `pch_ual2_library.py`.
+const UAL2_PATH: String = "res://shared_assets/characters/quaternius/animations/UAL2_Prototype.glb"
 ## Clip de UAL1 que alimenta cada acción del juego.
 const SOURCE_CLIPS: Dictionary[StringName, StringName] = {
 	&"idle": &"Idle",
@@ -24,6 +27,12 @@ const SOURCE_CLIPS: Dictionary[StringName, StringName] = {
 	&"attack": &"Sword_Attack",
 	&"hit": &"Hit_Chest",
 	&"death": &"Death01",
+}
+## Clips de UAL2 que sustituyen al clip de UAL1 del mismo nombre lógico.
+const UAL2_CLIPS: Dictionary[StringName, StringName] = {
+	&"idle_b": &"Idle_No",
+	&"work": &"Farm_PlantSeed",
+	&"hit": &"Hit_Knockback",
 }
 const LOOPED: Array[StringName] = [
 	&"idle", &"idle_b", &"walk", &"run", &"talk", &"work", &"weave", &"tired",
@@ -105,9 +114,15 @@ static func available() -> Array[StringName]:
 
 
 static func _load() -> void:
-	if not ResourceLoader.exists(SOURCE_PATH):
+	_load_source(SOURCE_PATH, SOURCE_CLIPS)
+	_load_source(UAL2_PATH, UAL2_CLIPS)
+
+
+## Carga un GLB de animaciones y copia sus clips con el nombre lógico del juego.
+static func _load_source(path: String, mapping: Dictionary[StringName, StringName]) -> void:
+	if not ResourceLoader.exists(path):
 		return
-	var packed: PackedScene = load(SOURCE_PATH) as PackedScene
+	var packed: PackedScene = load(path) as PackedScene
 	if packed == null:
 		return
 	var holder: Node = packed.instantiate()
@@ -115,8 +130,8 @@ static func _load() -> void:
 	if source == null:
 		holder.free()
 		return
-	for logical: StringName in SOURCE_CLIPS:
-		var source_name: StringName = SOURCE_CLIPS[logical]
+	for logical: StringName in mapping:
+		var source_name: StringName = mapping[logical]
 		if not source.has_animation(source_name):
 			continue
 		var clip: Animation = source.get_animation(source_name).duplicate() as Animation

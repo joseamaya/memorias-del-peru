@@ -19,8 +19,9 @@ Convenciones:
 - 1 unidad = 1 metro, pies en el suelo, frente hacia -Z de Godot.
 - La ropa lleva clase de superficie y coordenadas de tejido para el shader
   `pch_cloth`, igual que `pch_people.py`.
-- Los materiales se llaman `pch.body`, `pch.hair`, `pch.eye` y `pch_cloth`;
-  `SurfaceMaterials` los reconoce.
+- Los materiales se llaman `pch.body_<tono>_<m|f>`, `pch.hair_<color>_<m|f>`,
+  `pch.eye` y `pch_cloth`. `SurfaceMaterials` carga las texturas compartidas de
+  `shared_assets/characters/quaternius/base/`: el GLB no las embebe.
 """
 
 import argparse
@@ -186,30 +187,19 @@ def import_ubc(gender: str):
 			bpy.data.objects.remove(obj, do_unlink=True)
 	if armature is None or body is None:
 		raise SystemExit("No se encontró el cuerpo o el esqueleto UBC")
-	# Nombres de material que el juego reconoce.
+	# Nombres de material que el juego reconoce. El sufijo _m/_f elige la
+	# textura compartida en `SurfaceMaterials`.
+	suffix = "_m" if gender == "male" else "_f"
 	for material in bpy.data.materials:
 		if material.name.startswith("MI_Superhero"):
-			material.name = "pch.body"
+			material.name = "pch.body" + suffix
 		elif material.name == "MI_Eyes":
 			material.name = "pch.eye"
 		elif material.name.startswith("MI_Hair"):
-			material.name = "pch.hair"
+			material.name = "pch.hair_dark" + suffix
 	armature.name = "Armature"
 	body.name = "Body"
-	_tint_material("pch.body", (0.72, 0.54, 0.40))
-	_tint_material("pch.hair", (0.18, 0.14, 0.11))
 	return armature, body
-
-
-def _tint_material(name: str, srgb_color: tuple):
-	"""Multiplica la textura por un color base sin perder su detalle."""
-	material = bpy.data.materials.get(name)
-	if material is None or not material.use_nodes:
-		return
-	bsdf = material.node_tree.nodes.get("Principled BSDF")
-	if bsdf is None:
-		return
-	bsdf.inputs["Base Color"].default_value = srgb(srgb_color)
 
 
 def import_hair(armature, hair_name: str, material_name: str = "pch.hair", grey: bool = False):
@@ -292,7 +282,7 @@ def add_sleeve(garment: Garment, armature, side: str, color_name: str, short: bo
 	garment.tube(rings, sleeve_color, weights)
 
 
-def build_clothes(body: bpy.types.Object, armature, spec: dict):
+def build_clothes(body: bpy.types.Object, armature, spec: dict, hair_material_name: str):
 	body_info = BodyInfo(body)
 	garment = Garment()
 	segments = 24
@@ -469,7 +459,7 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict):
 				ellipsoid(
 					"Braid%s%d" % ("L" if side > 0 else "R", index),
 					center, (0.020 - 0.003 * t, 0.020 - 0.003 * t, 0.032),
-					bpy.data.materials["pch.hair"], armature,
+					bpy.data.materials[hair_material_name], armature,
 					{"Head": 1.0}, segments=10, rings=6,
 				)
 
@@ -487,10 +477,12 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict):
 	return clothes
 
 
-def prepare_body_materials(body: bpy.types.Object, skin_name: str = "pch.body"):
+def prepare_body_materials(body: bpy.types.Object, skin_name: str = "pch.body_mid",
+		gender: str = "male"):
+	suffix = "_m" if gender == "male" else "_f"
 	for slot in body.material_slots:
 		if slot.material is not None:
-			slot.material.name = skin_name
+			slot.material.name = skin_name + suffix
 
 
 def apply_width(armature, width: float) -> None:
@@ -567,13 +559,24 @@ def shape_face(spec: dict) -> None:
 		obj.data.update()
 
 
+def strip_textures() -> None:
+	"""Quita las texturas del GLB: el juego las comparte desde `base/`."""
+	for material in bpy.data.materials:
+		if not material.use_nodes:
+			continue
+		for node in list(material.node_tree.nodes):
+			if node.type == "TEX_IMAGE":
+				material.node_tree.nodes.remove(node)
+
+
 def build_character(spec: dict, name: str, out_dir: str):
 	clear_scene()
 	armature, body = import_ubc(spec["gender"])
-	prepare_body_materials(body, str(spec.get("skin", "pch.body")))
+	prepare_body_materials(body, str(spec.get("skin", "pch.body_mid")), str(spec["gender"]))
 	# Peinado y barba.
 	grey = bool(spec.get("hair_grey", False))
-	hair_name = "pch.hair_grey" if grey else "pch.hair"
+	gender_suffix = "_m" if str(spec["gender"]) == "male" else "_f"
+	hair_name = "pch.hair_grey" + gender_suffix if grey else "pch.hair_dark" + gender_suffix
 	hair = import_hair(armature, spec["hair"], hair_name, grey)
 	if spec.get("beard"):
 		beard = import_hair(armature, "Hair_Beard", hair_name, grey)
@@ -581,13 +584,13 @@ def build_character(spec: dict, name: str, out_dir: str):
 			# Barba canosa para la autoridad; el material se comparte con el pelo.
 			beard.name = "Beard"
 	if grey:
-		grey_material = bpy.data.materials.get("pch.hair_grey")
+		grey_material = bpy.data.materials.get("pch.hair_grey" + gender_suffix)
 		for obj in bpy.data.objects:
 			if obj.type == "MESH" and obj.name.startswith("Eyebrow") and grey_material is not None:
 				obj.data.materials.clear()
 				obj.data.materials.append(grey_material)
 	# Ropa.
-	clothes = build_clothes(body, armature, spec)
+	clothes = build_clothes(body, armature, spec, hair_name)
 	# Las trenzas se unen al pelo para no añadir una malla por cuenta.
 	braids = [obj for obj in bpy.data.objects if obj.type == "MESH" and obj.name.startswith("Braid")]
 	if hair is not None and braids:
@@ -611,12 +614,13 @@ def build_character(spec: dict, name: str, out_dir: str):
 	armature["pch_note"] = spec.get("notes", "")
 	armature["pch_walk_cycle_speed"] = 1.05
 	armature["pch_run_cycle_speed"] = 2.45
-	armature["pch_work_beat"] = 1.1
+	armature["pch_work_beat"] = 1.4
 	body["pch_rig"] = "quaternius"
 	# Nombres finales.
 	body.name = "Body"
 	clothes.name = "Clothes"
 	armature.name = "Armature"
+	strip_textures()
 	# Exporta solo la jerarquía del personaje.
 	os.makedirs(out_dir, exist_ok=True)
 	path = os.path.join(out_dir, name + ".glb")
@@ -631,6 +635,7 @@ def build_character(spec: dict, name: str, out_dir: str):
 		export_lights=False,
 		export_extras=True,
 		export_vertex_color="ACTIVE",
+		export_image_format="NONE",
 	)
 	print("EXPORTED", path)
 	return path

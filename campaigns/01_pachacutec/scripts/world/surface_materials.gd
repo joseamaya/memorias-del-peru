@@ -48,10 +48,14 @@ const CLOTH_DETAIL: float = 0.72
 ## Umbral de recorte del pelo y las cejas.
 const HAIR_ALPHA_SCISSOR: float = 0.4
 
+## Texturas compartidas de los cuerpos Quaternius. Los GLB no las embeben:
+## `SurfaceMaterials` las carga una vez y comparte el material entre modelos.
+const Q_BASE: String = "res://shared_assets/characters/quaternius/base/"
 static var _model_material: ShaderMaterial = null
 static var _cloth_material: ShaderMaterial = null
 ## Materiales de ropa con textil propio, uno por textura de personaje.
 static var _textile_materials: Dictionary[Texture2D, ShaderMaterial] = {}
+static var _q_materials: Dictionary[String, Material] = {}
 
 
 ## Material compartido de los modelos generados: capa según la clase de
@@ -187,30 +191,23 @@ static func apply_to_model(root: Node) -> int:
 				mesh_instance.set_surface_override_material(surface, _skin(material as BaseMaterial3D))
 				touched = true
 			elif material is BaseMaterial3D and material.resource_name.begins_with("pch.body"):
-				# Piel Quaternius: la textura es clara; el tinte la lleva al
-				# moreno de la sierra sin perder labios, ojos ni detalle.
-				var skin_tint: Color = Color(0.72, 0.55, 0.42, 1.0)
-				if material.resource_name.ends_with("_light"):
-					skin_tint = Color(0.80, 0.62, 0.48, 1.0)
-				elif material.resource_name.ends_with("_dark"):
-					skin_tint = Color(0.62, 0.46, 0.35, 1.0)
-				mesh_instance.set_surface_override_material(
-					surface, _skin(material as BaseMaterial3D, skin_tint))
+				var q_skin: Material = _quaternius_material(material.resource_name)
+				if q_skin != null:
+					mesh_instance.set_surface_override_material(surface, q_skin)
+				else:
+					mesh_instance.set_surface_override_material(
+						surface, _skin(material as BaseMaterial3D, Color(0.72, 0.55, 0.42, 1.0)))
 				touched = true
 			elif material is BaseMaterial3D and material.resource_name.begins_with("pch.eye"):
-				var q_eyes: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
-				q_eyes.roughness = 0.22
-				q_eyes.metallic_specular = 0.45
+				var q_eyes: Material = _quaternius_material(material.resource_name)
+				if q_eyes == null:
+					q_eyes = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
 				mesh_instance.set_surface_override_material(surface, q_eyes)
 				touched = true
 			elif material is BaseMaterial3D and (material.resource_name.begins_with("pch.hair") or material.resource_name.begins_with("MI_Hair")):
-				var q_hair: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
-				q_hair.albedo_color = Color(0.20, 0.15, 0.11, 1.0)
-				if material.resource_name.begins_with("pch.hair_grey"):
-					q_hair.albedo_color = Color(0.62, 0.58, 0.52, 1.0)
-				q_hair.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
-				q_hair.alpha_scissor_threshold = HAIR_ALPHA_SCISSOR
-				q_hair.cull_mode = BaseMaterial3D.CULL_DISABLED
+				var q_hair: Material = _quaternius_material(material.resource_name)
+				if q_hair == null:
+					q_hair = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
 				mesh_instance.set_surface_override_material(surface, q_hair)
 				touched = true
 			elif material is BaseMaterial3D and material.resource_name.ends_with(".low-poly"):
@@ -233,6 +230,80 @@ static func apply_to_model(root: Node) -> int:
 		if touched:
 			changed += 1
 	return changed
+
+
+## Material compartido de un cuerpo Quaternius. Los nombres llevan tono y
+## género: `pch.body_mid_m`, `pch.hair_dark_f`, `pch.hair_grey_m`.
+static func _quaternius_material(name: String) -> Material:
+	if _q_materials.has(name):
+		return _q_materials[name]
+	var material: StandardMaterial3D = null
+	if name.begins_with("pch.body_"):
+		var parts: PackedStringArray = name.trim_prefix("pch.body_").split("_")
+		if parts.size() < 2:
+			return null
+		var tone: String = parts[0]
+		var male: bool = parts[1] == "m"
+		var base_name: String = ("T_Superhero_Male_Dark" if male
+			else "T_Superhero_Female_Dark_BaseColor")
+		var albedo: Texture2D = load(Q_BASE + base_name + ".png") as Texture2D
+		var normal: Texture2D = load(Q_BASE + ("T_Superhero_Male_Normal" if male
+			else "T_Superhero_Female_Normal") + ".png") as Texture2D
+		if albedo == null:
+			return null
+		var tint: Color = Color(0.72, 0.55, 0.42, 1.0)
+		if tone == "light":
+			tint = Color(0.80, 0.62, 0.48, 1.0)
+		elif tone == "dark":
+			tint = Color(0.62, 0.46, 0.35, 1.0)
+		material = StandardMaterial3D.new()
+		material.albedo_texture = albedo
+		material.albedo_color = tint
+		material.normal_enabled = normal != null
+		material.normal_texture = normal
+		material.roughness = 0.72
+		material.metallic_specular = 0.25
+		material.rim_enabled = true
+		material.rim = 0.16
+		material.rim_tint = 0.45
+		material.subsurf_scatter_enabled = true
+		material.subsurf_scatter_strength = 0.12
+		material.subsurf_scatter_skin_mode = true
+	elif name.begins_with("pch.hair_"):
+		var parts: PackedStringArray = name.trim_prefix("pch.hair_").split("_")
+		if parts.size() < 2:
+			return null
+		var grey: bool = parts[0] == "grey"
+		var male: bool = parts[1] == "m"
+		var hair_name: String = "T_Hair_1" if male else "T_Hair_2"
+		var albedo: Texture2D = load(Q_BASE + hair_name + "_BaseColor.png") as Texture2D
+		var normal: Texture2D = load(Q_BASE + hair_name + "_Normal.png") as Texture2D
+		if albedo == null:
+			return null
+		material = StandardMaterial3D.new()
+		material.albedo_texture = albedo
+		material.albedo_color = Color(0.62, 0.58, 0.52, 1.0) if grey else Color(0.20, 0.15, 0.11, 1.0)
+		material.normal_enabled = normal != null
+		material.normal_texture = normal
+		material.roughness = 0.82
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+		material.alpha_scissor_threshold = HAIR_ALPHA_SCISSOR
+		material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	elif name.begins_with("pch.eye"):
+		var albedo: Texture2D = load(Q_BASE + "T_Eye_Brown.png") as Texture2D
+		var normal: Texture2D = load(Q_BASE + "T_Eye_Normal.png") as Texture2D
+		if albedo == null:
+			return null
+		material = StandardMaterial3D.new()
+		material.albedo_texture = albedo
+		material.normal_enabled = normal != null
+		material.normal_texture = normal
+		material.roughness = 0.22
+		material.metallic_specular = 0.45
+	if material == null:
+		return null
+	_q_materials[name] = material
+	return material
 
 
 static func _skin(material: BaseMaterial3D, tint: Color = Color(1.0, 0.94, 0.88, 1.0)) -> BaseMaterial3D:

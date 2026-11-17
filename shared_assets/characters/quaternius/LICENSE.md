@@ -7,6 +7,17 @@
 - Texturas de piel, ojos y pelo de la carpeta `base/`
 - `hair/Hair_SimpleParted.gltf`, `Hair_Long.gltf`, `Hair_Buns.gltf` y `Hair_Beard.gltf` con sus `.bin`
 - Los clips de **UAL1** que ya viven en `shared_assets/characters/mannequin/ual1_standard.glb` (ver su `LICENSE.md`).
+- `animations/UAL2_Prototype.glb`: 11 clips de **Universal Animation Library 2 (Standard gratuito)**, Quaternius, CC0. Se extraen con `pch_ual2_library.py`; no se versiona el paquete completo de 18 MB.
+
+## UAL2 Standard
+
+- **Autor:** Quaternius
+- **Pack:** Universal Animation Library 2, versión **Standard gratuita**
+- **Origen:** https://quaternius.com/packs/universalanimationlibrary2.html
+- **Descarga:** `Universal Animation Library 2[Standard].zip`, 18 MB, descargado el 2026-11-17
+- **Licencia:** CC0 1.0
+- **Clips conservados:** `Idle_No_Loop`, `Farm_PlantSeed`, `Farm_Harvest`, `TreeChopping_Loop`, `Hit_Knockback`, `Melee_Hook`, `Melee_Hook_Rec`, `Walk_Carry_Loop`, `Sword_Block`, `Yes`, `Chest_Open`.
+- **Uso:** `idle_b`, `work` y `hit` del prototipo. La versión Source de pago no se usa.
 
 ## Origen y licencia
 
