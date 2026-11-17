@@ -157,7 +157,8 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
 - **Chancas:** unku oscuro, manto pesado, porra, honda y escudo; acento teal
   `#296B85`; sin máscaras ni plumas inventadas.
 - **Rumi:** joven, unku y manto; la mano en primera persona lleva manga de
-  unku. La mejora de esa mano queda pendiente.
+  unku y bocamanga. La malla ya sustituye al bloqueo; falta articulación fina
+  de los dedos.
 - **Evitar:** armaduras de fantasía, hombreras, capuchas, tabardos, penachos y
   cualquier forma que diga “medieval europeo”.
 

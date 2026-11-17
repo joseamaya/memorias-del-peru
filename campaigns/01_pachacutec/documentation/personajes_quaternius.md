@@ -106,6 +106,7 @@ paleta:
 | Curaca | ![Curaca](img/personajes/curaca_q.png) |
 | Mensajero | ![Mensajero](img/personajes/mensajero_q.png) |
 | Chanca | ![Chanca](img/personajes/chanca_q.png) |
+| Mano en primera persona | ![Mano](img/personajes/mano_q.png) |
 
 Comparación con el elenco anterior:
 
@@ -142,10 +143,11 @@ colisión de escena, catálogo legacy/Quaternius, arena y arco completo.
 - Las cuatro caras comparten la topología base. Hay variación de cráneo,
   mandíbula, pómulos y piel, pero faltan arrugas, narices y bocas esculpidas
   para que el elenco no se lea como variantes del mismo rostro.
-- Manos y antebrazos en primera persona: el jugador sigue viendo el bloqueo
-  anterior. Se intentó un recorte estático de la mano UBC, pero el encuadre y
-  la deformación del antebrazo no pasaron la prueba; se descartó y no se
-  versiona. Queda pendiente un viewmodel dedicado.
+- Mano en primera persona: se sustituyó el bloqueo por una malla propia
+  (antebrazo, palma, cuatro dedos de tres falanges, pulgar, manga y bocamanga)
+  que usa el mismo tween de interacción. No tiene animación por dedo ni
+  articulación; las poses son globales. El recorte de la mano UBC se descartó
+  porque deformaba el antebrazo.
 - Expresiones faciales y labios: UBC no trae blendshapes; el juego ya usa
   gestos de cuerpo y cabeza. No hay sincronía labial.
 - Muelles de manto: la ropa nueva se pesa al torso, no a cadenas `Cape_*`; el
@@ -167,13 +169,13 @@ godot --headless --path . --script res://tests/arc_playthrough.gd -- --visual-se
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados de la entrega: **129 pruebas, 0 fallos**; arena con el set anterior
+Resultados de la entrega: **130 pruebas, 0 fallos**; arena con el set anterior
 y con el set Quaternius (`resolved=3`, `max_attackers=1`); `ARCO_OK` con el set
 Quaternius; importación sin errores ni advertencias de `res://`.
 
-Las pruebas nuevas son `test_quaternius_characters.gd`: validan altura, base,
-ausencia de colisión, 65 huesos, `Head`/`hand_r`, materiales, clips y el
-`NpcActor` con un cuerpo Quaternius.
+Las pruebas nuevas son `test_quaternius_characters.gd` (altura, base, ausencia
+de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips) y
+`test_first_person_hands.gd` (malla de la mano y gesto de interacción).
 
 ## 8. Recomendación
 
@@ -188,5 +190,5 @@ Siguiente lote, en este orden:
    ya varían.
 2. Compartir texturas y cerrar la medición del Cusco.
 3. Integrar UAL2 para combate y oficios.
-4. Resolver manos en primera persona.
+4. Añadir articulación o poses por dedo a la mano en primera persona.
 5. Solo entonces, migrar el resto del elenco.

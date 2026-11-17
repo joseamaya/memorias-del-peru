@@ -35,6 +35,17 @@ func _capture() -> void:
 	await _shot(camera, Vector3(-6.4, 1.5, -6.6), Vector3(-7.0, 1.15, -3.0), prefix + "_curaca")
 	await _shot(camera, Vector3(-2.4, 1.5, 0.2), Vector3(-3.0, 1.15, 3.0), prefix + "_mensajero")
 	await _shot(camera, Vector3(1.0, 1.65, 14.0), Vector3(0.0, 1.0, 4.0), prefix + "_llacta")
+	# Mano en primera persona: se usa la cámara del jugador.
+	var llacta_player: Node3D = llacta.get_node_or_null("PlayerFPS") as Node3D
+	if llacta_player != null:
+		var player_camera: Camera3D = llacta_player.get_node_or_null("Head/Camera3D") as Camera3D
+		var hand: FirstPersonHands = llacta_player.get_node_or_null(
+			"Head/Camera3D/FirstPersonHands") as FirstPersonHands
+		if player_camera != null and hand != null:
+			player_camera.current = true
+			hand.play(&"offer")
+			await _frames(7)
+			_save(prefix + "_mano")
 	llacta.queue_free()
 	await _frames(3)
 
@@ -63,6 +74,13 @@ func _capture() -> void:
 		manager.call("request_quit", 0)
 	else:
 		get_tree().quit()
+
+
+func _save(slug: String) -> void:
+	var image: Image = get_viewport().get_texture().get_image()
+	var file: String = "user://%s.png" % slug
+	image.save_png(file)
+	print("CAPTURA ", slug, " -> ", file)
 
 
 func _shot(camera: Camera3D, at: Vector3, target: Vector3, slug: String) -> void:

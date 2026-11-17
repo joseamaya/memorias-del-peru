@@ -580,6 +580,12 @@ def build_character(spec: dict, name: str, out_dir: str):
 		if beard is not None:
 			# Barba canosa para la autoridad; el material se comparte con el pelo.
 			beard.name = "Beard"
+	if grey:
+		grey_material = bpy.data.materials.get("pch.hair_grey")
+		for obj in bpy.data.objects:
+			if obj.type == "MESH" and obj.name.startswith("Eyebrow") and grey_material is not None:
+				obj.data.materials.clear()
+				obj.data.materials.append(grey_material)
 	# Ropa.
 	clothes = build_clothes(body, armature, spec)
 	# Las trenzas se unen al pelo para no añadir una malla por cuenta.

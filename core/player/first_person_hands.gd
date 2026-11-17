@@ -2,24 +2,30 @@ class_name FirstPersonHands
 extends Node3D
 ## Mano y antebrazo en primera persona para las interacciones.
 ##
-## Es una malla sencilla, propia y sin texturas: aparece durante la acción,
+## Es una malla propia, sombreada y articulada visualmente: antebrazo, muñeca,
+## palma, cuatro dedos de tres falanges y pulgar. Aparece durante la acción,
 ## entra hacia el centro de la pantalla y se retira. El interactuable elige la
 ## acción con `hand_action`; «Hablar» la desactiva. No tiene colisión ni
 ## participa en el raycast.
 
-const REST_POSITION: Vector3 = Vector3(0.30, -0.38, -0.52)
-const REST_ROTATION: Vector3 = Vector3(72.0, -12.0, 0.0)
-const HAND_SCALE: float = 0.82
+const REST_POSITION: Vector3 = Vector3(0.34, -0.36, -0.56)
+const REST_ROTATION: Vector3 = Vector3(66.0, -14.0, 0.0)
+const HAND_SCALE: float = 0.78
 const REACH_SECONDS: float = 0.22
 const HOLD_SECONDS: float = 0.18
 const RETURN_SECONDS: float = 0.32
+
+## X, separación, largo y radio de cada dedo. El meñique es el más corto.
+const FINGER_X: Array[float] = [-0.033, -0.011, 0.011, 0.033]
+const FINGER_YAW: Array[float] = [-4.0, -1.0, 1.0, 4.0]
+const FINGER_LENGTH: Array[float] = [0.082, 0.096, 0.090, 0.074]
+const FINGER_RADIUS: Array[float] = [0.0115, 0.0120, 0.0115, 0.0105]
 
 var _player: PlayerFPS = null
 var _tween: Tween = null
 var _skin: StandardMaterial3D = null
 var _sleeve: StandardMaterial3D = null
 var _cuff: StandardMaterial3D = null
-var _nail: StandardMaterial3D = null
 
 
 func _ready() -> void:
@@ -78,67 +84,125 @@ func _find_player() -> PlayerFPS:
 
 
 ## Posición y giro de destino para cada acción. La mano no intenta coger el
-## objeto del mundo: entra hacia el centro y acompaña al gesto.
+## objeto del mundo: entra hacia el centro y acompaña el gesto.
 func _action_target(action: StringName) -> Array:
 	match action:
 		&"drink":
-			return [Vector3(0.16, -0.24, -0.58), Vector3(70.0, -8.0, 6.0)]
+			return [Vector3(0.16, -0.24, -0.60), Vector3(64.0, -8.0, 8.0)]
 		&"offer":
-			return [Vector3(0.18, -0.32, -0.62), Vector3(72.0, -10.0, 2.0)]
+			return [Vector3(0.18, -0.32, -0.64), Vector3(66.0, -10.0, 4.0)]
 		&"blow":
-			return [Vector3(0.20, -0.26, -0.58), Vector3(70.0, -12.0, 4.0)]
+			return [Vector3(0.20, -0.26, -0.60), Vector3(64.0, -12.0, 6.0)]
 		&"attack":
-			return [Vector3(0.12, -0.44, -0.72), Vector3(78.0, -4.0, -8.0)]
+			return [Vector3(0.12, -0.44, -0.74), Vector3(74.0, -4.0, -8.0)]
 		_:
-			return [Vector3(0.18, -0.28, -0.62), Vector3(72.0, -10.0, 2.0)]
+			return [Vector3(0.18, -0.28, -0.64), Vector3(66.0, -10.0, 4.0)]
 
 
 func _build_materials() -> void:
-	_skin = StandardMaterial3D.new()
-	_skin.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_skin.albedo_color = Color(0.60, 0.41, 0.30, 1.0)
-	_sleeve = StandardMaterial3D.new()
-	_sleeve.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_sleeve.albedo_color = Color(0.35, 0.24, 0.17, 1.0)
-	_cuff = StandardMaterial3D.new()
-	_cuff.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_cuff.albedo_color = Color(0.55, 0.16, 0.11, 1.0)
-	_nail = StandardMaterial3D.new()
-	_nail.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_nail.albedo_color = Color(0.72, 0.55, 0.44, 1.0)
+	_skin = _material(Color(0.63, 0.46, 0.35, 1.0), 0.72)
+	_skin.rim_enabled = true
+	_skin.rim = 0.12
+	_skin.rim_tint = 0.42
+	_skin.subsurf_scatter_enabled = true
+	_skin.subsurf_scatter_strength = 0.10
+	_skin.subsurf_scatter_skin_mode = true
+	_sleeve = _material(Color(0.30, 0.20, 0.13, 1.0), 0.92)
+	_cuff = _material(Color(0.52, 0.14, 0.10, 1.0), 0.85)
+
+
+func _material(color: Color, roughness: float) -> StandardMaterial3D:
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.albedo_color = color
+	material.roughness = roughness
+	material.metallic_specular = 0.22
+	return material
 
 
 func _build_hand() -> void:
-	var forearm: CapsuleMesh = CapsuleMesh.new()
-	forearm.radius = 0.050
-	forearm.height = 0.32
-	_add_mesh(forearm, _sleeve, Vector3(0.0, 0.0, 0.16), Vector3(90.0, 0.0, 0.0))
-	var cuff: CylinderMesh = CylinderMesh.new()
-	cuff.top_radius = 0.060
-	cuff.bottom_radius = 0.060
-	cuff.height = 0.045
-	cuff.radial_segments = 12
-	_add_mesh(cuff, _cuff, Vector3(0.0, 0.0, 0.045), Vector3(90.0, 0.0, 0.0))
-	var palm: BoxMesh = BoxMesh.new()
-	palm.size = Vector3(0.105, 0.034, 0.10)
-	_add_mesh(palm, _skin, Vector3(0.0, -0.004, -0.055), Vector3.ZERO)
-	var finger_x: Array[float] = [-0.039, -0.013, 0.013, 0.039]
-	var finger_yaw: Array[float] = [-7.0, -2.0, 2.0, 7.0]
-	for index: int in range(finger_x.size()):
-		var finger: CapsuleMesh = CapsuleMesh.new()
-		finger.radius = 0.012
-		finger.height = 0.085
-		_add_mesh(finger, _skin, Vector3(finger_x[index], -0.008, -0.125),
-			Vector3(90.0, finger_yaw[index], 0.0))
-		var nail: BoxMesh = BoxMesh.new()
-		nail.size = Vector3(0.015, 0.004, 0.018)
-		_add_mesh(nail, _nail, Vector3(finger_x[index], -0.003, -0.165),
-			Vector3(0.0, finger_yaw[index], 0.0))
-	var thumb: CapsuleMesh = CapsuleMesh.new()
-	thumb.radius = 0.015
-	thumb.height = 0.075
-	_add_mesh(thumb, _skin, Vector3(0.060, -0.004, -0.055), Vector3(80.0, -38.0, 0.0))
+	# Antebrazo de piel y manga de unku. La muñeca queda descubierta.
+	var wrist_mesh: CapsuleMesh = CapsuleMesh.new()
+	wrist_mesh.radius = 0.038
+	wrist_mesh.height = 0.17
+	wrist_mesh.radial_segments = 16
+	wrist_mesh.rings = 8
+	_add_mesh(wrist_mesh, _skin, Vector3(0.0, 0.0, 0.04), Vector3(90.0, 0.0, 0.0))
 
+	var sleeve_mesh: CylinderMesh = CylinderMesh.new()
+	sleeve_mesh.top_radius = 0.060
+	sleeve_mesh.bottom_radius = 0.052
+	sleeve_mesh.height = 0.20
+	sleeve_mesh.radial_segments = 18
+	_add_mesh(sleeve_mesh, _sleeve, Vector3(0.0, 0.0, 0.18), Vector3(90.0, 0.0, 0.0))
+
+	var cuff_mesh: CylinderMesh = CylinderMesh.new()
+	cuff_mesh.top_radius = 0.061
+	cuff_mesh.bottom_radius = 0.061
+	cuff_mesh.height = 0.035
+	cuff_mesh.radial_segments = 18
+	_add_mesh(cuff_mesh, _cuff, Vector3(0.0, 0.0, 0.075), Vector3(90.0, 0.0, 0.0))
+
+	var band_mesh: CylinderMesh = CylinderMesh.new()
+	band_mesh.top_radius = 0.061
+	band_mesh.bottom_radius = 0.061
+	band_mesh.height = 0.022
+	band_mesh.radial_segments = 18
+	_add_mesh(band_mesh, _cuff, Vector3(0.0, 0.0, 0.155), Vector3(90.0, 0.0, 0.0))
+
+	# Palma redondeada y talón de la mano.
+	var palm_mesh: SphereMesh = SphereMesh.new()
+	palm_mesh.radius = 0.060
+	palm_mesh.height = 0.120
+	palm_mesh.radial_segments = 24
+	palm_mesh.rings = 12
+	var palm: MeshInstance3D = _add_mesh(palm_mesh, _skin, Vector3(0.0, -0.002, -0.052), Vector3.ZERO)
+	palm.scale = Vector3(0.92, 0.42, 1.05)
+
+	var heel_mesh: SphereMesh = SphereMesh.new()
+	heel_mesh.radius = 0.044
+	heel_mesh.height = 0.088
+	heel_mesh.radial_segments = 18
+	heel_mesh.rings = 10
+	var heel: MeshInstance3D = _add_mesh(heel_mesh, _skin, Vector3(0.0, -0.002, 0.010), Vector3.ZERO)
+	heel.scale = Vector3(1.0, 0.46, 0.72)
+
+	# Cuatro dedos de tres falanges, con nudillos y uñas.
+	for index: int in range(FINGER_X.size()):
+		var x: float = FINGER_X[index]
+		var yaw: float = FINGER_YAW[index]
+		var length: float = FINGER_LENGTH[index]
+		var radius: float = FINGER_RADIUS[index]
+		var segment: float = length / 3.0
+		for joint: int in range(3):
+			var capsule: CapsuleMesh = CapsuleMesh.new()
+			capsule.radius = radius * (1.0 - 0.12 * float(joint))
+			capsule.height = segment * 1.45
+			capsule.radial_segments = 12
+			capsule.rings = 6
+			_add_mesh(
+				capsule, _skin,
+				Vector3(x, -0.006 - 0.007 * float(joint), -0.100 - segment * 0.92 * float(joint)),
+				Vector3(-3.0 - 8.0 * float(joint), yaw, 0.0),
+			)
+		var knuckle_mesh: SphereMesh = SphereMesh.new()
+		knuckle_mesh.radius = radius * 1.08
+		knuckle_mesh.height = radius * 2.16
+		knuckle_mesh.radial_segments = 10
+		knuckle_mesh.rings = 6
+		_add_mesh(knuckle_mesh, _skin, Vector3(x, -0.010, -0.105), Vector3.ZERO)
+	# Pulgar: dos falanges que salen del lado interior de la palma.
+	var thumb_base: CapsuleMesh = CapsuleMesh.new()
+	thumb_base.radius = 0.016
+	thumb_base.height = 0.055
+	thumb_base.radial_segments = 14
+	thumb_base.rings = 8
+	_add_mesh(thumb_base, _skin, Vector3(0.056, -0.004, -0.055), Vector3(78.0, 0.0, -42.0))
+	var thumb_tip: CapsuleMesh = CapsuleMesh.new()
+	thumb_tip.radius = 0.013
+	thumb_tip.height = 0.045
+	thumb_tip.radial_segments = 12
+	thumb_tip.rings = 6
+	_add_mesh(thumb_tip, _skin, Vector3(0.074, -0.004, -0.085), Vector3(82.0, 0.0, -30.0))
 
 func _add_mesh(mesh: Mesh, material: Material, at: Vector3, rotation_euler: Vector3) -> MeshInstance3D:
 	var instance: MeshInstance3D = MeshInstance3D.new()
