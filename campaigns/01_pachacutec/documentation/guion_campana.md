@@ -86,7 +86,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Personajes:** Rumi, madre, hermano, Sisa, curaca, Puma.
 - **Desarrollo:** subtítulo de apertura (`PCH_NARR_OPENING`); la madre pide ayuda, manda practicar la honda y el hermano quiere ir; Sisa conoce el paso. El entrenamiento pide tres aciertos con la vista y el clic.
 - **Conflicto:** el hermano quiere ir; la madre lo retiene.
-- **Resolución:** la honda responde y el jugador baja a la plaza para los encargos.
+- **Resolución:** la honda responde y el jugador baja a la plaza por el camino; el manantial, el mirador y el camino del norte ya están a la vista.
 - **Consecuencias:** vínculo y tono; oficio de honda practicado; diario con el encargo `encargos`.
 - **Información histórica:** vida cotidiana, reciprocidad, arquitectura (PCH-007, 016).
 
@@ -96,7 +96,7 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo narrativo:** que los recursos sean reales y el oficio importe.
 - **Objetivo del jugador:** completar tres de los cuatro encargos.
 - **Personajes:** tejedora, agricultor, curaca.
-- **Desarrollo:** cuatro `TaskPoint`: agua, maíz, telar y pirca. El primero fija el oficio; los demás suben la habilidad correspondiente.
+- **Desarrollo:** cuatro `TaskPoint`: agua en el manantial, maíz, telar y pirca. Los caminos visibles con borde de piedra llevan a cada punto. El primero fija el oficio; los demás suben la habilidad correspondiente.
 - **Conflicto:** el tiempo; la noticia llega después de la duda.
 - **Resolución:** al tercer encargo se completa `encargos` y se abre la duda; el mensajero llega después.
 - **Consecuencias:** objetos `agua`, `maiz`, `manta`, `cuerda`; oficio; habilidades; el recurso que falte se nota en el paso.

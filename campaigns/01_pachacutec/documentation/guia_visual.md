@@ -65,13 +65,44 @@ encuadres de marketing: sirven para comparar la luz y la paleta entre actos.
 |---|---|---|
 | Persona | 1,70 m | Referencia para todo lo demás |
 | Puerta de casa | 0,9 × 1,7 m | Rectangular por defecto; la trapezoidal se decide aparte |
-| Casa de un ambiente | 4,5 × 3,6 m, muros de 2,2 m | Techo de ichu a dos aguas |
+| Casa de un ambiente | 4,4–7,0 m de ancho, 3,8–5,4 m de fondo y 2,0–2,5 m de muro | `HouseKit` ajusta la colisión a cada variante; puerta de 0,9 × 1,7 m |
 | Muro de terraza | 1,4–1,8 m de alto, 0,6 m de grueso | Pirca seca, hiladas irregulares |
 | Peldaño | 0,2 m de alto, 0,3 m de huella | El jugador sube ~0,1 m solo: escaleras con rampa de colisión |
 | Techo de ichu | Cumbrera +1,6–1,8 m, alero 0,4 m | Grueso: se ve el canto |
-| Plaza | 30–40 m de lado | Espacio para una oleada de 3–5 |
+| Plaza | 27 × 27 m | Borde de pirca baja con cuatro entradas; espacio para la asamblea |
+| Camino | 3,0 m de ancho | Cinta de tierra y piedras de borde; sin props a menos de 3 m |
+| Manantial | Pileta de 3,2 × 2,0 m | Agua, acequia corta y juncos; al pie de la primera terraza |
+| Mirador | Parapeto de 14 m y 0,72 m de alto | En el paso norte; mira al fondo de valle |
 | Santuario | Gradas de 3–4 niveles | Pirca, no cantería imperial |
 | Apus | 250–420 m sobre el valle, a 1,5–2,5 km | Sin niebla: el color lleva la atmósfera |
+
+## 3.1 Composición del territorio (2026-11-18)
+
+La llacta ya no es una plaza plana con casas en anillo: el camino es la espina y
+el borde de la plaza separa el recinto de los campos. Las reglas que se aplican:
+
+- **Camino visible**: cinta de tierra de 3 m, algo más oscura que el terreno, con
+  piedras de borde en `MultiMesh`. Los caminos salen de la plaza por cuatro
+  entradas y llevan a la casa de Rumi, el manantial, el maíz, el telar, la pirca,
+  los corrales y el mirador del norte.
+- **Borde de plaza**: pirca baja de 0,68 m con cuatro huecos alineados con los
+  caminos. No encierra al jugador: le dice dónde está la plaza.
+- **Manantial y acequia**: pileta de piedra, agua oscura, juncos y un canal corto
+  hacia la primera terraza. La tarea «Acarrear agua» se lee junto a la pileta.
+- **Mirador del norte**: el camino sube hasta un parapeto bajo en el paso; desde
+  allí se ven los campos, el caserío y las montañas. El fondo no se recorre.
+- **Vivienda**: cada variante tiene su ancho, fondo y colisión; la escala y el
+  tinte rompen la repetición. La puerta mira al camino.
+- **Roquedales**: cuatro bloques de piedra enmarcan el paso y dan una silueta de
+  montaña, no de colina lisa.
+
+| Vista | Captura |
+|---|---|
+| Plaza y borde | ![Plaza](img/acto_i/llacta_plaza.png) |
+| Manantial | ![Manantial](img/acto_i/llacta_manantial.png) |
+| Camino del norte | ![Camino del norte](img/acto_i/llacta_camino_norte.png) |
+| Mirador | ![Mirador](img/acto_i/llacta_mirador.png) |
+| Terrazas | ![Terrazas](img/acto_i/llacta_terrazas.png) |
 
 ## 4. Formas y materiales
 
@@ -121,6 +152,17 @@ El comando deja `user://paleta_<acto>.png`. Las imágenes se copian a
 `docs/img/guia_visual/` y se revisan en el monitor de referencia. La escena de captura
 carga los cinco mundos, espera a que los generadores terminen y guarda un fotograma por
 acto.
+
+La composición del territorio se revisa con capturas fijas y un recorrido real:
+
+```bash
+godot --path . --resolution 1280x720 res://tests/scenes/capture_llacta_tour.tscn
+godot --headless --path . --script res://tests/llacta_walk_check.gd
+```
+
+Las capturas van a `/tmp/opencode/llacta_tour/`. La segunda comprueba que el
+jugador llega a la plaza, el manantial, la casa, el mirador y los corrales sin
+atascarse.
 
 ## 8. Preguntas abiertas
 

@@ -48,6 +48,9 @@ jobs:
       - name: Arco completo
         run: ~/godot/godot --headless --path . --script res://tests/arc_playthrough.gd
 
+      - name: Recorrido de la llacta
+        run: ~/godot/godot --headless --path . --script res://tests/llacta_walk_check.gd
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [test]

@@ -195,26 +195,25 @@ más ajustado (334 y p1 62,0) y la llacta sube de 220 a 257 por las piezas de
 los maniquíes; la memoria baja unos 80 MB porque no hay texturas de cara ni de
 ropa. Las mediciones anteriores del elenco UBC quedan como histórico. La retirada del legado UBC no cambió draw calls ni memoria.
 
-### Flujo de objetivos del acto I (2026-11-18)
+### Composición del territorio del acto I (2026-11-18)
 
 Pasada con `measure_performance.tscn` a 1920×1080, vsync off, estado de campaña
-limpio y una sola pasada. La carga del equipo estuvo entre 17 y 27, así que los
-FPS **no son concluyentes**; los draw calls y la memoria sí sirven de termómetro.
+limpio y carga del equipo 0,45–0,51. La herramienta calienta 60 fotogramas y
+muestrea 300. Los cinco actos siguen bajo el presupuesto de 350 draw calls.
 
-| Acto | Draw calls | Memoria de vídeo |
-|---|---|---|
-| I — Llacta | 265 | 171,4 MB |
-| II — Paso | 270 | 151,7 MB |
-| III — Cusco | 334 | 184,1 MB |
-| IV — Posguerra | 272 | 172,4 MB |
-| V — Obra | 283 | 171,6 MB |
+| Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
+|---|---|---|---|---|
+| I — Llacta | 294 | 172,4 MB | 74,4 | 73,3 |
+| II — Paso | 270 | 151,7 MB | 98,8 | 96,0 |
+| III — Cusco | 331 | 184,7 MB | 63,8 | 60,0 |
+| IV — Posguerra | 306 | 173,4 MB | 80,0 | 80,0 |
+| V — Obra | 315 | 172,6 MB | 75,1 | 75,0 |
 
-Los cinco actos siguen bajo 350 draw calls. El acto I suma el marcador de la
-madre y el panel de pasos; una prueba quitando `QuestTracker` midió 265 → 262
-draw calls y 171,4 → 171,2 MB, de modo que el panel no explica la diferencia de
-memoria frente a la tabla anterior (probablemente caché de fuentes y carga de
-la GPU). El entrenamiento de honda y sus marcadores solo existen durante su
-paso. Falta repetir la medición con el equipo descargado.
+El acto I suma caminos visibles con bordes de piedra, borde de plaza con cuatro
+entradas, manantial y acequia, mirador, roquedales y fondo de valle: +29 draw
+calls y +1 MB respecto de la medición del elenco. El Cusco queda en 331 y p1
+60,0, el más ajustado. La vivienda usa `HouseKit` para que malla y colisión
+midan lo mismo en la llacta y el Cusco; las variantes añaden escala y tinte.
 
 **Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 

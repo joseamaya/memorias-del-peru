@@ -53,8 +53,13 @@ const HOUSE_CLEARANCE: float = 5.5
 const CORRAL_CLEARANCE: float = 1.0
 const FREE_RECTS: Array[Rect2] = [
 	Rect2(-14.5, -14.5, 29.0, 29.0), # plaza
-	Rect2(28.0, -16.0, 30.0, 32.0), # terrazas y mirador
+	Rect2(28.0, -16.0, 30.0, 32.0), # terrazas y campos del este
 	Rect2(-14.0, 2.5, 7.0, 7.5), # tejedora y telar
+	Rect2(25.5, 0.5, 6.5, 7.0), # manantial y acequia
+	Rect2(-6.0, -66.0, 12.0, 10.0), # mirador del norte
+	Rect2(12.0, 2.0, 19.0, 9.0), # camino este, casa y manantial
+	Rect2(-29.0, 6.0, 17.0, 5.0), # camino del maíz y telar
+	Rect2(-30.0, -14.0, 19.0, 8.0), # camino de la pirca y corrales
 ]
 ## Bosquecillos de queñua: (x, z, radio). Árboles por bosquecillo y
 ## separación mínima entre troncos.

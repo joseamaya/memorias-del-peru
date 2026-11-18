@@ -10,7 +10,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, el guion de escenas, los sistemas de campaña, el flujo de objetivos del acto I, la sensación de combate, la guía visual y el rendimiento en Medio están cerrados; las 140 pruebas pasan. Queda la mezcla de audio escuchada, la duración real y la prueba de humo |
+| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, el guion de escenas, los sistemas de campaña, el flujo de objetivos del acto I, la sensación de combate, la guía visual y el rendimiento en Medio están cerrados; las 141 pruebas pasan. Queda la mezcla de audio escuchada, la duración real y la prueba de humo |
 
 ## Requisitos
 

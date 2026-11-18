@@ -198,7 +198,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-016 — Plaza y caminos
 - Tipo: lugar
 - Clasificación: A / R / N (plaza como licencia de diseño)
-- Uso en el juego: `Llacta/Plaza`, `Llacta/PathSouth`, `Llacta/PathEast`, `Llacta/PathWest`
+- Uso en el juego: `Llacta/Plaza`, `Llacta/Paths`, `Llacta/PlazaEdges`, `Llacta/Spring`; caminos sur, norte, este y oeste
 - Fuentes:
   - A: Covey, Quave y otros, *Antiquity* 99 (2025), pp. 483–484 (ver PCH-006): en los sitios del Intermedio Tardío de la región del Cusco hay contextos excavados de «public spaces».
   - Caminos (localizada por búsqueda automática, sin contrastar directamente): Ministerio de Cultura del Perú, Proyecto Qhapaq Ñan, *Guía de identificación y registro del Qhapaq Ñan* (2023), https://qhapaqnan.cultura.pe/sites/default/files/mi/archivo/GuiaIdentificacionRegistrosCaminos2023.pdf. Caminos con calzada de tierra y caminos empedrados (§4.2–4.3), y rutas anteriores a los incas reutilizadas por el Estado inca (§2.1). Cita a Hyslop (1992 [1984]).
@@ -479,3 +479,13 @@ a la vista.
 - Discrepancias entre fuentes: las rejas metálicas son posteriores; el juego usa una punta de madera endurecida, documentada para cuando no hay metal. La forma exacta del mango varía por región.
 - Notas de representación: el útil se muestra **plantado en la tierra**, no en la mano del Agricultor: el clip `work` es de siembra y no hay animación de cavar a dos manos. La madera, la punta endurecida y las ataduras son reconstrucción (R); no se inventa metal.
 - Estado de verificación: **pendiente** (fuentes localizadas y citadas; falta la firma del responsable del proyecto).
+
+
+### PCH-038 — Manantial, acequia y mirador de la llacta
+- Tipo: lugar / arquitectura
+- Clasificación: R
+- Uso en el juego: `Llacta/Spring`, `Llacta/Acequia`, `Llacta/Mirador`, `Llacta/Paths` en los actos I, IV y V
+- Fuentes: PCH-008 (terraza agrícola y agua), PCH-013 (ichu y queñua), PCH-016 (plaza y caminos) y sus fuentes.
+- Discrepancias entre fuentes: —
+- Notas de representación: el manantial, la acequia corta y el mirador son reconstrucción de ambiente (R). No documentan un manantial ni un mirador de un sitio concreto: se apoyan en el uso agrícola del agua y en la red de caminos ya documentada. El fondo de valle con campos y caserío es una silueta de paisaje (R/N) para dar profundidad; no se recorre ni se presenta como un lugar real.
+- Estado de verificación: **pendiente de firma del responsable** (R).

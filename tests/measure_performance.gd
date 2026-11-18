@@ -69,6 +69,15 @@ func _run() -> void:
 		await get_tree().process_frame
 	print("PERF_LOAD ", _load_average())
 	print("PERF_OK")
+	var audio: Node = get_tree().root.get_node_or_null("AudioManager")
+	if audio != null:
+		audio.call("stop_all")
+	for node: Node in get_tree().root.find_children("*", "AudioStreamPlayer", true, false):
+		(node as AudioStreamPlayer).stop()
+	for node: Node in get_tree().root.find_children("*", "AudioStreamPlayer3D", true, false):
+		(node as AudioStreamPlayer3D).stop()
+	await get_tree().create_timer(0.4).timeout
+	await get_tree().process_frame
 	get_tree().quit()
 
 

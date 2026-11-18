@@ -13,8 +13,8 @@ const BOUNDARY_RADIUS: float = 70.0
 const RIDGE_START: float = 61.0
 const RIDGE_FULL: float = 73.0
 const RIDGE_HEIGHT: float = 11.0
-const PASS_HALF_WIDTH: float = 5.0
-const PASS_EDGE: float = 12.0
+const PASS_HALF_WIDTH: float = 7.0
+const PASS_EDGE: float = 16.0
 const RELIEF_AMPLITUDE: float = 1.3
 const RELIEF_START: float = 30.0
 const RELIEF_FULL: float = 42.0
@@ -31,16 +31,16 @@ const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
 const CLOUD_DOME_RADIUS: float = 420.0
 const CLOUD_DOME_SEGMENTS: int = 64
 const CLOUD_DOME_RINGS: int = 32
-const DISTANT_NEAR_INNER: float = 100.0
-const DISTANT_NEAR_OUTER: float = 250.0
+const DISTANT_NEAR_INNER: float = 170.0
+const DISTANT_NEAR_OUTER: float = 320.0
 const DISTANT_NEAR_AMPLITUDE: float = 72.0
 const DISTANT_NEAR_COLOR: Color = Color(0.35, 0.38, 0.43, 1.0)
-const DISTANT_MID_INNER: float = 190.0
-const DISTANT_MID_OUTER: float = 340.0
+const DISTANT_MID_INNER: float = 260.0
+const DISTANT_MID_OUTER: float = 410.0
 const DISTANT_MID_AMPLITUDE: float = 110.0
 const DISTANT_MID_COLOR: Color = Color(0.39, 0.43, 0.49, 1.0)
-const DISTANT_FAR_INNER: float = 280.0
-const DISTANT_FAR_OUTER: float = 470.0
+const DISTANT_FAR_INNER: float = 350.0
+const DISTANT_FAR_OUTER: float = 520.0
 const DISTANT_FAR_AMPLITUDE: float = 130.0
 const DISTANT_FAR_COLOR: Color = Color(0.42, 0.46, 0.52, 1.0)
 
@@ -58,9 +58,6 @@ const STONE_FOOTSTEP_PATHS: Array[String] = [
 const SURFACE_STONE: StringName = &"stone"
 
 const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
-const MODEL_HOUSES: Array[String] = [
-	"pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb", "pch_house_d.glb", "pch_house_e.glb",
-]
 ## Altura visible de cada papel, en metros.
 const CHARACTER_HEIGHTS: Dictionary[String, float] = {
 	"Curaca": 1.65,
@@ -130,7 +127,7 @@ const ACCOUNT_TEXTS: Array[StringName] = [
 	&"PCH_ACCOUNT_1_TEXT", &"PCH_ACCOUNT_2_TEXT", &"PCH_ACCOUNT_3_TEXT",
 ]
 const TASK_POSITIONS: Array[Vector3] = [
-	Vector3(14.0, 0.0, 8.0),
+	Vector3(29.0, 0.0, 5.6),
 	Vector3(-16.0, 0.0, 8.0),
 	Vector3(-8.6, 0.0, 6.2),
 	Vector3(-27.5, 0.0, -12.0),
@@ -142,9 +139,6 @@ const TALK_HOLD_SECONDS: float = 7.0
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
 const MODEL_PROP_CHAQUITACLLA: String = "pch_prop_chaquitaclla.glb"
-const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0, 5.4, 3.8]
-const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7, -2.5, -1.5]
-const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
 const PROP_WALL_GAP: float = 0.45
 ## Casa de Rumi: la cuarta vivienda, al este de la plaza (biblia §2.1). Su
 ## fachada mira a la plaza y la cámara de cierre tiene el camino despejado.
@@ -514,6 +508,11 @@ func _build_llacta() -> void:
 	]
 	for index: int in range(positions.size()):
 		_add_house(houses, index, positions[index], stone, thatch)
+	LlactaPaths.build_default(llacta, _height_at)
+	LlactaPlazaEdges.build_default(llacta)
+	LlactaSites.build_spring(llacta, _height_at)
+	LlactaSites.build_mirador(llacta, _height_at)
+	ValleyBackdrop.build_default(llacta)
 
 	# Ichu y queñua (PCH-013) fuera de la plaza, los caminos y las casas.
 	var vegetation: LlactaVegetation = LlactaVegetation.new()
@@ -548,7 +547,8 @@ func _build_llacta() -> void:
 	]:
 		_attach_pedestal(pedestal)
 
-	_add_box_body(boundary, "North", Vector3(0.0, 1.0, -BOUNDARY_RADIUS), Vector3(BOUNDARY_RADIUS * 2.0, 2.0, 1.0), stone, 1)
+	_add_box_body(boundary, "NorthWest", Vector3(-(BOUNDARY_RADIUS + PASS_HALF_WIDTH) * 0.5, 0.45, -BOUNDARY_RADIUS), Vector3(BOUNDARY_RADIUS - PASS_HALF_WIDTH, 0.9, 1.0), stone, 1)
+	_add_box_body(boundary, "NorthEast", Vector3((BOUNDARY_RADIUS + PASS_HALF_WIDTH) * 0.5, 0.45, -BOUNDARY_RADIUS), Vector3(BOUNDARY_RADIUS - PASS_HALF_WIDTH, 0.9, 1.0), stone, 1)
 	_add_box_body(boundary, "South", Vector3(0.0, 1.0, BOUNDARY_RADIUS), Vector3(BOUNDARY_RADIUS * 2.0, 2.0, 1.0), stone, 1)
 	_add_box_body(boundary, "East", Vector3(BOUNDARY_RADIUS, 1.0, 0.0), Vector3(1.0, 2.0, BOUNDARY_RADIUS * 2.0), stone, 1)
 	_add_box_body(boundary, "West", Vector3(-BOUNDARY_RADIUS, 1.0, 0.0), Vector3(1.0, 2.0, BOUNDARY_RADIUS * 2.0), stone, 1)
@@ -2170,15 +2170,21 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	root.position = at
 	parent.add_child(root)
 	root.look_at(Vector3(0.0, at.y, 0.0), Vector3.UP)
-	root.rotate_y(deg_to_rad(HOUSE_YAW_JITTER[index % HOUSE_YAW_JITTER.size()]))
-	var base: StaticBody3D = _add_box_body(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, 1)
+	root.rotate_y(deg_to_rad(HouseKit.yaw_jitter(index)))
+	root.scale = Vector3.ONE * HouseKit.scale(index)
+	var wall: Vector3 = HouseKit.wall_size(index)
+	var base: StaticBody3D = _add_box_body(
+		root, "Base", Vector3(0.0, wall.y * 0.5, 0.0), wall, stone, 1)
 	var roof: MeshInstance3D = MeshInstance3D.new()
 	roof.name = "Roof"
-	roof.position = Vector3(0.0, 3.25, 0.0)
+	roof.position = Vector3(0.0, wall.y + HouseKit.ROOF_HEIGHT * 0.5, 0.0)
 	var prism: PrismMesh = PrismMesh.new()
-	prism.size = Vector3(6.6, 1.5, 5.6)
+	prism.size = HouseKit.roof_size(index)
 	roof.mesh = prism
-	roof.material_override = thatch
+	var tint: Color = HouseKit.tint(index)
+	var roof_material: ShaderMaterial = thatch.duplicate() as ShaderMaterial
+	roof_material.set_shader_parameter("tint", tint)
+	roof.material_override = roof_material
 	root.add_child(roof)
 	root.add_to_group("houses")
 	var blockout: Array[Node3D] = [roof]
@@ -2188,15 +2194,15 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 			blockout.append(child as MeshInstance3D)
 		elif child is CollisionShape3D:
 			collisions.append(child)
-	var files: Array[String] = [MODEL_HOUSES[index % MODEL_HOUSES.size()]]
-	_attach_model(root, "ModelSlot", Vector3.ZERO, files, blockout, collisions)
+	var files: Array[String] = [HouseKit.model_file(index)]
+	var slot: ModelSlot = _attach_model(root, "ModelSlot", Vector3.ZERO, files, blockout, collisions)
+	slot.model_loaded.connect(func(model: Node3D) -> void: HouseKit.tint_model(model, tint))
 	_add_house_props(root, index)
 
 
 func _add_house_props(root: Node3D, index: int) -> void:
-	var variant: int = index % MODEL_HOUSES.size()
-	var front: float = -HOUSE_DEPTHS[variant] * 0.5 - PROP_WALL_GAP
-	var left_x: float = HOUSE_LEFT_PROP_X[variant]
+	var front: float = HouseKit.front_z(index)
+	var left_x: float = HouseKit.left_prop_x(index)
 	var props: Array[Array] = []
 	match index % 3:
 		0:

@@ -105,12 +105,12 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 **Capturas:** [la mañana](img/acto_i/acto_i_01_manana.png) · [la honda](img/acto_i/acto_i_02_honda.png).
 
-**Ficha histórica:** PCH-007, PCH-016 · R / N.  
+**Ficha histórica:** PCH-007, PCH-016, PCH-038 · R / N.  
 **Deuda:** ninguna de escena.
 
 ## I.2 · Los cuatro encargos
 
-**Lugar y momento:** plaza, terrazas, telar y corral · mañana.  
+**Lugar y momento:** plaza, manantial, terrazas, telar y corral · mañana.  
 **Duración:** 4 min · **Estado:** Implementado.  
 **Objetivo narrativo:** que los recursos sean reales y el oficio importe.  
 **Objetivo del jugador:** completar tres de los cuatro encargos.
@@ -119,7 +119,8 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - Tejedora en el telar.
 - Agricultor en la terraza.
 - Curaca cerca de la plaza.
-- Cuatro puntos de tarea: agua al este, maíz al oeste, telar junto a la tejedora, pirca al noroeste.
+- Cuatro puntos de tarea: agua en el manantial del este, maíz al oeste, telar junto a la tejedora, pirca al noroeste.
+- El camino de tierra con borde de piedra lleva a cada punto; el borde de pirca de la plaza deja cuatro entradas.
 
 **Cámara y sonido:**
 - Sin diálogo de cámara; el jugador se acerca y usa E.
@@ -152,13 +153,15 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - [ ] Hay cuatro puntos y se puede completar cualquiera.
 - [ ] La primera tarea fija el oficio y da +1 rango en su habilidad.
 - [ ] Cada tarea entrega su objeto real.
+- [ ] El agua se recoge en el manantial y la acequia se ve junto a la pileta.
+- [ ] Los caminos a los cuatro encargos se leen sin abrir el diario.
 - [ ] El HUD muestra los cuatro encargos, cuántos importan y el contador.
 - [ ] Al tercer encargo se completa `encargos` y el flujo pasa a la duda.
 - [ ] El cuarto encargo puede hacerse después o dejarse sin rebobinar.
 
 **Capturas:** [los encargos](img/acto_i/acto_i_03_encargos.png) · [un encargo hecho](img/acto_i/acto_i_04_encargo_hecho.png).
 
-**Ficha histórica:** PCH-004, 005, 010, 019, 021 · H / A / R.  
+**Ficha histórica:** PCH-004, 005, 010, 019, 021, 038 · H / A / R.  
 **Deuda:** ninguna funcional.
 
 ## I.3 · La duda

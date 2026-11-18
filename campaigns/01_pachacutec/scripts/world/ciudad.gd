@@ -26,23 +26,10 @@ const CLOUD_SHADER_PATH: String = "res://shared_assets/materials/nubes.gdshader"
 const CLOUD_DOME_RADIUS: float = 420.0
 const CLOUD_DOME_SEGMENTS: int = 48
 const CLOUD_DOME_RINGS: int = 24
-const MODEL_HOUSES: Array[String] = ["pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb", "pch_house_d.glb", "pch_house_e.glb"]
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
-const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0, 5.4, 3.8]
-const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7, -2.5, -1.5]
-const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
 ## Catorce casas con tres modelos: la escala y el tinte rompen la repetición sin
 ## generar geometría nueva.
-const HOUSE_SCALES: Array[float] = [1.0, 0.94, 1.06, 0.97, 1.03]
-const HOUSE_TINTS: Array[Color] = [
-	Color(1.0, 1.0, 1.0),
-	Color(0.96, 0.94, 0.90),
-	Color(1.0, 0.98, 0.93),
-	Color(0.94, 0.95, 0.98),
-	Color(1.0, 0.97, 0.91),
-	Color(0.98, 0.99, 0.97),
-]
 ## Catorce viviendas alrededor de la plaza, fuera de los caminos y del santuario.
 const HOUSE_POSITIONS: Array[Vector3] = [
 	Vector3(-22.0, 0.0, -19.0),
@@ -1850,15 +1837,17 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	root.position = at
 	parent.add_child(root)
 	root.look_at(Vector3(0.0, at.y, 0.0), Vector3.UP)
-	root.rotate_y(deg_to_rad(HOUSE_YAW_JITTER[index % HOUSE_YAW_JITTER.size()]))
-	var tint: Color = HOUSE_TINTS[index % HOUSE_TINTS.size()]
-	root.scale = Vector3.ONE * HOUSE_SCALES[index % HOUSE_SCALES.size()]
-	var base: Node3D = _add_block(root, "Base", Vector3(0.0, 1.25, 0.0), Vector3(6.0, 2.5, 5.0), stone, true)
+	root.rotate_y(deg_to_rad(HouseKit.yaw_jitter(index)))
+	var tint: Color = HouseKit.tint(index)
+	root.scale = Vector3.ONE * HouseKit.scale(index)
+	var wall: Vector3 = HouseKit.wall_size(index)
+	var base: Node3D = _add_block(
+		root, "Base", Vector3(0.0, wall.y * 0.5, 0.0), wall, stone, true)
 	var roof: MeshInstance3D = MeshInstance3D.new()
 	roof.name = "Roof"
-	roof.position = Vector3(0.0, 3.25, 0.0)
+	roof.position = Vector3(0.0, wall.y + HouseKit.ROOF_HEIGHT * 0.5, 0.0)
 	var prism: PrismMesh = PrismMesh.new()
-	prism.size = Vector3(6.6, 1.5, 5.6)
+	prism.size = HouseKit.roof_size(index)
 	roof.mesh = prism
 	# El techo también varía de tono: dos casas iguales se notan menos si el
 	# ichu no es exactamente del mismo color.
@@ -1877,35 +1866,19 @@ func _add_house(parent: Node3D, index: int, at: Vector3, stone: Material, thatch
 	var slot: ModelSlot = ModelSlot.new()
 	slot.name = "ModelSlot"
 	slot.position = Vector3.ZERO
-	slot.model_paths = [MODEL_DIR + MODEL_HOUSES[index % MODEL_HOUSES.size()]]
+	slot.model_paths = [MODEL_DIR + HouseKit.model_file(index)]
 	slot.blockout_nodes = blockout
 	slot.blockout_collisions = collisions
 	root.add_child(slot)
 	SurfaceMaterials.apply_to_model(slot.model)
-	_tint_model(slot.model, tint)
+	HouseKit.tint_model(slot.model, tint)
 	_add_house_props(root, index)
-
-
-## Aplica un tinte propio a todas las mallas del modelo sin tocar el material
-## compartido del resto de la ciudad.
-func _tint_model(model: Node3D, tint: Color) -> void:
-	if model == null or tint == Color(1.0, 1.0, 1.0):
-		return
-	for node: Node in model.find_children("*", "MeshInstance3D", true, false):
-		var mesh_instance: MeshInstance3D = node as MeshInstance3D
-		var base: ShaderMaterial = mesh_instance.material_override as ShaderMaterial
-		if base == null:
-			continue
-		var material: ShaderMaterial = base.duplicate() as ShaderMaterial
-		material.set_shader_parameter("tint", tint)
-		mesh_instance.material_override = material
 
 
 ## Cántaros y leña delante de la vivienda. El frente mira a −Z local.
 func _add_house_props(root: Node3D, index: int) -> void:
-	var variant: int = index % MODEL_HOUSES.size()
-	var front: float = -HOUSE_DEPTHS[variant] * 0.5 - 0.45
-	var left_x: float = HOUSE_LEFT_PROP_X[variant]
+	var front: float = HouseKit.front_z(index)
+	var left_x: float = HouseKit.left_prop_x(index)
 	var props: Array[Array] = []
 	match index % 3:
 		0:
