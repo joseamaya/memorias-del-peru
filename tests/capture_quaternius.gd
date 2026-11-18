@@ -6,7 +6,7 @@ extends Node
 ## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
 ## `..._curaca.png`, `..._curaca_close.png`, `..._curaca_blink.png`,
 ## `..._curaca_brows.png`, `..._rostro.png`, `..._mensajero.png`,
-## `..._chanca.png`, `..._mano.png`, `..._anciana.png`, `..._joven.png`,
+## `..._chanca.png`, `..._mano.png`, `..._arma.png`, `..._anciana.png`, `..._joven.png`,
 ## `..._madre.png`, `..._hermano.png`, `..._puma.png`, `..._anca.png` y sus
 ## versiones `_close`, además de `..._crowd_anciana.png` en el Cusco. Fija el
 ## acto I limpio y sin la vista de introducción para que la cámara de captura no
@@ -72,9 +72,23 @@ func _capture() -> void:
 			"Head/Camera3D/FirstPersonHands") as FirstPersonHands
 		if player_camera != null and hand != null:
 			player_camera.current = true
+			# La cámara del jugador conserva el pitch de la escena; para la
+			# foto se nivela y así se ven la mano y el paisaje.
+			player_camera.rotation_degrees = Vector3(-8.0, 0.0, 0.0)
+			var weapon: FirstPersonWeapon = llacta_player.get_node_or_null(
+				"Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
+			if weapon != null:
+				weapon.visible = false
 			hand.play(&"offer")
-			await _frames(7)
+			await _frames(2)
 			_save(prefix + "_mano")
+			hand.visible = false
+			if weapon != null:
+				weapon.visible = true
+				weapon.set_weapon(CombatWeapon.Kind.CLUB)
+				await _frames(2)
+				_save(prefix + "_arma")
+				weapon.set_weapon(CombatWeapon.Kind.SLING)
 	llacta.queue_free()
 	await _frames(3)
 

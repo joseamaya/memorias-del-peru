@@ -158,18 +158,20 @@ Resultado con el elenco Q completo:
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 249 | 222,3 MB | 95,4 | 73,8 |
+| I — Llacta | 248 | 222,3 MB | 95,4 | 73,8 |
 | II — Paso | 244 | 162,8 MB | 119,7 | 110,0 |
-| III — Cusco | 288 | 230,8 MB | 69,4 | 60,0 |
+| III — Cusco | 297 | 230,9 MB | 69,4 | 60,0 |
 | IV — Posguerra | 226 | 222,8 MB | 107,4 | 97,6 |
 | V — Obra | 257 | 217,5 MB | 101,7 | 98,3 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
 por acto con carga 1,1–1,6; se publica la mediana. La chaquitaclla del
-Agricultor añade 1 draw call a la llacta (248→249). El Cusco es el acto más
-ajustado (69,4 FPS de media y p1 60,0); el resto supera 60 FPS con holgura. En
-una pasada aislada del Cusco la media bajó a 53,8 y el p1 a 40,7; se vigila al
-añadir arte final.
+Agricultor añade 1 draw call; el puño que sostiene el arma suma unos 9 en
+primera persona. La revisión del 2026-11-18 midió llacta 247–248 y Cusco 297
+con carga 12–23; los FPS de la tabla son de la pasada en reposo anterior. El
+Cusco es el acto más ajustado (69,4 FPS de media y p1 60,0); el resto supera
+60 FPS con holgura. En una pasada aislada del Cusco la media bajó a 53,8 y el
+p1 a 40,7; se vigila al añadir arte final.
 
 **Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 

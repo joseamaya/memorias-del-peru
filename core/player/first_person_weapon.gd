@@ -12,15 +12,21 @@ const ATTACK_SECONDS: float = 0.18
 const RETURN_SECONDS: float = 0.28
 const BLOCK_POSITION: Vector3 = Vector3(0.0, -0.28, -0.48)
 const WEAPON_SCALE: float = 0.60
+## La mano del arma se construye a tamaño real y compensa la escala del arma.
+const HAND_SCALE: float = 1.0 / WEAPON_SCALE
 
 var _sling: Node3D = null
 var _club: Node3D = null
 var _shield: Node3D = null
+var _skin: StandardMaterial3D = null
+var _sleeve: StandardMaterial3D = null
+var _cuff: StandardMaterial3D = null
 var _kind: CombatWeapon.Kind = CombatWeapon.Kind.SLING
 var _tween: Tween = null
 
 
 func _ready() -> void:
+	_build_materials()
 	_build_sling()
 	_build_club()
 	_build_shield()
@@ -110,6 +116,7 @@ func _build_sling() -> void:
 	pebble.material_override = stone
 	pebble.position = Vector3(0.0, 0.06, 0.02)
 	_sling.add_child(pebble)
+	_build_hand(_sling, Vector3(0.0, 0.10, 0.0), 1.0)
 
 
 func _build_club() -> void:
@@ -117,7 +124,7 @@ func _build_club() -> void:
 	_club.name = "Club"
 	add_child(_club)
 	var wood: StandardMaterial3D = _material(Color(0.34, 0.22, 0.12, 1.0), 0.95)
-	var head_material: StandardMaterial3D = _material(Color(0.28, 0.18, 0.10, 1.0), 1.0)
+	var head_material: StandardMaterial3D = _material(Color(0.44, 0.42, 0.38, 1.0), 1.0)
 	var handle: MeshInstance3D = MeshInstance3D.new()
 	var cylinder: CylinderMesh = CylinderMesh.new()
 	cylinder.top_radius = 0.035
@@ -139,6 +146,7 @@ func _build_club() -> void:
 	head.material_override = head_material
 	head.position = Vector3(0.08, 0.27, 0.0)
 	_club.add_child(head)
+	_build_hand(_club, Vector3(0.0, -0.04, 0.0), -1.0)
 	_club.visible = false
 
 
@@ -171,6 +179,100 @@ func _build_shield() -> void:
 	_shield.position = Vector3(-0.18, -0.02, 0.02)
 	_shield.scale = Vector3.ONE * 0.72
 	_shield.visible = false
+
+
+func _build_materials() -> void:
+	_skin = _material(Color(0.63, 0.46, 0.35, 1.0), 0.72)
+	_skin.rim_enabled = true
+	_skin.rim = 0.12
+	_skin.rim_tint = 0.42
+	_skin.subsurf_scatter_enabled = true
+	_skin.subsurf_scatter_strength = 0.10
+	_skin.subsurf_scatter_skin_mode = true
+	_sleeve = _material(Color(0.30, 0.20, 0.13, 1.0), 0.92)
+	_cuff = _material(Color(0.52, 0.14, 0.10, 1.0), 0.85)
+
+
+## Mano cerrada alrededor del agarre. Sin ella, la honda y la porra se leían
+## como objetos flotando en la esquina de la cámara. La manga sale del puño
+## hacia el borde de la pantalla.
+func _build_hand(parent: Node3D, grip: Vector3, sleeve_direction: float) -> void:
+	var hand: Node3D = Node3D.new()
+	hand.name = "HoldingHand"
+	hand.position = grip
+	hand.scale = Vector3.ONE * HAND_SCALE
+	parent.add_child(hand)
+	var fist_instance: MeshInstance3D = MeshInstance3D.new()
+	var fist: CapsuleMesh = CapsuleMesh.new()
+	fist.radius = 0.042
+	fist.height = 0.105
+	fist.radial_segments = 12
+	fist.rings = 5
+	fist_instance.mesh = fist
+	fist_instance.material_override = _skin
+	_prepare_hand_mesh(fist_instance)
+	hand.add_child(fist_instance)
+	# Dorso de la mano y nudillos, hacia la cámara. Sin esto el puño se lee
+	# como una bola de piel y no como una mano que agarra.
+	var back_instance: MeshInstance3D = MeshInstance3D.new()
+	var back: BoxMesh = BoxMesh.new()
+	back.size = Vector3(0.070, 0.082, 0.014)
+	back_instance.mesh = back
+	back_instance.material_override = _skin
+	back_instance.position = Vector3(0.0, 0.0, 0.040)
+	_prepare_hand_mesh(back_instance)
+	hand.add_child(back_instance)
+	for index: int in range(4):
+		var knuckle: MeshInstance3D = MeshInstance3D.new()
+		var sphere: SphereMesh = SphereMesh.new()
+		sphere.radius = 0.013
+		sphere.height = 0.026
+		sphere.radial_segments = 8
+		sphere.rings = 4
+		knuckle.mesh = sphere
+		knuckle.material_override = _skin
+		knuckle.position = Vector3(-0.026, -0.030 + 0.020 * float(index), 0.050)
+		_prepare_hand_mesh(knuckle)
+		hand.add_child(knuckle)
+	var thumb: MeshInstance3D = MeshInstance3D.new()
+	var thumb_mesh: CapsuleMesh = CapsuleMesh.new()
+	thumb_mesh.radius = 0.013
+	thumb_mesh.height = 0.052
+	thumb_mesh.radial_segments = 8
+	thumb_mesh.rings = 3
+	thumb.mesh = thumb_mesh
+	thumb.material_override = _skin
+	thumb.position = Vector3(0.040, 0.036, 0.046)
+	thumb.rotation_degrees = Vector3(0.0, 0.0, -58.0)
+	_prepare_hand_mesh(thumb)
+	hand.add_child(thumb)
+	var sleeve_instance: MeshInstance3D = MeshInstance3D.new()
+	var sleeve: CylinderMesh = CylinderMesh.new()
+	sleeve.top_radius = 0.032
+	sleeve.bottom_radius = 0.038
+	sleeve.height = 0.12
+	sleeve.radial_segments = 10
+	sleeve_instance.mesh = sleeve
+	sleeve_instance.material_override = _sleeve
+	sleeve_instance.position = Vector3(0.0, sleeve_direction * 0.090, 0.0)
+	_prepare_hand_mesh(sleeve_instance)
+	hand.add_child(sleeve_instance)
+	var cuff_instance: MeshInstance3D = MeshInstance3D.new()
+	var cuff: CylinderMesh = CylinderMesh.new()
+	cuff.top_radius = 0.039
+	cuff.bottom_radius = 0.039
+	cuff.height = 0.026
+	cuff.radial_segments = 10
+	cuff_instance.mesh = cuff
+	cuff_instance.material_override = _cuff
+	cuff_instance.position = Vector3(0.0, sleeve_direction * 0.034, 0.0)
+	_prepare_hand_mesh(cuff_instance)
+	hand.add_child(cuff_instance)
+
+
+func _prepare_hand_mesh(instance: MeshInstance3D) -> void:
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	instance.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 
 
 func _material(color: Color, roughness: float) -> StandardMaterial3D:

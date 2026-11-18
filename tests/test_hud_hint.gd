@@ -20,6 +20,8 @@ func test_hud_hint() -> bool:
 	ok = ok and not text.begins_with("UI_") and text.contains("WASD") and text.contains("E ")
 	hud.show_hint(text, 8.0)
 	ok = ok and hud.is_showing_hint() and label.modulate.a < 0.01
+	# La pista vive debajo de la banda cinematográfica de 64 px.
+	ok = ok and label.offset_top >= 64.0
 	hud.advance_hint(4.0)
 	ok = ok and hud.is_showing_hint() and label.modulate.a > 0.9
 	hud.advance_hint(4.1)

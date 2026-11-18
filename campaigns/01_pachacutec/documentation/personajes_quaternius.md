@@ -76,7 +76,9 @@ la documentación del híbrido.
 - **Manto:** tres cadenas de dos huesos con muelles, cápsulas en pelvis y
   cintura. La multitud no simula muelles para no gastar CPU.
 - **Mano en primera persona:** malla propia con falanges articuladas; los dedos
-  se cierran al beber o golpear y se abren al ofrecer o soplar.
+  se cierran al beber o golpear y se abren al ofrecer o soplar. La honda y la
+  porra se sostienen con un puño de bloqueo con manga, para que no floten en la
+  esquina de la cámara; la mano articulada queda para las interacciones.
 - **Mandíbula de habla:** el hueso `Jaw` mueve el labio inferior, el mentón y
   la barba mientras suena `talk`. Es animación de habla, no fonemas ni
   sincronía labial completa.
@@ -98,15 +100,16 @@ Medición con el set Q completo, sin bandera. Tres pasadas por acto con carga
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 249 | 222,3 MB | 95,4 | 73,8 |
+| I — Llacta | 248 | 222,3 MB | 95,4 | 73,8 |
 | II — Paso | 244 | 162,8 MB | 119,7 | 110,0 |
-| III — Cusco | 288 | 230,8 MB | 69,4 | 60,0 |
+| III — Cusco | 297 | 230,9 MB | 69,4 | 60,0 |
 | IV — Posguerra | 226 | 222,8 MB | 107,4 | 97,6 |
 | V — Obra | 257 | 217,5 MB | 101,7 | 98,3 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
 por acto con carga 1,1–1,6 y se publica la mediana. La chaquitaclla del
-Agricultor añade 1 draw call a la llacta (248→249); el resto no cambia. El
+Agricultor añade 1 draw call; el puño que sostiene el arma suma unos 9 en
+primera persona y deja la llacta en 248 y el Cusco en 297. El
 desglose del Cusco mostró que la multitud pesaba 173 draw calls y el pase de
 sombra 266; el LOD por material y la política de sombras los dejan en torno a
 100 y 140. El Cusco es el acto más ajustado (69,4 FPS de media, p1 60,0); en una
@@ -146,6 +149,7 @@ La identidad viene de la ropa, el pelo, la paleta y la silueta:
 | Curaca de cerca | ![Curaca de cerca](img/personajes/curaca_close_q.png) |
 | Curaca parpadeando | ![Curaca parpadeando](img/personajes/curaca_blink_q.png) |
 | Curaca con las cejas alzadas | ![Curaca con las cejas alzadas](img/personajes/curaca_brows_q.png) |
+| Arma en primera persona | ![Arma en primera persona](img/personajes/arma_q.png) |
 | Mensajero | ![Mensajero](img/personajes/mensajero_q.png) |
 | Chanca | ![Chanca](img/personajes/chanca_q.png) |
 | Mujer mayor | ![Mujer mayor](img/personajes/anciana_q.png) |
@@ -197,6 +201,9 @@ habla, chaquitaclla del Agricultor, arena y arco completo.
   pero no hay fonemas ni sincronía labial; la cara sigue siendo una textura
   sobre la malla UBC. Una sincronía labial completa requiere shape keys o una
   malla facial nueva.
+- **Mano del arma:** es un puño de bloqueo, no la mano articulada; no hay IK ni
+  agarre individual de dedos. A distancia de juego se lee, de cerca es
+  geométrico.
 - Validación humana: movimiento, diálogo, combate y lectura a distancia con el
   elenco completo.
 
@@ -210,7 +217,7 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **138 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **139 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.

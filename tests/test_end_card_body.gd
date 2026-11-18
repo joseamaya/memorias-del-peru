@@ -17,6 +17,30 @@ func _spawn(path: String) -> Node:
 	return world
 
 
+func test_end_card_text_waits_for_the_backdrop() -> bool:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return false
+	var packed: PackedScene = load("res://core/ui/hud.tscn") as PackedScene
+	if packed == null:
+		return false
+	var hud: PlayerHud = packed.instantiate() as PlayerHud
+	if hud == null:
+		return false
+	tree.root.add_child(hud)
+	var body: Label = hud.get_node_or_null("EndPanel/EndBody") as Label
+	if body == null:
+		hud.free()
+		return false
+	hud.show_end_card("Fin", "Seguir", "Texto")
+	hud.advance_end_card(0.4)
+	var early: bool = body.modulate.a == 0.0
+	hud.advance_end_card(1.6)
+	var late: bool = is_equal_approx(body.modulate.a, 1.0)
+	hud.free()
+	return early and late
+
+
 func test_end_card_shows_news() -> bool:
 	CampaignState.clear()
 	var world: Node = _spawn(ACT_FOUR)

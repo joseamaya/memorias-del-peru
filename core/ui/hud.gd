@@ -12,10 +12,6 @@ extends Control
 ## diálogo, aparecen dos bandas cinematográficas. El centro de la pantalla lleva
 ## una retícula discreta que se abre al enfocar un interactuable.
 
-## Velocidad de lectura supuesta y margen añadido a cada subtítulo.
-const CHARS_PER_SECOND: float = 13.0
-const READING_PADDING: float = 1.5
-const MIN_SUBTITLE_SECONDS: float = 4.0
 ## Pausa entre dos subtítulos seguidos, para que se note el cambio.
 const SUBTITLE_GAP: float = 0.3
 ## Subtítulos en espera como máximo; si se llena, se descarta el más antiguo.
@@ -23,6 +19,9 @@ const QUEUE_LIMIT: int = 4
 ## Fundido de la tarjeta de fin y opacidad final del fondo.
 const END_FADE: float = 2.0
 const END_ALPHA: float = 0.93
+## El texto de la tarjeta espera a que el fondo esté oscuro; si aparece antes,
+## se lee sobre la escena iluminada y pierde contraste.
+const END_TEXT_DELAY: float = 0.35
 ## Fundidos del rótulo de lugar.
 const TITLE_FADE_IN: float = 0.8
 const TITLE_FADE_OUT: float = 1.2
@@ -262,6 +261,7 @@ func show_end_card(title: String, hint: String, body: String = "") -> void:
 	status_label.visible = false
 	ammo_label.visible = false
 	objective_label.visible = false
+	hint_label.visible = false
 	damage_flash.color = Color(0.55, 0.08, 0.05, 0.0)
 	_set_vignette(0.0)
 	_apply_end_fade()
@@ -284,8 +284,10 @@ func is_end_card_visible() -> bool:
 func _apply_end_fade() -> void:
 	var t: float = clampf(_end_elapsed / END_FADE, 0.0, 1.0)
 	end_panel.color = Color(0.0, 0.0, 0.0, END_ALPHA * t)
-	end_title.modulate.a = t
-	end_hint.modulate.a = t
+	var text_t: float = clampf((t - END_TEXT_DELAY) / (1.0 - END_TEXT_DELAY), 0.0, 1.0)
+	end_title.modulate.a = text_t
+	end_body.modulate.a = text_t
+	end_hint.modulate.a = text_t
 
 
 ## Muestra u oculta el aviso de pausa.
@@ -294,11 +296,9 @@ func show_pause(paused: bool) -> void:
 	queue_redraw()
 
 
-## Segundos que necesita [param text] para leerse con calma; nunca menos que
-## [param requested] ni que [constant MIN_SUBTITLE_SECONDS].
+## Segundos que necesita [param text] para leerse con calma.
 static func reading_seconds(text: String, requested: float = 0.0) -> float:
-	var needed: float = float(text.length()) / CHARS_PER_SECOND + READING_PADDING
-	return maxf(maxf(requested, MIN_SUBTITLE_SECONDS), needed)
+	return HudText.reading_seconds(text, requested)
 
 
 ## Muestra un subtítulo ya traducido. Dura al menos [param seconds] y lo que
