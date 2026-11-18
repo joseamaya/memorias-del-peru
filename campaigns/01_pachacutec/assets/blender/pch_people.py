@@ -1,45 +1,9 @@
-"""Generador de los personajes realistas de la campaña 01 (ADR-0016).
+"""Librería heredada de mallas, telas y utilidades de MakeHuman.
 
-Crea cada personaje con MPFB2 (MakeHuman para Blender), le pone ropa andina
-generada aquí mismo (las prendas grandes, cortadas como paños de telar y caídas
-con la simulación de tela de Blender, ADR-0020), traslada la captura de
-movimiento de CMU a su esqueleto y lo exporta a glTF binario en
-`assets/models/pch_npc_<papel>.glb`.
-
-Requisitos (no se versionan; ver ADR-0016):
-
-1. MPFB2 2.0.18 instalado en un directorio de usuario de Blender aparte:
-
-       export BLENDER_USER_RESOURCES=<dir>
-       blender --factory-startup --command extension install-file \\
-           -r user_default -e add-on-mpfb-v2.0.18.zip
-
-2. Los recursos CC0 de MakeHuman (`makehuman_system_assets_cc0.zip`)
-   descomprimidos en `<dir>/extensions/.user/user_default/mpfb/data/`.
-3. Las tomas ASF/AMC de CMU en un directorio, indicado con `--cmu`.
-4. Las cabezas de Rocketbox (ADR-0017): por cada avatar de `PEOPLE[...]["head"]`,
-   una carpeta con su FBX (`Export/<avatar>.fbx`) y sus texturas
-   `*_head_color.tga`, `*_head_normal.tga` y `*_opacity_color.tga`, todo bajo
-   el directorio indicado con `--rocketbox`.
-
-Uso (desde la raíz del repositorio):
-
-    BLENDER_USER_RESOURCES=<dir> blender --background --factory-startup \\
-        --python campaigns/01_pachacutec/assets/blender/pch_people.py -- \\
-        --cmu <dir_cmu> --rocketbox <dir_rocketbox> [--out DIR] [--preview DIR] [nombre ...]
-
-Convenciones:
-- 1 unidad = 1 metro, pies en el suelo y frente hacia +Y de Blender (−Z de
-  Godot), como el resto de modelos. MakeHuman mira hacia −Y, así que el
-  esqueleto se gira 180° al exportar.
-- Las animaciones se llaman como en ADR-0015 y se exportan como pistas NLA.
-- Tras exportar, ejecutar `postprocess_capes.py` sobre cada `pch_npc_*.glb`
-  para ajustar la apertura de mantos y llicllas (alcance v4.15). Ese paso no
-  toca huesos, pesos, UV ni animaciones.
-- La ropa lleva la clase de superficie en UV0 (tejido) y coordenadas de tejido
-  en UV1, con el material «pch_cloth» que el juego sustituye por el suyo.
-
-Los personajes son reconstrucciones (R) según PCH-011, PCH-017 y PCH-018.
+El pipeline de personajes MakeHuman/Rocketbox está **retirado**: el juego usa
+solo los cuerpos Quaternius. Este módulo se conserva como librería de
+`pch_dressed.py` para `pch_quaternius.py` (clases `BodyInfo`, `Garment`, el
+lienzo textil y la paleta). No genera el elenco.
 """
 
 import argparse
@@ -2744,6 +2708,3 @@ def main():
 			render_preview(name, args.preview, args.pose)
 		if not args.no_export:
 			export(name, args.out)
-
-
-main()

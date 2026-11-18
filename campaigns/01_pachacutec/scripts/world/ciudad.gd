@@ -781,7 +781,7 @@ func _setup_vespera() -> void:
 	_vespera_point = point
 	point.requested.connect(_on_vespera_requested)
 	_vespera_visual = _add_visual_npc(
-		Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), &"villager", 2)
+		Vector3(VESPERA_POSITION.x, 0.0, VESPERA_POSITION.z), &"Curaca", 0)
 	point.highlight_target = _vespera_visual
 
 
@@ -1010,9 +1010,9 @@ func _start_defense() -> void:
 	_wave = 1
 	_disable_interactions_for_defense()
 	if CampaignState.has_flag(&"herido_salvado"):
-		_anca_visual = _add_visual_npc(Vector3(-3.0, 0.0, -8.0), &"villager", 1)
+		_anca_visual = _add_visual_npc(Vector3(-3.0, 0.0, -8.0), &"Anca", 0)
 	elif CampaignState.has_flag(&"aliado_2") and ally_count() < 2:
-		_young_visual = _add_visual_npc(Vector3(3.0, 0.0, -8.0), &"villager", 2)
+		_young_visual = _add_visual_npc(Vector3(3.0, 0.0, -8.0), &"joven", 0)
 	CampaignProgress.save_checkpoint(self, player.global_position)
 	_start_drum()
 	_retreat_crowd()
@@ -1349,31 +1349,10 @@ func _restore_allies() -> void:
 			_add_ally_visual(index)
 
 
-## Modelo MakeHuman/Rocketbox para un rol y una variante de color.
-func _character_model_for(role: StringName, variant: int) -> String:
-	match role:
-		&"curaca":
-			return "pch_npc_curaca.glb"
-		&"principal":
-			return "pch_npc_principal.glb"
-		&"farmer":
-			return "pch_npc_farmer.glb"
-		&"messenger":
-			return "pch_npc_messenger.glb"
-		&"weaver":
-			return "pch_npc_weaver.glb"
-	match variant % 3:
-		1:
-			return "pch_npc_villager_b.glb"
-		2:
-			return "pch_npc_villager_c.glb"
-	return "pch_npc_villager.glb"
-
-
 func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> CharacterModelVisual:
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Visual"
-	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), _character_model_for(role, variant))
+	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), variant)
 	visual.position = at
 	add_child(visual)
 	visual.look_at(Vector3(0.0, at.y, 28.0), Vector3.UP)
@@ -1416,7 +1395,7 @@ func _add_ally_visual(index: int) -> void:
 	_ally_visuals[index] = true
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Ally%d" % index
-	visual.model_path = MODEL_DIR + _character_model_for(&"villager", index)
+	visual.model_path = MODEL_DIR + CharacterCatalog.model_for("villager", index)
 	visual.position = ALLY_POSITIONS[index]
 	add_child(visual)
 	visual.look_at(Vector3(0.0, ALLY_POSITIONS[index].y, 28.0), Vector3.UP)
@@ -2290,15 +2269,14 @@ func _build_crowd() -> void:
 
 
 func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName, variant: int) -> void:
-	# La multitud usa los mismos modelos que el elenco: seis GLB distintos
-	# repartidos en diez puestos, con variación de talla para romper la
-	# repetición. Ya no queda ninguna figura procedural en escena.
+	# La multitud usa los diez arquetipos Q; el LOD oculta cejas y tupu a
+	# distancia para no salirse del presupuesto de draw calls.
 	var spawn_at: Vector3 = at
 	if CROWD_VENDORS.has(index):
 		spawn_at = CROWD_VENDORS[index]
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Crowd%02d" % index
-	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), _character_model_for(role, variant))
+	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), variant)
 	visual.position = spawn_at
 	visual.scale = Vector3.ONE * (0.96 + 0.02 * float(index % 5))
 	parent.add_child(visual)

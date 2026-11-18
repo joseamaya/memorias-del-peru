@@ -2,19 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfne6pjr15p0j"
-path="res://.godot/imported/pch_npc_sisa_rb_f152_opacity_color.tga.png-8a144e69d43e61eab6f224c31b2557bb.ctex"
+uid="uid://bj7vrip7aa4yd"
+path="res://.godot/imported/llacta_q.png-ca93ef4501b202560e12e4aa395a56e4.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "a2b6e21173b42cd6cc6d269f9c025df5"
 }
 
 [deps]
 
-source_file="res://campaigns/01_pachacutec/assets/models/pch_npc_sisa_rb_f152_opacity_color.tga.png"
-dest_files=["res://.godot/imported/pch_npc_sisa_rb_f152_opacity_color.tga.png-8a144e69d43e61eab6f224c31b2557bb.ctex"]
+source_file="res://campaigns/01_pachacutec/documentation/img/personajes/llacta_q.png"
+dest_files=["res://.godot/imported/llacta_q.png-ca93ef4501b202560e12e4aa395a56e4.ctex"]
 
 [params]
 
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

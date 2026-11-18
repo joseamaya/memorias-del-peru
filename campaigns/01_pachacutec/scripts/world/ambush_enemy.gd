@@ -19,7 +19,7 @@ const STANDOFF_DISTANCE: float = 1.9
 const ATTACK_WINDUP: float = 0.45
 const ATTACK_REACH: float = 2.9
 const MORALE_LOSS: float = 15.0
-const MODEL_PATH: String = "res://campaigns/01_pachacutec/assets/models/pch_npc_commoner.glb"
+const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 ## Duración de la caída del enemigo derribado.
 const FALL_SECONDS: float = 0.85
 
@@ -48,9 +48,8 @@ func _ready() -> void:
 	collision_mask = 9
 	_visual = CharacterModelVisual.new()
 	_visual.name = "Visual"
-	var q_model: String = CharacterCatalog.model_for("Chanca", "")
-	_visual.model_path = MODEL_PATH if q_model.is_empty() else MODEL_PATH.get_base_dir() + "/" + q_model
-	_visual.dark_clothes = q_model.is_empty()
+	var q_model: String = CharacterCatalog.model_for("Chanca")
+	_visual.model_path = MODEL_DIR + q_model
 	_visual.porra = true
 	# El chanca es el único que corre hacia el jugador: algo más alto que la
 	# aldea y sin variación, para que los cuatro se lean como un grupo.

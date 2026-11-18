@@ -168,7 +168,18 @@ func test_quaternius_npc_actor() -> bool:
 	return ok
 
 
-func test_catalog_switch() -> bool:
-	# El catálogo no debe cambiar el set por defecto en una partida normal.
-	var legacy: String = CharacterCatalog.model_for("Curaca", "pch_npc_curaca.glb")
-	return legacy == "pch_npc_curaca.glb" or CharacterCatalog.enabled()
+func test_catalog_models() -> bool:
+	# Todos los papeles del juego usan un GLB Q existente; no queda legado.
+	var ok: bool = CharacterCatalog.model_for("Curaca") == "pch_npc_curaca_q.glb"
+	ok = ok and CharacterCatalog.model_for("HijoPuma") == "pch_npc_joven_q.glb"
+	ok = ok and CharacterCatalog.model_for("Tejedora") == "pch_npc_anca_q.glb"
+	ok = ok and CharacterCatalog.model_for("villager", 1) == "pch_npc_madre_q.glb"
+	for role: String in CharacterCatalog.MODELS:
+		var file_name: String = CharacterCatalog.model_for(role)
+		if not CharacterCatalog.is_quaternius_file(file_name):
+			printerr(role, ": modelo no Q ", file_name)
+			ok = false
+		elif not ResourceLoader.exists(MODEL_DIR + file_name):
+			printerr(role, ": falta ", file_name)
+			ok = false
+	return ok

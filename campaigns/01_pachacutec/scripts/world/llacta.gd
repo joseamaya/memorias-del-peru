@@ -61,37 +61,18 @@ const MODEL_DIR: String = "res://campaigns/01_pachacutec/assets/models/"
 const MODEL_HOUSES: Array[String] = [
 	"pch_house_a.glb", "pch_house_b.glb", "pch_house_c.glb", "pch_house_d.glb", "pch_house_e.glb",
 ]
-## Elenco del acto I: modelos con esqueleto, animaciones y ropa propios.
-const CHARACTER_MODELS: Dictionary[String, String] = {
-	"Tejedora": "pch_npc_weaver.glb",
-	"Agricultor": "pch_npc_farmer.glb",
-	"Curaca": "pch_npc_curaca.glb",
-	"Principal2": "pch_npc_principal.glb",
-	"Habitante1": "pch_npc_villager.glb",
-	"Habitante2": "pch_npc_villager_b.glb",
-	"Habitante3": "pch_npc_villager_c.glb",
-	"Anca": "pch_npc_villager_b.glb",
-	"Mensajero": "pch_npc_messenger.glb",
-	"HijoPuma": "pch_npc_villager_c.glb",
-	"CuracaVecino": "pch_npc_curaca.glb",
-	"Herido1": "pch_npc_villager.glb",
-	"Herido2": "pch_npc_villager_b.glb",
-	"Comitiva1": "pch_npc_villager.glb",
-	"Comitiva2": "pch_npc_villager_b.glb",
-	"Comitiva3": "pch_npc_villager_c.glb",
-}
 ## Altura visible de cada papel, en metros.
 const CHARACTER_HEIGHTS: Dictionary[String, float] = {
 	"Curaca": 1.65,
 	"Principal2": 1.63,
-	"Tejedora": 0.0,
+	"Tejedora": 1.54,
 	"Agricultor": 1.57,
 	"Habitante1": 1.53,
 	"Habitante2": 1.56,
 	"Habitante3": 1.50,
 	"Anca": 1.58,
 	"Mensajero": 1.60,
-	"HijoPuma": 1.55,
+	"HijoPuma": 1.20,
 	"CuracaVecino": 1.64,
 	"Herido1": 1.52,
 	"Herido2": 1.55,
@@ -709,7 +690,7 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 		slot_parent = body_mesh
 		slot_offset = -body_mesh.position
 	var no_collisions: Array[Node] = []
-	var files: Array[String] = [CharacterCatalog.model_for(node_name, CHARACTER_MODELS[node_name])]
+	var files: Array[String] = [CharacterCatalog.model_for(node_name)]
 	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, files, blockout, no_collisions)
 	slot.use_model_collision = false
 	actor.preserve_materials = true

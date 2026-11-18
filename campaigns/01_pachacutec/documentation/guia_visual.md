@@ -160,8 +160,8 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
   con pelo negro liso, unku sencillo y chuspa. Son arquetipos, no retratos.
 - **Familia de Rumi:** madre con anacu, lliclla y paño; hermano joven con unku,
   manto y chuspa; Puma como autoridad comunal con manto y chuspa, sin t’oqapu;
-  Anca con anacu, lliclla y tupu. HijoPuma sigue con el elenco anterior hasta
-  tener una base infantil.
+  Anca con anacu, lliclla y tupu. HijoPuma reutiliza el joven Q escalado a
+  1,20 m; no hay base infantil gratuita, así que se lee como un adulto pequeño.
 - **Textiles:** túnica de cuello alto y abertura estrecha, franjas verticales,
   cenefas de rombos y zigzag en llicllas y mantos, faja con rombos, tupu de
   cobre y chuspa con correa. Los diseños son reconstrucción (R) sobre

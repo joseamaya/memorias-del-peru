@@ -20,7 +20,7 @@
 - **Descarga:** `Universal Animation Library 2[Standard].zip`, 18 MB, descargado el 2026-11-17
 - **Licencia:** CC0 1.0
 - **Clips conservados:** `Idle_No_Loop`, `Farm_PlantSeed`, `Farm_Harvest`, `TreeChopping_Loop`, `Hit_Knockback`, `Melee_Hook`, `Melee_Hook_Rec`, `Walk_Carry_Loop`, `Sword_Block`, `Yes`, `Chest_Open`.
-- **Uso:** `idle_b`, `work` y `hit` del prototipo. La versión Source de pago no se usa.
+- **Uso:** `idle_b`, `work` y `hit` del elenco completo. La versión Source de pago no se usa.
 
 ## Origen y licencia
 
@@ -29,7 +29,7 @@
 - **Origen:** https://quaternius.com/packs/universalbasecharacters.html
 - **Descarga:** `Universal Base Characters[Standard].zip` (122 MB), descargado el 2026-11-16
 - **Licencia:** [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
-- **Uso:** cuerpo, cara, ojos, manos, pelo y barba de los diez personajes del prototipo (cuatro papeles, dos arquetipos de multitud y la familia de la llacta). La ropa, trenzas, cintas, fajas, chuspas y sandalias son autoría propia, generadas por `campaigns/01_pachacutec/assets/blender/pch_quaternius.py`.
+- **Uso:** cuerpo, cara, ojos, manos, pelo y barba de los diez personajes del **elenco único**; cubren protagonistas, autoridades, multitud y la familia de la llacta. La ropa, trenzas, cintas, fajas, chuspas y sandalias son autoría propia, generadas por `campaigns/01_pachacutec/assets/blender/pch_quaternius.py`.
 
 La versión **Source** de pago **no se ha usado**. El estándar gratuito solo incluye dos cuerpos (hombre y mujer “superhero”); los cuerpos regular/teen, los 20 peinados y los shaders de personalización quedan fuera. No se versionan los ZIP originales: solo los archivos usados.
 
@@ -38,10 +38,10 @@ La versión **Source** de pago **no se ha usado**. El estándar gratuito solo in
 - Albedo de piel reducida a 512 px en `base/` (ojos a 256 px) para el presupuesto de memoria del juego.
 - Caras nuevas: la albedo 2048 de UBC se pinta por personaje en el espacio UV de la cabeza (tono, labios, ojeras, líneas de edad y grano) y se guarda a 1024 px. El normal y la rugosidad bajan a 1024 px. Las texturas se importan con compresión VRAM y mipmaps.
 - Referencias de textura corregidas: el glTF gratuito pedía `T_Hair_1_Normal_png.png` y `T_Eye_Normal_png.png`; los archivos reales son `T_Hair_1_Normal.png` y `T_Eye_Normal.png`.
-- Materiales de cuerpo por personaje (`pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero` y `pch.body_chanca`), cejas propias (`pch.brow_*`), pelo (`pch.hair_*`), ojos (`pch.eye`) y ropa (`pch_cloth`). `QuaterniusMaterials` los reconoce.
+- Materiales de cuerpo por personaje (`pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`, `pch.body_anciana`, `pch.body_joven`, `pch.body_madre`, `pch.body_hermano`, `pch.body_puma` y `pch.body_anca`), cejas propias (`pch.brow_*`), pelo (`pch.hair_*`), ojos (`pch.eye`) y ropa (`pch_cloth`). `QuaterniusMaterials` los reconoce.
 - Cuerpos girados 180° en el generador para que miren hacia −Z, como el resto del elenco.
 - Sin animaciones dentro del GLB: `QuaterniusClips` añade los clips de UAL1/UAL2 en el juego.
-- Los GLB incluyen un **atlas textil de ropa** por personaje, pintado por `pch_people.py` a partir de la ropa y la paleta; es autoría propia (R). Las texturas de cuerpo, cara, pelo y ojos siguen compartidas fuera del GLB.
+- Los GLB incluyen un **atlas textil de ropa** por personaje, pintado por la librería de telas de `pch_people.py` desde `pch_quaternius.py`; es autoría propia (R). Las texturas de cuerpo, cara, pelo y ojos siguen compartidas fuera del GLB.
 
 ## Packs evaluados y no usados
 

@@ -1,18 +1,9 @@
-"""Genera la tejedora vestida sobre el maniquí UAL1 (ADR-0042).
+"""Utilidades de malla y tejido para el generador Quaternius.
 
-Uso (desde la raíz del repositorio):
-
-    blender --background --factory-startup \
-        --python campaigns/01_pachacutec/assets/blender/pch_dressed.py -- \
-        [--out DIR] [--preview DIR]
-
-El cuerpo y el esqueleto son los de UAL1 (Quaternius, CC0). La cabeza, el pelo
-y la ropa son mallas nuevas: la túnica se copia de la superficie del cuerpo para
-heredar sus pesos, y la falda, el cinturón, la chuspa, la lliclla y las sandalias
-se construyen con pesos asignados por altura y lado. El resultado es un único
-GLB con el cuerpo, las capas y las animaciones recortadas.
-
-El pipeline sigue ADR-0010: script versionado, sin addons ni MCP.
+El maniquí tejedor anterior ya no se genera. `pch_quaternius.py` usa este
+módulo como librería: carga las clases de `pch_people.py`, las utilidades de
+malla y el material de tela. El elenco del juego se genera con
+`pch_quaternius.py`.
 """
 
 import argparse
@@ -743,7 +734,3 @@ def main():
 	trim_animations(armature)
 	export(args.out)
 	render_previews(args.preview)
-
-
-if __name__ == "__main__":
-	main()

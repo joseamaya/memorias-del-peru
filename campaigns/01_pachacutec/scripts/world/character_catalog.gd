@@ -1,73 +1,68 @@
 class_name CharacterCatalog
 extends RefCounted
-## Catálogo visual de la campaña 01.
+## Catálogo único de personajes de la campaña 01.
 ##
-## El juego sigue usando los modelos MakeHuman/Rocketbox por defecto. Con
-## `-- --visual-set=quaternius` (o `PCH_VISUAL_SET=quaternius`) se sustituyen
-## los papeles del prototipo Quaternius. Con `--visual-set=rocketbox` se usa
-## el set híbrido: cuerpo y ropa Quaternius con cabeza Rocketbox realista.
-## Ningún set alternativo sobrescribe a los demás.
+## Todo el elenco usa los diez cuerpos Quaternius (UBC, CC0) con sus clips
+## UAL1/UAL2. No hay set anterior ni bandera de selección: los papeles que no
+## tienen un modelo propio reutilizan un arquetipo Q. Las alturas y el LOD de
+## multitud viven en las escenas.
 
-const ROCKETBOX_MODELS: Dictionary[String, String] = {
-	"Habitante3": "pch_npc_sisa_rb.glb",
-}
-
-const QUATERNIUS_MODELS: Dictionary[String, String] = {
-	"Mensajero": "pch_npc_mensajero_q.glb",
-	"Habitante3": "pch_npc_sisa_q.glb",
+## Papeles con nombre propio del guion.
+const MODELS: Dictionary[String, String] = {
+	"Tejedora": "pch_npc_anca_q.glb",
+	"Agricultor": "pch_npc_joven_q.glb",
 	"Curaca": "pch_npc_curaca_q.glb",
 	"CuracaVecino": "pch_npc_curaca_q.glb",
-	"Chanca": "pch_npc_chanca_q.glb",
-	"anciana": "pch_npc_anciana_q.glb",
-	"joven": "pch_npc_joven_q.glb",
+	"Principal2": "pch_npc_puma_q.glb",
 	"Habitante1": "pch_npc_madre_q.glb",
 	"Habitante2": "pch_npc_hermano_q.glb",
-	"Principal2": "pch_npc_puma_q.glb",
+	"Habitante3": "pch_npc_sisa_q.glb",
 	"Anca": "pch_npc_anca_q.glb",
+	"Mensajero": "pch_npc_mensajero_q.glb",
+	"HijoPuma": "pch_npc_joven_q.glb",
+	"Herido1": "pch_npc_hermano_q.glb",
+	"Herido2": "pch_npc_madre_q.glb",
+	"Comitiva1": "pch_npc_madre_q.glb",
+	"Comitiva2": "pch_npc_hermano_q.glb",
+	"Comitiva3": "pch_npc_joven_q.glb",
 	"curaca": "pch_npc_curaca_q.glb",
+	"principal": "pch_npc_puma_q.glb",
+	"farmer": "pch_npc_joven_q.glb",
 	"messenger": "pch_npc_mensajero_q.glb",
+	"weaver": "pch_npc_anca_q.glb",
+	"anciana": "pch_npc_anciana_q.glb",
+	"joven": "pch_npc_joven_q.glb",
+	"chanca": "pch_npc_chanca_q.glb",
 }
 
-
-## Set visual pedido por la partida: "legacy", "quaternius" o "rocketbox".
-## No cambia el valor por defecto: una partida normal sigue viendo el elenco
-## anterior.
-static func mode() -> String:
-	var requested: String = OS.get_environment("PCH_VISUAL_SET")
-	if requested == "quaternius" or requested == "rocketbox":
-		return requested
-	for argument: String in OS.get_cmdline_user_args():
-		if argument.begins_with("--visual-set="):
-			var value: String = argument.trim_prefix("--visual-set=")
-			if value == "quaternius" or value == "rocketbox":
-				return value
-		elif argument.begins_with("visual-set="):
-			var value: String = argument.trim_prefix("visual-set=")
-			if value == "quaternius" or value == "rocketbox":
-				return value
-	return "legacy"
+## Rotación de arquetipos para la multitud y los papeles sin modelo propio.
+const CROWD: Array[String] = [
+	"pch_npc_sisa_q.glb",
+	"pch_npc_madre_q.glb",
+	"pch_npc_anca_q.glb",
+	"pch_npc_anciana_q.glb",
+	"pch_npc_joven_q.glb",
+	"pch_npc_hermano_q.glb",
+	"pch_npc_mensajero_q.glb",
+	"pch_npc_puma_q.glb",
+	"pch_npc_curaca_q.glb",
+	"pch_npc_chanca_q.glb",
+]
 
 
-## Verdadero si la partida pidió cualquier set alternativo.
-static func enabled() -> bool:
-	return mode() != "legacy"
+## Modelo Q de [param role]. [param variant] elige el arquetipo de multitud
+## cuando el papel no tiene modelo propio (por ejemplo, `villager`).
+static func model_for(role: String, variant: int = 0) -> String:
+	if MODELS.has(role):
+		return MODELS[role]
+	return crowd_model(variant)
 
 
-## Modelo de [param role]; si no hay variante del set pedido, conserva el
-## anterior.
-static func model_for(role: String, legacy: String) -> String:
-	if mode() == "rocketbox" and ROCKETBOX_MODELS.has(role):
-		return ROCKETBOX_MODELS[role]
-	if mode() == "quaternius" and QUATERNIUS_MODELS.has(role):
-		return QUATERNIUS_MODELS[role]
-	return legacy
+## Arquetipo Q determinista para la multitud.
+static func crowd_model(variant: int) -> String:
+	return CROWD[posmod(variant, CROWD.size())]
 
 
-## Verdadero si [param file_name] pertenece al prototipo Quaternius.
+## Verdadero si [param file_name] es un GLB del elenco Quaternius.
 static func is_quaternius_file(file_name: String) -> bool:
-	return file_name.ends_with("_q.glb") or file_name == "pch_npc_chanca_q.glb"
-
-
-## Verdadero si [param file_name] pertenece al set híbrido Rocketbox.
-static func is_rocketbox_file(file_name: String) -> bool:
-	return file_name.ends_with("_rb.glb")
+	return file_name.ends_with("_q.glb")

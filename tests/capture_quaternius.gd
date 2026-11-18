@@ -1,11 +1,7 @@
 extends Node
-## Herramienta de desarrollo: captura el prototipo Quaternius en sus escenas.
+## Herramienta de desarrollo: captura el elenco Quaternius en sus escenas.
 ##
-##   godot --path . --resolution 1280x720 res://tests/scenes/capture_quaternius.tscn \
-##       -- --visual-set=quaternius
-##
-## Con `--visual-set=rocketbox` captura el piloto híbrido de Sisa; los
-## arquetipos de `_showcase` siguen siendo los modelos Quaternius.
+##   godot --path . --resolution 1280x720 res://tests/scenes/capture_quaternius.tscn
 ##
 ## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
 ## `..._curaca.png`, `..._curaca_close.png`, `..._rostro.png`, `..._mensajero.png`,
@@ -31,7 +27,7 @@ func _capture() -> void:
 	# que mueve la cámara del jugador y tapa la cámara de captura.
 	CampaignState.clear()
 	CampaignState.set_flag(&"intro_vista")
-	var prefix: String = CharacterCatalog.mode()
+	var prefix: String = "quaternius"
 	var llacta: Node = (load(LLACTA) as PackedScene).instantiate()
 	add_child(llacta)
 	await _frames(SETTLE_FRAMES)

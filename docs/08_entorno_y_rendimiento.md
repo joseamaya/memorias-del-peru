@@ -140,18 +140,21 @@ props, mercado, mobiliario, puerta, remates de muro, terrazas, santuario y veget
 del Cusco y la llacta. El Cusco queda en **349 draw calls con Quaternius** (328 con el
 elenco anterior) y 245/225 MB; la llacta queda en **310** con Quaternius, la familia y
 los textiles. El Cusco está a un draw call del presupuesto: no admite más personajes sin
-LOD o sin reducir estática. El presupuesto
-de 350 se cumple. La memoria sube ~8 MB por la copia de vértices fusionados; los
+LOD o sin reducir estática. Con 3 de 10 puestos Q el presupuesto se cumplía;
+con el elenco completo se supera (abajo). La memoria sube ~8 MB por la copia de
+vértices fusionados; los
 originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con carga
 6–16: falta repetirla en un equipo descargado. El siguiente límite es la multitud/LOD y
 la memoria de la geometría fusionada, no la estática.
 
-**Piloto híbrido Rocketbox (2026-11-17).** El modo `--visual-set=rocketbox`
-sustituye solo a Sisa (cuerpo/ropa Quaternius + cabeza Rocketbox). La llacta
-mide **298 draw calls y 223,1 MB** y el Cusco **328 y 225,2 MB**; el resto del
-set Q no se activa en este modo, así que la cifra no es comparable con el set
-Quaternius completo (349/245 MB). La pasada se hizo con carga 2,0–2,2 y FPS de
-39,3/38,2, no concluyentes. El presupuesto de 350 se cumple.
+**Elenco Quaternius completo (2026-11-17).** Todo el elenco usa los diez
+GLB Q; no queda elenco anterior. La llacta mide **321 draw calls y 222,2 MB**;
+el Cusco completo, **413 draw calls y 230,8 MB**. La pasada se hizo con carga
+3,7–4,5 y FPS de 45,1/53,7, no concluyentes. El LOD de multitud oculta cejas y
+tupu en los puestos de fondo. El Cusco **supera el presupuesto de 350 en 63
+draw calls**: la estática fusionada pesa ~329 y los personajes Q añaden el
+resto. Falta un LOD de personaje/multitud Q o reducir estática; no se vuelve
+al elenco anterior.
 
 **Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 

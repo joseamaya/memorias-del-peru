@@ -1,6 +1,6 @@
 class_name CharacterModelVisual
 extends Node3D
-## Visual de un personaje MakeHuman/Rocketbox ya versionado.
+## Visual de un personaje Quaternius.
 ##
 ## Carga el GLB con un [ModelSlot], aplica los materiales del proyecto y
 ## reproduce su reposo. Puede oscurecer la ropa y añadir una porra para los
@@ -9,18 +9,14 @@ extends Node3D
 
 ## Tinte de la ropa oscura de los chancas; multiplica el tejido original.
 const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
-## Clips de combate compartidos por todo el elenco. Viven en un GLB aparte para
-## no duplicar mallas: solo trae la armadura y las dos acciones.
-const COMBAT_LIBRARY_PATH: String = "res://campaigns/01_pachacutec/assets/animation/pch_npc_combat.glb"
-const COMBAT_CLIPS: Array[StringName] = [&"attack", &"hit", &"death"]
-
-## Copias de los clips de combate, cargadas una vez para todos los personajes.
-static var _combat_cache: Dictionary[StringName, Animation] = {}
 
 @export var model_path: String = ""
 @export var idle_clip: StringName = &"idle"
 @export var dark_clothes: bool = false
 @export var porra: bool = false
+## LOD de multitud: oculta cejas y tupu para ahorrar draw calls sin perder la
+## cara ni el pelo.
+@export var crowd: bool = false
 ## Altura visible a la que se ajusta el modelo. Los GLB del elenco venían con
 ## alturas de 1,34 a 1,68 m; el jugador mide 1,70 y la diferencia se notaba.
 ## Con 0 no se escala: solo se apoyan los pies en el suelo.
@@ -57,17 +53,16 @@ func _ready() -> void:
 	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
 	if _skeleton != null:
 		_head_index = _skeleton.find_bone("Head")
-	var quaternius: bool = QuaterniusClips.is_quaternius(_model)
 	_player = QuaterniusClips.player_for(
 		_model, _model.find_child("AnimationPlayer", true, false) as AnimationPlayer)
-	if _player != null and not quaternius:
-		_add_combat_clips()
 	if _player != null and _player.has_animation(idle_clip):
 		_player.play(idle_clip)
 	if dark_clothes:
 		_darken_clothes()
 	if porra:
 		_build_porra()
+	if crowd:
+		_apply_crowd_lod()
 
 
 ## Ajusta la altura del modelo y apoya sus pies en el suelo.
@@ -100,39 +95,15 @@ func play(clip: StringName, speed: float = 1.0) -> void:
 	_player.play(mapped, 0.15, speed)
 
 
-## Añade `attack` y `hit` a la librería del personaje. La armadura del GLB de
-## combate es la misma, así que las rutas de pista coinciden.
-func _add_combat_clips() -> void:
-	var library: AnimationLibrary = _player.get_animation_library(&"")
-	if library == null:
+## LOD de multitud: las piezas pequeñas no se leen a distancia y cuestan un
+## draw call cada una. La cara conserva ojos y pelo.
+func _apply_crowd_lod() -> void:
+	if _model == null:
 		return
-	for clip: StringName in _load_combat_clips():
-		if not library.has_animation(clip):
-			var copy: Animation = _combat_cache[clip].duplicate() as Animation
-			library.add_animation(clip, copy)
-
-
-## Carga los clips de combate una sola vez y devuelve los nombres disponibles.
-static func _load_combat_clips() -> Array[StringName]:
-	var names: Array[StringName] = []
-	if _combat_cache.is_empty():
-		if ResourceLoader.exists(COMBAT_LIBRARY_PATH):
-			var packed: PackedScene = load(COMBAT_LIBRARY_PATH) as PackedScene
-			if packed != null:
-				var holder: Node = packed.instantiate()
-				var player: AnimationPlayer = holder.find_child(
-					"AnimationPlayer", true, false) as AnimationPlayer
-				if player != null:
-					for clip: StringName in COMBAT_CLIPS:
-						if player.has_animation(clip):
-							# Se copia antes de liberar el nodo: la librería
-							# muere con él.
-							var copy: Animation = player.get_animation(clip).duplicate() as Animation
-							_combat_cache[clip] = copy
-				holder.free()
-	for clip: StringName in _combat_cache:
-		names.append(clip)
-	return names
+	for part: String in ["Eyebrows", "TupuDisc", "TupuPin"]:
+		var node: Node3D = _model.find_child(part, true, false) as Node3D
+		if node != null:
+			node.visible = false
 
 
 ## Punto de la cara para encuadrar un diálogo, tomado del hueso de la cabeza.
