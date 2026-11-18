@@ -19,14 +19,16 @@ func test_mannequin_looks_use_real_bones() -> bool:
 		return false
 	var skeleton: Skeleton3D = CharacterOutfit.find_skeleton(model)
 	var ok: bool = skeleton != null
-	var looks: Array[CharacterLook] = [
-		MannequinLooks.curaca(), MannequinLooks.sisa(), MannequinLooks.chanca(),
-	]
+	var looks: Array[CharacterLook] = MannequinLooks.all()
+	ok = ok and looks.size() == 10
 	for look: CharacterLook in looks:
-		ok = ok and not look.parts.is_empty()
+		ok = ok and look.parts.size() >= 3
 		for part: LookPart in look.parts:
 			ok = ok and skeleton.find_bone(part.bone) >= 0
 			ok = ok and CharacterOutfit.mesh_for(part) != null
+	# Las autoridades locales no llevan orejeras ni oro (guía visual).
+	for part: LookPart in MannequinLooks.curaca().parts:
+		ok = ok and not part.name.begins_with("Orejera")
 	model.free()
 	return ok
 

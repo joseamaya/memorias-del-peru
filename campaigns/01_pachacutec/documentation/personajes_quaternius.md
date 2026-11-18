@@ -229,13 +229,14 @@ expresión—, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`, `work` y
 `hit` de UAL2; texturas de cara de 1024, piel con rugosidad, cejas propias,
 catálogo de todos los papeles, política de sombras, LOD de multitud, muelles
 del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma),
-`test_first_person_hands.gd` (malla, falanges articuladas y gesto de
-interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
+`test_first_person_hands.gd` (malla de maniquí, pose abierta y puños de
+las armas) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
 estribo de 22 cm).
 
 > El prototipo de maniquíes UAL1 que puede sustituir a este elenco está en
-> [prototipo_maniqui.md](prototipo_maniqui.md). El elenco UBC sigue activo
-> hasta que se apruebe el prototipo.
+> [prototipo_maniqui.md](prototipo_maniqui.md). Tiene los diez looks capturados;
+> la mano de primera persona queda en revisión. El elenco UBC sigue activo
+> hasta que se integren los looks en NPC y multitud.
 
 ## 8. Decisión
 

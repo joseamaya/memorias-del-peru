@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://icp4llaauonx"
-path="res://.godot/imported/maniquis.png-a0052cc1770da496563c3d78b6af3ce1.ctex"
+uid="uid://cuyj7mq3vx5c6"
+path="res://.godot/imported/maniquies_principales.png-25cc42cd8422610ad26a1ecd0493a67a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://campaigns/01_pachacutec/documentation/img/prototipo/maniquis.png"
-dest_files=["res://.godot/imported/maniquis.png-a0052cc1770da496563c3d78b6af3ce1.ctex"]
+source_file="res://campaigns/01_pachacutec/documentation/img/prototipo/maniquies_principales.png"
+dest_files=["res://.godot/imported/maniquies_principales.png-25cc42cd8422610ad26a1ecd0493a67a.ctex"]
 
 [params]
 

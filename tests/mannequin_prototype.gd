@@ -1,32 +1,82 @@
 extends Node3D
-## Captura de prototipo del nuevo estilo de personajes.
+## Captura de contacto de los diez looks del elenco sobre maniquíes UAL1.
 ##
 ##   godot --path . res://tests/scenes/mannequin_prototype.tscn
 ##
-## Coloca a Curaca, Sisa y Chanca como maniquíes UAL1 con atuendo de primitivas
-## y guarda `user://mannequin_prototype.png`. No es una prueba: es la referencia
-## visual para aprobar el estilo antes de extenderlo al elenco.
+## Guarda dos imágenes: los cinco papeles principales y los cinco de familia y
+## apoyo. No es una prueba: es la referencia visual para aprobar los looks antes
+## de integrarlos en NPC y multitud.
 
-const LOOKS: Array[String] = ["Curaca", "Sisa", "Chanca"]
+const PRINCIPALES: Array[String] = ["Curaca", "Sisa", "Chanca", "Puma", "Anca"]
+const APOYO: Array[String] = ["Madre", "Hermano", "Joven", "Anciana", "Mensajero"]
+const SPACING: float = 1.15
+const CAMERA_POSITION: Vector3 = Vector3(0.0, 1.35, 4.6)
+const LOOK_AT: Vector3 = Vector3(0.0, 0.95, 0.0)
+
+var _camera: Camera3D = null
+var _group: Array[Node] = []
 
 
 func _ready() -> void:
 	_build_environment()
 	_build_ground()
-	var looks: Array[CharacterLook] = [
-		MannequinLooks.curaca(), MannequinLooks.sisa(), MannequinLooks.chanca(),
-	]
-	var heights: Array[float] = [1.65, 1.55, 1.60]
-	for index: int in range(3):
-		var mannequin: OutfitMannequin = OutfitMannequin.new()
-		mannequin.name = LOOKS[index]
-		mannequin.look = looks[index]
-		mannequin.target_height = heights[index]
-		mannequin.position = Vector3(-1.15 + 1.15 * float(index), 0.0, 0.0)
-		mannequin.clip = &"Idle"
-		add_child(mannequin)
-		_add_label(LOOKS[index], mannequin.position + Vector3(0.0, heights[index] + 0.18, 0.0))
+	_camera = Camera3D.new()
+	_camera.fov = 42.0
+	_camera.position = CAMERA_POSITION
+	add_child(_camera)
+	_camera.look_at(LOOK_AT, Vector3.UP)
+	_camera.current = true
 	_capture.call_deferred()
+
+
+func _capture() -> void:
+	for _i: int in range(6):
+		await get_tree().process_frame
+	await _capture_group(PRINCIPALES, "maniquies_principales.png")
+	await _capture_group(APOYO, "maniquies_apoyo.png")
+	get_tree().quit()
+
+
+func _capture_group(roles: Array[String], output: String) -> void:
+	await _clear_group()
+	for index: int in range(roles.size()):
+		var x: float = (float(index) - float(roles.size() - 1) * 0.5) * SPACING
+		_place(roles[index], Vector3(x, 0.0, 0.0))
+	for _i: int in range(8):
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	var image: Image = get_viewport().get_texture().get_image()
+	image.save_png("user://" + output)
+	print("PROTOTIPO_OK ", output)
+
+
+func _clear_group() -> void:
+	for node: Node in _group:
+		node.queue_free()
+	_group.clear()
+	await get_tree().process_frame
+
+
+func _place(role: String, at: Vector3) -> void:
+	var mannequin: OutfitMannequin = OutfitMannequin.new()
+	mannequin.name = role
+	mannequin.look = MannequinLooks.for_role(role)
+	mannequin.target_height = _height_for(role)
+	mannequin.position = at
+	mannequin.rotation.y = atan2(CAMERA_POSITION.x - at.x, CAMERA_POSITION.z - at.z)
+	mannequin.clip = &"Idle"
+	add_child(mannequin)
+	_group.append(mannequin)
+	var label: Label3D = _add_label(role,
+		at + Vector3(0.0, mannequin.target_height + 0.20, 0.0))
+	_group.append(label)
+
+
+func _height_for(role: String) -> float:
+	var index: int = MannequinLooks.ROLE_NAMES.find(role)
+	if index < 0:
+		return 1.55
+	return MannequinLooks.ROLE_HEIGHTS[index]
 
 
 func _build_environment() -> void:
@@ -49,7 +99,7 @@ func _build_environment() -> void:
 func _build_ground() -> void:
 	var ground: MeshInstance3D = MeshInstance3D.new()
 	var plane: PlaneMesh = PlaneMesh.new()
-	plane.size = Vector2(8.0, 8.0)
+	plane.size = Vector2(12.0, 12.0)
 	ground.mesh = plane
 	var material: StandardMaterial3D = StandardMaterial3D.new()
 	material.albedo_color = Color(0.56, 0.46, 0.33)
@@ -58,7 +108,7 @@ func _build_ground() -> void:
 	add_child(ground)
 
 
-func _add_label(text: String, at: Vector3) -> void:
+func _add_label(text: String, at: Vector3) -> Label3D:
 	var label: Label3D = Label3D.new()
 	label.text = text
 	label.font_size = 44
@@ -69,19 +119,4 @@ func _add_label(text: String, at: Vector3) -> void:
 	label.position = at
 	label.pixel_size = 0.0025
 	add_child(label)
-
-
-func _capture() -> void:
-	var camera: Camera3D = Camera3D.new()
-	camera.fov = 42.0
-	camera.position = Vector3(0.0, 1.35, 4.2)
-	add_child(camera)
-	camera.look_at(Vector3(0.0, 0.95, 0.0), Vector3.UP)
-	camera.current = true
-	for _i: int in range(12):
-		await get_tree().process_frame
-	await RenderingServer.frame_post_draw
-	var image: Image = get_viewport().get_texture().get_image()
-	image.save_png("user://mannequin_prototype.png")
-	print("PROTOTIPO_OK")
-	get_tree().quit()
+	return label
