@@ -20,7 +20,7 @@ Convenciones (alcance §7 y §7.1):
   Godot, el eje que apunta `look_at`.
 - Las mallas cuyo nombre termina en `-convcolonly` las convierte Godot en
   colisión convexa al importar y no se dibujan.
-- Los personajes los genera `pch_quaternius.py`; este script solo construye
+- Los personajes se montan en Godot con `MannequinLooks`; este script solo construye
   modelos estáticos y props.
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
@@ -1167,7 +1167,7 @@ def build_chaquitaclla(rng):
 
 # --- Personajes ----------------------------------------------------------
 #
-# Los personajes no salen de aquí: los genera `pch_quaternius.py` con los
+# Los personajes no salen de aquí: se montan en Godot con `MannequinLooks` y
 # cuerpos Quaternius, ropa propia y clips UAL1/UAL2.
 
 ANIM_FPS = 30

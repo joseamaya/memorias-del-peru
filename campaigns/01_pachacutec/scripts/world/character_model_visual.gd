@@ -1,46 +1,35 @@
 class_name CharacterModelVisual
 extends Node3D
-## Visual de un personaje Quaternius.
+## Visual de un personaje maniquí UAL1.
 ##
-## Carga el GLB con un [ModelSlot], aplica los materiales del proyecto y
-## reproduce su reposo. Puede oscurecer la ropa y añadir una porra para los
-## chancas. No conoce la lógica: los puntos de interacción y la colisión viven
-## fuera. El modelo mira hacia -Z, como el actor, así que no se gira.
+## Monta el cuerpo UAL1 con un [CharacterLook], lo ajusta a la altura visible,
+## reproduce los clips lógicos de [QuaterniusClips] y, si hace falta, añade una
+## porra a la mano derecha. La multitud usa un look reducido. No conoce la
+## lógica: los puntos de interacción y la colisión viven fuera.
 
-## Tinte de la ropa oscura de los chancas; multiplica el tejido original.
-const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
-## Pieza que la multitud oculta: el tupu. Es un alfiler pequeño que no se lee a
-## distancia; las cejas sí: sin ellas la cara parece vacía. Los nombres de
-## malla cambian entre los cuerpos masculino y femenino; el material no.
-const CROWD_HIDDEN_MATERIALS: Array[String] = ["pch_tupu"]
 ## A menos de esta distancia, la porra de un PNJ se oculta: entra en el plano
 ## de la cámara y se lee como un objeto flotante.
 const PORRA_HIDE_DISTANCE: float = 1.4
+## Velocidad de desplazamiento de cada ciclo a velocidad 1 (m/s). Los clips
+## UAL1 traen su propia zancada; si se reproducen a 1.0 con otra velocidad, los
+## pies patinan.
+const WALK_CYCLE_SPEED: float = 1.2
+const RUN_CYCLE_SPEED: float = 3.0
 
-@export var model_path: String = ""
-## Look de maniquí UAL1. Si está definido, sustituye al GLB Quaternius del
-## elenco anterior: el cuerpo, el atuendo y los clips salen del maniquí.
 @export var look: CharacterLook
 @export var idle_clip: StringName = &"idle"
-@export var dark_clothes: bool = false
 @export var porra: bool = false
-## LOD de multitud: oculta cejas y tupu para ahorrar draw calls sin perder la
-## cara ni el pelo.
+## LOD de multitud: reduce el look a silueta, color y cabeza.
 @export var crowd: bool = false
-## Altura visible a la que se ajusta el modelo. Los GLB del elenco venían con
-## alturas de 1,34 a 1,68 m; el jugador mide 1,70 y la diferencia se notaba.
-## Con 0 no se escala: solo se apoyan los pies en el suelo.
+## Altura visible a la que se ajusta el modelo.
 @export var target_height: float = 1.58
 ## Variación de altura, para que la multitud no sea un molde.
 @export var height_variation: float = 0.04
 
-var _slot: ModelSlot = null
 var _model: Node3D = null
 var _player: AnimationPlayer = null
 var _porra_pivot: Node3D = null
 var _skeleton: Skeleton3D = null
-var _springs: SpringBoneSimulator3D = null
-var _face: CharacterFace = null
 var _hand_index: int = -1
 var _head_index: int = -1
 var _flashing: bool = false
@@ -48,49 +37,13 @@ var _flash_restore: Dictionary[MeshInstance3D, Material] = {}
 
 
 func _ready() -> void:
-	if look != null:
-		_build_mannequin()
+	if look == null:
 		return
-	if model_path.is_empty() or not ResourceLoader.exists(model_path):
-		return
-	_slot = ModelSlot.new()
-	_slot.name = "ModelSlot"
-	_slot.model_paths = [model_path]
-	add_child(_slot)
-	_model = _slot.model
-	if _model == null:
-		return
-	_fit_model()
-	# Bajo el driver Dummy de las pruebas sin pantalla, los overrides de
-	# material se liberan mal; en el juego y en las capturas sí se aplican.
-	if DisplayServer.get_name() != "headless":
-		SurfaceMaterials.apply_to_model(_model)
-	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
-	if _skeleton != null:
-		_head_index = _skeleton.find_bone("Head")
-		_face = CharacterFace.new(_model)
-		if not crowd:
-			_springs = CapeSprings.setup(_skeleton)
-	_player = QuaterniusClips.player_for(
-		_model, _model.find_child("AnimationPlayer", true, false) as AnimationPlayer)
-	if _player != null and _player.has_animation(idle_clip):
-		_player.play(idle_clip)
-	if dark_clothes:
-		_darken_clothes()
-	if porra:
-		_build_porra()
-	QuaterniusMaterials.apply_shadow_policy(_model)
-	if crowd:
-		_apply_crowd_lod()
-
-
-## Monta el maniquí UAL1 con su look. El cuerpo mira hacia +Z; el visual mira
-## hacia -Z, así que se gira como en `NpcActor`.
-func _build_mannequin() -> void:
 	var applied: CharacterLook = MannequinLooks.crowd_from(look) if crowd else look
 	_model = OutfitMannequin.attach_look(self, applied)
 	if _model == null:
 		return
+	# El UAL1 mira hacia +Z; el visual mira hacia -Z, como el actor.
 	_model.rotation.y = PI
 	_fit_model()
 	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
@@ -113,8 +66,8 @@ func _fit_model() -> void:
 	ModelSlot.fit_height(_model, target_height + jitter * height_variation)
 
 
-## Reproduce un clip. Acepta los nombres lógicos (`Walk`, `Idle`) y los
-## propios (`attack`, `hit`); si el clip pedido no existe, cae a un equivalente.
+## Reproduce un clip lógico. Acepta los nombres de gesto (`Walk`, `Idle`) y los
+## propios (`attack`, `hit`).
 func play(clip: StringName, speed: float = 1.0) -> void:
 	if _player == null:
 		return
@@ -138,57 +91,7 @@ static func _logical_clip(clip: StringName) -> StringName:
 	return clip
 
 
-## LOD de multitud: las piezas pequeñas no se leen a distancia y cuestan un
-## draw call cada una. La cara conserva ojos y pelo.
-func _apply_crowd_lod() -> void:
-	if _model == null:
-		return
-	for node: Node in _model.find_children("*", "MeshInstance3D", true, false):
-		var mesh_instance: MeshInstance3D = node as MeshInstance3D
-		if mesh_instance != null and QuaterniusMaterials.uses_material(
-			mesh_instance, CROWD_HIDDEN_MATERIALS
-		):
-			mesh_instance.visible = false
-
-
-## Punto de la cara para encuadrar un diálogo, tomado del hueso de la cabeza.
-func focus_point() -> Vector3:
-	if _skeleton != null and _head_index >= 0 and _skeleton.is_inside_tree():
-		var head_pose: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_head_index)
-		return head_pose.origin + Vector3.UP * 0.12
-	return global_position + Vector3.UP * 1.55
-
-
-## Nodo del modelo cargado, para las pruebas y las capturas.
-func model() -> Node3D:
-	return _model
-
-
-## Simulador del manto, o `null` si el personaje no lleva cadenas o es multitud.
-func spring_simulator() -> SpringBoneSimulator3D:
-	return _springs
-
-
-## Mandíbula de habla del personaje.
-func character_face() -> CharacterFace:
-	return _face
-
-
-## Pivote de la porra, o null si el personaje no la lleva. Lo usan las pruebas
-## para comprobar que sigue la mano.
-func porra_pivot() -> Node3D:
-	return _porra_pivot
-
-
-## Velocidad de desplazamiento de cada ciclo a velocidad 1 (m/s). Los clips Q
-## traen su propia zancada; si se reproducen a 1.0 mientras el cuerpo va a otra
-## velocidad, los pies patinan.
-const WALK_CYCLE_SPEED: float = 1.2
-const RUN_CYCLE_SPEED: float = 3.0
-
-
-## Reproduce el ciclo de locomoción que corresponde a [param speed] (m/s) y lo
-## ajusta para que la zancada acompañe al desplazamiento real.
+## Reproduce el ciclo de locomoción que corresponde a [param speed] (m/s).
 func play_locomotion(speed: float) -> void:
 	if speed >= 2.0:
 		play(&"Run", speed / RUN_CYCLE_SPEED)
@@ -213,44 +116,28 @@ func current_animation() -> StringName:
 	return StringName(_player.current_animation)
 
 
-func _darken_clothes() -> void:
-	var clothes: MeshInstance3D = null
-	for node: Node in _model.find_children("*", "MeshInstance3D", true, false):
-		var mesh_instance: MeshInstance3D = node as MeshInstance3D
-		if mesh_instance == null or mesh_instance.mesh == null:
-			continue
-		if mesh_instance.name.to_lower().contains("cloth"):
-			clothes = mesh_instance
-			break
-		for surface: int in range(mesh_instance.mesh.get_surface_count()):
-			var candidate: Material = mesh_instance.get_active_material(surface)
-			if candidate != null and candidate.resource_name.begins_with("pch_cloth"):
-				clothes = mesh_instance
-				break
-		if clothes != null:
-			break
-	if clothes == null or clothes.mesh == null:
-		return
-	# Oscurece con el tinte del shader de tela en lugar de un material plano:
-	# el chanca conserva el tejido y las franjas, y deja de verse como un saco.
-	for surface: int in range(clothes.mesh.get_surface_count()):
-		var material: Material = clothes.get_active_material(surface)
-		if material is ShaderMaterial:
-			var cloth: ShaderMaterial = (material as ShaderMaterial).duplicate() as ShaderMaterial
-			cloth.set_shader_parameter("cloth_tint", DARK_CLOTH_TINT)
-			cloth.set_shader_parameter("tint", DARK_CLOTH_TINT)
-			clothes.set_surface_override_material(surface, cloth)
-		elif material is BaseMaterial3D:
-			var plain: BaseMaterial3D = (material as BaseMaterial3D).duplicate() as BaseMaterial3D
-			plain.albedo_color = DARK_CLOTH_TINT
-			clothes.set_surface_override_material(surface, plain)
+## Punto de la cara para encuadrar un diálogo, tomado del hueso de la cabeza.
+func focus_point() -> Vector3:
+	if _skeleton != null and _head_index >= 0 and _skeleton.is_inside_tree():
+		var head_pose: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_head_index)
+		return head_pose.origin + Vector3.UP * 0.12
+	return global_position + Vector3.UP * 1.55
+
+
+## Nodo del modelo cargado, para las pruebas y las capturas.
+func model() -> Node3D:
+	return _model
+
+
+## Pivote de la porra, o null si el personaje no la lleva. Lo usan las pruebas
+## para comprobar que sigue la mano.
+func porra_pivot() -> Node3D:
+	return _porra_pivot
 
 
 ## Destello breve al recibir un golpe. Se aplica a todas las mallas del modelo
 ## y se restaura el override anterior; si ya había un destello, no se apila.
 func flash_hit(color: Color = Color(1.0, 0.96, 0.90, 1.0), seconds: float = 0.08) -> void:
-	# Bajo el driver Dummy de las pruebas sin pantalla, los overrides de
-	# material se liberan mal; en el juego y en las capturas sí se aplican.
 	if DisplayServer.get_name() == "headless":
 		return
 	if _model == null or _flashing:
@@ -278,19 +165,17 @@ func flash_hit(color: Color = Color(1.0, 0.96, 0.90, 1.0), seconds: float = 0.08
 	_flashing = false
 
 
-func _process(delta: float) -> void:
-	if _face != null:
-		_face.update(delta, current_animation() == &"talk")
-	if _porra_pivot != null:
-		var camera: Camera3D = get_viewport().get_camera_3d()
-		_porra_pivot.visible = camera == null \
-			or camera.global_position.distance_to(_porra_pivot.global_position) > PORRA_HIDE_DISTANCE
-	if _porra_pivot == null or _skeleton == null or _hand_index < 0:
+func _process(_delta: float) -> void:
+	if _porra_pivot == null:
+		return
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	_porra_pivot.visible = camera == null \
+		or camera.global_position.distance_to(_porra_pivot.global_position) > PORRA_HIDE_DISTANCE
+	if _skeleton == null or _hand_index < 0:
 		return
 	# La porra sigue el transform completo de la mano, no solo su posición: si
 	# solo siguiera el origen, se quedaría vertical mientras el brazo gira y el
-	# golpe no se leería. El eje Y del hueso va del puño a los dedos, así que la
-	# porra sale de la mano a lo largo de ese eje.
+	# golpe no se leería.
 	var hand: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_hand_index)
 	var grip: Basis = hand.basis.orthonormalized()
 	_porra_pivot.global_transform = Transform3D(grip, hand.origin + grip.y * 0.04)

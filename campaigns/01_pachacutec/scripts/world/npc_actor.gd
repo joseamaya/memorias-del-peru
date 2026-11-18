@@ -17,11 +17,6 @@ signal stepped
 signal beat(animation: StringName)
 
 @export var body_color: Color = Color(0.6, 0.45, 0.35, 1.0)
-## Si es `true`, el maniquí se tiñe como piel (para el maniquí vestido).
-@export var mannequin_skin: bool = false
-## Si es `true`, el modelo trae sus propios materiales (personaje vestido en
-## Blender) y no se le aplica el tinte de piel del maniquí.
-@export var preserve_materials: bool = false
 @export var walk_speed: float = 1.8
 ## Animación de reposo: `idle`, `weave`, `work`, `talk`, `tired`…
 @export var idle_animation: StringName = &"idle"
@@ -48,14 +43,11 @@ const IDLE_TURN_RATE: float = 200.0
 ## (andar a cámara lenta se ve raro): mejor un paso algo más corto.
 const MIN_ANIMATION_RATE: float = 0.35
 ## Velocidad de desplazamiento de cada ciclo a velocidad de reproducción 1 y
-## metros por paso, si el modelo no trae los suyos. Los personajes de
-## `pch_people.py` (ADR-0016) traen los de su captura en los «extras» del
-## glTF (claves `pch_*`), que Godot importa como metadato `extras`.
+## metros por paso. Los maniquíes UAL1 usan estos valores fijos.
 const WALK_CYCLE_SPEED: float = 1.2
 const RUN_CYCLE_SPEED: float = 3.0
 const STRIDE_LENGTH: float = 0.66
 const RUN_STRIDE_LENGTH: float = 1.1
-const EXTRAS_META: StringName = &"extras"
 const BLEND_SECONDS: float = 0.3
 const LOOPED_ANIMATIONS: Array[StringName] = [&"idle", &"idle_b", &"walk", &"run", &"talk", &"tired", &"weave", &"work"]
 ## Correspondencia entre los nombres lógicos del juego y los clips del maniquí
@@ -102,8 +94,6 @@ var _idle_tween: Tween = null
 var _animation_player: AnimationPlayer = null
 var _look: LookAtModifier3D = null
 var _look_point: Marker3D = null
-var _springs: SpringBoneSimulator3D = null
-var _face: CharacterFace = null
 var _skeleton: Skeleton3D = null
 var _head_index: int = -1
 var _perform_animation: StringName = &""
@@ -123,10 +113,6 @@ var _last_position: float = -1.0
 var _steps_player: AudioStreamPlayer3D = null
 var _step_streams: Array[AudioStream] = []
 var _step_index: int = 0
-var _walk_cycle_speed: float = WALK_CYCLE_SPEED
-var _run_cycle_speed: float = RUN_CYCLE_SPEED
-var _walk_stride: float = STRIDE_LENGTH
-var _run_stride: float = RUN_STRIDE_LENGTH
 var _beats: Dictionary[StringName, float] = ANIMATION_BEATS.duplicate()
 var _mannequin: bool = false
 var _current_logical: StringName = &""
@@ -153,25 +139,20 @@ func set_model(model: Node3D) -> void:
 	_fit_model(model)
 	_mannequin = _animation_player.has_animation(&"Idle")
 	_prepare_loops(_animation_player, _mannequin)
-	_read_rhythm(model)
 	if _mannequin:
 		# UAL1 mira hacia +Z; el actor orienta su -Z hacia el objetivo. El giro
 		# deja la cara del maniquí hacia delante sin tocar los clips.
 		model.rotation.y = PI
-		if not preserve_materials:
-			_tint_model(model, mannequin_skin)
 		_set_mannequin_beats()
 	_idle_rng.seed = hash(String(name))
 	_idle_switch_left = _idle_rng.randf_range(IDLE_SWITCH_MIN, IDLE_SWITCH_MAX)
 	if _idle_tween != null and _idle_tween.is_valid():
 		_idle_tween.kill()
 	body.position.y = 0.85
+	body.visible = false
 	var skeletons: Array[Node] = model.find_children("*", "Skeleton3D", true, false)
 	if not skeletons.is_empty():
 		_setup_look(skeletons[0] as Skeleton3D)
-		if not _mannequin:
-			_springs = CapeSprings.setup(skeletons[0] as Skeleton3D)
-			_face = CharacterFace.new(model)
 	_play(idle_animation)
 	# Cada personaje empieza su reposo en un punto distinto del ciclo, para que
 	# no respiren todos a la vez.
@@ -209,7 +190,7 @@ func current_animation() -> StringName:
 ## Velocidad de desplazamiento del ciclo de paseo o de carrera del modelo
 ## a velocidad de reproducción 1.
 func cycle_speed(running: bool) -> float:
-	return _run_cycle_speed if running else _walk_cycle_speed
+	return RUN_CYCLE_SPEED if running else WALK_CYCLE_SPEED
 
 
 ## Instante del golpe de [param animation] dentro de su ciclo (o -1).
@@ -225,16 +206,6 @@ func animation_speed() -> float:
 ## [AnimationPlayer] del modelo, o `null` (para las pruebas).
 func animation_player() -> AnimationPlayer:
 	return _animation_player
-
-
-## Simulador de muelles del manto, o `null` si el personaje no lleva manto.
-func spring_simulator() -> SpringBoneSimulator3D:
-	return _springs
-
-
-## Mandíbula de habla del personaje.
-func character_face() -> CharacterFace:
-	return _face
 
 
 ## Modificador que gira la cabeza, o `null` si no hay esqueleto.
@@ -339,7 +310,7 @@ func advance(delta: float) -> bool:
 	global_position = global_position.move_toward(target, step)
 	_update_locomotion_rate()
 	_stride_distance += step
-	var stride: float = _run_stride if walk_speed >= RUN_SPEED_THRESHOLD else _walk_stride
+	var stride: float = RUN_STRIDE_LENGTH if walk_speed >= RUN_SPEED_THRESHOLD else STRIDE_LENGTH
 	if _stride_distance >= stride:
 		_stride_distance -= stride
 		stepped.emit()
@@ -347,8 +318,6 @@ func advance(delta: float) -> bool:
 
 
 func _process(delta: float) -> void:
-	if _face != null:
-		_face.update(delta, current_animation() == &"talk")
 	if _turning and not moving:
 		_turn_towards_target(delta, IDLE_TURN_RATE)
 	if _perform_left > 0.0:
@@ -395,22 +364,6 @@ func set_footsteps(streams: Array[AudioStream]) -> void:
 		_steps_player.unit_size = 4.0
 		add_child(_steps_player)
 		stepped.connect(_play_step)
-
-
-func _tint_model(model: Node3D, skin: bool = false) -> void:
-	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
-	if model is MeshInstance3D:
-		meshes.append(model)
-	for node: Node in meshes:
-		var mesh_instance: MeshInstance3D = node as MeshInstance3D
-		if mesh_instance == null:
-			continue
-		var material: StandardMaterial3D = StandardMaterial3D.new()
-		# El maniquí desnudo se tiñe de arcilla neutra; el vestido usa el color
-		# de piel para que brazos y manos combinen con la cabeza.
-		material.albedo_color = body_color if skin else body_color.lerp(Color(0.62, 0.60, 0.55, 1.0), 0.7)
-		material.roughness = 1.0
-		mesh_instance.material_override = material
 
 
 static func _clip_for(animation: StringName) -> StringName:
@@ -526,7 +479,7 @@ func _play_locomotion() -> void:
 func _update_locomotion_rate() -> void:
 	if _animation_player == null:
 		return
-	var cycle: float = _run_cycle_speed if walk_speed >= RUN_SPEED_THRESHOLD else _walk_cycle_speed
+	var cycle: float = RUN_CYCLE_SPEED if walk_speed >= RUN_SPEED_THRESHOLD else WALK_CYCLE_SPEED
 	_animation_player.speed_scale = _locomotion_rate(cycle)
 
 
@@ -570,36 +523,6 @@ static func _prepare_loops(player: AnimationPlayer, mannequin: bool = false) -> 
 				last_key = maxf(last_key, animation.track_get_key_time(track, count - 1))
 		if last_key > 0.0:
 			animation.length = last_key
-
-
-## Lee el ritmo propio del modelo (claves `pch_*` de sus extras glTF).
-func _read_rhythm(model: Node) -> void:
-	var nodes: Array[Node] = model.find_children("*", "", true, false)
-	nodes.push_front(model)
-	for node: Node in nodes:
-		if not node.has_meta(EXTRAS_META):
-			continue
-		var extras: Variant = node.get_meta(EXTRAS_META)
-		if not extras is Dictionary:
-			continue
-		var data: Dictionary = extras
-		_walk_cycle_speed = _positive(data, "pch_walk_cycle_speed", _walk_cycle_speed)
-		_run_cycle_speed = _positive(data, "pch_run_cycle_speed", _run_cycle_speed)
-		_walk_stride = _positive(data, "pch_walk_stride", _walk_stride)
-		_run_stride = _positive(data, "pch_run_stride", _run_stride)
-		if data.has("pch_weave_beat"):
-			_beats[&"weave"] = _positive(data, "pch_weave_beat", _beats[&"weave"])
-		if data.has("pch_work_beat"):
-			_beats[&"work"] = _positive(data, "pch_work_beat", _beats[&"work"])
-
-
-static func _positive(data: Dictionary, key: String, fallback: float) -> float:
-	var value: Variant = data.get(key, fallback)
-	if value is float or value is int:
-		var number: float = value
-		if number > 0.0:
-			return number
-	return fallback
 
 
 ## Eje del hueso [param bone] que apunta hacia delante del personaje en la

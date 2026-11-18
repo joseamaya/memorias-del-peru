@@ -118,10 +118,9 @@ Otras ideas que merece la pena conservar:
    llacta, Cusco, paso y chancas.
 4. ~~Multitud con LOD.~~ **Hecho:** `MannequinLooks.crowd_from` reduce el look
    a silueta, color y cabeza.
-5. **Retirar el legado UBC:** GLB, texturas de cara, `CharacterCatalog`,
-   `CharacterFace`, `CapeSprings`, `QuaterniusMaterials`, su prueba y la rama
-   UBC de `CharacterModelVisual`/`NpcActor`. El juego ya no los carga; quedan
-   como legado.
+5. ~~Retirar el legado UBC.~~ **Hecho:** se eliminaron los GLB, caras,
+   catálogo, `CharacterFace`, `CapeSprings`, `QuaterniusMaterials`, la rama
+   UBC de los visuales, sus herramientas y su prueba.
 6. ~~Integrar la mano en `FirstPersonHands` y en el arma.~~ **Hecho, pero
    pendiente de revisión:** el resultado actual no convence al responsable.
 7. Panel de objetivo: aprobado tal como está, sin temporizador ni rediseño.
@@ -173,13 +172,13 @@ Medición de la GPU de referencia, 1280×720, dos pasadas por acto. Presupuesto:
 
 | Acto | Draw calls | Memoria de vídeo | FPS (mediana) | p1 |
 |---|---|---|---|---|
-| Llacta | 257 | 145,2 MB | 93,5–95,5 | 77,6–88,7 |
-| Paso | 270 | 121,1 MB | 129,2–130,6 | 120,0 |
-| Cusco | 334 | 158,5 MB | 72,9–73,5 | 60,0–62,1 |
-| Posguerra | 259 | 145,3 MB | 90,7–96,7 | 60,0–89,1 |
-| Obra | 275 | 140,2 MB | 88,1–92,3 | 74,0–82,5 |
+| Llacta | 257 | 145,2 MB | 94,0–96,1 | 86,6–88,4 |
+| Paso | 270 | 121,1 MB | 118,3–120,7 | 82,4–110,0 |
+| Cusco | 334 | 158,5 MB | 67,8–70,7 | 62,0–65,1 |
+| Posguerra | 259 | 145,3 MB | 94,0–95,6 | 75,5–90,0 |
+| Obra | 275 | 140,2 MB | 88,1–91,0 | 69,6–77,2 |
 
-El Cusco es el acto más ajustado (334 de 350 draw calls, p1 60,0). La memoria
+El Cusco es el acto más ajustado (334 de 350 draw calls, p1 62,0). La memoria
 baja frente al elenco UBC (158,5 MB frente a 230,9 MB) porque no hay texturas
 de cara ni de ropa. El coste son más draw calls, ya contenidos por la fusión
 del atuendo y el LOD de multitud.
@@ -191,10 +190,8 @@ Pruebas:
 - `test_mannequin_cast.gd`: NPC de la llacta, clips UAL1/UAL2, fusión del
   atuendo, LOD de multitud, chanca con porra y elenco en la llacta (Curaca,
   Tejedora, Agricultor e HijoPuma).
-- `test_quaternius_characters.gd`: cobertura del legado UBC; se retirará con
-  los assets.
 - `test_first_person_hands.gd`: mano de maniquí abierta y puños cerrados de la
   honda y la porra.
 - `test_hud_objective.gd`: el objetivo está arriba a la izquierda, con fondo y
   fuente de 26 px.
-- Suite completa: **150 pruebas, 0 fallos**. Arena y arco completos.
+- Suite completa: **139 pruebas, 0 fallos**. Arena y arco completos.

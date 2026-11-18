@@ -686,7 +686,6 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	var body_mesh: MeshInstance3D = actor.get_node_or_null("Body") as MeshInstance3D
 	if body_mesh != null:
 		body_mesh.visible = false
-	actor.preserve_materials = true
 	var model: Node3D = OutfitMannequin.attach_look(
 		actor, MannequinLooks.for_role(node_name))
 	if model != null:

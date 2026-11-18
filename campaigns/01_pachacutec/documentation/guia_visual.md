@@ -178,7 +178,7 @@ largo, la lliclla con tupu y la melena posterior o el paño; los hombres, por el
 unku corto, el manto y la chuspa. La edad se sugiere con la paleta gris y el
 paño. No hay retratos, expresiones faciales ni sincronía labial; la emoción la
 llevan el cuerpo, la cabeza y la voz escrita. El elenco UBC con caras de 1024
-es histórico y ya no se carga en las escenas.
+es histórico y se retiró de las escenas.
 
 La ropa y los tocados son reconstrucción (R) sobre PCH-017, PCH-018 y PCH-024.
 El elenco activo, sus capturas y sus límites viven en

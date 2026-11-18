@@ -2,7 +2,8 @@
 
 > **Documento histórico.** El juego ya no usa este elenco: el cast activo es
 > [prototipo_maniqui.md](prototipo_maniqui.md). Los GLB, caras, catálogo y
-> pruebas UBC quedan como legado hasta su retirada.
+> pruebas UBC se retiraron el 2026-11-18; este documento se conserva como
+> registro.
 
 **Estado:** histórico · elenco retirado de las escenas · 2026-11-17 · Fase 4.12.
 **Manda:** [docs/09](../../../docs/09_biblia_narrativa.md) en lo narrativo,
@@ -227,19 +228,14 @@ y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.
 
-Las pruebas del elenco son `test_quaternius_characters.gd` (altura, base,
-ausencia de colisión, 76 huesos —65 UBC + 6 de manto + 1 mandíbula + 4 de
-expresión—, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`, `work` y
-`hit` de UAL2; texturas de cara de 1024, piel con rugosidad, cejas propias,
-catálogo de todos los papeles, política de sombras, LOD de multitud, muelles
-del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma),
-`test_first_person_hands.gd` (malla de maniquí, pose abierta y puños de
-las armas) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
-estribo de 22 cm).
+La prueba del elenco UBC se retiró con el legado. La cobertura activa es
+`test_mannequin_cast.gd` (elenco integrado, clips, fusión del atuendo, LOD de
+multitud y chanca), `test_first_person_hands.gd` (mano de maniquí) y
+`test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y estribo de 22 cm).
 
 > El elenco activo es el de [prototipo_maniqui.md](prototipo_maniqui.md): diez
 > maniquíes UAL1 integrados en las escenas. La mano de primera persona queda en
-> revisión. Los GLB, caras y pruebas UBC de este documento son legado.
+> revisión. Los GLB, caras y pruebas UBC de este documento ya no existen.
 
 ## 8. Decisión
 

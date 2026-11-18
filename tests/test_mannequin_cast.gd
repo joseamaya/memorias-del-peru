@@ -21,9 +21,10 @@ func test_mannequin_npc_actor() -> bool:
 	var ok: bool = model != null and actor.is_animated()
 	ok = ok and actor.current_animation() == &"idle"
 	ok = ok and actor.look_modifier() != null
-	ok = ok and actor.spring_simulator() == null
-	ok = ok and actor.character_face() == null
 	ok = ok and actor.focus_point().y > 1.0
+	var skeleton: Skeleton3D = model.find_child("Skeleton3D", true, false) as Skeleton3D
+	ok = ok and skeleton != null and skeleton.find_bone("Jaw") < 0
+	ok = ok and skeleton != null and skeleton.find_bone("Cape_C_1") < 0
 	ok = ok and CharacterOutfit.piece_count(model) == MannequinLooks.curaca().parts.size()
 	actor.free()
 	return ok
@@ -87,8 +88,6 @@ func test_mannequin_crowd_lod() -> bool:
 	ok = ok and model != null
 	if model != null:
 		ok = ok and CharacterOutfit.piece_count(model) == crowd.parts.size()
-		ok = ok and visual.spring_simulator() == null
-		ok = ok and visual.character_face() == null
 	visual.free()
 	return ok
 
