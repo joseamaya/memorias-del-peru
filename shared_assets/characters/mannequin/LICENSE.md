@@ -13,14 +13,16 @@ usa sus clips para los cuerpos UBC (`pch_npc_*_q.glb`); el elenco por defecto
 sigue siendo UBC hasta aprobar el prototipo de maniquíes. Se conserva también
 como figura de fondo o prototipo rápido.
 
-## Mano extraída
+## Antebrazo extraído
 
-- **Archivo:** `mannequin_hand_open.glb`
-- **Origen:** derivado de `ual1_standard.glb` (Quaternius, CC0): mano y antebrazo
-  derechos, con sus dos superficies.
-- **Script:** `tools/blender_mannequin_hand.py` (autoría propia, reproducible).
+- **Archivo:** `mannequin_forearm.glb`
+- **Origen:** derivado de `ual1_standard.glb` (Quaternius, CC0): antebrazo
+  derecho con sus dos superficies (piel y juntas).
+- **Script:** `tools/blender_mannequin_forearm.py` (autoría propia, reproducible).
 - **Fecha:** 2026-11-18.
-- **Uso:** prototipo de mano en primera persona; sin falanges articuladas.
+- **Uso:** antebrazo de la mano en primera persona. La palma, los cuatro dedos y
+  el pulgar son piezas primitivas construidas en
+  `core/player/mannequin_hand.gd`; no son assets externos.
 
 ## Código de atuendo
 

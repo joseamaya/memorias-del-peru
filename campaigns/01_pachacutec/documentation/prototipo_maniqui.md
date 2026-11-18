@@ -1,8 +1,8 @@
 # Prototipo de maniquíes UAL1 y panel de objetivo
 
-> Estado: **prototipo para aprobación**. No sustituye todavía al elenco UBC del
-> juego. El objetivo es decidir el nuevo aspecto de los personajes y el panel de
-> instrucciones antes de extenderlo a los diez roles.
+> Estado: **maniquíes y mano aprobados**. El prototipo fija el aspecto de los
+> personajes y de la mano en primera persona. El elenco UBC sigue activo hasta
+> extender los maniquíes a los diez roles.
 
 ## 1. Qué se ha probado
 
@@ -10,8 +10,10 @@
   - **Curaca:** unku crema, faja y manto rojos, llauto y orejeras.
   - **Sisa:** anacu pardo con ruedo rojo, lliclla, faja, cinta y tupu.
   - **Chanca:** túnica teal, faldón oscuro, faja y cinta.
-- **Mano del jugador** extraída del propio maniquí UAL1 (mano y antebrazo
-  derechos, dos superficies) en un GLB estático.
+- **Mano del jugador** de maniquí: antebrazo extraído del UAL1 y palma, cuatro
+  dedos separados y pulgar primitivos, con los colores de piel y juntas. Tiene
+  pose abierta para interactuar y puño cerrado para la honda y la porra; ambas
+  se hornean en dos mallas (piel y juntas) para no multiplicar draw calls.
 - **Panel de objetivo** arriba a la izquierda, con fondo oscuro y texto cálido,
   integrado en el HUD actual.
 
@@ -20,7 +22,9 @@ Capturas:
 | Prototipo | Imagen |
 |---|---|
 | Tres maniquíes | ![Maniquíes](img/prototipo/maniquis.png) |
-| Mano UAL1 en primera persona | ![Mano](img/prototipo/mano.png) |
+| Mano abierta en la llacta | ![Mano abierta](img/prototipo/mano.png) |
+| Puño con la honda | ![Mano con la honda](img/prototipo/mano_honda.png) |
+| Puño con la porra | ![Mano con la porra](img/prototipo/mano_porra.png) |
 | Panel de objetivo en la llacta | ![Objetivo](img/prototipo/objetivo.png) |
 
 ## 2. Cómo se ejecuta
@@ -31,10 +35,11 @@ godot --path . res://tests/scenes/mannequin_hand_prototype.tscn
 ```
 
 La primera guarda `user://mannequin_prototype.png`; la segunda,
-`user://mannequin_hand_prototype.png`. La mano se regenera con:
+`user://mano_abierta.png` y `user://mano_agarre.png`. El antebrazo se regenera
+con:
 
 ```bash
-blender --background --factory-startup --python tools/blender_mannequin_hand.py
+blender --background --factory-startup --python tools/blender_mannequin_forearm.py
 ```
 
 ## 3. Qué se aprende del proyecto de referencia
@@ -74,10 +79,10 @@ Otras ideas que merece la pena conservar:
 3. Integrar el maniquí en `NpcActor`/`CharacterModelVisual` y retirar los UBC,
    caras, texturas, mandíbula, parpadeo, cejas y manto con muelles.
 4. Multitud: maniquí liso sin piezas o con muy pocas, para no disparar draw calls.
-5. Mano del jugador: integrarla en `FirstPersonHands` y en el arma; decidir si
-   hace falta una pose de agarre además de la mano abierta.
-6. Panel de objetivo: temporizador de 7 s al cambiar, aviso de objetivo nuevo y
-   contadores; mantener el diario.
+5. ~~Mano del jugador: integrarla en `FirstPersonHands` y en el arma.~~
+   **Hecho:** mano abierta y puño de agarre, con el antebrazo UAL1.
+6. Panel de objetivo: aprobado tal como está. Sin temporizador ni rediseño por
+   ahora; el diario conserva el detalle.
 7. Pruebas de los diez looks, capturas, rendimiento y documentación final.
 
 ## 5. Decisiones y riesgos
@@ -86,22 +91,29 @@ Otras ideas que merece la pena conservar:
   `shared_assets/characters/mannequin/`. En el proyecto de referencia figura
   como recurso de prototipo; usarlo como estilo final es una decisión
   consciente de este proyecto.
-- **La mano es estática**: no hay falanges articuladas. Es coherente con el
-  maniquí y con la referencia, que es tercera persona y no tiene mano en primera
-  persona. La adaptación a primera persona es nuestra.
+- **La mano se posa al construirla**: el UAL1 trae los dedos fusionados en la
+  malla y posar sus huesos no los separa. Por eso se conserva su antebrazo y la
+  mano se monta con piezas primitivas; la pose abierta o de agarre se hornea al
+  fusionar las piezas en dos mallas. No hay falanges animadas en tiempo real. Es
+  la adaptación propia de un recurso pensado para tercera persona.
+- **La mano se fusiona en dos mallas** (piel y juntas): pasa de ~30 draw calls a
+  2 por mano y mantiene el aspecto.
 - **Las piezas son primitivas**: a distancia se leen; de cerca son geométricas.
   Es el precio de un estilo consistente y barato.
 - **El panel de objetivo** ya está en el HUD real, pero sin temporizador; el
   comportamiento transitorio de la referencia queda para la extensión.
-- **Licencia y procedencia**: UAL1 es CC0; la mano es una derivación del mismo
-  GLB; los scripts `CharacterLook`, `LookPart` y `CharacterOutfit` están
-  adaptados del proyecto de referencia del mismo autor. Se registra en
+- **Licencia y procedencia**: UAL1 es CC0; el antebrazo es una derivación del
+  mismo GLB y las piezas de la mano son código propio; los scripts
+  `CharacterLook`, `LookPart` y `CharacterOutfit` están adaptados del proyecto de
+  referencia del mismo autor. Se registra en
   `shared_assets/characters/mannequin/LICENSE.md`.
 
 ## 6. Pruebas
 
 - `test_mannequin_prototype.gd`: huesos reales de los tres looks, superficies y
-  sustitución de atuendo, nodo `OutfitMannequin` y GLB de la mano.
+  sustitución de atuendo, nodo `OutfitMannequin` y antebrazo UAL1.
+- `test_first_person_hands.gd`: mano abierta de interacción y puños cerrados de
+  la honda y la porra, con dos mallas por mano.
 - `test_hud_objective.gd`: el objetivo está arriba a la izquierda, con fondo y
   fuente de 26 px.
 - Suite completa: **144 pruebas, 0 fallos**.

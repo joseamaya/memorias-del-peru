@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dhj5ef6yrr5l6"
-path="res://.godot/imported/mannequin_hand_open.glb-507957220c21ebc54ba0d67ee08d7715.scn"
+uid="uid://pwfga6aa0ot3"
+path="res://.godot/imported/mannequin_forearm.glb-923f862f433432f3bbe982f448380488.scn"
 
 [deps]
 
-source_file="res://shared_assets/characters/mannequin/mannequin_hand_open.glb"
-dest_files=["res://.godot/imported/mannequin_hand_open.glb-507957220c21ebc54ba0d67ee08d7715.scn"]
+source_file="res://shared_assets/characters/mannequin/mannequin_forearm.glb"
+dest_files=["res://.godot/imported/mannequin_forearm.glb-923f862f433432f3bbe982f448380488.scn"]
 
 [params]
 

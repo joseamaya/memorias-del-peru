@@ -1,11 +1,11 @@
 extends RefCounted
-## Pruebas del prototipo de maniquíes: looks, atuendo, nodo visual y mano UAL1.
+## Pruebas del prototipo de maniquíes: looks, atuendo, nodo visual y antebrazo UAL1.
 ##
 ## El estilo nuevo usa el mismo GLB de Quaternius para todos: dos superficies y
 ## piezas primitivas colgadas de huesos reales. No hay caras ni texturas.
 
 const MANNEQUIN: String = "res://shared_assets/characters/mannequin/ual1_standard.glb"
-const HAND: String = "res://shared_assets/characters/mannequin/mannequin_hand_open.glb"
+const FOREARM: String = "res://shared_assets/characters/mannequin/mannequin_forearm.glb"
 
 
 func _model() -> Node3D:
@@ -64,16 +64,17 @@ func test_outfit_mannequin_node() -> bool:
 	return ok
 
 
-func test_mannequin_hand_asset() -> bool:
-	var packed: PackedScene = load(HAND) as PackedScene
+func test_mannequin_forearm_asset() -> bool:
+	var packed: PackedScene = load(FOREARM) as PackedScene
 	if packed == null:
 		return false
-	var hand: Node3D = packed.instantiate() as Node3D
-	var meshes: Array[Node] = hand.find_children("*", "MeshInstance3D", true, false)
-	var ok: bool = not meshes.is_empty()
+	var forearm: Node3D = packed.instantiate() as Node3D
+	var meshes: Array[Node] = forearm.find_children("*", "MeshInstance3D", true, false)
+	var ok: bool = meshes.size() == 1
 	if not meshes.is_empty():
 		var mesh: MeshInstance3D = meshes[0] as MeshInstance3D
 		ok = ok and mesh.mesh != null and mesh.mesh.get_surface_count() == 2
-		ok = ok and mesh.mesh.get_aabb().size.length() > 0.01
-	hand.free()
+		ok = ok and mesh.mesh.get_aabb().size.x > 0.1
+		ok = ok and mesh.mesh.get_aabb().size.y > 0.05
+	forearm.free()
 	return ok
