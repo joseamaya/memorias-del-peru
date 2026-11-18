@@ -22,7 +22,7 @@ modelo propio reutilizan un arquetipo; el catálogo está en
 | Habitante1 / Habitante2 / Habitante3 | Madre / Hermano / Sisa Q | Familia de Rumi |
 | Anca | Anca Q | Anacu, lliclla y tupu |
 | Mensajero / `messenger` | Mensajero Q | Ropa de viaje y chuspa |
-| HijoPuma | Joven Q | Escalado a 1,20 m; no hay base infantil |
+| HijoPuma | Joven Q | Escalado a 1,20 m; sin base infantil gratuita en UBC Standard (Regular/Teen es Source de pago) |
 | Herido1 / Herido2 | Hermano / Madre Q | Clip `tired` |
 | Comitiva1 / 2 / 3 | Madre / Hermano / Joven Q | Actos IV–V |
 | `curaca`, `farmer`, `weaver`, `villager` del Cusco y el Paso | Curaca / Joven / Anca / arquetipos Q | La multitud rota entre los diez Q |
@@ -44,6 +44,9 @@ la documentación del híbrido.
   generadas por `pch_quaternius.py`.
 - **Chaquitaclla del Agricultor:** prop de madera generado por `pch_models.py`
   (`pch_prop_chaquitaclla.glb`), autoría propia; sin metal. Ficha PCH-037.
+- **Base infantil:** el Standard gratuito solo incluye los cuerpos «superhero»
+  (hombre y mujer); Regular/Teen son de la versión Source de pago. No hay base
+  infantil gratuita; HijoPuma usa el Joven Q a 1,20 m (decisión cerrada).
 - **No usado:** la versión Source de pago de UBC y el Ultimate Animated
   Character Pack.
 - El detalle está en
@@ -68,7 +71,11 @@ la documentación del híbrido.
   tupu y pelo no: cada superficie suma un draw call por split del sol y no
   aporta a la silueta. La sombra del cuerpo sigue apoyando las figuras.
 - **HijoPuma** es el joven Q a 1,20 m: se lee como un adulto pequeño, no como
-  un niño. Es la limitación consciente de no usar una base infantil.
+  un niño. Se revisó el pack UBC Standard: solo trae los dos cuerpos
+  «superhero» (hombre y mujer); las proporciones Regular/Teen son de la versión
+  Source de pago, que no se usa. No hay base infantil gratuita compatible con
+  el rig Q, y mezclar otro set rompería la decisión de elenco único. **Decisión
+  cerrada:** se mantiene el escalado.
 
 ### Medición del elenco completo
 
@@ -162,7 +169,9 @@ Q, política de sombras, chaquitaclla del Agricultor, arena y arco completo.
   pasada el p1 bajó a 54,8. Falta confirmarlo en un equipo descargado.
 - La cara UBC sigue siendo estilizada. Es la cara definitiva del set; si se
   quiere realismo, es una tarea de escultura/arte, no de código.
-- **HijoPuma** es un adulto Q escalado, no un niño.
+- **HijoPuma** es un adulto Q escalado: no hay base infantil gratuita en
+  UBC Standard (Regular/Teen es Source de pago). Decisión cerrada; no se
+  mezclará otro set.
 - **Tejedora** reutiliza Anca Q con el clip `weave`; el Agricultor reutiliza
   Joven Q, ahora con la chaquitaclla plantada en la terraza.
 - Heridos y comitiva reutilizan arquetipos; no tienen ropa propia.
@@ -183,7 +192,7 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **134 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **135 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.
@@ -191,10 +200,10 @@ de todos los papeles.
 Las pruebas del elenco son `test_quaternius_characters.gd` (altura, base,
 ausencia de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos
 `idle_b`, `work` y `hit` de UAL2; texturas de cara de 1024, piel con rugosidad,
-cejas propias, catálogo de todos los papeles, política de sombras y LOD de
-multitud), `test_first_person_hands.gd` (malla de la mano y gesto de
-interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
-estribo de 22 cm).
+cejas propias, catálogo de todos los papeles, política de sombras, LOD de
+multitud y altura de HijoPuma), `test_first_person_hands.gd` (malla de la mano
+y gesto de interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de
+alto y estribo de 22 cm).
 
 ## 8. Decisión
 
@@ -202,5 +211,5 @@ Quaternius es el **único** set visual. Se retiraron los modelos
 MakeHuman/Rocketbox, el híbrido Rocketbox, el injerto de cabeza MakeHuman y sus
 pruebas/capturas. No se vuelve atrás. El rendimiento del Cusco está cerrado
 (288 draw calls, cinco actos bajo 350 y la chaquitaclla del Agricultor en la
-terraza); el siguiente trabajo es la base infantil de HijoPuma y el pulido de
-manos y expresiones.
+terraza); HijoPuma queda cerrado con el escalado a 1,20 m. El siguiente trabajo
+es el pulido de manos y expresiones.

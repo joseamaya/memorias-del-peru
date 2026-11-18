@@ -9,6 +9,7 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 | Cambio | Detalle | Commit |
 |---|---|---|
 | Chaquitaclla del Agricultor | Se añade `pch_prop_chaquitaclla.glb` (430 triángulos, 1,48 m, estribo de 22 cm, madera y punta endurecida, sin metal), generado por `pch_models.py` y plantado en la primera terraza junto al Agricultor. Ficha PCH-037 (H/R, pendiente de firma). La llacta pasa de 248 a 249 draw calls. Se corrige la cámara de `capture_quaternius`, que tras los arquetipos volvía a la del jugador. 134 pruebas, captura nueva | — |
+| HijoPuma sin base infantil | Se revisa el pack UBC Standard: solo incluye los cuerpos Superhero (hombre y mujer); Regular/Teen son de la versión Source de pago, no usada. No hay base infantil gratuita compatible con el rig Q y no se mezcla otro set. Se cierra la decisión con el Joven Q a 1,20 m y una prueba de altura. 135 pruebas | — |
 
 ## 2026-11-17
 

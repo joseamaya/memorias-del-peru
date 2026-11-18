@@ -33,6 +33,8 @@
 
 La versión **Source** de pago **no se ha usado**. El estándar gratuito solo incluye dos cuerpos (hombre y mujer “superhero”); los cuerpos regular/teen, los 20 peinados y los shaders de personalización quedan fuera. No se versionan los ZIP originales: solo los archivos usados.
 
+Por eso **no hay base infantil**: HijoPuma usa el cuerpo `joven` escalado a 1,20 m. No se usa el Teen de Source ni se mezcla otro set de personajes; la decisión está cerrada en [personajes_quaternius.md](../../../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
+
 ## Transformaciones propias
 
 - Albedo de piel reducida a 512 px en `base/` (ojos a 256 px) para el presupuesto de memoria del juego.

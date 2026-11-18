@@ -185,6 +185,16 @@ func test_catalog_models() -> bool:
 	return ok
 
 
+func test_hijopuma_height() -> bool:
+	# Decisión cerrada: no hay base infantil gratuita en UBC Standard
+	# (Regular/Teen son Source de pago). HijoPuma es el Joven Q a 1,20 m.
+	var height: float = Llacta.CHARACTER_HEIGHTS["HijoPuma"]
+	if not is_equal_approx(height, 1.20):
+		printerr("HijoPuma: altura ", height, " en vez de 1,20 m")
+		return false
+	return CharacterCatalog.model_for("HijoPuma") == "pch_npc_joven_q.glb"
+
+
 func test_quaternius_shadow_policy() -> bool:
 	# El pase de sombra solo conserva cuerpo y ropa: ojos, cejas, pelo y tupu
 	# no aportan a la silueta y cuestan draw calls. Es la optimización que baja

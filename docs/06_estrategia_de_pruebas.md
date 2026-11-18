@@ -150,7 +150,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_campaign_audio` | Recursos de audio de la campaña y bucles |
 | `test_model_validator` | Validación de modelos |
-| `test_quaternius_characters` | Rig de 65 huesos, clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras y LOD de multitud |
+| `test_quaternius_characters` | Rig de 65 huesos, clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud y altura de HijoPuma |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
 | `test_first_person_hands` | Malla propia de la mano y gesto de interacción |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
@@ -246,5 +246,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-17 | Quaternius único: todos los papeles y retirada del legado | `run_tests.gd`, `combat_arena_check.gd`, `arc_playthrough.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 131 pruebas, 0 fallos; sin bandera; todos los roles con GLB Q; llacta 321 draw calls/222,2 MB y Cusco 413/230,8 MB; Cusco sobre el presupuesto de 350; FPS no concluyentes |
 | 2026-11-17 | Rendimiento del Cusco: sombras y LOD de multitud | `scene_audit.gd --breakdown`, `run_tests.gd`, `combat_arena_check.gd`, `arc_playthrough.gd` y `measure_performance.tscn` | 133 pruebas, 0 fallos; multitud del Cusco 173→100 draw calls y pase de sombra 266→140; llacta 248, paso 244, Cusco 288, posguerra 226 y obra 257; los cinco actos bajo 350; Cusco 62,6 FPS de mediana y p1 60,0 con carga 4,3–6,9 (peor p1 54,8) |
 | 2026-11-18 | Chaquitaclla del Agricultor en la terraza | `pch_models.py`, `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 134 pruebas, 0 fallos; `pch_prop_chaquitaclla.glb` de 430 triángulos, 1,48 m y estribo de 22 cm; llacta 249 draw calls/222,2 MB; ficha PCH-037 |
+| 2026-11-18 | HijoPuma: búsqueda de base infantil cerrada | Revisión del pack UBC Standard y `run_tests.gd` | 135 pruebas, 0 fallos; el Standard gratuito solo trae los cuerpos Superhero (hombre y mujer); Regular/Teen es Source de pago; se mantiene el Joven Q a 1,20 m y no se mezcla otro set |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.
