@@ -176,6 +176,25 @@ siguen por encima de 60. El Cusco es el acto más ajustado
 pasada aislada del Cusco la media bajó a 53,8 y el p1 a 40,7; se vigila al
 añadir arte final.
 
+### Elenco de maniquíes (2026-11-18)
+
+Medición con `measure_performance.tscn`, 1280×720, vsync off y dos pasadas por
+acto, con el elenco de maniquíes UAL1 integrado. El atuendo se fusiona por hueso
+y la multitud usa un look reducido.
+
+| Acto | Draw calls | Memoria de vídeo | FPS mediana | p1 |
+|---|---|---|---|---|
+| I — Llacta | 257 | 145,2 MB | 93,5–95,5 | 77,6–88,7 |
+| II — Paso | 270 | 121,1 MB | 129,2–130,6 | 120,0 |
+| III — Cusco | 334 | 158,5 MB | 72,9–73,5 | 60,0–62,1 |
+| IV — Posguerra | 259 | 145,3 MB | 90,7–96,7 | 60,0–89,1 |
+| V — Obra | 275 | 140,2 MB | 88,1–92,3 | 74,0–82,5 |
+
+Los cinco actos quedan bajo el presupuesto de 350 draw calls. El Cusco es el
+más ajustado (334 y p1 60,0) y la llacta sube de 220 a 257 por las piezas de
+los maniquíes; la memoria baja unos 80 MB porque no hay texturas de cara ni de
+ropa. Las mediciones anteriores del elenco UBC quedan como histórico.
+
 **Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |

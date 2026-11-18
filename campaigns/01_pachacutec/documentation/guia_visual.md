@@ -144,8 +144,9 @@ acto.
 ## 10. Personajes
 
 La identidad de un personaje no viene de la resolución del cuerpo, sino de la
-**ropa, el pelo, la paleta y la silueta**. El prototipo Quaternius usa cuerpos
-UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
+**ropa, el pelo, la paleta y la silueta**. El elenco activo usa maniquíes UAL1
+(CC0): un cuerpo compartido, dos colores y piezas primitivas. La lectura andina
+la construyen la ropa, la paleta y la silueta; no hay caras ni texturas.
 
 - **Comunidad:** unku o anacu, manto o lliclla, faja, chuspa y ojotas. Lana
   crema, marrón y gris; franjas rojas y ocres. Nada de telas entalladas con
@@ -160,27 +161,25 @@ UBC (CC0) solo como maniquí; la lectura andina la construyen las capas.
   con pelo negro liso, unku sencillo y chuspa. Son arquetipos, no retratos.
 - **Familia de Rumi:** madre con anacu, lliclla y paño; hermano joven con unku,
   manto y chuspa; Puma como autoridad comunal con manto y chuspa, sin t’oqapu;
-  Anca con anacu, lliclla y tupu. HijoPuma reutiliza el joven Q escalado a
-  1,20 m; no hay base infantil gratuita, así que se lee como un adulto pequeño.
+  Anca con anacu, lliclla y tupu. HijoPuma reutiliza el Joven de maniquí
+  escalado a 1,20 m; no hay base infantil gratuita, así que se lee como un
+  adulto pequeño.
 - **Textiles:** túnica de cuello alto y abertura estrecha, franjas verticales,
   cenefas de rombos y zigzag en llicllas y mantos, faja con rombos, tupu de
   cobre y chuspa con correa. Los diseños son reconstrucción (R) sobre
   PCH-017/018; no copian una pieza concreta.
-- **Rumi:** joven, unku y manto; la mano en primera persona lleva manga de
-  unku y bocamanga. La malla ya sustituye al bloqueo; falta articulación fina
-  de los dedos.
+- **Rumi:** joven, unku y manto; el cuerpo no se ve en primera persona. La
+  mano de maniquí está integrada pero sigue en revisión.
 - **Evitar:** armaduras de fantasía, hombreras, capuchas, tabardos, penachos y
   cualquier forma que diga “medieval europeo”.
 
-Los rostros UBC son estilizados y **no son retratos**. Cada personaje tiene una
-textura de cara de 1024 derivada de UBC: tono de piel horneado, labios, ojeras,
-grano y líneas de edad. El Curaca envejece con surcos, mejillas hundidas y
-papada; Sisa lleva cejas finas y labios llenos. La mujer mayor y el hombre joven
-buscan rasgos andinos —pómulos anchos, nariz recta, labios llenos, pelo negro
-liso y piel media/oscura— sin caricatura. Sin blendshapes no hay expresiones
-faciales ni sincronía labial; la emoción la llevan el cuerpo, la cabeza y la voz
-escrita.
+El maniquí **no tiene cara, pelo ni barba**. Las mujeres se leen por el anacu
+largo, la lliclla con tupu y la melena posterior o el paño; los hombres, por el
+unku corto, el manto y la chuspa. La edad se sugiere con la paleta gris y el
+paño. No hay retratos, expresiones faciales ni sincronía labial; la emoción la
+llevan el cuerpo, la cabeza y la voz escrita. El elenco UBC con caras de 1024
+es histórico y ya no se carga en las escenas.
 
 La ropa y los tocados son reconstrucción (R) sobre PCH-017, PCH-018 y PCH-024.
-El prototipo completo, sus capturas y sus límites viven en
-[personajes_quaternius.md](personajes_quaternius.md).
+El elenco activo, sus capturas y sus límites viven en
+[prototipo_maniqui.md](prototipo_maniqui.md).

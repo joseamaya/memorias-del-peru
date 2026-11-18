@@ -684,22 +684,14 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	parent.add_child(actor)
 	actor.add_to_group("npcs")
 	var body_mesh: MeshInstance3D = actor.get_node_or_null("Body") as MeshInstance3D
-	var blockout: Array[Node3D] = []
-	var slot_parent: Node3D = actor
-	var slot_offset: Vector3 = Vector3.ZERO
 	if body_mesh != null:
-		blockout.append(body_mesh)
-		slot_parent = body_mesh
-		slot_offset = -body_mesh.position
-	var no_collisions: Array[Node] = []
-	var files: Array[String] = [CharacterCatalog.model_for(node_name)]
-	var slot: ModelSlot = _attach_model(slot_parent, "ModelSlot", slot_offset, files, blockout, no_collisions)
-	slot.use_model_collision = false
+		body_mesh.visible = false
 	actor.preserve_materials = true
-	actor.body_color = DressedMannequin.SKIN_COLOR
-	if slot.model != null:
-		actor.set_model(slot.model)
-		QuaterniusMaterials.apply_shadow_policy(slot.model)
+	var model: Node3D = OutfitMannequin.attach_look(
+		actor, MannequinLooks.for_role(node_name))
+	if model != null:
+		actor.set_model(model)
+	actor.face(_plaza_center_flat(), true)
 	return actor
 
 

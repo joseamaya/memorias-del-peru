@@ -40,7 +40,7 @@ Firma de la revisión humana: ____________________ · Fecha: __________
 
 - Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:58) solo sirve como suelo.
 - Remate de arte: texturas finas de roca y props de detalle.
-- Prototipo Quaternius: cuerpos re-proporcionados, caras con textura de 1024, textiles andinos embebidos, cuello alto, tupu, mujer mayor, hombre joven, familia de la llacta, mano en primera persona y Cusco en 349/350 hechos. Faltan una base facial con más rango andino (o esculpir la UBC), base infantil para HijoPuma, LOD del Cusco, articulación por dedo y medición limpia; no se sustituye el elenco hasta cerrarlo.
+- Elenco de maniquíes UAL1: diez looks sin caras ni texturas, integrados en la llacta, el Cusco, el paso y las chancas; llacta 257 draw calls/145,2 MB y Cusco 334/158,5 MB, bajo el presupuesto; 150 pruebas. Quedan por retirar el legado UBC, revisar la mano y cerrar la validación humana.
 - Audio: mezcla escuchada por acto.
 - Prueba de humo manual de los cinco actos.
 - Revisión histórica humana de PCH-032–036 (tabla anterior).

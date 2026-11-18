@@ -18,6 +18,9 @@ const CROWD_HIDDEN_MATERIALS: Array[String] = ["pch_tupu"]
 const PORRA_HIDE_DISTANCE: float = 1.4
 
 @export var model_path: String = ""
+## Look de maniquí UAL1. Si está definido, sustituye al GLB Quaternius del
+## elenco anterior: el cuerpo, el atuendo y los clips salen del maniquí.
+@export var look: CharacterLook
 @export var idle_clip: StringName = &"idle"
 @export var dark_clothes: bool = false
 @export var porra: bool = false
@@ -45,6 +48,9 @@ var _flash_restore: Dictionary[MeshInstance3D, Material] = {}
 
 
 func _ready() -> void:
+	if look != null:
+		_build_mannequin()
+		return
 	if model_path.is_empty() or not ResourceLoader.exists(model_path):
 		return
 	_slot = ModelSlot.new()
@@ -78,6 +84,26 @@ func _ready() -> void:
 		_apply_crowd_lod()
 
 
+## Monta el maniquí UAL1 con su look. El cuerpo mira hacia +Z; el visual mira
+## hacia -Z, así que se gira como en `NpcActor`.
+func _build_mannequin() -> void:
+	var applied: CharacterLook = MannequinLooks.crowd_from(look) if crowd else look
+	_model = OutfitMannequin.attach_look(self, applied)
+	if _model == null:
+		return
+	_model.rotation.y = PI
+	_fit_model()
+	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
+	if _skeleton != null:
+		_head_index = _skeleton.find_bone("Head")
+	_player = QuaterniusClips.player_for(
+		_model, _model.find_child("AnimationPlayer", true, false) as AnimationPlayer)
+	if _player != null and _player.has_animation(idle_clip):
+		_player.play(idle_clip)
+	if porra:
+		_build_porra()
+
+
 ## Ajusta la altura del modelo y apoya sus pies en el suelo.
 func _fit_model() -> void:
 	if target_height <= 0.0:
@@ -92,20 +118,24 @@ func _fit_model() -> void:
 func play(clip: StringName, speed: float = 1.0) -> void:
 	if _player == null:
 		return
-	var mapped: StringName = clip
+	var mapped: StringName = _logical_clip(clip)
 	if not _player.has_animation(mapped):
-		match clip:
-			&"Walk":
-				mapped = &"walk"
-			&"Run":
-				mapped = &"run"
-			&"Idle":
-				mapped = &"idle"
-			_:
-				mapped = &"idle"
+		mapped = &"idle"
 	if not _player.has_animation(mapped):
 		return
 	_player.play(mapped, 0.15, speed)
+
+
+## Traduce los nombres de gesto a los clips lógicos del elenco.
+static func _logical_clip(clip: StringName) -> StringName:
+	match clip:
+		&"Walk":
+			return &"walk"
+		&"Run":
+			return &"run"
+		&"Idle":
+			return &"idle"
+	return clip
 
 
 ## LOD de multitud: las piezas pequeñas no se leen a distancia y cuestan un
@@ -168,9 +198,12 @@ func play_locomotion(speed: float) -> void:
 
 ## Duración de un clip, o 0 si el personaje no lo tiene.
 func clip_length(clip: StringName) -> float:
-	if _player == null or not _player.has_animation(clip):
+	if _player == null:
 		return 0.0
-	return _player.get_animation(clip).length
+	var mapped: StringName = _logical_clip(clip)
+	if not _player.has_animation(mapped):
+		return 0.0
+	return _player.get_animation(mapped).length
 
 
 ## Animación actual, o vacía si el modelo no trae AnimationPlayer.

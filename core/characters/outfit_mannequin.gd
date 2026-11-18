@@ -18,19 +18,29 @@ var _player: AnimationPlayer = null
 
 
 func _ready() -> void:
-	var packed: PackedScene = load(MODEL_PATH) as PackedScene
-	if packed == null:
-		return
-	_model = packed.instantiate() as Node3D
+	_model = attach_look(self, look)
 	if _model == null:
 		return
-	add_child(_model)
-	# El UAL1 mira hacia +Z. El nodo que lo contiene decide el giro de juego.
 	ModelSlot.fit_height(_model, target_height)
-	if look != null:
-		CharacterOutfit.apply(_model, look)
 	_player = _model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	_play_current()
+
+
+## Carga el UAL1, lo cuelga de [param parent] y le aplica el atuendo. El
+## llamador decide la altura y lo anima: sirve para el prototipo y para los
+## actores del juego sin duplicar la carga del modelo.
+static func attach_look(parent: Node3D, target_look: CharacterLook) -> Node3D:
+	var packed: PackedScene = load(MODEL_PATH) as PackedScene
+	if packed == null or parent == null:
+		return null
+	var model_node: Node3D = packed.instantiate() as Node3D
+	if model_node == null:
+		return null
+	model_node.name = "MannequinModel"
+	parent.add_child(model_node)
+	if target_look != null:
+		CharacterOutfit.apply(model_node, target_look)
+	return model_node
 
 
 ## Aplica o cambia el atuendo.

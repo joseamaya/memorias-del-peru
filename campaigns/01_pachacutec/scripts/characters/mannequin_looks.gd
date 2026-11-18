@@ -60,6 +60,37 @@ static func all() -> Array[CharacterLook]:
 	return looks
 
 
+## Papeles que pueden aparecer en la multitud: la comunidad y el viajero, sin
+## las autoridades ni el enemigo, para no confundir a un vecino con el curaca.
+const CROWD_ROLES: Array[String] = [
+	"Sisa", "Anca", "Madre", "Anciana", "Joven", "Hermano", "Mensajero",
+]
+
+
+## Piezas que conserva la multitud: silueta, color y cabeza, sin tupu,
+## chuspa, bulto ni el panel trasero del manto.
+const CROWD_KEEP: Array[String] = [
+	"UnkuTop", "AnacuTop", "UnkuSkirt", "AnacuSkirt", "AnacuHem",
+	"Faja", "Cinta", "LlicllaFront", "HairBack", "Pano",
+]
+
+
+## Papel de multitud para un índice estable, sin depender de la escena.
+static func crowd_role(variant: int) -> String:
+	return CROWD_ROLES[posmod(variant, CROWD_ROLES.size())]
+
+
+## Reduce un look para la multitud conservando la identidad de frente.
+static func crowd_from(look: CharacterLook) -> CharacterLook:
+	var crowd: CharacterLook = CharacterLook.new()
+	crowd.skin = look.skin
+	crowd.joints = look.joints
+	for part: LookPart in look.parts:
+		if CROWD_KEEP.has(part.name):
+			crowd.parts.append(part)
+	return crowd
+
+
 ## Look del papel. Los papeles sin modelo propio reutilizan un arquetipo.
 static func for_role(role: String) -> CharacterLook:
 	match role:

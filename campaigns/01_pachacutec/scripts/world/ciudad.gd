@@ -1352,7 +1352,10 @@ func _restore_allies() -> void:
 func _add_visual_npc(at: Vector3, role: StringName, variant: int) -> CharacterModelVisual:
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Visual"
-	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), variant)
+	var role_name: String = String(role)
+	if role_name == "villager":
+		role_name = MannequinLooks.crowd_role(variant)
+	visual.look = MannequinLooks.for_role(role_name)
 	visual.position = at
 	add_child(visual)
 	visual.look_at(Vector3(0.0, at.y, 28.0), Vector3.UP)
@@ -1395,7 +1398,7 @@ func _add_ally_visual(index: int) -> void:
 	_ally_visuals[index] = true
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Ally%d" % index
-	visual.model_path = MODEL_DIR + CharacterCatalog.model_for("villager", index)
+	visual.look = MannequinLooks.for_role(MannequinLooks.crowd_role(index))
 	visual.position = ALLY_POSITIONS[index]
 	add_child(visual)
 	visual.look_at(Vector3(0.0, ALLY_POSITIONS[index].y, 28.0), Vector3.UP)
@@ -2276,7 +2279,11 @@ func _add_crowd_figure(parent: Node3D, index: int, at: Vector3, role: StringName
 		spawn_at = CROWD_VENDORS[index]
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "Crowd%02d" % index
-	visual.model_path = MODEL_DIR + CharacterCatalog.model_for(String(role), variant)
+	var role_name: String = String(role)
+	if role_name == "villager":
+		role_name = MannequinLooks.crowd_role(index + variant)
+	visual.look = MannequinLooks.for_role(role_name)
+	visual.crowd = true
 	visual.position = spawn_at
 	visual.scale = Vector3.ONE * (0.96 + 0.02 * float(index % 5))
 	parent.add_child(visual)

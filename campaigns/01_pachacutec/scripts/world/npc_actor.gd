@@ -169,8 +169,9 @@ func set_model(model: Node3D) -> void:
 	var skeletons: Array[Node] = model.find_children("*", "Skeleton3D", true, false)
 	if not skeletons.is_empty():
 		_setup_look(skeletons[0] as Skeleton3D)
-		_springs = CapeSprings.setup(skeletons[0] as Skeleton3D)
-		_face = CharacterFace.new(model)
+		if not _mannequin:
+			_springs = CapeSprings.setup(skeletons[0] as Skeleton3D)
+			_face = CharacterFace.new(model)
 	_play(idle_animation)
 	# Cada personaje empieza su reposo en un punto distinto del ciclo, para que
 	# no respiren todos a la vez.
@@ -419,14 +420,19 @@ static func _clip_for(animation: StringName) -> StringName:
 ## El maniquí no trae los extras de ritmo de los modelos propios: el golpe de
 ## trabajo se coloca a mitad del ciclo de `Fixing_Kneeling`.
 func _set_mannequin_beats() -> void:
-	var clip: StringName = &"Fixing_Kneeling"
-	if not _animation_player.has_animation(clip):
-		return
-	var length: float = _animation_player.get_animation(clip).length
-	if length <= 0.0:
-		return
-	_beats[&"weave"] = length * 0.5
-	_beats[&"work"] = length * 0.5
+	var weave_clip: StringName = &"weave"
+	if not _animation_player.has_animation(weave_clip):
+		weave_clip = &"Fixing_Kneeling"
+	var work_clip: StringName = &"work"
+	if not _animation_player.has_animation(work_clip):
+		work_clip = &"Fixing_Kneeling"
+	for logical: StringName in [&"weave", &"work"]:
+		var clip: StringName = weave_clip if logical == &"weave" else work_clip
+		if not _animation_player.has_animation(clip):
+			continue
+		var length: float = _animation_player.get_animation(clip).length
+		if length > 0.0:
+			_beats[logical] = length * 0.5
 
 
 func _play_step() -> void:
@@ -531,9 +537,14 @@ func _locomotion_rate(cycle: float) -> float:
 func _play(animation: StringName, speed: float = 1.0) -> void:
 	if _animation_player == null:
 		return
-	var clip: StringName = _clip_for(animation) if _mannequin else animation
+	# El maniquí recibe los clips lógicos de `QuaterniusClips`; así usa el
+	# `work` de UAL2 y conserva el mismo nombre que el elenco anterior. Si
+	# falta, cae al clip nativo del UAL1.
+	var clip: StringName = animation
+	if _mannequin and not _animation_player.has_animation(clip):
+		clip = _clip_for(animation)
 	if not _animation_player.has_animation(clip):
-		clip = _clip_for(&"idle") if _mannequin else &"idle"
+		clip = &"idle" if _animation_player.has_animation(&"idle") else _clip_for(&"idle")
 	# Si ya suena, `play` la continúa y solo cambia la velocidad. La escala
 	# general solo la usa la locomoción (_update_locomotion_rate).
 	_animation_player.speed_scale = 1.0

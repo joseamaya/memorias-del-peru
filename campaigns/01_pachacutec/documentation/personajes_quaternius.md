@@ -1,6 +1,10 @@
-# Personajes Quaternius — elenco único
+# Personajes Quaternius — elenco histórico
 
-**Estado:** elenco único · 2026-11-17 · Fase 4.12.
+> **Documento histórico.** El juego ya no usa este elenco: el cast activo es
+> [prototipo_maniqui.md](prototipo_maniqui.md). Los GLB, caras, catálogo y
+> pruebas UBC quedan como legado hasta su retirada.
+
+**Estado:** histórico · elenco retirado de las escenas · 2026-11-17 · Fase 4.12.
 **Manda:** [docs/09](../../../docs/09_biblia_narrativa.md) en lo narrativo,
 [docs/07](../../../docs/07_convenciones_historicas.md) en lo histórico y la
 [guía visual](guia_visual.md) en lo visual.
@@ -233,10 +237,9 @@ del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma),
 las armas) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
 estribo de 22 cm).
 
-> El prototipo de maniquíes UAL1 que puede sustituir a este elenco está en
-> [prototipo_maniqui.md](prototipo_maniqui.md). Tiene los diez looks capturados;
-> la mano de primera persona queda en revisión. El elenco UBC sigue activo
-> hasta que se integren los looks en NPC y multitud.
+> El elenco activo es el de [prototipo_maniqui.md](prototipo_maniqui.md): diez
+> maniquíes UAL1 integrados en las escenas. La mano de primera persona queda en
+> revisión. Los GLB, caras y pruebas UBC de este documento son legado.
 
 ## 8. Decisión
 

@@ -531,7 +531,10 @@ func _setup_camp() -> void:
 func _add_camp_npc(at: Vector3, role: StringName, variant: int) -> CharacterModelVisual:
 	var visual: CharacterModelVisual = CharacterModelVisual.new()
 	visual.name = "CampVisual"
-	visual.model_path = "res://campaigns/01_pachacutec/assets/models/" + CharacterCatalog.model_for(String(role), variant)
+	var role_name: String = String(role)
+	if role_name == "villager":
+		role_name = MannequinLooks.crowd_role(variant)
+	visual.look = MannequinLooks.for_role(role_name)
 	visual.position = Vector3(at.x, _height_at(at.x, at.z), at.z)
 	add_child(visual)
 	var target: Vector3 = Vector3(CAMP_POSITION.x, visual.position.y, CAMP_POSITION.z)
