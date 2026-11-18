@@ -1,9 +1,10 @@
-"""Genera el prototipo de personajes Quaternius de la campaña 01.
+"""Genera el elenco de personajes Quaternius de la campaña 01.
 
 Los cuerpos, ojos y peinados son de Universal Base Characters (Quaternius,
 CC0). La ropa, trenzas, cintas y sandalias son autoría propia. El esqueleto
-de 65 huesos es el mismo de UAL1/UAL2, así que los clips de UAL1 se añaden en
-el juego con `QuaterniusClips` sin retargeting.
+parte de los 65 huesos de UAL1/UAL2 y añade 7 propios (6 de manto y 1 de
+mandíbula), así que los clips de UAL1 se añaden en el juego con
+`QuaterniusClips` sin retargeting.
 
 Uso (desde la raíz del repositorio):
 
