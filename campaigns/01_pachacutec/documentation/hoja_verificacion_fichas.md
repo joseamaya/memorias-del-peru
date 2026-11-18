@@ -153,7 +153,7 @@ El agente revisó el 2026-11-12 las diez categorías de la lista contra el conte
 | Arquitectura | Sin anacronismos | Casas de piedra con barro y techo de ichu, terrazas y corrales de pirca seca (PCH-007, 008 y 021). Sin ventanas de vidrio, tejas, clavos ni chimeneas en el generador. |
 | Vestimenta | Justificado (1) | Prendas, tupu, ojotas y t'oqapu solo en autoridades (PCH-010, 017 y 018). Los peinados de las cabezas de Rocketbox son modernos. |
 | Armas | Sin anacronismos | No hay armas en el juego. La comitiva parte sin ellas, lo que no contradice ninguna fuente. |
-| Herramientas | Sin anacronismos | Chaquitaclla, telar de cintura, quero de madera, cántaros, leña y pututu. Sin metal, sin rueda y sin animales de tiro. |
+| Herramientas | Sin anacronismos | Chaquitaclla (PCH-037, pendiente de firma), telar de cintura, quero de madera, cántaros, leña y pututu. Sin metal, sin rueda y sin animales de tiro. |
 | Alimentación | Sin anacronismos | Chicha de maíz (PCH-005) y ofrenda de maíz y coca (PCH-012). |
 | Fauna y flora | Sin anacronismos | Ichu y queñua (PCH-013). No hay animales y el ambiente no lleva aves. La textura de hierba es solo variación sobre la paleta. |
 | Sonido | Justificado (2); comprobado (3) | El viento y la caracola ya están declarados en docs/07 §4. Los pasos son grabaciones con botas de montaña, y el murmullo es una grabación de hombres hablando. |
@@ -199,3 +199,14 @@ Las cinco fichas nuevas se verificaron sobre las ediciones digitales citadas en 
 - **PCH-036:** PCH-003, PCH-024 y PCH-030; la patrulla es ficción declarada.
 
 Revisión documental: agente · Fecha: 2026-11-15. El responsable del proyecto puede añadir su firma cuando contraste las ediciones en papel.
+
+## 11. PCH-037 — Chaquitaclla (2026-11-18)
+
+Ficha nueva del útil del Agricultor. El agente localizó las fuentes y generó el prop; queda pendiente la firma del responsable.
+
+- [x] Gade y Ríos (1972) y MOT V 95.0347: palo de 1–1,5 m, estribo doble y hoja; punta de madera endurecida cuando no hay metal.
+- [x] Garcilaso, lib. V, cap. 2, en la cita de Morlon: palo, estribo y uso en cuadrillas.
+- [x] El modelo `pch_prop_chaquitaclla.glb` mide 1,48 m, tiene estribo de 22 cm y no usa metal.
+- [ ] Firma del responsable del proyecto.
+
+Revisión documental: agente · Fecha: 2026-11-18.

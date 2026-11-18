@@ -4,6 +4,12 @@ Registro cronológico de los cambios y decisiones del desarrollo. Una fila por e
 
 La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`09` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §2). Conserva el porqué de lo que se hizo.
 
+## 2026-11-18
+
+| Cambio | Detalle | Commit |
+|---|---|---|
+| Chaquitaclla del Agricultor | Se añade `pch_prop_chaquitaclla.glb` (430 triángulos, 1,48 m, estribo de 22 cm, madera y punta endurecida, sin metal), generado por `pch_models.py` y plantado en la primera terraza junto al Agricultor. Ficha PCH-037 (H/R, pendiente de firma). La llacta pasa de 248 a 249 draw calls. Se corrige la cámara de `capture_quaternius`, que tras los arquetipos volvía a la del jugador. 134 pruebas, captura nueva | — |
+
 ## 2026-11-17
 
 | Cambio | Detalle | Commit |

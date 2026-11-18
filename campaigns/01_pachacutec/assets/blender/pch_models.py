@@ -20,10 +20,11 @@ Convenciones (alcance §7 y §7.1):
   Godot, el eje que apunta `look_at`.
 - Las mallas cuyo nombre termina en `-convcolonly` las convierte Godot en
   colisión convexa al importar y no se dibujan.
-- Los personajes los genera `pch_people.py` (ADR-0016).
+- Los personajes los genera `pch_quaternius.py`; este script solo construye
+  modelos estáticos y props.
 
 Los modelos son reconstrucciones (R) según las fichas del registro histórico
-(PCH-004, 007, 009, 010, 012, 013, 019 y 020; casas y poyos de pirca según ADR-0021);
+(PCH-004, 007, 009, 010, 012, 013, 019, 020 y 037; casas y poyos de pirca según ADR-0021);
 ninguna forma concreta está documentada como hecho.
 """
 
@@ -1129,10 +1130,45 @@ def build_firewood(rng):
 	b.to_object("pch_prop_firewood", collection)
 
 
+def build_chaquitaclla(rng):
+	"""Chaquitaclla de madera (PCH-037, R): palo de 1,45 m, hoja plana y
+	puntiaguda, estribo doble y ataduras de cuerda. Sin metal: la punta va
+	endurecida al fuego, como la variante documentada cuando no hay reja.
+	La forma se reconstruye a partir de Gade y Ríos (1972) y la ficha del MOT
+	V 95.0347; no copia una pieza concreta."""
+	collection = bpy.context.scene.collection
+	b = MeshBuilder()
+	# Hoja: pala plana, puntiaguda y algo más ancha que el palo.
+	frame = (Vector((0.0, -0.014, 0.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 0.0, 1.0)), Vector((0.0, 1.0, 0.0)))
+	blade = [(0.0, 0.0), (0.05, 0.09), (0.05, 0.37), (-0.05, 0.37), (-0.05, 0.09)]
+	b.prism(blade, 0.028, "wood_light", frame)
+	# Punta endurecida al fuego, algo más gruesa para que se lea.
+	tip = [(0.0, 0.0), (0.035, 0.06), (-0.035, 0.06)]
+	b.prism(tip, 0.032, "incision", frame)
+	# Palo ligeramente curvado hacia el mango.
+	b.tube(
+		[Vector((0.0, 0.0, 0.34)), Vector((0.0, 0.015, 0.9)), Vector((0.0, 0.035, 1.44))],
+		[0.028, 0.027, 0.024], 7, lambda ring: "wood")
+	# Mango curvo, atado al palo; la chaquitaclla no es una pala de T.
+	b.tube(
+		[Vector((0.0, 0.035, 1.42)), Vector((0.0, 0.10, 1.46)),
+		Vector((0.0, 0.15, 1.44)), Vector((0.0, 0.16, 1.38))],
+		[0.024, 0.022, 0.021, 0.020], 6, lambda ring: "wood_light")
+	# Estribo doble, dos barras paralelas de unos 22 cm.
+	for side in (-1.0, 1.0):
+		b.box(Vector((0.0, side * 0.035, 0.46)), (0.22, 0.035, 0.04), "wood_light")
+	# Ataduras de cuerda en el estribo y en la unión de la hoja.
+	for z in (0.36, 0.43, 0.49):
+		loop = [Vector((math.cos(2.0 * math.pi * i / 10.0) * 0.045,
+			math.sin(2.0 * math.pi * i / 10.0) * 0.045, z)) for i in range(11)]
+		b.tube(loop, [0.008] * len(loop), 5, lambda ring: "rope")
+	b.to_object("pch_prop_chaquitaclla", collection)
+
+
 # --- Personajes ----------------------------------------------------------
 #
-# Los personajes ya no salen de aquí: los genera `pch_people.py` con MPFB2,
-# ropa propia y captura de movimiento de CMU (ADR-0016).
+# Los personajes no salen de aquí: los genera `pch_quaternius.py` con los
+# cuerpos Quaternius, ropa propia y clips UAL1/UAL2.
 
 ANIM_FPS = 30
 
@@ -1167,6 +1203,7 @@ MODELS = {
 	"pch_loom": build_loom,
 	"pch_prop_jar": build_jar,
 	"pch_prop_firewood": build_firewood,
+	"pch_prop_chaquitaclla": build_chaquitaclla,
 	"pch_ichu_a": build_ichu_a,
 	"pch_ichu_b": build_ichu_b,
 	"pch_quenua_a": build_quenua,

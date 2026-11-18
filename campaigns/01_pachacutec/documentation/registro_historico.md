@@ -231,6 +231,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - el bulto, como un fardo de tela atado al pecho.
 
   Las medidas, la forma de anudar y la caída son reconstrucción (R). El unku del juego mide unos 55 cm de ancho, menos que la túnica del Met (75,6 cm), para que los brazos bajados no atraviesen la tela; es una desviación declarada.
+- **Actualización 2026-11-17:** el elenco vigente es Quaternius; los modelos MakeHuman/Rocketbox citados en esta ficha son históricos. La chaquitaclla del Agricultor se documenta en PCH-037.
 - Fuentes en que se basa (A, consultadas el 2026-11-11):
   - Dumbarton Oaks, *All T'oqapu Tunic*, PC.B.518: túnica (unku) tejida como un rectángulo doblado con abertura para el cuello y los lados cosidos hasta las sisas; algodón y fibra de camélido teñida. Según la ficha, el t'oqapu estaba reservado a personas de alto rango.
   - The Met, *Tunic*, inca, 1460–1540, 33.149.100 (https://www.metmuseum.org/art/collection/search/308120): pelo de camélido y algodón, 75,6 × 94 cm.
@@ -465,3 +466,16 @@ a la vista.
 - Discrepancias entre fuentes: las crónicas describen el avance chanca y el campamento en Ichu-pampa, no una patrulla concreta en un paso.
 - Notas de representación: la información se obtiene escuchando, no de un objeto inventado; no se atribuye a los chancas un sistema de registro que no esté documentado.
 - Estado de verificación: **verificado (R / N)** por revisión documental del agente el 2026-11-15: el encuentro y la patrulla son ficción declarada sobre el avance documentado.
+
+### PCH-037 — Chaquitaclla (arado de pie)
+- Tipo: herramienta
+- Clasificación: H / R
+- Uso en el juego: `Llacta/ChaquitacllaSlot`, en la primera terraza junto al Agricultor; modelo `pch_prop_chaquitaclla.glb` (R: palo de 1,45 m, hoja plana de madera endurecida, estribo doble de 22 cm y ataduras de cuerda; sin metal)
+- Fuentes:
+  - Garcilaso de la Vega, *Comentarios reales de los incas* (1609), lib. V, cap. 2, citado por Pierre Morlon, «La chaquitaclla du Pérou : pelle, bâton à fouir, charrue ou bêche ?», *Les Mots de l'agronomie* (INRAE), https://mots-agronomie.inrae.fr/index.php/La_chaquitaclla_du_P%C3%A9rou_:_pelle,_b%C3%A2ton_%C3%A0_fouir,_charrue_ou_b%C3%AAche_%3F: «un palo de una braza en largo; es llano por delante y rollizo por detrás ... media vara de la punta hacen un estribo de dos palos atados ...».
+  - Daniel W. Gade y Roberto Ríos, «Chaquitaclla, the native footplough and its persistence in central Andean agriculture» (1972), PDF en https://www.mot.be/webhdfs/v1/website/opzoeken/lectuur/artikels/chaquitaclla.pdf: palo de 1–1,5 m, estribo, reja; punta de madera endurecida cuando no hay metal.
+  - MOT, *Chaquitaclla*, objeto V 95.0347, https://www.mot.be/resource/Tool/chaquitaclla?lang=en: 145 cm de largo, 22 cm de ancho, 6 cm de grosor y 4,5 kg; estribo de dos palos de unos 20 cm a unos 45 cm; reja de 7–10 cm × 40 cm.
+  - Clark L. Erickson, «Domesticated Landscapes of the Andes» (2018), PDF en https://anthropology.sas.upenn.edu/sites/default/files/page/EricksonDomesticatedLandscapesOfTheAndes2019b.pdf: palo vertical, mango, estribo y hoja de piedra, madera o metal, atados con una correa larga.
+- Discrepancias entre fuentes: las rejas metálicas son posteriores; el juego usa una punta de madera endurecida, documentada para cuando no hay metal. La forma exacta del mango varía por región.
+- Notas de representación: el útil se muestra **plantado en la tierra**, no en la mano del Agricultor: el clip `work` es de siembra y no hay animación de cavar a dos manos. La madera, la punta endurecida y las ataduras son reconstrucción (R); no se inventa metal.
+- Estado de verificación: **pendiente** (fuentes localizadas y citadas; falta la firma del responsable del proyecto).

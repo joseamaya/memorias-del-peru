@@ -16,7 +16,7 @@ modelo propio reutilizan un arquetipo; el catálogo está en
 | Papel | Modelo Q | Nota |
 |---|---|---|
 | Tejedora | Anca Q | Clip `weave`; el telar sigue en la escena |
-| Agricultor | Joven Q | Clip `work`; falta la chaquitaclla como prop |
+| Agricultor | Joven Q | Clip `work`; chaquitaclla `pch_prop_chaquitaclla.glb` plantada en la terraza |
 | Curaca / CuracaVecino | Curaca Q | Autoridad, t’oqapu y manto |
 | Principal2 / `principal` | Puma Q | Autoridad comunal, sin t’oqapu |
 | Habitante1 / Habitante2 / Habitante3 | Madre / Hermano / Sisa Q | Familia de Rumi |
@@ -42,6 +42,8 @@ la documentación del híbrido.
 - **Clips:** UAL1 y UAL2, Quaternius, CC0 1.0.
 - **Ropa, trenzas, cintas, faja, chuspa, tupu y sandalias:** autoría propia,
   generadas por `pch_quaternius.py`.
+- **Chaquitaclla del Agricultor:** prop de madera generado por `pch_models.py`
+  (`pch_prop_chaquitaclla.glb`), autoría propia; sin metal. Ficha PCH-037.
 - **No usado:** la versión Source de pago de UBC y el Ultimate Animated
   Character Pack.
 - El detalle está en
@@ -75,14 +77,16 @@ Medición con el set Q completo, sin bandera. Tres pasadas por acto con carga
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 248 | 222,2 MB | 84,1 | 79,7 |
+| I — Llacta | 249 | 222,2 MB | 84,1 | 79,7 |
 | II — Paso | 244 | 162,8 MB | 106,2 | 100,0 |
 | III — Cusco | 288 | 230,8 MB | 62,6 | 60,0 |
 | IV — Posguerra | 226 | 222,8 MB | 91,9 | 85,7 |
 | V — Obra | 257 | 217,4 MB | 89,5 | 85,7 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
-por acto con carga 4,3–6,9 y se publica la mediana. El desglose del Cusco mostró
+por acto con carga 4,3–6,9 y se publica la mediana. La chaquitaclla del
+Agricultor añade 1 draw call a la llacta (248→249); el resto no cambia. El
+desglose del Cusco mostró
 que la multitud pesaba 173 draw calls y el pase de sombra 266; el LOD por
 material y la política de sombras los dejan en torno a 100 y 140. El Cusco es el acto
 más ajustado (62,6 FPS de media, p1 60,0); en la peor pasada el p1 bajó a 54,8,
@@ -114,6 +118,7 @@ La identidad viene de la ropa, el pelo, la paleta y la silueta:
 | Personaje | Captura |
 |---|---|
 | Llacta completa | ![Llacta](img/personajes/llacta_q.png) |
+| Agricultor y chaquitaclla | ![Agricultor](img/personajes/agricultor_q.png) |
 | Sisa | ![Sisa](img/personajes/sisa_q.png) |
 | Sisa de cerca | ![Sisa de cerca](img/personajes/sisa_close_q.png) |
 | Rostro de Sisa | ![Rostro](img/personajes/rostro_q.png) |
@@ -149,7 +154,7 @@ Escribe `user://quaternius_*.png`.
 **Funciona:** los diez modelos Q cubren todos los papeles; altura, orientación,
 idle, caminar, correr, hablar, trabajo, tejido, combate del chanca, impacto,
 muerte, porra en `hand_r`, foco de diálogo, mirada de cabeza, colisión, multitud
-Q, política de sombras, arena y arco completo.
+Q, política de sombras, chaquitaclla del Agricultor, arena y arco completo.
 
 **Falta:**
 
@@ -158,8 +163,8 @@ Q, política de sombras, arena y arco completo.
 - La cara UBC sigue siendo estilizada. Es la cara definitiva del set; si se
   quiere realismo, es una tarea de escultura/arte, no de código.
 - **HijoPuma** es un adulto Q escalado, no un niño.
-- **Agricultor** reutiliza el joven Q sin la chaquitaclla; el prop queda
-  pendiente. **Tejedora** reutiliza Anca Q con el clip `weave`.
+- **Tejedora** reutiliza Anca Q con el clip `weave`; el Agricultor reutiliza
+  Joven Q, ahora con la chaquitaclla plantada en la terraza.
 - Heridos y comitiva reutilizan arquetipos; no tienen ropa propia.
 - El pelo, la barba y las cejas siguen siendo mallas UBC; a distancia se leen
   bien, de cerca son geométricas.
@@ -178,7 +183,7 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **133 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **134 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.
@@ -187,13 +192,15 @@ Las pruebas del elenco son `test_quaternius_characters.gd` (altura, base,
 ausencia de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos
 `idle_b`, `work` y `hit` de UAL2; texturas de cara de 1024, piel con rugosidad,
 cejas propias, catálogo de todos los papeles, política de sombras y LOD de
-multitud) y `test_first_person_hands.gd` (malla de la mano y gesto de
-interacción).
+multitud), `test_first_person_hands.gd` (malla de la mano y gesto de
+interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
+estribo de 22 cm).
 
 ## 8. Decisión
 
 Quaternius es el **único** set visual. Se retiraron los modelos
 MakeHuman/Rocketbox, el híbrido Rocketbox, el injerto de cabeza MakeHuman y sus
 pruebas/capturas. No se vuelve atrás. El rendimiento del Cusco está cerrado
-(288 draw calls, cinco actos bajo 350); el siguiente trabajo es la chaquitaclla
-del Agricultor, la base infantil de HijoPuma y el pulido de manos y expresiones.
+(288 draw calls, cinco actos bajo 350 y la chaquitaclla del Agricultor en la
+terraza); el siguiente trabajo es la base infantil de HijoPuma y el pulido de
+manos y expresiones.

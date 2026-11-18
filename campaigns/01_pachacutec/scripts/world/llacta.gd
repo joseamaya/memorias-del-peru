@@ -141,6 +141,7 @@ const TALK_SCENE: String = "res://campaigns/01_pachacutec/scenes/npcs/talk_point
 const TALK_HOLD_SECONDS: float = 7.0
 const MODEL_PROP_JAR: String = "pch_prop_jar.glb"
 const MODEL_PROP_FIREWOOD: String = "pch_prop_firewood.glb"
+const MODEL_PROP_CHAQUITACLLA: String = "pch_prop_chaquitaclla.glb"
 const HOUSE_DEPTHS: Array[float] = [5.0, 4.6, 4.0, 5.4, 3.8]
 const HOUSE_LEFT_PROP_X: Array[float] = [-2.1, -2.4, -1.7, -2.5, -1.5]
 const HOUSE_YAW_JITTER: Array[float] = [7.0, -11.0, 4.0, -6.0, 10.0, -8.0, 5.0, -4.0]
@@ -583,6 +584,7 @@ func _build_cast() -> void:
 	if farmer != null:
 		farmer.face(_plaza_center_flat(), true)
 		farmer.set_idle_animation(&"work")
+		_add_chaquitaclla()
 	var nothing: Array[Node3D] = []
 	var no_collisions: Array[Node] = []
 	var loom_files: Array[String] = [MODEL_LOOM]
@@ -699,6 +701,20 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 		actor.set_model(slot.model)
 		QuaterniusMaterials.apply_shadow_policy(slot.model)
 	return actor
+
+
+## Chaquitaclla plantada en la terraza, junto al Agricultor. Es un prop
+## estático: el clip `work` es de siembra y no hay animación de cavar a dos
+## manos; el útil queda apoyado en la tierra como si lo hubiera dejado al
+## sembrar. La hoja mira a la plaza para que se lea al acercarse.
+func _add_chaquitaclla() -> void:
+	var no_blockout: Array[Node3D] = []
+	var no_collisions: Array[Node] = []
+	var files: Array[String] = [MODEL_PROP_CHAQUITACLLA]
+	var slot: ModelSlot = _attach_model(
+		$Llacta as Node3D, "ChaquitacllaSlot", Vector3(35.0, 0.8, -2.9),
+		files, no_blockout, no_collisions)
+	slot.rotation_degrees = Vector3(0.0, 80.0, 10.0)
 
 
 ## Añade «Hablar» a un personaje con su frase.

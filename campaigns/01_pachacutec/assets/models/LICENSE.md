@@ -2,13 +2,19 @@
 
 ## Modelos de `pch_models.py`
 
-Viviendas, objetos, vegetación, telar, cántaros y leña. Son de autoría propia del
-proyecto ([ADR-0010](../../../../docs/adr/0010-modelos-generados-con-blender.md)).
+Viviendas, objetos, vegetación, telar, cántaros, leña y la chaquitaclla del
+Agricultor. Son de autoría propia del proyecto
+([ADR-0010](../../../../docs/adr/0010-modelos-generados-con-blender.md)).
 
 Las viviendas D y E (`pch_house_d.glb`, `pch_house_e.glb`) se añadieron el
 2026-11-15 con el mismo generador y la misma licencia propia. D es una casa
 mayor enlucida y E una casa menor de piedra; no introducen una tipología nueva,
 solo variación de planta, altura y acabado.
+
+La chaquitaclla (`pch_prop_chaquitaclla.glb`) se añadió el 2026-11-18 con el
+mismo generador y licencia propia. Es un prop de madera con punta endurecida y
+sin metal; su forma y fuentes están en la ficha PCH-037 del
+[registro histórico](../documentation/registro_historico.md).
 
 ## Elenco Quaternius (`pch_npc_*_q.glb`)
 

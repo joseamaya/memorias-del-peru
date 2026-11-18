@@ -158,14 +158,15 @@ Resultado con el elenco Q completo:
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 248 | 222,2 MB | 84,1 | 79,7 |
+| I — Llacta | 249 | 222,2 MB | 84,1 | 79,7 |
 | II — Paso | 244 | 162,8 MB | 106,2 | 100,0 |
 | III — Cusco | 288 | 230,8 MB | 62,6 | 60,0 |
 | IV — Posguerra | 226 | 222,8 MB | 91,9 | 85,7 |
 | V — Obra | 257 | 217,4 MB | 89,5 | 85,7 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
-por acto con carga 4,3–6,9; se publica la mediana. El Cusco es el acto más
+por acto con carga 4,3–6,9; se publica la mediana. La chaquitaclla del
+Agricultor añade 1 draw call a la llacta (248→249). El Cusco es el acto más
 ajustado (62,6 FPS de media y p1 60,0) y cumple el objetivo de 60 FPS en mediana;
 el resto supera 60 FPS con holgura. Falta repetir la pasada en un equipo
 completamente descargado para confirmar el p1 del Cusco, que en la peor pasada
@@ -182,7 +183,7 @@ bajó a 54,8.
 | V — Obra | 105,3 FPS | 90,5 FPS | 82,9–93,2 | 362 | 225,5 MB |
 
 La tabla es la línea base del 2026-11-16. La pasada del elenco Q y la política de
-sombras del 2026-11-17 deja el Cusco en 288 draw calls y la llacta en 248; los FPS de la
+sombras del 2026-11-17 deja el Cusco en 288 draw calls y la llacta en 249; los FPS de la
 pasada nueva están en
 [personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
 

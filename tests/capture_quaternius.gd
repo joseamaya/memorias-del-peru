@@ -54,6 +54,8 @@ func _capture() -> void:
 	await _showcase(MODEL_DIR + "pch_npc_anca_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_anca")
 	await _shot(camera, Vector3(-2.4, 1.5, 0.2), Vector3(-3.0, 1.15, 3.0), prefix + "_mensajero")
 	await _shot(camera, Vector3(1.0, 1.65, 14.0), Vector3(0.0, 1.0, 4.0), prefix + "_llacta")
+	# El Agricultor y su chaquitaclla, en la primera terraza.
+	await _shot(camera, Vector3(32.4, 1.75, -0.4), Vector3(36.0, 1.05, -2.7), prefix + "_agricultor")
 	# Mano en primera persona: se usa la cámara del jugador.
 	var llacta_player: Node3D = llacta.get_node_or_null("PlayerFPS") as Node3D
 	if llacta_player != null:
@@ -139,6 +141,7 @@ func _save(slug: String) -> void:
 
 
 func _shot(camera: Camera3D, at: Vector3, target: Vector3, slug: String) -> void:
+	camera.current = true
 	camera.global_position = at
 	camera.look_at(target, Vector3.UP)
 	await _frames(5)
