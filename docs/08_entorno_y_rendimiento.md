@@ -122,12 +122,15 @@ Consecuencias de que la referencia tenga GPU integrada:
 ### 4.1. Auditoría de escena
 
 `tools/scene_audit.gd` cuenta draw calls, primitivas, memoria de vídeo, mallas,
-colisiones y luces con sombra de una escena. Se ejecuta con ventana (el servidor Dummy no
-cuenta draw calls):
+colisiones y luces con sombra de una escena. Con `--breakdown` oculta cada grupo
+de primer nivel y mide su aportación, incluido el pase de sombra; es la forma de
+decidir dónde optimizar antes de tocar la escena. Se ejecuta con ventana (el
+servidor Dummy no cuenta draw calls):
 
 ```bash
 godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
-    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20
+    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20 \
+    --breakdown
 ```
 
 **Línea base del Cusco (2026-11-16):** 488 draw calls, 1,48 M primitivas, 250 mallas,
@@ -137,26 +140,38 @@ porque el coste es de relleno, no de CPU.
 
 **Actualización 2026-11-17:** `StaticMeshBatch` fusiona por material/tinte casas,
 props, mercado, mobiliario, puerta, remates de muro, terrazas, santuario y vegetación
-del Cusco y la llacta. El Cusco queda en **349 draw calls con Quaternius** (328 con el
-elenco anterior) y 245/225 MB; la llacta queda en **310** con Quaternius, la familia y
-los textiles. El Cusco está a un draw call del presupuesto: no admite más personajes sin
-LOD o sin reducir estática. Con 3 de 10 puestos Q el presupuesto se cumplía;
-con el elenco completo se supera (abajo). La memoria sube ~8 MB por la copia de
-vértices fusionados; los
-originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con carga
-6–16: falta repetirla en un equipo descargado. El siguiente límite es la multitud/LOD y
-la memoria de la geometría fusionada, no la estática.
+del Cusco y la llacta. Antes del LOD de personaje, el Cusco quedaba en **349 draw
+calls con Quaternius** (328 con el elenco anterior) y 245/225 MB; la llacta, en
+**310**. El Cusco estaba a un draw call del presupuesto: no admitía la multitud Q
+completa sin LOD. La memoria sube ~8 MB por la copia de vértices fusionados; los
+originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con
+carga 6–16: falta repetirla en un equipo descargado.
 
-**Elenco Quaternius completo (2026-11-17).** Todo el elenco usa los diez
-GLB Q; no queda elenco anterior. La llacta mide **321 draw calls y 222,2 MB**;
-el Cusco completo, **413 draw calls y 230,8 MB**. La pasada se hizo con carga
-3,7–4,5 y FPS de 45,1/53,7, no concluyentes. El LOD de multitud oculta cejas y
-tupu en los puestos de fondo. El Cusco **supera el presupuesto de 350 en 63
-draw calls**: la estática fusionada pesa ~329 y los personajes Q añaden el
-resto. Falta un LOD de personaje/multitud Q o reducir estática; no se vuelve
-al elenco anterior.
+**Elenco Quaternius completo y política de sombras (2026-11-17).** El desglose de
+`scene_audit.gd --breakdown` mostró que la multitud del Cusco pesaba **173 draw
+calls** y el pase de sombra del sol, **266**. Dos medidas los recortan: la multitud
+oculta el tupu por material (el alfiler no se lee a distancia; las cejas se
+conservan porque sin ellas la cara parece vacía) y solo cuerpo y ropa proyectan
+sombra; ojos, cejas, tupu y pelo quedan fuera del pase de sombra. La sombra del
+cuerpo sigue apoyando las figuras y los primeros planos no pierden volumen.
+Resultado con el elenco Q completo:
 
-**Estado:** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
+| Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
+|---|---|---|---|---|
+| I — Llacta | 248 | 222,2 MB | 84,1 | 79,7 |
+| II — Paso | 244 | 162,8 MB | 106,2 | 100,0 |
+| III — Cusco | 288 | 230,8 MB | 62,6 | 60,0 |
+| IV — Posguerra | 226 | 222,8 MB | 91,9 | 85,7 |
+| V — Obra | 257 | 217,4 MB | 89,5 | 85,7 |
+
+Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
+por acto con carga 4,3–6,9; se publica la mediana. El Cusco es el acto más
+ajustado (62,6 FPS de media y p1 60,0) y cumple el objetivo de 60 FPS en mediana;
+el resto supera 60 FPS con holgura. Falta repetir la pasada en un equipo
+completamente descargado para confirmar el p1 del Cusco, que en la peor pasada
+bajó a 54,8.
+
+**Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |
 |---|---|---|---|---|---|
@@ -166,11 +181,11 @@ al elenco anterior.
 | IV — Posguerra | 124,5 FPS | 97,5 FPS | 90,9–101,6 | 342 | 226,1 MB |
 | V — Obra | 105,3 FPS | 90,5 FPS | 82,9–93,2 | 362 | 225,5 MB |
 
-La tabla es la línea base del 2026-11-16. La fusión de estática del 2026-11-17 deja el
-Cusco en 349 draw calls con Quaternius (328 con el elenco anterior) y la llacta en 310;
-los FPS de la pasada nueva están en
+La tabla es la línea base del 2026-11-16. La pasada del elenco Q y la política de
+sombras del 2026-11-17 deja el Cusco en 288 draw calls y la llacta en 248; los FPS de la
+pasada nueva están en
 [personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
 
-Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy). Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (55–60 FPS) sigue por debajo del objetivo en los picos; se vigila al añadir arte final.
+Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy); la política de sombras del elenco Q la deja en 288. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (60,0 de mediana, 54,8 en la peor pasada) está en el límite del objetivo; se vigila al añadir arte final.
 
-El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En Bajo, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.
+El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En la medición de Bajo de 2026-11-16, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.

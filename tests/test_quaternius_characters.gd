@@ -1,5 +1,5 @@
 extends RefCounted
-## Pruebas de los cuerpos Quaternius del prototipo.
+## Pruebas de los cuerpos Quaternius del elenco.
 ##
 ## Comprueban que los GLB conservan el rig de 65 huesos, las medidas, los
 ## materiales y que `QuaterniusClips` añade los clips lógicos sin depender de
@@ -182,4 +182,53 @@ func test_catalog_models() -> bool:
 		elif not ResourceLoader.exists(MODEL_DIR + file_name):
 			printerr(role, ": falta ", file_name)
 			ok = false
+	return ok
+
+
+func test_quaternius_shadow_policy() -> bool:
+	# El pase de sombra solo conserva cuerpo y ropa: ojos, cejas, pelo y tupu
+	# no aportan a la silueta y cuestan draw calls. Es la optimización que baja
+	# el Cusco y la llacta por debajo del presupuesto.
+	var ok: bool = true
+	for file_name: String in MODELS:
+		var packed: PackedScene = load(MODEL_DIR + file_name) as PackedScene
+		var model: Node3D = packed.instantiate() as Node3D
+		QuaterniusMaterials.apply_shadow_policy(model)
+		var casters: int = 0
+		for node: Node in model.find_children("*", "MeshInstance3D", true, false):
+			var mesh_instance: MeshInstance3D = node as MeshInstance3D
+			var expected: bool = QuaterniusMaterials.uses_material(
+				mesh_instance, QuaterniusMaterials.SHADOW_MATERIALS)
+			var casts: bool = (mesh_instance.cast_shadow
+				== GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+			if casts != expected:
+				printerr(file_name, ": sombra inesperada en ", mesh_instance.name)
+				ok = false
+			if expected:
+				casters += 1
+		if casters < 2:
+			printerr(file_name, ": sin cuerpo y ropa en el pase de sombra")
+			ok = false
+		model.free()
+	return ok
+
+
+func test_quaternius_crowd_lod() -> bool:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
+	visual.name = "CrowdTest"
+	visual.model_path = MODEL_DIR + "pch_npc_sisa_q.glb"
+	visual.crowd = true
+	tree.root.add_child(visual)
+	var model: Node3D = visual.model()
+	var ok: bool = model != null
+	if model != null:
+		for node: Node in model.find_children("*", "MeshInstance3D", true, false):
+			var mesh_instance: MeshInstance3D = node as MeshInstance3D
+			var hidden: bool = QuaterniusMaterials.uses_material(
+				mesh_instance, CharacterModelVisual.CROWD_HIDDEN_MATERIALS)
+			if mesh_instance.visible == hidden:
+				printerr("multitud: visibilidad inesperada en ", mesh_instance.name)
+				ok = false
+	visual.free()
 	return ok

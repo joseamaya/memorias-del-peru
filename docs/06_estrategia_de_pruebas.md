@@ -56,6 +56,10 @@ godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
     --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20
 ```
 
+Con `--breakdown` oculta cada grupo de primer nivel y mide su aportación, incluido
+el pase de sombra. Es la herramienta que localizó el peso de la multitud del Cusco
+(173 draw calls) y del pase de sombra (266) antes de optimizar.
+
 ## 3. Pruebas automatizadas
 
 Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga cada archivo `tests/test_*.gd`, ejecuta sus métodos `test_*` y termina con `quit(codigo)` (0 = éxito, 1 = fallo). Cada prueba enumera aquí su archivo al abrirse la fase correspondiente.
@@ -146,7 +150,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_campaign_audio` | Recursos de audio de la campaña y bucles |
 | `test_model_validator` | Validación de modelos |
-| `test_quaternius_characters` | Rig de 65 huesos, clips lógicos, `NpcActor` y catálogo Quaternius de todos los papeles |
+| `test_quaternius_characters` | Rig de 65 huesos, clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras y LOD de multitud |
 | `test_first_person_hands` | Malla propia de la mano y gesto de interacción |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
 | `test_title_screen` | La portada traduce sus textos y, sin campaña, deshabilita Comenzar |
@@ -239,5 +243,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 
 | 2026-11-17 | Textiles andinos, cuello alto y tupu de metal | `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 131 pruebas, 0 fallos; diez atlas textiles embebidos; llacta 310 draw calls y 225 MB; Cusco 349 y 245 MB; Cusco a un draw call del presupuesto |
 | 2026-11-17 | Quaternius único: todos los papeles y retirada del legado | `run_tests.gd`, `combat_arena_check.gd`, `arc_playthrough.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 131 pruebas, 0 fallos; sin bandera; todos los roles con GLB Q; llacta 321 draw calls/222,2 MB y Cusco 413/230,8 MB; Cusco sobre el presupuesto de 350; FPS no concluyentes |
+| 2026-11-17 | Rendimiento del Cusco: sombras y LOD de multitud | `scene_audit.gd --breakdown`, `run_tests.gd`, `combat_arena_check.gd`, `arc_playthrough.gd` y `measure_performance.tscn` | 133 pruebas, 0 fallos; multitud del Cusco 173→100 draw calls y pase de sombra 266→140; llacta 248, paso 244, Cusco 288, posguerra 226 y obra 257; los cinco actos bajo 350; Cusco 62,6 FPS de mediana y p1 60,0 con carga 4,3–6,9 (peor p1 54,8) |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

@@ -1,6 +1,6 @@
 class_name QuaterniusMaterials
 extends RefCounted
-## Materiales de los cuerpos Quaternius del prototipo (piel, cejas, pelo y
+## Materiales de los cuerpos Quaternius del elenco (piel, cejas, pelo y
 ## ojos). Viven aparte de `SurfaceMaterials` para que la ciudad y el terreno no
 ## carguen con la lógica de personajes.
 ##
@@ -12,6 +12,10 @@ extends RefCounted
 const BASE: String = "res://shared_assets/characters/quaternius/base/"
 const FACES: String = "res://shared_assets/characters/quaternius/faces/"
 const HAIR_ALPHA_SCISSOR: float = 0.4
+## Materiales que aportan a la silueta y por tanto proyectan sombra. Ojos,
+## cejas, tupu y pelo quedan fuera: cada superficie del pase de sombra cuesta
+## draw calls y esas piezas no se leen a la distancia del juego.
+const SHADOW_MATERIALS: Array[String] = ["pch.body_", "pch_cloth"]
 ## Texturas de rostro por personaje. El tono de piel va horneado y la cara
 ## lleva labios, ojeras y líneas de edad.
 const FACE_SET: Dictionary[String, Dictionary] = {
@@ -138,3 +142,46 @@ static func get_material(name: String) -> Material:
 		return null
 	_cache[name] = material
 	return material
+
+
+## Deja solo cuerpo y ropa en el pase de sombra de [param root]. Ojos, cejas,
+## tupu y pelo suman un draw call por split del sol y no aportan a la silueta;
+## la sombra del cuerpo sigue apoyando la figura. No toca modelos ajenos al
+## elenco Q: si no encuentra ninguna malla de cuerpo o ropa, no cambia nada.
+static func apply_shadow_policy(root: Node) -> void:
+	if root == null:
+		return
+	var meshes: Array[Node] = root.find_children("*", "MeshInstance3D", true, false)
+	if root is MeshInstance3D:
+		meshes.append(root)
+	var found: bool = false
+	for node: Node in meshes:
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		if mesh_instance != null and uses_material(mesh_instance, SHADOW_MATERIALS):
+			found = true
+			break
+	if not found:
+		return
+	for node: Node in meshes:
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		if mesh_instance == null:
+			continue
+		var casts: bool = uses_material(mesh_instance, SHADOW_MATERIALS)
+		mesh_instance.cast_shadow = (GeometryInstance3D.SHADOW_CASTING_SETTING_ON if casts
+			else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+
+
+## Verdadero si alguna superficie de [param mesh_instance] usa un material con
+## uno de los prefijos. Lee el material original del recurso, no el override:
+## `SurfaceMaterials` sustituye los materiales al cargar.
+static func uses_material(mesh_instance: MeshInstance3D, prefixes: Array[String]) -> bool:
+	if mesh_instance == null or mesh_instance.mesh == null:
+		return false
+	for surface: int in range(mesh_instance.mesh.get_surface_count()):
+		var material: Material = mesh_instance.mesh.surface_get_material(surface)
+		if material == null:
+			continue
+		for prefix: String in prefixes:
+			if material.resource_name.begins_with(prefix):
+				return true
+	return false

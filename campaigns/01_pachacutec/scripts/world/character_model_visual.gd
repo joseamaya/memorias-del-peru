@@ -9,6 +9,10 @@ extends Node3D
 
 ## Tinte de la ropa oscura de los chancas; multiplica el tejido original.
 const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
+## Pieza que la multitud oculta: el tupu. Es un alfiler pequeño que no se lee a
+## distancia; las cejas sí: sin ellas la cara parece vacía. Los nombres de
+## malla cambian entre los cuerpos masculino y femenino; el material no.
+const CROWD_HIDDEN_MATERIALS: Array[String] = ["pch_tupu"]
 
 @export var model_path: String = ""
 @export var idle_clip: StringName = &"idle"
@@ -61,6 +65,7 @@ func _ready() -> void:
 		_darken_clothes()
 	if porra:
 		_build_porra()
+	QuaterniusMaterials.apply_shadow_policy(_model)
 	if crowd:
 		_apply_crowd_lod()
 
@@ -100,10 +105,12 @@ func play(clip: StringName, speed: float = 1.0) -> void:
 func _apply_crowd_lod() -> void:
 	if _model == null:
 		return
-	for part: String in ["Eyebrows", "TupuDisc", "TupuPin"]:
-		var node: Node3D = _model.find_child(part, true, false) as Node3D
-		if node != null:
-			node.visible = false
+	for node: Node in _model.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance: MeshInstance3D = node as MeshInstance3D
+		if mesh_instance != null and QuaterniusMaterials.uses_material(
+			mesh_instance, CROWD_HIDDEN_MATERIALS
+		):
+			mesh_instance.visible = false
 
 
 ## Punto de la cara para encuadrar un diálogo, tomado del hueso de la cabeza.
@@ -125,9 +132,9 @@ func porra_pivot() -> Node3D:
 	return _porra_pivot
 
 
-## Velocidad de desplazamiento de cada ciclo a velocidad 1 (m/s). Los clips del
-## elenco vienen de la captura de CMU y traen su propia zancada; si se reproducen
-## a 1.0 mientras el cuerpo va a otra velocidad, los pies patinan.
+## Velocidad de desplazamiento de cada ciclo a velocidad 1 (m/s). Los clips Q
+## traen su propia zancada; si se reproducen a 1.0 mientras el cuerpo va a otra
+## velocidad, los pies patinan.
 const WALK_CYCLE_SPEED: float = 1.2
 const RUN_CYCLE_SPEED: float = 3.0
 
@@ -260,6 +267,7 @@ func _build_porra() -> void:
 	handle.mesh = handle_mesh
 	handle.material_override = wood
 	handle.position = Vector3(0.0, 0.28, 0.0)
+	handle.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_porra_pivot.add_child(handle)
 	var head: MeshInstance3D = MeshInstance3D.new()
 	var head_mesh: SphereMesh = SphereMesh.new()
@@ -270,4 +278,5 @@ func _build_porra() -> void:
 	head.mesh = head_mesh
 	head.material_override = stone
 	head.position = Vector3(0.0, 0.56, 0.0)
+	head.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_porra_pivot.add_child(head)

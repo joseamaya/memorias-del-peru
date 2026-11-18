@@ -4,6 +4,12 @@ Registro cronológico de los cambios y decisiones del desarrollo. Una fila por e
 
 La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`09` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §2). Conserva el porqué de lo que se hizo.
 
+## 2026-11-17
+
+| Cambio | Detalle | Commit |
+|---|---|---|
+| Rendimiento del Cusco | El desglose de `scene_audit.gd --breakdown` mostró que la multitud del Cusco pesaba 173 draw calls y el pase de sombra 266. La multitud oculta el tupu por material y conserva las cejas; solo cuerpo y ropa proyectan sombra, y ojos, cejas, tupu y pelo quedan fuera del pase. Llacta 248 draw calls/222,2 MB, paso 244/162,8 MB, Cusco 288/230,8 MB, posguerra 226/222,8 MB y obra 257/217,4 MB: los cinco actos bajo el presupuesto de 350. Tres pasadas por acto con carga 4,3–6,9: Cusco 62,6 FPS de mediana y p1 60,0 (peor p1 54,8). 133 pruebas, arena y arco completos | — |
+
 ## 2026-11-16
 
 | Cambio | Detalle | Commit |

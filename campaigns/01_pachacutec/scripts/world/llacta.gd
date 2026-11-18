@@ -697,6 +697,7 @@ func _add_npc(parent: Node3D, node_name: String, at: Vector3, color: Color) -> N
 	actor.body_color = DressedMannequin.SKIN_COLOR
 	if slot.model != null:
 		actor.set_model(slot.model)
+		QuaterniusMaterials.apply_shadow_policy(slot.model)
 	return actor
 
 

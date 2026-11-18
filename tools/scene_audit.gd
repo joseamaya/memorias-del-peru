@@ -6,14 +6,20 @@ extends SceneTree
 ##       --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn \
 ##       --frames=20 --out=/tmp/ciudad_audit.json
 ##
+## Con `--breakdown` oculta cada grupo de primer nivel y mide cuántos draw
+## calls aporta. Sirve para decidir dónde optimizar antes de tocar la escena.
+##
 ## Sin `--headless`: el servidor de render Dummy no cuenta draw calls. Se usa
 ## como termómetro, no como benchmark: para FPS está `measure_performance.tscn`.
 
 const DEFAULT_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/ciudad.tscn"
+## Fotogramas de asentamiento tras ocultar o mostrar un grupo.
+const SETTLE_FRAMES: int = 4
 
 var _scene_path: String = DEFAULT_SCENE
 var _frames: int = 20
 var _out_path: String = ""
+var _breakdown: bool = false
 
 
 func _initialize() -> void:
@@ -24,6 +30,8 @@ func _initialize() -> void:
 			_frames = maxi(arg.trim_prefix("--frames=").to_int(), 1)
 		elif arg.begins_with("--out="):
 			_out_path = arg.trim_prefix("--out=")
+		elif arg == "--breakdown":
+			_breakdown = true
 	_run.call_deferred()
 
 
@@ -35,9 +43,11 @@ func _run() -> void:
 		return
 	var scene: Node = packed.instantiate()
 	root.add_child(scene)
-	for _i: int in range(_frames):
-		await process_frame
+	var baseline: float = await _measure_draw_calls(_frames)
 	var report: Dictionary = _build_report(scene)
+	report["draw_calls"] = int(roundf(baseline))
+	if _breakdown:
+		report["groups"] = await _group_breakdown(scene, baseline)
 	print("SCENE_AUDIT ", JSON.stringify(report))
 	if not _out_path.is_empty():
 		var file: FileAccess = FileAccess.open(_out_path, FileAccess.WRITE)
@@ -49,6 +59,49 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	quit(0)
+
+
+## Media de draw calls durante [param frames], tras dejar que la escena se
+## asiente y que los ModelSlot terminen de cargar.
+func _measure_draw_calls(frames: int) -> float:
+	for _i: int in range(SETTLE_FRAMES):
+		await process_frame
+	var total: int = 0
+	for _i: int in range(maxi(frames, 1)):
+		await process_frame
+		total += int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
+	return float(total) / float(maxi(frames, 1))
+
+
+## Aportación de cada grupo de primer nivel. El delta incluye también su pase
+## de sombra, que es justo lo que interesa al ajustar el presupuesto.
+func _group_breakdown(scene: Node, baseline: float) -> Array[Dictionary]:
+	var groups: Array[Dictionary] = []
+	for child: Node in scene.get_children():
+		var node3d: Node3D = child as Node3D
+		if node3d == null or not node3d.visible:
+			continue
+		var meshes: int = child.find_children("*", "MeshInstance3D", true, false).size()
+		var multimeshes: int = child.find_children("*", "MultiMeshInstance3D", true, false).size()
+		var light: bool = child is Light3D
+		if meshes == 0 and multimeshes == 0 and not light:
+			continue
+		node3d.visible = false
+		var hidden: float = await _measure_draw_calls(maxi(int(_frames / 2.0), 5))
+		node3d.visible = true
+		groups.append({
+			"name": String(child.name),
+			"draw_calls": int(roundf(baseline - hidden)),
+			"mesh_instances": meshes,
+			"multimesh_instances": multimeshes,
+		})
+	groups.sort_custom(
+		func(a: Dictionary, b: Dictionary) -> bool:
+			var left: int = a["draw_calls"]
+			var right: int = b["draw_calls"]
+			return left > right
+	)
+	return groups
 
 
 func _build_report(scene: Node) -> Dictionary:
