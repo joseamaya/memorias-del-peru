@@ -108,7 +108,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_assembly` | El tercer encargo abre la asamblea, la elección deja su bandera y aparece la tarjeta de fin |
 | `test_post_acts` | El acto IV abre la asamblea de posguerra y el maíz guardado paga; el acto V completa las cinco obras, incluida la casa, y cierra la campaña |
 | `test_campaign_progress` | Recursos, oficio y habilidades del acto I sobreviven al paso al acto II |
-| `test_end_card_body` | La tarjeta de fin muestra la noticia de Viracocha y el nombre nuevo con su variante |
+| `test_end_card_body` | La tarjeta de fin muestra la noticia de Viracocha y el nombre nuevo, y espera al fondo oscuro antes de mostrar el cuerpo |
 | `test_act_three_cost` | La defensa tiene tres oleadas; el costo de Anca y el del hijo de Puma llegan al epílogo |
 | `test_paso_sneak` | El sigilo exige Monte o el aviso del mensajero; la cuerda se consume al distraer |
 | `test_camp_dialogue` | El campamento reparte sus seis opciones en dos páginas y no pierde coca ni salida |
@@ -150,7 +150,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_campaign_audio` | Recursos de audio de la campaña y bucles |
 | `test_model_validator` | Validación de modelos |
-| `test_quaternius_characters` | Rig de 76 huesos (65 UBC + 6 de manto + 1 mandíbula + 4 de expresión), clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud, muelles del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma |
+| `test_quaternius_characters` | Rig de 76 huesos (65 UBC + 6 de manto + 1 mandíbula + 4 de expresión), clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud, muelles del manto, mandíbula de habla, parpadeo, cejas, porra que se oculta cerca de la cámara y altura de HijoPuma |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
 | `test_first_person_hands` | Malla propia de la mano, falanges articuladas y gesto de interacción |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
@@ -251,5 +251,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-18 | Mandíbula de habla | `pch_quaternius.py`, `run_tests.gd` y `capture_quaternius.tscn` | 137 pruebas, 0 fallos; diez GLB con 72 huesos (65 UBC + 6 de manto + 1 mandíbula); la boca se abre con el clip `talk`; sin fonemas, cejas animadas ni parpadeo |
 | 2026-11-18 | Parpadeo y cejas | `pch_quaternius.py`, `character_face.gd`, `run_tests.gd` y `capture_quaternius.tscn` | 138 pruebas, 0 fallos; diez GLB con 76 huesos; `Blink_L/R` cierra el párpado y `Brow_L/R` alza la ceja; la multitud parpadea; sin fonemas |
 | 2026-11-18 | Revisión general: HUD y puño del arma | `hud.gd`, `hud_text.gd`, `first_person_weapon.gd`, `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 139 pruebas, 0 fallos; la pista baja de la banda cinematográfica; el texto de la tarjeta de fin espera al fondo oscuro y no deja la pista detrás; la honda y la porra se sostienen con un puño de bloqueo (+9 draw calls en primera persona); Cusco 297, llacta 248 |
+| 2026-11-18 | Pase visual: casas, llama y tarjetas | `llacta.gd`, `ciudad.gd`, `character_model_visual.gd`, `first_person_weapon.gd`, `first_person_hands.gd`, `hud.gd`, `capture_quaternius.tscn` y `run_tests.gd` | 140 pruebas, 0 fallos; casas de la llacta con `SurfaceMaterials` (piedra, paja y madera); llama por shader; tarjeta del acto IV a 0,80; párrafos en la del III; porra de PNJ oculta a menos de 1,4 m; honda con correa fina; mano de interacción a 0,68 |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

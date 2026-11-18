@@ -6,7 +6,7 @@ extends Node
 ## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
 ## `..._curaca.png`, `..._curaca_close.png`, `..._curaca_blink.png`,
 ## `..._curaca_brows.png`, `..._rostro.png`, `..._mensajero.png`,
-## `..._chanca.png`, `..._mano.png`, `..._arma.png`, `..._anciana.png`, `..._joven.png`,
+## `..._chanca.png`, `..._mano.png`, `..._arma.png`, `..._honda.png`, `..._anciana.png`, `..._joven.png`,
 ## `..._madre.png`, `..._hermano.png`, `..._puma.png`, `..._anca.png` y sus
 ## versiones `_close`, además de `..._crowd_anciana.png` en el Cusco. Fija el
 ## acto I limpio y sin la vista de introducción para que la cámara de captura no
@@ -89,6 +89,8 @@ func _capture() -> void:
 				await _frames(2)
 				_save(prefix + "_arma")
 				weapon.set_weapon(CombatWeapon.Kind.SLING)
+				await _frames(2)
+				_save(prefix + "_honda")
 	llacta.queue_free()
 	await _frames(3)
 

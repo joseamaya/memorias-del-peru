@@ -158,20 +158,23 @@ Resultado con el elenco Q completo:
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 248 | 222,3 MB | 95,4 | 73,8 |
-| II — Paso | 244 | 162,8 MB | 119,7 | 110,0 |
+| I — Llacta | 220 | 222,8 MB | 95,4 | 73,8 |
+| II — Paso | 258 | 162,9 MB | 119,7 | 110,0 |
 | III — Cusco | 297 | 230,9 MB | 69,4 | 60,0 |
-| IV — Posguerra | 226 | 222,8 MB | 107,4 | 97,6 |
-| V — Obra | 257 | 217,5 MB | 101,7 | 98,3 |
+| IV — Posguerra | 218 | 223,3 MB | 107,4 | 97,6 |
+| V — Obra | 243 | 218,0 MB | 101,7 | 98,3 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
 por acto con carga 1,1–1,6; se publica la mediana. La chaquitaclla del
 Agricultor añade 1 draw call; el puño que sostiene el arma suma unos 9 en
-primera persona. La revisión del 2026-11-18 midió llacta 247–248 y Cusco 297
-con carga 12–23; los FPS de la tabla son de la pasada en reposo anterior. El
-Cusco es el acto más ajustado (69,4 FPS de media y p1 60,0); el resto supera
-60 FPS con holgura. En una pasada aislada del Cusco la media bajó a 53,8 y el
-p1 a 40,7; se vigila al añadir arte final.
+primera persona. Las casas de la llacta usan un único material de superficie y
+bajan a 220. La comprobación del pase visual (2026-11-18) midió estos draw
+calls con carga variable (2,1–37); los FPS de la tabla son de la pasada en
+reposo anterior. Con carga 2,1–2,3, llacta dio 90,0/87,2 FPS y Cusco 66,4/66,1;
+siguen por encima de 60. El Cusco es el acto más ajustado
+(69,4 FPS de media y p1 60,0); el resto supera 60 FPS con holgura. En una
+pasada aislada del Cusco la media bajó a 53,8 y el p1 a 40,7; se vigila al
+añadir arte final.
 
 **Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 

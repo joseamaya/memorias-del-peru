@@ -293,6 +293,35 @@ func test_character_face() -> bool:
 	return ok
 
 
+func test_porra_hides_near_camera() -> bool:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var camera: Camera3D = Camera3D.new()
+	camera.position = Vector3(0.0, 1.5, 0.4)
+	tree.root.add_child(camera)
+	camera.current = true
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
+	visual.name = "PorraDistanceTest"
+	visual.model_path = MODEL_DIR + "pch_npc_chanca_q.glb"
+	visual.porra = true
+	tree.root.add_child(visual)
+	var pivot: Node3D = visual.porra_pivot()
+	var ok: bool = pivot != null
+	if pivot != null:
+		# El primer _process coloca el pivote en la mano; el segundo ya puede
+		# decidir la distancia real a la cámara.
+		visual.call("_process", 0.016)
+		var grip: Vector3 = pivot.global_position
+		camera.global_position = grip + Vector3(0.0, 0.0, 0.5)
+		visual.call("_process", 0.016)
+		var near: bool = not pivot.visible
+		camera.global_position = grip + Vector3(0.0, 0.0, 3.0)
+		visual.call("_process", 0.016)
+		ok = ok and near and pivot.visible
+	camera.free()
+	visual.free()
+	return ok
+
+
 func test_character_expressions() -> bool:
 	var packed: PackedScene = load(MODEL_DIR + "pch_npc_curaca_q.glb") as PackedScene
 	var model: Node3D = packed.instantiate() as Node3D

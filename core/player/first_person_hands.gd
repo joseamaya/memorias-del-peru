@@ -10,7 +10,7 @@ extends Node3D
 
 const REST_POSITION: Vector3 = Vector3(0.24, -0.14, -0.52)
 const REST_ROTATION: Vector3 = Vector3(66.0, -14.0, 0.0)
-const HAND_SCALE: float = 0.78
+const HAND_SCALE: float = 0.68
 const REACH_SECONDS: float = 0.22
 const HOLD_SECONDS: float = 0.18
 const RETURN_SECONDS: float = 0.32

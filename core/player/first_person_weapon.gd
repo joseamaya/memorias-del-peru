@@ -98,23 +98,34 @@ func _build_sling() -> void:
 	var stone: StandardMaterial3D = _material(Color(0.48, 0.46, 0.42, 1.0), 1.0)
 	var cord: MeshInstance3D = MeshInstance3D.new()
 	var torus: TorusMesh = TorusMesh.new()
-	torus.inner_radius = 0.08
-	torus.outer_radius = 0.11
-	torus.rings = 12
-	torus.ring_segments = 8
+	torus.inner_radius = 0.095
+	torus.outer_radius = 0.105
+	torus.rings = 18
+	torus.ring_segments = 5
 	cord.mesh = torus
 	cord.material_override = leather
 	cord.rotation_degrees = Vector3(82.0, 0.0, 58.0)
 	_sling.add_child(cord)
+	var pouch: MeshInstance3D = MeshInstance3D.new()
+	var pouch_mesh: SphereMesh = SphereMesh.new()
+	pouch_mesh.radius = 0.045
+	pouch_mesh.height = 0.09
+	pouch_mesh.radial_segments = 10
+	pouch_mesh.rings = 5
+	pouch.mesh = pouch_mesh
+	pouch.material_override = leather
+	pouch.scale = Vector3(1.0, 0.55, 0.85)
+	pouch.position = Vector3(0.0, 0.025, 0.02)
+	_sling.add_child(pouch)
 	var pebble: MeshInstance3D = MeshInstance3D.new()
 	var sphere: SphereMesh = SphereMesh.new()
-	sphere.radius = 0.04
-	sphere.height = 0.08
+	sphere.radius = 0.034
+	sphere.height = 0.068
 	sphere.radial_segments = 8
 	sphere.rings = 5
 	pebble.mesh = sphere
 	pebble.material_override = stone
-	pebble.position = Vector3(0.0, 0.06, 0.02)
+	pebble.position = Vector3(0.0, 0.055, 0.02)
 	_sling.add_child(pebble)
 	_build_hand(_sling, Vector3(0.0, 0.10, 0.0), 1.0)
 

@@ -100,16 +100,16 @@ Medición con el set Q completo, sin bandera. Tres pasadas por acto con carga
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 248 | 222,3 MB | 95,4 | 73,8 |
-| II — Paso | 244 | 162,8 MB | 119,7 | 110,0 |
+| I — Llacta | 220 | 222,8 MB | 95,4 | 73,8 |
+| II — Paso | 258 | 162,9 MB | 119,7 | 110,0 |
 | III — Cusco | 297 | 230,9 MB | 69,4 | 60,0 |
-| IV — Posguerra | 226 | 222,8 MB | 107,4 | 97,6 |
-| V — Obra | 257 | 217,5 MB | 101,7 | 98,3 |
+| IV — Posguerra | 218 | 223,3 MB | 107,4 | 97,6 |
+| V — Obra | 243 | 218,0 MB | 101,7 | 98,3 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
 por acto con carga 1,1–1,6 y se publica la mediana. La chaquitaclla del
 Agricultor añade 1 draw call; el puño que sostiene el arma suma unos 9 en
-primera persona y deja la llacta en 248 y el Cusco en 297. El
+primera persona y deja la llacta en 220, el paso en 258, el Cusco en 297, la posguerra en 218 y la obra en 243. El
 desglose del Cusco mostró que la multitud pesaba 173 draw calls y el pase de
 sombra 266; el LOD por material y la política de sombras los dejan en torno a
 100 y 140. El Cusco es el acto más ajustado (69,4 FPS de media, p1 60,0); en una
@@ -150,6 +150,7 @@ La identidad viene de la ropa, el pelo, la paleta y la silueta:
 | Curaca parpadeando | ![Curaca parpadeando](img/personajes/curaca_blink_q.png) |
 | Curaca con las cejas alzadas | ![Curaca con las cejas alzadas](img/personajes/curaca_brows_q.png) |
 | Arma en primera persona | ![Arma en primera persona](img/personajes/arma_q.png) |
+| Honda en primera persona | ![Honda en primera persona](img/personajes/honda_q.png) |
 | Mensajero | ![Mensajero](img/personajes/mensajero_q.png) |
 | Chanca | ![Chanca](img/personajes/chanca_q.png) |
 | Mujer mayor | ![Mujer mayor](img/personajes/anciana_q.png) |
@@ -217,7 +218,7 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **139 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **140 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.

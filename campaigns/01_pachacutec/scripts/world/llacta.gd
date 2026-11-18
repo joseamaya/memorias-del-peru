@@ -1835,19 +1835,19 @@ func _add_community_fire(parent: Node3D) -> void:
 		log_instance.position = Vector3(offset.x, 0.12, offset.z)
 		log_instance.rotation_degrees = Vector3(0.0, 20.0, 90.0)
 		root.add_child(log_instance)
-	for size: Vector2 in [Vector2(0.20, 0.48), Vector2(0.12, 0.30)]:
+	var flame_shader: Shader = load("res://shared_assets/materials/llama.gdshader") as Shader
+	for size: Vector2 in [Vector2(0.55, 0.85), Vector2(0.36, 0.62)]:
 		var flame: MeshInstance3D = MeshInstance3D.new()
-		var cone: CylinderMesh = CylinderMesh.new()
-		cone.top_radius = 0.0
-		cone.bottom_radius = size.x
-		cone.height = size.y
-		flame.mesh = cone
-		var material: StandardMaterial3D = StandardMaterial3D.new()
-		material.albedo_color = Color(0.98, 0.52, 0.16, 1.0)
-		material.emission_enabled = true
-		material.emission = Color(1.0, 0.42, 0.1, 1.0)
-		material.emission_energy_multiplier = 2.0
+		var quad: QuadMesh = QuadMesh.new()
+		quad.size = size
+		flame.mesh = quad
+		var material: ShaderMaterial = ShaderMaterial.new()
+		material.shader = flame_shader
+		if size.x < 0.4:
+			material.set_shader_parameter("intensity", 2.0)
 		flame.material_override = material
+		flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		flame.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 		flame.position = Vector3(0.0, 0.12 + size.y * 0.5, 0.0)
 		root.add_child(flame)
 	var light: OmniLight3D = OmniLight3D.new()
@@ -2280,5 +2280,6 @@ func _attach_model(parent: Node3D, slot_name: String, at: Vector3, files: Array[
 	slot.model_paths = full_paths
 	slot.blockout_nodes = blockout
 	slot.blockout_collisions = collisions
+	slot.model_loaded.connect(SurfaceMaterials.apply_to_model)
 	parent.add_child(slot)
 	return slot

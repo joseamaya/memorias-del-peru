@@ -18,7 +18,7 @@ const SUBTITLE_GAP: float = 0.3
 const QUEUE_LIMIT: int = 4
 ## Fundido de la tarjeta de fin y opacidad final del fondo.
 const END_FADE: float = 2.0
-const END_ALPHA: float = 0.93
+const END_ALPHA: float = 0.80
 ## El texto de la tarjeta espera a que el fondo esté oscuro; si aparece antes,
 ## se lee sobre la escena iluminada y pierde contraste.
 const END_TEXT_DELAY: float = 0.35

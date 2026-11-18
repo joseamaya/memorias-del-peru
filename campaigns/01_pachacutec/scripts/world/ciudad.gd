@@ -1269,17 +1269,17 @@ func _finish_defense() -> void:
 	_apply_defense_cost()
 	var epilogue: String = tr("PCH_CIUDAD_COUNTER") + " " + tr("PCH_CIUDAD_EPILOGUE")
 	if CampaignState.has_flag(&"costo_anca"):
-		epilogue += " " + tr("PCH_CIUDAD_COST_ANCA")
+		epilogue += "\n\n" + tr("PCH_CIUDAD_COST_ANCA")
 	elif CampaignState.has_flag(&"costo_joven"):
-		epilogue += " " + tr("PCH_CIUDAD_COST_JOVEN")
+		epilogue += "\n\n" + tr("PCH_CIUDAD_COST_JOVEN")
 	else:
-		epilogue += " " + tr("PCH_CIUDAD_NO_COST")
+		epilogue += "\n\n" + tr("PCH_CIUDAD_NO_COST")
 	if CampaignState.has_flag(&"santuario_protegido"):
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SANCTUARY")
 	elif CampaignState.has_flag(&"orden_llevada"):
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_ORDER")
 	if CampaignState.has_flag(&"maiz_guardado"):
-		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_MAIZE")
+		epilogue += "\n\n" + tr("PCH_CIUDAD_EPILOGUE_MAIZE")
 	if CampaignState.has_flag(&"scout_spared"):
 		epilogue += " " + tr("PCH_CIUDAD_EPILOGUE_SPARED")
 	if journal != null:

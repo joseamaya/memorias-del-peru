@@ -13,6 +13,9 @@ const DARK_CLOTH_TINT: Color = Color(0.30, 0.26, 0.23, 1.0)
 ## distancia; las cejas sí: sin ellas la cara parece vacía. Los nombres de
 ## malla cambian entre los cuerpos masculino y femenino; el material no.
 const CROWD_HIDDEN_MATERIALS: Array[String] = ["pch_tupu"]
+## A menos de esta distancia, la porra de un PNJ se oculta: entra en el plano
+## de la cámara y se lee como un objeto flotante.
+const PORRA_HIDE_DISTANCE: float = 1.4
 
 @export var model_path: String = ""
 @export var idle_clip: StringName = &"idle"
@@ -245,6 +248,10 @@ func flash_hit(color: Color = Color(1.0, 0.96, 0.90, 1.0), seconds: float = 0.08
 func _process(delta: float) -> void:
 	if _face != null:
 		_face.update(delta, current_animation() == &"talk")
+	if _porra_pivot != null:
+		var camera: Camera3D = get_viewport().get_camera_3d()
+		_porra_pivot.visible = camera == null \
+			or camera.global_position.distance_to(_porra_pivot.global_position) > PORRA_HIDE_DISTANCE
 	if _porra_pivot == null or _skeleton == null or _hand_index < 0:
 		return
 	# La porra sigue el transform completo de la mano, no solo su posición: si
