@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://core/ui/hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://core/ui/dialogue_panel.tscn" id="6_dialogue"]
 [ext_resource type="PackedScene" path="res://core/ui/journal_panel.tscn" id="7_journal"]
 [ext_resource type="Shader" path="res://shared_assets/ui/health_vignette.gdshader" id="8_vignette"]
+[ext_resource type="Script" path="res://core/ui/quest_tracker.gd" id="9_tracker"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stamina_bg"]
 bg_color = Color(0, 0, 0, 0.55)
@@ -412,3 +413,12 @@ visible = false
 
 [node name="JournalPanel" parent="." instance=ExtResource("7_journal")]
 visible = false
+
+[node name="QuestTracker" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_tracker")

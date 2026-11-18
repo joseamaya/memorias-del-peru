@@ -61,6 +61,20 @@ func _act_one() -> void:
 		return
 	await _wait_for_intro(world)
 	await _show_home(world, player, 2.5)
+	var mother: Node = world.get_node_or_null("Llacta/NPCs/Habitante1")
+	if mother != null:
+		var talks: Array[Node] = mother.find_children("*", "TalkPoint", true, false)
+		if not talks.is_empty():
+			talks[0].call("interact", player)
+			await _wait(1.2)
+	var director: ActOneDirector = world.get_node_or_null("ActOneDirector") as ActOneDirector
+	if director != null and director.training_drill() != null:
+		player.global_position = Vector3(-2.0, 0.05, 9.0)
+		player.look_at(Vector3(-2.0, 0.05, 4.0), Vector3.UP)
+		await _wait(1.0)
+		for _shot: int in range(3):
+			director.training_drill().throw_stone()
+			await _wait(0.8)
 	player.global_position = Vector3(0.0, 0.05, 12.0)
 	player.rotation.y = 0.0
 	for task_name: String in ["TaskAgua", "TaskPirca", "TaskTelar"]:
@@ -68,6 +82,16 @@ func _act_one() -> void:
 		if task != null:
 			task.call("interact", player)
 			await _wait(0.9)
+	var doubt: Node = world.get_node_or_null("DudaPoint")
+	if doubt != null:
+		doubt.call("interact", player)
+		await _wait(0.8)
+		# Apoyar al curaca mantiene la reputación ante el Cusco y permite
+		# reclutar a los tres grupos en el acto III.
+		_choose(hud, 1)
+		await _wait(0.6)
+		world.call("_on_dialogue_advanced")
+		await _wait(0.8)
 	var messenger: Node = world.get_node_or_null("MessengerPoint")
 	if messenger != null:
 		messenger.call("interact", player)

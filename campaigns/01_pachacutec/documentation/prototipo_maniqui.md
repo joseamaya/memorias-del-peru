@@ -194,4 +194,4 @@ Pruebas:
   honda y la porra.
 - `test_hud_objective.gd`: el objetivo está arriba a la izquierda, con fondo y
   fuente de 26 px.
-- Suite completa: **139 pruebas, 0 fallos**. Arena y arco completos.
+- Suite completa: **140 pruebas, 0 fallos**. Arena y arco completos.

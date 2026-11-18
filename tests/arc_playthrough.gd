@@ -55,6 +55,15 @@ func _act_one() -> bool:
 			ok = false
 			break
 		task.call("interact", player)
+	var doubt: Node = world.get_node_or_null("DudaPoint")
+	if doubt == null:
+		print("ACTO_I_SIN_DUDA")
+		return false
+	doubt.call("interact", player)
+	# Apoyar al curaca conserva la reputación ante el Cusco; reclutar al
+	# curaca vecino en el acto III depende de ella.
+	_choose(hud, 1)
+	world.call("_on_dialogue_advanced")
 	var messenger: Node = world.get_node_or_null("MessengerPoint")
 	if messenger == null:
 		print("ACTO_I_SIN_MENSAJERO")

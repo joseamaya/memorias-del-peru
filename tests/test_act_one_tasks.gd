@@ -43,9 +43,17 @@ func test_act_one_tasks() -> bool:
 	ok = ok and oficio_entry != null and oficio_entry.body_key \
 		== CampaignProgress.oficio_body_key(&"agua")
 	ok = ok and hud.hint_label.text == tr("PCH_TASK_DONE") % 3
-	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_MESSENGER")
+	ok = ok and hud.get_objective_text() == tr("PCH_OBJ_DUDA")
 	# El cuarto encargo sigue disponible, pero ya no hace falta.
 	ok = ok and pirca.is_available()
+	var doubt: CampPoint = world.get_node_or_null("DudaPoint") as CampPoint
+	ok = ok and doubt != null
+	if doubt != null:
+		doubt.interact(player)
+		ok = ok and hud.is_dialogue_open()
+		hud.get_dialogue_panel().choice_selected.emit(0)
+		world.call("_on_dialogue_advanced")
+		ok = ok and hud.get_objective_text() == tr("PCH_OBJ_MESSENGER")
 	var messenger: CampPoint = world.get_node_or_null("MessengerPoint") as CampPoint
 	ok = ok and messenger != null
 	if messenger != null:

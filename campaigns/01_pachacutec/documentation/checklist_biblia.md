@@ -40,7 +40,7 @@ Firma de la revisión humana: ____________________ · Fecha: __________
 
 - Duración real de 43–50 min: falta la partida humana cronometrada. El protocolo ya está listo (`--session` y `tools/session_duration.py`); la pasada guionizada (1:58) solo sirve como suelo.
 - Remate de arte: texturas finas de roca y props de detalle.
-- Elenco de maniquíes UAL1: diez looks sin caras ni texturas, integrados en la llacta, el Cusco, el paso y las chancas; llacta 257 draw calls/145,2 MB y Cusco 334/158,5 MB, bajo el presupuesto; 139 pruebas. El legado UBC se retiró; quedan revisar la mano y cerrar la validación humana.
+- Elenco de maniquíes UAL1: diez looks sin caras ni texturas, integrados en la llacta, el Cusco, el paso y las chancas; llacta 265 draw calls y Cusco 334, bajo el presupuesto; 140 pruebas. El legado UBC se retiró; quedan revisar la mano y cerrar la validación humana.
 - Audio: mezcla escuchada por acto.
 - Prueba de humo manual de los cinco actos.
 - Revisión histórica humana de PCH-032–036 (tabla anterior).

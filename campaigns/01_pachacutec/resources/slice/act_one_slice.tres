@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="SliceSequence" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://core/systems/slice/slice_sequence.gd" id="1_seq"]
+[ext_resource type="Script" path="res://core/systems/slice/slice_step.gd" id="2_step"]
+
+[sub_resource type="Resource" id="Step_Morning"]
+script = ExtResource("2_step")
+act = 0
+kind = 3
+marker = &"Mother"
+objective = &"PCH_OBJ_MORNING"
+notice = &"PCH_NOTICE_TRAINING"
+checkpoint = &"LlactaInicio"
+flag = &"paso_manana"
+
+[sub_resource type="Resource" id="Step_Training"]
+script = ExtResource("2_step")
+act = 0
+kind = 6
+marker = &"Training"
+objective = &"PCH_OBJ_TRAIN"
+notice = &"PCH_NOTICE_TASKS"
+count = 3
+checkpoint = &"LlactaEntrenamiento"
+flag = &"paso_entrenamiento"
+
+[sub_resource type="Resource" id="Step_Tasks"]
+script = ExtResource("2_step")
+act = 1
+kind = 1
+objective = &"PCH_OBJ_ENCARGOS"
+notice = &"PCH_NOTICE_DOUBT"
+count = 3
+checkpoint = &"LlactaEncargos"
+flag = &"paso_encargos"
+
+[sub_resource type="Resource" id="Step_Doubt"]
+script = ExtResource("2_step")
+act = 1
+kind = 3
+marker = &"Doubt"
+objective = &"PCH_OBJ_DUDA"
+notice = &"PCH_NOTICE_MESSENGER"
+checkpoint = &"LlactaDuda"
+flag = &"paso_duda"
+
+[sub_resource type="Resource" id="Step_Messenger"]
+script = ExtResource("2_step")
+act = 2
+kind = 3
+marker = &"Messenger"
+objective = &"PCH_OBJ_MESSENGER"
+notice = &"PCH_NOTICE_ASSEMBLY"
+checkpoint = &"LlactaMensajero"
+flag = &"paso_mensajero"
+
+[sub_resource type="Resource" id="Step_Assembly"]
+script = ExtResource("2_step")
+act = 2
+kind = 3
+marker = &"Plaza"
+objective = &"PCH_OBJ_ASAMBLEA"
+checkpoint = &"LlactaAsamblea"
+flag = &"paso_asamblea"
+
+[resource]
+script = ExtResource("1_seq")
+steps = Array[ExtResource("2_step")]([SubResource("Step_Morning"), SubResource("Step_Training"), SubResource("Step_Tasks"), SubResource("Step_Doubt"), SubResource("Step_Messenger"), SubResource("Step_Assembly")])

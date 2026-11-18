@@ -227,7 +227,6 @@ func _ready() -> void:
 	match act:
 		1:
 			_setup_act_one()
-			hud.show_objective(tr("PCH_OBJ_LLACTA"))
 		4:
 			_setup_act_four()
 		5:
@@ -235,6 +234,9 @@ func _ready() -> void:
 			hud.show_objective(tr("PCH_OBJ_REBUILD"))
 	if act == 1 and not CampaignState.has_flag(&"intro_vista"):
 		_show_intro()
+	var director: ActOneDirector = get_node_or_null("ActOneDirector") as ActOneDirector
+	if director != null:
+		director.bind_now()
 	_setup_footsteps()
 	_setup_ambience()
 	environment_controller.bind(world_environment, sun)
@@ -752,7 +754,8 @@ func _process(_delta: float) -> void:
 	if not can_assemble:
 		return
 	var center: Vector3 = _plaza_center_flat()
-	if Vector2(player.global_position.x - center.x, player.global_position.z - center.z).length() <= 10.0:
+	var radius: float = 2.5 if act == 1 else 10.0
+	if Vector2(player.global_position.x - center.x, player.global_position.z - center.z).length() <= radius:
 		_start_assembly()
 
 
@@ -1108,8 +1111,6 @@ func _on_dialogue_flag(key: StringName, value: int) -> void:
 	SessionLog.mark(&"flag", "%s=%d" % [String(key), value])
 	if key == &"noticia_chanca":
 		_messenger_seen = true
-		if hud != null:
-			hud.show_objective(tr("PCH_OBJ_ASAMBLEA"))
 	if key == &"apoyo_curaca" and character != null:
 		character.register_skill_use(&"palabra", 4)
 	if key == &"hablo_en_asamblea" and character != null:
@@ -1673,9 +1674,6 @@ func _on_task_completed(task_id: StringName) -> void:
 	if _tasks_done.size() >= TASKS_REQUIRED:
 		if journal != null:
 			journal.complete_quest(&"encargos")
-		_spawn_messenger()
-		if hud != null:
-			hud.show_objective(tr("PCH_OBJ_MESSENGER"))
 
 
 func _make_quest_item(id: StringName, name_key: StringName) -> ItemDefinition:

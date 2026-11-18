@@ -104,8 +104,9 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_sandbox_interaction_hud` | El HUD muestra la acción del quero al enfocarlo |
 | `test_localization_tables` | Las claves usadas por Core y campaña existen en sus CSV |
 | `test_llacta_loads` | La llacta carga con terreno, ocho casas, terrazas, corrales, ocho personajes, cuatro encargos y límites |
-| `test_act_one_tasks` | Tres encargos dan agua, maíz y manta, dejan el cuarto disponible y cambian el objetivo |
-| `test_assembly` | El tercer encargo abre la asamblea, la elección deja su bandera y aparece la tarjeta de fin |
+| `test_act_one_tasks` | Tres encargos dan agua, maíz y manta, dejan el cuarto disponible y abren la duda |
+| `test_act_one_flow` | Recorrido de jugador nuevo: mañana, honda de tres aciertos, cuatro encargos, duda, mensajero y asamblea; lista, contador y marcadores solo cuando toca; el cuarto encargo no rebobina |
+| `test_assembly` | La duda abre el mensajero, la asamblea pregunta, la elección deja su bandera y aparece la tarjeta de fin |
 | `test_post_acts` | El acto IV abre la asamblea de posguerra y el maíz guardado paga; el acto V completa las cinco obras, incluida la casa, y cierra la campaña |
 | `test_campaign_progress` | Recursos, oficio y habilidades del acto I sobreviven al paso al acto II |
 | `test_end_card_body` | La tarjeta de fin muestra la noticia de Viracocha y el nombre nuevo, y espera al fondo oscuro antes de mostrar el cuerpo |
@@ -258,5 +259,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-18 | Diez looks de maniquí | `mannequin_looks.gd`, `tests/mannequin_prototype.gd`, `test_mannequin_prototype.gd` y `run_tests.gd` | 144 pruebas, 0 fallos; diez looks (Curaca, Sisa, Chanca, Anca, Puma, Madre, Hermano, Joven, Anciana, Mensajero), capturas `maniquies_principales.png` y `maniquies_apoyo.png`; sin impacto en partida porque aún no se usan en NPC; pendiente de aprobación e integración; la mano sigue en revisión |
 | 2026-11-18 | Prototipo de maniquíes UAL1 | `core/characters/*`, `MannequinLooks`, `OutfitMannequin`, `tools/blender_mannequin_forearm.py`, `tests/scenes/mannequin_prototype.tscn` y `run_tests.gd` | 144 pruebas, 0 fallos; tres looks iniciales (Curaca, Sisa, Chanca), mano de maniquí con antebrazo UAL1 y panel de objetivo arriba a la izquierda; capturas en `documentation/img/prototipo/`; maniquíes aprobados; mano pendiente de revisión; UBC sigue activo |
 | 2026-11-18 | Pase visual: casas, llama y tarjetas | `llacta.gd`, `ciudad.gd`, `character_model_visual.gd`, `first_person_weapon.gd`, `first_person_hands.gd`, `hud.gd`, `capture_quaternius.tscn` y `run_tests.gd` | 140 pruebas, 0 fallos; casas de la llacta con `SurfaceMaterials` (piedra, paja y madera); llama por shader; tarjeta del acto IV a 0,80; párrafos en la del III; porra de PNJ oculta a menos de 1,4 m; honda con correa fina; mano de interacción a 0,68 |
+| 2026-11-18 | Acto I con objetivos visibles: pasos, cuatro encargos, entrenamiento de honda y mensajero tras la duda | `run_tests.gd`, `arc_playthrough.gd`, `combat_arena_check.gd`, `capture_act_one_flow.tscn` y `measure_performance.tscn` | 140 pruebas, 0 fallos; `ARCO_OK`; arena 3 enemigos resueltos con ≤ 2 atacantes; capturas de mañana/honda/encargos; draw calls 265/270/334/272/283, bajo 350; FPS no concluyentes por carga 17–27 |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

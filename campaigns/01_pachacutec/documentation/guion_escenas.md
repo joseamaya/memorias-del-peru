@@ -1,7 +1,7 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
-- **Versión:** 1.9 — 2026-11-16
-- **Estado:** arco jugable con blockout y materiales propios; sin deudas de escena.
+- **Versión:** 2.0 — 2026-11-18
+- **Estado:** arco jugable con blockout y materiales propios; acto I con flujo de pasos visible y entrenamiento de honda.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
 - **Uso:** este documento manda sobre la puesta en escena. Las claves de texto viven en `localization/pachacutec_texts.csv`; las banderas, en `CampaignState`.
 
@@ -21,7 +21,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 | ID | Escena | Acto | Duración | Estado | Cumplimiento |
 |---|---|---|---|---|---|
-| I.1 | La mañana | I | 2 min | Implementado | Sí |
+| I.1 | La mañana | I | 3 min | Implementado | Sí |
 | I.2 | Los cuatro encargos | I | 4 min | Implementado | Sí |
 | I.3 | La duda | I | 1 min | Implementado | Sí |
 | I.4 | El mensajero | I | 1 min | Implementado | Sí |
@@ -46,7 +46,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 **Resultado:** 22/22 escenas implementadas y **22/22 sin deuda de escena**. El combate y el HUD se cerraron en 4.7. **0 parciales.**
 
-**Total objetivo:** 43–50 min. **Medido:** pendiente de partida humana. La suma de las 22 fichas da 45,5 min y la pasada guionizada dura 1:58; ninguna de las dos sustituye a una partida real. El protocolo y el resumen automático están listos en [docs/06 §4](../../../docs/06_estrategia_de_pruebas.md): `godot --path . -- --session PCH-DUR-1` y `python3 tools/session_duration.py PCH-DUR-1`.
+**Total objetivo:** 43–50 min. **Medido:** pendiente de partida humana. La suma de las 22 fichas da 46,5 min y la pasada guionizada dura 1:58; ninguna de las dos sustituye a una partida real. El protocolo y el resumen automático están listos en [docs/06 §4](../../../docs/06_estrategia_de_pruebas.md): `godot --path . -- --session PCH-DUR-1` y `python3 tools/session_duration.py PCH-DUR-1`.
 
 ---
 
@@ -55,9 +55,9 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 ## I.1 · La mañana
 
 **Lugar y momento:** llacta del valle; casa de Rumi al este de la plaza, plaza y caminos · amanecer.  
-**Duración:** 2 min · **Estado:** Implementado.  
+**Duración:** 3 min · **Estado:** Implementado.  
 **Objetivo narrativo:** presentar el mundo, la familia y la amenaza.  
-**Objetivo del jugador:** recorrer la llacta y hablar con la familia.
+**Objetivo del jugador:** hablar con su madre y practicar la honda en la plaza.
 
 **Presentes y bloqueo:**
 - Rumi, en el punto de aparición.
@@ -74,10 +74,12 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 **Textos:**
 - `PCH_CAMPAIGN_SUBTITLE`, `PCH_INTRO_1`, `PCH_INTRO_2`, `PCH_INTRO_3`, `PCH_INTRO_NOTE`, `PCH_INTRO_HINT`.
 - `PCH_NARR_OPENING`.
-- `PCH_TALK_MADRE`: pide ayuda con el maíz y retiene al hermano.
+- `PCH_TALK_MADRE`: pide ayuda con el maíz, retiene al hermano y manda practicar la honda.
 - `PCH_TALK_HERMANO`: quiere ir al Cusco.
 - `PCH_TALK_SISA`: conoce el paso.
 - `PCH_TALK_PUMA`, `PCH_TALK_HIJO_PUMA`, `PCH_TALK_CURACA`.
+- `PCH_OBJ_MORNING`, `PCH_OBJ_TRAIN`, `PCH_TRAIN_AIM`, `PCH_TRAIN_HIT`, `PCH_TRAIN_MISS`, `PCH_TRAIN_FAR`.
+- `PCH_NOTICE_TRAINING`; marcadores `PCH_MARK_MOTHER` y `PCH_MARK_TRAINING`.
 
 **Decisiones:** ninguna; la primera tarea fija el oficio en I.2.
 
@@ -87,14 +89,21 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 **Consecuencias:**
 - Diario con el encargo `encargos`.
-- Objetivo «Recorre la llacta».
+- Objetivo visible «La mañana: habla con tu madre» y marcador sobre la madre.
+- Al hablar con ella, el objetivo pasa a «Practica la honda (0/3)» y el blanco de paja aparece en la plaza.
+- Tres aciertos de honda cierran la mañana y abren los encargos.
 
 **Aceptación:**
 - [ ] La introducción se muestra una vez por campaña y se pasa con E.
-- [ ] La madre pide ayuda y menciona que el hermano quiere ir.
+- [ ] El primer objetivo nombra a la madre y su marcador se ve en el mundo.
+- [ ] La madre pide ayuda, menciona al hermano y manda practicar la honda.
+- [ ] El blanco de honda aparece en la plaza y pide tres aciertos con la vista y el clic.
+- [ ] La lista de los cuatro encargos no aparece hasta I.2.
 - [ ] Sisa dice que conoce el paso.
 - [ ] La casa de Rumi está al este de la plaza.
 - [ ] No hay combate ni HUD de combate.
+
+**Capturas:** [la mañana](img/acto_i/acto_i_01_manana.png) · [la honda](img/acto_i/acto_i_02_honda.png).
 
 **Ficha histórica:** PCH-007, PCH-016 · R / N.  
 **Deuda:** ninguna de escena.
@@ -114,6 +123,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 
 **Cámara y sonido:**
 - Sin diálogo de cámara; el jugador se acerca y usa E.
+- El HUD muestra «Completa 3 de los 4 encargos (n/3)» y la lista `Encargos (n/3)`.
 - Sonido de pasos y ambiente.
 
 **Textos:**
@@ -121,6 +131,8 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - `PCH_TASK_*_DONE`, `PCH_TASK_DONE`.
 - `PCH_Q_AGUA_*`, `PCH_Q_MAIZ_*`, `PCH_Q_TELAR_*`, `PCH_Q_PIRCA_*`.
 - `PCH_OFICIO_AGUA/MAIZ/TELAR/PIRCA`, `PCH_OFICIO_NONE`.
+- `PCH_OBJ_ENCARGOS`, `PCH_TASKS_TITLE`, `PCH_HINT_JOURNAL`, `PCH_NOTICE_TASKS`.
+- Marcadores de los cuatro puntos con su `PCH_TASK_*`.
 
 **Decisiones:**
 - Qué tres tareas completar; el orden es libre.
@@ -131,7 +143,8 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - Lee: ninguna.
 
 **Consecuencias:**
-- Al tercer encargo aparece el mensajero.
+- Al tercer encargo se completa `encargos` y se abre la duda; el mensajero llega después de la duda.
+- El cuarto encargo puede hacerse durante la duda o dejarse; no devuelve el flujo al paso anterior.
 - El recurso que falte no aparece en el campamento.
 - El oficio abre la preparación del Cusco y marca una obra en V.1.
 
@@ -139,15 +152,18 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - [ ] Hay cuatro puntos y se puede completar cualquiera.
 - [ ] La primera tarea fija el oficio y da +1 rango en su habilidad.
 - [ ] Cada tarea entrega su objeto real.
-- [ ] Al tercer encargo se completa `encargos` y aparece el mensajero.
-- [ ] El cuarto encargo puede hacerse después o dejarse.
+- [ ] El HUD muestra los cuatro encargos, cuántos importan y el contador.
+- [ ] Al tercer encargo se completa `encargos` y el flujo pasa a la duda.
+- [ ] El cuarto encargo puede hacerse después o dejarse sin rebobinar.
+
+**Capturas:** [los encargos](img/acto_i/acto_i_03_encargos.png) · [un encargo hecho](img/acto_i/acto_i_04_encargo_hecho.png).
 
 **Ficha histórica:** PCH-004, 005, 010, 019, 021 · H / A / R.  
 **Deuda:** ninguna funcional.
 
 ## I.3 · La duda
 
-**Lugar y momento:** plaza, junto al fuego · mañana.  
+**Lugar y momento:** plaza, junto al fuego · mañana, tras los encargos.  
 **Duración:** 1 min · **Estado:** Implementado.  
 **Objetivo narrativo:** presentar las divisiones políticas antes de la noticia.  
 **Objetivo del jugador:** escuchar y tomar partido.
@@ -165,6 +181,7 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - `PCH_TALK_DUDA`, `PCH_DUDA_INTRO`.
 - `PCH_DUDA_PUMA`, `PCH_DUDA_CURACA`, `PCH_DUDA_SILENCE`.
 - `PCH_DUDA_*_ANSWER`.
+- `PCH_OBJ_DUDA`, `PCH_NOTICE_MESSENGER`; marcador `PCH_MARK_DOUBT`.
 
 **Decisiones:**
 - Apoyar a Puma, apoyar al curaca o callar.
@@ -176,19 +193,21 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 **Consecuencias:**
 - Reputación de llacta y Cusco.
 - Opción de reconciliación y variante de silencio en IV.3.
+- Al terminar, el mensajero llega a la plaza.
 
 **Aceptación:**
 - [ ] Hay tres opciones y cada una fija su bandera.
 - [ ] La conversación se abre una sola vez.
 - [ ] La cámara mira a Puma, que es el primer parlamento.
-- [ ] La duda no bloquea la asamblea: se puede escuchar o saltar.
+- [ ] La duda es obligatoria y abre el paso al mensajero.
+- [ ] Apoyar a Puma baja la reputación ante el Cusco y puede costar un aliado en III.
 
 **Ficha histórica:** PCH-001, PCH-015 · H (tradición) / N.  
 **Deuda:** ninguna de escena.
 
 ## I.4 · El mensajero
 
-**Lugar y momento:** plaza, junto al fuego · mañana, tras el tercer encargo.  
+**Lugar y momento:** plaza, junto al fuego · mañana, tras la duda.  
 **Duración:** 1 min · **Estado:** Implementado.  
 **Objetivo narrativo:** convertir la noticia en una decisión.  
 **Objetivo del jugador:** escuchar y dar agua o maíz, o no dar nada.
@@ -206,7 +225,8 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - `PCH_TALK_MESSENGER`, `PCH_MSG_INTRO`.
 - `PCH_MSG_WATER`, `PCH_MSG_MAIZE`, `PCH_MSG_LISTEN`.
 - `PCH_MSG_*_ANSWER`, `PCH_MSG_AGAIN`.
-- `PCH_OBJ_MESSENGER`, `PCH_OBJ_ASAMBLEA`.
+- `PCH_OBJ_MESSENGER`, `PCH_OBJ_ASAMBLEA`, `PCH_NOTICE_ASSEMBLY`.
+- Marcador `PCH_MARK_MESSENGER`.
 
 **Decisiones:**
 - Dar agua, dar maíz o escuchar sin dar nada.
@@ -223,7 +243,8 @@ La aceptación es el contrato de la escena: si una prueba o una captura no puede
 - Objetivo de asamblea.
 
 **Aceptación:**
-- [ ] El mensajero aparece al tercer encargo y no antes.
+- [ ] El mensajero aparece al terminar la duda y no antes.
+- [ ] Su marcador se ve sobre el punto de conversación.
 - [ ] Las opciones de dar solo se muestran si hay objeto.
 - [ ] Dar consume el objeto.
 - [ ] La conversación no se repite.
@@ -1084,12 +1105,12 @@ Prioridad: primero «llena», después «vacía», después «en pie». La tarje
 
 | Acto | Objetivo de la biblia | Suma de escenas | Medido |
 |---|---|---|---|
-| I | 8–9 min | 9 min | No verificado |
+| I | 8–9 min | 10 min | No verificado |
 | II | 11–13 min | 12,5 min | No verificado |
 | III | 9–10 min | 9 min | No verificado |
 | IV | 9–11 min | 9 min | No verificado |
 | V | 6–7 min | 6 min | No verificado |
-| **Total** | **43–50 min** | **45,5 min** | **No verificado** |
+| **Total** | **43–50 min** | **46,5 min** | **No verificado** |
 
 La pasada guionizada de `build/partida_completa_actual.mp4` dura 1:58 y sirve para revisar el arco, no para acreditar duración.
 

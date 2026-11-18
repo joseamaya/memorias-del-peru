@@ -19,6 +19,17 @@ func test_localization_tables() -> bool:
 		"PCH_ACCOUNT_1",
 		"PCH_FINAL_LLENA",
 		"PCH_END5_NAME",
+		"PCH_OBJ_MORNING",
+		"PCH_OBJ_ENCARGOS",
+		"PCH_MARK_MOTHER",
+		"PCH_TRAIN_AIM",
+		"PCH_TRAIN_MISS",
+		"PCH_TRAIN_FAR",
+		"PCH_NOTICE_TRAINING",
+		"PCH_NOTICE_TASKS",
+		"PCH_NOTICE_DOUBT",
+		"PCH_NOTICE_MESSENGER",
+		"PCH_NOTICE_ASSEMBLY",
 	]
 	for key: String in keys:
 		if TranslationServer.translate(key) == key:

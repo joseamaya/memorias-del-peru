@@ -1,5 +1,5 @@
 class_name Interactable
-extends Node
+extends Node3D
 ## Clase base de los objetos interactuables.
 ##
 ## El jugador detecta un collider y busca un ancestro de este tipo. Los objetos

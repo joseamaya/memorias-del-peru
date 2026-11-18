@@ -195,6 +195,27 @@ más ajustado (334 y p1 62,0) y la llacta sube de 220 a 257 por las piezas de
 los maniquíes; la memoria baja unos 80 MB porque no hay texturas de cara ni de
 ropa. Las mediciones anteriores del elenco UBC quedan como histórico. La retirada del legado UBC no cambió draw calls ni memoria.
 
+### Flujo de objetivos del acto I (2026-11-18)
+
+Pasada con `measure_performance.tscn` a 1920×1080, vsync off, estado de campaña
+limpio y una sola pasada. La carga del equipo estuvo entre 17 y 27, así que los
+FPS **no son concluyentes**; los draw calls y la memoria sí sirven de termómetro.
+
+| Acto | Draw calls | Memoria de vídeo |
+|---|---|---|
+| I — Llacta | 265 | 171,4 MB |
+| II — Paso | 270 | 151,7 MB |
+| III — Cusco | 334 | 184,1 MB |
+| IV — Posguerra | 272 | 172,4 MB |
+| V — Obra | 283 | 171,6 MB |
+
+Los cinco actos siguen bajo 350 draw calls. El acto I suma el marcador de la
+madre y el panel de pasos; una prueba quitando `QuestTracker` midió 265 → 262
+draw calls y 171,4 → 171,2 MB, de modo que el panel no explica la diferencia de
+memoria frente a la tabla anterior (probablemente caché de fuentes y carga de
+la GPU). El entrenamiento de honda y sus marcadores solo existen durante su
+paso. Falta repetir la medición con el equipo descargado.
+
 **Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
 | Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |

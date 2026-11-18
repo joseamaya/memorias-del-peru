@@ -82,12 +82,12 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 
 - **Contexto:** amanece en la llacta; la plaza despierta.
 - **Objetivo narrativo:** presentar el mundo, la familia y la amenaza.
-- **Objetivo del jugador:** recorrer la llacta y hablar con la familia.
+- **Objetivo del jugador:** hablar con su madre y practicar la honda en la plaza.
 - **Personajes:** Rumi, madre, hermano, Sisa, curaca, Puma.
-- **Desarrollo:** subtítulo de apertura (`PCH_NARR_OPENING`); la madre pide ayuda; el hermano quiere ir; Sisa conoce el paso.
+- **Desarrollo:** subtítulo de apertura (`PCH_NARR_OPENING`); la madre pide ayuda, manda practicar la honda y el hermano quiere ir; Sisa conoce el paso. El entrenamiento pide tres aciertos con la vista y el clic.
 - **Conflicto:** el hermano quiere ir; la madre lo retiene.
-- **Resolución:** el jugador baja a la plaza.
-- **Consecuencias:** vínculo y tono; diario con el encargo `encargos`.
+- **Resolución:** la honda responde y el jugador baja a la plaza para los encargos.
+- **Consecuencias:** vínculo y tono; oficio de honda practicado; diario con el encargo `encargos`.
 - **Información histórica:** vida cotidiana, reciprocidad, arquitectura (PCH-007, 016).
 
 #### I.2 Los cuatro encargos
@@ -97,26 +97,26 @@ De la vida cotidiana y la incertidumbre al miedo, la responsabilidad, la pérdid
 - **Objetivo del jugador:** completar tres de los cuatro encargos.
 - **Personajes:** tejedora, agricultor, curaca.
 - **Desarrollo:** cuatro `TaskPoint`: agua, maíz, telar y pirca. El primero fija el oficio; los demás suben la habilidad correspondiente.
-- **Conflicto:** el tiempo; el mensajero está por llegar.
-- **Resolución:** al tercer encargo se completa `encargos` y aparece el mensajero.
+- **Conflicto:** el tiempo; la noticia llega después de la duda.
+- **Resolución:** al tercer encargo se completa `encargos` y se abre la duda; el mensajero llega después.
 - **Consecuencias:** objetos `agua`, `maiz`, `manta`, `cuerda`; oficio; habilidades; el recurso que falte se nota en el paso.
 - **Información histórica:** PCH-004, 005, 010, 019, 021.
 
 #### I.3 La duda
 
-- **Contexto:** Puma y Asto discuten junto al fuego.
+- **Contexto:** Puma y Asto discuten junto al fuego, tras los encargos.
 - **Objetivo narrativo:** presentar las divisiones políticas.
 - **Objetivo del jugador:** escuchar y tomar partido.
 - **Personajes:** Puma, Asto.
 - **Desarrollo:** diálogo con tres opciones: apoyar a Puma, apoyar al curaca o callar.
 - **Conflicto:** resistir o no resistir.
-- **Resolución:** la opción fija `apoyo_puma`, `apoyo_curaca` o `apoyo_silencio`; la reputación cambia.
+- **Resolución:** la opción fija `apoyo_puma`, `apoyo_curaca` o `apoyo_silencio`; la reputación cambia y el mensajero llega.
 - **Consecuencias:** la línea de Puma en el acto IV y la opción de reconciliación.
 - **Información histórica:** PCH-001, 015.
 
 #### I.4 El mensajero
 
-- **Contexto:** llega un mensajero agotado.
+- **Contexto:** tras la duda, llega un mensajero agotado.
 - **Objetivo narrativo:** convertir la noticia en una decisión.
 - **Objetivo del jugador:** escuchar y darle agua o maíz, o no darle nada.
 - **Personajes:** mensajero, curaca.

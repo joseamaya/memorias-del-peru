@@ -18,11 +18,13 @@ func test_hud_objective() -> bool:
 	var backdrop: ColorRect = null
 	if label != null:
 		backdrop = label.get_node_or_null("Backdrop") as ColorRect
+	var tracker: QuestTracker = hud.get_node_or_null("QuestTracker") as QuestTracker
 	var ok: bool = (
 		label != null
 		and not hud.is_showing_objective()
 		and hud.get_objective_text().is_empty()
 	)
+	ok = ok and tracker != null and not tracker.is_active()
 	# El objetivo vive en un panel arriba a la izquierda, como la referencia.
 	ok = ok and backdrop != null and backdrop.color.a > 0.5
 	ok = ok and label.offset_left < 80.0
@@ -32,6 +34,11 @@ func test_hud_objective() -> bool:
 	hud.show_objective(text)
 	ok = ok and hud.is_showing_objective() and label.visible
 	ok = ok and hud.get_objective_text() == text
+	# Sin un paso activo, el panel de encargos no toca el objetivo del HUD:
+	# los actos IV y V siguen usando show_objective.
+	if tracker != null:
+		tracker.call("_process", 0.016)
+	ok = ok and hud.is_showing_objective()
 	hud.show_objective(tr("UI_QUIT"))
 	ok = ok and hud.get_objective_text() == tr("UI_QUIT")
 	hud.clear_objective()

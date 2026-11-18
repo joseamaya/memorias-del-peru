@@ -29,6 +29,14 @@ func test_assembly() -> bool:
 		return false
 	for task: TaskPoint in tasks:
 		task.interact(player)
+	var doubt: CampPoint = world.get_node_or_null("DudaPoint") as CampPoint
+	if doubt == null:
+		world.free()
+		CampaignState.clear()
+		return false
+	doubt.interact(player)
+	hud.get_dialogue_panel().choice_selected.emit(0)
+	world.call("_on_dialogue_advanced")
 	var messenger: CampPoint = world.get_node_or_null("MessengerPoint") as CampPoint
 	if messenger == null:
 		world.free()
