@@ -197,15 +197,109 @@ def skirt_weights(point: Vector) -> dict:
 
 
 def mantle_weights(point: Vector) -> dict:
+	"""Peso del manto: arriba sigue la espalda; abajo cuelga de tres cadenas
+	(L/C/R) que el juego simula con muelles. Así el paño se mece sin mover la
+	lliclla del pecho ni la correa de la chuspa."""
 	if point.z >= 1.30:
 		return {"spine_03": 1.0}
-	if point.z >= 1.10:
-		t = (point.z - 1.10) / 0.20
-		return {"spine_03": t, "spine_02": 1.0 - t}
-	if point.z >= 0.88:
-		t = (point.z - 0.88) / 0.22
-		return {"spine_02": t, "pelvis": 1.0 - t}
-	return {"pelvis": 1.0}
+	side = max(-1.0, min(1.0, point.x / 0.17))
+	left = max(0.0, -side)
+	right = max(0.0, side)
+	center = 1.0 - abs(side)
+	cape = min(1.0, (1.30 - point.z) / 0.25)
+	spine = 1.0 - cape
+	hang = min(1.0, max(0.0, (1.05 - point.z) / 0.33))
+	weights = {"spine_03": spine}
+	for name, share in (("L", left), ("C", center), ("R", right)):
+		if share <= 0.0:
+			continue
+		weights["Cape_%s_1" % name] = cape * share * (1.0 - hang)
+		weights["Cape_%s_2" % name] = cape * share * hang
+	return weights
+
+
+## Cadenas de manto: dos huesos por lado, colgando de la espalda alta. El
+## juego las lee en `Cape_<lado>_1/2` y las mueve con `SpringBoneSimulator3D`.
+CAPE_CHAINS = (("L", -1.0), ("C", 0.0), ("R", 1.0))
+
+
+def add_cape_bones(armature):
+	"""Añade las cadenas del manto al esqueleto UBC antes de construir la ropa.
+	Los huesos son autoría propia; el cuerpo y los clips siguen siendo UBC."""
+	parent = armature.data.bones.get("spine_03")
+	if parent is None:
+		return
+	bpy.context.view_layer.objects.active = armature
+	armature.select_set(True)
+	bpy.ops.object.mode_set(mode="EDIT")
+	bones = armature.data.edit_bones
+	for name, side in CAPE_CHAINS:
+		head = Vector((0.12 * side, 0.10, 1.32))
+		mid = Vector((0.15 * side, 0.15, 1.02))
+		tail = Vector((0.17 * side, 0.19, 0.72))
+		first = bones.new("Cape_%s_1" % name)
+		first.head = head
+		first.tail = mid
+		first.parent = bones.get("spine_03")
+		first.use_connect = False
+		second = bones.new("Cape_%s_2" % name)
+		second.head = mid
+		second.tail = tail
+		second.parent = first
+		second.use_connect = True
+	bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def add_jaw_bone(armature):
+	"""Hueso de mandíbula para abrir/cerrar la boca al hablar. La cara UBC no
+	trae mandíbula ni blendshapes; este hueso mueve el labio inferior y el
+	mentón sin tocar el resto de la cabeza."""
+	parent = armature.data.bones.get("Head")
+	if parent is None:
+		return
+	bpy.context.view_layer.objects.active = armature
+	armature.select_set(True)
+	bpy.ops.object.mode_set(mode="EDIT")
+	bones = armature.data.edit_bones
+	jaw = bones.new("Jaw")
+	jaw.head = Vector((0.0, -0.020, 1.650))
+	jaw.tail = Vector((0.0, -0.075, 1.585))
+	jaw.parent = bones.get("Head")
+	jaw.use_connect = False
+	bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def weight_jaw(body, armature):
+	"""Reparte el labio inferior, el mentón y la barba entre `Head` y `Jaw`
+	para que la mandíbula los mueva sin arrastrar la nariz ni los ojos."""
+	if armature.data.bones.get("Jaw") is None:
+		return
+	targets = [body]
+	beard = bpy.data.objects.get("Beard")
+	if beard is not None:
+		targets.append(beard)
+	for target in targets:
+		head_group = target.vertex_groups.get("Head")
+		if head_group is None:
+			continue
+		jaw_group = target.vertex_groups.get("Jaw") or target.vertex_groups.new(name="Jaw")
+		for vertex in target.data.vertices:
+			z = vertex.co.z
+			if not (1.575 < z < 1.665):
+				continue
+			if vertex.co.y > -0.060 or abs(vertex.co.x) > 0.060:
+				continue
+			falloff = max(0.0, min(1.0, math.sin(math.pi * (z - 1.575) / 0.090)))
+			weight = falloff * 0.85
+			if weight <= 0.01:
+				continue
+			head_weight = 1.0
+			for membership in vertex.groups:
+				if membership.group == head_group.index:
+					head_weight = membership.weight
+					break
+			jaw_group.add([vertex.index], head_weight * weight, "REPLACE")
+			head_group.add([vertex.index], head_weight * (1.0 - weight), "REPLACE")
 
 
 def color(name: str) -> tuple:
@@ -483,7 +577,7 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict, hair_material_na
 				z = 1.42 - 0.30 * t
 				y = -0.205 - 0.010 * math.sin(math.pi * u)
 				point = Vector((x, y, z))
-				line.append(garment.add_vertex(point, mantle_weights(point)))
+				line.append(garment.add_vertex(point, upper_body_weights(point)))
 			front_ids.append(line)
 		for row in range(front_rows):
 			for col in range(front_cols):
@@ -528,7 +622,7 @@ def build_clothes(body: bpy.types.Object, armature, spec: dict, hair_material_na
 		garment.tube(
 			strap_rings,
 			lambda _segment, _row: color(spec["chuspa"]),
-			mantle_weights,
+			upper_body_weights,
 		)
 
 	# Sandalias: suela y dos tiras por pie.
@@ -772,6 +866,10 @@ def build_character(spec: dict, name: str, out_dir: str):
 	body_material = str(spec.get("body_material",
 		"pch.body_" + name.replace("pch_npc_", "").replace("_q", "")))
 	prepare_body_materials(body, body_material)
+	# Cadenas del manto, antes de construir la ropa para que las costuras
+	# encuentren sus grupos de vértices.
+	add_cape_bones(armature)
+	add_jaw_bone(armature)
 	# Peinado y barba.
 	grey = bool(spec.get("hair_grey", False))
 	gender_suffix = "_m" if str(spec["gender"]) == "male" else "_f"
@@ -815,6 +913,7 @@ def build_character(spec: dict, name: str, out_dir: str):
 	shape_head(spec)
 	shape_face(spec)
 	shape_age(spec)
+	weight_jaw(body, armature)
 	# Orientación del proyecto: el frente mira a -Z de Godot. El importador
 	# deja la armadura en modo cuaternión; hay que cambiarlo para que el giro
 	# se exporte.

@@ -33,6 +33,8 @@ var _model: Node3D = null
 var _player: AnimationPlayer = null
 var _porra_pivot: Node3D = null
 var _skeleton: Skeleton3D = null
+var _springs: SpringBoneSimulator3D = null
+var _face: CharacterFace = null
 var _hand_index: int = -1
 var _head_index: int = -1
 var _flashing: bool = false
@@ -57,6 +59,9 @@ func _ready() -> void:
 	_skeleton = _model.find_child("Skeleton3D", true, false) as Skeleton3D
 	if _skeleton != null:
 		_head_index = _skeleton.find_bone("Head")
+		_face = CharacterFace.new(_model)
+		if not crowd:
+			_springs = CapeSprings.setup(_skeleton)
 	_player = QuaterniusClips.player_for(
 		_model, _model.find_child("AnimationPlayer", true, false) as AnimationPlayer)
 	if _player != null and _player.has_animation(idle_clip):
@@ -124,6 +129,16 @@ func focus_point() -> Vector3:
 ## Nodo del modelo cargado, para las pruebas y las capturas.
 func model() -> Node3D:
 	return _model
+
+
+## Simulador del manto, o `null` si el personaje no lleva cadenas o es multitud.
+func spring_simulator() -> SpringBoneSimulator3D:
+	return _springs
+
+
+## Mandíbula de habla del personaje.
+func character_face() -> CharacterFace:
+	return _face
 
 
 ## Pivote de la porra, o null si el personaje no la lleva. Lo usan las pruebas
@@ -227,7 +242,9 @@ func flash_hit(color: Color = Color(1.0, 0.96, 0.90, 1.0), seconds: float = 0.08
 	_flashing = false
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if _face != null:
+		_face.update(delta, current_animation() == &"talk")
 	if _porra_pivot == null or _skeleton == null or _hand_index < 0:
 		return
 	# La porra sigue el transform completo de la mano, no solo su posición: si

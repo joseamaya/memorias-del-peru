@@ -10,6 +10,8 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 |---|---|---|
 | Chaquitaclla del Agricultor | Se añade `pch_prop_chaquitaclla.glb` (430 triángulos, 1,48 m, estribo de 22 cm, madera y punta endurecida, sin metal), generado por `pch_models.py` y plantado en la primera terraza junto al Agricultor. Ficha PCH-037 (H/R, pendiente de firma). La llacta pasa de 248 a 249 draw calls. Se corrige la cámara de `capture_quaternius`, que tras los arquetipos volvía a la del jugador. 134 pruebas, captura nueva | — |
 | HijoPuma sin base infantil | Se revisa el pack UBC Standard: solo incluye los cuerpos Superhero (hombre y mujer); Regular/Teen son de la versión Source de pago, no usada. No hay base infantil gratuita compatible con el rig Q y no se mezcla otro set. Se cierra la decisión con el Joven Q a 1,20 m y una prueba de altura. 135 pruebas | — |
+| Mano articulada y manto con muelles | Los diez GLB Q pasan a 71 huesos: 65 de UBC más 6 de manto (`Cape_L/C/R_1/2`) con pesos en el paño. `NpcActor` y `CharacterModelVisual` montan `SpringBoneSimulator3D` con cápsulas en pelvis y cintura; la multitud no simula muelles. La mano en primera persona articula las falanges y cierra el puño al golpear. Capturas y medición nuevas: llacta 249 draw calls/222,3 MB y 101,7 FPS; Cusco 288/230,8 MB y 70,6 FPS. 136 pruebas | — |
+| Mandíbula de habla | Se añade el hueso `Jaw` (72 huesos: 65 UBC + 6 de manto + 1 mandíbula) y se reparte el labio inferior, el mentón y la barba entre `Head` y `Jaw`. `CharacterFace` abre y cierra la boca mientras suena `talk`; la multitud no anima la cara. Es animación de habla, no fonemas ni parpadeo. 137 pruebas | — |
 
 ## 2026-11-17
 

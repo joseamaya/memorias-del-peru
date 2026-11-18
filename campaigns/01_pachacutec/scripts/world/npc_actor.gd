@@ -82,16 +82,7 @@ const LOOK_PITCH_LIMIT_DEGREES: float = 50.0
 const LOOK_FADE_PER_SECOND: float = 2.5
 ## Altura de los ojos del objetivo sobre su origen (el jugador mide 1,7 m).
 const LOOK_TARGET_HEIGHT: float = 1.55
-## Cadenas de muelle del manto (alcance v4.0): huesos «Cape_<lado>_1» y
-## «Cape_<lado>_2» que el generador pone detrás de la espalda.
-const CAPE_CHAINS: Array[String] = ["L", "C", "R"]
-const CAPE_STIFFNESS: float = 2.6
-const CAPE_DRAG: float = 0.6
-const CAPE_GRAVITY: float = 0.9
-const CAPE_RADIUS: float = 0.03
-## Cuerpo que el manto no debe atravesar: cápsulas en la cadera y el pecho.
-const CAPE_COLLIDERS: Dictionary[String, Vector2] = {"Hips": Vector2(0.17, 0.42), "Spine1": Vector2(0.17, 0.4)}
-## Hueso de la cabeza: «Head» en el esqueleto de MakeHuman (ADR-0016).
+## Hueso de la cabeza: «Head» en el esqueleto Quaternius.
 const HEAD_BONES: Array[String] = ["Head", "head"]
 ## Instante del golpe dentro de cada ciclo de trabajo, en segundos, si el
 ## modelo no trae el suyo (`pch_weave_beat`, `pch_work_beat`).
@@ -112,6 +103,7 @@ var _animation_player: AnimationPlayer = null
 var _look: LookAtModifier3D = null
 var _look_point: Marker3D = null
 var _springs: SpringBoneSimulator3D = null
+var _face: CharacterFace = null
 var _skeleton: Skeleton3D = null
 var _head_index: int = -1
 var _perform_animation: StringName = &""
@@ -177,7 +169,8 @@ func set_model(model: Node3D) -> void:
 	var skeletons: Array[Node] = model.find_children("*", "Skeleton3D", true, false)
 	if not skeletons.is_empty():
 		_setup_look(skeletons[0] as Skeleton3D)
-		_setup_springs(skeletons[0] as Skeleton3D)
+		_springs = CapeSprings.setup(skeletons[0] as Skeleton3D)
+		_face = CharacterFace.new(model)
 	_play(idle_animation)
 	# Cada personaje empieza su reposo en un punto distinto del ciclo, para que
 	# no respiren todos a la vez.
@@ -236,6 +229,11 @@ func animation_player() -> AnimationPlayer:
 ## Simulador de muelles del manto, o `null` si el personaje no lleva manto.
 func spring_simulator() -> SpringBoneSimulator3D:
 	return _springs
+
+
+## Mandíbula de habla del personaje.
+func character_face() -> CharacterFace:
+	return _face
 
 
 ## Modificador que gira la cabeza, o `null` si no hay esqueleto.
@@ -348,6 +346,8 @@ func advance(delta: float) -> bool:
 
 
 func _process(delta: float) -> void:
+	if _face != null:
+		_face.update(delta, current_animation() == &"talk")
 	if _turning and not moving:
 		_turn_towards_target(delta, IDLE_TURN_RATE)
 	if _perform_left > 0.0:
@@ -602,40 +602,6 @@ func _forward_axis(skeleton: Skeleton3D, bone: int) -> SkeletonModifier3D.BoneAx
 		if axes[index].dot(forward) > axes[best].dot(forward):
 			best = index
 	return best as SkeletonModifier3D.BoneAxis
-
-
-## El manto se mece con la inercia del cuerpo: una cadena de muelle por
-## lado, que choca con cápsulas en la cadera y el pecho.
-func _setup_springs(skeleton: Skeleton3D) -> void:
-	var chains: Array[String] = []
-	for chain: String in CAPE_CHAINS:
-		if skeleton.find_bone("Cape_%s_1" % chain) >= 0 and skeleton.find_bone("Cape_%s_2" % chain) >= 0:
-			chains.append(chain)
-	if chains.is_empty():
-		return
-	_springs = SpringBoneSimulator3D.new()
-	_springs.name = "CapeSprings"
-	skeleton.add_child(_springs)
-	_springs.setting_count = chains.size()
-	for index: int in range(chains.size()):
-		_springs.set_root_bone_name(index, "Cape_%s_1" % chains[index])
-		_springs.set_end_bone_name(index, "Cape_%s_2" % chains[index])
-		_springs.set_extend_end_bone(index, true)
-		_springs.set_end_bone_length(index, 0.12)
-		_springs.set_stiffness(index, CAPE_STIFFNESS)
-		_springs.set_drag(index, CAPE_DRAG)
-		_springs.set_gravity(index, CAPE_GRAVITY)
-		_springs.set_radius(index, CAPE_RADIUS)
-		_springs.set_enable_all_child_collisions(index, true)
-	for bone: String in CAPE_COLLIDERS:
-		if skeleton.find_bone(bone) < 0:
-			continue
-		var capsule: SpringBoneCollisionCapsule3D = SpringBoneCollisionCapsule3D.new()
-		capsule.name = "Collider%s" % bone
-		capsule.bone_name = bone
-		capsule.radius = CAPE_COLLIDERS[bone].x
-		capsule.height = CAPE_COLLIDERS[bone].y
-		_springs.add_child(capsule)
 
 
 func _setup_look(skeleton: Skeleton3D) -> void:

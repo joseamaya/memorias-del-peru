@@ -54,7 +54,9 @@ la documentación del híbrido.
 
 ## 3. Rig y rendimiento
 
-- **65 huesos**, los mismos de UAL1/UAL2. `QuaterniusClips` combina UAL1
+- **72 huesos**: los 65 de UBC/UAL1/UAL2, 6 de manto (`Cape_L/C/R_1/2`) y
+  1 de mandíbula (`Jaw`). El manto se mueve con `SpringBoneSimulator3D` y la
+  mandíbula con `CharacterFace` al hablar. `QuaterniusClips` combina UAL1
   (`idle`, `walk`, `run`, `talk`, `attack`, `death`) con 11 clips de UAL2;
   `idle_b`, `work` y `hit` vienen de UAL2.
 - Los GLB salen **sin animaciones**; `QuaterniusClips` copia los clips una vez
@@ -70,6 +72,13 @@ la documentación del híbrido.
 - **Política de sombras:** solo cuerpo y ropa proyectan sombra. Ojos, cejas,
   tupu y pelo no: cada superficie suma un draw call por split del sol y no
   aporta a la silueta. La sombra del cuerpo sigue apoyando las figuras.
+- **Manto:** tres cadenas de dos huesos con muelles, cápsulas en pelvis y
+  cintura. La multitud no simula muelles para no gastar CPU.
+- **Mano en primera persona:** malla propia con falanges articuladas; los dedos
+  se cierran al beber o golpear y se abren al ofrecer o soplar.
+- **Mandíbula de habla:** el hueso `Jaw` mueve el labio inferior, el mentón y
+  la barba mientras suena `talk`. Es animación de habla, no fonemas ni
+  sincronía labial completa.
 - **HijoPuma** es el joven Q a 1,20 m: se lee como un adulto pequeño, no como
   un niño. Se revisó el pack UBC Standard: solo trae los dos cuerpos
   «superhero» (hombre y mujer); las proporciones Regular/Teen son de la versión
@@ -84,16 +93,20 @@ Medición con el set Q completo, sin bandera. Tres pasadas por acto con carga
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 249 | 222,2 MB | 84,1 | 79,7 |
-| II — Paso | 244 | 162,8 MB | 106,2 | 100,0 |
-| III — Cusco | 288 | 230,8 MB | 62,6 | 60,0 |
-| IV — Posguerra | 226 | 222,8 MB | 91,9 | 85,7 |
-| V — Obra | 257 | 217,4 MB | 89,5 | 85,7 |
+| I — Llacta | 249 | 222,3 MB | 95,4 | 73,8 |
+| II — Paso | 244 | 162,8 MB | 119,7 | 110,0 |
+| III — Cusco | 288 | 230,8 MB | 69,4 | 60,0 |
+| IV — Posguerra | 226 | 222,8 MB | 107,4 | 97,6 |
+| V — Obra | 257 | 217,5 MB | 101,7 | 98,3 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
-por acto con carga 4,3–6,9 y se publica la mediana. La chaquitaclla del
+por acto con carga 1,1–1,6 y se publica la mediana. La chaquitaclla del
 Agricultor añade 1 draw call a la llacta (248→249); el resto no cambia. El
-desglose del Cusco mostró
+desglose del Cusco mostró que la multitud pesaba 173 draw calls y el pase de
+sombra 266; el LOD por material y la política de sombras los dejan en torno a
+100 y 140. El Cusco es el acto más ajustado (69,4 FPS de media, p1 60,0); en una
+pasada aislada la media bajó a 53,8 y el p1 a 40,7, así que se vigila. No se
+vuelve al elenco anterior: la decisión es Q único.
 que la multitud pesaba 173 draw calls y el pase de sombra 266; el LOD por
 material y la política de sombras los dejan en torno a 100 y 140. El Cusco es el acto
 más ajustado (62,6 FPS de media, p1 60,0); en la peor pasada el p1 bajó a 54,8,
@@ -161,12 +174,13 @@ Escribe `user://quaternius_*.png`.
 **Funciona:** los diez modelos Q cubren todos los papeles; altura, orientación,
 idle, caminar, correr, hablar, trabajo, tejido, combate del chanca, impacto,
 muerte, porra en `hand_r`, foco de diálogo, mirada de cabeza, colisión, multitud
-Q, política de sombras, chaquitaclla del Agricultor, arena y arco completo.
+Q, política de sombras, manto con muelles, mano articulada, mandíbula de
+habla, chaquitaclla del Agricultor, arena y arco completo.
 
 **Falta:**
 
-- **FPS del Cusco:** 62,6 de media y p1 60,0 con carga 4,3–6,9; en la peor
-  pasada el p1 bajó a 54,8. Falta confirmarlo en un equipo descargado.
+- **FPS del Cusco:** 69,4 de media y p1 60,0 con carga 1,1–1,6; en una pasada
+  aislada la media bajó a 53,8 y el p1 a 40,7. Se vigila al añadir arte final.
 - La cara UBC sigue siendo estilizada. Es la cara definitiva del set; si se
   quiere realismo, es una tarea de escultura/arte, no de código.
 - **HijoPuma** es un adulto Q escalado: no hay base infantil gratuita en
@@ -177,8 +191,10 @@ Q, política de sombras, chaquitaclla del Agricultor, arena y arco completo.
 - Heridos y comitiva reutilizan arquetipos; no tienen ropa propia.
 - El pelo, la barba y las cejas siguen siendo mallas UBC; a distancia se leen
   bien, de cerca son geométricas.
-- Mano en primera persona sin articulación por dedo; sin blendshapes ni
-  sincronía labial; el manto no se mece (sin cadenas `Cape_*`).
+- **Expresiones finas:** la mandíbula abre la boca al hablar, pero no hay
+  fonemas, cejas animadas ni parpadeo; la cara sigue siendo una textura sobre
+  la malla UBC. Una sincronía labial completa requiere shape keys o una malla
+  facial nueva.
 - Validación humana: movimiento, diálogo, combate y lectura a distancia con el
   elenco completo.
 
@@ -192,18 +208,19 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **135 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **137 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.
 
 Las pruebas del elenco son `test_quaternius_characters.gd` (altura, base,
-ausencia de colisión, 65 huesos, `Head`/`hand_r`, materiales y clips, incluidos
-`idle_b`, `work` y `hit` de UAL2; texturas de cara de 1024, piel con rugosidad,
-cejas propias, catálogo de todos los papeles, política de sombras, LOD de
-multitud y altura de HijoPuma), `test_first_person_hands.gd` (malla de la mano
-y gesto de interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de
-alto y estribo de 22 cm).
+ausencia de colisión, 72 huesos —65 UBC + 6 de manto + 1 mandíbula—,
+`Head`/`hand_r`, materiales y clips, incluidos `idle_b`, `work` y `hit` de UAL2;
+texturas de cara de 1024, piel con rugosidad, cejas propias, catálogo de todos
+los papeles, política de sombras, LOD de multitud, muelles del manto,
+mandíbula de habla y altura de HijoPuma), `test_first_person_hands.gd` (malla,
+falanges articuladas y gesto de interacción) y `test_chaquitaclla.gd` (carga,
+validador, 1,48 m de alto y estribo de 22 cm).
 
 ## 8. Decisión
 
@@ -212,4 +229,4 @@ MakeHuman/Rocketbox, el híbrido Rocketbox, el injerto de cabeza MakeHuman y sus
 pruebas/capturas. No se vuelve atrás. El rendimiento del Cusco está cerrado
 (288 draw calls, cinco actos bajo 350 y la chaquitaclla del Agricultor en la
 terraza); HijoPuma queda cerrado con el escalado a 1,20 m. El siguiente trabajo
-es el pulido de manos y expresiones.
+son las expresiones finas (fonemas, cejas, parpadeo) y la validación humana.

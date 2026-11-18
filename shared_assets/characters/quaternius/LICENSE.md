@@ -43,6 +43,7 @@ Por eso **no hay base infantil**: HijoPuma usa el cuerpo `joven` escalado a 1,20
 - Materiales de cuerpo por personaje (`pch.body_sisa`, `pch.body_curaca`, `pch.body_mensajero`, `pch.body_chanca`, `pch.body_anciana`, `pch.body_joven`, `pch.body_madre`, `pch.body_hermano`, `pch.body_puma` y `pch.body_anca`), cejas propias (`pch.brow_*`), pelo (`pch.hair_*`), ojos (`pch.eye`) y ropa (`pch_cloth`). `QuaterniusMaterials` los reconoce.
 - Cuerpos girados 180° en el generador para que miren hacia −Z, como el resto del elenco.
 - Sin animaciones dentro del GLB: `QuaterniusClips` añade los clips de UAL1/UAL2 en el juego.
+- Seis huesos de manto `Cape_<L|C|R>_1/2` y un hueso de mandíbula `Jaw`, con sus pesos de paño y de labio inferior/mentón/barba: autoría propia, añadidos al esqueleto UBC. El rig Q tiene 72 huesos (65 UBC + 7 propios).
 - Los GLB incluyen un **atlas textil de ropa** por personaje, pintado por la librería de telas de `pch_people.py` desde `pch_quaternius.py`; es autoría propia (R). Las texturas de cuerpo, cara, pelo y ojos siguen compartidas fuera del GLB.
 
 ## Packs evaluados y no usados

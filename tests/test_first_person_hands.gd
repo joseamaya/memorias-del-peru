@@ -24,5 +24,8 @@ func test_first_person_hand_geometry() -> bool:
 	ok = ok and not hand.is_showing_hand()
 	hand.play(&"offer")
 	ok = ok and hand.is_showing_hand()
+	ok = ok and hand.finger_curl() < 12.0
+	hand.play(&"attack")
+	ok = ok and hand.finger_curl() > 30.0
 	player.free()
 	return ok

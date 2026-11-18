@@ -1,7 +1,7 @@
 extends RefCounted
 ## Pruebas de los cuerpos Quaternius del elenco.
 ##
-## Comprueban que los GLB conservan el rig de 65 huesos, las medidas, los
+## Comprueban que los GLB conservan el rig de 72 huesos, las medidas, los
 ## materiales y que `QuaterniusClips` añade los clips lógicos sin depender de
 ## un AnimationPlayer dentro del GLB.
 
@@ -114,13 +114,21 @@ func test_quaternius_assets() -> bool:
 			printerr(file_name, ": ", errors)
 			ok = false
 		var skeleton: Skeleton3D = model.find_child("Skeleton3D", true, false) as Skeleton3D
-		if skeleton == null or skeleton.get_bone_count() != 65:
+		if skeleton == null or skeleton.get_bone_count() != 72:
 			printerr(file_name, ": esqueleto inesperado")
 			ok = false
 		if skeleton != null:
 			if skeleton.find_bone("Head") < 0 or skeleton.find_bone("hand_r") < 0:
 				printerr(file_name, ": faltan Head o hand_r")
 				ok = false
+			if skeleton.find_bone("Jaw") < 0:
+				printerr(file_name, ": falta el hueso de mandíbula")
+				ok = false
+			for chain: String in CapeSprings.CHAINS:
+				if (skeleton.find_bone("Cape_%s_1" % chain) < 0
+					or skeleton.find_bone("Cape_%s_2" % chain) < 0):
+					printerr(file_name, ": falta la cadena de manto ", chain)
+					ok = false
 		if not QuaterniusClips.is_quaternius(model):
 			printerr(file_name, ": no se reconoce como Quaternius")
 			ok = false
@@ -163,6 +171,8 @@ func test_quaternius_npc_actor() -> bool:
 	var ok: bool = actor.is_animated()
 	ok = ok and actor.current_animation() == &"idle"
 	ok = ok and actor.look_modifier() != null
+	ok = ok and actor.spring_simulator() != null
+	ok = ok and actor.character_face() != null and actor.character_face().jaw_index() >= 0
 	ok = ok and actor.focus_point().y > 1.0
 	actor.free()
 	return ok
@@ -241,4 +251,37 @@ func test_quaternius_crowd_lod() -> bool:
 				printerr("multitud: visibilidad inesperada en ", mesh_instance.name)
 				ok = false
 	visual.free()
+	return ok
+
+
+func test_quaternius_cape_springs() -> bool:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var visual: CharacterModelVisual = CharacterModelVisual.new()
+	visual.name = "CapeTest"
+	visual.model_path = MODEL_DIR + "pch_npc_curaca_q.glb"
+	tree.root.add_child(visual)
+	var springs: SpringBoneSimulator3D = visual.spring_simulator()
+	var ok: bool = springs != null and springs.setting_count == 3
+	ok = ok and visual.character_face() != null and visual.character_face().jaw_index() >= 0
+	var crowd: CharacterModelVisual = CharacterModelVisual.new()
+	crowd.name = "CapeCrowdTest"
+	crowd.model_path = MODEL_DIR + "pch_npc_sisa_q.glb"
+	crowd.crowd = true
+	tree.root.add_child(crowd)
+	ok = ok and crowd.spring_simulator() == null
+	crowd.free()
+	visual.free()
+	return ok
+
+
+func test_character_face() -> bool:
+	var packed: PackedScene = load(MODEL_DIR + "pch_npc_curaca_q.glb") as PackedScene
+	var model: Node3D = packed.instantiate() as Node3D
+	var face: CharacterFace = CharacterFace.new(model)
+	var ok: bool = face.jaw_index() >= 0
+	face.update(0.1, true)
+	ok = ok and face.open_amount() > 0.0
+	face.update(0.1, false)
+	ok = ok and face.open_amount() == 0.0
+	model.free()
 	return ok

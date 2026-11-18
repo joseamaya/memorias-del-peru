@@ -158,19 +158,18 @@ Resultado con el elenco Q completo:
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
-| I — Llacta | 249 | 222,2 MB | 84,1 | 79,7 |
-| II — Paso | 244 | 162,8 MB | 106,2 | 100,0 |
-| III — Cusco | 288 | 230,8 MB | 62,6 | 60,0 |
-| IV — Posguerra | 226 | 222,8 MB | 91,9 | 85,7 |
-| V — Obra | 257 | 217,4 MB | 89,5 | 85,7 |
+| I — Llacta | 249 | 222,3 MB | 95,4 | 73,8 |
+| II — Paso | 244 | 162,8 MB | 119,7 | 110,0 |
+| III — Cusco | 288 | 230,8 MB | 69,4 | 60,0 |
+| IV — Posguerra | 226 | 222,8 MB | 107,4 | 97,6 |
+| V — Obra | 257 | 217,5 MB | 101,7 | 98,3 |
 
 Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
-por acto con carga 4,3–6,9; se publica la mediana. La chaquitaclla del
+por acto con carga 1,1–1,6; se publica la mediana. La chaquitaclla del
 Agricultor añade 1 draw call a la llacta (248→249). El Cusco es el acto más
-ajustado (62,6 FPS de media y p1 60,0) y cumple el objetivo de 60 FPS en mediana;
-el resto supera 60 FPS con holgura. Falta repetir la pasada en un equipo
-completamente descargado para confirmar el p1 del Cusco, que en la peor pasada
-bajó a 54,8.
+ajustado (69,4 FPS de media y p1 60,0); el resto supera 60 FPS con holgura. En
+una pasada aislada del Cusco la media bajó a 53,8 y el p1 a 40,7; se vigila al
+añadir arte final.
 
 **Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
 
@@ -187,6 +186,6 @@ sombras del 2026-11-17 deja el Cusco en 288 draw calls y la llacta en 249; los F
 pasada nueva están en
 [personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
 
-Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy); la política de sombras del elenco Q la deja en 288. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (60,0 de mediana, 54,8 en la peor pasada) está en el límite del objetivo; se vigila al añadir arte final.
+Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy); la política de sombras del elenco Q la deja en 288. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (60,0 de mediana, 40,7 en la peor pasada) está en el límite del objetivo; se vigila al añadir arte final.
 
 El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En la medición de Bajo de 2026-11-16, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.

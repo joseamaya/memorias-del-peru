@@ -1,6 +1,7 @@
 class_name QuaterniusClips
 extends RefCounted
-## clips lógicos compartidos para los cuerpos Quaternius de 65 huesos.
+## clips lógicos compartidos para los cuerpos Quaternius de 72 huesos (65 de
+## UBC, 6 de manto y 1 de mandíbula).
 ##
 ## El GLB del personaje trae malla y esqueleto, pero no animaciones: este
 ## cargador copia una vez los clips de UAL1 y los añade al AnimationPlayer de
