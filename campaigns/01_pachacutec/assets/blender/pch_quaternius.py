@@ -273,7 +273,7 @@ def add_jaw_bone(armature):
 ## Huesos de expresión: párpados y cejas. El juego los mueve con
 ## `CharacterFace`; no hay blendshapes porque el exportador de Blender 5.3 no
 ## los conserva en mallas con skin.
-def add_face_bones(armature, body, eyebrows):
+def add_face_bones(armature, eyebrows):
 	"""Crea `Blink_L/R` en los ojos y `Brow_L/R` en las cejas.
 
 	Los párpados cuelgan de `Head` y apuntan hacia abajo: en Godot, trasladar
@@ -315,12 +315,12 @@ def add_face_bones(armature, body, eyebrows):
 	bpy.ops.object.mode_set(mode="OBJECT")
 
 
-def weight_face(body, eyebrows, armature):
+def weight_face(body, eyebrows):
 	"""Pesa el párpado superior y las cejas.
 
-	El párpado se hunde en los extremos y en el pliegue para que el ojo cierre
-	sin arrastrar la frente. Las cejas son una malla aparte: pasan enteras al
-	hueso de su lado y dejan de seguir a `Head` directamente.
+	El peso baja en los extremos y en el pliegue para que el ojo cierre sin
+	arrastrar la frente. Las cejas son una malla aparte: pasan enteras al hueso
+	de su lado y dejan de seguir a `Head` directamente.
 	"""
 	eyes = bpy.data.objects.get("Eyes")
 	if eyes is None:
@@ -1019,8 +1019,8 @@ def build_character(spec: dict, name: str, out_dir: str):
 	shape_face(spec)
 	shape_age(spec)
 	eyebrows = bpy.data.objects.get("Eyebrows")
-	add_face_bones(armature, body, eyebrows)
-	weight_face(body, eyebrows, armature)
+	add_face_bones(armature, eyebrows)
+	weight_face(body, eyebrows)
 	weight_jaw(body, armature)
 	# Orientación del proyecto: el frente mira a -Z de Godot. El importador
 	# deja la armadura en modo cuaternión; hay que cambiarlo para que el giro

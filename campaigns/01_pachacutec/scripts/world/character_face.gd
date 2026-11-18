@@ -94,7 +94,7 @@ func brow_amount() -> float:
 	return _brow_lift
 
 
-## Parpadeos completados desde que nació la cara. Lo usan las pruebas.
+## Parpadeos iniciados desde que nació la cara. Lo usan las pruebas.
 func blink_count() -> int:
 	return _blink_count
 
