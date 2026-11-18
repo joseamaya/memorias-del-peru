@@ -218,7 +218,7 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **140 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **144 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.
@@ -232,6 +232,10 @@ del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma),
 `test_first_person_hands.gd` (malla, falanges articuladas y gesto de
 interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
 estribo de 22 cm).
+
+> El prototipo de maniquíes UAL1 que puede sustituir a este elenco está en
+> [prototipo_maniqui.md](prototipo_maniqui.md). El elenco UBC sigue activo
+> hasta que se apruebe el prototipo.
 
 ## 8. Decisión
 

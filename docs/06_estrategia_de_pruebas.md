@@ -152,6 +152,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_model_validator` | Validación de modelos |
 | `test_quaternius_characters` | Rig de 76 huesos (65 UBC + 6 de manto + 1 mandíbula + 4 de expresión), clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud, muelles del manto, mandíbula de habla, parpadeo, cejas, porra que se oculta cerca de la cámara y altura de HijoPuma |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
+| `test_mannequin_prototype` | Looks UAL1, huesos reales, atuendo, nodo `OutfitMannequin` y mano extraída |
 | `test_first_person_hands` | Malla propia de la mano, falanges articuladas y gesto de interacción |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
 | `test_title_screen` | La portada traduce sus textos y, sin campaña, deshabilita Comenzar |
@@ -251,6 +252,7 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-18 | Mandíbula de habla | `pch_quaternius.py`, `run_tests.gd` y `capture_quaternius.tscn` | 137 pruebas, 0 fallos; diez GLB con 72 huesos (65 UBC + 6 de manto + 1 mandíbula); la boca se abre con el clip `talk`; sin fonemas, cejas animadas ni parpadeo |
 | 2026-11-18 | Parpadeo y cejas | `pch_quaternius.py`, `character_face.gd`, `run_tests.gd` y `capture_quaternius.tscn` | 138 pruebas, 0 fallos; diez GLB con 76 huesos; `Blink_L/R` cierra el párpado y `Brow_L/R` alza la ceja; la multitud parpadea; sin fonemas |
 | 2026-11-18 | Revisión general: HUD y puño del arma | `hud.gd`, `hud_text.gd`, `first_person_weapon.gd`, `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 139 pruebas, 0 fallos; la pista baja de la banda cinematográfica; el texto de la tarjeta de fin espera al fondo oscuro y no deja la pista detrás; la honda y la porra se sostienen con un puño de bloqueo (+9 draw calls en primera persona); Cusco 297, llacta 248 |
+| 2026-11-18 | Prototipo de maniquíes UAL1 | `core/characters/*`, `MannequinLooks`, `OutfitMannequin`, `tools/blender_mannequin_hand.py`, `tests/scenes/mannequin_prototype.tscn` y `run_tests.gd` | 144 pruebas, 0 fallos; tres looks (Curaca, Sisa, Chanca), mano UAL1 extraída y panel de objetivo arriba a la izquierda; capturas en `documentation/img/prototipo/`; pendiente de aprobación antes de retirar UBC |
 | 2026-11-18 | Pase visual: casas, llama y tarjetas | `llacta.gd`, `ciudad.gd`, `character_model_visual.gd`, `first_person_weapon.gd`, `first_person_hands.gd`, `hud.gd`, `capture_quaternius.tscn` y `run_tests.gd` | 140 pruebas, 0 fallos; casas de la llacta con `SurfaceMaterials` (piedra, paja y madera); llama por shader; tarjeta del acto IV a 0,80; párrafos en la del III; porra de PNJ oculta a menos de 1,4 m; honda con correa fina; mano de interacción a 0,68 |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

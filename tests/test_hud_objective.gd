@@ -15,11 +15,18 @@ func test_hud_objective() -> bool:
 		return false
 	tree.root.add_child(hud)
 	var label: Label = hud.get_node_or_null("ObjectiveLabel") as Label
+	var backdrop: ColorRect = null
+	if label != null:
+		backdrop = label.get_node_or_null("Backdrop") as ColorRect
 	var ok: bool = (
 		label != null
 		and not hud.is_showing_objective()
 		and hud.get_objective_text().is_empty()
 	)
+	# El objetivo vive en un panel arriba a la izquierda, como la referencia.
+	ok = ok and backdrop != null and backdrop.color.a > 0.5
+	ok = ok and label.offset_left < 80.0
+	ok = ok and label.get_theme_font_size(&"font_size") >= 26
 	var text: String = tr("UI_START")
 	ok = ok and not text.is_empty() and not text.begins_with("UI_")
 	hud.show_objective(text)
