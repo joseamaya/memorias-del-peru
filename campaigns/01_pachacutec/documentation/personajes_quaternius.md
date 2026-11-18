@@ -54,9 +54,10 @@ la documentación del híbrido.
 
 ## 3. Rig y rendimiento
 
-- **72 huesos**: los 65 de UBC/UAL1/UAL2, 6 de manto (`Cape_L/C/R_1/2`) y
-  1 de mandíbula (`Jaw`). El manto se mueve con `SpringBoneSimulator3D` y la
-  mandíbula con `CharacterFace` al hablar. `QuaterniusClips` combina UAL1
+- **76 huesos**: los 65 de UBC/UAL1/UAL2, 6 de manto (`Cape_L/C/R_1/2`),
+  1 de mandíbula (`Jaw`) y 4 de expresión (`Blink_L/R`, `Brow_L/R`). El manto
+  se mueve con `SpringBoneSimulator3D`; `CharacterFace` anima la mandíbula al
+  hablar, parpadea y alza las cejas. `QuaterniusClips` combina UAL1
   (`idle`, `walk`, `run`, `talk`, `attack`, `death`) con 11 clips de UAL2;
   `idle_b`, `work` y `hit` vienen de UAL2.
 - Los GLB salen **sin animaciones**; `QuaterniusClips` copia los clips una vez
@@ -79,6 +80,10 @@ la documentación del híbrido.
 - **Mandíbula de habla:** el hueso `Jaw` mueve el labio inferior, el mentón y
   la barba mientras suena `talk`. Es animación de habla, no fonemas ni
   sincronía labial completa.
+- **Parpadeo y cejas:** `Blink_L/R` baja el párpado superior y `Brow_L/R` alza
+  la ceja de su lado. `CharacterFace` parpadea cada 2,8–6,2 s (con doble
+  parpadeo ocasional) y mantiene las cejas alzadas mientras habla. La multitud
+  también parpadea.
 - **HijoPuma** es el joven Q a 1,20 m: se lee como un adulto pequeño, no como
   un niño. Se revisó el pack UBC Standard: solo trae los dos cuerpos
   «superhero» (hombre y mujer); las proporciones Regular/Teen son de la versión
@@ -89,7 +94,7 @@ la documentación del híbrido.
 ### Medición del elenco completo
 
 Medición con el set Q completo, sin bandera. Tres pasadas por acto con carga
-4,3–6,9; se publica la mediana:
+1,1–1,6; se publica la mediana:
 
 | Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
 |---|---|---|---|---|
@@ -107,11 +112,6 @@ sombra 266; el LOD por material y la política de sombras los dejan en torno a
 100 y 140. El Cusco es el acto más ajustado (69,4 FPS de media, p1 60,0); en una
 pasada aislada la media bajó a 53,8 y el p1 a 40,7, así que se vigila. No se
 vuelve al elenco anterior: la decisión es Q único.
-que la multitud pesaba 173 draw calls y el pase de sombra 266; el LOD por
-material y la política de sombras los dejan en torno a 100 y 140. El Cusco es el acto
-más ajustado (62,6 FPS de media, p1 60,0); en la peor pasada el p1 bajó a 54,8,
-así que falta confirmarlo en un equipo completamente descargado. No se vuelve al
-elenco anterior: la decisión es Q único.
 
 ## 4. Dirección artística
 
@@ -144,6 +144,8 @@ La identidad viene de la ropa, el pelo, la paleta y la silueta:
 | Rostro de Sisa | ![Rostro](img/personajes/rostro_q.png) |
 | Curaca | ![Curaca](img/personajes/curaca_q.png) |
 | Curaca de cerca | ![Curaca de cerca](img/personajes/curaca_close_q.png) |
+| Curaca parpadeando | ![Curaca parpadeando](img/personajes/curaca_blink_q.png) |
+| Curaca con las cejas alzadas | ![Curaca con las cejas alzadas](img/personajes/curaca_brows_q.png) |
 | Mensajero | ![Mensajero](img/personajes/mensajero_q.png) |
 | Chanca | ![Chanca](img/personajes/chanca_q.png) |
 | Mujer mayor | ![Mujer mayor](img/personajes/anciana_q.png) |
@@ -191,10 +193,10 @@ habla, chaquitaclla del Agricultor, arena y arco completo.
 - Heridos y comitiva reutilizan arquetipos; no tienen ropa propia.
 - El pelo, la barba y las cejas siguen siendo mallas UBC; a distancia se leen
   bien, de cerca son geométricas.
-- **Expresiones finas:** la mandíbula abre la boca al hablar, pero no hay
-  fonemas, cejas animadas ni parpadeo; la cara sigue siendo una textura sobre
-  la malla UBC. Una sincronía labial completa requiere shape keys o una malla
-  facial nueva.
+- **Expresiones finas:** la mandíbula, los párpados y las cejas se animan,
+  pero no hay fonemas ni sincronía labial; la cara sigue siendo una textura
+  sobre la malla UBC. Una sincronía labial completa requiere shape keys o una
+  malla facial nueva.
 - Validación humana: movimiento, diálogo, combate y lectura a distancia con el
   elenco completo.
 
@@ -208,19 +210,20 @@ godot --headless --path . --script res://tests/arc_playthrough.gd
 python3 tools/check_gdscript_limits.py
 ```
 
-Resultados: **137 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
+Resultados: **138 pruebas, 0 fallos**; arena (`resolved=3`, `max_attackers=1`)
 y `ARCO_OK` con el set Q; importación sin errores ni advertencias de `res://`.
 Las pruebas recorren los diez modelos, las diez texturas de cara y el catálogo
 de todos los papeles.
 
 Las pruebas del elenco son `test_quaternius_characters.gd` (altura, base,
-ausencia de colisión, 72 huesos —65 UBC + 6 de manto + 1 mandíbula—,
-`Head`/`hand_r`, materiales y clips, incluidos `idle_b`, `work` y `hit` de UAL2;
-texturas de cara de 1024, piel con rugosidad, cejas propias, catálogo de todos
-los papeles, política de sombras, LOD de multitud, muelles del manto,
-mandíbula de habla y altura de HijoPuma), `test_first_person_hands.gd` (malla,
-falanges articuladas y gesto de interacción) y `test_chaquitaclla.gd` (carga,
-validador, 1,48 m de alto y estribo de 22 cm).
+ausencia de colisión, 76 huesos —65 UBC + 6 de manto + 1 mandíbula + 4 de
+expresión—, `Head`/`hand_r`, materiales y clips, incluidos `idle_b`, `work` y
+`hit` de UAL2; texturas de cara de 1024, piel con rugosidad, cejas propias,
+catálogo de todos los papeles, política de sombras, LOD de multitud, muelles
+del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma),
+`test_first_person_hands.gd` (malla, falanges articuladas y gesto de
+interacción) y `test_chaquitaclla.gd` (carga, validador, 1,48 m de alto y
+estribo de 22 cm).
 
 ## 8. Decisión
 
@@ -228,5 +231,6 @@ Quaternius es el **único** set visual. Se retiraron los modelos
 MakeHuman/Rocketbox, el híbrido Rocketbox, el injerto de cabeza MakeHuman y sus
 pruebas/capturas. No se vuelve atrás. El rendimiento del Cusco está cerrado
 (288 draw calls, cinco actos bajo 350 y la chaquitaclla del Agricultor en la
-terraza); HijoPuma queda cerrado con el escalado a 1,20 m. El siguiente trabajo
-son las expresiones finas (fonemas, cejas, parpadeo) y la validación humana.
+terraza); HijoPuma queda cerrado con el escalado a 1,20 m. Las cejas y el
+parpadeo están cerrados; el siguiente trabajo es la sincronía labial por
+fonemas (requiere malla facial nueva) y la validación humana.

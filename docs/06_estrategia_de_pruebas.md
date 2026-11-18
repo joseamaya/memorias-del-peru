@@ -150,7 +150,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_campaign_audio` | Recursos de audio de la campaña y bucles |
 | `test_model_validator` | Validación de modelos |
-| `test_quaternius_characters` | Rig de 72 huesos (65 UBC + 6 de manto + 1 mandíbula), clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud, muelles del manto, mandíbula de habla y altura de HijoPuma |
+| `test_quaternius_characters` | Rig de 76 huesos (65 UBC + 6 de manto + 1 mandíbula + 4 de expresión), clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud, muelles del manto, mandíbula de habla, parpadeo, cejas y altura de HijoPuma |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
 | `test_first_person_hands` | Malla propia de la mano, falanges articuladas y gesto de interacción |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
@@ -249,5 +249,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-18 | HijoPuma: búsqueda de base infantil cerrada | Revisión del pack UBC Standard y `run_tests.gd` | 135 pruebas, 0 fallos; el Standard gratuito solo trae los cuerpos Superhero (hombre y mujer); Regular/Teen es Source de pago; se mantiene el Joven Q a 1,20 m y no se mezcla otro set |
 | 2026-11-18 | Mano articulada y manto con muelles | `pch_quaternius.py`, `run_tests.gd`, `capture_quaternius.tscn` y `measure_performance.tscn` | 136 pruebas, 0 fallos; diez GLB con 71 huesos (65 UBC + 6 de manto); mano con falanges que se cierran; llacta 249 draw calls/222,3 MB y 101,7 FPS; Cusco 288/230,8 MB y 70,6 FPS |
 | 2026-11-18 | Mandíbula de habla | `pch_quaternius.py`, `run_tests.gd` y `capture_quaternius.tscn` | 137 pruebas, 0 fallos; diez GLB con 72 huesos (65 UBC + 6 de manto + 1 mandíbula); la boca se abre con el clip `talk`; sin fonemas, cejas animadas ni parpadeo |
+| 2026-11-18 | Parpadeo y cejas | `pch_quaternius.py`, `character_face.gd`, `run_tests.gd` y `capture_quaternius.tscn` | 138 pruebas, 0 fallos; diez GLB con 76 huesos; `Blink_L/R` cierra el párpado y `Brow_L/R` alza la ceja; la multitud parpadea; sin fonemas |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

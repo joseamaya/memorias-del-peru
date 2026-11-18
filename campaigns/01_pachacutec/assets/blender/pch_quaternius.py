@@ -2,9 +2,9 @@
 
 Los cuerpos, ojos y peinados son de Universal Base Characters (Quaternius,
 CC0). La ropa, trenzas, cintas y sandalias son autoría propia. El esqueleto
-parte de los 65 huesos de UAL1/UAL2 y añade 7 propios (6 de manto y 1 de
-mandíbula), así que los clips de UAL1 se añaden en el juego con
-`QuaterniusClips` sin retargeting.
+parte de los 65 huesos de UAL1/UAL2 y añade 11 propios (6 de manto, 1 de
+mandíbula y 4 de expresión), así que los clips de UAL1 se añaden en el juego
+con `QuaterniusClips` sin retargeting.
 
 Uso (desde la raíz del repositorio):
 
@@ -268,6 +268,110 @@ def add_jaw_bone(armature):
 	jaw.parent = bones.get("Head")
 	jaw.use_connect = False
 	bpy.ops.object.mode_set(mode="OBJECT")
+
+
+## Huesos de expresión: párpados y cejas. El juego los mueve con
+## `CharacterFace`; no hay blendshapes porque el exportador de Blender 5.3 no
+## los conserva en mallas con skin.
+def add_face_bones(armature, body, eyebrows):
+	"""Crea `Blink_L/R` en los ojos y `Brow_L/R` en las cejas.
+
+	Los párpados cuelgan de `Head` y apuntan hacia abajo: en Godot, trasladar
+	el hueso en su eje +Y baja la piel del párpado. Las cejas apuntan hacia
+	arriba para que +Y las alce. Las posiciones salen de la malla ya modelada,
+	así cada cara conserva su proporción.
+	"""
+	eyes = bpy.data.objects.get("Eyes")
+	if eyes is None:
+		return
+	bpy.context.view_layer.objects.active = armature
+	armature.select_set(True)
+	bpy.ops.object.mode_set(mode="EDIT")
+	bones = armature.data.edit_bones
+	head_bone = bones.get("Head")
+	for sign, name in ((1.0, "L"), (-1.0, "R")):
+		points = [vertex.co for vertex in eyes.data.vertices if sign * vertex.co.x > 0.0]
+		if not points:
+			continue
+		center = sum(points, Vector()) / float(len(points))
+		blink = bones.new("Blink_%s" % name)
+		blink.head = Vector((center.x, center.y - 0.006, center.z + 0.013))
+		blink.tail = Vector((center.x, center.y - 0.006, center.z - 0.017))
+		blink.parent = head_bone
+		blink.use_connect = False
+	if eyebrows is None:
+		bpy.ops.object.mode_set(mode="OBJECT")
+		return
+	for sign, name in ((1.0, "L"), (-1.0, "R")):
+		points = [vertex.co for vertex in eyebrows.data.vertices if sign * vertex.co.x > 0.0]
+		if not points:
+			continue
+		center = sum(points, Vector()) / float(len(points))
+		brow = bones.new("Brow_%s" % name)
+		brow.head = Vector((center.x, center.y - 0.004, center.z - 0.010))
+		brow.tail = Vector((center.x, center.y - 0.004, center.z + 0.012))
+		brow.parent = head_bone
+		brow.use_connect = False
+	bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def weight_face(body, eyebrows, armature):
+	"""Pesa el párpado superior y las cejas.
+
+	El párpado se hunde en los extremos y en el pliegue para que el ojo cierre
+	sin arrastrar la frente. Las cejas son una malla aparte: pasan enteras al
+	hueso de su lado y dejan de seguir a `Head` directamente.
+	"""
+	eyes = bpy.data.objects.get("Eyes")
+	if eyes is None:
+		return
+	head_body = body.vertex_groups.get("Head")
+	if head_body is None:
+		return
+	for sign, name in ((1.0, "L"), (-1.0, "R")):
+		points = [vertex.co for vertex in eyes.data.vertices if sign * vertex.co.x > 0.0]
+		if not points:
+			continue
+		center = sum(points, Vector()) / float(len(points))
+		blink_group = body.vertex_groups.get("Blink_%s" % name)
+		if blink_group is None:
+			blink_group = body.vertex_groups.new(name="Blink_%s" % name)
+		low = center.z - 0.0015
+		high = center.z + 0.0195
+		for vertex in body.data.vertices:
+			point = vertex.co
+			if sign * point.x <= 0.010 or point.y > -0.058:
+				continue
+			if point.z < low or point.z > high:
+				continue
+			# El borde del párpado se mueve casi entero; el pliegue se queda.
+			falloff = max(0.0, min(1.0, (high - point.z) / (high - low)))
+			# Esquinas ancladas: el párpado no arranca la piel del lagrimal.
+			across = abs(abs(point.x) - abs(center.x)) / 0.028
+			weight = 0.92 * falloff * max(0.0, 1.0 - across * across)
+			if weight <= 0.01:
+				continue
+			head_weight = 1.0
+			for membership in vertex.groups:
+				if membership.group == head_body.index:
+					head_weight = membership.weight
+					break
+			blink_group.add([vertex.index], head_weight * weight, "REPLACE")
+			head_body.add([vertex.index], head_weight * (1.0 - weight), "REPLACE")
+	if eyebrows is None:
+		return
+	for sign, name in ((1.0, "L"), (-1.0, "R")):
+		indices = [vertex.index for vertex in eyebrows.data.vertices
+			if sign * vertex.co.x > 0.0]
+		if not indices:
+			continue
+		brow_group = eyebrows.vertex_groups.get("Brow_%s" % name)
+		if brow_group is None:
+			brow_group = eyebrows.vertex_groups.new(name="Brow_%s" % name)
+		brow_group.add(indices, 1.0, "REPLACE")
+		head_group = eyebrows.vertex_groups.get("Head")
+		if head_group is not None:
+			head_group.remove(indices)
 
 
 def weight_jaw(body, armature):
@@ -914,6 +1018,9 @@ def build_character(spec: dict, name: str, out_dir: str):
 	shape_head(spec)
 	shape_face(spec)
 	shape_age(spec)
+	eyebrows = bpy.data.objects.get("Eyebrows")
+	add_face_bones(armature, body, eyebrows)
+	weight_face(body, eyebrows, armature)
 	weight_jaw(body, armature)
 	# Orientación del proyecto: el frente mira a -Z de Godot. El importador
 	# deja la armadura en modo cuaternión; hay que cambiarlo para que el giro

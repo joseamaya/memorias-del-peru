@@ -4,7 +4,8 @@ extends Node
 ##   godot --path . --resolution 1280x720 res://tests/scenes/capture_quaternius.tscn
 ##
 ## Guarda `user://quaternius_llacta.png`, `..._sisa.png`, `..._sisa_close.png`,
-## `..._curaca.png`, `..._curaca_close.png`, `..._rostro.png`, `..._mensajero.png`,
+## `..._curaca.png`, `..._curaca_close.png`, `..._curaca_blink.png`,
+## `..._curaca_brows.png`, `..._rostro.png`, `..._mensajero.png`,
 ## `..._chanca.png`, `..._mano.png`, `..._anciana.png`, `..._joven.png`,
 ## `..._madre.png`, `..._hermano.png`, `..._puma.png`, `..._anca.png` y sus
 ## versiones `_close`, además de `..._crowd_anciana.png` en el Cusco. Fija el
@@ -44,6 +45,13 @@ func _capture() -> void:
 	await _shot(camera, Vector3(7.0, 1.42, 7.45), Vector3(7.0, 1.38, 8.0), prefix + "_sisa_close")
 	await _shot(camera, Vector3(-6.4, 1.5, -6.6), Vector3(-7.0, 1.15, -3.0), prefix + "_curaca")
 	await _shot(camera, Vector3(-6.9, 1.58, -3.68), Vector3(-7.0, 1.55, -3.0), prefix + "_curaca_close")
+	var curaca: NpcActor = llacta.get_node_or_null("Llacta/NPCs/Curaca") as NpcActor
+	if curaca != null and curaca.character_face() != null:
+		curaca.character_face().set_expression(1.0, 0.0)
+		await _shot(camera, Vector3(-6.9, 1.58, -3.68), Vector3(-7.0, 1.55, -3.0), prefix + "_curaca_blink")
+		curaca.character_face().set_expression(0.0, 1.0)
+		await _shot(camera, Vector3(-6.9, 1.58, -3.68), Vector3(-7.0, 1.55, -3.0), prefix + "_curaca_brows")
+		curaca.character_face().clear_expression()
 	# Arquetipos de multitud: se muestran aparte para no depender de que la
 	# escena los tenga colocados. El visual ajusta la altura y los materiales.
 	await _showcase(MODEL_DIR + "pch_npc_anciana_q.glb", Vector3(0.0, 0.0, 18.0), prefix + "_anciana")

@@ -1,7 +1,7 @@
 extends RefCounted
 ## Pruebas de los cuerpos Quaternius del elenco.
 ##
-## Comprueban que los GLB conservan el rig de 72 huesos, las medidas, los
+## Comprueban que los GLB conservan el rig de 76 huesos, las medidas, los
 ## materiales y que `QuaterniusClips` añade los clips lógicos sin depender de
 ## un AnimationPlayer dentro del GLB.
 
@@ -114,7 +114,7 @@ func test_quaternius_assets() -> bool:
 			printerr(file_name, ": ", errors)
 			ok = false
 		var skeleton: Skeleton3D = model.find_child("Skeleton3D", true, false) as Skeleton3D
-		if skeleton == null or skeleton.get_bone_count() != 72:
+		if skeleton == null or skeleton.get_bone_count() != 76:
 			printerr(file_name, ": esqueleto inesperado")
 			ok = false
 		if skeleton != null:
@@ -124,6 +124,10 @@ func test_quaternius_assets() -> bool:
 			if skeleton.find_bone("Jaw") < 0:
 				printerr(file_name, ": falta el hueso de mandíbula")
 				ok = false
+			for bone: String in ["Blink_L", "Blink_R", "Brow_L", "Brow_R"]:
+				if skeleton.find_bone(bone) < 0:
+					printerr(file_name, ": falta el hueso de expresión ", bone)
+					ok = false
 			for chain: String in CapeSprings.CHAINS:
 				if (skeleton.find_bone("Cape_%s_1" % chain) < 0
 					or skeleton.find_bone("Cape_%s_2" % chain) < 0):
@@ -173,6 +177,7 @@ func test_quaternius_npc_actor() -> bool:
 	ok = ok and actor.look_modifier() != null
 	ok = ok and actor.spring_simulator() != null
 	ok = ok and actor.character_face() != null and actor.character_face().jaw_index() >= 0
+	ok = ok and actor.character_face().has_expression_bones()
 	ok = ok and actor.focus_point().y > 1.0
 	actor.free()
 	return ok
@@ -263,6 +268,7 @@ func test_quaternius_cape_springs() -> bool:
 	var springs: SpringBoneSimulator3D = visual.spring_simulator()
 	var ok: bool = springs != null and springs.setting_count == 3
 	ok = ok and visual.character_face() != null and visual.character_face().jaw_index() >= 0
+	ok = ok and visual.character_face().has_expression_bones()
 	var crowd: CharacterModelVisual = CharacterModelVisual.new()
 	crowd.name = "CapeCrowdTest"
 	crowd.model_path = MODEL_DIR + "pch_npc_sisa_q.glb"
@@ -283,5 +289,35 @@ func test_character_face() -> bool:
 	ok = ok and face.open_amount() > 0.0
 	face.update(0.1, false)
 	ok = ok and face.open_amount() == 0.0
+	model.free()
+	return ok
+
+
+func test_character_expressions() -> bool:
+	var packed: PackedScene = load(MODEL_DIR + "pch_npc_curaca_q.glb") as PackedScene
+	var model: Node3D = packed.instantiate() as Node3D
+	var face: CharacterFace = CharacterFace.new(model)
+	var ok: bool = face.has_expression_bones()
+	face.update(0.2, true)
+	ok = ok and face.brow_amount() > 0.5
+	# En un minuto de reposo debe parpadear varias veces aunque el intervalo
+	# sea aleatorio.
+	for _index: int in range(600):
+		face.update(0.1, false)
+	ok = ok and face.blink_count() >= 3
+	face.set_expression(1.0, 1.0)
+	ok = ok and is_equal_approx(face.blink_amount(), 1.0)
+	ok = ok and is_equal_approx(face.brow_amount(), 1.0)
+	var skeleton: Skeleton3D = model.find_child("Skeleton3D", true, false) as Skeleton3D
+	if skeleton != null:
+		var blink_bone: int = skeleton.find_bone("Blink_L")
+		var brow_bone: int = skeleton.find_bone("Brow_L")
+		ok = ok and absf(skeleton.get_bone_pose_position(blink_bone).y
+			- skeleton.get_bone_rest(blink_bone).origin.y) > 0.01
+		ok = ok and absf(skeleton.get_bone_pose_position(brow_bone).y
+			- skeleton.get_bone_rest(brow_bone).origin.y) > 0.002
+	face.clear_expression()
+	ok = ok and face.blink_amount() == 0.0
+	ok = ok and face.brow_amount() == 0.0
 	model.free()
 	return ok
