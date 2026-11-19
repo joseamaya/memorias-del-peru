@@ -155,7 +155,7 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/grey_sector_check.gd 2>&1 | tee /tmp/grey_sector.log
           python3 tools/check_output.py /tmp/grey_sector.log
 
-      - name: Streaming: carga y memoria
+      - name: Streaming y memoria
         run: |
           set -o pipefail
           ~/godot/godot --headless --path . --script res://tests/streaming_soak_check.gd 2>&1 | tee /tmp/streaming_soak.log
