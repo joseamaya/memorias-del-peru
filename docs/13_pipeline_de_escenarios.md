@@ -10,7 +10,7 @@
 | Herramienta | Versión de trabajo | Licencia | Uso | Estado |
 |---|---|---|---|---|
 | Godot | 4.7.2 stable | MIT | Motor, ensamblaje, navegación, audio, UI | Verificado |
-| Terrain3D | 1.1.0 stable | MIT | Terreno, texturas, LOD, vegetación | Candidato; soporta Godot 4.5–4.8+ |
+| Terrain3D | 1.1.0 stable | MIT | Terreno, texturas, LOD, vegetación | **Instalado para F1.1; adopción provisional** |
 | Cyclops Level Builder | 1.5.2 | MIT | Blockout de niveles, pircas, plazas, escaleras | Candidato; 1.5.0+ requiere Godot 4.7+ |
 | Blender | 5.3.0 | GPL (herramienta) | Arquitectura, props, personajes, exportación GLB | Verificado |
 
@@ -25,6 +25,12 @@
 - El shader por defecto es complejo; para la GPU integrada se evalúa el shader `lightweight` o uno propio.
 - La colisión y el navmesh sobre el terreno deben medirse; no se asumen gratuitos.
 - El fondo lejano puede ser cielo, malla de montañas o *world background*; la opción más cara no es la mejor.
+
+### 2.1.1. Resultado del spike
+
+La escena de prueba de 512 × 512 m, con 4 regiones de 256 m, 50 árboles y 20 NPC de relleno, midió **113–115 FPS de media** en perfil Medio, 68 draw calls y 97 MB de VRAM en la UHD 770. La colisión se validó con un rayo vertical. La malla simple de referencia quedó en 300 FPS (tope de la medición), 13 draw calls y 87,8 MB. El registro de la instalación y la licencia está en `addons/terrain_3d/REGISTRO.md`.
+
+**Decisión provisional:** adoptar Terrain3D para el blockout de F2. No es adopción definitiva: faltan texturas, vegetación densa, edificios, navmesh sobre el terreno, exportación Linux/Windows y el sector real. Si el sector real baja de 60 FPS Medio, se activa el respaldo de malla.
 
 ### 2.2. Cyclops Level Builder
 

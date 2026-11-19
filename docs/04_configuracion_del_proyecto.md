@@ -161,7 +161,7 @@ Un autoload solo se registra en `project.godot` cuando tiene una responsabilidad
 
 ## 8.1. Addons
 
-Ningún addon está adoptado todavía. Los candidatos son **Terrain3D 1.1.0** y **Cyclops Level Builder 1.5.2**, ambos MIT. Se instalan solo después de los spikes de F1, con versión fijada, licencia registrada y verificación de importación/exportación. `res://addons` queda excluido de las advertencias de GDScript (ver §5) y del lint de archivos nuevos.
+**Terrain3D 1.1.0** está instalado en `addons/terrain_3d` para el spike de F1.1, con adopción provisional para F2. **Cyclops Level Builder 1.5.2** sigue como candidato. Ambos son MIT; su versión, origen y licencia se registran en el addon y en la bitácora. `res://addons` queda excluido de las advertencias de GDScript (ver §5) y del lint de archivos nuevos.
 
 ## 8.2. Ajustes de mundo (previstos)
 

@@ -76,6 +76,12 @@ Comprobar una ruta entre dos regiones de navegación unidas por un enlace:
 godot --headless --path . --script res://tests/navigation_check.gd
 ```
 
+Comprobar que Terrain3D carga y que una heightmap mínima se puede consultar:
+
+```bash
+godot --headless --path . --script res://tests/terrain3d_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -218,6 +224,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `sector_streaming_check.gd` | Carga asíncrona de escenas reales, descarga por radio y sector siempre cargado |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
+| `terrain3d_check.gd` | Terrain3D carga, crea una región y devuelve la altura importada |
 
 ### 3.5. Pruebas de la campaña
 

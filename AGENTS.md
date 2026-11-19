@@ -12,7 +12,7 @@ La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está 
 
 ## 2. Fase actual
 
-**Fase 0 cerrada; F1 — Spikes técnicos en curso.** La base de reloj, estado, guardado, NPC, streaming y navegación (1.3–1.6) está implementada. Criterio de salida de F0: el fijado en [docs/05](docs/05_plan_de_implementacion.md) §Fase 0.
+**Fase 0 cerrada; F1 — Spikes técnicos en curso.** La base de Terrain3D (1.1), reloj, estado, guardado, NPC, streaming y navegación (1.3–1.6) está implementada. Criterio de salida de F0: el fijado en [docs/05](docs/05_plan_de_implementacion.md) §Fase 0.
 
 - Estado y criterios de fase: [docs/05](docs/05_plan_de_implementacion.md).
 - Tareas, dependencias y evidencia de F1: [ficha de F1](docs/fases/F1-spikes-tecnicos.md).

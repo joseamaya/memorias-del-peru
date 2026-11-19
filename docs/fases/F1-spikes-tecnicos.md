@@ -8,7 +8,7 @@
 
 | # | Spike | Estado | Criterio de paso | Evidencia |
 |---|---|---|---|---|
-| 1.1 | Terrain3D | Pendiente | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | Medición y captura |
+| 1.1 | Terrain3D | **Base implementada; adopción provisional** | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | `terrain3d_check`, `measure_terrain`; 113–115 FPS |
 | 1.2 | Cyclops | Pendiente | Blockout de una plaza y conversión a malla/colisión; export sin addon | Escena y captura |
 | 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
 | 1.4 | Navegación | **Base implementada** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check` |
@@ -86,14 +86,45 @@ godot --headless --path . --script res://tests/run_tests.gd
 - 20 NPC recorriendo llacta–manantial–paso sin atascos.
 - Coste de generación y actualización del navmesh.
 
+## 2.4. F1.1 — Terrain3D
+
+**Instalado:** Terrain3D 1.1.0 stable, MIT, en `addons/terrain_3d` (Linux, Windows y macOS; se retiraron Android/iOS/Web). Registro en `addons/terrain_3d/REGISTRO.md`.
+
+**Escena de prueba:** 512 × 512 m, 4 regiones de 256 m, 50 árboles y 20 NPC de relleno, sin texturas de terreno, edificios ni vegetación densa. Cámara en órbita fija; perfil por defecto (Medio), 1920 × 1080, vsync off.
+
+| Pasada | FPS medio | p1 | Frame ms | Draw calls | VRAM | Carga |
+|---|---|---|---|---|---|---|
+| 1 | 113,5 | 106,7 | 8,81 | 68 | 97,0 MB | 1,06 |
+| 2 | 114,0 | 103,4 | 8,77 | 68 | 97,0 MB | 0,98 |
+| 3 | 114,5 | 110,0 | 8,73 | 68 | 97,0 MB | 0,90 |
+
+**Línea base de malla simple:** 300 FPS (tope de la medición), 13 draw calls y 87,8 MB. La malla es mucho más simple; sirve para comprobar que la diferencia no es catastrófica, no como comparación exacta.
+
+**Colisión:** validada con un rayo vertical sobre el terreno en `terrain3d_check`.
+
+**Pendiente:** navmesh horneado sobre Terrain3D, texturas/materiales, vegetación densa, edificios, exportación Linux/Windows y sector real. La adopción definitiva se decide después de F2.
+
+**Decisión provisional:** adoptar Terrain3D para el blockout de F2, con el presupuesto de [docs/08](../../docs/08_entorno_y_rendimiento.md) §4.2 y el respaldo de malla si el sector real baja de 60 FPS Medio.
+
+**Comandos:**
+
+```bash
+godot --headless --path . --script res://tests/terrain3d_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_terrain.tscn -- --mode=terrain
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_terrain.tscn -- --mode=baseline
+```
+
 ## 3. Orden de trabajo
 
-1. Cerrar F1.6 con la integración mínima en la escena de prueba.
-2. Spike 1.1 Terrain3D: importar, colisionar, exportar y medir en la GPU de referencia.
-3. Spike 1.2 Cyclops: blockout y conversión.
-4. Spike 1.3 streaming con sectores de prueba.
-5. Spike 1.4 navegación y 1.5 NPC/horarios.
-6. Spike 1.7 presupuesto final por sector.
+1. **Hecho:** F1.6 base (reloj, estado y guardado).
+2. **Hecho:** F1.1 base (Terrain3D importa, colisiona y mide 113–115 FPS en la escena de prueba).
+3. **Siguiente:** F1.2 Cyclops y blockout sobre el terreno.
+4. F1.3 streaming con sectores de la región.
+5. F1.4 navmesh sobre Terrain3D y 20 NPC en ruta; F1.5 `NpcDirector` y LOD.
+6. F1.7 presupuesto final con arte y edificios.
+7. Exportación Linux/Windows con Terrain3D y prueba de humo.
 
 ## 4. Riesgos
 

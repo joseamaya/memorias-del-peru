@@ -143,6 +143,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/navigation_check.gd 2>&1 | tee /tmp/navigation.log
           python3 tools/check_output.py /tmp/navigation.log
 
+      - name: Terrain3D
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/terrain3d_check.gd 2>&1 | tee /tmp/terrain3d.log
+          python3 tools/check_output.py /tmp/terrain3d.log
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [guard, lint, test]
