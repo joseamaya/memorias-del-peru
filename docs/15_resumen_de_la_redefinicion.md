@@ -37,7 +37,7 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 ## 3. Estado del repositorio
 
 - **F0 entregada:** documentación redefinida; el PR queda pendiente de merge.
-- **F1 en curso:** la base de reloj, estado y guardado (1.6) y la definición/horario de NPC (1.5) están implementadas; 1.1–1.4, el resto de 1.5 y 1.7 están pendientes.
+- **F1 en curso:** la base de reloj, estado y guardado (1.6), la definición/horario de NPC (1.5) y el streaming de sectores (1.3) están implementados; 1.1, 1.2, 1.4, el resto de 1.3/1.5 y 1.7 están pendientes.
 - **F4-L y F5-L congeladas:** la versión lineal se conserva como historial y banco de pruebas.
 - **F2–F6 previstas:** geografía, vertical slice, producción, cierre y campañas II–IV.
 - **No adoptado:** Terrain3D y Cyclops son candidatos; su adopción depende de F1.

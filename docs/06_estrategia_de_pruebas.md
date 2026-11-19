@@ -64,6 +64,12 @@ cuando toca, que E abre y avanza la respuesta y que el flujo pasa al mensajero:
 godot --headless --path . --script res://tests/llacta_doubt_check.gd
 ```
 
+Comprobar la carga y descarga asíncrona de sectores con escenas reales:
+
+```bash
+godot --headless --path . --script res://tests/sector_streaming_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -202,6 +208,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
 | `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado y ciclo mundo/reloj/jugador |
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
+| `test_sector_streamer` | Celdas, radio de carga, distancia, siempre cargado y registro de definiciones |
+| `sector_streaming_check.gd` | Carga asíncrona de escenas reales, descarga por radio y sector siempre cargado |
 
 ### 3.5. Pruebas de la campaña
 
@@ -231,11 +239,10 @@ Una escena no se marca `Implementado` si su aceptación no se puede verificar. L
 
 ### 3.7. Mundo abierto (previstas, F1–F3)
 
-Estas pruebas **todavía no existen**, salvo las de reloj, estado, guardado y horario, que ya están en §3.4.1. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
+Estas pruebas **todavía no existen**, salvo las de reloj, estado, guardado, horario y streaming, que ya están en §3.4.1. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
 
 | Área | Prueba prevista | Criterio |
 |---|---|---|
-| Sectores | `test_sector_streamer` | Carga/descarga por radio, prioridad y memoria estable |
 | NPC LOD | `test_npc_lod` | Cerca/medio/lejos; límite de animados y de sombras |
 | Navegación | `test_navigation_route` | Ruta entre anclas, puerta y desnivel sin atascos |
 | Misiones | `test_quest_state` | Etapas, condiciones, consecuencias y guardado |

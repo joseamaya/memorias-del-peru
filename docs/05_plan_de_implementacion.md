@@ -69,7 +69,7 @@
 
 **Objetivo:** comprobar con medidas, no con suposiciones, que la arquitectura elegida funciona en Godot 4.7.2 y en la GPU integrada de referencia.
 
-**Estado:** 1.6 (reloj, estado y guardado) y la base de 1.5 (definición y horario de NPC) están implementadas y probadas; 1.1–1.4, el resto de 1.5 y 1.7 están pendientes. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
+**Estado:** 1.6 (reloj, estado y guardado), la base de 1.5 (definición y horario de NPC) y la base de 1.3 (streaming de sectores) están implementadas y probadas; 1.1, 1.2, 1.4, el resto de 1.3/1.5 y 1.7 están pendientes. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
 
 | # | Spike | Pregunta | Criterio de paso |
 |---|---|---|---|

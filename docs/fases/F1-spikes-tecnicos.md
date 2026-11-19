@@ -10,7 +10,7 @@
 |---|---|---|---|---|
 | 1.1 | Terrain3D | Pendiente | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | Medición y captura |
 | 1.2 | Cyclops | Pendiente | Blockout de una plaza y conversión a malla/colisión; export sin addon | Escena y captura |
-| 1.3 | Streaming | Pendiente | Carga/descarga sin hitches; < 150 ms por sector | Instrumentación |
+| 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
 | 1.4 | Navegación | Pendiente | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_route` |
 | 1.5 | NPC y horarios | **Base implementada** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`; `test_npc_lod` pendiente |
 | 1.6 | Guardado y reloj | **Base implementada** | Esquema versionado y round-trip de mundo/reloj/jugador | `test_world_clock`, `test_world_state`, `test_save_round_trip` |
@@ -54,6 +54,22 @@ godot --headless --path . --script res://tests/run_tests.gd
 - `NpcActor` conectado a la definición y al reloj.
 - 60 NPC con 25 animados y presupuesto medido.
 - Reanudación de rutina tras una secuencia controlada.
+
+## 2.2. F1.3 — Base de streaming de sectores
+
+**Implementado:**
+
+- `SectorDefinition`: id, escena, celda y `always_loaded`.
+- `SectorStreamer`: índice de sectores, celda por posición, radio de carga y descarga con histéresis, carga asíncrona con `ResourceLoader.load_threaded_request`, descarga y señales.
+- `tests/test_sector_streamer.gd`: celdas, radio, distancia, siempre cargado y registro.
+- `tests/sector_streaming_check.gd`: carga real de escenas, descarga y persistencia del sector siempre cargado.
+
+**Pendiente de F1.3:**
+
+- Medir tiempo de carga y hitch por sector con arte real.
+- Integrar sectores de la región (props, edificios, vegetación y NPC).
+- Cancelar cargas pendientes cuando el objetivo se aleja mucho.
+- Presupuesto de memoria en un recorrido de 10 min.
 
 ## 3. Orden de trabajo
 
