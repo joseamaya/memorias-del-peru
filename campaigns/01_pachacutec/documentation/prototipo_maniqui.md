@@ -2,9 +2,8 @@
 
 > Estado: **diez looks aprobados e integrados en las escenas**. La mano de
 > primera persona sigue **pendiente de revisión**: el responsable no está
-> conforme con su resultado. El elenco UBC ya no se carga en partida, pero sus
-> GLB, caras, pruebas y código de soporte quedan como legado hasta el lote de
-> retirada.
+> conforme con su resultado. El legado UBC se retiró; su documento histórico
+> se conserva en [personajes_quaternius.md](personajes_quaternius.md).
 
 ## 1. Qué se ha probado
 
@@ -124,8 +123,9 @@ Otras ideas que merece la pena conservar:
 6. ~~Integrar la mano en `FirstPersonHands` y en el arma.~~ **Hecho, pero
    pendiente de revisión:** el resultado actual no convence al responsable.
 7. Panel de objetivo: aprobado tal como está, sin temporizador ni rediseño.
-8. **Validación humana** de la fase 4: partida cronometrada, prueba de humo y
-   mezcla de audio escuchada.
+8. **Mezcla de audio escuchada y validación visual** (F4). La partida humana
+   cronometrada, el contraste de dificultad y la prueba de humo del build son
+   de la Fase 5.
 
 ## 5. Decisiones y riesgos
 
