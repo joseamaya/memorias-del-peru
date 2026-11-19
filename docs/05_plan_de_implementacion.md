@@ -170,4 +170,4 @@
 - [ ] Cero errores y cero advertencias de GDScript procedentes de `res://`.
 - [ ] Cero bloqueos de progreso.
 - [ ] La checklist de la biblia se supera en los cinco actos.
-- [ ] Informe de entrega con el formato de [AGENTS.md](../AGENTS.md) §5.
+- [ ] Informe de entrega con el formato de [AGENTS.md](../AGENTS.md) §7.

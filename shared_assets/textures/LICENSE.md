@@ -1,6 +1,6 @@
 # Licencias de texturas
 
-Toda textura de `shared_assets/textures/` se registra aquí con autor, origen, licencia y fecha de descarga. El proyecto exige licencia compatible con uso comercial y sin addons ([AGENTS.md](../../AGENTS.md) §3).
+Toda textura de `shared_assets/textures/` se registra aquí con autor, origen, licencia y fecha de descarga. El proyecto exige licencia compatible con uso comercial y sin addons ([AGENTS.md](../../AGENTS.md) §5).
 
 Las dos imágenes del juego son tiras verticales de 9 capas de 1024 × 1024 que Godot importa como `Texture2DArray` ([ADR-0014](../../docs/adr/0014-texturas-de-detalle-triplanares.md)):
 

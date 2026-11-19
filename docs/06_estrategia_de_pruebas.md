@@ -56,12 +56,20 @@ los botones reales:
 godot --headless --path . --script res://tests/llacta_messenger_check.gd
 ```
 
+Comprobar que la duda no se puede abrir antes de su paso, que el rayo la enfoca
+cuando toca, que E abre y avanza la respuesta y que el flujo pasa al mensajero:
+
+```bash
+godot --headless --path . --script res://tests/llacta_doubt_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`.
 
 La CI de GitHub Actions (`.github/workflows/ci.yml`) repite en cada push a `main`:
 importar, límites de GDScript, pruebas, comportamiento del combate, recorrido de la
-llacta, mensajero del acto I, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. Si la CI falla, la entrega no
-está terminada.
+llacta, mensajero y duda del acto I, arco completo y exportación de Linux/Windows;
+el build de Linux se arranca en headless. Si la CI falla, la entrega no está
+terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -121,6 +129,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_llacta_layout` | Caminos visibles, borde de plaza, manantial, mirador, fondo de valle y colisión de casa por variante |
 | `llacta_walk_check.gd` | Recorrido real de entrada, plaza, manantial, casa, mirador, pirca y corrales sin atascos |
 | `llacta_messenger_check.gd` | Desde la duda, el rayo enfoca al mensajero, se elige «Escuchar» y el paso pasa a la asamblea |
+| `llacta_doubt_check.gd` | La duda no se abre antes de su paso; el rayo la enfoca, E abre y avanza la respuesta y el flujo pasa al mensajero |
 | `test_act_one_tasks` | Tres encargos dan agua, maíz y manta, dejan el cuarto disponible y abren la duda |
 | `test_act_one_flow` | Recorrido de jugador nuevo: mañana, honda de tres aciertos, cuatro encargos, duda, mensajero y asamblea; lista, contador y marcadores solo cuando toca; el cuarto encargo no rebobina |
 | `test_assembly` | La duda abre el mensajero, la asamblea pregunta, la elección deja su bandera y aparece la tarjeta de fin |

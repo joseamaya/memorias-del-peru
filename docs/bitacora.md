@@ -2,7 +2,15 @@
 
 Registro cronológico de los cambios y decisiones del desarrollo. Una fila por entrega, con la fecha y el commit.
 
-La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`09` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §2). Conserva el porqué de lo que se hizo.
+La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`09` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §3). Conserva el porqué de lo que se hizo.
+
+## 2026-11-19
+
+| Cambio | Detalle | Commit |
+|---|---|---|
+| Reglas de trabajo por fase y PR | `AGENTS.md` pasa a 13 secciones: fase actual visible, stack fijado, plan previo para cambios importantes, tarea con criterio de aceptación, una rama y un PR, prohibición de adelantar fases, capas, verificación por alcance, informe con «no verificado» y autoridad de decisión. Se añade la plantilla de PR. Se corrigen las referencias a las secciones de `AGENTS.md` en `docs/00`, `docs/05`, `docs/bitacora.md` y los `LICENSE.md` de audio y texturas. Sin cambios de código; enlaces verificados. | — |
+| Duda del acto I con E | El `DudaPoint` estaba disponible desde la mañana; si el jugador lo abría antes de tiempo, el punto se consumía y el paso «Escucha la discusión» quedaba sin interacción: E no hacía nada. `ActOneDirector` lo habilita solo en el paso `Doubt` (`_set_doubt_available`). Prueba nueva `llacta_doubt_check.gd`: sin foco temprano, el rayo y la E reales abren la duda, la E avanza la respuesta y el flujo pasa al mensajero; añadida a CI y a `docs/06`. 141 pruebas, mensajero, recorrido y arco OK. | — |
+| Tráiler de redes | Se capturan 960 fotogramas por formato con cámara libre, HUD y manos ocultos, y se montan cuatro piezas: 35 s y 15 s en 9:16 y 16:9, con rótulos en español, subtítulos en inglés quemados, etalonaje, música «Over The Andes» (Pixabay, IA) y efectos del juego. La casa de Rumi da el antes/después (paño de ausencia → lumbre) sin revelar el final. Herramientas `tools/trailer_capture.gd`, `trailer_post.py`, `trailer_audio.sh` y `trailer_build.sh`; ficha en `docs/trailer_redes.md`; piezas en `build/trailer/` (ignorado por Git). Verificado con `ffprobe` y fotogramas clave; −13,9 LUFS. | — |
 
 ## 2026-11-18
 

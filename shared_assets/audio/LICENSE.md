@@ -1,6 +1,6 @@
 # Licencias de audio
 
-Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licencia y fecha de descarga. El proyecto exige licencia compatible con uso comercial y sin addons ([AGENTS.md](../../AGENTS.md) §3).
+Toda pieza de `shared_assets/audio/` se registra aquí con autor, origen, licencia y fecha de descarga. El proyecto exige licencia compatible con uso comercial y sin addons ([AGENTS.md](../../AGENTS.md) §5).
 
 | Archivo | Uso | Autor | Origen | Licencia | Añadido |
 |---|---|---|---|---|---|
