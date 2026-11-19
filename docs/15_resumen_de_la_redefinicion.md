@@ -37,7 +37,7 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 ## 3. Estado del repositorio
 
 - **F0 cerrada y aprobada:** documentación redefinida; sin cambios de código, escenas ni assets.
-- **F1 en curso:** la base de Terrain3D (1.1), Cyclops (1.2), reloj/estado/guardado (1.6), definición/horario de NPC (1.5), streaming (1.3) y navegación (1.4) están implementados; el sector gris integrado (256 m, pirca Cyclops, navmesh, 20 NPC y guardado) está medido a 89–94 FPS; el blockout real, el navmesh sobre el terreno y el resto de 1.1/1.3/1.4/1.5/1.7 están pendientes.
+- **F1 en curso:** la base de Terrain3D (1.1), Cyclops (1.2), reloj/estado/guardado (1.6), definición/horario de NPC (1.5), streaming (1.3) y navegación (1.4) están implementados. El sector gris integra 256 m de terreno, pirca Cyclops, 128 polígonos de navmesh sobre el relieve, 20 NPC que llegan caminando y guardado; la medición limpia (carga 3,3–3,7) da 94–95 FPS de media y 91–94 draw calls. Faltan el blockout real, el `NpcDirector` con LOD y el presupuesto de 1.7.
 - **F4-L y F5-L congeladas:** la versión lineal se conserva como historial y banco de pruebas.
 - **F2–F6 previstas:** geografía, vertical slice, producción, cierre y campañas II–IV.
 - **No adoptado:** Terrain3D y Cyclops son candidatos; su adopción depende de F1.

@@ -1,6 +1,6 @@
 extends SceneTree
-## Comprueba el sector gris de integración: Terrain3D, pirca Cyclops, navmesh,
-## 20 NPC con horario y guardado/carga.
+## Comprueba el sector gris de integración: Terrain3D, pirca Cyclops, navmesh
+## horneado sobre el terreno, 20 NPC en ruta y guardado/carga.
 
 const SCENE_PATH: String = "res://tests/scenes/grey_sector.tscn"
 
@@ -19,31 +19,86 @@ func _run() -> void:
 	root.add_child(sector)
 	for _i: int in 20:
 		await physics_frame
-	var npc_ok: bool = sector.get_npc_count() == 20
+	var ok: bool = sector.get_npc_count() == 20
 	var terrain: Terrain3D = sector.get_terrain()
-	var terrain_ok: bool = (
-		terrain != null and terrain.data != null and terrain.data.get_region_count() >= 1
-	)
+	ok = ok and terrain != null and terrain.data != null
+	ok = ok and terrain.data.get_region_count() >= 1
 	var block: CyclopsBlock = sector.get_cyclops_block()
-	var block_ok: bool = (
-		block != null and block.mesh_instance != null and block.mesh_instance.mesh != null
+	ok = ok and block != null and block.mesh_instance != null
+	ok = ok and block.mesh_instance.mesh != null
+	ok = ok and block.collision_shape != null and block.collision_shape.shape != null
+	ok = ok and _check_navmesh(sector)
+	ok = ok and _check_routes(sector)
+	ok = ok and _check_walk(sector)
+	ok = ok and _check_save_load()
+	var polygons: int = 0
+	if sector.get_navmesh() != null:
+		polygons = sector.get_navmesh().get_polygon_count()
+	sector.queue_free()
+	await process_frame
+	if ok:
+		print("GREY_SECTOR_OK npcs=20 navmesh_polys=", polygons)
+	else:
+		printerr("GREY_SECTOR_FAIL")
+	quit(0 if ok else 1)
+
+
+## El navmesh cubre el terreno y tiene relieve, no es una plaza plana.
+func _check_navmesh(sector: GreySector) -> bool:
+	var navmesh: NavigationMesh = sector.get_navmesh()
+	if navmesh == null or navmesh.get_polygon_count() <= 0:
+		return false
+	if sector.get_navigation_region() == null:
+		return false
+	var minimum: float = INF
+	var maximum: float = -INF
+	for vertex: Vector3 in navmesh.get_vertices():
+		minimum = minf(minimum, vertex.y)
+		maximum = maxf(maximum, vertex.y)
+	return minimum < 0.5 and maximum > 1.5
+
+
+## Las rutas llegan a pie hasta el campo y rodean la pirca.
+func _check_routes(sector: GreySector) -> bool:
+	var home: Vector3 = sector.get_anchor_position(&"casa")
+	var field: Vector3 = sector.get_anchor_position(&"campo")
+	var to_field: PackedVector3Array = sector.get_navmesh_path(home, field)
+	var field_ok: bool = to_field.size() >= 2 and to_field[to_field.size() - 1].y > 1.0
+	var detour: PackedVector3Array = sector.get_navmesh_path(
+		Vector3(0.0, 0.0, -10.0), Vector3(0.0, 0.0, -26.0)
 	)
-	block_ok = block_ok and block.collision_shape != null and block.collision_shape.shape != null
-	var path: PackedVector3Array = sector.get_navmesh_path(
-		Vector3(-20.0, 0.0, -20.0), Vector3(20.0, 0.0, 20.0)
-	)
-	var path_ok: bool = path.size() >= 2
-	var ok: bool = npc_ok and terrain_ok and block_ok and path_ok
+	var detour_ok: bool = false
+	for point: Vector3 in detour:
+		if absf(point.x) >= 3.5:
+			detour_ok = true
+	return field_ok and detour_ok
+
+
+## Los 20 NPC cambian de ancla y llegan caminando por el navmesh.
+func _check_walk(sector: GreySector) -> bool:
 	sector.update_npcs(200, true)
-	var home_anchor: StringName = sector.get_npc_anchor(0, 200)
-	var home_position: Vector3 = sector.get_npc_position(0)
-	ok = ok and home_anchor == &"casa"
-	ok = ok and home_position.distance_to(Vector3(-8.0, 0.9, 8.0)) < 0.1
-	sector.update_npcs(600, true)
-	var work_anchor: StringName = sector.get_npc_anchor(1, 600)
-	var work_position: Vector3 = sector.get_npc_position(1)
-	ok = ok and work_anchor == &"trabajo"
-	ok = ok and work_position.distance_to(Vector3(8.0, 0.9, -8.0)) < 0.1
+	if sector.get_npc_anchor(0, 200) != &"casa":
+		return false
+	if sector.get_npc_position(0).distance_to(sector.get_npc_goal_position(0)) > 0.1:
+		return false
+	sector.update_npcs(600, false)
+	if sector.get_npc_target(0) != &"campo" or sector.get_npc_target(1) != &"trabajo":
+		return false
+	sector.advance_npcs(90.0, 0.2)
+	var arrived: bool = true
+	for index: int in sector.get_npc_count():
+		if not sector.is_npc_at_target(index, 0.9):
+			arrived = false
+	var work_ok: bool = (
+		sector.get_npc_position(1).distance_to(sector.get_npc_goal_position(1)) < 0.9
+	)
+	var field_ok: bool = (
+		sector.get_npc_position(0).distance_to(sector.get_npc_goal_position(0)) < 0.9
+	)
+	return arrived and work_ok and field_ok
+
+
+func _check_save_load() -> bool:
 	var manager: SaveManagerService = SaveManagerService.new()
 	var world: WorldStateService = WorldStateService.new()
 	var clock: WorldClockService = WorldClockService.new()
@@ -54,7 +109,7 @@ func _run() -> void:
 	clock.set_time(2, 600.0)
 	var campaign: StringName = StringName("test_grey_%d" % Time.get_ticks_msec())
 	var slot: StringName = &"auto"
-	ok = ok and manager.save_world(campaign, slot, world, clock, {"npc_count": 20})
+	var ok: bool = manager.save_world(campaign, slot, world, clock, {"npc_count": 20})
 	var loaded_world: WorldStateService = WorldStateService.new()
 	var loaded_clock: WorldClockService = WorldClockService.new()
 	loaded_clock.autostart = false
@@ -73,10 +128,4 @@ func _run() -> void:
 	loaded_world.free()
 	loaded_clock.free()
 	manager.free()
-	sector.queue_free()
-	await process_frame
-	if ok:
-		print("GREY_SECTOR_OK npcs=20 path=", path.size())
-	else:
-		printerr("GREY_SECTOR_FAIL")
-	quit(0 if ok else 1)
+	return ok

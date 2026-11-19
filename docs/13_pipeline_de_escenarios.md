@@ -30,7 +30,7 @@
 
 La escena de prueba de 512 × 512 m, con 4 regiones de 256 m, 50 árboles y 20 NPC de relleno, midió **113–115 FPS de media** en perfil Medio, 68 draw calls y 97 MB de VRAM en la UHD 770. La colisión se validó con un rayo vertical. La malla simple de referencia quedó en 300 FPS (tope de la medición), 13 draw calls y 87,8 MB. El registro de la instalación y la licencia está en `addons/terrain_3d/REGISTRO.md`.
 
-**Decisión provisional:** adoptar Terrain3D para el blockout de F2. No es adopción definitiva: faltan texturas, vegetación densa, edificios, navmesh sobre el terreno, exportación Linux/Windows y el sector real. Si el sector real baja de 60 FPS Medio, se activa el respaldo de malla.
+**Decisión provisional:** adoptar Terrain3D para el blockout de F2. No es adopción definitiva: faltan texturas, vegetación densa, edificios, el sector real y la medición con el equipo descargado. El navmesh ya se hornea sobre el relieve (ver §3.5). Si el sector real baja de 60 FPS Medio, se activa el respaldo de malla.
 
 ### 2.2. Cyclops Level Builder
 
@@ -110,6 +110,12 @@ Validación histórica, visual, de rendimiento y de guardado
 4. `NavigationRegion3D` por sector; enlaces para puertas y desniveles.
 5. Luces, ambiente y audio por sector; sin duplicar `WorldEnvironment`.
 6. Pruebas de recorrido y de guardado.
+
+**Navmesh sobre Terrain3D.** El addon no expone su malla ni su colisión como nodos de escena: la colisión es un `Terrain3DCollision` con RID propio. Por eso no sirve `NavigationRegion3D.bake_navigation_mesh()` sobre el terreno. `core/world/terrain_navmesh.gd` muestrea la altura, construye una rejilla de triángulos con la orientación de Recast y hornea de forma síncrona con `NavigationMeshSourceGeometryData3D`. `NavmeshProfile` declara paso, radio de agente y pendiente. Los muros y edificios del blockout se declaran como huellas en XZ y se recortan con `add_projected_obstruction`; los que tengan malla propia pueden añadirse al horneado. En el sector gris, 120 × 120 m de terreno con la pirca recortada dieron 128 polígonos y una ruta que sube el relieve hasta el campo.
+
+```bash
+godot --headless --path . --script res://tests/grey_sector_check.gd
+```
 
 ## 4. Estructura de archivos propuesta
 

@@ -88,7 +88,7 @@ Auditoría de solo lectura sobre `main` (2026-11-19): estructura de carpetas, do
 | Terrain3D no rinde en UHD 770 o CI | Alto | Spike D1; respaldo con malla/LOD propio | F1 |
 | Sin streaming de regiones en Terrain3D 1.1 | Medio | Terreno siempre cargado; stream de props/NPC | F1 |
 | Cyclops rompe exportación | Medio | Solo blockout; conversión a malla; probar export | F1 |
-| Navmesh sobre terreno irregular | Alto | Horneado por sector; waypoints de respaldo | F1/F3 |
+| Navmesh sobre terreno irregular | Medio | Horneado por sector desde alturas + huellas de obstáculo; waypoints de respaldo | F1 hecho en sector gris; F2/F3 |
 | Guardado complejo y frágil | Alto | Esquema versionado y round-trip desde el inicio | F1 |
 | Contenido de NPC y misiones mucho mayor | Muy alto | Kits, datos, reutilización, densidad sobre escala | F3 |
 | Guion lineal no encaja | Alto | Fases del mismo mundo; secuencias controladas para clímax | F2 |

@@ -154,6 +154,8 @@ PlayerFPS (CharacterBody3D)
 | `SectorState` | Estado persistente del sector | Contenedores, puertas, props, NPC |
 | `InteriorManager` | Carga aditiva de interiores | `enter_interior`, `exit_interior` |
 | `NavigationService` | Consulta de rutas y enlaces; el navmesh lo aportan los sectores | `find_path`, `is_reachable`, `path_length`, `closest_point` |
+| `TerrainNavmesh` | Hornea el navmesh de un sector desde las alturas de Terrain3D y sus huellas de obstáculo | `bake`, `NavmeshProfile` |
+| `NpcMover` | Sigue una ruta de navegación con velocidad y altura de cuerpo | `set_path`, `advance`, `is_finished` |
 | `NpcDirector` | Spawn/despawn, LOD, horarios | `npc_spawned`, `npc_despawned`, `schedule_applied` |
 | `QuestDirector` | Estado de misiones | `quest_started`, `stage_changed`, `quest_completed` |
 | `WorldEventDirector` | Disparadores y secuencias | `event_started`, `event_finished` |
@@ -242,10 +244,11 @@ extends Resource
 
 ### 10.1. Navegación
 
-- `NavigationRegion3D` por sector, horneado en editor.
+- `NavigationRegion3D` por sector. El navmesh se hornea desde las alturas de Terrain3D con `TerrainNavmesh`: el addon no expone su malla ni su colisión como nodos de escena.
+- Los obstáculos del blockout se declaran como huellas en XZ y se recortan del navmesh; la geometría de edificios y muros puede añadirse al horneado por sector.
 - `NavigationAgent3D` para tier A; `NavigationObstacle3D` para obstáculos dinámicos.
 - Enlaces para puertas, escaleras y desniveles.
-- Respaldo: waypoints de ancla + movimiento local si el navmesh falla.
+- Respaldo: waypoints de ancla + movimiento local (`NpcMover`) si el navmesh falla.
 
 ### 10.2. Streaming
 
