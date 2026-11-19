@@ -11,7 +11,7 @@ La partida humana cronometrada de 40–50 min es criterio de la **Fase 5**, no d
 - Equilibrio numérico: salud, aliento, daño, munición y economía de objetos.
 - Rendimiento dentro del presupuesto de 350 draw calls y 60 FPS de mediana en la GPU de referencia.
 
-**Fuera de esta fase:** campañas II–IV, códice histórico, guardado en disco, mando físico, build de Windows probado en otra máquina y duración real de la campaña. Todo eso es Fase 5 o posterior.
+**Fuera de esta fase:** campañas II–IV, códice histórico y guardado en disco (posteriores a la campaña 01); mando físico, build de Windows probado en otra máquina y duración real de la campaña (Fase 5).
 
 ## 2. Tareas
 

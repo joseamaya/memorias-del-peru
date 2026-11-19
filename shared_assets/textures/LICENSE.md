@@ -2,7 +2,7 @@
 
 Toda textura de `shared_assets/textures/` se registra aquí con autor, origen, licencia y fecha de descarga. El proyecto exige licencia compatible con uso comercial y sin addons ([AGENTS.md](../../AGENTS.md) §5).
 
-Las dos imágenes del juego son tiras verticales de 9 capas de 1024 × 1024 que Godot importa como `Texture2DArray` ([ADR-0014](../../docs/adr/0014-texturas-de-detalle-triplanares.md)):
+Las dos imágenes del juego son tiras verticales de 9 capas de 1024 × 1024 que Godot importa como `Texture2DArray` (ADR-0014, histórico; registro en la [bitácora](../../docs/bitacora.md)):
 
 - `superficies_detalle.webp`: color de detalle **relativo a su media** (en lineal, × 0,5) en RGB y rugosidad en alfa. El color final lo pone la paleta del juego; la textura solo aporta la variación.
 - `superficies_normal.webp`: normales en convención OpenGL.
@@ -25,7 +25,7 @@ Los originales (mapas *Diffuse*, *nor_gl* y *Rough* a 1K, JPG) se descargaron de
 2. Rugosidad en el canal alfa.
 3. Unión de las 9 capas en una tira y guardado en WebP con calidad 92 (alfa 95), para que el repositorio no cargue 47 MB de PNG.
 
-La capa 4 se sustituyó el 2026-11-12 ([ADR-0020](../../docs/adr/0020-ropa-cortada-y-cosida.md)) por Fabric031 de ambientCG, descargada con permiso del responsable del proyecto (paquete *2K-JPG*, SHA-256 `64c3fb14…82f9`, no se versiona). Licencia CC0 1.0 según https://docs.ambientcg.com/license/. Se procesó con la misma receta, reduciendo los mapas *Color*, *Roughness* y *NormalGL* a 1024 × 1024.
+La capa 4 se sustituyó el 2026-11-12 (ADR-0020, histórico; registro en la [bitácora](../../docs/bitacora.md)) por Fabric031 de ambientCG, descargada con permiso del responsable del proyecto (paquete *2K-JPG*, SHA-256 `64c3fb14…82f9`, no se versiona). Licencia CC0 1.0 según https://docs.ambientcg.com/license/. Se procesó con la misma receta, reduciendo los mapas *Color*, *Roughness* y *NormalGL* a 1024 × 1024.
 
 ## Criterios
 

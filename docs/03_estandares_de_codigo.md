@@ -19,7 +19,7 @@ func calculate_damage(base_damage: float) -> float:
 | Constantes | `const NAME: Tipo = valor`. |
 | Parámetros y retorno | Todos tipados; `-> void` explícito. |
 | Variables de bucle | `for item: Tipo in coleccion:` |
-| Colecciones | `Array[T]` y `Dictionary[K, V]` siempre (la versión mínima, 4.4, admite ambos). |
+| Colecciones | `Array[T]` y `Dictionary[K, V]` siempre (Godot 4.7.2 admite ambos). |
 | `Variant` | Evitar. Si es inevitable (p. ej. datos de `JSON`), convertir de inmediato a un tipo concreto con comprobación. |
 | Conversiones | `as` seguido de comprobación de `null`, o `is` antes del cast. Nunca acceder a miembros de un resultado sin tipar. |
 | Nodos | `@onready var head: Node3D = $Head` (tipo explícito). Preferir `%NombreUnico` para nodos internos de una escena; nunca rutas absolutas `/root/...`. |
@@ -84,7 +84,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 - Funciones cortas (orientativo: ≤ 30 líneas) y con un solo nivel de abstracción.
 - Sin valores mágicos: `@export` para lo ajustable por diseño, `const` para lo fijo.
 - Sin lógica de negocio en escenas (`.tscn`): las escenas componen nodos; la lógica vive en scripts.
-- Sin código duplicado: si se repite en dos campañas, se evalúa moverlo a Core (con ADR si cambia contratos).
+- Sin código duplicado: si se repite en dos campañas, se evalúa moverlo a Core (con una entrada en la bitácora si cambia contratos).
 - Documentar con `##` toda clase pública y todo método público de Core (aparece en la ayuda del editor).
 
 ## 5. Control de versiones
@@ -92,4 +92,4 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 - Mensajes de commit en español, en imperativo, con prefijo de área: `core(player): añade head bobbing`, `docs: …`, `pachacutec(world): …`.
 - Un commit = un cambio coherente.
 - `.godot/` no se versiona; los archivos `*.import` sí (necesarios para reproducir la importación en Godot 4).
-- Los archivos `*.uid` generados por Godot 4.4+ también se versionan: estabilizan las referencias entre recursos.
+- Los archivos `*.uid` generados por Godot 4.4+ (el proyecto usa 4.7.2) también se versionan: estabilizan las referencias entre recursos.

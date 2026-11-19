@@ -2,7 +2,7 @@
 
 Este documento define **qué** debe contener `project.godot`. El archivo se creó desde el editor de la versión instalada y se ajusta a mano, para que `config_version` y las claves coincidan exactamente con esa versión.
 
-> Claves verificadas con **Godot 4.7.2** el 2026-11-10 (versión fijada en ADR-0002).
+> Claves verificadas con **Godot 4.7.2** el 2026-11-10 (versión fijada; ADR-0002, histórico).
 
 ## 1. Aplicación
 
@@ -60,7 +60,7 @@ Verificación obligatoria: una prueba automatizada comprueba que cada acción ex
 
 Valores: `0` = ignorar, `1` = advertencia, `2` = error.
 
-**Política:** ninguna categoría queda en `1`. Cada una es un error que bloquea (`2`) o se ignora (`0`) con motivo documentado. Lista completa revisada con **Godot 4.7.2** el 2026-11-10; cambiar una categoría requiere ADR.
+**Política:** ninguna categoría queda en `1`. Cada una es un error que bloquea (`2`) o se ignora (`0`) con motivo documentado. Lista completa revisada con **Godot 4.7.2** el 2026-11-10; cambiar una categoría requiere decisión del responsable y entrada en la bitácora.
 
 | Clave (`debug/gdscript/warnings/…`) | Valor | Propósito |
 |---|---|---|
