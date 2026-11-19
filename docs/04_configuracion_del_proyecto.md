@@ -152,16 +152,16 @@ Un autoload solo se registra en `project.godot` cuando tiene una responsabilidad
 | `GraphicsSettings` | `res://core/systems/graphics/graphics_settings.gd` | 3 |
 | `CampaignState` | `res://core/autoload/campaign_state.gd` | 3 |
 | `SessionLog` | `res://core/autoload/session_log.gd` | 3 |
-| `SaveManager` | `res://core/autoload/save_manager.gd` | F1 |
-| `WorldClock` | `res://core/world/world_clock.gd` | F1 |
-| `WorldState` | `res://core/world/world_state.gd` | F1 |
+| `SaveManager` | `res://core/save/save_manager.gd` | F1.6 |
+| `WorldClock` | `res://core/world/world_clock.gd` | F1.6 |
+| `WorldState` | `res://core/world/world_state.gd` | F1.6 |
 | `ContentRegistry` | `res://core/systems/campaigns/content_registry.gd` | F1 |
 
-> **Estado:** los cinco primeros están implementados. Los cuatro de F1 son la configuración prevista; no se registran hasta que existan con sus pruebas y el responsable apruebe el sistema.
+> **Estado:** los cinco primeros y los tres de F1.6 están implementados y registrados. `ContentRegistry` sigue previsto. Los autoloads nuevos se prueban en `test_world_clock`, `test_world_state` y `test_save_round_trip`.
 
 ## 8.1. Addons
 
-Ningún addon está adoptado todavía. Los candidatos son **Terrain3D 1.1.0** y **Cyclops Level Builder 1.5.2**, ambos MIT. Se instalan solo después de los spikes de F1, con versión fijada, licencia registrada y verificación de importación/exportación. `res://addons` queda excluido de las advertencias de GDScript (ver §5) y del lint de archivos nuevos.
+**Terrain3D 1.1.0** está instalado en `addons/terrain_3d` para el spike de F1.1, con adopción provisional para F2. **Cyclops Level Builder 1.5.2** sigue como candidato. Ambos son MIT; su versión, origen y licencia se registran en el addon y en la bitácora. `res://addons` queda excluido de las advertencias de GDScript (ver §5) y del lint de archivos nuevos.
 
 ## 8.2. Ajustes de mundo (previstos)
 

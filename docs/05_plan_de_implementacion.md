@@ -2,7 +2,7 @@
 
 > La prioridad es el mundo habitable y su aspecto; las únicas reglas duras son licencias/procedencia, rigor histórico y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** **Fase 0 cerrada; F1 — Spikes técnicos como siguiente fase.** El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
+**Fase activa:** **F1 — Spikes técnicos.** La F0 está cerrada y aprobada. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
 
 ## Estado
 
@@ -15,7 +15,7 @@
 | F4-L — Arte, audio y equilibrio (lineal) | **Congelada** | — |
 | F5-L — Validación y cierre (lineal) | **Congelada** | — |
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
-| F1 — Spikes técnicos | Siguiente | — |
+| **F1 — Spikes técnicos** | **En curso** (1.3–1.6 base) | — |
 | F2 — Geografía y blockout | Prevista | — |
 | F3 — Vertical slice | Prevista | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
@@ -65,9 +65,11 @@
 
 ## Fase 1 — Spikes técnicos
 
-**Precondiciones:** F0 cerrada y aprobada.
+**Precondiciones:** F0 entregada y aprobada por el responsable; PR de documentación pendiente de merge.
 
 **Objetivo:** comprobar con medidas, no con suposiciones, que la arquitectura elegida funciona en Godot 4.7.2 y en la GPU integrada de referencia.
+
+**Estado:** 1.6 (reloj, estado y guardado), la base de 1.5 (definición y horario de NPC), la base de 1.3 (streaming de sectores), la base de 1.4 (navegación) y la base de 1.1 (Terrain3D: 113–115 FPS en escena de prueba) están implementadas y probadas; 1.2, el resto de 1.1/1.3/1.4/1.5 y 1.7 están pendientes. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
 
 | # | Spike | Pregunta | Criterio de paso |
 |---|---|---|---|
