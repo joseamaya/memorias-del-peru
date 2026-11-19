@@ -11,7 +11,7 @@
 | 1.1 | Terrain3D | **Base implementada; adopción provisional** | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | `terrain3d_check`, `measure_terrain`; 113–115 FPS |
 | 1.2 | Cyclops | **Base implementada** | Blockout de una plaza y conversión a malla/colisión; export sin addon | `cyclops_probe`; cubo convertido a malla y colisión |
 | 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
-| 1.4 | Navegación | **Base implementada** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check` |
+| 1.4 | Navegación | **Implementada en el sector gris** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check`, `grey_sector_check`; navmesh sobre el terreno y 20 NPC que llegan caminando |
 | 1.5 | NPC y horarios | **Base implementada** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`; `test_npc_lod` pendiente |
 | 1.6 | Guardado y reloj | **Base implementada** | Esquema versionado y round-trip de mundo/reloj/jugador | `test_world_clock`, `test_world_state`, `test_save_round_trip` |
 | 1.7 | Rendimiento | Pendiente | ≤ 350 draw calls, ≤ 250 MB VRAM, 30/60 FPS, hitch < 50 ms | `scene_audit`, `measure_performance` |
@@ -76,15 +76,18 @@ godot --headless --path . --script res://tests/run_tests.gd
 **Implementado:**
 
 - `NavigationService`: mapa del `World3D`, ruta entre puntos, comprobación de alcance, longitud y punto más cercano.
+- `TerrainNavmesh` y `NavmeshProfile`: horneado síncrono sobre 120 × 120 m de Terrain3D, con huellas de obstáculo recortadas.
+- `NpcMover`: seguimiento de ruta por tramos, con altura de cuerpo y fin de trayecto.
 - `tests/test_navigation_service.gd`: consulta fuera del árbol y longitud.
+- `tests/test_npc_mover.gd`: avance por tramos, altura, fin de ruta y ruta vacía.
 - `tests/navigation_check.gd`: dos regiones de navegación separadas por un hueco de 5 m, unidas por `NavigationLink3D`, con ruta completa.
+- `tests/grey_sector_check.gd`: navmesh de 128 polígonos sobre el terreno, ruta hasta el campo con relieve, desvío alrededor de la pirca y 20 NPC que llegan caminando.
 
 **Pendiente de F1.4:**
 
-- Navmesh horneado por sector sobre el terreno real.
+- Ruta real llacta–manantial–paso de la campaña (F2).
 - Enlaces de puertas, escaleras y desniveles en la región.
-- 20 NPC recorriendo llacta–manantial–paso sin atascos.
-- Coste de generación y actualización del navmesh.
+- Coste de generación y actualización del navmesh con el sector real y streaming.
 
 ## 2.4. F1.1 — Terrain3D
 
@@ -134,19 +137,25 @@ godot --headless --path . --script res://tests/cyclops_probe.gd
 
 ## 2.6. Sector gris de integración (F1.3–F1.5)
 
-**Escena:** `tests/scenes/grey_sector.tscn`, 256 m de Terrain3D, pirca de Cyclops convertida a malla/colisión, plaza con navmesh, 20 NPC con horario y cámara en órbita.
+**Escena:** `tests/scenes/grey_sector.tscn`, 256 m de Terrain3D, pirca de Cyclops convertida a malla/colisión, navmesh horneado sobre el terreno y 20 NPC que caminan por él.
 
-**Comprobación:** `grey_sector_check` valida 20 NPC, región de terreno, malla y colisión de la pirca, ruta de navegación, cambio de ancla por hora y guardado/carga de fase, bandera y reloj. Salida: `GREY_SECTOR_OK npcs=20 path=2`.
+**Navmesh sobre el terreno.** Terrain3D no expone su malla ni su colisión como nodos: la colisión es un `Terrain3DCollision` con RID propio, fuera del árbol. Por eso `NavigationRegion3D.bake_navigation_mesh()` no puede verla. `core/world/terrain_navmesh.gd` muestrea la altura del terreno, construye la geometría con la orientación que espera Recast y hornea de forma síncrona. `NavmeshProfile` declara paso, radio, altura, pendiente y resolución. Los obstáculos se declaran como huellas en XZ (`add_projected_obstruction` con recorte); la pirca recorta su huella y obliga a rodearla.
 
-**Medición:** tres pasadas a 1920 × 1080, perfil Medio, vsync off, con carga del equipo 4,5–5,1:
+**Rutas.** `core/npc/npc_mover.gd` sigue una ruta con velocidad, altura de cuerpo y final de trayecto. El sector pide la ruta a `NavigationService` cuando el horario cambia de ancla y avanza la simulación con `advance_npcs(segundos, paso)`, de forma determinista para las pruebas.
+
+**Comprobación:** `grey_sector_check` valida 20 NPC, región de terreno, malla y colisión de la pirca, 128 polígonos de navmesh con relieve (de −0,02 a 2,73 m), ruta hasta el campo con altura creciente, desvío alrededor de la pirca, llegada caminando de los 20 NPC y guardado/carga de fase, bandera y reloj. Salida: `GREY_SECTOR_OK npcs=20 navmesh_polys=128`.
+
+**Medición:** tres pasadas a 1920 × 1080, perfil Medio, vsync off, con carga del equipo 3,3–3,7:
 
 | Pasada | FPS medio | p1 | Draw calls | VRAM |
 |---|---|---|---|---|
-| 1 | 94,1 | 90,0 | 116 | 98,7 MB |
-| 2 | 89,2 | 77,6 | 118 | 98,7 MB |
-| 3 | 89,6 | 82,9 | 118 | 98,7 MB |
+| 1 | 94,2 | 82,5 | 91 | 98,7 MB |
+| 2 | 94,8 | 94,3 | 94 | 98,7 MB |
+| 3 | 95,0 | 90,0 | 94 | 98,7 MB |
 
-**Pendiente:** navmesh horneado sobre el terreno real (la plaza usa una malla plana), ruta de 20 NPC entre sectores, edificios y texturas. La carga alta del equipo obliga a repetir la medición en F2.
+Las pasadas con carga 32–38 (68,8–92,8 FPS) se descartaron por contención del equipo; la escena de terreno sola también bajó de 113–115 a 86,9 FPS en esa franja. La medición se repite en F1.7 con arte y edificios.
+
+**Pendiente:** ruta real llacta–manantial–paso de la campaña, edificios y texturas, horneado por sector con streaming y `NpcDirector` con LOD.
 
 **Comandos:**
 
@@ -154,15 +163,18 @@ godot --headless --path . --script res://tests/cyclops_probe.gd
 godot --headless --path . --script res://tests/grey_sector_check.gd
 godot --path . --disable-vsync --resolution 1920x1080 \
     res://tests/scenes/measure_grey_sector.tscn
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_grey_sector.tscn
 ```
 
+La captura queda en `build/evidencia/grey_sector_nav.png` (ignorada por Git).
 ## 3. Orden de trabajo
 
 1. **Hecho:** F1.6 base (reloj, estado y guardado).
 2. **Hecho:** F1.1 base (Terrain3D importa, colisiona y mide 113–115 FPS en la escena de prueba).
 3. **Hecho:** F1.2 base (Cyclops convierte un bloque en malla y colisión).
-4. **Siguiente:** blockout real de plaza/pirca y sector de prueba con streaming y navmesh.
-5. F1.4 navmesh sobre Terrain3D y 20 NPC en ruta; F1.5 `NpcDirector` y LOD.
+4. **Hecho:** F1.3–F1.4 en el sector gris (streaming base, navmesh sobre el terreno, 20 NPC en ruta y guardado).
+5. **Siguiente:** F1.5 `NpcDirector` y LOD con 60 NPC; blockout real de plaza/pirca.
 6. F1.7 presupuesto final con arte y edificios.
 7. Exportación Linux/Windows con ambos addons y prueba de humo.
 

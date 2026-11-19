@@ -1,29 +1,41 @@
 class_name GreySector
 extends Node3D
-## Sector gris de integración F1: Terrain3D, pirca de Cyclops, navmesh,
-## 20 NPC con horario y reloj de mundo.
+## Sector gris de integración F1: Terrain3D, pirca de Cyclops, navmesh
+## horneado sobre el terreno, 20 NPC en ruta y reloj de mundo.
 ##
 ## No es contenido de campaña: es una escena de prueba para comprobar que los
 ## sistemas conviven antes del blockout de F2.
 
+const NPC_SPEED: float = 1.6
+const BODY_OFFSET: float = 0.9
+## Radio del corro en el que se reparten los NPC alrededor de un ancla.
+const ANCHOR_RADIUS: float = 1.6
+const ANCHOR_RING_STEP: float = 0.65
+
 @export var npc_count: int = 20
 @export var terrain_size: int = 256
+@export var navmesh_bounds: AABB = AABB(Vector3(-60.0, -2.0, -60.0), Vector3(120.0, 10.0, 120.0))
 
 var _terrain: Terrain3D = null
 var _navigation: NavigationService = null
+var _navigation_region: NavigationRegion3D = null
+var _navmesh: NavigationMesh = null
 var _cyclops_block: CyclopsBlock = null
 var _npc_nodes: Array[Node3D] = []
+var _movers: Array[NpcMover] = []
+var _targets: Array[StringName] = []
 var _definitions: Array[NpcDefinition] = []
 var _anchors: Dictionary[StringName, Vector3] = {}
 var _camera: Camera3D = null
+var _minute: int = 360
 
 
 func _ready() -> void:
 	_build_environment()
 	_build_camera()
 	_build_terrain()
-	_build_navigation()
 	_build_pirca()
+	_build_navigation()
 	_build_npcs()
 	set_process(true)
 
@@ -40,7 +52,17 @@ func _process(delta: float) -> void:
 
 ## Actualiza los NPC a la hora indicada. Con `immediate`, los coloca en el ancla.
 func update_npcs(minute: int, immediate: bool = false) -> void:
-	_update_npcs(minute, 0.0 if immediate else 0.05, immediate)
+	_update_npcs(minute, 0.0, immediate)
+
+
+## Avanza la simulación de caminata sin depender del reloj real.
+func advance_npcs(seconds: float, step: float = 0.2) -> void:
+	var safe_step: float = maxf(step, 0.02)
+	var elapsed: float = 0.0
+	while elapsed < seconds:
+		var slice: float = minf(safe_step, seconds - elapsed)
+		_update_npcs(_minute, slice, false)
+		elapsed += slice
 
 
 func get_npc_count() -> int:
@@ -59,10 +81,46 @@ func get_npc_anchor(index: int, minute: int) -> StringName:
 	return _definitions[index].get_anchor(minute)
 
 
+func get_npc_target(index: int) -> StringName:
+	if index < 0 or index >= _targets.size():
+		return &""
+	return _targets[index]
+
+
+## Indica si el NPC ya está en el ancla de su horario.
+func is_npc_at_target(index: int, tolerance: float = 0.6) -> bool:
+	if index < 0 or index >= _npc_nodes.size() or index >= _targets.size():
+		return false
+	if not _anchors.has(_targets[index]):
+		return false
+	return _npc_nodes[index].position.distance_to(_goal_for(index, _targets[index])) <= tolerance
+
+
+## Punto concreto del corro de un NPC en su ancla actual.
+func get_npc_goal_position(index: int) -> Vector3:
+	if index < 0 or index >= _targets.size() or not _anchors.has(_targets[index]):
+		return Vector3.ZERO
+	return _goal_for(index, _targets[index])
+
+
+func get_anchor_position(anchor_id: StringName) -> Vector3:
+	if _anchors.has(anchor_id):
+		return _anchors[anchor_id]
+	return Vector3.ZERO
+
+
 func get_navmesh_path(from: Vector3, to: Vector3) -> PackedVector3Array:
 	if _navigation == null:
 		return PackedVector3Array()
 	return _navigation.find_path(from, to)
+
+
+func get_navmesh() -> NavigationMesh:
+	return _navmesh
+
+
+func get_navigation_region() -> NavigationRegion3D:
+	return _navigation_region
 
 
 func get_terrain() -> Terrain3D:
@@ -131,26 +189,17 @@ func _build_terrain() -> void:
 
 
 func _build_navigation() -> void:
-	var navmesh: NavigationMesh = NavigationMesh.new()
-	(
-		navmesh
-		. set_vertices(
-			PackedVector3Array(
-				[
-					Vector3(-36.0, 0.0, -36.0),
-					Vector3(36.0, 0.0, -36.0),
-					Vector3(36.0, 0.0, 36.0),
-					Vector3(-36.0, 0.0, 36.0),
-				]
-			)
-		)
-	)
-	navmesh.add_polygon(PackedInt32Array([0, 1, 2]))
-	navmesh.add_polygon(PackedInt32Array([0, 2, 3]))
-	var region: NavigationRegion3D = NavigationRegion3D.new()
-	region.name = "PlazaNavigation"
-	region.navigation_mesh = navmesh
-	add_child(region)
+	var obstacles: Array[PackedVector3Array] = [_pirca_footprint()]
+	var profile: NavmeshProfile = NavmeshProfile.new()
+	profile.step = 2.0
+	_navmesh = TerrainNavmesh.bake(_terrain, navmesh_bounds, profile, obstacles)
+	if _navmesh == null:
+		push_error("GreySector: no se pudo hornear el navmesh.")
+		return
+	_navigation_region = NavigationRegion3D.new()
+	_navigation_region.name = "TerrainNavigation"
+	_navigation_region.navigation_mesh = _navmesh
+	add_child(_navigation_region)
 	_navigation = NavigationService.new()
 	_navigation.name = "NavigationService"
 	add_child(_navigation)
@@ -165,13 +214,33 @@ func _build_pirca() -> void:
 	add_child(_cyclops_block)
 
 
-func _build_npcs() -> void:
+## Huella en XZ de la pirca: recorta el navmesh para que nadie la atraviese.
+func _pirca_footprint() -> PackedVector3Array:
+	return PackedVector3Array(
+		[
+			Vector3(-4.0, 0.0, -18.3),
+			Vector3(4.0, 0.0, -18.3),
+			Vector3(4.0, 0.0, -17.7),
+			Vector3(-4.0, 0.0, -17.7),
+		]
+	)
+
+
+func _build_anchors() -> void:
 	_anchors = {
-		&"casa": Vector3(-8.0, 0.9, 8.0),
-		&"trabajo": Vector3(8.0, 0.9, -8.0),
-		&"plaza": Vector3(0.0, 0.9, 0.0),
-		&"campo": Vector3(18.0, 0.9, 14.0),
+		&"casa": _anchor(-12.0, 10.0),
+		&"trabajo": _anchor(26.0, -18.0),
+		&"plaza": _anchor(0.0, 0.0),
+		&"campo": _anchor(44.0, 32.0),
 	}
+
+
+func _anchor(x: float, z: float) -> Vector3:
+	return Vector3(x, height_at(x, z) + BODY_OFFSET, z)
+
+
+func _build_npcs() -> void:
+	_build_anchors()
 	for index: int in npc_count:
 		var definition: NpcDefinition = NpcDefinition.new()
 		definition.id = StringName("npc_gris_%d" % index)
@@ -197,22 +266,55 @@ func _build_npcs() -> void:
 		npc.add_child(mesh)
 		add_child(npc)
 		_npc_nodes.append(npc)
+		var mover: NpcMover = NpcMover.new()
+		mover.speed = NPC_SPEED
+		mover.body_offset = BODY_OFFSET
+		_movers.append(mover)
+		_targets.append(&"")
 	var clock: WorldClockService = WorldClockService.instance()
 	var minute: int = clock.get_minute_of_day() if clock != null else 360
 	_update_npcs(minute, 0.0, true)
 
 
 func _update_npcs(minute: int, delta: float, immediate: bool = false) -> void:
+	_minute = minute
 	for index: int in _npc_nodes.size():
 		var anchor_id: StringName = _definitions[index].get_anchor(minute)
-		var target: Vector3 = _anchors[&"plaza"]
-		if _anchors.has(anchor_id):
-			target = _anchors[anchor_id]
+		if not _anchors.has(anchor_id):
+			anchor_id = &"plaza"
 		var npc: Node3D = _npc_nodes[index]
-		if immediate or delta <= 0.0:
-			npc.position = target
-		else:
-			npc.position = npc.position.move_toward(target, 2.0 * delta)
+		var goal: Vector3 = _goal_for(index, anchor_id)
+		if immediate:
+			npc.position = goal
+			_targets[index] = anchor_id
+			_movers[index].set_path(PackedVector3Array())
+			continue
+		if _targets[index] != anchor_id:
+			_targets[index] = anchor_id
+			_begin_path(index, goal)
+		if delta > 0.0:
+			_movers[index].advance(npc, delta)
+
+
+## Reparte el grupo en un corro alrededor del ancla para que no se apilen.
+func _goal_for(index: int, anchor_id: StringName) -> Vector3:
+	var base: Vector3 = _anchors[&"plaza"]
+	if _anchors.has(anchor_id):
+		base = _anchors[anchor_id]
+	var radius: float = ANCHOR_RADIUS + float(index % 4) * ANCHOR_RING_STEP
+	var angle: float = float(index) * 2.399963
+	return base + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
+
+
+func _begin_path(index: int, target: Vector3) -> void:
+	var npc: Node3D = _npc_nodes[index]
+	var origin: Vector3 = Vector3(npc.position.x, target.y, npc.position.z)
+	var path: PackedVector3Array = PackedVector3Array()
+	if _navigation != null:
+		path = _navigation.find_path(origin, target)
+	if path.is_empty():
+		path = PackedVector3Array([target])
+	_movers[index].set_path(path)
 
 
 func _entry(start: int, end: int, anchor: StringName, activity: StringName) -> ScheduleEntry:
