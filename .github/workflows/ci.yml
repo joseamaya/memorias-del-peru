@@ -179,6 +179,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/route_network_check.gd 2>&1 | tee /tmp/routes.log
           python3 tools/check_output.py /tmp/routes.log
 
+      - name: Blockout de la llacta
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/llacta_blockout_check.gd 2>&1 | tee /tmp/llacta.log
+          python3 tools/check_output.py /tmp/llacta.log
+
       - name: LOD de 60 NPC
         run: |
           set -o pipefail

@@ -12,7 +12,7 @@
 | 2.1 | Heightmap regional | **Base implementada** | 3,5 × 2,5 km con valle, río, quebrada, paso y cumbres; alturas por sector | `region_terrain_check`, captura aérea |
 | 2.2 | Sectores y streaming | **Base implementada** | Seis sectores con función y presupuesto; carga sin pantallas | `region_streaming_check`; 6 escenas, 3 cargadas en la llacta |
 | 2.3 | Rutas | **Base implementada** | R1–R8 conectan los sectores; navmesh por sector | `route_network_check`; 8 rutas, 6 navmeshes y rutas continuas |
-| 2.4 | S3 Llacta de Rumi | Pendiente | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | Captura y presupuesto |
+| 2.4 | S3 Llacta de Rumi | **Base implementada** | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | `llacta_blockout_check`; 17 casas, 9 POI, 120 draw calls |
 | 2.5 | S1 Cusco preimperial | Pendiente | Plaza, recinto, ayllus, mercado y talleres en blockout | Captura y presupuesto |
 | 2.6 | S4–S6 | Pendiente | Quebrada, paso y frontera con POI y límites naturales | Captura y presupuesto |
 | 2.7 | POI y descubrimiento | Pendiente | 30 POI con ID, función, clasificación y disparador | `DiscoveryRegistry` |
@@ -122,12 +122,41 @@ godot --path . --resolution 1280x720 \
 
 La captura queda en `build/evidencia/routes.png`.
 
+## 2.4. F2.4 — S3 Llacta de Rumi
+
+**Escena:** `campaigns/01_pachacutec/scenes/world/sectors/s3_llacta.tscn`; se carga con el sector S3 sobre el terreno regional.
+
+**Contenido de blockout:**
+
+- Plaza circular de 18 m de radio y 17 casas: 12 en anillo exterior, 4 interiores y la casa de Rumi.
+- Casa de Rumi, casa del curaca, telar, corral, manantial, acequia, huerto, horno de cerámica y fogón.
+- Nueve etiquetas de POI: 01–08 y el huerto (POI-10).
+- 20 cuerpos estáticos de colisión en casas, corral y plataformas.
+- Los caminos R1, R2, R3 y R7 salen de la plaza; las casas se colocan fuera del anillo de 21 m para no bloquear las salidas.
+
+**Comprobación:** `llacta_blockout_check` valida 17 casas, 9 POI, 69 mallas, 20 colisiones, la plaza despejada y rutas al manantial y a las afueras. Salida: `LLACTA_OK houses=17 pois=9`.
+
+**Medición:** tres pasadas a 1920 × 1080, perfil Medio, vsync off, carga 18–30: **78,0/81,3/85,3 FPS** de media, p1 59,7–76,5, **120 draw calls** y **152 MB** de VRAM. Dentro del presupuesto de 300 draw calls y 250 MB.
+
+**Pendiente:** interiores transitables, materiales definitivos, conversión a malla final, rutinas de NPC y POI con descubrimiento. La geometría es de blockout.
+
+```bash
+godot --headless --path . --script res://tests/llacta_blockout_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_llacta.tscn
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_llacta_blockout.tscn
+```
+
+La captura queda en `build/evidencia/llacta_blockout.png`.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
 2. **Hecho:** F2.2 base (seis sectores y streaming sin pantallas).
 3. **Hecho:** F2.3 base (ocho rutas y navmesh por sector con enlaces).
-4. **Siguiente:** F2.4–F2.6 blockout de sectores.
+4. **Hecho:** F2.4 base (blockout de S3 con 17 casas y nueve POI).
+5. **Siguiente:** F2.5 Cusco preimperial y F2.6 S4–S6.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 

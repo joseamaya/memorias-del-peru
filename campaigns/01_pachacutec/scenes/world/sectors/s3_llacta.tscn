@@ -1,11 +1,7 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/sector_marker.gd" id="1_marker"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/llacta_blockout.gd" id="1_llacta"]
 
 [node name="S3Llacta" type="Node3D"]
-position = Vector3(300.0, 0, 0.0)
-script = ExtResource("1_marker")
-sector_id = &"s3_llacta"
-display_name = "S3 · Llacta de Rumi"
-classification = "GN"
-color = Color(0.8, 0.55, 0.3, 1)
+position = Vector3(300, 0, 0)
+script = ExtResource("1_llacta")
