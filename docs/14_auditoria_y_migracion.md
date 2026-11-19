@@ -95,7 +95,7 @@ Auditoría de solo lectura sobre `main` (2026-11-19): estructura de carpetas, do
 | Pérdida de rigor histórico al inventar geografía | Alto | GD/GR/GN; revisión externa | F2 |
 | Región III/IV mal elegida | Alto | Expediente comparativo antes de fijar | F2 |
 | Pruebas de actos se rompen | Medio | Suite legacy hasta sustituir escenas | F3 |
-| Rendimiento de multitudes y sombras | Alto | LOD, MultiMesh, sombras selectivas, límite de animados | F1/F3 |
+| Rendimiento de multitudes y sombras | Medio | LOD probado con 60 activos y 25 animados; MultiMesh y sombras selectivas pendientes | F1/F3 |
 | Equipo pequeño y tiempo | Muy alto | Gates, recortes definidos, no abrir II–IV | Todas |
 
 ## 9. Recortes, en orden

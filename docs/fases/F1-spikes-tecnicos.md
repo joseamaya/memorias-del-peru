@@ -12,7 +12,7 @@
 | 1.2 | Cyclops | **Base implementada** | Blockout de una plaza y conversión a malla/colisión; export sin addon | `cyclops_probe`; cubo convertido a malla y colisión |
 | 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
 | 1.4 | Navegación | **Implementada en el sector gris** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check`, `grey_sector_check`; navmesh sobre el terreno y 20 NPC que llegan caminando |
-| 1.5 | NPC y horarios | **Base implementada** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`; `test_npc_lod` pendiente |
+| 1.5 | NPC y horarios | **Implementada en el sector gris** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`, `test_npc_lod`, `npc_lod_check`; 60/25 y caída del 15,9 % |
 | 1.6 | Guardado y reloj | **Base implementada** | Esquema versionado y round-trip de mundo/reloj/jugador | `test_world_clock`, `test_world_state`, `test_save_round_trip` |
 | 1.7 | Rendimiento | Pendiente | ≤ 350 draw calls, ≤ 250 MB VRAM, 30/60 FPS, hitch < 50 ms | `scene_audit`, `measure_performance` |
 
@@ -46,14 +46,16 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 - `core/npc/schedule_entry.gd`: franja con inicio/fin, cruce de medianoche, ancla, actividad y condiciones.
 - `core/npc/npc_definition.gd`: identidad, nivel de simulación, casa, trabajo, facción, apariencia, diálogo y horario.
-- `tests/test_npc_schedule.gd`: horario diario, medianoche, condiciones, ancla/actividad y validez.
+- `core/npc/npc_director.gd`: registro de definiciones y anclas, horario, spawn/despawn por distancia, presupuesto y snapshot.
+- `core/npc/npc_sim_actor.gd`: cuerpo y animación de marcador; el nombre evita la clase heredada `NpcActor` de la campaña lineal.
+- `tests/test_npc_schedule.gd` y `tests/test_npc_lod.gd`.
+- `tests/npc_lod_check.gd`: escena de 60 NPC con 60 activos y 25 animados.
 
 **Pendiente de F1.5:**
 
-- `NpcDirector` con spawn/despawn por sector y LOD de simulación.
-- `NpcActor` conectado a la definición y al reloj.
-- 60 NPC con 25 animados y presupuesto medido.
-- Reanudación de rutina tras una secuencia controlada.
+- Sustituir la animación de marcador por los personajes y clips reales.
+- 60 NPC en el sector de la campaña, con interiores y multitud ambiente.
+- Reanudar una secuencia controlada con el snapshot del director en una escena real.
 
 ## 2.2. F1.3 — Base de streaming de sectores
 
@@ -168,14 +170,44 @@ godot --path . --resolution 1280x720 \
 ```
 
 La captura queda en `build/evidencia/grey_sector_nav.png` (ignorada por Git).
+
+## 2.7. F1.5 — Director de NPC y LOD
+
+**Implementado:**
+
+- `NpcDirector`: los tier B se descargan al alejarse y los narrativos siguen activos; el presupuesto se reparte por cercanía (60 activos, 25 animados). Histéresis de 10 m para no alternar en el borde.
+- Tier C: radio de simulación y animación al 55 % del tier B; no se guarda en el snapshot.
+- `NpcSimActor`: cápsula de marcador, `NpcMover` y un balanceo de malla que solo se reproduce en el nivel animado. En F2 lo sustituyen los personajes reales.
+- `get_snapshot()` / `restore_snapshot()`: minuto, posición y ancla de los tier A/B, guardados dentro del diccionario del jugador.
+- `tests/scenes/npc_lod.tscn`: 60 NPC, simulación a 120 m y animación a 70 m.
+- Pruebas: `test_npc_lod` (distancias, presupuesto, despawn, snapshot y horario) y `npc_lod_check` (60 activos, 25 animados, vista lejana, rutas y guardado).
+
+**Medición (carga del equipo 47–50):**
+
+| Escena | FPS medio (3 pasadas) | Mediana | Draw calls | VRAM |
+|---|---|---|---|---|
+| 20 NPC | 75,4 / 76,8 / 77,2 | 76,8 | 110–114 | 98,7 MB |
+| 60 NPC, 25 animados | 62,4 / 71,6 / 64,6 | 64,6 | 209–223 | 101,6 MB |
+
+La caída es del **15,9 %**, dentro del 20 %. El p1 no es comparable con esta carga; se repite en F1.7. Los 60 NPC son mallas individuales: F2 debe usar MultiMesh para la multitud ambiente y revisar el presupuesto de draw calls.
+
+```bash
+godot --headless --path . --script res://tests/npc_lod_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_npc_lod.tscn
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_npc_lod.tscn
+```
+
+La captura de los 60 NPC queda en `build/evidencia/npc_lod.png`.
 ## 3. Orden de trabajo
 
 1. **Hecho:** F1.6 base (reloj, estado y guardado).
 2. **Hecho:** F1.1 base (Terrain3D importa, colisiona y mide 113–115 FPS en la escena de prueba).
 3. **Hecho:** F1.2 base (Cyclops convierte un bloque en malla y colisión).
 4. **Hecho:** F1.3–F1.4 en el sector gris (streaming base, navmesh sobre el terreno, 20 NPC en ruta y guardado).
-5. **Siguiente:** F1.5 `NpcDirector` y LOD con 60 NPC; blockout real de plaza/pirca.
-6. F1.7 presupuesto final con arte y edificios.
+5. **Hecho:** F1.5 en el sector gris (`NpcDirector`, LOD, 60 NPC, 25 animados y snapshot).
+6. **Siguiente:** blockout real de plaza/pirca y F1.7 con arte, edificios y multitud con MultiMesh.
 7. Exportación Linux/Windows con ambos addons y prueba de humo.
 
 ## 4. Riesgos

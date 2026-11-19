@@ -4,9 +4,10 @@ extends Node
 ##   godot --path . --resolution 1280x720 \
 ##       res://tests/scenes/capture_grey_sector.tscn
 
-const SECTOR_SCENE: String = "res://tests/scenes/grey_sector.tscn"
-const OUTPUT: String = "res://build/evidencia/grey_sector_nav.png"
 const WARMUP_FRAMES: int = 60
+
+@export var sector_scene: String = "res://tests/scenes/grey_sector.tscn"
+@export var output_path: String = "res://build/evidencia/grey_sector_nav.png"
 
 
 func _ready() -> void:
@@ -14,7 +15,7 @@ func _ready() -> void:
 
 
 func _run() -> void:
-	var packed: PackedScene = load(SECTOR_SCENE) as PackedScene
+	var packed: PackedScene = load(sector_scene) as PackedScene
 	if packed == null:
 		printerr("GREY_CAPTURE_FAIL scene")
 		get_tree().quit(1)
@@ -36,7 +37,7 @@ func _run() -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var image: Image = get_viewport().get_texture().get_image()
-	var absolute: String = ProjectSettings.globalize_path(OUTPUT)
+	var absolute: String = ProjectSettings.globalize_path(output_path)
 	DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
 	var error: Error = image.save_png(absolute)
 	if error == OK:

@@ -156,7 +156,8 @@ PlayerFPS (CharacterBody3D)
 | `NavigationService` | Consulta de rutas y enlaces; el navmesh lo aportan los sectores | `find_path`, `is_reachable`, `path_length`, `closest_point` |
 | `TerrainNavmesh` | Hornea el navmesh de un sector desde las alturas de Terrain3D y sus huellas de obstáculo | `bake`, `NavmeshProfile` |
 | `NpcMover` | Sigue una ruta de navegación con velocidad y altura de cuerpo | `set_path`, `advance`, `is_finished` |
-| `NpcDirector` | Spawn/despawn, LOD, horarios | `npc_spawned`, `npc_despawned`, `schedule_applied` |
+| `NpcDirector` | Spawn/despawn por distancia, LOD (60 activos, 25 animados), horarios y snapshot | `npc_spawned`, `npc_despawned`, `schedule_applied` |
+| `NpcSimActor` | Cuerpo y animación de marcador de un NPC activo | `setup`, `set_lod`, `advance` |
 | `QuestDirector` | Estado de misiones | `quest_started`, `stage_changed`, `quest_completed` |
 | `WorldEventDirector` | Disparadores y secuencias | `event_started`, `event_finished` |
 | `DiscoveryRegistry` | POI y mapa del diario | `discovered` |

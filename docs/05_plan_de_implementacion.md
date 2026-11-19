@@ -69,7 +69,7 @@
 
 **Objetivo:** comprobar con medidas, no con suposiciones, que la arquitectura elegida funciona en Godot 4.7.2 y en la GPU integrada de referencia.
 
-**Estado:** 1.6 (reloj, estado y guardado), la base de 1.5 (definición y horario de NPC), la base de 1.3 (streaming de sectores), 1.4 en el sector gris (navmesh horneado sobre el terreno y 20 NPC en ruta), la base de 1.1 (Terrain3D) y la base de 1.2 (Cyclops) están implementados y probados. El sector gris integra Terrain3D, pirca Cyclops, 128 polígonos de navmesh, 20 NPC que llegan caminando y guardado. El blockout real, el `NpcDirector` con LOD, el presupuesto de 1.7 y el resto de 1.5 están pendientes. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
+**Estado:** 1.6 (reloj, estado y guardado), 1.5 en el sector gris (`NpcDirector`, LOD de 60 activos y 25 animados, snapshot), la base de 1.3 (streaming de sectores), 1.4 en el sector gris (navmesh horneado sobre el terreno y 20 NPC en ruta), la base de 1.1 (Terrain3D) y la base de 1.2 (Cyclops) están implementados y probados. El sector gris integra Terrain3D, pirca Cyclops, 128 polígonos de navmesh, 20 NPC que llegan caminando, guardado y una escena de 60 NPC con caída del 15,9 %. El blockout real, el arte con MultiMesh, el presupuesto de 1.7 y la integración en la campaña están pendientes. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
 
 | # | Spike | Pregunta | Criterio de paso |
 |---|---|---|---|

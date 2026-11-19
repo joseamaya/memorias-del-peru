@@ -24,12 +24,14 @@ func _run() -> void:
 	var service: NavigationService = NavigationService.new()
 	stage.add_child(service)
 	var ok: bool = await _wait_for_map(service)
-	# El mapa registra regiones antes de que el servidor termine de unirlas.
-	for _settle: int in 8:
+	# El mapa registra regiones antes de que el servidor termine de unirlas:
+	# se consulta hasta que la ruta cruce el enlace, no un número fijo de fotogramas.
+	var path: PackedVector3Array = PackedVector3Array()
+	for _settle: int in TIMEOUT_FRAMES:
+		path = service.find_path(Vector3(2.0, 0.0, 0.0), Vector3(22.0, 0.0, 0.0))
+		if path.size() >= 4:
+			break
 		await physics_frame
-	var path: PackedVector3Array = service.find_path(
-		Vector3(2.0, 0.0, 0.0), Vector3(22.0, 0.0, 0.0)
-	)
 	ok = ok and path.size() >= 4
 	ok = ok and path[path.size() - 1].distance_to(Vector3(22.0, 0.0, 0.0)) < 0.5
 	ok = ok and service.is_reachable(Vector3(2.0, 0.0, 0.0), Vector3(22.0, 0.0, 0.0))

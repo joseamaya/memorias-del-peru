@@ -155,6 +155,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/grey_sector_check.gd 2>&1 | tee /tmp/grey_sector.log
           python3 tools/check_output.py /tmp/grey_sector.log
 
+      - name: LOD de 60 NPC
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/npc_lod_check.gd 2>&1 | tee /tmp/npc_lod.log
+          python3 tools/check_output.py /tmp/npc_lod.log
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [guard, lint, test]

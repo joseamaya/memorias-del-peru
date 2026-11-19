@@ -88,6 +88,12 @@ Comprobar el sector gris de integración (Terrain3D, pirca Cyclops, navmesh, 20 
 godot --headless --path . --script res://tests/grey_sector_check.gd
 ```
 
+Comprobar el LOD con 60 NPC, el presupuesto de 25 animados y el snapshot:
+
+```bash
+godot --headless --path . --script res://tests/npc_lod_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -102,7 +108,7 @@ godot --headless --path . --import 2>&1 | tee /tmp/import.log
 python3 tools/check_output.py /tmp/import.log
 ```
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -230,9 +236,11 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `sector_streaming_check.gd` | Carga asíncrona de escenas reales, descarga por radio y sector siempre cargado |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
+| `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |
 | `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
 | `terrain3d_check.gd` | Terrain3D carga, crea una región y devuelve la altura importada |
 | `grey_sector_check.gd` | Sector gris: navmesh horneado sobre Terrain3D, pirca Cyclops como obstáculo, 20 NPC que llegan caminando y guardado |
+| `npc_lod_check.gd` | 60 NPC con 60 activos y 25 animados, despawn al alejar la vista, rutas y snapshot |
 
 ### 3.5. Pruebas de la campaña
 
