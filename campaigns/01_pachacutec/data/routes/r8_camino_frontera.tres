@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampaignRoute" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/route_definition.gd" id="1_route"]
+
+[resource]
+script = ExtResource("1_route")
+id = &"r8_camino_frontera"
+display_name = "R8 · Camino de la frontera"
+classification = "GN"
+width = 2.0
+points = PackedVector3Array(-1300, 0, 100, -1400, 0, 130, -1500, 0, 160, -1580, 0, 120, -1650, 0, 0)

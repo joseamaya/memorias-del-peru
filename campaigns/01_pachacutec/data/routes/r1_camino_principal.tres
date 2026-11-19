@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampaignRoute" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/route_definition.gd" id="1_route"]
+
+[resource]
+script = ExtResource("1_route")
+id = &"r1_camino_principal"
+display_name = "R1 · Camino principal"
+classification = "GR"
+width = 4.0
+points = PackedVector3Array(300, 0, 0, 450, 0, 80, 600, 0, 120, 750, 0, 150, 900, 0, 230, 1050, 0, 320, 1200, 0, 400)
