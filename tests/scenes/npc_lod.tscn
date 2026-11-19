@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://tests/scenes/grey_sector.tscn" id="1_grey"]
+
+[node name="NpcLod" instance=ExtResource("1_grey")]
+npc_count = 60
+npc_simulate_distance = 120.0
+npc_animate_distance = 70.0

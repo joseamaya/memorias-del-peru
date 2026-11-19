@@ -200,6 +200,8 @@ El jugador empieza con Honda 0, Mano 1, Palabra 1, Oficio 1 y Monte 1. Acarrear 
 | B — comunidad | 40–60 | Horario por anclas, movimiento simple, sin diálogo profundo | Estado y ubicación |
 | C — ambiente | 80–150 | Multitud, animación LOD, sin colisión lejana | Ninguna |
 
+**Validado en F1:** el `NpcDirector` mantiene el presupuesto de 60 activos y 25 animados con histéresis; los tier B se descargan al alejarse y los narrativos no. La animación de F1 es un marcador hasta que lleguen los personajes de F2.
+
 ### 7.2. Rutinas
 
 Cada NPC tier A/B declara:
