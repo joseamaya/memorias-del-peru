@@ -80,6 +80,8 @@ Validación histórica, visual, de rendimiento y de guardado
 
 ### 3.2. Terreno
 
+**Blockout regional (F2).** `campaigns/01_pachacutec/scripts/world/region_terrain.gd` genera un Terrain3D de 1024 con paso de 4 m para los 3,5 × 2,5 km de la región. El perfil es GN/GR: valle este-oeste, río, quebrada, paso y cumbres. Se genera en memoria al cargar (~1,5 s en la referencia) y se sustituirá o pregenerará cuando el expediente geográfico tenga DEM. Los sectores tendrán terreno local de 1 m en F2.2.
+
 1. Base DEM recortada (SRTM/Copernicus 30 m u otra fuente citada).
 2. Esculpido manual para valles, quebradas, pasos y terrazas.
 3. Declarar exageración vertical, compresión de distancias y elementos ficticios.
