@@ -185,6 +185,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/llacta_blockout_check.gd 2>&1 | tee /tmp/llacta.log
           python3 tools/check_output.py /tmp/llacta.log
 
+      - name: Blockout del Cusco
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/cusco_blockout_check.gd 2>&1 | tee /tmp/cusco.log
+          python3 tools/check_output.py /tmp/cusco.log
+
       - name: LOD de 60 NPC
         run: |
           set -o pipefail

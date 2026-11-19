@@ -57,7 +57,7 @@ func _run() -> void:
 
 func _marker_loaded(streamer: SectorStreamer, id: StringName) -> bool:
 	var node: Node3D = streamer.get_loaded_node(id)
-	return node is CampaignSectorMarker or node is LlactaBlockout
+	return node is CampaignSectorMarker or node is LlactaBlockout or node is CuscoBlockout
 
 
 func _wait_loaded(streamer: SectorStreamer, id: StringName) -> bool:
