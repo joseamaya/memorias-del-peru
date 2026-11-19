@@ -1,11 +1,7 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/sector_marker.gd" id="1_marker"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/frontera_blockout.gd" id="1_frontera"]
 
 [node name="S6Frontera" type="Node3D"]
-position = Vector3(-1650.0, 0, 0.0)
-script = ExtResource("1_marker")
-sector_id = &"s6_frontera"
-display_name = "S6 · Frontera chanca"
-classification = "GN/GR"
-color = Color(0.65, 0.35, 0.35, 1)
+position = Vector3(-1650, 0, 0)
+script = ExtResource("1_frontera")

@@ -14,7 +14,7 @@
 | 2.3 | Rutas | **Base implementada** | R1–R8 conectan los sectores; navmesh por sector | `route_network_check`; 8 rutas, 6 navmeshes y rutas continuas |
 | 2.4 | S3 Llacta de Rumi | **Base implementada** | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | `llacta_blockout_check`; 17 casas, 9 POI, 120 draw calls |
 | 2.5 | S1 Cusco preimperial | **Base implementada** | Plaza, recinto, ayllus, mercado y talleres en blockout | `cusco_blockout_check`; 28 casas, 6 POI, 247 draw calls |
-| 2.6 | S4–S6 | Pendiente | Quebrada, paso y frontera con POI y límites naturales | Captura y presupuesto |
+| 2.6 | S4–S6 | **Base implementada** | Quebrada, paso y frontera con POI y límites naturales | `frontier_sectors_check`; 5+3+5 POI y presupuestos |
 | 2.7 | POI y descubrimiento | Pendiente | 30 POI con ID, función, clasificación y disparador | `DiscoveryRegistry` |
 | 2.8 | Recorrido completo | Pendiente | 20–30 min a pie sin bloqueos ni pantallas exteriores | Prueba humana y capturas |
 
@@ -181,6 +181,53 @@ godot --path . --resolution 1280x720 \
 
 La captura queda en `build/evidencia/cusco_blockout.png`.
 
+## 2.6. F2.6 — S4 quebrada, S5 paso y S6 frontera
+
+**Escenas:** `s4_quebrada.tscn`, `s5_paso.tscn` y `s6_frontera.tscn`; se cargan con el streamer al oeste de la llacta.
+
+**S4 — Quebrada alta:**
+
+- Cinco terrazas altas de papa.
+- Ocho queñuas, salto de agua con poza, cueva, cantera y refugio de pastores.
+- Cinco POI: terrazas (10), queñua (11), salto (13), cantera (14) y cueva (25).
+- Baja densidad; el blockout pesa 146 draw calls y 127 MB.
+
+**S5 — Paso:**
+
+- Zigzag de 2,6 m de ancho, refugio de pirca con techo, mirador con parapeto, altar de altura y tres manchas de nieve.
+- Tres POI: mirador (23), refugio (24) y altar (30).
+- 103 draw calls y 127 MB.
+
+**S6 — Frontera chanca:**
+
+- Bofedal, tambo abandonado, seis marcas de piedra, campamento de cuatro tiendas con empalizada y fuegos, puesto de vigilancia y campo de batalla con enterramientos.
+- Cinco POI: bofedal (12), tambo (26), marcas (27), campamento (28) y campo (29).
+- 83 draw calls y 127 MB.
+
+**Comprobación:** `frontier_sectors_check` valida POI, mallas, colisiones y rutas S4→llacta y S5→S6. Salida: `FRONTERA_OK s4=5 s5=3 s6=5`.
+
+**Medición:** una pasada por sector a 1920 × 1080, perfil Medio, vsync off, carga 1,3–1,5:
+
+| Sector | FPS medio | p1 | Draw calls | VRAM |
+|---|---|---|---|---|
+| S4 | 80,0 | 79,4 | 146 | 127,1 MB |
+| S5 | 95,5 | 94,3 | 103 | 127,1 MB |
+| S6 | 103,0 | 90,3 | 83 | 126,9 MB |
+
+Los tres quedan por debajo de sus presupuestos (180, 150 y 220 draw calls) y de 250 MB.
+
+**Pendiente:** clima y nieve estacional, refugios con interior, campamento funcional, facciones y combate, y el recorrido de F2.8.
+
+```bash
+godot --headless --path . --script res://tests/frontier_sectors_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_west.tscn
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_west.tscn
+```
+
+Las capturas quedan en `build/evidencia/quebrada_blockout.png`, `paso_blockout.png` y `frontera_blockout.png`.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
@@ -188,7 +235,8 @@ La captura queda en `build/evidencia/cusco_blockout.png`.
 3. **Hecho:** F2.3 base (ocho rutas y navmesh por sector con enlaces).
 4. **Hecho:** F2.4 base (blockout de S3 con 17 casas y nueve POI).
 5. **Hecho:** F2.5 base (blockout de S1 con 28 casas, Coricancha, mercado y talleres).
-6. **Siguiente:** F2.6 S4 quebrada, S5 paso y S6 frontera.
+6. **Hecho:** F2.6 base (S4 quebrada, S5 paso y S6 frontera).
+7. **Siguiente:** F2.7 POI y descubrimiento.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 

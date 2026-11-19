@@ -59,6 +59,25 @@ static func add_cylinder(
 	return mesh
 
 
+static func add_sphere(
+	parent: Node3D,
+	radius: float,
+	mesh_position: Vector3,
+	color: Color,
+) -> MeshInstance3D:
+	var mesh: MeshInstance3D = MeshInstance3D.new()
+	var sphere: SphereMesh = SphereMesh.new()
+	sphere.radius = radius
+	sphere.height = radius * 2.0
+	sphere.radial_segments = 8
+	sphere.rings = 4
+	mesh.mesh = sphere
+	mesh.material_override = material(color)
+	mesh.position = mesh_position
+	parent.add_child(mesh)
+	return mesh
+
+
 static func add_ribbon(
 	parent: Node3D,
 	points: PackedVector3Array,
