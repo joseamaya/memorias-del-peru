@@ -1,0 +1,7 @@
+max-line-length: 100
+max-file-lines: 400
+function-arguments-number: 8
+excluded_directories: !!set
+  .git: null
+  .godot: null
+  addons: null

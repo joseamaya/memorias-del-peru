@@ -36,7 +36,7 @@ Supresiones (`@warning_ignore`): solo con comentario que justifique por qué no 
 Basado en la guía oficial de estilo de GDScript.
 
 - Indentación con tabuladores.
-- Longitud de línea orientativa: 100 caracteres.
+- Longitud de línea: máximo 100 caracteres (el lint lo comprueba en archivos nuevos).
 - Orden dentro de un script:
   1. `@tool` (si aplica), `class_name`, `extends`
   2. Comentario de documentación (`##`)
@@ -51,6 +51,19 @@ Basado en la guía oficial de estilo de GDScript.
   11. Métodos públicos
   12. Métodos privados
   13. Callbacks de señales (`_on_<emisor>_<señal>`)
+
+### 2.1. Lint y formato (archivos nuevos)
+
+- Herramienta: `gdtoolkit==4.5.0` (`requirements-dev.txt`) con `gdlintrc`.
+- Los **archivos nuevos** deben pasar `gdlint` y `gdformat --check`; la CI lo comprueba en cada PR.
+- Los archivos heredados **no se reformatean en masa**: `tools/check_gdscript_limits.py` los mantiene congelados y el estilo se corrige cuando se dividen o se tocan de verdad.
+- Comandos:
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+.venv/bin/gdlint <archivos nuevos>
+.venv/bin/gdformat --check <archivos nuevos>
+```
 
 ## 3. Nombres
 

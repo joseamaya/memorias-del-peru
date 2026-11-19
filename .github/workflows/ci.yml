@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -26,6 +25,43 @@ jobs:
 
       - name: Pruebas ejecutadas y documentadas
         run: python3 tools/check_test_inventory.py
+
+  lint:
+    name: Lint (archivos nuevos)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar gdtoolkit
+        run: pip install -r requirements-dev.txt
+
+      - name: GDScript añadido en este cambio
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ -n "${BASE_REF}" ]; then
+            base="origin/${BASE_REF}"
+          elif [ -n "${BEFORE_SHA}" ] && [ "${BEFORE_SHA}" != "0000000000000000000000000000000000000000" ]; then
+            base="${BEFORE_SHA}"
+          else
+            base="HEAD^"
+          fi
+          mapfile -t files < <(git diff --name-only --diff-filter=A "${base}" HEAD -- '*.gd' ':!:addons/*')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "Sin archivos GDScript nuevos: nada que revisar."
+            exit 0
+          fi
+          printf 'Revisando:\n%s\n' "${files[@]}"
+          gdlint "${files[@]}"
+          gdformat --check "${files[@]}"
 
   test:
     name: Pruebas y límites
@@ -97,7 +133,7 @@ jobs:
 
   export:
     name: Exportar ${{ matrix.preset }}
-    needs: [guard, test]
+    needs: [guard, lint, test]
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false

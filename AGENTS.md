@@ -47,6 +47,7 @@ La [bitácora](docs/bitacora.md) es el registro cronológico de cambios y decisi
 - **GDScript con tipado estricto** según [docs/03](docs/03_estandares_de_codigo.md).
 - **Pruebas:** ejecutor propio en `tests/run_tests.gd` y recorridos de integración en `tests/`.
 - **CI:** GitHub Actions (importación, límites, pruebas, exportación y arranque).
+- **Lint y formato:** `gdtoolkit 4.5.0` (`requirements-dev.txt`); los archivos nuevos pasan `gdlint` y `gdformat --check`. Los heredados no se reformatean en masa.
 - **Plataformas verificadas:** Linux y Windows. macOS es objetivo, no una plataforma probada.
 
 ## 5. Antes de implementar
