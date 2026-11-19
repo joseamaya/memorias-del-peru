@@ -77,7 +77,7 @@ godot --headless --path . --import 2>&1 | tee /tmp/import.log
 python3 tools/check_output.py /tmp/import.log
 ```
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 

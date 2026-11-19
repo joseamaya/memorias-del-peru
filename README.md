@@ -16,6 +16,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 
 - Godot 4.7.2 estable (edición estándar, no .NET). Debe estar disponible en el `PATH` como `godot` para ejecutar las validaciones de línea de comandos.
 - GPU compatible con Vulkan (requisito de Forward+).
+- Python 3.12 o superior para `gdtoolkit` (`requirements-dev.txt`), solo para lint y formato de archivos nuevos.
 
 ## Controles
 
