@@ -11,7 +11,7 @@
 |---|---|---|---|---|
 | Godot | 4.7.2 stable | MIT | Motor, ensamblaje, navegación, audio, UI | Verificado |
 | Terrain3D | 1.1.0 stable | MIT | Terreno, texturas, LOD, vegetación | **Instalado para F1.1; adopción provisional** |
-| Cyclops Level Builder | 1.5.2 | MIT | Blockout de niveles, pircas, plazas, escaleras | Candidato; 1.5.0+ requiere Godot 4.7+ |
+| Cyclops Level Builder | 1.5.2 | MIT | Blockout de niveles, pircas, plazas, escaleras | **Instalado para F1.2; adopción provisional** |
 | Blender | 5.3.0 | GPL (herramienta) | Arquitectura, props, personajes, exportación GLB | Verificado |
 
 > **Regla de licencias:** las herramientas MIT/GPL no contaminan los assets del juego. Cada modelo, textura, audio y addon se registra con autor, origen, licencia y fecha en el `LICENSE.md` correspondiente. No se usan assets de pago.
@@ -38,6 +38,8 @@ La escena de prueba de 512 × 512 m, con 4 regiones de 256 m, 50 árboles y 20 N
 - Los bloques tienen colisión, pero para la escena final se convierten a malla y colisión propias.
 - El addon puede registrar un autoload; hay que verificar que no se necesita en runtime y que la exportación funciona sin él.
 - Su valor es el blockout rápido, no la geometría final.
+
+**Resultado del spike:** `cyclops_probe` construye un `ConvexBlockData` cúbico, lo asigna a un `CyclopsBlock` y comprueba que genera una malla con una superficie y una forma de colisión. La conversión es viable. El addon deja un aviso de objetos sin liberar al salir en Godot 4.7.2; se vigila en F2. El plugin no se habilita por defecto para no registrar su autoload en el juego. El addon se excluye de la exportación con `addons/cyclops_level_builder/*` en ambos presets: el blockout se convierte a malla y colisión propias antes de la escena final.
 
 ### 2.3. Blender
 

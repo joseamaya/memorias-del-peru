@@ -9,7 +9,7 @@
 | # | Spike | Estado | Criterio de paso | Evidencia |
 |---|---|---|---|---|
 | 1.1 | Terrain3D | **Base implementada; adopción provisional** | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | `terrain3d_check`, `measure_terrain`; 113–115 FPS |
-| 1.2 | Cyclops | Pendiente | Blockout de una plaza y conversión a malla/colisión; export sin addon | Escena y captura |
+| 1.2 | Cyclops | **Base implementada** | Blockout de una plaza y conversión a malla/colisión; export sin addon | `cyclops_probe`; cubo convertido a malla y colisión |
 | 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
 | 1.4 | Navegación | **Base implementada** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check` |
 | 1.5 | NPC y horarios | **Base implementada** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`; `test_npc_lod` pendiente |
@@ -116,15 +116,31 @@ godot --path . --disable-vsync --resolution 1920x1080 \
     res://tests/scenes/measure_terrain.tscn -- --mode=baseline
 ```
 
+## 2.5. F1.2 — Cyclops Level Builder
+
+**Instalado:** Cyclops Level Builder 1.5.2, MIT, en `addons/cyclops_level_builder`. Registro en `addons/cyclops_level_builder/REGISTRO.md`. El plugin de editor no se habilita por defecto para no registrar su autoload en el juego.
+
+**Validado:** `cyclops_probe` construye un `ConvexBlockData` cúbico, lo asigna a un `CyclopsBlock` y comprueba que el nodo genera una malla con una superficie y una forma de colisión. La conversión a malla/colisión propia es, por tanto, viable.
+
+**Pendiente:** blockout real de una plaza y una pirca en el editor, exportación GLB/escena y captura visual. La escena final no depende del addon: se excluye de la exportación con `addons/cyclops_level_builder/*` y el blockout se convierte a malla y colisión. La adopción definitiva se decide en F2.
+
+**Comando:**
+
+```bash
+godot --headless --path . --script res://tests/cyclops_probe.gd
+```
+
+> El addon deja un aviso de objetos sin liberar al salir en Godot 4.7.2. Es un problema del addon, no de la escena de juego; se vigila al convertirlo en herramienta de F2.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F1.6 base (reloj, estado y guardado).
 2. **Hecho:** F1.1 base (Terrain3D importa, colisiona y mide 113–115 FPS en la escena de prueba).
-3. **Siguiente:** F1.2 Cyclops y blockout sobre el terreno.
-4. F1.3 streaming con sectores de la región.
+3. **Hecho:** F1.2 base (Cyclops convierte un bloque en malla y colisión).
+4. **Siguiente:** blockout real de plaza/pirca y sector de prueba con streaming y navmesh.
 5. F1.4 navmesh sobre Terrain3D y 20 NPC en ruta; F1.5 `NpcDirector` y LOD.
 6. F1.7 presupuesto final con arte y edificios.
-7. Exportación Linux/Windows con Terrain3D y prueba de humo.
+7. Exportación Linux/Windows con ambos addons y prueba de humo.
 
 ## 4. Riesgos
 
