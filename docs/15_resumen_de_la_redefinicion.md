@@ -37,7 +37,7 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 ## 3. Estado del repositorio
 
 - **F0 cerrada y aprobada:** documentación redefinida; sin cambios de código, escenas ni assets.
-- **F1 cerrada (2026-11-19); F2 en curso:** el relieve regional de 3,5 × 2,5 km está en blockout (seis sectores, río, quebrada, paso y cumbres; ~1,5 s de generación) y los siete spikes tienen escena, prueba y medición. El sector gris integra Terrain3D, Cyclops, navmesh sobre el relieve, 60 NPC (25 animados), guardado y un blockout con seis casas, multitud y vegetación MultiMesh. El presupuesto queda en 255–287 draw calls, 101,7 MB, 61–66 FPS y frame máximo de 30,3 ms; el streaming carga en 21,4 ms de media con 1 KB de crecimiento en 60 ciclos. La adopción definitiva de Terrain3D/Cyclops se decide con el sector real de F2.
+- **F1 cerrada (2026-11-19); F2 en curso:** el relieve regional de 3,5 × 2,5 km está en blockout (seis sectores, río, quebrada, paso y cumbres; ~1,5 s de generación) y los seis sectores ya se transmiten por cercanía sobre el terreno continuo. El sector gris integra Terrain3D, Cyclops, navmesh sobre el relieve, 60 NPC (25 animados), guardado y un blockout con seis casas, multitud y vegetación MultiMesh. El presupuesto queda en 255–287 draw calls, 101,7 MB, 61–66 FPS y frame máximo de 30,3 ms; el streaming carga en 21,4 ms de media con 1 KB de crecimiento en 60 ciclos. La adopción definitiva de Terrain3D/Cyclops se decide con el sector real de F2.
 - **F4-L y F5-L congeladas:** la versión lineal se conserva como historial y banco de pruebas.
 - **F2–F6 previstas:** geografía, vertical slice, producción, cierre y campañas II–IV.
 - **No adoptado:** Terrain3D y Cyclops son candidatos; su adopción depende de F1.
