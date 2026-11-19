@@ -80,6 +80,8 @@ Validación histórica, visual, de rendimiento y de guardado
 
 ### 3.2. Terreno
 
+**Sectores transmitidos (F2.2).** `region_world.tscn` mantiene el terreno regional y transmite seis escenas de sector con `SectorStreamer`; cada escena lleva su transformación mundial y su marcador de blockout. No hay pantallas de carga exteriores: el terreno no se descarga.
+
 **Blockout regional (F2).** `campaigns/01_pachacutec/scripts/world/region_terrain.gd` genera un Terrain3D de 1024 con paso de 4 m para los 3,5 × 2,5 km de la región. El perfil es GN/GR: valle este-oeste, río, quebrada, paso y cumbres. Se genera en memoria al cargar (~1,5 s en la referencia) y se sustituirá o pregenerará cuando el expediente geográfico tenga DEM. Los sectores tendrán terreno local de 1 m en F2.2.
 
 1. Base DEM recortada (SRTM/Copernicus 30 m u otra fuente citada).

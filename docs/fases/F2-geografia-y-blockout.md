@@ -10,7 +10,7 @@
 | # | Tarea | Estado | Criterio de paso | Evidencia |
 |---|---|---|---|---|
 | 2.1 | Heightmap regional | **Base implementada** | 3,5 × 2,5 km con valle, río, quebrada, paso y cumbres; alturas por sector | `region_terrain_check`, captura aérea |
-| 2.2 | Sectores y streaming | Pendiente | Seis sectores con función y presupuesto; carga sin pantallas | `sector_streaming_check` ampliado |
+| 2.2 | Sectores y streaming | **Base implementada** | Seis sectores con función y presupuesto; carga sin pantallas | `region_streaming_check`; 6 escenas, 3 cargadas en la llacta |
 | 2.3 | Rutas | Pendiente | R1–R8 conectan los sectores; navmesh por sector | Recorrido y `navigation_check` |
 | 2.4 | S3 Llacta de Rumi | Pendiente | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | Captura y presupuesto |
 | 2.5 | S1 Cusco preimperial | Pendiente | Plaza, recinto, ayllus, mercado y talleres en blockout | Captura y presupuesto |
@@ -50,7 +50,7 @@
 **Pendiente:**
 
 - DEM real o ajuste aprobado por el responsable.
-- Terreno local de 1 m por sector; la malla regional es de 4 m.
+- Terreno local de 1 m por sector; la malla regional es de 4 m y el detalle llega en F3.
 - Texturas, materiales y vegetación.
 - Rutas y POI sobre el relieve.
 
@@ -62,11 +62,38 @@ godot --path . --resolution 1280x720 \
     res://tests/scenes/capture_region.tscn
 ```
 
+## 2.2. F2.2 — Sectores y streaming
+
+**Mundo:** `campaigns/01_pachacutec/scenes/world/region_world.tscn`. El terreno regional queda cargado; los sectores aportan props, edificios y NPC sin cambiar de escena ni mostrar pantallas de carga.
+
+| Sector | Centro (x, z) | Celda | Clasificación | Presupuesto |
+|---|---|---|---|---|
+| S1 Cusco | (1200, 400) | (2, 0) | GD/GR | 350 draw calls |
+| S2 Afueras | (750, 150) | (1, 0) | GR | 250 |
+| S3 Llacta | (300, 0) | (0, 0) | GN | 300 |
+| S4 Quebrada | (−700, 350) | (−2, 0) | GR/GN | 180 |
+| S5 Paso | (−1300, 100) | (−3, 0) | GN/GR | 150 |
+| S6 Frontera | (−1650, 0) | (−4, 0) | GN/GR | 220 |
+
+**Streaming:** `SectorStreamer` con celdas de 512 m, radio de carga 2 y descarga 3. El objetivo se mueve sin cambiar de escena; el terreno y los sectores ya cargados no se recargan. Cada escena de sector lleva su transformación mundial y un marcador de blockout con nombre y clasificación.
+
+**Comprobación:** `region_streaming_check` valida las seis definiciones, la carga de S3 al inicio, la de S1 al este, la de S6 al oeste, la descarga de S1/S3 al alejarse y que el terreno regional sigue cargado. Salida: `REGION_STREAMING_OK sectors=6 loaded=3 failures=0`.
+
+**Pendiente:** contenido real de cada sector (F2.4–F2.6), rutas R1–R8 (F2.3), POI (F2.7) y recorrido de 20–30 min (F2.8). Los marcadores son blockout, no arte.
+
+```bash
+godot --headless --path . --script res://tests/region_streaming_check.gd
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_region_stream.tscn
+```
+
+La captura queda en `build/evidencia/region_streaming.png`.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
-2. **Siguiente:** F2.2 sectores y streaming.
-3. F2.3 rutas; F2.4–F2.6 blockout de sectores.
+2. **Hecho:** F2.2 base (seis sectores y streaming sin pantallas).
+3. **Siguiente:** F2.3 rutas; F2.4–F2.6 blockout de sectores.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/sector_marker.gd" id="1_marker"]
+
+[node name="S5Paso" type="Node3D"]
+position = Vector3(-1300.0, 0, 100.0)
+script = ExtResource("1_marker")
+sector_id = &"s5_paso"
+display_name = "S5 · Paso"
+classification = "GN/GR"
+color = Color(0.7, 0.7, 0.75, 1)

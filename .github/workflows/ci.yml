@@ -167,6 +167,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/region_terrain_check.gd 2>&1 | tee /tmp/region.log
           python3 tools/check_output.py /tmp/region.log
 
+      - name: Región y streaming
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/region_streaming_check.gd 2>&1 | tee /tmp/region_streaming.log
+          python3 tools/check_output.py /tmp/region_streaming.log
+
       - name: LOD de 60 NPC
         run: |
           set -o pipefail

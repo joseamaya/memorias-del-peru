@@ -42,15 +42,19 @@ const SECTOR_NAMES: Dictionary[StringName, String] = {
 	&"s6_frontera": "S6 · Frontera chanca",
 }
 
+@export var show_sector_markers: bool = true
+
 var _terrain: Terrain3D = null
 var _camera: Camera3D = null
 var _build_ms: int = 0
 
 
 func _ready() -> void:
+	add_to_group(&"campaign_region")
 	_build_environment()
 	_build_terrain()
-	_build_sector_markers()
+	if show_sector_markers:
+		_build_sector_markers()
 	_build_camera()
 
 
