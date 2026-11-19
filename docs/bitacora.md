@@ -31,13 +31,14 @@ Una decisión relevante se anota con su motivación, las alternativas considerad
 
 **Documentos:** [docs/01](../docs/01_vision_y_alcance.md), [docs/02](../docs/02_arquitectura.md), [docs/05](../docs/05_plan_de_implementacion.md), [docs/06](../docs/06_estrategia_de_pruebas.md), [docs/07](../docs/07_convenciones_historicas.md), [docs/08](../docs/08_entorno_y_rendimiento.md), [docs/09](../docs/09_biblia_narrativa.md), [docs/10](../docs/10_plantilla_guion_de_escena.md), [docs/11](../docs/11_diseno_de_mundo.md), [docs/12](../docs/12_campanas.md), [docs/13](../docs/13_pipeline_de_escenarios.md), [docs/14](../docs/14_auditoria_y_migracion.md), [docs/15](../docs/15_resumen_de_la_redefinicion.md), [ficha de F0](../docs/fases/F0-redefinicion-mundo-abierto.md) y [dossier de región](../campaigns/01_pachacutec/documentation/mundo/README.md).
 
-### F1.6 — Reloj, estado y guardado (2026-11-19)
+### F1.5–F1.6 — Núcleo de mundo (2026-11-19)
 
 | Cambio | Detalle |
 |---|---|
-| Núcleo de mundo | Se añaden `WorldClockService` (`core/world/world_clock.gd`), `WorldStateService` (`core/world/world_state.gd`) y `SaveManagerService` (`core/save/save_manager.gd`), registrados como autoloads `WorldClock`, `WorldState` y `SaveManager`. El reloj hace un día de juego en 48 min reales por defecto; el estado guarda fase, banderas, descubrimientos, NPC y cambios físicos; el guardado es JSON versionado por campaña/ranura, con escritura temporal y round-trip de mundo/reloj/jugador. |
-| Pruebas | `test_world_clock`, `test_world_state` y `test_save_round_trip` cubren avance, pausa, franjas, serialización, nombres inválidos, sobrescritura y ciclo mundo/reloj/jugador. Se documentan en `docs/06` §3.4.1. |
-| Alcance | No se integra todavía la posición real del jugador ni la escena de mundo; eso es F3. No se adoptan Terrain3D ni Cyclops. La F0 queda entregada y la F1 en curso. |
+| Reloj, estado y guardado | Se añaden `WorldClockService` (`core/world/world_clock.gd`), `WorldStateService` (`core/world/world_state.gd`) y `SaveManagerService` (`core/save/save_manager.gd`), registrados como autoloads `WorldClock`, `WorldState` y `SaveManager`. El reloj hace un día de juego en 48 min reales por defecto; el estado guarda fase, banderas, descubrimientos, NPC y cambios físicos; el guardado es JSON versionado por campaña/ranura, con escritura temporal y round-trip de mundo/reloj/jugador. |
+| Definición y horario de NPC | Se añaden `ScheduleEntry` y `NpcDefinition` (`core/npc/`): franjas con cruce de medianoche, ancla, actividad, condiciones y niveles de simulación. `NpcDefinition.get_entry/get_anchor/get_activity` resuelven la rutina con el minuto y el estado del mundo. |
+| Pruebas | `test_world_clock`, `test_world_state`, `test_save_round_trip` y `test_npc_schedule` cubren avance, pausa, franjas, serialización, nombres inválidos, sobrescritura, ciclo mundo/reloj/jugador, horario diario, medianoche y condiciones. Se documentan en `docs/06` §3.4.1. |
+| Alcance | No se integra todavía la posición real del jugador, la escena de mundo, el `NpcDirector` ni el LOD de simulación; eso es F3. No se adoptan Terrain3D ni Cyclops. La F0 queda entregada y la F1 en curso. |
 
 ## 2026-11-19
 

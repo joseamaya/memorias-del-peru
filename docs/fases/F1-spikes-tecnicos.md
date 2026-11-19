@@ -12,7 +12,7 @@
 | 1.2 | Cyclops | Pendiente | Blockout de una plaza y conversión a malla/colisión; export sin addon | Escena y captura |
 | 1.3 | Streaming | Pendiente | Carga/descarga sin hitches; < 150 ms por sector | Instrumentación |
 | 1.4 | Navegación | Pendiente | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_route` |
-| 1.5 | NPC y horarios | Pendiente | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`, `test_npc_lod` |
+| 1.5 | NPC y horarios | **Base implementada** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`; `test_npc_lod` pendiente |
 | 1.6 | Guardado y reloj | **Base implementada** | Esquema versionado y round-trip de mundo/reloj/jugador | `test_world_clock`, `test_world_state`, `test_save_round_trip` |
 | 1.7 | Rendimiento | Pendiente | ≤ 350 draw calls, ≤ 250 MB VRAM, 30/60 FPS, hitch < 50 ms | `scene_audit`, `measure_performance` |
 
@@ -39,6 +39,21 @@
 godot --headless --path . --import
 godot --headless --path . --script res://tests/run_tests.gd
 ```
+
+## 2.1. F1.5 — Base de definición y horario de NPC
+
+**Implementado:**
+
+- `core/npc/schedule_entry.gd`: franja con inicio/fin, cruce de medianoche, ancla, actividad y condiciones.
+- `core/npc/npc_definition.gd`: identidad, nivel de simulación, casa, trabajo, facción, apariencia, diálogo y horario.
+- `tests/test_npc_schedule.gd`: horario diario, medianoche, condiciones, ancla/actividad y validez.
+
+**Pendiente de F1.5:**
+
+- `NpcDirector` con spawn/despawn por sector y LOD de simulación.
+- `NpcActor` conectado a la definición y al reloj.
+- 60 NPC con 25 animados y presupuesto medido.
+- Reanudación de rutina tras una secuencia controlada.
 
 ## 3. Orden de trabajo
 
