@@ -18,13 +18,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  guard:
+    name: Inventario de pruebas
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pruebas ejecutadas y documentadas
+        run: python3 tools/check_test_inventory.py
+
   test:
     name: Pruebas y límites
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache de Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-stable-linux
+
       - name: Descargar Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
           mkdir -p ~/godot
@@ -34,32 +51,53 @@ jobs:
           chmod +x ~/godot/godot
 
       - name: Importar el proyecto
-        run: ~/godot/godot --headless --path . --import
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --import 2>&1 | tee /tmp/import.log
+          python3 tools/check_output.py /tmp/import.log
 
       - name: Límites de GDScript
         run: python3 tools/check_gdscript_limits.py
 
       - name: Pruebas automatizadas
-        run: ~/godot/godot --headless --path . --script res://tests/run_tests.gd
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/run_tests.gd 2>&1 | tee /tmp/tests.log
+          python3 tools/check_output.py /tmp/tests.log
 
       - name: Comportamiento del combate
-        run: ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd 2>&1 | tee /tmp/combat.log
+          python3 tools/check_output.py /tmp/combat.log
 
       - name: Arco completo
-        run: ~/godot/godot --headless --path . --script res://tests/arc_playthrough.gd
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/arc_playthrough.gd 2>&1 | tee /tmp/arc.log
+          python3 tools/check_output.py /tmp/arc.log
 
       - name: Recorrido de la llacta
-        run: ~/godot/godot --headless --path . --script res://tests/llacta_walk_check.gd
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/llacta_walk_check.gd 2>&1 | tee /tmp/walk.log
+          python3 tools/check_output.py /tmp/walk.log
 
       - name: Mensajero del acto I
-        run: ~/godot/godot --headless --path . --script res://tests/llacta_messenger_check.gd
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/llacta_messenger_check.gd 2>&1 | tee /tmp/messenger.log
+          python3 tools/check_output.py /tmp/messenger.log
 
       - name: Duda del acto I
-        run: ~/godot/godot --headless --path . --script res://tests/llacta_doubt_check.gd
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/llacta_doubt_check.gd 2>&1 | tee /tmp/doubt.log
+          python3 tools/check_output.py /tmp/doubt.log
 
   export:
     name: Exportar ${{ matrix.preset }}
-    needs: [test]
+    needs: [guard, test]
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -95,7 +133,10 @@ jobs:
           cp /tmp/templates/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
       - name: Importar el proyecto
-        run: ~/godot/godot --headless --path . --import
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --import 2>&1 | tee /tmp/import-export.log
+          python3 tools/check_output.py /tmp/import-export.log
 
       - name: Exportar ${{ matrix.preset }}
         run: |

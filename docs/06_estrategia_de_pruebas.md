@@ -63,13 +63,21 @@ cuando toca, que E abre y avanza la respuesta y que el flujo pasa al mensajero:
 godot --headless --path . --script res://tests/llacta_doubt_check.gd
 ```
 
-Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`.
+Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) repite en cada push a `main`:
-importar, límites de GDScript, pruebas, comportamiento del combate, recorrido de la
-llacta, mensajero y duda del acto I, arco completo y exportación de Linux/Windows;
-el build de Linux se arranca en headless. Si la CI falla, la entrega no está
-terminada.
+```bash
+set -o pipefail
+godot --headless --path . --script res://tests/run_tests.gd 2>&1 | tee /tmp/pruebas.log
+python3 tools/check_output.py /tmp/pruebas.log
+```
+
+```bash
+set -o pipefail
+godot --headless --path . --import 2>&1 | tee /tmp/import.log
+python3 tools/check_output.py /tmp/import.log
+```
+
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -84,7 +92,7 @@ el pase de sombra. Es la herramienta que localizó el peso de la multitud del Cu
 
 ## 3. Pruebas automatizadas
 
-Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga cada archivo `tests/test_*.gd`, ejecuta sus métodos `test_*` y termina con `quit(codigo)` (0 = éxito, 1 = fallo). Cada prueba enumera aquí su archivo al abrirse la fase correspondiente.
+Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga cada archivo `tests/test_*.gd`, ejecuta sus métodos `test_*` y termina con `quit(codigo)` (0 = éxito, 1 = fallo). Toda prueba nueva se añade a esta sección en el mismo lote: `tools/check_test_inventory.py` comprueba que no falte ninguna y que todos los recorridos de integración se ejecuten en la CI.
 
 **Política:** “pruebas en verde” significa que todas las de esta sección pasan.
 
@@ -165,6 +173,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_hud_combat` | Viñeta de salud y munición visible solo con la honda |
 | `test_intro_cards` | Tarjetas de introducción |
 | `test_session_log` | Registro de sesión y marcas |
+| `test_session_acts` | Los cinco mundos marcan su acto en el registro de sesión |
 
 ### 3.4. Configuración, gráficos y audio
 
@@ -177,16 +186,18 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_campaign_audio` | Recursos de audio de la campaña y bucles |
 | `test_model_validator` | Validación de modelos |
-| `test_quaternius_characters` | Rig de 76 huesos (65 UBC + 6 de manto + 1 mandíbula + 4 de expresión), clips lógicos, `NpcActor`, catálogo de todos los papeles, política de sombras, LOD de multitud, muelles del manto, mandíbula de habla, parpadeo, cejas, porra que se oculta cerca de la cámara y altura de HijoPuma |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
 | `test_mannequin_prototype` | Looks UAL1, huesos reales, atuendo, nodo `OutfitMannequin` y mano extraída |
-| `test_first_person_hands` | Malla propia de la mano, falanges articuladas y gesto de interacción |
+| `test_mannequin_cast` | Elenco en llacta, Cusco y paso: clips UAL1/UAL2, fusión del atuendo por hueso, LOD de multitud y chanca con porra |
+| `test_first_person_hands` | Mano de maniquí: antebrazo UAL1, falanges y poses abierta y puño |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
 | `test_title_screen` | La portada traduce sus textos y, sin campaña, deshabilita Comenzar |
 
-### 3.5. Pruebas de la campaña (se escriben en la Fase 3)
+### 3.5. Pruebas de la campaña
 
-| Nivel | Qué debe cubrir |
+Escritas en la Fase 3 y ampliadas en la Fase 4. Cubren:
+
+| Nivel | Cobertura |
 |---|---|
 | Acto I | Encargos, recursos, oficio, familia, mensajero y asamblea |
 | Acto II | Campamento, emboscada, sigilo, herido, maíz, reclutamiento y preparación |
@@ -195,7 +206,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | Acto V | Reconstrucción, nombre nuevo y cierre |
 | Sistemas | Recursos, oficio aplicado, confianza de Sisa, asamblea y puntos de control |
 | Del arco | Partida guionizada I→V (`ARCO_OK`) |
-| Duración | Marcas por acto y total; objetivo 40–50 min |
+| Duración | Marcas por acto y total; la partida humana de 40–50 min se mide en la Fase 5 |
 
 ### 3.6. Aceptación de escenas
 
