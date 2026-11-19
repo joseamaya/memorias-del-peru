@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampaignRoute" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/route_definition.gd" id="1_route"]
+
+[resource]
+script = ExtResource("1_route")
+id = &"r2_ruta_del_paso"
+display_name = "R2 · Ruta del paso"
+classification = "GN/GR"
+width = 3.0
+points = PackedVector3Array(300, 0, 0, 150, 0, 80, -50, 0, 150, -250, 0, 250, -450, 0, 320, -700, 0, 350, -900, 0, 300, -1100, 0, 200, -1300, 0, 100, -1450, 0, 60, -1650, 0, 0)

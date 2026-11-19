@@ -173,6 +173,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/region_streaming_check.gd 2>&1 | tee /tmp/region_streaming.log
           python3 tools/check_output.py /tmp/region_streaming.log
 
+      - name: Rutas y navmesh
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/route_network_check.gd 2>&1 | tee /tmp/routes.log
+          python3 tools/check_output.py /tmp/routes.log
+
       - name: LOD de 60 NPC
         run: |
           set -o pipefail

@@ -11,7 +11,7 @@
 |---|---|---|---|---|
 | 2.1 | Heightmap regional | **Base implementada** | 3,5 × 2,5 km con valle, río, quebrada, paso y cumbres; alturas por sector | `region_terrain_check`, captura aérea |
 | 2.2 | Sectores y streaming | **Base implementada** | Seis sectores con función y presupuesto; carga sin pantallas | `region_streaming_check`; 6 escenas, 3 cargadas en la llacta |
-| 2.3 | Rutas | Pendiente | R1–R8 conectan los sectores; navmesh por sector | Recorrido y `navigation_check` |
+| 2.3 | Rutas | **Base implementada** | R1–R8 conectan los sectores; navmesh por sector | `route_network_check`; 8 rutas, 6 navmeshes y rutas continuas |
 | 2.4 | S3 Llacta de Rumi | Pendiente | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | Captura y presupuesto |
 | 2.5 | S1 Cusco preimperial | Pendiente | Plaza, recinto, ayllus, mercado y talleres en blockout | Captura y presupuesto |
 | 2.6 | S4–S6 | Pendiente | Quebrada, paso y frontera con POI y límites naturales | Captura y presupuesto |
@@ -89,11 +89,45 @@ godot --path . --resolution 1280x720 \
 
 La captura queda en `build/evidencia/region_streaming.png`.
 
+## 2.3. F2.3 — Rutas y navmesh
+
+**Datos:** ocho `CampaignRoute` en `campaigns/01_pachacutec/data/routes/` con ID, nombre, clasificación, ancho y puntos. Son trazados de blockout GN/GR; ningún camino se presenta como documentado.
+
+| Ruta | Recorrido | Ancho |
+|---|---|---|
+| R1 Camino principal | Llacta → afueras → Cusco | 4,0 m |
+| R2 Ruta del paso | Llacta → quebrada → paso → frontera | 3,0 m |
+| R3 Ruta del río | Llacta → vado → acequia → Cusco | 2,5 m |
+| R4 Sendero de pastores | Quebrada → cueva → mirador | 2,0 m |
+| R5 Ruta oculta | Quebrada → tambo → frontera | 2,0 m |
+| R6 Callejones del Cusco | Plaza → ayllus → talleres | 2,0 m |
+| R7 Acequia madre | Manantial → terrazas → río | 1,5 m |
+| R8 Camino de la frontera | Paso → campamento → puesto | 2,0 m |
+
+**Dibujo:** una cinta de blockout de 3 m de muestreo por ruta, apoyada en el terreno y separada 0,8 m para no recortarse con la malla de 4 m.
+
+**Navmesh:** seis regiones horneadas con `TerrainNavmesh` sobre los límites de cada sector (paso de 6 m), unidas con cinco `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa sincronizó las regiones y sus extremos se proyectan al navmesh.
+
+**Comprobación:** `route_network_check` valida 8 rutas, 8 cintas, 6 regiones, y rutas continuas llacta–Cusco (~1.039 m) y llacta–frontera (~2.190 m). Salida: `ROUTES_OK routes=8 regions=6`.
+
+**Medición:** horneado completo de las seis regiones en ~3,4 s en la referencia con carga alta. Es coste de blockout; si se convierte en ruta de carga, se pregenerará o se reducirá el paso.
+
+**Pendiente:** caminos con ancho y material definitivos, puentes, vados, cierres de fase, navmesh local de 1 m y el recorrido a pie de F2.8.
+
+```bash
+godot --headless --path . --script res://tests/route_network_check.gd
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_routes.tscn
+```
+
+La captura queda en `build/evidencia/routes.png`.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
 2. **Hecho:** F2.2 base (seis sectores y streaming sin pantallas).
-3. **Siguiente:** F2.3 rutas; F2.4–F2.6 blockout de sectores.
+3. **Hecho:** F2.3 base (ocho rutas y navmesh por sector con enlaces).
+4. **Siguiente:** F2.4–F2.6 blockout de sectores.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 

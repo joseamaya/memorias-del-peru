@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampaignRoute" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/route_definition.gd" id="1_route"]
+
+[resource]
+script = ExtResource("1_route")
+id = &"r5_ruta_oculta"
+display_name = "R5 · Ruta oculta"
+classification = "GN"
+width = 2.0
+points = PackedVector3Array(-700, 0, 350, -850, 0, 380, -1000, 0, 420, -1150, 0, 450, -1300, 0, 300, -1450, 0, 150, -1650, 0, 0)

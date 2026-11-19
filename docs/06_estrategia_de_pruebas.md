@@ -118,6 +118,12 @@ Comprobar el streaming de los seis sectores sobre el terreno continuo:
 godot --headless --path . --script res://tests/region_streaming_check.gd
 ```
 
+Comprobar las ocho rutas, los seis navmeshes y la continuidad llacta–Cusco–frontera:
+
+```bash
+godot --headless --path . --script res://tests/route_network_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -132,7 +138,7 @@ godot --headless --path . --import 2>&1 | tee /tmp/import.log
 python3 tools/check_output.py /tmp/import.log
 ```
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -261,6 +267,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `streaming_soak_check.gd` | 60 ciclos de carga/descarga: latencia < 150 ms, hitch < 50 ms y memoria estable |
 | `region_terrain_check.gd` | 3,5 × 2,5 km de relieve: seis sectores con alturas plausibles, cumbres y cauce bajo la vega |
 | `region_streaming_check.gd` | Seis sectores cargan por cercanía, se descargan al alejarse y el terreno regional sigue cargado |
+| `route_network_check.gd` | Ocho rutas dibujadas, seis navmeshes con enlaces y rutas continuas llacta–Cusco y llacta–frontera |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
 | `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |

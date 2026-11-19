@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampaignRoute" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/route_definition.gd" id="1_route"]
+
+[resource]
+script = ExtResource("1_route")
+id = &"r6_callejones_cusco"
+display_name = "R6 · Callejones del Cusco"
+classification = "GN/GR"
+width = 2.0
+points = PackedVector3Array(1200, 0, 400, 1250, 0, 430, 1290, 0, 410, 1270, 0, 370, 1220, 0, 360, 1200, 0, 400)

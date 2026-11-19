@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CampaignRoute" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/route_definition.gd" id="1_route"]
+
+[resource]
+script = ExtResource("1_route")
+id = &"r4_sendero_pastores"
+display_name = "R4 · Sendero de pastores"
+classification = "GN"
+width = 2.0
+points = PackedVector3Array(-700, 0, 350, -780, 0, 480, -850, 0, 620, -980, 0, 720, -1100, 0, 650, -1000, 0, 520, -850, 0, 450)
