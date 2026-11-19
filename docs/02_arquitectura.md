@@ -153,7 +153,7 @@ PlayerFPS (CharacterBody3D)
 | `SectorStreamer` | Carga/descarga de sectores exteriores | `sector_loaded`, `sector_unloaded`, `load_sector`, `unload_sector` |
 | `SectorState` | Estado persistente del sector | Contenedores, puertas, props, NPC |
 | `InteriorManager` | Carga aditiva de interiores | `enter_interior`, `exit_interior` |
-| `NavigationService` | Navmesh por sector, rutas y enlaces | `find_path`, `map_changed` |
+| `NavigationService` | Consulta de rutas y enlaces; el navmesh lo aportan los sectores | `find_path`, `is_reachable`, `path_length`, `closest_point` |
 | `NpcDirector` | Spawn/despawn, LOD, horarios | `npc_spawned`, `npc_despawned`, `schedule_applied` |
 | `QuestDirector` | Estado de misiones | `quest_started`, `stage_changed`, `quest_completed` |
 | `WorldEventDirector` | Disparadores y secuencias | `event_started`, `event_finished` |

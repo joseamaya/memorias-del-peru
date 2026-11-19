@@ -70,6 +70,12 @@ Comprobar la carga y descarga asíncrona de sectores con escenas reales:
 godot --headless --path . --script res://tests/sector_streaming_check.gd
 ```
 
+Comprobar una ruta entre dos regiones de navegación unidas por un enlace:
+
+```bash
+godot --headless --path . --script res://tests/navigation_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -210,6 +216,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
 | `test_sector_streamer` | Celdas, radio de carga, distancia, siempre cargado y registro de definiciones |
 | `sector_streaming_check.gd` | Carga asíncrona de escenas reales, descarga por radio y sector siempre cargado |
+| `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
+| `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
 
 ### 3.5. Pruebas de la campaña
 
@@ -244,7 +252,6 @@ Estas pruebas **todavía no existen**, salvo las de reloj, estado, guardado, hor
 | Área | Prueba prevista | Criterio |
 |---|---|---|
 | NPC LOD | `test_npc_lod` | Cerca/medio/lejos; límite de animados y de sombras |
-| Navegación | `test_navigation_route` | Ruta entre anclas, puerta y desnivel sin atascos |
 | Misiones | `test_quest_state` | Etapas, condiciones, consecuencias y guardado |
 | Descubrimientos | `test_discovery_registry` | POI, mapa y rumor; sin duplicados |
 | Contenido | `test_content_ids` | IDs, textos y fichas existen; ninguna referencia rota |

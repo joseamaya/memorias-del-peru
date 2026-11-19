@@ -137,6 +137,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/sector_streaming_check.gd 2>&1 | tee /tmp/streaming.log
           python3 tools/check_output.py /tmp/streaming.log
 
+      - name: Navegación entre sectores
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/navigation_check.gd 2>&1 | tee /tmp/navigation.log
+          python3 tools/check_output.py /tmp/navigation.log
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [guard, lint, test]

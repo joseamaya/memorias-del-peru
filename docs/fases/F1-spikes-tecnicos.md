@@ -11,7 +11,7 @@
 | 1.1 | Terrain3D | Pendiente | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | Medición y captura |
 | 1.2 | Cyclops | Pendiente | Blockout de una plaza y conversión a malla/colisión; export sin addon | Escena y captura |
 | 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
-| 1.4 | Navegación | Pendiente | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_route` |
+| 1.4 | Navegación | **Base implementada** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check` |
 | 1.5 | NPC y horarios | **Base implementada** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`; `test_npc_lod` pendiente |
 | 1.6 | Guardado y reloj | **Base implementada** | Esquema versionado y round-trip de mundo/reloj/jugador | `test_world_clock`, `test_world_state`, `test_save_round_trip` |
 | 1.7 | Rendimiento | Pendiente | ≤ 350 draw calls, ≤ 250 MB VRAM, 30/60 FPS, hitch < 50 ms | `scene_audit`, `measure_performance` |
@@ -70,6 +70,21 @@ godot --headless --path . --script res://tests/run_tests.gd
 - Integrar sectores de la región (props, edificios, vegetación y NPC).
 - Cancelar cargas pendientes cuando el objetivo se aleja mucho.
 - Presupuesto de memoria en un recorrido de 10 min.
+
+## 2.3. F1.4 — Base de consulta y rutas de navegación
+
+**Implementado:**
+
+- `NavigationService`: mapa del `World3D`, ruta entre puntos, comprobación de alcance, longitud y punto más cercano.
+- `tests/test_navigation_service.gd`: consulta fuera del árbol y longitud.
+- `tests/navigation_check.gd`: dos regiones de navegación separadas por un hueco de 5 m, unidas por `NavigationLink3D`, con ruta completa.
+
+**Pendiente de F1.4:**
+
+- Navmesh horneado por sector sobre el terreno real.
+- Enlaces de puertas, escaleras y desniveles en la región.
+- 20 NPC recorriendo llacta–manantial–paso sin atascos.
+- Coste de generación y actualización del navmesh.
 
 ## 3. Orden de trabajo
 
