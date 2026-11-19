@@ -49,11 +49,18 @@ mirador del norte, pirca y corrales) con el jugador real:
 godot --headless --path . --script res://tests/llacta_walk_check.gd
 ```
 
+Comprobar el diálogo del mensajero desde el punto de la duda, con el rayo y
+los botones reales:
+
+```bash
+godot --headless --path . --script res://tests/llacta_messenger_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`.
 
 La CI de GitHub Actions (`.github/workflows/ci.yml`) repite en cada push a `main`:
 importar, límites de GDScript, pruebas, comportamiento del combate, recorrido de la
-llacta, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. Si la CI falla, la entrega no
+llacta, mensajero del acto I, arco completo y exportación de Linux/Windows; el build de Linux se arranca en headless. Si la CI falla, la entrega no
 está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
@@ -113,6 +120,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_llacta_loads` | La llacta carga con terreno, ocho casas, terrazas, corrales, ocho personajes, cuatro encargos y límites |
 | `test_llacta_layout` | Caminos visibles, borde de plaza, manantial, mirador, fondo de valle y colisión de casa por variante |
 | `llacta_walk_check.gd` | Recorrido real de entrada, plaza, manantial, casa, mirador, pirca y corrales sin atascos |
+| `llacta_messenger_check.gd` | Desde la duda, el rayo enfoca al mensajero, se elige «Escuchar» y el paso pasa a la asamblea |
 | `test_act_one_tasks` | Tres encargos dan agua, maíz y manta, dejan el cuarto disponible y abren la duda |
 | `test_act_one_flow` | Recorrido de jugador nuevo: mañana, honda de tres aciertos, cuatro encargos, duda, mensajero y asamblea; lista, contador y marcadores solo cuando toca; el cuarto encargo no rebobina |
 | `test_assembly` | La duda abre el mensajero, la asamblea pregunta, la elección deja su bandera y aparece la tarjeta de fin |
@@ -268,6 +276,6 @@ tiempos de carga de escena quedan dentro del acto que empieza.
 | 2026-11-18 | Diez looks de maniquí | `mannequin_looks.gd`, `tests/mannequin_prototype.gd`, `test_mannequin_prototype.gd` y `run_tests.gd` | 144 pruebas, 0 fallos; diez looks (Curaca, Sisa, Chanca, Anca, Puma, Madre, Hermano, Joven, Anciana, Mensajero), capturas `maniquies_principales.png` y `maniquies_apoyo.png`; sin impacto en partida porque aún no se usan en NPC; pendiente de aprobación e integración; la mano sigue en revisión |
 | 2026-11-18 | Prototipo de maniquíes UAL1 | `core/characters/*`, `MannequinLooks`, `OutfitMannequin`, `tools/blender_mannequin_forearm.py`, `tests/scenes/mannequin_prototype.tscn` y `run_tests.gd` | 144 pruebas, 0 fallos; tres looks iniciales (Curaca, Sisa, Chanca), mano de maniquí con antebrazo UAL1 y panel de objetivo arriba a la izquierda; capturas en `documentation/img/prototipo/`; maniquíes aprobados; mano pendiente de revisión; UBC sigue activo |
 | 2026-11-18 | Pase visual: casas, llama y tarjetas | `llacta.gd`, `ciudad.gd`, `character_model_visual.gd`, `first_person_weapon.gd`, `first_person_hands.gd`, `hud.gd`, `capture_quaternius.tscn` y `run_tests.gd` | 140 pruebas, 0 fallos; casas de la llacta con `SurfaceMaterials` (piedra, paja y madera); llama por shader; tarjeta del acto IV a 0,80; párrafos en la del III; porra de PNJ oculta a menos de 1,4 m; honda con correa fina; mano de interacción a 0,68 |
-| 2026-11-18 | Acto I con objetivos visibles y territorio compuesto: pasos, honda, caminos, manantial, mirador y vivienda coherente | `run_tests.gd`, `llacta_walk_check.gd`, `arc_playthrough.gd`, `combat_arena_check.gd`, `capture_act_one_flow.tscn`, `capture_llacta_tour.tscn` y `measure_performance.tscn` | 141 pruebas, 0 fallos; recorrido de la llacta OK; `ARCO_OK`; arena 3 enemigos con ≤ 2 atacantes; capturas de mañana/honda/encargos y de plaza/manantial/mirador; draw calls 294/270/331/306/315, bajo 350; Cusco 63,8 FPS y p1 60,0 con carga 0,45–0,51 |
+| 2026-11-18 | Acto I con objetivos visibles y territorio compuesto: pasos, honda, caminos, manantial, mirador y vivienda coherente | `run_tests.gd`, `llacta_walk_check.gd`, `llacta_messenger_check.gd`, `arc_playthrough.gd`, `combat_arena_check.gd`, `capture_act_one_flow.tscn`, `capture_llacta_tour.tscn` y `measure_performance.tscn` | 141 pruebas, 0 fallos; recorrido de la llacta y mensajero OK; `ARCO_OK`; arena 3 enemigos con ≤ 2 atacantes; capturas de mañana/honda/encargos y de plaza/manantial/mirador; draw calls 294/270/331/306/315, bajo 350; Cusco 63,8 FPS y p1 60,0 con carga 0,45–0,51 |
 
 Cada entrega añade una fila con el alcance, el comando y el resultado.

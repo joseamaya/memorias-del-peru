@@ -1098,6 +1098,10 @@ func _on_dialogue_finished() -> void:
 	if hud != null:
 		hud.hide_dialogue()
 	player.end_dialogue()
+	if _duda_started:
+		var duda: CampPoint = get_node_or_null("DudaPoint") as CampPoint
+		if duda != null:
+			duda.set_available(false)
 	if act == 1 and _assembly_started and not _assembly_done:
 		_end_act_one()
 	elif act == 4 and _assembly_started and not _assembly_done:
@@ -1547,12 +1551,12 @@ func _spawn_messenger() -> void:
 		return
 	_messenger_spawned = true
 	var npcs: Node3D = get_node_or_null("Llacta/NPCs") as Node3D
-	var actor: NpcActor = _add_npc(npcs, "Mensajero", Vector3(-3.0, 0.0, 3.0), Color(0.55, 0.42, 0.32, 1.0))
+	var actor: NpcActor = _add_npc(npcs, "Mensajero", Vector3(-4.8, 0.0, 3.8), Color(0.55, 0.42, 0.32, 1.0))
 	if actor != null:
 		_messenger_actor = actor
 		actor.watch_target = player
 		actor.face(_plaza_center_flat(), true)
-	var point: CampPoint = _add_request_point("MessengerPoint", Vector3(-3.0, 0.9, 3.0), &"PCH_TALK_MESSENGER", _on_messenger_requested)
+	var point: CampPoint = _add_request_point("MessengerPoint", Vector3(-4.8, 0.9, 3.8), &"PCH_TALK_MESSENGER", _on_messenger_requested)
 	if point != null:
 		point.name = "MessengerPoint"
 

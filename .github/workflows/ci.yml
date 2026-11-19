@@ -51,6 +51,9 @@ jobs:
       - name: Recorrido de la llacta
         run: ~/godot/godot --headless --path . --script res://tests/llacta_walk_check.gd
 
+      - name: Mensajero del acto I
+        run: ~/godot/godot --headless --path . --script res://tests/llacta_messenger_check.gd
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [test]

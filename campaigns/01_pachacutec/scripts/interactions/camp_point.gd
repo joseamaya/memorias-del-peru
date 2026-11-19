@@ -22,6 +22,12 @@ func _init() -> void:
 ## ejemplo, Cusi en el santuario antes de recibir el mensaje).
 func set_available(value: bool) -> void:
 	_available = value
+	# Un punto retirado no debe seguir absorbiendo el rayo ni mostrar «Hablar»:
+	# el jugador tiene que poder enfocar lo que hay detrás.
+	# El script cuelga de un StaticBody3D, pero la clase base es Node3D para
+	# poder compartirse con otros interactuables; la propiedad se asigna por
+	# nombre para no romper esa jerarquía.
+	set("collision_layer", 4 if value else 0)
 
 
 func is_available() -> bool:

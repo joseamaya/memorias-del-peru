@@ -126,15 +126,34 @@ func test_act_one_flow() -> bool:
 	ok = ok and tracker.objective_text() == tr("PCH_OBJ_MESSENGER")
 	ok = ok and tracker.banner_text() == tr("PCH_NOTICE_MESSENGER")
 	ok = ok and director.is_marker_visible(&"Messenger")
-
-	# I.4: el mensajero aparece después de la duda, no al tercer encargo.
+	# El punto de la duda se retira y el mensajero queda dentro del rayo.
+	ok = ok and not doubt.is_available()
 	var messenger: CampPoint = world.get_node_or_null("MessengerPoint") as CampPoint
 	if messenger == null:
 		return _fail(world)
+	var gap: Vector2 = Vector2(
+		messenger.global_position.x - doubt.global_position.x,
+		messenger.global_position.z - doubt.global_position.z)
+	ok = ok and gap.length() <= 3.0
+	ok = ok and messenger.is_available()
+
+	# I.4: el mensajero aparece después de la duda, no al tercer encargo.
 	messenger.interact(player)
 	ok = ok and hud.is_dialogue_open()
-	hud.get_dialogue_panel().choice_selected.emit(2)
-	world.call("_on_dialogue_advanced")
+	var panel: DialoguePanel = hud.get_dialogue_panel()
+	var listen_button: Button = null
+	for node: Node in panel.get_node("Panel/Margin/VBox/Choices").get_children():
+		var button: Button = node as Button
+		if button != null and button.visible and button.text.contains(tr("PCH_MSG_LISTEN")):
+			listen_button = button
+			break
+	ok = ok and listen_button != null
+	if listen_button != null:
+		listen_button.pressed.emit()
+	var advance: InputEventAction = InputEventAction.new()
+	advance.action = &"interact"
+	advance.pressed = true
+	panel._unhandled_input(advance)
 	ok = ok and CampaignState.has_flag(&"noticia_chanca")
 	ok = ok and director.current_marker() == &"Plaza"
 	ok = ok and tracker.objective_text() == tr("PCH_OBJ_ASAMBLEA")
