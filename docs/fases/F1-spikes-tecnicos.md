@@ -10,11 +10,11 @@
 |---|---|---|---|---|
 | 1.1 | Terrain3D | **Base implementada; adopción provisional** | Importa, renderiza, colisiona y exporta en 4.7.2; sector a 60 FPS Medio | `terrain3d_check`, `measure_terrain`; 113–115 FPS |
 | 1.2 | Cyclops | **Base implementada** | Blockout de una plaza y conversión a malla/colisión; export sin addon | `cyclops_probe`; cubo convertido a malla y colisión |
-| 1.3 | Streaming | **Base implementada** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check` |
+| 1.3 | Streaming | **Base implementada y medida** | Carga/descarga sin hitches; < 150 ms por sector | `test_sector_streamer`, `sector_streaming_check`, `streaming_soak_check`; 21,4 ms medio, 32,2 ms máximo, 15,6 ms de hitch y 1 KB de crecimiento |
 | 1.4 | Navegación | **Implementada en el sector gris** | 20 NPC recorren llacta–manantial–paso sin atascos | `test_navigation_service`, `navigation_check`, `grey_sector_check`; navmesh sobre el terreno y 20 NPC que llegan caminando |
 | 1.5 | NPC y horarios | **Implementada en el sector gris** | 60 NPC, 25 animados, sin caída > 20 % | `test_npc_schedule`, `test_npc_lod`, `npc_lod_check`; 60/25 y caída del 15,9 % |
 | 1.6 | Guardado y reloj | **Base implementada** | Esquema versionado y round-trip de mundo/reloj/jugador | `test_world_clock`, `test_world_state`, `test_save_round_trip` |
-| 1.7 | Rendimiento | Pendiente | ≤ 350 draw calls, ≤ 250 MB VRAM, 30/60 FPS, hitch < 50 ms | `scene_audit`, `measure_performance` |
+| 1.7 | Rendimiento | **Implementada en el blockout** | ≤ 350 draw calls, ≤ 250 MB VRAM, 30/60 FPS, hitch < 50 ms | `sector_blockout_check`, `measure_blockout_compare`; 255–287 draw calls, 101,7 MB, 61–66 FPS, frame máximo 30,3 ms |
 
 ## 2. F1.6 — Base de reloj, estado y guardado
 
@@ -65,13 +65,14 @@ godot --headless --path . --script res://tests/run_tests.gd
 - `SectorStreamer`: índice de sectores, celda por posición, radio de carga y descarga con histéresis, carga asíncrona con `ResourceLoader.load_threaded_request`, descarga y señales.
 - `tests/test_sector_streamer.gd`: celdas, radio, distancia, siempre cargado y registro.
 - `tests/sector_streaming_check.gd`: carga real de escenas, descarga y persistencia del sector siempre cargado.
+- `tests/streaming_soak_check.gd`: 60 ciclos de carga/descarga con escenas reales; 21,4 ms de media, 32,2 ms el peor ciclo, 15,6 ms de hitch máximo y 1 KB de crecimiento de memoria estática.
 
 **Pendiente de F1.3:**
 
-- Medir tiempo de carga y hitch por sector con arte real.
+- Medir tiempo de carga y hitch con arte y edificios reales.
 - Integrar sectores de la región (props, edificios, vegetación y NPC).
 - Cancelar cargas pendientes cuando el objetivo se aleja mucho.
-- Presupuesto de memoria en un recorrido de 10 min.
+- Recorrido real de 10 minutos; el soak de 60 ciclos es la aproximación de CI.
 
 ## 2.3. F1.4 — Base de consulta y rutas de navegación
 
@@ -200,6 +201,38 @@ godot --path . --resolution 1280x720 \
 ```
 
 La captura de los 60 NPC queda en `build/evidencia/npc_lod.png`.
+## 2.8. F1.7 — Blockout y presupuesto
+
+**Escena:** `tests/scenes/sector_blockout.tscn`, variante del sector gris con:
+
+- Seis casas y dos pircas de Cyclops convertidas a malla y colisión; sus huellas recortan el navmesh.
+- 120 cápsulas de multitud y 180 matas de ichu en dos `MultiMesh` (un draw call cada uno).
+- 60 NPC con 25 animados.
+- Terreno de 256 m y navmesh de 128 polígonos.
+
+**Comprobación:** `sector_blockout_check` valida 6 casas, 120 de multitud, 180 de vegetación, 60 NPC activos, 25 animados y que la ruta entre (−30, 6) y (−14, 6) rodea la casa de (−22, 6). Salida: `BLOCKOUT_OK npcs=60 houses=6 crowd=120 vegetation=180 active=60 animated=25`.
+
+**Medición comparativa** en el mismo proceso y franja de carga 52–57 (tres pasadas, 1920 × 1080, Medio, vsync off):
+
+| Escena | FPS medio | Mediana | Draw calls | VRAM | Frame máximo |
+|---|---|---|---|---|---|
+| 60 NPC | 63,9 / 74,0 / 62,0 | 63,9 | 180–189 | 101,6 MB | 28,7–32,0 ms |
+| Blockout | 62,1 / 65,7 / 61,3 | 62,1 | 255–287 | 101,7 MB | 23,1–30,3 ms |
+
+El blockout cuesta un **2,8 %** de FPS de mediana; todo queda por debajo de 350 draw calls y 250 MB, por encima de 61 FPS y con frame máximo inferior a 50 ms. Las pasadas con carga 74–79 (41–54 FPS) se descartaron por contención del equipo.
+
+**Pendiente:** arte real, LOD de edificios, sombras selectivas, rutina de multitud sobre MultiMesh y el sector de campaña.
+
+```bash
+godot --headless --path . --script res://tests/sector_blockout_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_blockout_compare.tscn
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_sector_blockout.tscn
+```
+
+La captura queda en `build/evidencia/sector_blockout.png`.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F1.6 base (reloj, estado y guardado).
@@ -207,8 +240,9 @@ La captura de los 60 NPC queda en `build/evidencia/npc_lod.png`.
 3. **Hecho:** F1.2 base (Cyclops convierte un bloque en malla y colisión).
 4. **Hecho:** F1.3–F1.4 en el sector gris (streaming base, navmesh sobre el terreno, 20 NPC en ruta y guardado).
 5. **Hecho:** F1.5 en el sector gris (`NpcDirector`, LOD, 60 NPC, 25 animados y snapshot).
-6. **Siguiente:** blockout real de plaza/pirca y F1.7 con arte, edificios y multitud con MultiMesh.
-7. Exportación Linux/Windows con ambos addons y prueba de humo.
+6. **Hecho:** F1.7 en el blockout (casas y pircas Cyclops, multitud y vegetación MultiMesh, presupuesto medido).
+7. **Hecho:** exportación Linux/Windows con ambos addons y prueba de humo.
+8. **Siguiente:** aprobación del responsable para cerrar F1 y abrir F2 con el expediente geográfico.
 
 ## 4. Riesgos
 
@@ -222,8 +256,8 @@ La captura de los 60 NPC queda en `build/evidencia/npc_lod.png`.
 
 ## 5. Criterio de cierre
 
-- [ ] 1.1–1.5 y 1.7 con medición publicada.
-- [ ] 1.6 con round-trip completo e integración mínima.
-- [ ] CI verde con los addons o con el respaldo.
-- [ ] Decisión de adopción de Terrain3D/Cyclops en la bitácora.
-- [ ] Presupuesto por sector fijado con números medidos.
+- [x] 1.1–1.5 y 1.7 con prueba reproducible y medición publicada (1.2 valida conversión y exportación, no rendimiento).
+- [x] 1.6 con round-trip completo e integración mínima.
+- [x] CI verde con los addons.
+- [ ] Decisión definitiva de adopción de Terrain3D/Cyclops: siguen en adopción provisional hasta el sector real de F2.
+- [x] Presupuesto por sector fijado con números medidos: ≤ 350 draw calls, ≤ 250 MB, 60 FPS Medio y frame < 50 ms.

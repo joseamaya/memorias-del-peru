@@ -11,6 +11,9 @@ extends Node3D
 @export var npc_animate_distance: float = 40.0
 @export var terrain_size: int = 256
 @export var navmesh_bounds: AABB = AABB(Vector3(-60.0, -2.0, -60.0), Vector3(120.0, 10.0, 120.0))
+@export var blockout: bool = false
+@export var crowd_count: int = 0
+@export var vegetation_count: int = 0
 
 var _terrain: Terrain3D = null
 var _navigation: NavigationService = null
@@ -21,6 +24,7 @@ var _director: NpcDirector = null
 var _definitions: Array[NpcDefinition] = []
 var _anchors: Dictionary[StringName, Vector3] = {}
 var _camera: Camera3D = null
+var _blockout: GreyBlockout = null
 
 
 func _ready() -> void:
@@ -30,6 +34,11 @@ func _ready() -> void:
 	_build_pirca()
 	_build_navigation()
 	_build_npcs()
+	if blockout or crowd_count > 0 or vegetation_count > 0:
+		_blockout = GreyBlockout.new()
+		_blockout.name = "Blockout"
+		add_child(_blockout)
+		_blockout.build(_terrain, blockout, crowd_count, vegetation_count)
 	set_process(true)
 
 
@@ -140,6 +149,10 @@ func get_cyclops_block() -> CyclopsBlock:
 	return _cyclops_block
 
 
+func get_blockout() -> GreyBlockout:
+	return _blockout
+
+
 func height_at(x: float, z: float) -> float:
 	var distance: float = sqrt(x * x + z * z)
 	if distance < 36.0:
@@ -199,6 +212,8 @@ func _build_terrain() -> void:
 
 func _build_navigation() -> void:
 	var obstacles: Array[PackedVector3Array] = [_pirca_footprint()]
+	if blockout:
+		obstacles.append_array(GreyBlockout.footprints())
 	var profile: NavmeshProfile = NavmeshProfile.new()
 	profile.step = 2.0
 	_navmesh = TerrainNavmesh.bake(_terrain, navmesh_bounds, profile, obstacles)
@@ -215,7 +230,7 @@ func _build_navigation() -> void:
 
 
 func _build_pirca() -> void:
-	var data: ConvexBlockData = _cube_data(8.0, 1.0, 0.6)
+	var data: ConvexBlockData = GreyBlockout.cube_data(8.0, 1.0, 0.6)
 	_cyclops_block = CyclopsBlock.new()
 	_cyclops_block.name = "PircaCyclops"
 	_cyclops_block.block_data = data
@@ -289,54 +304,3 @@ func _entry(start: int, end: int, anchor: StringName, activity: StringName) -> S
 	entry.anchor_id = anchor
 	entry.activity = activity
 	return entry
-
-
-func _cube_data(width: float, height: float, depth: float) -> ConvexBlockData:
-	var data: ConvexBlockData = ConvexBlockData.new()
-	var half_x: float = width * 0.5
-	var half_y: float = height * 0.5
-	var half_z: float = depth * 0.5
-	data.vertex_points = PackedVector3Array(
-		[
-			Vector3(-half_x, -half_y, -half_z),
-			Vector3(half_x, -half_y, -half_z),
-			Vector3(half_x, half_y, -half_z),
-			Vector3(-half_x, half_y, -half_z),
-			Vector3(-half_x, -half_y, half_z),
-			Vector3(half_x, -half_y, half_z),
-			Vector3(half_x, half_y, half_z),
-			Vector3(-half_x, half_y, half_z),
-		]
-	)
-	data.vertex_selected = PackedByteArray([0, 0, 0, 0, 0, 0, 0, 0])
-	data.edge_selected = PackedByteArray()
-	data.face_material_indices = PackedInt32Array([0, 0, 0, 0, 0, 0])
-	data.face_uv_transform = []
-	for _i: int in 6:
-		data.face_uv_transform.append(Transform2D.IDENTITY)
-	data.face_visible = PackedByteArray([1, 1, 1, 1, 1, 1])
-	data.face_color = PackedColorArray(
-		[Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE]
-	)
-	data.face_selected = PackedByteArray([0, 0, 0, 0, 0, 0])
-	data.edge_vertex_indices = PackedInt32Array()
-	data.edge_face_indices = PackedInt32Array()
-	data.face_vertex_count = PackedInt32Array([4, 4, 4, 4, 4, 4])
-	data.face_vertex_indices = PackedInt32Array(
-		[0, 3, 2, 1, 4, 5, 6, 7, 0, 4, 7, 3, 1, 2, 6, 5, 0, 1, 5, 4, 3, 7, 6, 2]
-	)
-	var normals: PackedVector3Array = PackedVector3Array()
-	for _i: int in 4:
-		normals.append(Vector3(0, 0, -1))
-	for _i: int in 4:
-		normals.append(Vector3(0, 0, 1))
-	for _i: int in 4:
-		normals.append(Vector3(-1, 0, 0))
-	for _i: int in 4:
-		normals.append(Vector3(1, 0, 0))
-	for _i: int in 4:
-		normals.append(Vector3(0, -1, 0))
-	for _i: int in 4:
-		normals.append(Vector3(0, 1, 0))
-	data.face_vertex_normal = normals
-	return data
