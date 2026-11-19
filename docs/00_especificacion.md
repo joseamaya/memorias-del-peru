@@ -1,6 +1,6 @@
 # 00 — Especificación original
 
-> **Estado de este documento.** Es la especificación técnica de origen (v1.0), conservada íntegra como referencia y punto de partida. Los documentos `docs/01`–`08` la desarrollan y concretan; las desviaciones respecto a ella se justifican en la [bitácora](bitacora.md). Ante una contradicción, prevalece el orden de [AGENTS.md](../AGENTS.md) §3. No se edita: si una sección queda superada, se indica en el documento o en la bitácora que la sustituye.
+> **Estado de este documento.** Es la especificación técnica de origen (v1.0), conservada íntegra como referencia y punto de partida. **La dirección de producto cambió el 2026-11-19:** *Memorias del Perú* se redefine como antología de cuatro RPG históricos de mundo abierto regional. Este documento describe la versión lineal y **está superado** por [docs/01](01_vision_y_alcance.md), [docs/02](02_arquitectura.md), [docs/11](11_diseno_de_mundo.md) y [docs/12](12_campanas.md). Las desviaciones se justifican en la [bitácora](bitacora.md). Ante una contradicción, prevalece el orden de [AGENTS.md](../AGENTS.md) §3. No se edita: su valor es histórico.
 >
 > Los ADR se retiraron el 2026-11-14. Sus referencias en este repositorio son históricas y su registro vive en la [bitácora](bitacora.md).
 

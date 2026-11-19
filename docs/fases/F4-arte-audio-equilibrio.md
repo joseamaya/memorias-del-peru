@@ -1,8 +1,10 @@
-# F4 · Arte, audio y equilibrio — tareas
+# F4-L · Arte, audio y equilibrio — tareas (congelada)
 
-**Estado:** en curso · **Organización aprobada:** 2026-11-19.
-**Criterio de salida:** el de [docs/05](../../docs/05_plan_de_implementacion.md) §Fase 4.
-La partida humana cronometrada de 40–50 min es criterio de la **Fase 5**, no de esta fase.
+> **Fase congelada el 2026-11-19.** La dirección lineal de 40–50 minutos se sustituye por el mundo abierto regional. Esta ficha se conserva como historial y banco de pruebas; **no se continúa**. El plan activo es la [F0](F0-redefinicion-mundo-abierto.md) y, después, F1–F6 de [docs/05](../../docs/05_plan_de_implementacion.md). Las tareas abiertas (4.9, 4.12, 4.14) no bloquean el trabajo nuevo.
+
+**Estado:** congelada · **Organización aprobada:** 2026-11-19.
+**Criterio de salida original:** el de [docs/05](../../docs/05_plan_de_implementacion.md) §Fase 4 (histórico).
+La partida humana cronometrada de 40–50 min era criterio de la **Fase 5** lineal; ya no aplica al producto nuevo.
 
 ## 1. Alcance
 
@@ -24,7 +26,7 @@ La partida humana cronometrada de 40–50 min es criterio de la **Fase 5**, no d
 | 4.11 | Sensación de combate | Cerrado el 2026-11-16 | — | Fases del golpe, parry, hitstop, aviso enemigo y fichas; arena con ≤ 2 atacantes | `test_combat_feel.gd`, [combat-tuning-log](../combat-tuning-log.md) |
 | 4.12 | Elenco de maniquíes UAL1 | **Abierto** | — | Diez looks integrados y aprobados; legado UBC retirado; mano en primera persona revisada | [prototipo_maniqui.md](../../campaigns/01_pachacutec/documentation/prototipo_maniqui.md) |
 | 4.13 | Composición del territorio del acto I | Cerrado el 2026-11-19 | — | Caminos, pirca, manantial, mirador, roquedales y fondo de valle con recorrido real y pruebas | `test_llacta_layout.gd`, `llacta_walk_check.gd`, capturas del acto I |
-| 4.14 | Cierre de F4 | **Pendiente** | 4.9, 4.12 | Checklist de cierre completo, nota de fase y build exportada | Este documento §7 |
+| 4.14 | Cierre de F4-L | **Pendiente** | 4.9, 4.12 | Checklist de cierre completo, nota de fase y build exportada | Este documento §7 |
 
 ## 3. Detalle de los bloques cerrados (4.1–4.7)
 
@@ -64,7 +66,7 @@ Criterio de aceptación: decisión del responsable sobre la mano (se queda, se a
 
 ### 4.8 — Equilibrio numérico (cerrado)
 
-Los valores de salud, aliento, daño, munición y economía están fijados y cubiertos por `test_combat`, `test_combat_loadout`, `test_combat_feel` y la arena de tres enemigos con ≤ 2 atacantes. El contraste humano de dificultad y la duración real se hacen en la partida completa de F5; aquí no queda trabajo propio.
+Los valores de salud, aliento, daño, munición y economía están fijados y cubiertos por `test_combat`, `test_combat_loadout`, `test_combat_feel` y la arena de tres enemigos con ≤ 2 atacantes. El contraste humano de dificultad y la duración real se hacen en la partida completa de F5-L; aquí no queda trabajo propio.
 
 ### 4.13 — Composición del acto I (cerrado)
 
@@ -89,7 +91,7 @@ Si la fase se pasa de lo razonable, en este orden:
 3. Pase visual del Cusco: solo luz, paleta y legibilidad, sin geometría nueva.
 4. Mano del maniquí: se mantiene la actual con la deuda declarada, en lugar de abrir un rediseño.
 
-## 7. Cierre de F4
+## 7. Cierre de F4-L
 
 - [ ] 4.9: los cinco actos con pase visual y sonoro aprobado.
 - [ ] 4.12: mano revisada y elenco validado en partida.
@@ -97,15 +99,15 @@ Si la fase se pasa de lo razonable, en este orden:
 - [ ] Interfaz y textos legibles sin esfuerzo.
 - [ ] Suite completa, arena, arco y recorridos en verde; cero errores y advertencias de `res://`.
 - [ ] Builds de Linux y Windows exportados; el de Linux arranca.
-- [ ] Nota de cierre con evidencia, decisiones, «lo aprendido», «no verificado» y deudas que pasan a F5.
+- [ ] Nota de cierre con evidencia, decisiones, «lo aprendido», «no verificado» y deudas que pasan a F5-L.
 - [ ] El responsable confirma el criterio de salida.
 
-## 8. Deudas que pasan a F5
+## 8. Deudas que pasan a F5-L
 
 | Deuda | Motivo |
 |---|---|
-| Partida humana completa y cronometrada (40–50 min) | Es el criterio de duración de F5; F4 no la sustituye con la pasada guionizada ni con la suma de fichas |
+| Partida humana completa y cronometrada (40–50 min) | Es el criterio de duración de F5-L; F4-L no la sustituye con la pasada guionizada ni con la suma de fichas |
 | Contraste humano de dificultad y equilibrio | Se observa en la partida completa, con las decisiones y el costo del arco |
-| Prueba de humo del build exportado en una sesión real | F5 valida bloqueos y arranque, no solo la exportación |
-| Mando físico y build de Windows probado por otra persona | Fuera del alcance de F4 |
+| Prueba de humo del build exportado en una sesión real | F5-L valida bloqueos y arranque, no solo la exportación |
+| Mando físico y build de Windows probado por otra persona | Fuera del alcance de F4-L |
 | Mezcla de audio si se recorta | Se retoma al cerrar el arte |

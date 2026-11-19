@@ -6,6 +6,54 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-19 — Cierre documental de la F0
+
+**Decisión:** se cierra la F0 con las recomendaciones aprobadas por el responsable.
+
+| Decisión | Valor |
+|---|---|
+| Duración | 6–8 h de historia principal; 8–12 h con contenido secundario |
+| Región | 2–4 km² de área densa; hasta ~8 km² con wilderness |
+| Portada | Cuatro campañas visibles; solo la 01 jugable hasta su fase |
+| Campaña III | Ayacucho–Huanta–Cangallo como hipótesis principal, sujeta a expediente |
+| Campaña IV | Mantaro; Huamachuco como epílogo narrado o secuencia final |
+| Addons | Spikes de Terrain3D y Cyclops, no adopción definitiva |
+
+**Cambios documentales:**
+
+- `docs/09` se reescribe como biblia de mundo abierto: cuatro campañas, fases, reglas de guion y criterios de rigor.
+- `docs/11` cierra el GDD: decisiones, accesibilidad, contenido por fase, guardado, pantallas, audio y vertical slice.
+- `docs/12` desarrolla las cuatro campañas a nivel regional: lugares, historia principal, contenido no principal y riesgos.
+- El dossier de la región Pachacútec se completa con rutas, 30 POI, 25 experiencias de exploración y clasificación GD/GR/GN.
+- `docs/01`, `docs/05`, `docs/15`, `README` y `AGENTS` reflejan la F0 cerrada y F1 como siguiente fase.
+
+**Consecuencias:** la F0 queda cerrada; la F1 no se abre hasta que el responsable lo indique. No se toca código, escenas ni assets en este cierre.
+
+## 2026-11-19 — Giro a mundo abierto regional
+
+**Decisión:** *Memorias del Perú* deja de ser una sucesión de escenas históricas lineales y pasa a ser una antología de cuatro RPG históricos de **mundo abierto regional**. Cada campaña tendrá una región continua con 2–4 km² de área densa (hasta ~8 km² con wilderness), vida cotidiana, NPC con rutinas, misiones principales y secundarias, descubrimientos y persistencia. La campaña 01 conserva la historia, el elenco y el registro histórico, pero los cinco actos se viven como fases del mismo territorio.
+
+**Motivación:** la dirección lineal no satisfacía el objetivo de producto. El jugador recorría escenarios, no habitaba un lugar; los NPC existían solo mientras la escena estaba cargada; las decisiones se leían en la escena siguiente; no había guardado, navegación, reloj ni descubrimientos. La historia y el rigor histórico sí funcionaban y se conservan.
+
+**Alternativas consideradas:**
+
+1. **Ampliar los mapas actuales** y mantener los cinco actos como cinco zonas. Se descartó: produce cinco lugares desconectados y no resuelve la vida cotidiana, la persistencia ni la exploración.
+2. **Mundo abierto de escala nacional** (decenas de km²). Se descartó: inviable para un equipo pequeño y para la GPU integrada; favorece mapas vacíos.
+3. **Mundo abierto regional con densidad** (elegida): 2–4 km², una comunidad principal, varios núcleos, rutinas, contenido no principal y fases históricas. Permite un producto viable y medible.
+
+**Consecuencias:**
+
+- Se congelan **F4-L y F5-L** (las fases lineales); no se cierran ni se continúan. Su contenido queda como historial y banco de pruebas.
+- Se abre **F0 — Redefinición a mundo abierto (documentación)**. Después vienen F1 (spikes), F2 (geografía y blockout), F3 (vertical slice), F4 (producción de la campaña 01), F5 (cierre) y F6 (campañas II–IV).
+- La arquitectura cambia: entran `WorldClock`, `WorldState`, `SaveManager`, `ContentRegistry`, `SectorStreamer`, `NpcDirector`, `QuestDirector`, `WorldEventDirector`, navegación y datos por recursos.
+- El inventario de campaña pasa a 16 huecos + 3 equipados + almacenamiento; el de 8 huecos queda como historial lineal.
+- La duración objetivo pasa de 40–50 min a 6–8 h de historia principal.
+- Se propone Terrain3D 1.1.0 y Cyclops 1.5.2 como candidatos, no adoptados; su adopción depende de F1.
+- La geografía se clasifica con GD/GR/GN. La región de la campaña 01 es una hipótesis: Cusco preimperial, llacta ficticia, quebrada, paso y frontera chanca, con distancias comprimidas declaradas.
+- Las campañas II–IV quedan como concepto y región propuesta; no se construyen hasta que la 01 esté cerrada.
+
+**Documentos:** [docs/01](../docs/01_vision_y_alcance.md), [docs/02](../docs/02_arquitectura.md), [docs/05](../docs/05_plan_de_implementacion.md), [docs/06](../docs/06_estrategia_de_pruebas.md), [docs/07](../docs/07_convenciones_historicas.md), [docs/08](../docs/08_entorno_y_rendimiento.md), [docs/09](../docs/09_biblia_narrativa.md), [docs/10](../docs/10_plantilla_guion_de_escena.md), [docs/11](../docs/11_diseno_de_mundo.md), [docs/12](../docs/12_campanas.md), [docs/13](../docs/13_pipeline_de_escenarios.md), [docs/14](../docs/14_auditoria_y_migracion.md), [docs/15](../docs/15_resumen_de_la_redefinicion.md), [ficha de F0](../docs/fases/F0-redefinicion-mundo-abierto.md) y [dossier de región](../campaigns/01_pachacutec/documentation/mundo/README.md).
+
 ## 2026-11-19
 
 | Cambio | Detalle |

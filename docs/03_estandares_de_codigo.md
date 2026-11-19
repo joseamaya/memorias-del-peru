@@ -87,6 +87,16 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 - Sin código duplicado: si se repite en dos campañas, se evalúa moverlo a Core (con una entrada en la bitácora si cambia contratos).
 - Documentar con `##` toda clase pública y todo método público de Core (aparece en la ayuda del editor).
 
+### 4.1. Datos y contenido
+
+- El contenido de una campaña se declara en **recursos** (`Resource`) o datos versionados, no en condicionales de código.
+- IDs estables y legibles: `npc_sisa`, `poi_mirador`, `quest_mensajero`, `loc_plaza_llacta`.
+- El código de Core interpreta definiciones; no contiene nombres, textos ni rutas de una campaña.
+- Toda definición se valida al arrancar o en pruebas: IDs únicos, referencias existentes, textos con clave y fichas clasificadas.
+- Los datos que se guardan declaran versión, ID y migración.
+- Los archivos de contenido no se parten por tamaño arbitrario: se dividen por responsabilidad (NPC, misión, lugar, horario).
+- Un archivo nuevo de GDScript sigue el límite de 400 líneas; si un sistema de mundo crece, se separa en director, definición, estado y presentación.
+
 ## 5. Control de versiones
 
 - Mensajes de commit en español, en imperativo, con prefijo de área: `core(player): añade head bobbing`, `docs: …`, `pachacutec(world): …`.

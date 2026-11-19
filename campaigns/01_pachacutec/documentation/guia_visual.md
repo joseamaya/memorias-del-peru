@@ -1,10 +1,12 @@
 # Guía visual — campaña 01, *Pachacútec: El despertar del Sol*
 
-**Estado:** v1.0 · 2026-11-16 · Fase 4.9.
+**Estado:** v1.0 (lineal) · 2026-11-16 · Fase 4.9. **Congelada como referencia visual.**
 **Manda:** [docs/09](../../../docs/09_biblia_narrativa.md) en lo narrativo,
-[docs/07](../../../docs/07_convenciones_historicas.md) en lo histórico y este documento
+[docs/07](../../../docs/07_convenciones_historicas.md) en lo histórico, [docs/11](../../../docs/11_diseno_de_mundo.md) en el mundo y este documento
 en lo visual. Si una pieza incumple una regla, se corrige la pieza; si la regla no sirve,
 se cambia aquí y se anota en la [bitácora](../../../docs/bitacora.md).
+
+> **Nota de transición (2026-11-19).** Esta guía describe los cinco escenarios lineales. La paleta, las formas, la luz y las reglas de escala siguen siendo válidas para la región de mundo abierto, pero las medidas de 150 × 150 m y la composición por acto se sustituyen por el [dossier de región](mundo/README.md). La guía visual de la región se escribe en F2, después del blockout.
 
 La guía existe para que los cinco actos parezcan **el mismo mundo visto a distintas
 horas**, no cinco escenarios ensamblados. No pide más assets: decide cómo se iluminan,
