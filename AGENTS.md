@@ -80,7 +80,7 @@ La [bitácora](docs/bitacora.md) es el registro cronológico de cambios y decisi
    - **Solo documentación:** enlaces relativos resueltos y sin afirmaciones que contradigan el código.
    - **Código de Core o sistemas:** suite completa.
    - **Mundo, jugador o evento:** suite completa, partida de extremo a extremo y arranque del build exportado.
-   - **Escena, arte, audio o interfaz:** además, capturas fijas y medición de rendimiento según [docs/08](docs/08_entorno_y_rendimiento.md).
+   - **Escena, arte, audio o interfaz:** además, capturas fijas y medición de rendimiento según [docs/06](docs/06_estrategia_de_pruebas.md) §4.1 y [docs/08](docs/08_entorno_y_rendimiento.md).
 2. Revisar la salida completa: **cero errores y cero advertencias de GDScript procedentes de `res://`**.
 3. Corregir y volver a validar. Si algo no se pudo comprobar, se declara como *no verificado*.
 4. Actualizar lo que corresponda: [docs/05](docs/05_plan_de_implementacion.md), la ficha de la fase, [docs/06](docs/06_estrategia_de_pruebas.md) y la [bitácora](docs/bitacora.md).

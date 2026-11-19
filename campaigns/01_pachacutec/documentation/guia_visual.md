@@ -164,6 +164,11 @@ Las capturas van a `/tmp/opencode/llacta_tour/`. La segunda comprueba que el
 jugador llega a la plaza, el manantial, la casa, el mirador y los corrales sin
 atascarse.
 
+El procedimiento completo —tomas fijas, comparación antes/después, escala,
+rendimiento y evidencia— está en [docs/06](../../../docs/06_estrategia_de_pruebas.md) §4.1.
+Toda tarea que cambie el aspecto lo sigue y archiva las capturas en
+`documentation/img/<tarea>/`.
+
 ## 8. Preguntas abiertas
 
 1. **Puertas trapezoidales:** muy reconocibles como andinas, pero más propias de la

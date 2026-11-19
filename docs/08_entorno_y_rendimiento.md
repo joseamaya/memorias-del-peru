@@ -118,6 +118,7 @@ Consecuencias de que la referencia tenga GPU integrada:
 3. Tres pasadas por perfil; se publica la mediana y el rango.
 4. Se registran FPS medio y p1, tiempo de frame, draw calls y memoria de vídeo.
 5. La medición se repite al cerrar cada acto y al cambiar la escena.
+6. Las capturas y su revisión siguen el procedimiento de [docs/06](06_estrategia_de_pruebas.md) §4.1.
 
 ### 4.1. Auditoría de escena
 
