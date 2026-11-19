@@ -10,7 +10,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
-| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, el guion de escenas, los sistemas de campaña, el flujo de objetivos del acto I, la sensación de combate, la guía visual y el rendimiento en Medio están cerrados; las 141 pruebas pasan. Queda la mezcla de audio escuchada, la duración real y la prueba de humo |
+| Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, los sistemas de campaña, la sensación de combate, la guía visual y el rendimiento en Medio están cerrados. Quedan el pase visual y sonoro por acto y la revisión de la mano del maniquí; la duración real y la prueba de humo son de la Fase 5. Ver el [plan](docs/05_plan_de_implementacion.md) y la [ficha de F4](docs/fases/F4-arte-audio-equilibrio.md) |
 
 ## Requisitos
 
@@ -53,6 +53,7 @@ Los argumentos `--profile=0..3` eligen perfil gráfico (0 Bajo, 1 Medio, 2 Alto,
 | [docs/03_estandares_de_codigo.md](docs/03_estandares_de_codigo.md) | Tipado estricto, estilo y convenciones de nombres |
 | [docs/04_configuracion_del_proyecto.md](docs/04_configuracion_del_proyecto.md) | Contenido requerido de `project.godot` e Input Map |
 | [docs/05_plan_de_implementacion.md](docs/05_plan_de_implementacion.md) | Fases, entregables y criterios de aceptación |
+| [docs/fases/](docs/fases/) | Tareas de la fase activa, dependencias, criterios por tarea y evidencia |
 | [docs/06_estrategia_de_pruebas.md](docs/06_estrategia_de_pruebas.md) | Validación, pruebas automatizadas y verificación manual |
 | [docs/07_convenciones_historicas.md](docs/07_convenciones_historicas.md) | Clasificación de contenido histórico y fuentes |
 | [docs/08_entorno_y_rendimiento.md](docs/08_entorno_y_rendimiento.md) | Entorno atmosférico, perfiles gráficos y métricas |
