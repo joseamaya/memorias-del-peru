@@ -82,6 +82,12 @@ Comprobar que Terrain3D carga y que una heightmap mínima se puede consultar:
 godot --headless --path . --script res://tests/terrain3d_check.gd
 ```
 
+Comprobar el sector gris de integración (Terrain3D, pirca Cyclops, navmesh, 20 NPC y guardado):
+
+```bash
+godot --headless --path . --script res://tests/grey_sector_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -225,6 +231,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
 | `terrain3d_check.gd` | Terrain3D carga, crea una región y devuelve la altura importada |
+| `grey_sector_check.gd` | Sector gris: Terrain3D, pirca Cyclops, navmesh, 20 NPC con horario y guardado |
 
 ### 3.5. Pruebas de la campaña
 

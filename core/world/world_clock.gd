@@ -38,6 +38,14 @@ var _period: int = Period.MORNING
 var _paused: bool = false
 
 
+## Devuelve el autoload, o `null` si no existe.
+static func instance() -> WorldClockService:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("WorldClock") as WorldClockService
+
+
 func _ready() -> void:
 	set_process(autostart)
 	_period = get_period()

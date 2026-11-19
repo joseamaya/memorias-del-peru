@@ -149,6 +149,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/terrain3d_check.gd 2>&1 | tee /tmp/terrain3d.log
           python3 tools/check_output.py /tmp/terrain3d.log
 
+      - name: Sector gris de integración
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/grey_sector_check.gd 2>&1 | tee /tmp/grey_sector.log
+          python3 tools/check_output.py /tmp/grey_sector.log
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [guard, lint, test]

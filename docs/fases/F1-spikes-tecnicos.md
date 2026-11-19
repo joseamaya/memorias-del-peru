@@ -132,6 +132,30 @@ godot --headless --path . --script res://tests/cyclops_probe.gd
 
 > El addon deja un aviso de objetos sin liberar al salir en Godot 4.7.2. Es un problema del addon, no de la escena de juego; se vigila al convertirlo en herramienta de F2.
 
+## 2.6. Sector gris de integración (F1.3–F1.5)
+
+**Escena:** `tests/scenes/grey_sector.tscn`, 256 m de Terrain3D, pirca de Cyclops convertida a malla/colisión, plaza con navmesh, 20 NPC con horario y cámara en órbita.
+
+**Comprobación:** `grey_sector_check` valida 20 NPC, región de terreno, malla y colisión de la pirca, ruta de navegación, cambio de ancla por hora y guardado/carga de fase, bandera y reloj. Salida: `GREY_SECTOR_OK npcs=20 path=2`.
+
+**Medición:** tres pasadas a 1920 × 1080, perfil Medio, vsync off, con carga del equipo 4,5–5,1:
+
+| Pasada | FPS medio | p1 | Draw calls | VRAM |
+|---|---|---|---|---|
+| 1 | 94,1 | 90,0 | 116 | 98,7 MB |
+| 2 | 89,2 | 77,6 | 118 | 98,7 MB |
+| 3 | 89,6 | 82,9 | 118 | 98,7 MB |
+
+**Pendiente:** navmesh horneado sobre el terreno real (la plaza usa una malla plana), ruta de 20 NPC entre sectores, edificios y texturas. La carga alta del equipo obliga a repetir la medición en F2.
+
+**Comandos:**
+
+```bash
+godot --headless --path . --script res://tests/grey_sector_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_grey_sector.tscn
+```
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F1.6 base (reloj, estado y guardado).
