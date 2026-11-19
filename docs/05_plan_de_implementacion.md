@@ -15,7 +15,7 @@
 | F4-L — Arte, audio y equilibrio (lineal) | **Congelada** | — |
 | F5-L — Validación y cierre (lineal) | **Congelada** | — |
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
-| **F1 — Spikes técnicos** | **En curso** (1.3–1.6 base) | — |
+| **F1 — Spikes técnicos** | Spikes cerrados; cierre pendiente de aprobación | — |
 | F2 — Geografía y blockout | Prevista | — |
 | F3 — Vertical slice | Prevista | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
@@ -69,7 +69,7 @@
 
 **Objetivo:** comprobar con medidas, no con suposiciones, que la arquitectura elegida funciona en Godot 4.7.2 y en la GPU integrada de referencia.
 
-**Estado:** 1.6 (reloj, estado y guardado), 1.5 en el sector gris (`NpcDirector`, LOD de 60 activos y 25 animados, snapshot), la base de 1.3 (streaming de sectores), 1.4 en el sector gris (navmesh horneado sobre el terreno y 20 NPC en ruta), la base de 1.1 (Terrain3D) y la base de 1.2 (Cyclops) están implementados y probados. El sector gris integra Terrain3D, pirca Cyclops, 128 polígonos de navmesh, 20 NPC que llegan caminando, guardado y una escena de 60 NPC con caída del 15,9 %. El blockout real, el arte con MultiMesh, el presupuesto de 1.7 y la integración en la campaña están pendientes. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
+**Estado:** los siete spikes tienen escena, prueba y medición. 1.1 (Terrain3D), 1.2 (Cyclops), 1.3 (streaming: 21,4 ms de carga media y 1 KB de crecimiento en 60 ciclos), 1.4 (navmesh sobre el terreno y 20 NPC en ruta), 1.5 (60 NPC, 25 animados y snapshot), 1.6 (reloj, estado y guardado) y 1.7 (blockout con 255–287 draw calls, 101,7 MB, 61–66 FPS y frame máximo de 30,3 ms) están implementados y medidos. El cierre de F1 queda pendiente de la aprobación del responsable y de la decisión de adopción de Terrain3D/Cyclops, que se confirma con el sector real de F2. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
 
 | # | Spike | Pregunta | Criterio de paso |
 |---|---|---|---|

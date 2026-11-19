@@ -113,6 +113,8 @@ Validación histórica, visual, de rendimiento y de guardado
 
 **Navmesh sobre Terrain3D.** El addon no expone su malla ni su colisión como nodos de escena: la colisión es un `Terrain3DCollision` con RID propio. Por eso no sirve `NavigationRegion3D.bake_navigation_mesh()` sobre el terreno. `core/world/terrain_navmesh.gd` muestrea la altura, construye una rejilla de triángulos con la orientación de Recast y hornea de forma síncrona con `NavigationMeshSourceGeometryData3D`. `NavmeshProfile` declara paso, radio de agente y pendiente. Los muros y edificios del blockout se declaran como huellas en XZ y se recortan con `add_projected_obstruction`; los que tengan malla propia pueden añadirse al horneado. En el sector gris, 120 × 120 m de terreno con la pirca recortada dieron 128 polígonos y una ruta que sube el relieve hasta el campo.
 
+**Blockout de presupuesto (F1.7).** `tests/grey_blockout.gd` levanta seis casas y dos pircas con Cyclops, una multitud de 120 cápsulas y 180 matas de ichu en dos `MultiMesh`. Las casas y pircas recortan el navmesh por huella. No es arte ni contenido de campaña: sirve para fijar el presupuesto de draw calls, VRAM y FPS antes del blockout real de F2.
+
 ```bash
 godot --headless --path . --script res://tests/grey_sector_check.gd
 ```

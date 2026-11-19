@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/capture_grey_sector.gd" id="1_capture"]
+
+[node name="CaptureSectorBlockout" type="Node"]
+script = ExtResource("1_capture")
+sector_scene = "res://tests/scenes/sector_blockout.tscn"
+output_path = "res://build/evidencia/sector_blockout.png"
