@@ -80,6 +80,8 @@ Los tiempos incluyen pendiente y clima; no son una promesa de velocidad del juga
 
 ## 7. Puntos de interés (20–30)
 
+> El catálogo con IDs, clasificación, actividad y fase está en [rutas_y_poi.md](rutas_y_poi.md). Las experiencias no principales están en [experiencias_de_exploracion.md](experiencias_de_exploracion.md).
+
 ### 7.1. Núcleo y vida cotidiana
 
 1. Casa de Rumi y huerto.

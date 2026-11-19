@@ -3,7 +3,7 @@
 - **Versión:** 1.0 — 2026-11-19
 - **Ámbito:** diseño del producto y de cada región; no fija fases ni pruebas.
 - **Marco:** [visión](01_vision_y_alcance.md), [arquitectura](02_arquitectura.md), [biblia narrativa](09_biblia_narrativa.md), [campañas](12_campanas.md) y [pipeline](13_pipeline_de_escenarios.md).
-- **Estado:** propuesta aprobada para F0; los números se validan en F1–F3.
+- **Estado:** aprobada para F1–F2; los números de rendimiento y escala se validan en F1–F3.
 
 ## 1. Concepto
 
@@ -32,6 +32,24 @@ El territorio y sus habitantes existen **más allá de la misión activa**. El j
 | Legibilidad y rendimiento | 30 FPS en Bajo y 60 en Medio en la GPU integrada de referencia |
 
 **Anti-pilares:** mapas enormes vacíos, marcadores flotantes como única guía, simulación compleja para todos los NPC, crafting profundo, loot aleatorio, niveles/XP, magia, cuatro campañas a la vez.
+
+### 2.1. Decisiones cerradas
+
+| Decisión | Valor aprobado |
+|---|---|
+| Duración | 6–8 h de historia principal; 8–12 h con contenido secundario |
+| Región | 2–4 km² de área densa; hasta ~8 km² con wilderness |
+| Campaña 01 | 3,5 × 2,5 km totales; seis sectores |
+| Portada | Cuatro campañas visibles; solo la 01 jugable hasta su fase |
+| Inventario | 16 huecos + 3 equipados + almacenamiento en casa |
+| Habilidades | Honda, Mano, Palabra, Oficio y Monte, 0–5 por uso |
+| Combate | Contextual, con opciones de disuasión y huida |
+| Guardado | Completo, versionado y con autoguardado en hitos |
+| Día/noche | Día de 48 min reales por defecto |
+| Rendimiento | ≥ 30 FPS Bajo y ≥ 60 FPS Medio en UHD 770 |
+| Campaña III | Ayacucho–Huanta–Cangallo como hipótesis principal, sujeta a expediente |
+| Campaña IV | Mantaro; Huamachuco como epílogo narrado o secuencia final |
+| Addons | Terrain3D y Cyclops solo tras spikes de F1 |
 
 ## 3. Bucles
 
@@ -157,6 +175,21 @@ Se conserva `PlayerFPS`: caminar, correr, cámara, balanceo, pasos por superfici
 - Las decisiones cambian acceso, precios, diálogo, ayuda y variantes de escena.
 - La reputación no es una barra única: un aliado en la llacta puede ser un extraño en el Cusco.
 
+### 6.6. Accesibilidad
+
+- Subtítulos con tamaño, fondo y tiempo de lectura ajustables.
+- Texto de interfaz escalable; contraste alto y alternativa al color.
+- Sensibilidad de cámara, FOV, balanceo y movimiento reducido.
+- Opción de guía de objetivo para quien no quiera orientarse por hitos.
+- Remapeo de teclas y alternativa a mantener pulsado.
+- Avisos visuales y sonoros para interacciones y peligro.
+- Sin información esencial que dependa solo del color o del audio.
+- Pausa real en todo momento, también en diálogos.
+
+### 6.7. Ejemplo de progresión
+
+El jugador empieza con Honda 0, Mano 1, Palabra 1, Oficio 1 y Monte 1. Acarrear agua y subir terrazas sube Monte; moler maíz y reparar una pirca suben Oficio; una conversación difícil sube Palabra. Las habilidades no dan niveles ni puntos: abren opciones de diálogo, trabajos, rutas y formas de resolver un encuentro. Un jugador puede terminar la campaña con Honda baja si evita el combate; el mundo debe permitirlo.
+
 ## 7. NPC
 
 ### 7.1. Niveles de simulación
@@ -193,6 +226,21 @@ Cada NPC tier A/B declara:
 - Máximo de animados visibles y de sombras por sector, medido.
 - La multitud no proyecta sombra completa ni usa diálogo profundo.
 
+### 7.5. Ejemplo de horario
+
+Un NPC narrativo puede tener:
+
+| Franja | Ancla | Actividad | Condición |
+|---|---|---|---|
+| 05:00–07:00 | casa | despertar, desayunar | — |
+| 07:00–12:00 | campo | trabajar | fase 0–1 |
+| 12:00–14:00 | plaza | comer, conversar | — |
+| 14:00–18:00 | campo | trabajar | fase 0–1 |
+| 18:00–21:00 | casa | cenar, tejer | — |
+| 21:00–05:00 | casa | dormir | — |
+
+En fase de guerra, las franjas de campo se sustituyen por refugio o vigilancia. El horario se interrumpe por una secuencia controlada y se reanuda después; el NPC no desaparece ni reinicia su día.
+
 ## 8. Misiones y contenido
 
 ### 8.1. Tipos
@@ -221,6 +269,19 @@ Cada NPC tier A/B declara:
 - Modo “guía” opcional para accesibilidad: resalta el objetivo activo, sin sustituir la exploración.
 - La niebla de guerra no oculta el mundo: oculta nombres y detalles no descubiertos.
 
+### 8.4. Contenido por fase (campaña 01)
+
+| Fase | Principal | Secundarias | Encargos | POI nuevos | Acontecimientos |
+|---|---|---|---|---|---|
+| Paz | 3 | 5 | 8 | 10 | 3 |
+| Noticia | 4 | 4 | 2 | 5 | 3 |
+| Guerra | 3 | 3 | 1 | 4 | 2 |
+| Posguerra | 3 | 4 | 1 | 4 | 2 |
+| Obra | 2 | 3 | 1 | 2 | 1 |
+| **Total** | **15** | **19** | **13** | **25** | **11** |
+
+El catálogo de la campaña 01 tiene 30 POI; la columna «POI nuevos» cuenta los que se activan por primera vez en cada fase. Los números son objetivos de producción, no una cuota rígida. Si una fase no necesita una secundaria, se recorta antes que rellenarla. Los POI se reparten entre los seis sectores y no todos se marcan.
+
 ## 9. Combate
 
 - Contextual y poco frecuente; no es el bucle principal.
@@ -246,6 +307,15 @@ Cada NPC tier A/B declara:
 - Autoguardado al dormir, cambiar de fase o entrar/salir de un sector seguro.
 - Guardado manual fuera de combate.
 
+### 10.1. Experiencia de guardado
+
+- Guardado manual desde la pausa, fuera de combate y de secuencias controladas.
+- Autoguardado al dormir, al cambiar de fase y al entrar o salir de un sector seguro.
+- Tres ranuras manuales + autoguardado por campaña.
+- La pantalla de carga muestra lugar, día y hora, no una barra genérica.
+- Si una partida no se puede cargar por versión, se conserva el archivo y se avisa; nunca se borra en silencio.
+- El guardado no se usa para castigar: morir recarga el último punto seguro, no reinicia la campaña.
+
 ## 11. Interfaz
 
 - HUD mínimo: interacción contextual, salud y aliento solo cuando importan, subtítulos y rótulo de lugar.
@@ -253,6 +323,17 @@ Cada NPC tier A/B declara:
 - Mapa diegético; sin minimapa permanente.
 - Pausa con opciones, guardado y accesibilidad.
 - Textos legibles a 1080p; alto contraste; sin información que dependa solo del color.
+
+### 11.1. Pantallas
+
+| Pantalla | Contenido | Regla |
+|---|---|---|
+| Portada | Cuatro campañas, solo la 01 jugable | Las otras indican “en diseño” |
+| Pausa | Continuar, guardar, opciones, salir | No hay menús anidados innecesarios |
+| Diario | Encargos, descubrimientos, personas, lugares, memoria | Navegable con teclado y puntero |
+| Mapa | Descubierto, sin GPS; modo guía opcional | No revela lo no visitado |
+| Guardado | Ranuras, fecha, lugar, hora | Confirmación antes de sobrescribir |
+| Opciones | Gráficos, audio, controles, accesibilidad | Cambios aplicados sin reiniciar |
 
 ## 12. Arte y audio
 
@@ -262,6 +343,15 @@ Cada NPC tier A/B declara:
 - Ambiente por región y hora; audio posicional para oficios y multitud.
 - La música no tapa el ambiente; se usa en transiciones y momentos.
 - Medir niveles antes de escuchar; sin clips ni efectos casi mudos.
+
+### 12.1. Audio
+
+- Ambiente por región, hora y clima: viento, agua, aves, mercado, taller.
+- Pasos por superficie; el jugador y los NPC comparten bancos de sonido, no el mismo volumen.
+- Audio posicional para oficios, animales y multitud; sin saturación.
+- La música se usa en transiciones, clímax y cierre; no compite con el ambiente.
+- Medir antes de escuchar: picos por debajo de −0,5 dBFS, sin clips ni efectos casi mudos.
+- Los anacronismos sonoros se declaran en la ficha de la campaña.
 
 ## 13. Rendimiento
 
@@ -300,6 +390,19 @@ Los números son provisionales hasta F1. Se mide por sector, no por mapa complet
 5. Combate a encuentros authored.
 6. Viaje rápido eliminado.
 7. Campañas II–IV solo documentadas.
+
+### 14.3. Vertical slice (F3)
+
+La primera demostración jugable no es la campaña completa. Debe incluir:
+
+- 400–500 × 400–500 m de terreno natural.
+- Una comunidad con 8–12 casas, plaza, 3 interiores y límite natural.
+- 20–30 NPC, 8 nombrados, rutinas de mañana/tarde/noche.
+- 1 misión principal de 3 etapas con consecuencia.
+- 2 actividades secundarias y 1 descubrimiento no marcado.
+- Ciclo día/noche, descanso y guardado/carga.
+- Un cambio del jugador persistente (corral, acequia, puente o casa).
+- 30–45 min de juego real, con contenido no principal.
 
 ## 15. Métricas de éxito
 

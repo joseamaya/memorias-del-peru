@@ -10,9 +10,9 @@ Antología de cuatro **RPG históricos de mundo abierto regional** en primera pe
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma | Linux y Windows (verificados); macOS como objetivo, sin probar |
-| Fase | **F1 — Spikes técnicos.** La F0 está entregada y aprobada; el PR de documentación queda pendiente de merge. La base de reloj, estado y guardado (1.6) está implementada. La campaña lineal I–V se conserva como historial y banco de pruebas; F4-L y F5-L quedan congeladas. Ver [docs/05](docs/05_plan_de_implementacion.md) y la [ficha de F1](docs/fases/F1-spikes-tecnicos.md) |
+| Fase | **F0 cerrada; F1 — Spikes técnicos en curso.** La base de reloj, estado, guardado, NPC, streaming y navegación (1.3–1.6) está implementada. La campaña lineal I–V se conserva como historial y banco de pruebas; F4-L y F5-L quedan congeladas. Ver [docs/05](docs/05_plan_de_implementacion.md) y la [ficha de F1](docs/fases/F1-spikes-tecnicos.md) |
 
-> **Estado honesto del repositorio.** El código actual implementa la versión lineal de 40–50 minutos: cinco actos, tres escenarios y un arco cerrado. No es todavía un mundo abierto. La redefinición empieza por la documentación y sigue con spikes técnicos; no se construye terreno ni se producen assets definitivos hasta validar la arquitectura y la vertical slice. Ver [docs/11](docs/11_diseno_de_mundo.md), [docs/12](docs/12_campanas.md) y [docs/13](docs/13_pipeline_de_escenarios.md).
+> **Estado honesto del repositorio.** El código actual implementa la versión lineal de 40–50 minutos: cinco actos, tres escenarios y un arco cerrado. No es todavía un mundo abierto. La F0 documental está cerrada; la F1 de spikes técnicos está en curso. No se construye terreno ni se producen assets definitivos hasta validar la arquitectura y la vertical slice. Ver [docs/11](docs/11_diseno_de_mundo.md), [docs/12](docs/12_campanas.md) y [docs/13](docs/13_pipeline_de_escenarios.md).
 
 ## Requisitos
 

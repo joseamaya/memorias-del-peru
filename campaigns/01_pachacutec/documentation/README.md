@@ -40,7 +40,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Documento | Estado |
 |---|---|
 | [biblia_campana.md](biblia_campana.md) | **v1.1 (narrativa)** — los cinco actos, el protagonista, el elenco, los sistemas y las banderas; la estructura de mundo se adapta en `mundo/` |
-| [mundo/](mundo/README.md) | **v0.1 (propuesta F0)** — expediente geográfico, mapa conceptual, sectores y reestructuración narrativa a mundo abierto |
+| [mundo/](mundo/README.md) | **v1.0 (dossier completo)** — expediente, mapa, sectores, rutas, 30 POI, 25 experiencias, clasificación y reestructuración narrativa |
 | [expediente_historico.md](expediente_historico.md) | **v1.0** — cronología, lugares, personajes, cultura material, controversias y ficción declarada |
 | [registro_historico.md](registro_historico.md) | 29 fichas verificadas; PCH-025 (armadura acolchada) fuera del juego; PCH-032 a PCH-036 verificadas el 2026-11-15 |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |

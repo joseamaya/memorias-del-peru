@@ -10,11 +10,11 @@
 |---|---|---|---|
 | 1 | Diagnóstico del proyecto actual | [docs/14](14_auditoria_y_migracion.md) §2–§5 | Completo |
 | 2 | Nueva definición del producto | [docs/01](01_vision_y_alcance.md) | Completo |
-| 3 | GDD actualizado | [docs/11](11_diseno_de_mundo.md) | Completo como propuesta |
-| 4 | Diseño conceptual de las cuatro campañas | [docs/12](12_campanas.md) | Completo; regiones II–IV por validar |
+| 3 | GDD actualizado | [docs/11](11_diseno_de_mundo.md) | Completo |
+| 4 | Diseño conceptual de las cuatro campañas | [docs/12](12_campanas.md) | Completo; regiones II–IV sujetas a expediente |
 | 5 | Propuesta de mundo abierto regional | [docs/11](11_diseno_de_mundo.md) §4–§10 | Completo |
-| 6 | Diseño preliminar de la región Pachacútec | [mundo/](../campaigns/01_pachacutec/documentation/mundo/README.md) | Propuesta; revisión histórica pendiente |
-| 7 | Arquitectura técnica propuesta | [docs/02](02_arquitectura.md) | Completo como propuesta |
+| 6 | Diseño de la región Pachacútec | [mundo/](../campaigns/01_pachacutec/documentation/mundo/README.md) | Completo para revisión histórica |
+| 7 | Arquitectura técnica propuesta | [docs/02](02_arquitectura.md) | Completo |
 | 8 | Pipeline Terrain3D / Cyclops / Blender / Godot | [docs/13](13_pipeline_de_escenarios.md) | Completo; adopción pendiente de F1 |
 | 9 | Sistemas a conservar, adaptar, reconstruir o retirar | [docs/14](14_auditoria_y_migracion.md) §6 | Completo |
 | 10 | Plan de implementación por etapas | [docs/05](05_plan_de_implementacion.md) | Completo |
@@ -36,20 +36,22 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 
 ## 3. Estado del repositorio
 
-- **F0 entregada:** documentación redefinida; el PR queda pendiente de merge.
+- **F0 cerrada y aprobada:** documentación redefinida; sin cambios de código, escenas ni assets.
 - **F1 en curso:** la base de reloj, estado y guardado (1.6), la definición/horario de NPC (1.5), el streaming de sectores (1.3) y la navegación (1.4) están implementados; 1.1, 1.2, el resto de 1.3/1.4/1.5 y 1.7 están pendientes.
 - **F4-L y F5-L congeladas:** la versión lineal se conserva como historial y banco de pruebas.
 - **F2–F6 previstas:** geografía, vertical slice, producción, cierre y campañas II–IV.
 - **No adoptado:** Terrain3D y Cyclops son candidatos; su adopción depende de F1.
 
-## 4. Decisiones pendientes del responsable
+## 4. Decisiones aprobadas
 
-1. Duración objetivo: 6–8 h (recomendado) o 4–5 h.
-2. Portada: cuatro campañas visibles con solo la 01 jugable (recomendado) o solo la 01.
-3. Campaña III: expediente comparativo con Ayacucho–Huanta como hipótesis (recomendado).
-4. Campaña IV: Mantaro con Huamachuco como epílogo (recomendado) u otra región.
-5. Adopción de Terrain3D/Cyclops: autorizar spikes, no adopción definitiva.
-6. Congelación de F4-L/F5-L y apertura de F1.
+Se aprueban las recomendaciones de la F0:
+
+1. **Duración:** 6–8 h de historia principal por campaña; 8–12 h con contenido secundario.
+2. **Portada:** cuatro campañas visibles; solo la 01 jugable hasta su fase; las otras indican “en diseño”.
+3. **Campaña III:** expediente comparativo con **Ayacucho–Huanta–Cangallo** como hipótesis principal.
+4. **Campaña IV:** valle del Mantaro; Huamachuco como epílogo narrado o secuencia final.
+5. **Addons:** autorizar los spikes de Terrain3D y Cyclops, no su adopción definitiva.
+6. **Fases:** F4-L/F5-L congeladas; F0 cerrada; F1 como siguiente fase.
 
 ## 5. No verificado
 
@@ -62,8 +64,9 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 
 ## 6. Siguiente paso
 
-Si el responsable aprueba este resumen y la F0:
+La F0 está aprobada. El siguiente paso es F1:
 
-1. Abrir F1 y ejecutar los spikes 1.1–1.7.
+1. Ejecutar los spikes 1.1–1.7.
 2. No producir arte definitivo ni construir la región completa hasta aprobar la vertical slice.
 3. Registrar en la bitácora la adopción o el descarte de Terrain3D y Cyclops con medidas.
+4. Mantener la campaña 01 como único producto en construcción; II–IV solo como concepto hasta su fase.

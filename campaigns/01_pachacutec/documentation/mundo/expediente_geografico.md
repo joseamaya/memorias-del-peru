@@ -74,7 +74,74 @@ Definir un territorio continuo y explorable para *Pachacútec — El despertar d
 - ¿Qué diferencias hay entre las crónicas sobre el papel de Cusi Yupanqui y Viracocha?
 - ¿Qué elementos del paisaje actual son posteriores (eucalipto, caminos coloniales, obras modernas) y deben excluirse?
 
-## 7. Validación pendiente
+## 7. Clima, agua y agricultura
+
+- **Dos estaciones:** húmeda y seca. La húmeda condiciona caminos, crecidas y cosecha; la seca, el estiaje y el pasto.
+- **Heladas:** nocturnas en altura; riesgo para maíz y papa; obligan a terrazas, abrigo y selección de cultivos.
+- **Lluvia de tarde:** ventana de trabajo por la mañana; el barro encarece el camino.
+- **Viento del paso:** afecta visibilidad, ropa y refugio.
+- **Agua:** manantial, acequia, río y bofedal. El mantenimiento de la acequia es una actividad comunitaria.
+- **Cultivos:** maíz, papa, quinua, olluco y tubérculos de altura; sin trigo, cebada, vacunos, cerdos ni gallinas euroasiáticas.
+- **Ganado:** llamas y alpacas; no caballos ni animales de tiro europeos.
+- **Recolección:** ichu, queñua, fibra, tintes y plantas de uso cotidiano.
+
+La productividad concreta no se simula al detalle; se representa con actividades, estaciones y consecuencias.
+
+## 8. Asentamientos y caminos
+
+- **Patrón:** casas dispersas y núcleos pequeños, no una ciudad continua. La llacta se organiza alrededor de una plaza y un camino.
+- **Vivienda:** piedra y barro, techo de ichu, puerta baja, un ambiente principal y almacenamiento; las variantes se documentan en la guía visual.
+- **Terrazas:** siguen la pendiente y el agua; muro de pirca seca, relleno y superficie de cultivo.
+- **Caminos:** de tierra y piedra, 2–3 m; conectan plaza, campos, manantial, paso y Cusco.
+- **Cusco preimperial:** centro en consolidación, no la ciudad monumental posterior; plaza, recinto sagrado, ayllus y talleres.
+- **Tambo/refugio:** punto de descanso y marca de camino; puede ser real o reconstruido.
+- **Límites:** ríos, pircas, acantilados, nieve y controles; no muros invisibles arbitrarios.
+
+## 9. Cultura material y vida cotidiana
+
+El detalle de vestimenta, herramientas, armas, alimentos y objetos vive en el [registro histórico](../registro_historico.md) y en el [expediente histórico](../expediente_historico.md). Este dossier solo fija lo que afecta al territorio:
+
+- Agricultura de terrazas, acequias y almacenamiento.
+- Pastoreo de llamas y alpacas.
+- Tejido, cerámica, leña y cocina.
+- Reciprocidad y trabajo comunal.
+- Ofrendas y lugares sagrados.
+- Caminos, tambos y mensajeros.
+
+Ningún objeto entra al juego sin ficha y clasificación.
+
+## 10. Compresión de escala
+
+| Elemento real | En el juego | Decisión |
+|---|---|---|
+| Cusco–Andahuaylas | No se recorre | Fuera del mapa; la amenaza llega desde el oeste |
+| Cusco–llacta | 1,4 km de juego | Compresión declarada |
+| Llacta–paso | 1,2 km | Compresión declarada |
+| Paso–frontera chanca | 700 m | Ficción operativa |
+| Cumbres de 4.500–4.800 m | Fondo no recorrible | Silueta y atmósfera |
+
+La compresión no se presenta como distancia histórica. El jugador recorre un territorio de juego, no un mapa a escala.
+
+## 11. Clasificación resumida
+
+| Elemento | Código | Motivo |
+|---|---|---|
+| Cusco y valle del Huatanay | GD | Geografía y ocupación documentadas |
+| Ruta hacia Anta/Abancay | GD/GR | Corredor real; trazado histórico por verificar |
+| Guerra chanca y Cusco de 1438 | H (tradición) | Crónicas con versiones divergentes |
+| Terrazas, acequias, pirca, ichu | GR | Prácticas documentadas; forma concreta aproximada |
+| Llacta de Rumi | GN | Comunidad ficticia que sostiene la historia |
+| Valle intermedio | GN | Ficción de escala y geografía |
+| Paso y campamento chanca | GN/GR | Inspirados en geografía de altura; no identificados |
+| Cueva, mirador y tambo | GN | Lugares de juego |
+
+## 12. Fuentes y estado de verificación
+
+Las fuentes de partida están en §4. El estado de cada ficha y su cita completa viven en el [registro histórico](../registro_historico.md). Este dossier **no declara verificado** ningún elemento que no tenga ficha con edición y página.
+
+**Pendiente de revisión humana:** extensión del Cusco preimperial, ruta chanca, distribución de terrazas y canales, estacionalidad, presencia de un asentamiento como la llacta y diferencias entre crónicas.
+
+## 13. Validación pendiente
 
 - Revisión de un historiador o arqueólogo especializado.
 - Contraste de las fuentes citadas con edición y página.

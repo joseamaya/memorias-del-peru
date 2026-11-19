@@ -2,7 +2,7 @@
 
 > La prioridad es el mundo habitable y su aspecto; las únicas reglas duras son licencias/procedencia, rigor histórico y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** **Fase 1 — Spikes técnicos.** La F0 se entregó y el responsable autorizó continuar; el PR de documentación queda pendiente de merge. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
+**Fase activa:** **F1 — Spikes técnicos.** La F0 está cerrada y aprobada. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
 
 ## Estado
 
@@ -14,8 +14,8 @@
 | 3 — Arco jugable I–V lineal | Cerrada (historial) | 2026-11-15 |
 | F4-L — Arte, audio y equilibrio (lineal) | **Congelada** | — |
 | F5-L — Validación y cierre (lineal) | **Congelada** | — |
-| **F0 — Redefinición a mundo abierto** | **Entregada** (PR pendiente de merge) | 2026-11-19 |
-| **F1 — Spikes técnicos** | **En curso** (1.6 base) | — |
+| **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
+| **F1 — Spikes técnicos** | **En curso** (1.3–1.6 base) | — |
 | F2 — Geografía y blockout | Prevista | — |
 | F3 — Vertical slice | Prevista | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
@@ -49,15 +49,15 @@
 
 **Criterios de aceptación:**
 
-- [ ] `README.md`, `AGENTS.md` y `docs/01`–`13` describen el producto nuevo, no el lineal.
-- [ ] La campaña 01 tiene región, sectores, rutas, POI, fases y criterio de vertical slice.
-- [ ] Las cuatro campañas tienen concepto, región propuesta, protagonista provisional y estado de investigación.
-- [ ] La arquitectura separa Core de campaña y define persistencia, navegación, streaming y NPC.
-- [ ] El pipeline fija versiones y licencias verificadas, y declara lo que no se ha probado.
-- [ ] Cada sistema existente está clasificado como conservar, adaptar, reconstruir o retirar.
-- [ ] Los enlaces relativos resuelven y no hay afirmaciones que contradigan el código.
-- [ ] La bitácora registra el giro y las fases congeladas.
-- [ ] El responsable aprueba el plan antes de abrir F1.
+- [x] `README.md`, `AGENTS.md` y `docs/01`–`15` describen el producto nuevo, no el lineal.
+- [x] La campaña 01 tiene región, sectores, rutas, POI, experiencias, fases y criterio de vertical slice.
+- [x] Las cuatro campañas tienen concepto, región propuesta, protagonista provisional y estado de investigación.
+- [x] La arquitectura separa Core de campaña y define persistencia, navegación, streaming y NPC.
+- [x] El pipeline fija versiones y licencias verificadas, y declara lo que no se ha probado.
+- [x] Cada sistema existente está clasificado como conservar, adaptar, reconstruir o retirar.
+- [x] Los enlaces relativos resuelven y no hay afirmaciones que contradigan el código.
+- [x] La bitácora registra el giro y las fases congeladas.
+- [x] El responsable aprueba el plan antes de abrir F1.
 
 **Fuera de F0:** implementar terreno, añadir addons, producir assets, reescribir escenas o borrar contenido lineal.
 
