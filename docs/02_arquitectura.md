@@ -76,9 +76,9 @@ Los directorios se crean **solo** cuando reciben su primer archivo funcional.
 | `GraphicsSettings` | Perfil gráfico activo y ajustes | Implementado |
 | `CampaignState` | Banderas y datos de campaña en memoria | Implementado; se integra con `WorldState` |
 | `SessionLog` | Registro de sesión y duración | Implementado |
-| `WorldClock` | Hora, día, clima y señales de cambio | F1 |
-| `WorldState` | Fase, banderas, descubrimientos, estado de NPC y mundo físico | F1 |
-| `SaveManager` | Serialización versionada, ranuras, autoguardado | F1 |
+| `WorldClock` | Hora, día y franjas; señales de cambio | Implementado (F1.6) |
+| `WorldState` | Fase, banderas, descubrimientos, estado de NPC y mundo físico | Implementado (F1.6) |
+| `SaveManager` | Serialización versionada, ranuras, autoguardado | Implementado (F1.6) |
 | `ContentRegistry` | Carga y valida definiciones de la campaña activa | F1 |
 
 Máximo 9. Un autoload solo se registra cuando tiene responsabilidad real y pruebas.
@@ -149,7 +149,7 @@ PlayerFPS (CharacterBody3D)
 
 | Sistema | Responsabilidad | Señales / contrato |
 |---|---|---|
-| `WorldClock` | Hora, día, clima, franjas | `time_changed`, `day_changed`, `weather_changed` |
+| `WorldClock` | Hora, día, franjas | `time_changed`, `day_changed`, `period_changed`, `paused_changed` |
 | `SectorStreamer` | Carga/descarga de sectores exteriores | `sector_loaded`, `sector_unloaded`, `load_sector`, `unload_sector` |
 | `SectorState` | Estado persistente del sector | Contenedores, puertas, props, NPC |
 | `InteriorManager` | Carga aditiva de interiores | `enter_interior`, `exit_interior` |

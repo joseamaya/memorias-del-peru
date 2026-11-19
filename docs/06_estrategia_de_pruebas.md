@@ -194,6 +194,14 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
 | `test_title_screen` | La portada traduce sus textos y, sin campaña, deshabilita Comenzar |
 
+### 3.4.1. Mundo y persistencia (F1)
+
+| Archivo | Qué cubre |
+|---|---|
+| `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
+| `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
+| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado y ciclo mundo/reloj/jugador |
+
 ### 3.5. Pruebas de la campaña
 
 Escritas en la Fase 3 y ampliadas en la F4-L (lineal, congelada). Se conservan como banco de pruebas hasta que la vertical slice las sustituya. Cubren:
@@ -222,13 +230,11 @@ Una escena no se marca `Implementado` si su aceptación no se puede verificar. L
 
 ### 3.7. Mundo abierto (previstas, F1–F3)
 
-Estas pruebas **todavía no existen**. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
+Estas pruebas **todavía no existen**, salvo las de reloj, estado y guardado, que ya están en §3.4.1. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
 
 | Área | Prueba prevista | Criterio |
 |---|---|---|
-| Reloj | `test_world_clock` | Avance, día, franjas y señales; sin deriva al guardar/cargar |
 | Sectores | `test_sector_streamer` | Carga/descarga por radio, prioridad y memoria estable |
-| Persistencia | `test_save_round_trip` | Todo el estado declarado sobrevive; migración de versión |
 | NPC | `test_npc_schedule` | Horario, ancla, condiciones y reanudación tras evento |
 | NPC LOD | `test_npc_lod` | Cerca/medio/lejos; límite de animados y de sombras |
 | Navegación | `test_navigation_route` | Ruta entre anclas, puerta y desnivel sin atascos |

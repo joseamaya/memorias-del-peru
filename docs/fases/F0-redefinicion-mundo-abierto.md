@@ -24,7 +24,7 @@ La versión lineal (Fases 0–3) se conserva como historial y banco de pruebas. 
 | 0.8 | Plan y pruebas | Cerrada | [docs/05](../05_plan_de_implementacion.md) y [docs/06](../06_estrategia_de_pruebas.md) actualizados | Enlaces y guardas de CI |
 | 0.9 | Reglas de trabajo | Cerrada | [AGENTS.md](../../AGENTS.md) y [README.md](../../README.md) describen el producto nuevo | Revisión |
 | 0.10 | Bitácora | Cerrada | Decisión, alternativas, consecuencias y fases congeladas | Entrada del 2026-11-19 |
-| 0.11 | Aprobación del responsable | Pendiente | El responsable aprueba el plan y autoriza F1 | Acta o comentario en el PR |
+| 0.11 | Aprobación del responsable | **Recibida** | El responsable autorizó continuar; el PR de documentación queda pendiente de merge | Comentario del responsable; PR #8 |
 
 ## 3. Qué no se hace en F0
 

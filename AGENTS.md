@@ -12,11 +12,12 @@ La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está 
 
 ## 2. Fase actual
 
-**Fase 0 — Redefinición a mundo abierto (documentación).** Criterio de salida: el fijado en [docs/05](docs/05_plan_de_implementacion.md) §Fase 0 y en la [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
+**Fase 1 — Spikes técnicos.** La F0 se entregó y el responsable autorizó continuar; el PR de documentación queda pendiente de merge. La base de reloj, estado y guardado (1.6) está implementada.
 
 - Estado y criterios de fase: [docs/05](docs/05_plan_de_implementacion.md).
-- Tareas, dependencias y evidencia de la fase: [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
-- Fases cerradas: 0 (documentación original), 1 (fundación y núcleo RPG), 2 (guion lineal de la campaña 01) y 3 (arco jugable I–V en el modelo lineal).
+- Tareas, dependencias y evidencia de la fase: [ficha de F1](docs/fases/F1-spikes-tecnicos.md).
+- F0 entregada: [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
+- Fases cerradas: 0 (documentación original), 1 (fundación y núcleo RPG), 2 (guion lineal de la campaña 01) y 3 (arco jugable I–V en el modelo lineal). La F0 de la redefinición está entregada.
 - **F4-L y F5-L (las fases lineales) quedan congeladas**, no cerradas: su contenido se conserva como historial y banco de pruebas, pero no se continúa. La redefinición las sustituye por F0–F6.
 
 Solo se trabaja en la fase activa o en el pulido que la cierre. **Nada de la fase siguiente se adelanta.** Si una tarea parece necesitar algo de una fase futura, se para y se consulta.
