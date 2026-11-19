@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/world/poi_definition.gd" id="1_poi"]
+
+[resource]
+script = ExtResource("1_poi")
+id = &"poi_21"
+display_name = "Casa de un ayllu"
+description = "Casa de un ayllu cusqueño y sus cuentas."
+sector = &"s1_cusco"
+classification = "GR"
+trigger = 2
+radius = 15
+position = Vector3(1275, 0, 475)
+phase_min = 1
+phase_max = 4

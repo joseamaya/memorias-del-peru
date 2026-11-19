@@ -55,6 +55,10 @@ func _ready() -> void:
 	_streamer.target = _target
 	_streamer.rebuild_index()
 	_streamer.refresh()
+	var discovery: DiscoveryService = get_node("Discovery") as DiscoveryService
+	if discovery != null:
+		discovery.set_target(_target)
+		discovery.load_catalog("res://campaigns/01_pachacutec/data/pois")
 	_update_camera()
 
 
@@ -73,6 +77,10 @@ func set_target_position(target_position: Vector3) -> void:
 
 func get_streamer() -> SectorStreamer:
 	return _streamer
+
+
+func get_discovery() -> DiscoveryService:
+	return get_node_or_null("Discovery") as DiscoveryService
 
 
 func get_region() -> CampaignRegion:

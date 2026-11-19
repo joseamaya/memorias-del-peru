@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/world/poi_definition.gd" id="1_poi"]
+
+[resource]
+script = ExtResource("1_poi")
+id = &"poi_07"
+display_name = "Horno de cerámica"
+description = "Horno comunal para cocer vasijas y placas."
+sector = &"s3_llacta"
+classification = "GR"
+trigger = 1
+radius = 12
+position = Vector3(335, 0, 58)
+phase_min = 0
+phase_max = 4
