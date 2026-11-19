@@ -1,6 +1,8 @@
 # 00 — Especificación original
 
-> **Estado de este documento.** Es la especificación técnica de origen (v1.0), conservada íntegra como referencia y punto de partida. Los documentos `docs/01`–`08` la desarrollan y concretan; las desviaciones respecto a ella se justifican en ADR. Ante una contradicción, prevalece el orden de [AGENTS.md](../AGENTS.md) §3. No se edita: si una sección queda superada, se indica en el documento o ADR que la sustituye.
+> **Estado de este documento.** Es la especificación técnica de origen (v1.0), conservada íntegra como referencia y punto de partida. Los documentos `docs/01`–`08` la desarrollan y concretan; las desviaciones respecto a ella se justifican en la [bitácora](bitacora.md). Ante una contradicción, prevalece el orden de [AGENTS.md](../AGENTS.md) §3. No se edita: si una sección queda superada, se indica en el documento o en la bitácora que la sustituye.
+>
+> Los ADR se retiraron el 2026-11-14. Sus referencias en este repositorio son históricas y su registro vive en la [bitácora](bitacora.md).
 
 ---
 

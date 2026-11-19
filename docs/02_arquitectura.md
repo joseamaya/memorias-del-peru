@@ -26,19 +26,21 @@
 3. `shared_assets/` no contiene scripts con lógica de juego (solo shaders, materiales, temas de UI y recursos).
 4. La comunicación de abajo hacia arriba (Core → contenido/UI) se hace **por señales**, nunca por rutas rígidas de nodos (`get_node("/root/...")`).
 5. Las dependencias entre sistemas Core se inyectan (`@export`, parámetros, señales) o se acceden vía autoload documentado. Sin dependencias circulares.
-6. Una campaña nueva no requiere modificar el jugador, el guardado, la interacción ni el audio. Si lo requiere, se abre un ADR.
+6. Una campaña nueva no requiere modificar el jugador, el guardado, la interacción ni el audio. Si lo requiere, se revisa la arquitectura con el responsable y se anota en la bitácora.
+
+> Las referencias a `ADR-…` en este documento son históricas: los ADR se retiraron el 2026-11-14 y su registro vive en la [bitácora](bitacora.md).
 
 ## 2. Estructura del repositorio
 
-Estructura oficial (de la [especificación](00_especificacion.md) §3) más dos adiciones justificadas en ADR-0001: `docs/` y `tests/`.
+Estructura oficial (de la [especificación](00_especificacion.md) §3) más dos adiciones registradas en la bitácora (ADR-0001, histórico): `docs/` y `tests/`.
 
 ```text
 memorias-del-peru/
 ├── project.godot
 ├── README.md
 ├── AGENTS.md
-├── docs/                       ← adición (ADR-0001)
-├── tests/                      ← adición (ADR-0001)
+├── docs/                       ← adición registrada (ADR-0001, histórico)
+├── tests/                      ← adición registrada (ADR-0001, histórico)
 ├── core/
 │   ├── autoload/               game_manager.gd, audio_manager.gd, save_manager.gd
 │   ├── player/                 player_fps.tscn, player_fps.gd

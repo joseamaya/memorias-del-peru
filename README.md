@@ -9,7 +9,7 @@ Antología de experiencias históricas en 3D que reconstruye períodos de la his
 | Motor | Godot 4.7.2 |
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
-| Plataforma objetivo | Escritorio (Linux, Windows, macOS) |
+| Plataforma | Linux y Windows (verificados); macOS como objetivo, sin probar |
 | Fase | **Fase 4 — Arte, audio y equilibrio.** El arco completo (I–V), el guion, los sistemas de campaña, la sensación de combate, la guía visual y el rendimiento en Medio están cerrados. Quedan el pase visual y sonoro por acto y la revisión de la mano del maniquí; la duración real y la prueba de humo son de la Fase 5. Ver el [plan](docs/05_plan_de_implementacion.md) y la [ficha de F4](docs/fases/F4-arte-audio-equilibrio.md) |
 
 ## Requisitos

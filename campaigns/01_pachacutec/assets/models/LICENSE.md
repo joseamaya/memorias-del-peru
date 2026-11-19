@@ -4,7 +4,7 @@
 
 Viviendas, objetos, vegetación, telar, cántaros, leña y la chaquitaclla del
 Agricultor. Son de autoría propia del proyecto
-([ADR-0010](../../../../docs/adr/0010-modelos-generados-con-blender.md)).
+(ADR-0010, histórico; registro en la [bitácora](../../../../docs/bitacora.md)).
 
 Las viviendas D y E (`pch_house_d.glb`, `pch_house_e.glb`) se añadieron el
 2026-11-15 con el mismo generador y la misma licencia propia. D es una casa
@@ -14,7 +14,7 @@ solo variación de planta, altura y acabado.
 La chaquitaclla (`pch_prop_chaquitaclla.glb`) se añadió el 2026-11-18 con el
 mismo generador y licencia propia. Es un prop de madera con punta endurecida y
 sin metal; su forma y fuentes están en la ficha PCH-037 del
-[registro histórico](../documentation/registro_historico.md).
+[registro histórico](../../documentation/registro_historico.md).
 
 ## Elenco Quaternius (`pch_npc_*_q.glb`)
 

@@ -4,7 +4,9 @@
 Un archivo de 2.300 líneas no se arregla en un día, pero tampoco debe seguir
 creciendo. Los archivos grandes que ya existen quedan congelados en su tamaño
 actual; cualquier archivo nuevo debe caber en MAX_NEW_LINES. Así el proyecto
-puede dividirse poco a poco sin una reescritura ni un reformateo masivo.
+puede dividirse poco a poco sin una reescritura ni un reformateo masivo. Si un
+archivo heredado desaparece, se retira de la tabla: el script falla si una
+entrada ya no existe.
 
 Uso:
     python3 tools/check_gdscript_limits.py
@@ -23,13 +25,12 @@ SEARCH_DIRS = ("core", "campaigns", "tests", "tools")
 # Archivos heredados: no pueden crecer. Al dividir uno, se baja su límite o se
 # elimina de esta tabla en el mismo commit.
 GRANDFATHERED = {
-    "campaigns/01_pachacutec/scripts/world/ciudad.gd": 2408,
-    "campaigns/01_pachacutec/scripts/world/llacta.gd": 2286,
-    "campaigns/01_pachacutec/scripts/world/paso.gd": 1382,
-    "campaigns/01_pachacutec/scripts/world/npc_actor.gd": 682,
+    "campaigns/01_pachacutec/scripts/world/ciudad.gd": 2366,
+    "campaigns/01_pachacutec/scripts/world/llacta.gd": 2284,
+    "campaigns/01_pachacutec/scripts/world/paso.gd": 1371,
+    "campaigns/01_pachacutec/scripts/world/npc_actor.gd": 582,
     "core/ui/hud.gd": 612,
     "core/player/player_fps.gd": 606,
-    "campaigns/01_pachacutec/scripts/world/dressed_mannequin.gd": 500,
 }
 
 
@@ -40,6 +41,12 @@ def count_lines(path: Path) -> int:
 
 def main() -> int:
     failures: list[str] = []
+    for relative in GRANDFATHERED:
+        if not (ROOT / relative).is_file():
+            failures.append(
+                f"{relative}: figura como heredado pero no existe. "
+                "Retíralo del ratchet en el mismo commit que lo elimina."
+            )
     for directory in SEARCH_DIRS:
         base = ROOT / directory
         if not base.exists():
