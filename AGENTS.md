@@ -12,10 +12,11 @@ La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está 
 
 ## 2. Fase actual
 
-**Fase 0 cerrada; F1 — Spikes técnicos como siguiente fase.** Criterio de salida de F0: el fijado en [docs/05](docs/05_plan_de_implementacion.md) §Fase 0 y en la [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
+**Fase 0 cerrada; F1 — Spikes técnicos en curso.** La base de reloj, estado, guardado, NPC, streaming y navegación (1.3–1.6) está implementada. Criterio de salida de F0: el fijado en [docs/05](docs/05_plan_de_implementacion.md) §Fase 0.
 
 - Estado y criterios de fase: [docs/05](docs/05_plan_de_implementacion.md).
-- Tareas, dependencias y evidencia de F0: [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
+- Tareas, dependencias y evidencia de F1: [ficha de F1](docs/fases/F1-spikes-tecnicos.md).
+- F0 cerrada: [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
 - Fases cerradas: 0 (documentación original), 1 (fundación y núcleo RPG), 2 (guion lineal de la campaña 01), 3 (arco jugable I–V en el modelo lineal) y F0 (redefinición a mundo abierto).
 - **F4-L y F5-L (las fases lineales) quedan congeladas**, no cerradas: su contenido se conserva como historial y banco de pruebas, pero no se continúa. La redefinición las sustituye por F0–F6.
 

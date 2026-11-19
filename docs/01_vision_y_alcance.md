@@ -76,7 +76,7 @@ La métrica 5 sustituye a la validación con jugadores externos en la primera et
 | Etapa | Contenido | Estado |
 |---|---|---|
 | F0 | Redefinición documental y auditoría | **Cerrada** (2026-11-19) |
-| F1 | Spikes técnicos: terreno, streaming, navegación, NPC, guardado y rendimiento | **Siguiente** |
+| F1 | Spikes técnicos: terreno, streaming, navegación, NPC, guardado y rendimiento | **En curso** (1.3–1.6 base) |
 | F2 | Geografía y blockout de la región Pachacútec | Prevista |
 | F3 | Vertical slice de mundo abierto | Prevista |
 | F4 | Producción de la campaña 01 | Prevista |

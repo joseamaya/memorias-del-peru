@@ -54,6 +54,17 @@ Una decisión relevante se anota con su motivación, las alternativas considerad
 
 **Documentos:** [docs/01](../docs/01_vision_y_alcance.md), [docs/02](../docs/02_arquitectura.md), [docs/05](../docs/05_plan_de_implementacion.md), [docs/06](../docs/06_estrategia_de_pruebas.md), [docs/07](../docs/07_convenciones_historicas.md), [docs/08](../docs/08_entorno_y_rendimiento.md), [docs/09](../docs/09_biblia_narrativa.md), [docs/10](../docs/10_plantilla_guion_de_escena.md), [docs/11](../docs/11_diseno_de_mundo.md), [docs/12](../docs/12_campanas.md), [docs/13](../docs/13_pipeline_de_escenarios.md), [docs/14](../docs/14_auditoria_y_migracion.md), [docs/15](../docs/15_resumen_de_la_redefinicion.md), [ficha de F0](../docs/fases/F0-redefinicion-mundo-abierto.md) y [dossier de región](../campaigns/01_pachacutec/documentation/mundo/README.md).
 
+### F1.3–F1.6 — Núcleo de mundo (2026-11-19)
+
+| Cambio | Detalle |
+|---|---|
+| Reloj, estado y guardado | Se añaden `WorldClockService` (`core/world/world_clock.gd`), `WorldStateService` (`core/world/world_state.gd`) y `SaveManagerService` (`core/save/save_manager.gd`), registrados como autoloads `WorldClock`, `WorldState` y `SaveManager`. El reloj hace un día de juego en 48 min reales por defecto; el estado guarda fase, banderas, descubrimientos, NPC y cambios físicos; el guardado es JSON versionado por campaña/ranura, con escritura temporal y round-trip de mundo/reloj/jugador. |
+| Definición y horario de NPC | Se añaden `ScheduleEntry` y `NpcDefinition` (`core/npc/`): franjas con cruce de medianoche, ancla, actividad, condiciones y niveles de simulación. `NpcDefinition.get_entry/get_anchor/get_activity` resuelven la rutina con el minuto y el estado del mundo. |
+| Streaming de sectores | Se añaden `SectorDefinition` y `SectorStreamer` (`core/world/`): celdas de región, radio de carga y descarga con histéresis, carga asíncrona con `ResourceLoader.load_threaded_request`, descarga, sector siempre cargado y señales. La verificación usa tres escenas reales y descarga por radio. |
+| Navegación | Se añade `NavigationService` (`core/world/`): mapa del `World3D`, ruta, alcance, longitud y punto más cercano. `navigation_check` valida dos regiones separadas por un hueco de 5 m unidas por `NavigationLink3D`; `test_navigation_service` cubre la consulta fuera del árbol. |
+| Pruebas | `test_world_clock`, `test_world_state`, `test_save_round_trip`, `test_npc_schedule` y `test_sector_streamer` y `test_navigation_service` cubren avance, pausa, franjas, serialización, nombres inválidos, sobrescritura, ciclo mundo/reloj/jugador, horario diario, medianoche, condiciones, celdas, radios y longitud de ruta. `sector_streaming_check` carga y descarga escenas reales; `navigation_check` cruza dos regiones con un enlace. Se documentan en `docs/06` §3.4.1. |
+| Alcance | No se integra todavía la posición real del jugador, la escena de mundo, el `NpcDirector` ni el LOD de simulación; eso es F3. No se adoptan Terrain3D ni Cyclops. La F0 queda entregada y la F1 en curso. |
+
 ## 2026-11-19
 
 | Cambio | Detalle |

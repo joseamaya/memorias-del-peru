@@ -64,6 +64,18 @@ cuando toca, que E abre y avanza la respuesta y que el flujo pasa al mensajero:
 godot --headless --path . --script res://tests/llacta_doubt_check.gd
 ```
 
+Comprobar la carga y descarga asíncrona de sectores con escenas reales:
+
+```bash
+godot --headless --path . --script res://tests/sector_streaming_check.gd
+```
+
+Comprobar una ruta entre dos regiones de navegación unidas por un enlace:
+
+```bash
+godot --headless --path . --script res://tests/navigation_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -194,6 +206,19 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
 | `test_title_screen` | La portada traduce sus textos y, sin campaña, deshabilita Comenzar |
 
+### 3.4.1. Mundo y persistencia (F1)
+
+| Archivo | Qué cubre |
+|---|---|
+| `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
+| `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
+| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado y ciclo mundo/reloj/jugador |
+| `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
+| `test_sector_streamer` | Celdas, radio de carga, distancia, siempre cargado y registro de definiciones |
+| `sector_streaming_check.gd` | Carga asíncrona de escenas reales, descarga por radio y sector siempre cargado |
+| `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
+| `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
+
 ### 3.5. Pruebas de la campaña
 
 Escritas en la Fase 3 y ampliadas en la F4-L (lineal, congelada). Se conservan como banco de pruebas hasta que la vertical slice las sustituya. Cubren:
@@ -222,16 +247,11 @@ Una escena no se marca `Implementado` si su aceptación no se puede verificar. L
 
 ### 3.7. Mundo abierto (previstas, F1–F3)
 
-Estas pruebas **todavía no existen**. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
+Estas pruebas **todavía no existen**, salvo las de reloj, estado, guardado, horario y streaming, que ya están en §3.4.1. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
 
 | Área | Prueba prevista | Criterio |
 |---|---|---|
-| Reloj | `test_world_clock` | Avance, día, franjas y señales; sin deriva al guardar/cargar |
-| Sectores | `test_sector_streamer` | Carga/descarga por radio, prioridad y memoria estable |
-| Persistencia | `test_save_round_trip` | Todo el estado declarado sobrevive; migración de versión |
-| NPC | `test_npc_schedule` | Horario, ancla, condiciones y reanudación tras evento |
 | NPC LOD | `test_npc_lod` | Cerca/medio/lejos; límite de animados y de sombras |
-| Navegación | `test_navigation_route` | Ruta entre anclas, puerta y desnivel sin atascos |
 | Misiones | `test_quest_state` | Etapas, condiciones, consecuencias y guardado |
 | Descubrimientos | `test_discovery_registry` | POI, mapa y rumor; sin duplicados |
 | Contenido | `test_content_ids` | IDs, textos y fichas existen; ninguna referencia rota |

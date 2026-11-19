@@ -152,12 +152,12 @@ Un autoload solo se registra en `project.godot` cuando tiene una responsabilidad
 | `GraphicsSettings` | `res://core/systems/graphics/graphics_settings.gd` | 3 |
 | `CampaignState` | `res://core/autoload/campaign_state.gd` | 3 |
 | `SessionLog` | `res://core/autoload/session_log.gd` | 3 |
-| `SaveManager` | `res://core/autoload/save_manager.gd` | F1 |
-| `WorldClock` | `res://core/world/world_clock.gd` | F1 |
-| `WorldState` | `res://core/world/world_state.gd` | F1 |
+| `SaveManager` | `res://core/save/save_manager.gd` | F1.6 |
+| `WorldClock` | `res://core/world/world_clock.gd` | F1.6 |
+| `WorldState` | `res://core/world/world_state.gd` | F1.6 |
 | `ContentRegistry` | `res://core/systems/campaigns/content_registry.gd` | F1 |
 
-> **Estado:** los cinco primeros están implementados. Los cuatro de F1 son la configuración prevista; no se registran hasta que existan con sus pruebas y el responsable apruebe el sistema.
+> **Estado:** los cinco primeros y los tres de F1.6 están implementados y registrados. `ContentRegistry` sigue previsto. Los autoloads nuevos se prueban en `test_world_clock`, `test_world_state` y `test_save_round_trip`.
 
 ## 8.1. Addons
 

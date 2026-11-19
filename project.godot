@@ -21,6 +21,9 @@ AudioManager="*res://core/autoload/audio_manager.gd"
 GraphicsSettings="*res://core/systems/graphics/graphics_settings.gd"
 SessionLog="*res://core/autoload/session_log.gd"
 CampaignState="*res://core/autoload/campaign_state.gd"
+WorldClock="*res://core/world/world_clock.gd"
+WorldState="*res://core/world/world_state.gd"
+SaveManager="*res://core/save/save_manager.gd"
 
 [debug]
 
