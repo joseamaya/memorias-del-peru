@@ -21,7 +21,7 @@ jobs:
     name: Inventario de pruebas
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Pruebas ejecutadas y documentadas
         run: python3 tools/check_test_inventory.py
@@ -30,11 +30,11 @@ jobs:
     name: Lint (archivos nuevos)
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -67,11 +67,11 @@ jobs:
     name: Pruebas y límites
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Cache de Godot
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/godot
           key: godot-${{ env.GODOT_VERSION }}-stable-linux
@@ -162,11 +162,11 @@ jobs:
           - preset: Windows
             output: build/windows/memorias-del-peru.exe
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Cache de Godot y plantillas
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/godot
@@ -202,7 +202,7 @@ jobs:
         if: matrix.preset == 'Linux'
         run: timeout 60 ./${{ matrix.output }} --headless --quit-after 10
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: memorias-del-peru-${{ matrix.preset }}-${{ github.sha }}
           path: ${{ matrix.output }}
