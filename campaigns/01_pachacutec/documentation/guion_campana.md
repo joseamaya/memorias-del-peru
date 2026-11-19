@@ -1,5 +1,7 @@
 # Guion de la campaña 01 — El despertar del Sol
 
+> **Estado:** guion de la versión lineal (v1.1), conservado como material narrativo. No es el guion del mundo abierto. La adaptación de los cinco actos a fases del mismo territorio vive en [mundo/reestructuracion_narrativa.md](mundo/reestructuracion_narrativa.md); la región, en [mundo/](mundo/README.md). Las misiones, duraciones y mapas de este documento se ajustan en F2–F3 antes de convertirse en el guion definitivo.
+
 - **Versión:** 1.1 — 2026-11-16
 - **Estado:** cerrado para construir la Fase 3
 - **Marco:** [biblia de la campaña](biblia_campana.md) y [biblia narrativa general](../../../docs/09_biblia_narrativa.md)

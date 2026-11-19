@@ -1,17 +1,19 @@
 # Biblia de la campaña 01 — El despertar del Sol
 
-- **Versión:** 1.1 — 2026-11-16
-- **Estado:** aprobada para construir
+- **Versión:** 2.0 (mundo abierto) — 2026-11-19
+- **Estado:** narrativa aprobada; estructura de mundo en adaptación (F0–F2)
 - **Crónica rectora:** Betanzos. Contraste: Garcilaso y Pachacuti Yamqui
-- **Marco narrativo:** [biblia narrativa general](../../../docs/09_biblia_narrativa.md)
-- **Documentos de apoyo:** [registro histórico](registro_historico.md), [expediente histórico](expediente_historico.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
-- **Puesta en escena:** [guion de escenas](guion_escenas.md)
+- **Marco narrativo:** [biblia narrativa general](../../../docs/09_biblia_narrativa.md), [GDD de mundo](../../../docs/11_diseno_de_mundo.md)
+- **Documentos de apoyo:** [dossier de región](mundo/README.md), [registro histórico](registro_historico.md), [expediente histórico](expediente_historico.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
+- **Puesta en escena:** [reestructuración narrativa](mundo/reestructuracion_narrativa.md) y [guion de escenas](guion_escenas.md) (histórico lineal)
 
-Este documento manda sobre el contenido de la campaña: actos, misiones, personajes, sistemas, banderas y criterios de cierre.
+Este documento manda sobre el contenido narrativo de la campaña: actos, misiones, personajes, sistemas, banderas y criterios de cierre. La estructura de mundo abierto se desarrolla en [mundo/](mundo/README.md).
 
 ## 0. Alcance
 
-RPG histórico en primera persona, en **cinco actos**, con una duración objetivo de **40–50 minutos**.
+RPG histórico en primera persona de **mundo abierto regional**, con **cinco actos** vividos como **fases históricas del mismo territorio**, y una duración objetivo de **6–8 horas** de historia principal.
+
+> La versión lineal de 40–50 minutos queda como historial. Los cinco actos no son cinco mapas: la región, los sectores y las fases se definen en [mundo/](mundo/README.md). La duración y los sistemas de la tabla siguiente se ajustan en F2/F3.
 
 | Acto | Título | Pregunta dramática |
 |---|---|---|
@@ -76,7 +78,7 @@ Cada personaje tiene objetivo, conflicto y evolución. Ninguno existe solo para 
 
 ### 3.1 Base
 
-Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Honda, Mano, Palabra, Oficio y Monte. Reputación de −2 a +2 en llacta, comitiva y Cusco. Inventario de ocho huecos y tres equipados.
+Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Honda, Mano, Palabra, Oficio y Monte. Reputación de −2 a +2 en llacta, comitiva y Cusco. Inventario de **16 huecos + 3 equipados + almacenamiento en casa** para el mundo abierto; el valor de ocho huecos corresponde a la versión lineal.
 
 | Habilidad | Uso | Efecto |
 |---|---|---|
@@ -241,17 +243,19 @@ Salud 0–100, aliento 0–100, ánimo 0–100. Habilidades de 0 a 5 por uso: Ho
 
 Honda, porra, escudo, piedras, coca, chicha, maíz, agua, hierbas, cuerda, q'ipi, mensaje. Propios del acto I: **cántaro**, **ración de maíz**, **manta**, **cuerda de ichu**. Propios del acto II: **ofrenda** (coca y maíz).
 
-## 11. Mapas
+## 11. Territorio y fases
 
-| Acto | Escenario | Requisito |
+La campaña se juega en **una región continua** de ~3,5 × 2,5 km totales, con **2–4 km² de área densa** y seis sectores: Cusco preimperial, afueras y terrazas, llacta de Rumi, quebrada alta, paso y frontera chanca. El detalle está en [mundo/mapa_conceptual.md](mundo/mapa_conceptual.md) y [mundo/sectores.md](mundo/sectores.md).
+
+| Acto | Fase del mundo | Requisito |
 |---|---|---|
-| I | Llacta | Plaza, 8–10 casas, terrazas, corral, manantial, mirador, camino del norte |
-| II | Paso | 80 × 80 m: zigzag, campamento, cornisa, arroyo, refugio de pirca |
-| II–III | Cusco de 1438 | 150 × 150 m: plaza, 12–14 casas, santuario, muro, terrazas |
-| IV | Llacta de posguerra | Mismo terreno; casas vacías, heridos, asamblea, campos sin cuidar |
-| V | Llacta en obra | Mismo terreno; corral, terraza, telar y acequia reparados y casa de Rumi con umbral y lumbre |
+| I | Paz / vida cotidiana | Llacta habitable, terrazas, corral, manantial, mirador, caminos |
+| II | Noticia / movilización | Camino y paso transitables; campamento; Cusco como hub |
+| III | Guerra | Preparación en el mundo; defensa como secuencia controlada |
+| IV | Posguerra | La misma llacta y el mismo Cusco, con NPC y casas cambiados |
+| V | Reconstrucción | Obras visibles y persistentes en la llacta |
 
-El Cusco de 1438 no es la ciudad monumental, posterior a Pachacútec: es el centro de un señorío en consolidación (PCH-022, PCH-027).
+El Cusco de 1438 no es la ciudad monumental, posterior a Pachacútec: es el centro de un señorío en consolidación (PCH-022, PCH-027). Las distancias están comprimidas y el valle intermedio es ficción declarada (GN).
 
 ## 12. Fichas históricas
 
@@ -274,9 +278,9 @@ Ninguna entra al juego sin estado «verificado».
 | Unitarias | Recursos, oficio aplicado, confianza, asamblea, puntos de control |
 | Por acto | Carga, objetivo, cero bloqueos, claves de texto |
 | Del arco | Partida guionizada I→V con decisiones fijas (`ARCO_OK`) |
-| Duración | Registro de sesión por actos; objetivo 40–50 min |
-| Rendimiento | Los cinco actos en la GPU de referencia |
-| Contra la biblia | Checklist por acto: ¿se vive la pregunta?, ¿la decisión tiene consecuencia?, ¿el hecho está clasificado y citado? |
+| Duración | Registro de sesión por fases; objetivo 6–8 h de historia principal en el mundo abierto |
+| Rendimiento | Sectores de la región en la GPU de referencia |
+| Contra la biblia | Checklist por fase: ¿se vive la pregunta?, ¿la decisión tiene consecuencia?, ¿el hecho está clasificado y citado? |
 
 La validación de diseño se hace contra esta biblia. La métrica de audiencia externa queda como objetivo futuro.
 
@@ -284,21 +288,24 @@ La validación de diseño se hace contra esta biblia. La métrica de audiencia e
 
 | Fase | Contenido |
 |---|---|
-| 1 | Guion con diálogos y fichas de misión |
-| 2 | Arco jugable en gris: los cinco actos, de principio a fin |
-| 3 | Arte, audio y equilibrio |
-| 4 | Validación contra la biblia, duración y rendimiento |
+| F0 | Redefinición documental y dossier de región |
+| F1 | Spikes técnicos: terreno, streaming, navegación, NPC y guardado |
+| F2 | Geografía y blockout de la región |
+| F3 | Vertical slice: comunidad, rutinas, misión, actividades y persistencia |
+| F4 | Producción de la campaña completa |
+| F5 | Validación, duración y cierre |
 
-La fase 2 es la apuesta: tener los cinco actos jugables antes de gastar arte, para comprobar que el arco se sostiene.
+La apuesta es la vertical slice: comprobar que el mundo se habita y se juega antes de producir la campaña completa.
 
 ## 15. Fuera de alcance
 
-- Guardado completo en disco, multijugador, mando, VR, móviles.
+- Multijugador, mando, VR, móviles.
 - Niveles, XP, loot aleatorio, magia, crafting profundo.
 - Diálogo con voz, retratos o árboles enormes.
 - Combate a caballo, asedios a escala real, pururaucas como mecánica.
 - Cambiar el resultado histórico.
+- Cuatro campañas construidas a la vez.
 
 ## 16. Aprobación
 
-Aprobada el 2026-11-15 como diseño de los cinco actos. Cualquier cambio de acto, sistema o final exige una versión nueva de este documento y una fila en la [bitácora](../../../docs/bitacora.md).
+Aprobada el 2026-11-15 como diseño de los cinco actos; **reestructurada el 2026-11-19** para mundo abierto regional. Cualquier cambio de acto, sistema, región o final exige una versión nueva de este documento y una fila en la [bitácora](../../../docs/bitacora.md).

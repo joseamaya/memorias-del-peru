@@ -10,6 +10,7 @@ Principio: **una funcionalidad está terminada cuando se comprobó**, no cuando 
 | 2. Pruebas automatizadas headless | Contratos (Input Map, jerarquía de escenas, lógica pura) | Tras cada cambio de código |
 | 3. Carga de escenas | Escenas que no instancian o producen errores al entrar al árbol | Tras cambios en escenas |
 | 4. Verificación manual en ejecución | Sensación de control, visuales, audio | Al cerrar cada tarea con impacto jugable |
+| 5. Mundo y persistencia | Sectores, streaming, navegación, NPC, guardado/carga y presupuesto | Al cerrar cada tarea de mundo o sistema nuevo |
 
 ## 2. Comandos
 
@@ -195,7 +196,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 
 ### 3.5. Pruebas de la campaña
 
-Escritas en la Fase 3 y ampliadas en la Fase 4. Cubren:
+Escritas en la Fase 3 y ampliadas en la F4-L (lineal, congelada). Se conservan como banco de pruebas hasta que la vertical slice las sustituya. Cubren:
 
 | Nivel | Cobertura |
 |---|---|
@@ -206,7 +207,7 @@ Escritas en la Fase 3 y ampliadas en la Fase 4. Cubren:
 | Acto V | Reconstrucción, nombre nuevo y cierre |
 | Sistemas | Recursos, oficio aplicado, confianza de Sisa, asamblea y puntos de control |
 | Del arco | Partida guionizada I→V (`ARCO_OK`) |
-| Duración | Marcas por acto y total; la partida humana de 40–50 min se mide en la Fase 5 |
+| Duración | Marcas por acto y total; la partida humana de 40–50 min se medía en la F5-L (histórico) |
 
 ### 3.6. Aceptación de escenas
 
@@ -219,9 +220,29 @@ Cada escena de `campaigns/01_pachacutec/documentation/guion_escenas.md` tiene un
 
 Una escena no se marca `Implementado` si su aceptación no se puede verificar. Las deudas se anotan en la ficha y en la bitácora.
 
+### 3.7. Mundo abierto (previstas, F1–F3)
+
+Estas pruebas **todavía no existen**. Se escriben con su sistema, en el mismo PR, y entonces se incorporan a §3.1–§3.4. La lista fija el contrato mínimo:
+
+| Área | Prueba prevista | Criterio |
+|---|---|---|
+| Reloj | `test_world_clock` | Avance, día, franjas y señales; sin deriva al guardar/cargar |
+| Sectores | `test_sector_streamer` | Carga/descarga por radio, prioridad y memoria estable |
+| Persistencia | `test_save_round_trip` | Todo el estado declarado sobrevive; migración de versión |
+| NPC | `test_npc_schedule` | Horario, ancla, condiciones y reanudación tras evento |
+| NPC LOD | `test_npc_lod` | Cerca/medio/lejos; límite de animados y de sombras |
+| Navegación | `test_navigation_route` | Ruta entre anclas, puerta y desnivel sin atascos |
+| Misiones | `test_quest_state` | Etapas, condiciones, consecuencias y guardado |
+| Descubrimientos | `test_discovery_registry` | POI, mapa y rumor; sin duplicados |
+| Contenido | `test_content_ids` | IDs, textos y fichas existen; ninguna referencia rota |
+| Rendimiento | `test_sector_budget` | Draw calls, primitivas y VRAM dentro del presupuesto |
+| Recorrido | `world_slice_check.gd` | 30–45 min de slice: salir, descubrir, trabajar, volver y guardar |
+
 ## 4. Verificación manual
 
-Al cerrar cada acto:
+### 4.0. Versión lineal (histórica)
+
+Al cerrar cada acto lineal:
 
 1. Recorrer el acto completo, sin atajos, con el perfil por defecto.
 2. Comprobar la legibilidad de los textos y del HUD.
@@ -265,6 +286,19 @@ Las capturas de `capture_llacta_tour` se escriben en `/tmp/opencode/llacta_tour`
 **Evidencia.** Las capturas aprobadas se versionan en la documentación de la campaña; las de trabajo pueden quedar en `build/` (ignorado por Git). La ficha de la tarea anota tomas, comandos, cifras, veredicto y fecha; el PR enlaza la carpeta y resume el antes/después.
 
 **Cierre.** Una tarea visual no se marca terminada sin capturas antes/después, medición, revisión del responsable y deudas declaradas. Lo que falte queda como *no verificado*.
+
+### 4.2. Mundo abierto (F1–F3)
+
+Al cerrar una tarea de mundo:
+
+1. **Recorrido:** entrar al sector, cruzarlo en varias direcciones, salir y volver; sin bloqueos ni caídas.
+2. **Streaming:** medir carga, hitch y memoria en un recorrido de 10 minutos; anotar el peor caso.
+3. **Navegación:** una ruta de NPC entre casa, trabajo y puerta; una ruta del jugador entre comunidad y paso.
+4. **Guardado:** guardar, salir, cargar y comprobar posición, misión, NPC, inventario, hora y un cambio del mundo.
+5. **Vida:** comprobar que al menos tres NPC siguen su rutina y que el mundo cambia con la hora.
+6. **Descubrimiento:** encontrar un POI sin marcador y verificar que el diario y el mapa lo registran.
+7. **Rendimiento:** `scene_audit.gd` por sector y `measure_performance.tscn` en el peor caso.
+8. **Histórico:** revisar la clasificación del sector y sus fichas.
 
 ### Duración de la partida
 

@@ -39,7 +39,8 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 | Documento | Estado |
 |---|---|
-| [biblia_campana.md](biblia_campana.md) | **Aprobada (v1.0)** — los cinco actos, el protagonista, el elenco, los sistemas y las banderas |
+| [biblia_campana.md](biblia_campana.md) | **v1.1 (narrativa)** — los cinco actos, el protagonista, el elenco, los sistemas y las banderas; la estructura de mundo se adapta en `mundo/` |
+| [mundo/](mundo/README.md) | **v0.1 (propuesta F0)** — expediente geográfico, mapa conceptual, sectores y reestructuración narrativa a mundo abierto |
 | [expediente_historico.md](expediente_historico.md) | **v1.0** — cronología, lugares, personajes, cultura material, controversias y ficción declarada |
 | [registro_historico.md](registro_historico.md) | 29 fichas verificadas; PCH-025 (armadura acolchada) fuera del juego; PCH-032 a PCH-036 verificadas el 2026-11-15 |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
@@ -52,9 +53,11 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 ## 6. Estado de construcción
 
-La campaña se juega de principio a fin con blockout y materiales propios: los actos I–V encadenan llacta, paso, Cusco, posguerra y reconstrucción. El guion y el guion de escenas están cerrados y las 141 pruebas pasan; el Agricultor tiene su chaquitaclla plantada en la terraza. El elenco activo son diez maniquíes UAL1 (CC0, sin caras ni texturas) integrados en `NpcActor` y `CharacterModelVisual`; el legado UBC se retiró y su documento histórico se conserva en [personajes_quaternius.md](personajes_quaternius.md). La mano de primera persona sigue pendiente de revisión.
+**La versión lineal está congelada desde el 2026-11-19.** Los actos I–V se juegan de principio a fin con blockout y materiales propios; el guion, el guion de escenas y las 141 pruebas se conservan como banco de pruebas. El elenco activo son diez maniquíes UAL1 (CC0) integrados en `NpcActor` y `CharacterModelVisual`; el legado UBC se retiró y su documento histórico se conserva en [personajes_quaternius.md](personajes_quaternius.md).
 
-El estado por tarea, la dependencia entre bloques y la evidencia viven en la [ficha de F4](../../../docs/fases/F4-arte-audio-equilibrio.md); el estado de las fases, en [docs/05](../../../docs/05_plan_de_implementacion.md). Quedan el pase visual y sonoro por acto, los props finos y la mezcla de audio escuchada; el contraste humano de dificultad, la duración y la prueba de humo son de la Fase 5.
+**La campaña nueva se redefine como mundo abierto regional.** La región, los sectores y la adaptación de los cinco actos viven en [mundo/](mundo/README.md). La implementación lineal no se amplía: se usa como referencia de contenido, tono y pruebas hasta que la vertical slice la sustituya.
+
+El estado por tarea y la evidencia viven en la [ficha de F0](../../../docs/fases/F0-redefinicion-mundo-abierto.md); el estado de las fases, en [docs/05](../../../docs/05_plan_de_implementacion.md). La [ficha de F4](../../../docs/fases/F4-arte-audio-equilibrio.md) y la F5 lineal quedan congeladas.
 
 ## 7. Notas de producción
 

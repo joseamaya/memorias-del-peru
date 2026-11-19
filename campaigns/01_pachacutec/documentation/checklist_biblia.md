@@ -1,7 +1,9 @@
-# Checklist de la biblia — Campaña 01
+# Checklist de la biblia — Campaña 01 (lineal, congelada)
+
+> **Estado:** checklist de la versión lineal, congelada el 2026-11-19. No se actualiza con el mundo abierto. La checklist de la región y de la vertical slice se escribe en F2–F3 y vive en la [ficha de F0](../../../docs/fases/F0-redefinicion-mundo-abierto.md).
 
 - **Fecha:** 2026-11-16
-- **Alcance:** los cinco actos, contra `biblia_campana.md` §4–§8 y §13
+- **Alcance:** los cinco actos lineales, contra `biblia_campana.md` §4–§8 y §13
 - **Método:** revisión de diseño + partida guionizada (`ARCO_OK`) + pruebas por acto
 
 | Acto | ¿Se vive la pregunta? | ¿La decisión tiene consecuencia? | ¿El hecho está clasificado y citado? | Evidencia |

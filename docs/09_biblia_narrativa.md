@@ -1,9 +1,11 @@
 # 09 — Biblia narrativa general
 
-- **Versión:** 1.0 (adaptada al proyecto) — 2026-11-15
-- **Estado:** aprobada como capa narrativa de la antología
+- **Versión:** 2.0 (mundo abierto regional) — 2026-11-19
+- **Estado:** aprobada como capa narrativa de la antología; la estructura lineal de cinco escenas queda como material histórico
 - **Ámbito:** qué se cuenta y con qué reglas. No fija fases, sistemas ni pruebas.
-- **Documentos que la desarrollan:** [01 — Visión y alcance](01_vision_y_alcance.md), [05 — Plan de implementación](05_plan_de_implementacion.md), [07 — Convenciones históricas](07_convenciones_historicas.md), [biblia de la campaña 01](../campaigns/01_pachacutec/documentation/biblia_campana.md)
+- **Documentos que la desarrollan:** [01 — Visión y alcance](01_vision_y_alcance.md), [11 — Diseño de mundo](11_diseno_de_mundo.md), [12 — Campañas](12_campanas.md), [05 — Plan de implementación](05_plan_de_implementacion.md), [07 — Convenciones históricas](07_convenciones_historicas.md), [biblia de la campaña 01](../campaigns/01_pachacutec/documentation/biblia_campana.md)
+
+> **Cambio de modelo (2026-11-19).** Los “actos” siguen siendo unidades dramáticas, pero dejan de ser mapas separados: se viven como **fases históricas del mismo territorio**. Las descripciones de actos de este documento se conservan como material narrativo y se reinterpretan en el mundo abierto. La estructura de región, sectores y experiencias vive en [docs/11](11_diseno_de_mundo.md) y [docs/12](12_campanas.md).
 
 ---
 
@@ -20,9 +22,13 @@
 | Término | Significado |
 |---|---|
 | Campaña | Una época histórica jugable, independiente, con protagonista propio |
-| Acto | Unidad dramática de una campaña (cinco por campaña) |
+| Región | Territorio continuo y explorable de una campaña (2–4 km² de área densa; hasta ~8 km² con wilderness) |
+| Sector | Unidad de composición y streaming del territorio (256–512 m) |
+| Acto | Unidad dramática de una campaña (cinco por campaña); en mundo abierto se vive como fase, no como mapa |
+| Fase histórica | Estado del mundo que cambia la región y la historia: paz, noticia, guerra, posguerra, obra |
+| Secuencia controlada | Escena con control limitado del jugador: asamblea, batalla, sueño, clímax |
 | Episodio | Unidad menor que un acto: viaje, asedio, asamblea |
-| Expediente | Dossier histórico de una campaña antes de escribir su guion (§9) |
+| Expediente | Dossier histórico y geográfico de una campaña antes de escribir su guion (§9) |
 | Ficha | Entrada del registro histórico con clasificación, fuente y estado (docs/07 §3) |
 
 ---
@@ -31,21 +37,23 @@
 
 ## 1.1. Concepto central
 
-*Memorias del Perú* es un videojuego narrativo de acción y exploración que permite vivir diferentes momentos decisivos de la historia peruana desde la perspectiva de personas comunes que participaron en ellos.
+*Memorias del Perú* es una antología de **RPG históricos de mundo abierto regional** que permite vivir diferentes momentos decisivos de la historia peruana desde la perspectiva de personas comunes que participaron en ellos.
 
 El jugador no encarna a los grandes líderes históricos. Vive la historia desde abajo: como un habitante, trabajador, mensajero, combatiente o integrante de una comunidad que se ve involucrada en acontecimientos que transforman el país.
 
-Cada campaña presenta un protagonista diferente, con su propia familia, relaciones, motivaciones, conflictos y evolución personal.
+Cada campaña presenta un protagonista diferente, con su propia familia, relaciones, motivaciones, conflictos y evolución personal. También presenta una **región continua y explorable** con comunidades, caminos, campos, ríos, montañas y lugares que existen más allá de la misión activa.
 
 Los personajes históricos aparecen como parte del mundo y conservan su importancia. El protagonista ficticio participa en los acontecimientos sin reemplazar a sus protagonistas históricos ni apropiarse de sus decisiones.
 
-El género jugable es el **RPG histórico en primera persona**: exploración, interacción contextualizada, decisiones y combate subordinados al relato. Los sistemas concretos de cada campaña se definen en su documentación.
+El género jugable es el **RPG histórico en primera persona de mundo abierto regional**: exploración, vida cotidiana, interacción contextualizada, decisiones y combate subordinados al relato. Los sistemas concretos de cada campaña se definen en [docs/11](11_diseno_de_mundo.md) y en su documentación.
 
 ## 1.2. Promesa al jugador
 
-No se trata de memorizar fechas o contemplar acontecimientos desde fuera.
+No se trata de memorizar fechas o contemplar acontecimientos desde fuera, ni de recorrer un pasillo de escenarios históricos.
 
-El jugador conocerá cómo vivía la gente, qué temía, qué defendía, qué perdía y qué esperaba de su futuro. Los acontecimientos históricos serán experiencias que deberá atravesar.
+El jugador conocerá cómo vivía la gente, qué temía, qué defendía, qué perdía y qué esperaba de su futuro. Los acontecimientos históricos serán experiencias que deberá atravesar, pero también podrá salir de su comunidad, tomar un camino distinto, encontrar a alguien, descubrir un lugar, trabajar y volver a casa.
+
+**El territorio y sus habitantes deben existir más allá de la misión activa.**
 
 ## 1.3. Principios narrativos
 
@@ -57,6 +65,8 @@ El jugador conocerá cómo vivía la gente, qué temía, qué defendía, qué pe
 6. **Diversidad de experiencias:** cada campaña tiene un tono, ritmo y conflicto particular.
 7. **Historia sin lecciones forzadas:** el aprendizaje surge de explorar, conversar, observar y participar.
 8. **Ambigüedad humana:** evitar representar a todos los personajes de un bando como buenos o malos de manera automática.
+9. **El lugar importa:** cada región tiene geografía, economía, comunidad y memoria propias; no es un decorado intercambiable.
+10. **La vida sigue:** el mundo ofrece trabajo, rutinas, relaciones y descubrimientos que no dependen de la misión principal.
 
 ---
 
@@ -66,16 +76,30 @@ El juego está pensado como una antología de cuatro campañas independientes, a
 
 | Campaña | Título | Periodo | Conflicto central | Estado |
 |---|---|---|---|---|
-| I | El despertar del Sol | Siglo XV, guerra contra los chancas | Defender el Cusco y vivir el ascenso de Pachacútec | **En desarrollo** |
-| II | La llama de la rebelión | 1780–1783 | La rebelión de Túpac Amaru II y sus consecuencias | Visión; sin expediente |
-| III | Entre dos banderas | 1820–1824 | El proceso de independencia del Perú | Visión; región por definir |
-| IV | Los últimos defensores | 1881–1883 | La resistencia de la Breña durante la Guerra del Pacífico | Visión; sin expediente |
+| I | El despertar del Sol | Siglo XV, guerra contra los chancas | Defender el Cusco y vivir el ascenso de Pachacútec | **Redefinición a mundo abierto (F0–F3)** |
+| II | La llama de la rebelión | 1780–1783 | La rebelión de Túpac Amaru II y sus consecuencias | Concepto; expediente por hacer |
+| III | Entre dos banderas | 1820–1824 | El proceso de independencia del Perú | Concepto; región por decidir |
+| IV | Los últimos defensores | 1881–1883 | La resistencia de la Breña durante la Guerra del Pacífico | Concepto; expediente por hacer |
 
 Cada campaña debe poder disfrutarse por separado. No requiere conocer las otras para comprender su historia.
 
 La posible conexión entre los protagonistas mediante memorias ancestrales queda fuera del alcance de esta versión. La «Memoria» del diario de la campaña 01 es una pestaña de conocimiento histórico, no un vínculo entre campañas.
 
 **Nombre visible:** la pantalla de título muestra el nombre del juego y el de la campaña en curso. En la campaña 01 la línea de campaña es *El despertar del Sol*; el nombre descriptivo completo —*Pachacútec y la defensa del Cusco*— se usa en documentación.
+
+### 2.1. Modelo de mundo abierto
+
+Cada campaña se desarrolla en **una región continua** (2–4 km² de área densa; hasta ~8 km² con wilderness), no en una sucesión de niveles. La estructura dramática de cinco actos se conserva, pero se vive como **fases históricas del mismo territorio**:
+
+| Acto | Fase del mundo | Qué cambia |
+|---|---|---|
+| I | Paz / vida cotidiana | Rutinas, caminos y comunidad |
+| II | Noticia / movilización | Refugiados, precios, patrullas |
+| III | Guerra | Accesos, combate, ausencias |
+| IV | Posguerra | Casas vacías, heridos, cuentas |
+| V | Reconstrucción | Obras, nombre nuevo, cierre |
+
+Las secuencias controladas se reservan para asambleas, batallas, sueños y clímax. El resto del mundo sigue siendo explorable y habitable antes, durante y después de la historia principal. La región, los sectores y las experiencias se diseñan en [docs/11](11_diseno_de_mundo.md).
 
 ---
 
@@ -84,9 +108,11 @@ La posible conexión entre los protagonistas mediante memorias ancestrales queda
 ## 3.1. Identidad
 
 **Periodo:** siglo XV, durante el conflicto entre los incas y los chancas.
-**Espacio principal:** una llacta del valle del Cusco, el paso de montaña y el Cusco de 1438.
+**Región:** valle del Cusco y aproximación occidental, con la llacta de Rumi, la quebrada, el paso y el Cusco de 1438. La distancia está comprimida y el valle intermedio es ficción declarada.
+**Espacios principales:** la llacta, el paso de montaña y el Cusco preimperial.
 **Personaje histórico central:** Cusi Yupanqui, posteriormente conocido como Pachacútec.
 **Tono:** épico, íntimo, de supervivencia y transformación.
+**Fases:** paz, noticia, guerra, posguerra y obra sobre el mismo territorio.
 
 ## 3.2. Premisa
 
@@ -122,6 +148,8 @@ No debe ser un guerrero excepcional desde el comienzo. Su experiencia y capacida
 Los personajes secundarios deben tener objetivos propios y no existir únicamente para entregar misiones.
 
 ## 3.5. Estructura de actos
+
+> Los cinco actos se conservan como unidades dramáticas. En el juego se viven como fases del mismo territorio, no como mapas separados. Las descripciones siguientes son material narrativo; la puesta en escena de mundo se define en `campaigns/01_pachacutec/documentation/mundo/`.
 
 ### Acto I — Una ciudad al borde del colapso
 
@@ -209,9 +237,10 @@ La guerra contra los chancas y el ascenso de Pachacútec se conocen principalmen
 ## 4.1. Identidad
 
 **Periodo:** 1780–1783.
-**Espacio principal:** región de Tinta, Tungasuca, Cusco y zonas vinculadas a la rebelión.
+**Región propuesta:** corredor del Vilcanota y punas de Canas/Canchis: Tinta, Tungasuca, Pampamarca, Sangarará, Sicuani y caminos de altura. Cusco se trata como destino lejano o secuencia controlada, no como parte del mapa continuo.
 **Personajes históricos centrales:** Túpac Amaru II, Micaela Bastidas y dirigentes de la rebelión.
 **Tono:** tensión, indignación, esperanza y tragedia.
+**Mundo:** pueblos, haciendas, obrajes, tambos, mercados, iglesia, caminos y puna; trueque, tributo y redes de información.
 
 ## 4.2. Premisa
 
@@ -302,9 +331,10 @@ La rebelión debe representarse como un movimiento complejo, con distintas etapa
 ## 5.1. Identidad
 
 **Periodo:** 1820–1824.
-**Espacio principal:** por definir, preferentemente una región que permita seguir al protagonista de manera coherente.
+**Región:** por decidir mediante expediente comparativo. Candidatas: Ayacucho–Huanta–Cangallo; Jauja–Tarma–Huancayo; Lima–Huarochirí–Yauyos. No se fija una ubicación arbitraria.
 **Personajes históricos centrales:** José de San Martín, Simón Bolívar, José de la Riva-Agüero, José Bernardo de Tagle y otros personajes según la localización elegida.
 **Tono:** incertidumbre, intriga, esperanza y conflicto moral.
+**Mundo:** pueblos, haciendas, coca, puna, caminos, cuarteles y redes de información; la guerra irregular y la vida cotidiana pesan más que las grandes batallas.
 
 ## 5.2. Premisa
 
@@ -392,9 +422,10 @@ La campaña debe diferenciar las proclamaciones locales, la declaración de inde
 ## 6.1. Identidad
 
 **Periodo:** 1881–1883.
-**Espacio principal:** sierra central, con localizaciones definidas según las operaciones históricas seleccionadas.
+**Región propuesta:** valle del Mantaro y puna hacia Ayacucho: Jauja, Concepción, Huancayo, Pucará y Marcavalle. Huamachuco queda fuera del mapa continuo; se resuelve como epílogo narrado o secuencia final.
 **Personaje histórico central:** Andrés Avelino Cáceres.
 **Tono:** supervivencia, resistencia, sacrificio y reconstrucción.
+**Mundo:** valle, pueblos, haciendas, puentes, quebradas, cuevas, pastos y rutas de altura; requisiciones, ocultamiento y logística.
 
 ## 6.2. Premisa
 
@@ -486,10 +517,13 @@ Las cuatro campañas no deben sentirse como la misma aventura con diferentes ves
 | Elemento | Pachacútec | Túpac Amaru II | Independencia | Cáceres |
 |---|---|---|---|---|
 | Conflicto | Defensa y cambio político | Rebelión | Ruptura del orden colonial | Resistencia ante ocupación |
-| Escala | Ciudad y entorno | Región y comunidades | Regiones y campañas | Sierra central |
+| Región | Valle del Cusco y aproximación occidental | Vilcanota: Tinta–Canas–Canchis | Por decidir; candidata Ayacucho–Huanta | Valle del Mantaro y puna |
+| Escala | ~3,5 × 2,5 km | ~4 × 3 km | ~4 × 3 km | ~4 × 3 km |
 | Motivación inicial | Proteger el hogar | Sobrevivir a los abusos | Proteger a los suyos | Proteger la comunidad |
 | Evolución | Participar en una transformación | Asumir el costo de rebelarse | Elegir y sostener una causa | Resistir y reconstruir |
 | Tono | Épico e íntimo | Trágico y tenso | Esperanzador y ambiguo | Crudo y resiliente |
+
+La superficie total incluye wilderness y aproximaciones; el **área densa** (asentamientos, campos, rutas y POI) es de 2–4 km². La escala exacta se fija en el expediente de cada campaña.
 
 ---
 
@@ -542,6 +576,14 @@ Combinar:
 - Combate.
 - Decisiones personales.
 
+**Reglas de mundo abierto:**
+
+- La misión no es la única razón para recorrer el territorio: el mundo ofrece descubrimientos, oficios, relaciones y rumores por sí mismo.
+- Las indicaciones se dan con personas, hitos y caminos; no con marcadores flotantes como única guía.
+- Las misiones secundarias nacen de personas y lugares concretos, no de una lista genérica.
+- Las secuencias controladas se reservan para asambleas, batallas, sueños y clímax; el resto se juega en el mundo.
+- Una misión no puede resolverse con una escena lineal nueva si el mismo contenido cabe en el territorio.
+
 ## 8.4. Combate
 
 El combate debe surgir de las circunstancias de cada periodo.
@@ -586,14 +628,16 @@ Debe contener:
 
 1. Cronología de acontecimientos.
 2. Localizaciones y desplazamientos.
-3. Personajes históricos y sus roles.
-4. Organización política y social.
-5. Vestimenta, arquitectura, herramientas y armamento.
-6. Actividades cotidianas.
-7. Costumbres, creencias y prácticas culturales.
-8. Fuentes primarias y estudios historiográficos.
-9. Controversias y vacíos documentales.
-10. Elementos ficticios que se incorporarán al guion.
+3. **Geografía histórica y clasificación del territorio** (documentado / aproximado / ficción).
+4. Personajes históricos y sus roles.
+5. Organización política y social.
+6. Vestimenta, arquitectura, herramientas y armamento.
+7. Actividades cotidianas y economía.
+8. Costumbres, creencias y prácticas culturales.
+9. Fuentes primarias y estudios historiográficos.
+10. Controversias y vacíos documentales.
+11. Elementos ficticios que se incorporarán al guion.
+12. **Diseño de la región**: sectores, rutas, asentamientos, recursos y límites de jugabilidad.
 
 Cada acontecimiento narrativo debe clasificarse como:
 
@@ -642,6 +686,7 @@ Cada campaña debe desarrollarse mediante un documento propio con estas seccione
 13. Clímax y desenlace.
 14. Registro de rigor histórico.
 15. Bibliografía y fuentes.
+16. **Diseño de mundo**: región, sectores, rutas, POI, fases históricas y experiencias no principales.
 
 Cada misión debe especificar:
 - Contexto.
@@ -666,14 +711,14 @@ El desarrollo narrativo se realiza en etapas. Cada etapa se convierte en una o m
 
 | Etapa | Contenido | Fase del plan | Estado |
 |---|---|---|---|
-| 1 — Desarrollar Pachacútec | Escribir el guion, definir protagonista y vínculos, construir los cinco actos y cerrar el desenlace | Fases 2–5 | En curso |
-| 2 — Desarrollar Túpac Amaru II | Investigar cronología y liderazgos, definir protagonista y localización, construir actos y misiones | Futura | No abierta |
-| 3 — Desarrollar la Independencia | Elegir región y recorrido, definir la posición del protagonista, investigar las campañas, construir el guion | Futura | No abierta |
-| 4 — Desarrollar la Campaña de la Breña | Definir comunidad y protagonista, investigar montoneras, seleccionar operaciones, construir el guion | Futura | No abierta |
+| 1 — Desarrollar Pachacútec | Mantener la historia y el elenco; rediseñar la región, las fases de mundo y la vertical slice | F0–F5 | **Redefinición en curso** |
+| 2 — Desarrollar Túpac Amaru II | Investigar cronología y liderazgos, definir región, protagonista y economía colonial; construir actos y misiones | F6 | No abierta |
+| 3 — Desarrollar la Independencia | Elegir región y recorrido con expediente comparativo, definir la posición del protagonista, construir el guion | F6 | No abierta |
+| 4 — Desarrollar la Campaña de la Breña | Definir comunidad, región y protagonista; investigar montoneras y operaciones; construir el guion | F6 | No abierta |
 
-**Regla de oro:** no se desarrollan simultáneamente los diálogos y misiones de las cuatro campañas. Primero se aprueba la estructura narrativa de una; después se construye.
+**Regla de oro:** no se desarrollan simultáneamente los diálogos y misiones de las cuatro campañas. Primero se aprueba la estructura narrativa y geográfica de una; después se construye.
 
-Cada etapa empieza por el **expediente histórico** (§9) y solo pasa al guion cuando el expediente está aprobado.
+Cada etapa empieza por el **expediente histórico y geográfico** (§9) y solo pasa al guion cuando el expediente está aprobado. La región se diseña antes de construir terreno; la vertical slice se valida antes de producir la campaña completa.
 
 ---
 
@@ -683,28 +728,33 @@ Cada etapa empieza por el **expediente histórico** (§9) y solo pasa al guion c
 
 También está formada por quienes trabajaron, lucharon, resistieron, cuidaron a sus familias y sobrevivieron a los acontecimientos que transformaron su sociedad.
 
-Cada campaña contará una historia humana distinta, pero todas compartirán una misma intención: acercar al jugador a la historia peruana haciéndolo parte de ella.
+Cada campaña contará una historia humana distinta, en un territorio con identidad propia, y todas compartirán una misma intención: acercar al jugador a la historia peruana haciéndolo parte de ella.
 
-**La historia no solo se recuerda. También se vive.**
+**La historia no solo se recuerda. También se vive. Y el lugar donde se vive también cuenta.**
 
 ---
 
 # Anexo A — Decisiones de diseño
 
-1. **Cinco actos.** La campaña 01 se estructura en cinco actos; el arco se construye completo antes de ampliar arte.
+1. **Cinco actos, un territorio.** La campaña 01 conserva cinco actos como unidades dramáticas, pero se viven como fases del mismo mundo abierto regional; no son cinco mapas.
 2. **Título.** La línea de campaña en pantalla es *El despertar del Sol*. El nombre descriptivo *Pachacútec y la defensa del Cusco* se mantiene en documentación.
 3. **Protagonista con identidad.** Rumi, 17 años, con familia, miedo y motivación declarados. El oficio se fija con el primer encargo.
-4. **Clasificación.** Se conserva H/A/R/N de [docs/07](07_convenciones_historicas.md); la clasificación de §9 se mapea sobre ella. «Controversial» es una bandera, no una categoría.
-5. **Una campaña es un producto.** Las campañas II–IV no se escriben hasta que les toque su etapa.
+4. **Clasificación.** Se conserva H/A/R/N de [docs/07](07_convenciones_historicas.md); la clasificación de §9 se mapea sobre ella. «Controversial» es una bandera, no una categoría. La geografía usa GD/GR/GN.
+5. **Una campaña es un producto.** Las campañas II–IV no se escriben ni se construyen hasta que les toque su etapa.
 6. **Etapas y fases.** Las etapas de §11 se convierten en fases de `docs/05` cuando se abren; no conviven dos numeraciones activas.
 7. **Origen del protagonista.** Rumi vive en una llacta del valle, no en el Cusco: la ciudad se descubre al final del camino.
+8. **Mundo abierto regional.** El área densa es de 2–4 km² por campaña, con hasta ~8 km² incluyendo wilderness; la densidad manda sobre la extensión. No se construyen mapas gigantes vacíos.
+9. **Sin vínculo sobrenatural.** Las cuatro campañas son independientes; no hay memorias ancestrales ni conexión mágica entre protagonistas en esta versión.
 
 # Anexo B — Pendientes declarados
 
 | Pendiente | Bloquea | Dónde se resuelve |
 |---|---|---|
 | Norma de escritura quechua | Nombres propios, fichas y diálogos con quechua | Documentación de la campaña 01 §4 |
-| Región de la campaña III | Todo el guion de la III | Expediente de la campaña III |
-| Ruta de la campaña IV hasta Huamachuco | Actos III–IV de la IV | Expediente de la campaña IV |
+| Región de la campaña III | Todo el guion de la III | Expediente comparativo de la campaña III |
+| Alcance de Huamachuco en la IV | Actos III–IV de la IV | Expediente de la campaña IV |
+| Región y protagonista de la II | Todo el guion de la II | Expediente de la campaña II |
+| Geografía de la campaña 01 | Terreno, sectores y POI | Dossier `campaigns/01_pachacutec/documentation/mundo/` |
 | Assets coloniales, republicanos y armas de fuego | Campañas II–IV | Fase de cada campaña, con licencia registrada |
-| Selector de campañas y guardado | Antología completa | Fase técnica posterior |
+| Selector de campañas y guardado | Antología completa | F1/F4 |
+| Adopción de Terrain3D y Cyclops | Terreno y blockout | Spikes de F1 |

@@ -79,12 +79,16 @@ Los valores concretos se fijan tras medir (§4).
 - **Culling:** frustum culling del motor; oclusión (`OccluderInstance3D`) solo si las mediciones lo justifican.
 - **Materiales:** materiales compartidos en `shared_assets/materials/`; preferir instancias de un mismo shader con parámetros a materiales duplicados.
 - **Vegetación:** `MultiMeshInstance3D` para elementos repetidos (ichu, piedras).
-- **Carga de escenas:** carga en segundo plano (`ResourceLoader.load_threaded_request`) cuando existan varias zonas.
+- **Carga de escenas:** carga en segundo plano (`ResourceLoader.load_threaded_request`) por sector; terreno siempre cargado en la región.
 - **Iluminación:** luz principal dinámica; evaluar baking (`LightmapGI`) solo para interiores estáticos.
+- **Sectores:** presupuesto independiente por sector; el peor caso manda, no la media del mapa.
+- **Simulación:** distancia de NPC, animación, sombras y navegación escalan con la cercanía; fuera de sector solo se guarda estado.
 
 **No se optimiza sin medir.** Cada optimización se justifica con una medición antes/después.
 
 ## 4. Métricas de referencia
+
+> Las tablas de §4.1 son la línea base de la versión lineal (histórica). El presupuesto del mundo abierto está en §4.2 y se valida por sector en F1–F3.
 
 | Métrica | Herramienta | Objetivo |
 |---|---|---|
@@ -234,3 +238,24 @@ pasada nueva están en
 Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy); la política de sombras del elenco Q la deja en 288. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (60,0 de mediana, 40,7 en la peor pasada) está en el límite del objetivo; se vigila al añadir arte final.
 
 El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En la medición de Bajo de 2026-11-16, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.
+
+### 4.2. Presupuesto de mundo abierto (F1–F3)
+
+Los valores siguientes son **provisionales** hasta que F1 mida el terreno y el streaming. Se aplican por **sector**, no por mapa completo.
+
+| Métrica | Presupuesto | Cómo se mide |
+|---|---|---|
+| FPS medio | ≥ 30 Bajo / ≥ 60 Medio, 1080p, UHD 770 | `measure_performance.tscn` en el peor sector |
+| FPS p1 | ≥ 2/3 del FPS medio | Recorrido fijo de 10 min |
+| Draw calls | ≤ 350 por sector | `scene_audit.gd --breakdown` |
+| Primitivas | ≤ 1,2 M por sector | `scene_audit.gd` |
+| VRAM | ≤ 250 MB | `Performance.RENDER_VIDEO_MEM_USED` |
+| NPC activos | ≤ 60; animados ≤ 25 | Contador del `NpcDirector` |
+| Distancia de sombras | 40–60 m, selectiva | Perfil y auditoría |
+| Carga de sector | < 150 ms asíncrona | Instrumentación del `SectorStreamer` |
+| Hitch | < 50 ms | Serie de tiempos de fotograma |
+| Memoria del proceso | ≤ 4 GB | Monitor del sistema |
+
+**Peor caso de prueba:** mercado o plaza a mediodía, con multitud, sombras, clima y NPC en rutina. No se mide una aldea vacía.
+
+**Regla:** si un sector supera el presupuesto, se recorta antes de subir el límite. La decisión se registra con la medición antes/después.

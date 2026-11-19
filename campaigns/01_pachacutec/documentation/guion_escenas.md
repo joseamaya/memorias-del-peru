@@ -1,5 +1,7 @@
 # Guion de escenas — Campaña 01: El despertar del Sol
 
+> **Estado:** guion de la versión lineal (v1.0), conservado como material narrativo y banco de pruebas. No es el guion del mundo abierto. La puesta en escena de mundo se diseña en [mundo/reestructuracion_narrativa.md](mundo/reestructuracion_narrativa.md) con la [plantilla de escena](../../../docs/10_plantilla_guion_de_escena.md) v2.0. Las fichas lineales se adaptan o se retiran en F3.
+
 - **Versión:** 2.0 — 2026-11-18
 - **Estado:** arco jugable con blockout y materiales propios; acto I con flujo de pasos visible y entrenamiento de honda.
 - **Marco:** [guion de campaña](guion_campana.md), [biblia de campaña](biblia_campana.md), [plantilla](../../../docs/10_plantilla_guion_de_escena.md).
