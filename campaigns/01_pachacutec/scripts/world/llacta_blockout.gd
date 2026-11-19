@@ -240,114 +240,21 @@ func _add_box(
 	orientation: Basis,
 	name_hint: String
 ) -> Node3D:
-	var root: Node3D = Node3D.new()
-	root.name = name_hint
-	root.position = box_position
-	root.basis = orientation
-	add_child(root)
-	var mesh: MeshInstance3D = MeshInstance3D.new()
-	var box: BoxMesh = BoxMesh.new()
-	box.size = size
-	mesh.mesh = box
-	mesh.material_override = _material(color)
-	root.add_child(mesh)
-	if collision:
-		var body: StaticBody3D = StaticBody3D.new()
-		var shape: CollisionShape3D = CollisionShape3D.new()
-		var box_shape: BoxShape3D = BoxShape3D.new()
-		box_shape.size = size
-		shape.shape = box_shape
-		body.add_child(shape)
-		root.add_child(body)
-	return root
+	return BlockoutKit.add_box(self, size, box_position, color, collision, orientation, name_hint)
 
 
 func _cylinder(
 	radius: float, height: float, mesh_position: Vector3, color: Color = STONE
 ) -> MeshInstance3D:
-	var mesh: MeshInstance3D = MeshInstance3D.new()
-	var cylinder: CylinderMesh = CylinderMesh.new()
-	cylinder.top_radius = radius
-	cylinder.bottom_radius = radius
-	cylinder.height = height
-	mesh.mesh = cylinder
-	mesh.material_override = _material(color)
-	mesh.position = mesh_position
-	add_child(mesh)
-	return mesh
+	return BlockoutKit.add_cylinder(self, radius, height, mesh_position, color)
 
 
 func _ribbon(points: PackedVector3Array, width: float, color: Color, lift: float) -> MeshInstance3D:
-	var vertices: PackedVector3Array = PackedVector3Array()
-	var normals: PackedVector3Array = PackedVector3Array()
-	var indices: PackedInt32Array = PackedInt32Array()
-	var centers: PackedVector3Array = PackedVector3Array()
-	for index: int in range(points.size() - 1):
-		var from: Vector3 = points[index]
-		var to: Vector3 = points[index + 1]
-		var steps: int = maxi(ceili(from.distance_to(to) / 4.0), 1)
-		for step: int in steps:
-			var t: float = float(step) / float(steps)
-			var point: Vector3 = from.lerp(to, t)
-			centers.append(Vector3(point.x, _ground(point.x, point.z) + lift, point.z))
-	centers.append(
-		Vector3(
-			points[points.size() - 1].x,
-			_ground(points[points.size() - 1].x, points[points.size() - 1].z) + lift,
-			points[points.size() - 1].z
-		)
-	)
-	for index: int in centers.size():
-		var direction: Vector3 = _direction(centers, index)
-		var side: Vector3 = Vector3(-direction.z, 0.0, direction.x) * (width * 0.5)
-		vertices.append(centers[index] + side)
-		vertices.append(centers[index] - side)
-		normals.append(Vector3.UP)
-		normals.append(Vector3.UP)
-	for index: int in range(centers.size() - 1):
-		var base: int = index * 2
-		indices.append_array([base, base + 1, base + 2])
-		indices.append_array([base + 1, base + 3, base + 2])
-	var arrays: Array = []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh: ArrayMesh = ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var instance: MeshInstance3D = MeshInstance3D.new()
-	instance.mesh = mesh
-	instance.material_override = _material(color)
-	add_child(instance)
-	return instance
-
-
-func _direction(points: PackedVector3Array, index: int) -> Vector3:
-	var from: Vector3 = points[maxi(index - 1, 0)]
-	var to: Vector3 = points[mini(index + 1, points.size() - 1)]
-	var flat: Vector3 = Vector3(to.x - from.x, 0.0, to.z - from.z)
-	if flat.length_squared() < 0.0001:
-		return Vector3.FORWARD
-	return flat.normalized()
+	return BlockoutKit.add_ribbon(self, points, _ground, width, color, lift)
 
 
 func _add_label(text: String, label_position: Vector3) -> void:
-	var label: Label3D = Label3D.new()
-	label.text = text
-	label.font_size = 64
-	label.pixel_size = 0.12
-	label.outline_size = 12
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.position = label_position
-	add_child(label)
-	_poi_labels.append(label)
-
-
-func _material(color: Color) -> StandardMaterial3D:
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = color
-	material.roughness = 1.0
-	return material
+	_poi_labels.append(BlockoutKit.add_label(self, text, label_position))
 
 
 func _ground(x: float, z: float) -> float:

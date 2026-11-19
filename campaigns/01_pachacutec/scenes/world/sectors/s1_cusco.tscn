@@ -1,11 +1,7 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/sector_marker.gd" id="1_marker"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/cusco_blockout.gd" id="1_cusco"]
 
 [node name="S1Cusco" type="Node3D"]
-position = Vector3(1200.0, 0, 400.0)
-script = ExtResource("1_marker")
-sector_id = &"s1_cusco"
-display_name = "S1 · Cusco preimperial"
-classification = "GD/GR"
-color = Color(0.85, 0.7, 0.35, 1)
+position = Vector3(1200, 0, 400)
+script = ExtResource("1_cusco")

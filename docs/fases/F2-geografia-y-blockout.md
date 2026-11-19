@@ -13,7 +13,7 @@
 | 2.2 | Sectores y streaming | **Base implementada** | Seis sectores con función y presupuesto; carga sin pantallas | `region_streaming_check`; 6 escenas, 3 cargadas en la llacta |
 | 2.3 | Rutas | **Base implementada** | R1–R8 conectan los sectores; navmesh por sector | `route_network_check`; 8 rutas, 6 navmeshes y rutas continuas |
 | 2.4 | S3 Llacta de Rumi | **Base implementada** | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | `llacta_blockout_check`; 17 casas, 9 POI, 120 draw calls |
-| 2.5 | S1 Cusco preimperial | Pendiente | Plaza, recinto, ayllus, mercado y talleres en blockout | Captura y presupuesto |
+| 2.5 | S1 Cusco preimperial | **Base implementada** | Plaza, recinto, ayllus, mercado y talleres en blockout | `cusco_blockout_check`; 28 casas, 6 POI, 247 draw calls |
 | 2.6 | S4–S6 | Pendiente | Quebrada, paso y frontera con POI y límites naturales | Captura y presupuesto |
 | 2.7 | POI y descubrimiento | Pendiente | 30 POI con ID, función, clasificación y disparador | `DiscoveryRegistry` |
 | 2.8 | Recorrido completo | Pendiente | 20–30 min a pie sin bloqueos ni pantallas exteriores | Prueba humana y capturas |
@@ -150,13 +150,45 @@ godot --path . --resolution 1280x720 \
 
 La captura queda en `build/evidencia/llacta_blockout.png`.
 
+## 2.5. F2.5 — S1 Cusco preimperial
+
+**Escena:** `campaigns/01_pachacutec/scenes/world/sectors/s1_cusco.tscn`; se carga al acercarse al sector S1.
+
+**Contenido de blockout:**
+
+- Plaza de 28 m de radio.
+- **28 casas de ayllu** en cuadrícula con callejones, fuera del anillo de 42 m y de los corredores de R1/R3.
+- Recinto del Coricancha sobre plataforma, con muros perimetrales y recinto interior.
+- Mercado con seis puestos y toldos.
+- Taller textil con dos casas y tres telares.
+- Cuatro depósitos.
+- Acequia urbana de 280 m.
+- Seis etiquetas de POI: 17–22.
+
+**Comprobación:** `cusco_blockout_check` valida 28 casas, 6 POI, 111 mallas, 43 colisiones y rutas a afueras y llacta. Salida: `CUSCO_OK houses=28 pois=6`.
+
+**Medición:** tres pasadas a 1920 × 1080, perfil Medio, vsync off, carga 1,0–1,4: **76,4/79,2/82,3 FPS** de media, p1 60,0–65,8, **247 draw calls** y **128–137 MB** de VRAM. Dentro del presupuesto de 350 draw calls y 250 MB.
+
+**Pendiente:** interiores, materiales definitivos, muralla y quebrada de límite, multitud de 30–40 NPC, mercado funcional y descubrimiento de POI.
+
+```bash
+godot --headless --path . --script res://tests/cusco_blockout_check.gd
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_cusco.tscn
+godot --path . --resolution 1280x720 \
+    res://tests/scenes/capture_cusco_blockout.tscn
+```
+
+La captura queda en `build/evidencia/cusco_blockout.png`.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
 2. **Hecho:** F2.2 base (seis sectores y streaming sin pantallas).
 3. **Hecho:** F2.3 base (ocho rutas y navmesh por sector con enlaces).
 4. **Hecho:** F2.4 base (blockout de S3 con 17 casas y nueve POI).
-5. **Siguiente:** F2.5 Cusco preimperial y F2.6 S4–S6.
+5. **Hecho:** F2.5 base (blockout de S1 con 28 casas, Coricancha, mercado y talleres).
+6. **Siguiente:** F2.6 S4 quebrada, S5 paso y S6 frontera.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 
