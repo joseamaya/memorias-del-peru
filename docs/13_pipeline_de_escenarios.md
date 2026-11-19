@@ -80,7 +80,7 @@ Validación histórica, visual, de rendimiento y de guardado
 
 ### 3.2. Terreno
 
-**Blockout de sector (F2.4–F2.5).** S3 y S1 comparten `BlockoutKit` (cajas, cilindros, cintas y etiquetas con colisión simple) y se cargan con el streamer. S3 aporta plaza, casas, manantial y acequia; S1, Coricancha, ayllus, mercado, talleres y depósitos. Las capturas de revisión son ortográficas y ocultan las etiquetas para leer la planta.
+**Blockout de sector (F2.4–F2.5).** S3 y S1 comparten `BlockoutKit` (cajas, cilindros, cintas y etiquetas con colisión simple) y se cargan con el streamer. S3 aporta plaza, casas, manantial y acequia; S1, Coricancha, ayllus, mercado, talleres y depósitos; S4–S6, quebrada, paso y frontera con sus POI y límites naturales. Las capturas de revisión son ortográficas y ocultan las etiquetas para leer la planta.
 
 **Blockout de sector (F2.4).** S3 usa `LlactaBlockout`: plaza, casas, manantial, acequia y POI con mallas y colisiones simples de blockout, cargadas por el streamer. La captura de revisión es ortográfica y oculta las etiquetas para leer la planta.
 

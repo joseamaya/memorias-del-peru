@@ -95,7 +95,7 @@
 
 ## Fase 2 — Geografía y blockout
 
-**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout. **Estado:** en curso; F2.1 (heightmap), F2.2 (sectores y streaming), F2.3 (rutas y navmesh), F2.4 (blockout de S3) y F2.5 (blockout de S1) con base implementada.
+**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout. **Estado:** en curso; F2.1 (heightmap), F2.2 (sectores y streaming), F2.3 (rutas y navmesh), F2.4 (blockout de S3), F2.5 (blockout de S1) y F2.6 (S4–S6) con base implementada.
 
 **Objetivo:** construir el territorio de la campaña 01 en gris, con escala real, rutas, sectores y lugares, antes de producir arte definitivo.
 

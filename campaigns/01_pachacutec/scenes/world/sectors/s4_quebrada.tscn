@@ -1,11 +1,7 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/sector_marker.gd" id="1_marker"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/quebrada_blockout.gd" id="1_quebrada"]
 
 [node name="S4Quebrada" type="Node3D"]
-position = Vector3(-700.0, 0, 350.0)
-script = ExtResource("1_marker")
-sector_id = &"s4_quebrada"
-display_name = "S4 · Quebrada alta"
-classification = "GR/GN"
-color = Color(0.35, 0.55, 0.6, 1)
+position = Vector3(-700, 0, 350)
+script = ExtResource("1_quebrada")
