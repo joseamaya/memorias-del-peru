@@ -13,8 +13,9 @@ La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está 
 **Fase 4 — Arte, audio y equilibrio.** Criterio de salida: el fijado en [docs/05](docs/05_plan_de_implementacion.md) §Fase 4. La partida humana cronometrada de 40–50 min se mide en la Fase 5.
 
 - Estado y criterios de fase: [docs/05](docs/05_plan_de_implementacion.md).
+- Tareas, dependencias y evidencia de la fase: [ficha de F4](docs/fases/F4-arte-audio-equilibrio.md).
 - Fases cerradas: 0 (documentación), 1 (fundación y núcleo RPG), 2 (guion de la campaña 01) y 3 (arco jugable I–V).
-- Deudas heredadas de la Fase 3: las que recoge la ficha de la fase activa.
+- Deudas heredadas de la Fase 3: las que recoge la [ficha de la fase activa](docs/fases/F4-arte-audio-equilibrio.md).
 
 Solo se trabaja en la fase activa o en el pulido que la cierre. **Nada de la fase siguiente se adelanta.** Si una tarea parece necesitar algo de una fase futura, se para y se consulta.
 
