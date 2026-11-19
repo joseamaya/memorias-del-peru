@@ -1,7 +1,7 @@
 # Biblia de la campaña 01 — El despertar del Sol
 
 - **Versión:** 2.0 (mundo abierto) — 2026-11-19
-- **Estado:** narrativa aprobada; estructura de mundo en adaptación (F0–F2)
+- **Estado:** narrativa aprobada; dossier de mundo completo para revisión histórica; blockout en F2
 - **Crónica rectora:** Betanzos. Contraste: Garcilaso y Pachacuti Yamqui
 - **Marco narrativo:** [biblia narrativa general](../../../docs/09_biblia_narrativa.md), [GDD de mundo](../../../docs/11_diseno_de_mundo.md)
 - **Documentos de apoyo:** [dossier de región](mundo/README.md), [registro histórico](registro_historico.md), [expediente histórico](expediente_historico.md), [convenciones históricas](../../../docs/07_convenciones_historicas.md)
@@ -245,7 +245,7 @@ Honda, porra, escudo, piedras, coca, chicha, maíz, agua, hierbas, cuerda, q'ipi
 
 ## 11. Territorio y fases
 
-La campaña se juega en **una región continua** de ~3,5 × 2,5 km totales, con **2–4 km² de área densa** y seis sectores: Cusco preimperial, afueras y terrazas, llacta de Rumi, quebrada alta, paso y frontera chanca. El detalle está en [mundo/mapa_conceptual.md](mundo/mapa_conceptual.md) y [mundo/sectores.md](mundo/sectores.md).
+La campaña se juega en **una región continua** de ~3,5 × 2,5 km totales, con **2–4 km² de área densa** y seis sectores: Cusco preimperial, afueras y terrazas, llacta de Rumi, quebrada alta, paso y frontera chanca. El detalle está en [mundo/](mundo/README.md): mapa, sectores, rutas y 30 POI, 25 experiencias de exploración y clasificación geográfica.
 
 | Acto | Fase del mundo | Requisito |
 |---|---|---|

@@ -49,42 +49,44 @@ La campaña conserva **cinco actos como unidades dramáticas**, pero se juega en
 | Marcadores de objetivo | Indicaciones, hitos y mapa del diario; guía opcional |
 | Misiones en cadena | Historia principal + secundarias + descubrimientos + acontecimientos |
 
-## 5. Estructura propuesta de la historia principal
+## 5. Estructura de la historia principal (15 misiones)
 
 > Los títulos son provisionales. La numeración de fases es de diseño, no de guion cerrado.
 
-### Fase 0 — Paz
+| Fase | Misión | Objetivo del jugador | Decisión / consecuencia |
+|---|---|---|---|
+| 0 — Paz | 0.1 La mañana y los encargos | Despertar, ayudar en casa, completar tres de cuatro encargos | Recursos, oficio y relación familiar |
+| 0 — Paz | 0.2 La duda | Escuchar a Puma y Asto, o callar | Reputación y línea de Puma |
+| 0 — Paz | 0.3 El mensajero | Atender al mensajero agotado | Información y recurso que gasta |
+| 1 — Noticia | 1.1 La asamblea | Decidir si Rumi va con la comitiva | Comitiva, Sisa y despedida |
+| 1 — Noticia | 1.2 El camino | Cruzar el valle y acampar | Recursos, clima y primera evidencia |
+| 1 — Noticia | 1.3 La emboscada | Pasar el paso sin ser detectado o enfrentarlo | Sigilo, herido, información |
+| 1 — Noticia | 1.4 El Cusco dividido | Entrar, escuchar, reclutar y preparar | Aliados, preparación y reputación |
+| 2 — Guerra | 2.1 La víspera | Preparar la defensa con el oficio elegido | Trampa, santuario y orden |
+| 2 — Guerra | 2.2 La defensa | Sostener la plaza y el santuario | Oleadas y resultado del combate |
+| 2 — Guerra | 2.3 El coste | Ver quién cae y qué se pierde | Coste con nombre; estado del mundo |
+| 3 — Posguerra | 3.1 El regreso | Volver por el mismo camino | Refugiados, ruinas y ausencias |
+| 3 — Posguerra | 3.2 Las cuentas | Visitar casas y rendir cuentas | Recursos, reputación y duelo |
+| 3 — Posguerra | 3.3 La asamblea y la noticia | Hablar o callar; recibir la noticia de Viracocha | Reconciliación y fin del orden antiguo |
+| 4 — Obra | 4.1 La reconstrucción | Reparar terraza, corral, acequia, telar y casa | Obras persistentes y oficio |
+| 4 — Obra | 4.2 El nombre y el cierre | Vivir el nombre nuevo y cerrar la historia | Variantes de final |
 
-- **0.1 La mañana:** despertar, casa, primeras tareas. Tutorial diegético.
-- **0.2 Los encargos:** agua, maíz, telar, pirca. El jugador elige tres; los recursos quedan.
-- **0.3 La duda:** Puma y Asto discuten; el jugador escucha o calla.
-- **0.4 El mensajero:** llega agotado; darle agua o maíz tiene consecuencia.
+### 5.1. Matriz de consecuencias
 
-### Fase 1 — La noticia
+| Decisión | Se fija en | Se lee en | Efecto |
+|---|---|---|---|
+| `apoyo_puma` / `apoyo_curaca` / `silencio` | 0.2 | 3.3, 4.2 | Reconciliación, reputación, variante de cierre |
+| Recursos `agua/maiz/manta/cuerda` | 0.1 | 1.2, 1.3, 2.1 | Aliento, ánimo, frío y distracción |
+| `mensajero_ayudado` | 0.3 | 1.2, 1.3 | Información y ruta |
+| `comitiva` / `sisa` | 1.1 | 1.4, 3.3 | Aliados y cierre |
+| `scout_spared` / `mensaje_chanca` | 1.3 | 2.1, 3.2 | Preparación y reputación |
+| `preparacion_hecha` / `santuario_protegido` | 1.4, 2.1 | 2.2, 4.1 | Defensa y obras |
+| `costo_anca` / `costo_joven` | 2.3 | 3.1, 3.2, 4.2 | Duelo y variantes |
+| `casa_reconstruida` / `obra_oficio` | 4.1 | 4.2 | Cierre y epílogo |
 
-- **1.1 La asamblea:** el curaca pregunta quién va; decisión y despedida.
-- **1.2 El camino:** viaje por el valle; campamento; primera evidencia de la guerra.
-- **1.3 La emboscada:** exploradores chancas; sigilo, distracción o combate.
-- **1.4 El Cusco dividido:** llegada, rumores, reclutamiento, preparación.
+### 5.2. Contenido no principal
 
-### Fase 2 — La guerra
-
-- **2.1 La víspera:** preparar defensas, elegir oficio, hablar con aliados.
-- **2.2 La defensa:** secuencia controlada en la plaza y el santuario.
-- **2.3 El coste:** un NPC querido cae o se pierde; el jugador lo ve en el mundo.
-
-### Fase 3 — La posguerra
-
-- **3.1 El regreso:** el mismo camino, ahora con refugiados y ruinas.
-- **3.2 Las cuentas:** casas, ausencias, recursos; varía según el coste.
-- **3.3 La asamblea:** hablar o callar; reconciliación o silencio.
-- **3.4 La noticia de Viracocha:** el orden antiguo termina.
-
-### Fase 4 — La obra
-
-- **4.1 La reconstrucción:** terraza, corral, acequia, telar y casa.
-- **4.2 El nombre:** la tradición del nombre nuevo.
-- **4.3 El cierre:** la familia, la casa y el territorio; variantes.
+Las 25 experiencias de [experiencias_de_exploracion.md](experiencias_de_exploracion.md) se reparten entre las fases. Ninguna es obligatoria para avanzar, pero varias cambian relaciones, recursos o el estado del mundo. La historia principal no llena el territorio: el jugador puede pasar una tarde tejiendo, reparando una acequia o buscando una llama.
 
 ## 6. Secuencias controladas
 

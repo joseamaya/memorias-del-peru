@@ -10,9 +10,9 @@ Antología de cuatro **RPG históricos de mundo abierto regional** en primera pe
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma | Linux y Windows (verificados); macOS como objetivo, sin probar |
-| Fase | **Fase 0 — Redefinición a mundo abierto (documentación).** La campaña lineal I–V se conserva como historial y banco de pruebas; F4-L y F5-L quedan congeladas. El plan nuevo vive en [docs/05](docs/05_plan_de_implementacion.md) y la [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md) |
+| Fase | **Fase 0 cerrada; F1 — Spikes técnicos como siguiente fase.** La campaña lineal I–V se conserva como historial y banco de pruebas; F4-L y F5-L quedan congeladas. El plan vive en [docs/05](docs/05_plan_de_implementacion.md) y la [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md) |
 
-> **Estado honesto del repositorio.** El código actual implementa la versión lineal de 40–50 minutos: cinco actos, tres escenarios y un arco cerrado. No es todavía un mundo abierto. La redefinición empieza por la documentación y sigue con spikes técnicos; no se construye terreno ni se producen assets definitivos hasta validar la arquitectura y la vertical slice. Ver [docs/11](docs/11_diseno_de_mundo.md), [docs/12](docs/12_campanas.md) y [docs/13](docs/13_pipeline_de_escenarios.md).
+> **Estado honesto del repositorio.** El código actual implementa la versión lineal de 40–50 minutos: cinco actos, tres escenarios y un arco cerrado. No es todavía un mundo abierto. La F0 documental está cerrada; la F1 de spikes técnicos es la siguiente fase. No se construye terreno ni se producen assets definitivos hasta validar la arquitectura y la vertical slice. Ver [docs/11](docs/11_diseno_de_mundo.md), [docs/12](docs/12_campanas.md) y [docs/13](docs/13_pipeline_de_escenarios.md).
 
 ## Requisitos
 

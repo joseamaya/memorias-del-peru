@@ -110,3 +110,29 @@ Si un sector supera el presupuesto, se recorta antes de subir el límite.
 - Casas sin interior cuando la misión las usa.
 - Props únicos que no se reutilizan.
 - Detalle fino en zonas que solo se ven desde lejos.
+
+## 11. Mapa de contenido
+
+| Sector | POI principales | Experiencias | Interiores | NPC |
+|---|---|---|---|---|
+| S1 Cusco | POI-17 a POI-22 | E24, E25 | 5–8 | 30–40 |
+| S2 Afueras | POI-09, POI-15, POI-16 | E05, E13 | 2–3 | 8–12 |
+| S3 Llacta | POI-01 a POI-08 | E01–E08 | 3–5 | 20–30 |
+| S4 Quebrada | POI-10 a POI-14, POI-25 | E09–E12, E14 | 1–2 | 3–6 |
+| S5 Paso | POI-23, POI-24, POI-30 | E14–E16 | 1 | 2–5 |
+| S6 Frontera | POI-26 a POI-29 | E17–E21 | 1–2 | 10–20 |
+
+El catálogo completo está en [rutas_y_poi.md](rutas_y_poi.md) y [experiencias_de_exploracion.md](experiencias_de_exploracion.md).
+
+## 12. Cambios por fase
+
+| Sector | Paz | Noticia | Guerra | Posguerra | Obra |
+|---|---|---|---|---|---|
+| S1 Cusco | Mercado y talleres | Controles y rumores | Defensa y refugio | Cuentas y ausencias | Reconstrucción |
+| S2 Afueras | Campos | Refugiados | Paso restringido | Campos sin cuidar | Acequia reparada |
+| S3 Llacta | Rutinas | Asamblea y salida | Ausencias | Casas vacías y heridos | Obras y lumbre |
+| S4 Quebrada | Pastoreo | Paso de mensajeros | Escondite | Recursos escasos | Recolección |
+| S5 Paso | Camino abierto | Controles | Peligro | Ruinas | Camino reparado |
+| S6 Frontera | Puna | Exploradores | Campamento | Campo de batalla | Memoria |
+
+El cambio de fase se guarda y se ve. No se reconstruye el sector desde cero: se activan y desactivan estados, props y NPC.

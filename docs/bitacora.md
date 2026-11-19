@@ -6,6 +6,29 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-19 — Cierre documental de la F0
+
+**Decisión:** se cierra la F0 con las recomendaciones aprobadas por el responsable.
+
+| Decisión | Valor |
+|---|---|
+| Duración | 6–8 h de historia principal; 8–12 h con contenido secundario |
+| Región | 2–4 km² de área densa; hasta ~8 km² con wilderness |
+| Portada | Cuatro campañas visibles; solo la 01 jugable hasta su fase |
+| Campaña III | Ayacucho–Huanta–Cangallo como hipótesis principal, sujeta a expediente |
+| Campaña IV | Mantaro; Huamachuco como epílogo narrado o secuencia final |
+| Addons | Spikes de Terrain3D y Cyclops, no adopción definitiva |
+
+**Cambios documentales:**
+
+- `docs/09` se reescribe como biblia de mundo abierto: cuatro campañas, fases, reglas de guion y criterios de rigor.
+- `docs/11` cierra el GDD: decisiones, accesibilidad, contenido por fase, guardado, pantallas, audio y vertical slice.
+- `docs/12` desarrolla las cuatro campañas a nivel regional: lugares, historia principal, contenido no principal y riesgos.
+- El dossier de la región Pachacútec se completa con rutas, 30 POI, 25 experiencias de exploración y clasificación GD/GR/GN.
+- `docs/01`, `docs/05`, `docs/15`, `README` y `AGENTS` reflejan la F0 cerrada y F1 como siguiente fase.
+
+**Consecuencias:** la F0 queda cerrada; la F1 no se abre hasta que el responsable lo indique. No se toca código, escenas ni assets en este cierre.
+
 ## 2026-11-19 — Giro a mundo abierto regional
 
 **Decisión:** *Memorias del Perú* deja de ser una sucesión de escenas históricas lineales y pasa a ser una antología de cuatro RPG históricos de **mundo abierto regional**. Cada campaña tendrá una región continua con 2–4 km² de área densa (hasta ~8 km² con wilderness), vida cotidiana, NPC con rutinas, misiones principales y secundarias, descubrimientos y persistencia. La campaña 01 conserva la historia, el elenco y el registro histórico, pero los cinco actos se viven como fases del mismo territorio.

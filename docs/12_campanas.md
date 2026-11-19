@@ -10,7 +10,7 @@
 | Elemento | I — Pachacútec | II — Túpac Amaru II | III — Independencia | IV — Campaña de la Breña |
 |---|---|---|---|---|
 | Periodo | 1438 | 1780–1783 | 1820–1824 | 1881–1883 |
-| Región propuesta | Valle del Cusco y aproximación occidental | Vilcanota: Tinta–Tungasuca–Sangarará–Sicuani | Por decidir: Ayacucho–Huanta (candidata) | Valle del Mantaro y puna |
+| Región propuesta | Valle del Cusco y aproximación occidental | Vilcanota: Tinta–Tungasuca–Sangarará–Sicuani | Ayacucho–Huanta–Cangallo (sujeta a expediente) | Valle del Mantaro y puna |
 | Conflicto | Defensa y cambio político | Rebelión y represión | Lealtades y guerra irregular | Ocupación y resistencia |
 | Protagonista | Rumi, joven de una llacta | Arriero/comunero (provisional) | Mensajero/arriero (provisional) | Campesino/montonera (provisional) |
 | Motivación inicial | Proteger el hogar | Sobrevivir a los abusos | Proteger a los suyos | Proteger la comunidad |
@@ -57,6 +57,37 @@ Los cinco actos dejan de ser cinco mapas y se convierten en **fases del mismo te
 
 La historia, el elenco y el registro histórico existen. La implementación lineal está congelada y se conserva como banco de pruebas. La adaptación a mundo abierto se diseña en F0–F2 y se valida en F3.
 
+### 2.6. Historia principal (15 misiones)
+
+| Fase | Misiones | Hito |
+|---|---|---|
+| Paz | 3 | Rutina, encargos, duda, mensajero |
+| Noticia | 4 | Asamblea, viaje, emboscada, Cusco dividido |
+| Guerra | 3 | Preparación, defensa, coste con nombre |
+| Posguerra | 3 | Regreso, cuentas, asamblea y noticia de Viracocha |
+| Obra | 2 | Reconstrucción y nombre nuevo |
+
+### 2.7. Contenido no principal
+
+- La pastora que perdió una llama.
+- El telar roto.
+- La ofrenda del mirador.
+- El pozo seco y la acequia.
+- El niño que quiere ver el Cusco.
+- El tambo abandonado.
+- La cueva de la quebrada.
+- La cuenta pendiente entre dos familias.
+- La fiesta de la cosecha.
+
+### 2.8. Riesgos
+
+| Riesgo | Mitigación |
+|---|---|
+| La historia lineal se diluye | Fases claras, diario y secuencias controladas en los clímax |
+| El coste pierde fuerza | El NPC perdido tiene presencia previa y su ausencia se nota |
+| El combate domina | Encuentros authored y opciones de evitarlos |
+| El mundo no justifica la historia | Contenido secundario ligado a personas y lugares |
+
 ## 3. Campaña II — La llama de la rebelión
 
 ### 3.1. Identidad
@@ -85,6 +116,51 @@ Cusco y la ejecución de los líderes no caben en un mapa continuo de 4 km². La
 ### 3.5. Estado
 
 Concepto y región propuestos. Requiere expediente histórico, elección de ocupación del protagonista y decisión sobre el alcance de Cusco.
+
+### 3.6. Región: Vilcanota y punas
+
+| Lugar | Función | Clasificación |
+|---|---|---|
+| Tinta | Pueblo colonial, autoridad y comercio | GD/GR |
+| Tungasuca | Comunidad y centro de la rebelión | GD/GR |
+| Pampamarca | Pueblo de paso y redes familiares | GR |
+| Sangarará | Pueblo y escenario de conflicto | GD/GR |
+| Sicuani | Núcleo comercial y de camino | GD/GR |
+| Haciendas y obrajes | Economía colonial y presión social | GR |
+| Punas de Canas/Canchis | Ganadería, caminos y refugio | GR |
+| Cusco | Destino lejano / secuencia controlada | GD |
+
+La distancia real es mucho mayor que el mapa; se comprime y se declara. Cusco no se recorre como parte del territorio continuo.
+
+### 3.7. Historia principal (12–15 misiones)
+
+| Fase | Misiones | Hito |
+|---|---|---|
+| Orden colonial | 3 | Tributo, reparto, deuda familiar |
+| Agitación | 3 | Rumores, reuniones, primer castigo |
+| Rebelión | 4 | Convocatoria, red de caminos, Sangarará |
+| Represión | 3 | Persecución, pérdida, juicio |
+| Resistencia | 2 | Continuidad y posguerra personal |
+
+### 3.8. Contenido no principal
+
+- Llevar una carga a un tambo antes de la lluvia.
+- Reparar un puente o una acequia.
+- Encontrar a un familiar desaparecido.
+- Negociar un precio en el mercado.
+- Escuchar una misa y una queja.
+- Ayudar a una familia a esconder comida.
+- Descubrir un obraje abandonado.
+- Elegir entre dos versiones de un mismo rumor.
+
+### 3.9. Riesgos
+
+| Riesgo | Mitigación |
+|---|---|
+| Cusco y la ejecución no caben en el mapa | Destino lejano o secuencia controlada |
+| La rebelión se simplifica | Distintos liderazgos, intereses y miedos |
+| El protagonista se vuelve héroe militar | Su papel es logística, información y comunidad |
+| Anacronismos coloniales | Expediente y fichas por elemento |
 
 ## 4. Campaña III — Entre dos banderas
 
@@ -121,6 +197,49 @@ El protagonista vive el proceso de independencia en una región donde las lealta
 
 Solo concepto. No se fija región, protagonista ni guion hasta el expediente.
 
+### 4.6. Región recomendada: Ayacucho–Huanta–Cangallo
+
+| Lugar | Función | Clasificación |
+|---|---|---|
+| Ayacucho / Huamanga | Ciudad, autoridad, comercio y cuartel | GD/GR |
+| Huanta | Pueblo y nudo de caminos; lealtades divididas | GD/GR |
+| Cangallo | Comunidad y guerrilla | GD/GR |
+| Pampa de Quinua | Escenario del desenlace de 1824 | GD |
+| Haciendas y valles de coca | Economía y redes sociales | GR |
+| Punas y caminos | Movimiento, ocultamiento y abastecimiento | GR |
+
+La región se elige por coherencia territorial, no por comodidad. La proclamación de Lima y la campaña de San Martín llegan como noticias y cartas; el protagonista no está en todos los frentes.
+
+### 4.7. Historia principal (12–15 misiones)
+
+| Fase | Misiones | Hito |
+|---|---|---|
+| Orden virreinal | 3 | Vida local, autoridad, primeras noticias |
+| Rumores | 3 | Redes, mensajes, delación |
+| Guerra | 4 | Abastecimiento, ocultamiento, acción local |
+| Independencia proclamada | 3 | Promesas, divisiones, desencanto |
+| Desenlace y posguerra | 2 | Ayacucho como acontecimiento y después |
+
+### 4.8. Contenido no principal
+
+- Llevar una carta a través de un control.
+- Encontrar a un desertor.
+- Negociar coca o alimentos.
+- Reparar un camino o un puente.
+- Escuchar dos versiones de una batalla.
+- Ayudar a una familia a esconder a un pariente.
+- Descubrir un puesto abandonado.
+- Elegir qué noticia llevar y cuál callar.
+
+### 4.9. Riesgos
+
+| Riesgo | Mitigación |
+|---|---|
+| Región dispersa | Un solo corredor y un solo conflicto local |
+| La gran batalla devora la historia | Ayacucho como acontecimiento, no como protagonista |
+| Politización plana | Realistas y patriotas con razones humanas |
+| Falta de fuentes locales | Expediente comparativo antes del guion |
+
 ## 5. Campaña IV — Los últimos defensores
 
 ### 5.1. Identidad
@@ -156,6 +275,59 @@ Huamachuco (1883) está muy lejos del Mantaro. No se puede incluir en un mapa co
 
 Concepto y región propuestos. Requiere expediente histórico, definición de la comunidad y decisión sobre Huamachuco.
 
+### 5.6. Región: valle del Mantaro y puna
+
+| Lugar | Función | Clasificación |
+|---|---|---|
+| Jauja | Ciudad, autoridad y camino | GD/GR |
+| Concepción | Pueblo y escenario de la campaña de 1882 | GD/GR |
+| Huancayo | Núcleo comercial y de abastecimiento | GD/GR |
+| Pucará | Pueblo y acción militar de 1882 | GD/GR |
+| Marcavalle | Escenario de combate | GD/GR |
+| Haciendas y pueblos menores | Economía, ganado y requisiciones | GR |
+| Quebradas y cuevas | Ocultamiento y refugio | GR |
+| Puna hacia Ayacucho | Rutas, pastos y retirada | GR |
+
+### 5.7. Historia principal (12–15 misiones)
+
+| Fase | Misiones | Hito |
+|---|---|---|
+| Ocupación | 3 | Requisiciones, miedo, primer agravio |
+| Resistencia | 3 | Contacto con montoneras, guía, abastecimiento |
+| Campaña de la sierra | 4 | Pucará, Marcavalle, Concepción |
+| Sacrificio | 3 | Pérdidas, enfermedad, represalias |
+| Posguerra | 2 | Regreso, reconstrucción y memoria |
+
+### 5.8. Contenido no principal
+
+- Ocultar ganado en una quebrada.
+- Reparar un puente para el paso de heridos.
+- Encontrar a un hijo que se unió a la montonera.
+- Llevar sal o medicina a un pueblo aislado.
+- Escuchar a un soldado y a un campesino contar la misma batalla.
+- Descubrir un puesto de vigilancia abandonado.
+- Ayudar a una familia a enterrar a un ausente.
+- Elegir qué recurso compartir y cuál guardar.
+
+### 5.9. Huamachuco
+
+La campaña cierra su región con la campaña de 1882. Huamachuco se trata como **epílogo narrado o secuencia final controlada**, no como un viaje continuo. El responsable decide entre:
+
+1. Epílogo narrado con cartas y noticias.
+2. Secuencia final en un mapa pequeño separado.
+3. Renunciar a Huamachuco y cerrar en el Mantaro.
+
+La recomendación es la opción 1: conserva el desenlace histórico sin fingir una geografía continua.
+
+### 5.10. Riesgos
+
+| Riesgo | Mitigación |
+|---|---|
+| Huamachuco rompe el mapa | Epílogo o secuencia controlada |
+| La guerra se idealiza | Represalias, miedo y coste civil |
+| El protagonista se vuelve comandante | Su papel es guía, logística y comunidad |
+| Exceso de combate | Encuentros authored y opciones de ocultamiento |
+
 ## 6. Reglas comunes
 
 1. **Una región continua por campaña.** Las batallas que no caben se resuelven con secuencias controladas o epílogo, no con teleport.
@@ -165,3 +337,25 @@ Concepto y región propuestos. Requiere expediente histórico, definición de la
 5. **Una identidad visual y sonora.** Cada campaña se reconoce sin leer el título.
 6. **Un expediente antes del guion.** No se escribe una campaña sin fuentes, región y clasificación.
 7. **Una campaña a la vez.** Las otras tres esperan su fase.
+
+## 7. Estado de investigación
+
+| Campaña | Historia | Región | Expediente | Guion | Construcción |
+|---|---|---|---|---|---|
+| I — Pachacútec | Escrita | Dossier v1.0 | Verificado en parte | Lineal cerrado; adaptación pendiente | Redefinición |
+| II — Túpac Amaru II | Concepto | Propuesta | Pendiente | No | No |
+| III — Independencia | Concepto | Candidata Ayacucho–Huanta | Pendiente comparativo | No | No |
+| IV — Breña | Concepto | Propuesta Mantaro | Pendiente | No | No |
+
+Las campañas II–IV no escriben guion de escenas ni producen assets hasta que su etapa se abra. Este documento fija el concepto y la región de trabajo, no su canon definitivo.
+
+## 8. Escala de producción
+
+| Campaña | Región total | Área densa | Sectores | NPC persistentes | Historia principal |
+|---|---|---|---|---|---|
+| I | ~3,5 × 2,5 km | 2–4 km² | 6 | 60–100 | 15 misiones |
+| II | ~4 × 3 km | 2–4 km² | 6–8 | 60–100 | 12–15 misiones |
+| III | ~4 × 3 km | 2–4 km² | 6–8 | 60–100 | 12–15 misiones |
+| IV | ~4 × 3 km | 2–4 km² | 6–8 | 60–100 | 12–15 misiones |
+
+La escala es una hipótesis de producción. Se ajusta al expediente y al presupuesto de rendimiento; no se construye una región mayor sin contenido que la justifique.
