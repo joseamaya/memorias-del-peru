@@ -1,6 +1,6 @@
 # F1 · Spikes técnicos — tareas
 
-**Estado:** en curso · **Apertura:** 2026-11-19.
+**Estado:** cerrada · **Apertura:** 2026-11-19 · **Cierre:** 2026-11-19.
 **Criterio de salida:** el de [docs/05](../05_plan_de_implementacion.md) §F1.
 **Alcance:** validar con medidas, no con suposiciones, la arquitectura de mundo abierto.
 
@@ -259,5 +259,5 @@ La captura queda en `build/evidencia/sector_blockout.png`.
 - [x] 1.1–1.5 y 1.7 con prueba reproducible y medición publicada (1.2 valida conversión y exportación, no rendimiento).
 - [x] 1.6 con round-trip completo e integración mínima.
 - [x] CI verde con los addons.
-- [ ] Decisión definitiva de adopción de Terrain3D/Cyclops: siguen en adopción provisional hasta el sector real de F2.
+- [x] Decisión de adopción provisional de Terrain3D/Cyclops aprobada para F2; la revisión definitiva se hace con el sector real.
 - [x] Presupuesto por sector fijado con números medidos: ≤ 350 draw calls, ≤ 250 MB, 60 FPS Medio y frame < 50 ms.

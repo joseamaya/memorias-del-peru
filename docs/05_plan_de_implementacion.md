@@ -2,7 +2,7 @@
 
 > La prioridad es el mundo habitable y su aspecto; las únicas reglas duras son licencias/procedencia, rigor histórico y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** **F1 — Spikes técnicos.** La F0 está cerrada y aprobada. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
+**Fase activa:** **F2 — Geografía y blockout.** F1 está cerrada y aprobada; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
 
 ## Estado
 
@@ -15,8 +15,8 @@
 | F4-L — Arte, audio y equilibrio (lineal) | **Congelada** | — |
 | F5-L — Validación y cierre (lineal) | **Congelada** | — |
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
-| **F1 — Spikes técnicos** | Spikes cerrados; cierre pendiente de aprobación | — |
-| F2 — Geografía y blockout | Prevista | — |
+| **F1 — Spikes técnicos** | **Cerrada** (2026-11-19) | [Ficha de F1](fases/F1-spikes-tecnicos.md) |
+| **F2 — Geografía y blockout** | **En curso** | [Ficha de F2](fases/F2-geografia-y-blockout.md) |
 | F3 — Vertical slice | Prevista | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
 | F5 — Validación y cierre de la campaña 01 | Prevista | — |
