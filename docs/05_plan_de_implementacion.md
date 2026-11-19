@@ -69,7 +69,7 @@
 
 **Objetivo:** comprobar con medidas, no con suposiciones, que la arquitectura elegida funciona en Godot 4.7.2 y en la GPU integrada de referencia.
 
-**Estado:** los siete spikes tienen escena, prueba y medición. 1.1 (Terrain3D), 1.2 (Cyclops), 1.3 (streaming: 21,4 ms de carga media y 1 KB de crecimiento en 60 ciclos), 1.4 (navmesh sobre el terreno y 20 NPC en ruta), 1.5 (60 NPC, 25 animados y snapshot), 1.6 (reloj, estado y guardado) y 1.7 (blockout con 255–287 draw calls, 101,7 MB, 61–66 FPS y frame máximo de 30,3 ms) están implementados y medidos. El cierre de F1 queda pendiente de la aprobación del responsable y de la decisión de adopción de Terrain3D/Cyclops, que se confirma con el sector real de F2. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md).
+**Estado:** F1 cerrada (2026-11-19) con los siete spikes medidos; Terrain3D y Cyclops quedan en adopción provisional hasta el sector real. F2 en curso: relieve regional de 3,5 × 2,5 km y seis sectores transmitidos sobre el terreno continuo. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md) y en la [ficha de F2](fases/F2-geografia-y-blockout.md).
 
 | # | Spike | Pregunta | Criterio de paso |
 |---|---|---|---|
@@ -95,7 +95,7 @@
 
 ## Fase 2 — Geografía y blockout
 
-**Precondiciones:** F1 cerrada; expediente geográfico aprobado.
+**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout. **Estado:** en curso; F2.1 (heightmap) y F2.2 (sectores y streaming) con base implementada.
 
 **Objetivo:** construir el territorio de la campaña 01 en gris, con escala real, rutas, sectores y lugares, antes de producir arte definitivo.
 
