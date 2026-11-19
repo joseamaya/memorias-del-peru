@@ -54,6 +54,9 @@ jobs:
       - name: Mensajero del acto I
         run: ~/godot/godot --headless --path . --script res://tests/llacta_messenger_check.gd
 
+      - name: Duda del acto I
+        run: ~/godot/godot --headless --path . --script res://tests/llacta_doubt_check.gd
+
   export:
     name: Exportar ${{ matrix.preset }}
     needs: [test]

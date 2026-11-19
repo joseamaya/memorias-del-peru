@@ -4,6 +4,12 @@ Registro cronológico de los cambios y decisiones del desarrollo. Una fila por e
 
 La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `docs/00`–`09` ni `AGENTS.md` ([AGENTS.md](../AGENTS.md) §2). Conserva el porqué de lo que se hizo.
 
+## 2026-11-19
+
+| Cambio | Detalle | Commit |
+|---|---|---|
+| Duda del acto I con E | El `DudaPoint` estaba disponible desde la mañana; si el jugador lo abría antes de tiempo, el punto se consumía y el paso «Escucha la discusión» quedaba sin interacción: E no hacía nada. `ActOneDirector` lo habilita solo en el paso `Doubt` (`_set_doubt_available`). Prueba nueva `llacta_doubt_check.gd`: sin foco temprano, el rayo y la E reales abren la duda, la E avanza la respuesta y el flujo pasa al mensajero; añadida a CI y a `docs/06`. 141 pruebas, mensajero, recorrido y arco OK. | — |
+
 ## 2026-11-18
 
 | Cambio | Detalle | Commit |

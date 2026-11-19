@@ -137,6 +137,8 @@ func _start(step: SliceStep) -> void:
 			step.count if step.kind in [SliceStep.Kind.TASKS, SliceStep.Kind.DRILL] else 0)
 	_set_training(step.kind == SliceStep.Kind.DRILL)
 	_set_task_markers(step.kind == SliceStep.Kind.TASKS)
+	_set_doubt_available(step.kind == SliceStep.Kind.DIALOGUE
+		and step.marker == &"Doubt")
 	if step.kind == SliceStep.Kind.DIALOGUE and step.marker == &"Messenger" \
 			and not _world._messenger_spawned:
 		_world._spawn_messenger()
@@ -255,6 +257,16 @@ func _task_rows() -> Array[Dictionary]:
 				break
 		rows.append({"key": TASK_PROMPT_KEYS[task_id], "done": done})
 	return rows
+
+
+## La duda solo se puede abrir en su paso. Abrirla antes consumía el punto y
+## dejaba el objetivo sin nada que pulsar.
+func _set_doubt_available(value: bool) -> void:
+	if _world == null:
+		return
+	var doubt: CampPoint = _world.get_node_or_null("DudaPoint") as CampPoint
+	if doubt != null:
+		doubt.set_available(value)
 
 
 func _set_task_markers(value: bool) -> void:
