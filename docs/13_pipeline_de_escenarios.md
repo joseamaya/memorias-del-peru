@@ -80,6 +80,8 @@ Validación histórica, visual, de rendimiento y de guardado
 
 ### 3.2. Terreno
 
+**Blockout de sector (F2.4).** S3 usa `LlactaBlockout`: plaza, casas, manantial, acequia y POI con mallas y colisiones simples de blockout, cargadas por el streamer. La captura de revisión es ortográfica y oculta las etiquetas para leer la planta.
+
 **Rutas y navmesh (F2.3).** Las rutas viven en `CampaignRoute` y se dibujan como cintas de blockout; el navmesh se hornea por sector con `TerrainNavmesh` y se une con `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa ya sincronizó las regiones.
 
 **Sectores transmitidos (F2.2).** `region_world.tscn` mantiene el terreno regional y transmite seis escenas de sector con `SectorStreamer`; cada escena lleva su transformación mundial y su marcador de blockout. No hay pantallas de carga exteriores: el terreno no se descarga.

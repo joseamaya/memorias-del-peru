@@ -34,7 +34,16 @@ func _run() -> void:
 	world.set_target_position(Vector3(1200.0, 0.0, 400.0))
 	ok = ok and await _wait_loaded(streamer, &"s1_cusco")
 	world.set_target_position(Vector3(-1650.0, 0.0, 0.0))
+	print(
+		"DEBUG before s6 loaded=",
+		streamer.get_loaded_ids(),
+		" pending=",
+		streamer.get_pending_ids()
+	)
 	ok = ok and await _wait_loaded(streamer, &"s6_frontera")
+	print(
+		"DEBUG after s6 loaded=", streamer.get_loaded_ids(), " pending=", streamer.get_pending_ids()
+	)
 	ok = ok and await _wait_unloaded(streamer, &"s3_llacta")
 	ok = ok and await _wait_unloaded(streamer, &"s1_cusco")
 	ok = ok and region.is_inside_tree() and region.get_terrain() != null
@@ -48,7 +57,7 @@ func _run() -> void:
 
 func _marker_loaded(streamer: SectorStreamer, id: StringName) -> bool:
 	var node: Node3D = streamer.get_loaded_node(id)
-	return node is CampaignSectorMarker
+	return node is CampaignSectorMarker or node is LlactaBlockout
 
 
 func _wait_loaded(streamer: SectorStreamer, id: StringName) -> bool:
