@@ -231,6 +231,41 @@ Al cerrar cada acto:
 6. Anotar la duración con `--session <código>`.
 7. Antes de la escucha, medir los niveles con `python3 tools/audio_levels.py`: picos por debajo de -0,5 dBFS, sin clips y sin efectos casi mudos.
 
+### 4.1. Validación visual
+
+Se exige cuando una tarea cambia escenarios, personajes, iluminación, materiales, props o interfaz. El agente prepara la evidencia y señala lo que ve; **el veredicto estético es del responsable**.
+
+**Tomas fijas.** Cada revisión repite las mismas tomas, anotadas en la ficha de la tarea con nombre, posición, objetivo, inclinación y perfil. Se hacen con la cámara real del jugador, no con cámara libre, y con HUD, manos y arma ocultos. Resolución: 1280×720 (1920×1080 si el criterio es la interfaz). Escenas disponibles:
+
+| Escena | Qué enseña |
+|---|---|
+| `tests/scenes/capture_palettes.tscn` | Un fotograma por acto con su paleta |
+| `tests/scenes/capture_llacta_tour.tscn` | Plaza, casa, manantial, mirador, paso norte, terrazas y corrales |
+| `tests/scenes/capture_act_one_flow.tscn` | Mañana, honda y encargos del acto I |
+| `tests/scenes/capture_llacta.tscn` y `capture_title.tscn` | Llacta y portada |
+
+```bash
+godot --path . --resolution 1280x720 res://tests/scenes/capture_llacta_tour.tscn
+```
+
+Las capturas de `capture_llacta_tour` se escriben en `/tmp/opencode/llacta_tour`; se copian a la carpeta de evidencia antes de cerrar la sesión. Las de `capture_palettes` quedan en `user://`.
+
+**Antes y después.** Antes de tocar la escena se guarda la tanda base en `campaigns/<campaña>/documentation/img/<tarea>/antes/`; después del cambio, la misma tanda en `.../despues/`. Una tanda anterior no se sobrescribe: si hace falta otra iteración, se usa `antes_2`/`despues_2` o una carpeta con fecha.
+
+**Qué se revisa:**
+
+1. **Cámara del jugador:** horizonte, encuadre y escala de puertas, casas, personas (1,70 m) y caminos.
+2. **Guía visual:** paleta del acto, formas, materiales y «qué evitar» ([guía visual](../campaigns/01_pachacutec/documentation/guia_visual.md) §2–§6).
+3. **Legibilidad:** textos, HUD, siluetas y objetos interactuables.
+4. **Anacronismos:** lista de [docs/07](07_convenciones_historicas.md) §4.
+5. **Comparación:** qué mejora, qué empeora y qué no cambió.
+
+**Rendimiento.** En la misma sesión, medir con `tools/scene_audit.gd` (draw calls, primitivas y luces con sombra) y, si cambia la escena, con `measure_performance.tscn`: tres pasadas por perfil, mediana, p1 y carga del sistema. Presupuesto en [docs/08](08_entorno_y_rendimiento.md) §4.
+
+**Evidencia.** Las capturas aprobadas se versionan en la documentación de la campaña; las de trabajo pueden quedar en `build/` (ignorado por Git). La ficha de la tarea anota tomas, comandos, cifras, veredicto y fecha; el PR enlaza la carpeta y resume el antes/después.
+
+**Cierre.** Una tarea visual no se marca terminada sin capturas antes/después, medición, revisión del responsable y deudas declaradas. Lo que falte queda como *no verificado*.
+
 ### Duración de la partida
 
 Cada mundo marca su acto al tomar el control (`SessionLog.mark(&"act", ...)`) y
