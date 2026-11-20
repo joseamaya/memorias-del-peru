@@ -12,11 +12,12 @@ La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está 
 
 ## 2. Fase actual
 
-**F1 cerrada; F2 — Geografía y blockout en curso.** Los siete spikes técnicos tienen escena, prueba y medición. Terrain3D y Cyclops quedan en adopción provisional hasta el sector real de F2. La fase activa construye el territorio de la campaña 01 en gris: heightmap regional, seis sectores, rutas, comunidades y POI.
+**F2 cerrada y aprobada con cambios (2026-11-20); F3 — vertical slice en preparación.** Los siete spikes técnicos tienen escena, prueba y medición. Terrain3D y Cyclops quedan en adopción provisional hasta el sector real. El territorio de la campaña 01 está en blockout: heightmap regional, seis sectores, rutas, comunidades y POI. El primer entregable de F3 es su ficha de alcance; no se construye contenido de la slice hasta que el responsable la apruebe.
 
 - Estado y criterios de fase: [docs/05](docs/05_plan_de_implementacion.md).
 - Tareas, dependencias y evidencia de F1: [ficha de F1](docs/fases/F1-spikes-tecnicos.md).
-- Tareas de la fase activa: [ficha de F2](docs/fases/F2-geografia-y-blockout.md).
+- Fase cerrada: [ficha de F2](docs/fases/F2-geografia-y-blockout.md).
+- Ficha de F3: pendiente de escribir como primer entregable de la fase.
 - F0 cerrada: [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
 - Fases cerradas: 0 (documentación original), 1 (fundación y núcleo RPG), 2 (guion lineal de la campaña 01), 3 (arco jugable I–V en el modelo lineal) y F0 (redefinición a mundo abierto).
 - **F4-L y F5-L (las fases lineales) quedan congeladas**, no cerradas: su contenido se conserva como historial y banco de pruebas, pero no se continúa. La redefinición las sustituye por F0–F6.

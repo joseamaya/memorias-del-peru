@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — Cierre de la F2: aprobada con cambios
+
+**Decisión:** se cierra la F2 con el veredicto **aprobada con cambios** del responsable, tras recorrer a pie la ruta A del [protocolo de blockout](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
+
+| Cambio | Detalle |
+|---|---|
+| Veredicto | F2 cerrada el 2026-11-20. Los bloqueantes de la revisión humana (marcador de S2 atravesable, Coricancha hundido y sin colisión, corral y muros flotantes, río sin agua, R7 como camino falso, acequia del Cusco bajo una casa) están corregidos y cubiertos por prueba. |
+| Motivación | No quedan bloqueantes conocidos y la fase ya cumplía sus criterios con evidencia automatizada; mantener F2 abierta solo retrasaba F3 sin aportar criterio nuevo. |
+| Alternativas | (a) Cerrar como aprobada sin reservas: rechazada, ocultaría que la ruta oeste no se recorrió a pie. (b) Mantener F2 abierta hasta la prueba humana del oeste: rechazada, porque S4–S6 no tienen bloqueantes conocidos y su contenido pertenece a una fase posterior. |
+| Consecuencias | `docs/05`, la ficha de F2, `README`, `AGENTS`, `docs/12`, `docs/13` y `docs/15` pasan a F2 cerrada y F3 en preparación. F3 queda activa con la ficha de alcance como primer entregable; no se construye contenido de la slice hasta aprobarla. |
+| No verificado | Ruta oeste (S4–S6) solo con recorrido automatizado; contenido de S4–S6; parpadeo de aristas al caminar (head bob + FXAA con render al 68 %); muestreo de 4 m del terreno (F3 prevé 1 m local); adopción definitiva de Terrain3D/Cyclops. |
+| Siguiente | Ficha de la vertical slice con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. El tema de la misión principal queda como propuesta a revisar por el responsable, no como decisión tomada. |
+
 ## 2026-11-20 — F2.9: mundo caminable y protocolo de prueba humana
 
 | Cambio | Detalle |

@@ -55,7 +55,7 @@ Los cinco actos dejan de ser cinco mapas y se convierten en **fases del mismo te
 
 ### 2.5. Estado
 
-La historia, el elenco y el registro histórico existen. La implementación lineal está congelada y se conserva como banco de pruebas. La adaptación a mundo abierto se diseña en F0–F2 y se valida en F3.
+La historia, el elenco y el registro histórico existen. La implementación lineal está congelada y se conserva como banco de pruebas. La adaptación a mundo abierto se diseñó en F0–F2; el territorio está en blockout y el blockout se aprobó con cambios el 2026-11-20. La vertical slice (F3) se prepara con la llacta como candidata a comunidad jugable.
 
 ### 2.6. Historia principal (15 misiones)
 
