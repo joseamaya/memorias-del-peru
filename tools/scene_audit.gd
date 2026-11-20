@@ -3,7 +3,7 @@ extends SceneTree
 ## sombra, mallas, colisiones y tamaño del script raíz.
 ##
 ##   godot --path . -s res://tools/scene_audit.gd -- \
-##       --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn \
+##       --scene=res://campaigns/01_pachacutec/scenes/world/region_world.tscn \
 ##       --frames=20 --out=/tmp/ciudad_audit.json
 ##
 ## Con `--breakdown` oculta cada grupo de primer nivel y mide cuántos draw
@@ -12,7 +12,7 @@ extends SceneTree
 ## Sin `--headless`: el servidor de render Dummy no cuenta draw calls. Se usa
 ## como termómetro, no como benchmark: para FPS está `measure_performance.tscn`.
 
-const DEFAULT_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/ciudad.tscn"
+const DEFAULT_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 ## Fotogramas de asentamiento tras ocultar o mostrar un grupo.
 const SETTLE_FRAMES: int = 4
 
@@ -89,12 +89,17 @@ func _group_breakdown(scene: Node, baseline: float) -> Array[Dictionary]:
 		node3d.visible = false
 		var hidden: float = await _measure_draw_calls(maxi(int(_frames / 2.0), 5))
 		node3d.visible = true
-		groups.append({
-			"name": String(child.name),
-			"draw_calls": int(roundf(baseline - hidden)),
-			"mesh_instances": meshes,
-			"multimesh_instances": multimeshes,
-		})
+		(
+			groups
+			. append(
+				{
+					"name": String(child.name),
+					"draw_calls": int(roundf(baseline - hidden)),
+					"mesh_instances": meshes,
+					"multimesh_instances": multimeshes,
+				}
+			)
+		)
 	groups.sort_custom(
 		func(a: Dictionary, b: Dictionary) -> bool:
 			var left: int = a["draw_calls"]

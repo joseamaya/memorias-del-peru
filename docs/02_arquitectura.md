@@ -224,7 +224,7 @@ extends Resource
   "saved_at": "2026-11-19T12:00:00Z",
   "clock": {"day": 3, "minute": 480, "weather": "clear"},
   "phase": "noticia",
-  "flags": {"mensajero_ayudado": 1},
+  "flags": {"mision_01_etapa_3": 1},
   "player": {"position": [0, 0, 0], "inventory": [], "skills": {}},
   "npcs": {"npc_sisa": {"alive": true, "anchor": "plaza", "relation": 2}},
   "quests": {"quest_mensajero": {"stage": 2, "choices": []}},

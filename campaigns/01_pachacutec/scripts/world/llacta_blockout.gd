@@ -1,8 +1,8 @@
 class_name LlactaBlockout
 extends Node3D
-## Blockout de S3 — Llacta de Rumi.
+## Blockout de S3 — Llacta del valle.
 ##
-## Geometría gris de blockout: plaza, 16 casas, casa de Rumi, manantial,
+## Geometría gris de blockout: plaza, 16 casas, casa de la familia, manantial,
 ## acequia, telar, corral, huerto y fogón. No es arte final ni contenido
 ## definitivo; las casas se convertirán a malla y colisión propias en F3.
 
@@ -129,9 +129,7 @@ func _plaza_point(radius: float, angle: float) -> Vector3:
 	return Vector3(x, _ground(x, z) + PLAZA_LIFT, z)
 
 
-func _add_plaza_triangle(
-	surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3
-) -> void:
+func _add_plaza_triangle(surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3) -> void:
 	for vertex: Vector3 in [a, b, c]:
 		surface.set_normal(Vector3.UP)
 		surface.add_vertex(vertex)
@@ -153,7 +151,7 @@ func _build_houses() -> void:
 
 
 func _build_casa_rumi() -> void:
-	_house(0.0, OUTER_RADIUS + 2.0, CASA_RUMI_SIZE, "POI-01 · Casa de Rumi")
+	_house(0.0, OUTER_RADIUS + 2.0, CASA_RUMI_SIZE, "POI-01 · Casa de la familia")
 
 
 func _house(angle_degrees: float, radius: float, size: Vector3, label: String) -> void:
@@ -198,9 +196,7 @@ func _build_manantial() -> void:
 	var ground: float = _ground(x, z)
 	var basin: MeshInstance3D = _cylinder(4.0, 0.9, Vector3(x, ground + 0.45, z))
 	basin.name = "Manantial"
-	BlockoutKit.add_terrain_disk(
-		self, 3.4, 0.12, WATER, _ground, 48, 6, Vector2(x, z), "Agua"
-	)
+	BlockoutKit.add_terrain_disk(self, 3.4, 0.12, WATER, _ground, 48, 6, Vector2(x, z), "Agua")
 	_add_label("POI-03 · Manantial", Vector3(x, ground + 3.0, z))
 
 
@@ -224,39 +220,12 @@ func _build_corral() -> void:
 	var side_size: Vector3 = Vector3(0.6, 1.2, 12.0)
 	# Cada pared se apoya en la altura mínima de su propia huella. Con una sola
 	# altura central, los extremos cuesta abajo quedaban flotando.
-	var north: float = BlockoutKit.min_ground(
-		_ground, -55.0, 39.0, long_size
-	)
-	var south: float = BlockoutKit.min_ground(
-		_ground, -55.0, 51.0, long_size
-	)
-	var west: float = BlockoutKit.min_ground(
-		_ground, -61.0, 45.0, side_size
-	)
-	_add_box(
-		long_size,
-		Vector3(-55.0, north + 0.6, 39.0),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"Corral"
-	)
-	_add_box(
-		long_size,
-		Vector3(-55.0, south + 0.6, 51.0),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"Corral"
-	)
-	_add_box(
-		side_size,
-		Vector3(-61.0, west + 0.6, 45.0),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"Corral"
-	)
+	var north: float = BlockoutKit.min_ground(_ground, -55.0, 39.0, long_size)
+	var south: float = BlockoutKit.min_ground(_ground, -55.0, 51.0, long_size)
+	var west: float = BlockoutKit.min_ground(_ground, -61.0, 45.0, side_size)
+	_add_box(long_size, Vector3(-55.0, north + 0.6, 39.0), STONE, true, Basis.IDENTITY, "Corral")
+	_add_box(long_size, Vector3(-55.0, south + 0.6, 51.0), STONE, true, Basis.IDENTITY, "Corral")
+	_add_box(side_size, Vector3(-61.0, west + 0.6, 45.0), STONE, true, Basis.IDENTITY, "Corral")
 	_add_label(
 		"POI-05 · Corral de llamas",
 		Vector3(center.x, _ground(center.x, center.z) + 3.0, center.z),

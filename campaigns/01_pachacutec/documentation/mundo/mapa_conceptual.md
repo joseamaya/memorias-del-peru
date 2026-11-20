@@ -16,7 +16,7 @@
    [campamento chanca] ── [sendero] ── [quebrada alta]
           (GN)                              (GR)
           │                                 │
-   [puna / bofedal] ── [río] ── [llacta de Rumi] ── [terrazas]
+   [puna / bofedal] ── [río] ── [llacta del valle] ── [terrazas]
           (GR)                     (GN)              (GR)
           │                        │                 │
    [frontera / tambo] ── [camino principal] ── [Cusco preimperial]
@@ -44,7 +44,7 @@ Los tiempos incluyen pendiente y clima; no son una promesa de velocidad del juga
 |---|---|---|---|
 | S1 — Cusco preimperial | 350 × 300 m | GD/GR | Hub urbano, política, comercio, Coricancha |
 | S2 — Afueras y terrazas | 400 × 300 m | GR | Transición urbano-rural, campos y acequias |
-| S3 — Llacta de Rumi | 300 × 250 m | GN | Hogar, vida cotidiana, comunidad |
+| S3 — Llacta del valle | 300 × 250 m | GN | Hogar, vida cotidiana, comunidad |
 | S4 — Quebrada alta | 400 × 300 m | GR/GN | Recursos, cueva, pastoreo, descubrimiento |
 | S5 — Paso | 350 × 300 m | GN/GR | Viaje, refugio, peligro, mirador |
 | S6 — Frontera chanca | 400 × 350 m | GN/GR | Conflicto, campamento, tambo, clímax |
@@ -72,7 +72,7 @@ Los tiempos incluyen pendiente y clima; no son una promesa de velocidad del juga
 | Lugar | Tipo | Clasificación | Contenido |
 |---|---|---|---|
 | Cusco preimperial | Centro político | GD/GR | Plaza, recinto del Coricancha, ayllus, mercado, talleres |
-| Llacta de Rumi | Comunidad | GN | 12–18 casas, plaza, casa de Rumi, telar, corral, manantial |
+| Llacta del valle | Comunidad | GN | 12–18 casas, plaza, casa de la familia, telar, corral, manantial |
 | Caserío de la quebrada | Núcleo secundario | GN | 4–6 casas, pastores, era, corral |
 | Tambo abandonado | Lugar histórico | GN/GR | Refugio, marcas de camino, rumores |
 | Campamento chanca | Zona de conflicto | GN | Puestos, fuegos, centinelas, prisioneros |
@@ -84,7 +84,7 @@ Los tiempos incluyen pendiente y clima; no son una promesa de velocidad del juga
 
 ### 7.1. Núcleo y vida cotidiana
 
-1. Casa de Rumi y huerto.
+1. Casa de la familia y huerto.
 2. Plaza de la llacta y pirca baja.
 3. Manantial y acequia.
 4. Telar comunal.

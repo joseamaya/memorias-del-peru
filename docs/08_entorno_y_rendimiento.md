@@ -134,110 +134,25 @@ servidor Dummy no cuenta draw calls):
 
 ```bash
 godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
-    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20 \
+    --scene=res://campaigns/01_pachacutec/scenes/world/region_world.tscn --frames=20 \
     --breakdown
 ```
 
-**Línea base del Cusco (2026-11-16):** 488 draw calls, 1,48 M primitivas, 250 mallas,
-1 luz con sombra, 211 MB de vídeo. El presupuesto de la referencia es ≤ 350 draw calls y
-≤ 1,2 M primitivas; el Cusco lo superaba. La mediana de FPS seguía por encima de 60
-porque el coste es de relleno, no de CPU.
+La auditoría se corre sobre la escena regional y sobre cada sector; los valores vigentes están abajo.
 
-**Actualización 2026-11-17:** `StaticMeshBatch` fusiona por material/tinte casas,
-props, mercado, mobiliario, puerta, remates de muro, terrazas, santuario y vegetación
-del Cusco y la llacta. Antes del LOD de personaje, el Cusco quedaba en **349 draw
-calls con Quaternius** (328 con el elenco anterior) y 245/225 MB; la llacta, en
-**310**. El Cusco estaba a un draw call del presupuesto: no admitía la multitud Q
-completa sin LOD. La memoria sube ~8 MB por la copia de vértices fusionados; los
-originales quedan ocultos y sus colisiones siguen activas. La medición se hizo con
-carga 6–16: falta repetirla en un equipo descargado.
+### Mediciones del blockout regional (F2)
 
-**Elenco Quaternius completo y política de sombras (2026-11-17).** El desglose de
-`scene_audit.gd --breakdown` mostró que la multitud del Cusco pesaba **173 draw
-calls** y el pase de sombra del sol, **266**. Dos medidas los recortan: la multitud
-oculta el tupu por material (el alfiler no se lee a distancia; las cejas se
-conservan porque sin ellas la cara parece vacía) y solo cuerpo y ropa proyectan
-sombra; ojos, cejas, tupu y pelo quedan fuera del pase de sombra. La sombra del
-cuerpo sigue apoyando las figuras y los primeros planos no pierden volumen.
-Resultado con el elenco Q completo:
+La medición vigente es la del territorio de F2, no la de los actos retirados. Protocolo: 1920 × 1080, vsync off, perfil Medio, carga del sistema anotada, con `tests/scenes/measure_cusco.tscn` y `measure_blockout.tscn`.
 
-| Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
-|---|---|---|---|---|
-| I — Llacta | 220 | 222,8 MB | 95,4 | 73,8 |
-| II — Paso | 258 | 162,9 MB | 119,7 | 110,0 |
-| III — Cusco | 297 | 230,9 MB | 69,4 | 60,0 |
-| IV — Posguerra | 218 | 223,3 MB | 107,4 | 97,6 |
-| V — Obra | 243 | 218,0 MB | 101,7 | 98,3 |
+| Sector | Draw calls | Memoria de vídeo | FPS de Medio |
+|---|---|---|---|
+| S1 — Cusco | 247 | 128–137 MB | 76,4 / 79,2 / 82,3 (tres pasadas) |
+| S3 — Llacta | 120 | — | 78–85 |
+| S4 — Quebrada | 146 | — | 80 |
+| S5 — Paso | 103 | — | 95 |
+| S6 — Frontera | 83 | — | 103 |
 
-Los cinco actos cumplen el presupuesto de **≤ 350 draw calls**. Son tres pasadas
-por acto con carga 1,1–1,6; se publica la mediana. La chaquitaclla del
-Agricultor añade 1 draw call; el puño que sostiene el arma suma unos 9 en
-primera persona. Las casas de la llacta usan un único material de superficie y
-bajan a 220. La comprobación del pase visual (2026-11-18) midió estos draw
-calls con carga variable (2,1–37); los FPS de la tabla son de la pasada en
-reposo anterior. Con carga 2,1–2,3, llacta dio 90,0/87,2 FPS y Cusco 66,4/66,1;
-siguen por encima de 60. El Cusco es el acto más ajustado
-(69,4 FPS de media y p1 60,0); el resto supera 60 FPS con holgura. En una
-pasada aislada del Cusco la media bajó a 53,8 y el p1 a 40,7; se vigila al
-añadir arte final.
-
-### Elenco de maniquíes (2026-11-18)
-
-Medición con `measure_performance.tscn`, 1280×720, vsync off y dos pasadas por
-acto, con el elenco de maniquíes UAL1 integrado. El atuendo se fusiona por hueso
-y la multitud usa un look reducido.
-
-| Acto | Draw calls | Memoria de vídeo | FPS mediana | p1 |
-|---|---|---|---|---|
-| I — Llacta | 257 | 145,2 MB | 94,0–96,1 | 86,6–88,4 |
-| II — Paso | 270 | 121,1 MB | 118,3–120,7 | 82,4–110,0 |
-| III — Cusco | 334 | 158,5 MB | 67,8–70,7 | 62,0–65,1 |
-| IV — Posguerra | 259 | 145,3 MB | 94,0–95,6 | 75,5–90,0 |
-| V — Obra | 275 | 140,2 MB | 88,1–91,0 | 69,6–77,2 |
-
-Los cinco actos quedan bajo el presupuesto de 350 draw calls. El Cusco es el
-más ajustado (334 y p1 62,0) y la llacta sube de 220 a 257 por las piezas de
-los maniquíes; la memoria baja unos 80 MB porque no hay texturas de cara ni de
-ropa. Las mediciones anteriores del elenco UBC quedan como histórico. La retirada del legado UBC no cambió draw calls ni memoria.
-
-### Composición del territorio del acto I (2026-11-18)
-
-Pasada con `measure_performance.tscn` a 1920×1080, vsync off, estado de campaña
-limpio y carga del equipo 0,45–0,51. La herramienta calienta 60 fotogramas y
-muestrea 300. Los cinco actos siguen bajo el presupuesto de 350 draw calls.
-
-| Acto | Draw calls | Memoria de vídeo | FPS medio | p1 |
-|---|---|---|---|---|
-| I — Llacta | 294 | 172,4 MB | 74,4 | 73,3 |
-| II — Paso | 270 | 151,7 MB | 98,8 | 96,0 |
-| III — Cusco | 331 | 184,7 MB | 63,8 | 60,0 |
-| IV — Posguerra | 306 | 173,4 MB | 80,0 | 80,0 |
-| V — Obra | 315 | 172,6 MB | 75,1 | 75,0 |
-
-El acto I suma caminos visibles con bordes de piedra, borde de plaza con cuatro
-entradas, manantial y acequia, mirador, roquedales y fondo de valle: +29 draw
-calls y +1 MB respecto de la medición del elenco. El Cusco queda en 331 y p1
-60,0, el más ajustado. La vivienda usa `HouseKit` para que malla y colisión
-midan lo mismo en la llacta y el Cusco; las variantes añaden escala y tinte.
-
-**Línea base de Medio (2026-11-16):** medido sobre el arco nuevo el 2026-11-16 en la GPU integrada de referencia (Intel UHD 770), a 1920 × 1080, sin vsync y con el estado de campaña limpio entre actos. La herramienta es `tests/scenes/measure_performance.tscn`: calienta 60 fotogramas y muestrea 300, con FPS medio y p1 (percentil 99 del tiempo de fotograma). La tabla es la medición final del 2026-11-16, con las cordilleras con volumen, el shader aligerado y la escala 3D de Medio en 0,68. El Medio se midió con carga 1,8–2,7 y el Bajo con carga 1,6–3,8.
-
-| Acto | Bajo (3 pasadas, mediana) | Medio (3 pasadas, mediana) | Rango de Medio | Draw calls (Medio) | Memoria de vídeo (Medio) |
-|---|---|---|---|---|---|
-| I — Llacta | 102,4 FPS | 89,4 FPS | 86,1–93,7 | 352 | 205,1 MB |
-| II — Paso | 102,0 FPS | 93,4 FPS | 92,4–93,7 | 273 | 197,8 MB |
-| III — Cusco | 74,2 FPS | 63,6 FPS | 63,2–65,8 | 476 | 231,8 MB |
-| IV — Posguerra | 124,5 FPS | 97,5 FPS | 90,9–101,6 | 342 | 226,1 MB |
-| V — Obra | 105,3 FPS | 90,5 FPS | 82,9–93,2 | 362 | 225,5 MB |
-
-La tabla es la línea base del 2026-11-16. La pasada del elenco Q y la política de
-sombras del 2026-11-17 deja el Cusco en 288 draw calls y la llacta en 249; los FPS de la
-pasada nueva están en
-[personajes_quaternius.md](../campaigns/01_pachacutec/documentation/personajes_quaternius.md).
-
-Ambos perfiles cumplen: el Bajo supera el objetivo vinculante de ≥ 30 FPS (mínimo 73,8 en el Cusco) y el Medio supera el comprometido de ≥ 60 FPS en mediana. El Cusco era el acto más ajustado de Medio (63,6 FPS de mediana, 63,2 en la peor pasada) porque concentraba 476 draw calls y el SSAO; tras la fusión de estática y los textiles baja a 349 draw calls (328 legacy); la política de sombras del elenco Q la deja en 288. Se mantuvo el SSAO y la escala 3D de Medio bajó de 0,83 a 0,68 en dos pasos: 0,70 tras el primer pase visual y 0,68 al añadir las cordilleras con volumen. Sin SSAO el Cusco subía a 71–74 FPS, pero se perdía la oclusión ambiental que asienta los volúmenes. El p1 del Cusco (60,0 de mediana, 40,7 en la peor pasada) está en el límite del objetivo; se vigila al añadir arte final.
-
-El acto V mostró un p1 de 49,1 FPS en una pasada por un tirón aislado; la mediana no se ve afectada, pero queda bajo observación. En la medición de Bajo de 2026-11-16, los draw calls son 297 (llacta), 232 (paso), 406 (Cusco), 297 (posguerra) y 310 (obra), con 195,2, 192,3, 226,3, 220,7 y 220,1 MB de memoria de vídeo.
+Los seis sectores quedan bajo el presupuesto de 350 draw calls y 250 MB. El detalle por sector vive en la [ficha de F2](../docs/fases/F2-geografia-y-blockout.md) y en el [protocolo de blockout](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
 
 ### 4.2. Presupuesto de mundo abierto (F1–F3)
 
@@ -245,7 +160,7 @@ Los valores siguientes son **provisionales** hasta que F1 mida el terreno y el s
 
 | Métrica | Presupuesto | Cómo se mide |
 |---|---|---|
-| FPS medio | ≥ 30 Bajo / ≥ 60 Medio, 1080p, UHD 770 | `measure_performance.tscn` en el peor sector |
+| FPS medio | ≥ 30 Bajo / ≥ 60 Medio, 1080p, UHD 770 | `measure_cusco.tscn` en el peor sector |
 | FPS p1 | ≥ 2/3 del FPS medio | Recorrido fijo de 10 min |
 | Draw calls | ≤ 350 por sector | `scene_audit.gd --breakdown` |
 | Primitivas | ≤ 1,2 M por sector | `scene_audit.gd` |

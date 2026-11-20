@@ -25,10 +25,6 @@ SEARCH_DIRS = ("core", "campaigns", "tests", "tools")
 # Archivos heredados: no pueden crecer. Al dividir uno, se baja su límite o se
 # elimina de esta tabla en el mismo commit.
 GRANDFATHERED = {
-    "campaigns/01_pachacutec/scripts/world/ciudad.gd": 2366,
-    "campaigns/01_pachacutec/scripts/world/llacta.gd": 2284,
-    "campaigns/01_pachacutec/scripts/world/paso.gd": 1371,
-    "campaigns/01_pachacutec/scripts/world/npc_actor.gd": 582,
     "core/ui/hud.gd": 612,
     "core/player/player_fps.gd": 606,
 }

@@ -33,7 +33,7 @@
 
 | ID | Lugar | Sector | Clasif. | Descubrimiento | Actividad | Fase |
 |---|---|---|---|---|---|---|
-| POI-01 | Casa de Rumi | S3 | GN | Inicio | Dormir, guardar, cocinar | 0–4 |
+| POI-01 | Casa de la familia | S3 | GN | Inicio | Dormir, guardar, cocinar | 0–4 |
 | POI-02 | Plaza de la llacta | S3 | GN | Inicio | Asamblea, comercio, conversación | 0–4 |
 | POI-03 | Manantial | S3 | GN | Cercano | Acarrear agua, beber | 0–4 |
 | POI-04 | Telar comunal | S3 | GR | Cercano | Tejer, reparar | 0–4 |

@@ -42,7 +42,7 @@ Antología de cuatro **RPG históricos de mundo abierto regional** en primera pe
 ```bash
 godot --path .                              # portada
 godot --path . -- --profile=0               # perfil Bajo
-godot --path . res://tests/scenes/player_sandbox.tscn   # banco de pruebas del jugador
+godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn   # mundo abierto
 ```
 
 Los argumentos `--profile=0..3` eligen perfil gráfico (0 Bajo, 1 Medio, 2 Alto, 3 Ultra; por defecto Medio).
@@ -70,7 +70,7 @@ Los argumentos `--profile=0..3` eligen perfil gráfico (0 Bajo, 1 Medio, 2 Alto,
 | [docs/14_auditoria_y_migracion.md](docs/14_auditoria_y_migracion.md) | Estado del repositorio, clasificación de sistemas y migración |
 | [docs/15_resumen_de_la_redefinicion.md](docs/15_resumen_de_la_redefinicion.md) | Mapa de entregables, decisiones pendientes y siguiente paso |
 | [docs/bitacora.md](docs/bitacora.md) | Registro cronológico de cambios y decisiones |
-| [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Biblia, guion, expediente, registro histórico y dossier de la región |
+| [campaigns/01_pachacutec/documentation/](campaigns/01_pachacutec/documentation/) | Expediente histórico, registro de fichas y dossier de la región |
 
 ## Validación rápida
 
@@ -97,18 +97,18 @@ godot --headless --path . --export-release "Linux" build/linux/memorias-del-peru
 ./build/linux/memorias-del-peru.x86_64 --headless --quit-after 10
 ```
 
-Medición de rendimiento por acto (tres pasadas; `--profile=0` Bajo, `--profile=1` Medio):
+Medición de rendimiento de un sector (tres pasadas; `--profile=0` Bajo, `--profile=1` Medio):
 
 ```bash
 godot --path . --disable-vsync --resolution 1920x1080 \
-    res://tests/scenes/measure_performance.tscn -- --profile=1
+    res://tests/scenes/measure_cusco.tscn -- --profile=1
 ```
 
 Auditar una escena (draw calls, primitivas y luces con sombra):
 
 ```bash
 godot --path . --resolution 1280x720 -s res://tools/scene_audit.gd -- \
-    --scene=res://campaigns/01_pachacutec/scenes/world/ciudad.tscn --frames=20
+    --scene=res://campaigns/01_pachacutec/scenes/world/region_world.tscn --frames=20
 ```
 
 Duración de una partida (requiere jugarla):

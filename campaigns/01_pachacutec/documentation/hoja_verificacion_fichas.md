@@ -1,7 +1,7 @@
 # Hoja de verificación de fichas — Campaña 01
 
 - Estado: **Hoja de trabajo** (2026-11-11). No sustituye al [registro histórico](registro_historico.md): cuando una ficha se verifica, el resultado se copia allí y se firma.
-- Reglas: [docs/07](../../../docs/07_convenciones_historicas.md) §2 y la [biblia de la campaña](biblia_campana.md) §12. Para marcar una ficha como «verificado», una persona con la edición a la vista (en papel o digital) comprueba la cita y la firma. Una edición digital completa o una ficha de colección en línea cuentan como edición, siempre que la pieza o el pasaje sea el que se cita.
+- Reglas: [docs/07](../../../docs/07_convenciones_historicas.md) §2 y el [expediente histórico](expediente_historico.md) §6. Para marcar una ficha como «verificado», una persona con la edición a la vista (en papel o digital) comprueba la cita y la firma. Una edición digital completa o una ficha de colección en línea cuentan como edición, siempre que la pieza o el pasaje sea el que se cita.
 - Las direcciones de esta hoja se localizaron el 2026-11-11 y se comprobó que cargan, salvo las marcadas **[sin abrir]**: esas webs bloquean a los programas, pero se abren con normalidad en un navegador. **Localizar una fuente no es verificarla:** lo que dice cada fuente sobre el elemento del juego tiene que leerlo una persona.
 
 Qué exige cada clasificación:

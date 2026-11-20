@@ -48,7 +48,7 @@ func _run() -> void:
 	discovery.discover(&"poi_28")
 	ok = ok and discovery.is_discovered(&"poi_28")
 	ok = ok and discovery.get_map_points().size() == discovery.get_discovered_count()
-	ok = ok and _journal_has(discovery, "Casa de Rumi")
+	ok = ok and _journal_has(discovery, "Casa de la familia")
 	ok = ok and _check_save()
 	var discovered: int = discovery.get_discovered_count()
 	world.queue_free()

@@ -22,13 +22,12 @@ Sin este nivel, el código puede cumplir la estructura y fallar la escena: una c
 |---|---|---|
 | 1 | `docs/09_biblia_narrativa.md` | Antología, tono, reglas de guion |
 | 2 | `docs/11_diseno_de_mundo.md` | Región, sectores, bucle, NPC y sistemas |
-| 3 | `biblia_campana.md` | Fases, elenco, sistemas, banderas y finales de la campaña |
-| 4 | `documentation/mundo/` | Geografía, sectores, rutas, POI y fases |
-| 5 | `guion_campana.md` | Misiones, objetivos, conflictos, claves de texto |
-| 6 | **`guion_escenas.md`** (este formato) | Escena, bloqueo, cámara, textos, aceptación |
-| 7 | Código y pruebas | Implementación de lo anterior |
+| 3 | `documentation/mundo/` | Geografía, sectores, rutas, POI y fases |
+| 4 | Guion de campaña (por escribir) | Misiones, objetivos, conflictos, claves de texto |
+| 5 | **Guion de escena** (este formato) | Escena, bloqueo, cámara, textos y aceptación |
+| 6 | Código y pruebas | Implementación de lo anterior |
 
-Una escena no inventa canon: si necesita un cambio de misión, de bandera, de sector o de final, se actualiza primero el nivel 3–5 y se anota en la [bitácora](bitacora.md).
+La campaña rediseñada no tiene aún guion de campaña ni de escenas: el nivel 4 se escribe antes que el 5, y una escena no inventa canon. Si necesita un cambio de misión, de sector o de final, se actualiza primero el nivel 3–4 y se anota en la [bitácora](bitacora.md).
 
 ## 3. Cuándo se escribe
 
@@ -123,7 +122,7 @@ Copiar este bloque por cada escena:
 **Presentes y bloqueo:**
 - Puma, de pie, frente al curaca.
 - Asto, curaca, de frente a Puma.
-- Rumi, a un lado, dentro del punto de interacción.
+- El protagonista, a un lado, dentro del punto de interacción.
 
 **Cámara y sonido:**
 - La cámara enfoca a Puma al abrir el diálogo.

@@ -1,5 +1,5 @@
 extends Node
-## Captura el blockout de S3 — Llacta de Rumi.
+## Captura el blockout de S3 — Llacta del valle.
 ##
 ##   godot --path . --resolution 1280x720 \
 ##       res://tests/scenes/capture_llacta_blockout.tscn

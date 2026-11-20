@@ -89,15 +89,15 @@ La conexión entre protagonistas mediante memorias ancestrales queda fuera del a
 
 ## 2.2. Modelo de mundo abierto
 
-Cada campaña se desarrolla en **una región continua**, no en una sucesión de niveles. La estructura dramática de cinco actos se conserva, pero se vive como **fases históricas del mismo territorio**:
+Cada campaña se desarrolla en **una región continua**, no en una sucesión de niveles. El conflicto histórico se vive como **fases del mismo territorio**. La campaña 01 no hereda las fases de la versión anterior; esta tabla es la hipótesis de trabajo que se confirma al rediseñarla:
 
-| Acto | Fase del mundo | Qué cambia |
+| Fase | Estado | Qué cambia |
 |---|---|---|
-| I | Paz / vida cotidiana | Rutinas, caminos y comunidad |
-| II | Noticia / movilización | Refugiados, precios, patrullas |
-| III | Guerra | Accesos, combate, ausencias |
-| IV | Posguerra | Casas vacías, heridos, cuentas |
-| V | Reconstrucción | Obras, nombre nuevo, cierre |
+| Paz | Vida cotidiana | Rutinas, caminos y comunidad |
+| Noticia | Movilización | Refugiados, precios, patrullas |
+| Guerra | Conflicto | Accesos, combate, ausencias |
+| Posguerra | Vacío y cuentas | Casas vacías, heridos, duelos |
+| Obra | Reconstrucción | Obras y cierre |
 
 Las secuencias controladas se reservan para asambleas, batallas, sueños y clímax. El resto del mundo sigue siendo explorable y habitable antes, durante y después de la historia principal.
 
@@ -110,49 +110,42 @@ La región, los sectores y las experiencias se diseñan en [docs/11](11_diseno_d
 ## 3.1. Identidad
 
 - **Periodo:** siglo XV, durante el conflicto entre los incas y los chancas.
-- **Región:** valle del Cusco y aproximación occidental, con la llacta de Rumi, la quebrada, el paso y el Cusco de 1438. La distancia está comprimida y el valle intermedio es ficción declarada.
+- **Región:** valle del Cusco y aproximación occidental: la llacta, la quebrada, el paso y el Cusco de 1438. La distancia está comprimida y el valle intermedio es ficción declarada.
 - **Personaje histórico central:** Cusi Yupanqui, posteriormente conocido como Pachacútec.
 - **Tono:** épico, íntimo, de supervivencia y transformación.
-- **Fases:** paz, noticia, guerra, posguerra y obra sobre el mismo territorio.
 
 ## 3.2. Premisa
 
-El protagonista es un joven de una llacta del valle del Cusco cuya vida cotidiana se ve amenazada por la expansión chanca y la crisis política del poder inca.
+La vida cotidiana de una comunidad del valle del Cusco se ve amenazada por la expansión chanca y la crisis política del poder inca.
 
-Cuando la amenaza alcanza la ciudad, las divisiones internas, la incertidumbre y la decisión de abandonar el Cusco ponen a la población ante una situación límite. Mientras Cusi Yupanqui organiza la resistencia, el protagonista se ve involucrado en la defensa de su hogar y en una guerra que cambiará el destino de la región.
+Cuando la amenaza alcanza la ciudad, las divisiones internas, la incertidumbre y la decisión de abandonar el Cusco ponen a la población ante una situación límite. Mientras Cusi Yupanqui organiza la resistencia, la comunidad se ve involucrada en la defensa de su hogar y en una guerra que cambiará el destino de la región.
 
-Su historia no es la de un gran general. Es la de una persona que debe proteger a los suyos, sobrevivir y encontrar su lugar en un mundo que está cambiando.
+La historia no es la de un gran general. Es la de una persona que debe proteger a los suyos, sobrevivir y encontrar su lugar en un mundo que está cambiando.
 
 ## 3.3. Protagonista
 
-**Rumi**, 17 años, joven de la llacta. Tiene familia, responsabilidades cotidianas, un miedo concreto y una motivación que va más allá de combatir. No es un guerrero excepcional al empezar; su experiencia y capacidades evolucionan con lo que vive.
-
-La ficha completa —familia, miedo, motivación, oficio y objetivo final— está en la [biblia de la campaña](../campaigns/01_pachacutec/documentation/biblia_campana.md) §2.
+**Por definir.** La campaña anterior tenía un protagonista inventado; se retiró con su trama el 2026-11-20. El nuevo se diseña con el contexto histórico delante: edad, oficio, familia, miedo concreto y motivación que vaya más allá de combatir. No es un guerrero excepcional al empezar; su experiencia y capacidades evolucionan con lo que vive.
 
 ## 3.4. Elenco
 
 - **Cusi Yupanqui:** figura central de la resistencia y del cambio político. El protagonista puede conocerlo, recibir instrucciones de sus representantes y presenciar su ascenso, pero no dirigir sus decisiones.
 - **Viracocha Inca:** figura del poder establecido, cuya retirada y decisiones deben contextualizarse históricamente. No es un villano: es un gobernante que calcula.
-- **Familia de Rumi:** representa lo que está en juego para una persona común.
-- **Sisa:** vínculo afectivo y social; su confianza se gana escuchando y compartiendo, no con regalos.
-- **Puma:** compañero de camino con una visión distinta de la resistencia.
-- **Asto, el curaca:** autoridad local; su apoyo o su silencio tiene consecuencias.
-- **Anca:** personaje de posición contraria o crítica; no es un obstáculo decorativo.
+- **La comunidad:** familia, autoridades locales y vecinos; representan lo que está en juego para una persona común.
 - **Chancas:** exploradores, guerreros y comunidades; no se representan como un bloque homogéneo.
 
-Los personajes secundarios tienen objetivos propios y no existen solo para entregar misiones.
+Los personajes secundarios tendrán objetivos propios y no existirán solo para entregar misiones. Ningún nombre de personaje está fijado.
 
-## 3.5. Estructura narrativa por fases
+## 3.5. Fases (hipótesis de trabajo)
 
-| Fase | Pregunta dramática | Historia principal | Mundo |
-|---|---|---|---|
-| Paz | ¿Qué haces cuando la noticia llega? | Rutina, encargos, duda, mensajero | Llacta habitable, caminos abiertos |
-| Noticia | ¿Hasta dónde estás dispuesto a llegar? | Asamblea, viaje, emboscada, Cusco dividido | Refugiados, controles, precios |
-| Guerra | ¿Quién sostiene la línea? | Preparación, defensa, coste | Accesos restringidos, ausencias |
-| Posguerra | ¿Qué queda cuando la victoria llega? | Regreso, cuentas, asamblea, noticia de Viracocha | Casas vacías, heridos, duelo |
-| Obra | ¿Qué se hace con lo que queda? | Reconstrucción, nombre, cierre | Terrazas, corral y casa reparados |
+| Fase | Pregunta dramática | Mundo |
+|---|---|---|
+| Paz | ¿Qué haces cuando la noticia llega? | Comunidad habitable, caminos abiertos |
+| Noticia | ¿Hasta dónde estás dispuesto a llegar? | Refugiados, controles, precios |
+| Guerra | ¿Quién sostiene la línea? | Accesos restringidos, ausencias |
+| Posguerra | ¿Qué queda cuando la victoria llega? | Casas vacías, heridos, duelo |
+| Obra | ¿Qué se hace con lo que queda? | Terrazas, corral y casa reparados |
 
-**Secuencias controladas:** la asamblea de la llacta, la emboscada, la defensa del Cusco, la asamblea de posguerra y el cierre. Todo lo demás ocurre en el mundo.
+Las cinco fases son una **hipótesis derivada del relato histórico**, no una decisión cerrada: se confirman o se recortan al rediseñar la campaña. Las secuencias controladas se reservan para clímax, asambleas, batallas y sueños.
 
 ## 3.6. Consideraciones históricas
 
@@ -160,13 +153,11 @@ La guerra chanca y la defensa del Cusco están narradas por Betanzos, Cieza de L
 
 La campaña no cambia el resultado histórico. El protagonista sostiene su parte, la pierde o la conserva, y paga el precio.
 
-## 3.7. Qué se conserva de la versión lineal
+## 3.7. Qué queda de la versión anterior
 
-Se conservan Rumi, su familia, Sisa, Puma, Asto, Anca, el curaca, Cusi Yupanqui, la noticia, la asamblea, el viaje, la emboscada, la defensa, el coste, la posguerra y el nombre nuevo. Se conservan las decisiones principales y su lectura en el mundo, el rigor histórico y el diario.
+Nada de la trama inventada: ni el protagonista, ni su familia, ni el elenco ficticio, ni las misiones, ni las escenas. Se retiraron el 2026-11-20 y solo viven en el historial de git.
 
-No se conservan los cinco mapas separados ni los directores de acto. La adaptación vive en el [dossier de mundo](../campaigns/01_pachacutec/documentation/mundo/README.md).
-
----
+Quedan el contexto histórico, el territorio del [dossier de mundo](../campaigns/01_pachacutec/documentation/mundo/README.md) y las fichas del registro histórico.
 
 # 4. Campaña II — La llama de la rebelión
 
@@ -391,7 +382,7 @@ Cada campaña desarrolla:
 15. Bibliografía y fuentes.
 16. **Diseño de mundo**: región, sectores, rutas, POI, fases y experiencias no principales.
 
-La campaña en desarrollo mantiene además un **dossier de región** y un **guion de escenas** con la [plantilla de escena](10_plantilla_guion_de_escena.md). Las campañas futuras no escriben guion de escenas hasta que su etapa se abra.
+La campaña en desarrollo mantiene además un **dossier de región**. Su guion de campaña y sus escenas se escriben después de rediseñarla, con la [plantilla de escena](10_plantilla_guion_de_escena.md). Las campañas futuras no escriben guion de escenas hasta que su etapa se abra.
 
 ---
 

@@ -12,7 +12,7 @@
 | Periodo | 1438 | 1780–1783 | 1820–1824 | 1881–1883 |
 | Región propuesta | Valle del Cusco y aproximación occidental | Vilcanota: Tinta–Tungasuca–Sangarará–Sicuani | Ayacucho–Huanta–Cangallo (sujeta a expediente) | Valle del Mantaro y puna |
 | Conflicto | Defensa y cambio político | Rebelión y represión | Lealtades y guerra irregular | Ocupación y resistencia |
-| Protagonista | Rumi, joven de una llacta | Arriero/comunero (provisional) | Mensajero/arriero (provisional) | Campesino/montonera (provisional) |
+| Protagonista | Por definir | Arriero/comunero (provisional) | Mensajero/arriero (provisional) | Campesino/montonera (provisional) |
 | Motivación inicial | Proteger el hogar | Sobrevivir a los abusos | Proteger a los suyos | Proteger la comunidad |
 | Evolución | Participar en una transformación | Asumir el coste de rebelarse | Elegir y sostener una causa | Resistir y reconstruir |
 | Tono | Épico e íntimo | Trágico y tenso | Esperanzador y ambiguo | Crudo y resiliente |
@@ -25,17 +25,17 @@
 
 - **Periodo:** siglo XV, conflicto entre incas y chancas.
 - **Región:** valle del Cusco y aproximación occidental (Cusco–Anta–paso), con distancias comprimidas y un valle ficticio declarado.
-- **Protagonista:** Rumi, 17 años, joven de una llacta del valle.
+- **Protagonista:** por definir.
 - **Figura histórica central:** Cusi Yupanqui, futuro Pachacútec.
 - **Tono:** épico e íntimo; la guerra se ve desde abajo.
 
 ### 2.2. Promesa
 
-Rumi vive la llegada de la noticia chanca, cruza el paso con la comitiva, participa en la defensa del Cusco y vuelve a una casa que ya no es la misma. No gana la guerra ni decide el resultado histórico: sostiene su parte y paga el precio.
+La comunidad vive la llegada de la noticia chanca, el viaje al Cusco, la defensa y la vuelta a una casa que ya no es la misma. El protagonista no gana la guerra ni decide el resultado histórico: sostiene su parte y paga el precio.
 
-### 2.3. Estructura de mundo
+### 2.3. Fases del territorio
 
-Los cinco actos dejan de ser cinco mapas y se convierten en **fases del mismo territorio**:
+Las cinco fases son la hipótesis de trabajo, derivada del relato histórico; se confirman o se recortan al rediseñar la campaña:
 
 | Fase | Estado | Qué cambia |
 |---|---|---|
@@ -49,41 +49,22 @@ Los cinco actos dejan de ser cinco mapas y se convierten en **fases del mismo te
 
 ### 2.4. Región
 
-- Cusco preimperial, llacta de Rumi, quebrada alta, paso y frontera chanca.
+- Cusco preimperial, la llacta del valle, quebrada alta, paso y frontera chanca.
 - Seis sectores; 20–30 POI; 60–100 NPC persistentes.
 - El detalle vive en `campaigns/01_pachacutec/documentation/mundo/`.
 
 ### 2.5. Estado
 
-La implementación lineal y su trama inventada se retiran (decisión del 2026-11-20); solo queda el contexto histórico como punto de partida. El territorio de F2 se conserva porque es geografía, no trama: seis sectores, ocho rutas y 30 POI en blockout, con el blockout aprobado con cambios el 2026-11-20. La campaña —protagonista, comunidad, arranque y fases— se repiensa desde el contexto histórico antes de escribir la ficha de F3.
+La trama anterior se retiró el 2026-11-20 y solo queda en el historial de git. El punto de partida es el **contexto histórico** del [expediente](../campaigns/01_pachacutec/documentation/expediente_historico.md) y las fichas del registro. El territorio de F2 se conserva porque es geografía, no trama: seis sectores, ocho rutas y 30 POI en blockout, aprobado con cambios.
 
-### 2.6. Historia principal (15 misiones)
+La campaña —protagonista, comunidad, arranque, misiones y fases— se repiensa antes de escribir la ficha de F3.
 
-| Fase | Misiones | Hito |
-|---|---|---|
-| Paz | 3 | Rutina, encargos, duda, mensajero |
-| Noticia | 4 | Asamblea, viaje, emboscada, Cusco dividido |
-| Guerra | 3 | Preparación, defensa, coste con nombre |
-| Posguerra | 3 | Regreso, cuentas, asamblea y noticia de Viracocha |
-| Obra | 2 | Reconstrucción y nombre nuevo |
-
-### 2.7. Contenido no principal
-
-- La pastora que perdió una llama.
-- El telar roto.
-- La ofrenda del mirador.
-- El pozo seco y la acequia.
-- El niño que quiere ver el Cusco.
-- El tambo abandonado.
-- La cueva de la quebrada.
-- La cuenta pendiente entre dos familias.
-- La fiesta de la cosecha.
-
-### 2.8. Riesgos
+### 2.6. Riesgos
 
 | Riesgo | Mitigación |
 |---|---|
-| La historia lineal se diluye | Fases claras, diario y secuencias controladas en los clímax |
+| Repetir la trama retirada por inercia | Rediseño explícito desde el contexto histórico, sin reutilizar elenco ni misiones |
+| La historia se diluye en el mundo | Fases claras, diario y secuencias controladas en los clímax |
 | El coste pierde fuerza | El NPC perdido tiene presencia previa y su ausencia se nota |
 | El combate domina | Encuentros authored y opciones de evitarlos |
 | El mundo no justifica la historia | Contenido secundario ligado a personas y lugares |

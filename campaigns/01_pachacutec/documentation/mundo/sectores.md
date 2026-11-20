@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|---|
 | S1 Cusco preimperial | 350 × 300 m | Hub político y comercial | Alta | 30–40 | 5–8 | 350 draw calls |
 | S2 Afueras y terrazas | 400 × 300 m | Transición y agricultura | Media | 8–12 | 2–3 | 250 draw calls |
-| S3 Llacta de Rumi | 300 × 250 m | Hogar y vida cotidiana | Alta | 20–30 | 3–5 | 300 draw calls |
+| S3 Llacta del valle | 300 × 250 m | Hogar y vida cotidiana | Alta | 20–30 | 3–5 | 300 draw calls |
 | S4 Quebrada alta | 400 × 300 m | Recursos y descubrimiento | Baja | 3–6 | 1–2 | 180 draw calls |
 | S5 Paso | 350 × 300 m | Viaje y peligro | Baja | 2–5 | 1 | 150 draw calls |
 | S6 Frontera chanca | 400 × 350 m | Conflicto y clímax | Media | 10–20 | 1–2 | 220 draw calls |
@@ -38,13 +38,13 @@ Los NPC de cada sector se solapan con los de la región; no se suman todos a la 
 - **Experiencias:** ayudar con el riego, reparar una acequia, aprender sobre terrazas, atajar por el río.
 - **Riesgo:** pendientes y colisión de terrazas; el jugador no debe quedar atrapado.
 
-## 4. S3 — Llacta de Rumi
+## 4. S3 — Llacta del valle
 
 - **Clasificación:** GN.
 - **Función:** hogar; vida cotidiana, familia, comunidad, primera base del jugador.
-- **Contenido:** 12–18 casas, plaza, casa de Rumi, telar, corral, manantial, acequia, huerto, fogón.
+- **Contenido:** 12–18 casas, plaza, casa de la familia, telar, corral, manantial, acequia, huerto, fogón.
 - **Vida:** amanecer, desayuno, trabajo, mercado, comida, conversación, noche.
-- **POI:** casa de Rumi, plaza, manantial, telar, corral, casa del curaca, mirador bajo.
+- **POI:** casa de la familia, plaza, manantial, telar, corral, casa del curaca, mirador bajo.
 - **Experiencias:** acarrear agua, moler maíz, tejer, reparar el corral, escuchar una discusión, preparar una ofrenda.
 - **Riesgo:** exceso de props y NPC; se usan kits y LOD.
 - **Persistencia:** corral reparado, acequia limpia, casa reconstruida, objetos del hogar.
@@ -95,7 +95,7 @@ Los NPC de cada sector se solapan con los de la región; no se suman todos a la 
 Cada sector se valida con:
 
 - `scene_audit.gd --breakdown` para draw calls y sombras.
-- `measure_performance.tscn` en el peor caso (mediodía, multitud, clima).
+- `measure_blockout.tscn` en el peor caso (mediodía, multitud, clima).
 - Recorrido a pie completo, sin atascos.
 - Ruta de NPC entre casa, trabajo y puerta.
 - Guardar/cargar con el sector activo.

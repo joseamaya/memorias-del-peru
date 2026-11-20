@@ -10,7 +10,7 @@ Definir un territorio continuo y explorable para *Pachacútec — El despertar d
 
 ## 2. Hipótesis territorial
 
-**Territorio de juego:** valle del Cusco y su aproximación occidental, entre el Cusco preimperial y un paso hacia la frontera chanca. La llacta de Rumi se sitúa en un valle intermedio, a un día de camino del Cusco.
+**Territorio de juego:** valle del Cusco y su aproximación occidental, entre el Cusco preimperial y un paso hacia la frontera chanca. La llacta del valle se sitúa en un valle intermedio, a un día de camino del Cusco.
 
 **Escala de juego:** ~3,5 km este-oeste × 2,5 km norte-sur (8,75 km² totales), con **2–4 km² de área densa** y fondo visual no recorrible. La distancia real Cusco–Andahuaylas es mucho mayor; el mapa la comprime y lo declara.
 
@@ -28,7 +28,7 @@ Definir un territorio continuo y explorable para *Pachacútec — El despertar d
 | Valle del Huatanay y cuenca de Lucre | Geografía real; ocupación prehispánica documentada | GD | No se reproduce a escala exacta |
 | Approximación occidental del Cusco (corredor hacia Anta y la ruta de Abancay/Andahuaylas) | Geografía real; ruta histórica de conexión | GD / GR | La ruta exacta y su uso en 1438 requieren verificación |
 | Amenaza chanca desde Andahuaylas/Apurímac | Tradición histórica; la escala y unidad política chanca son discutidas | H (tradición) / A | Ver PCH-002, PCH-003 y la discusión de Bauer et al. |
-| Llacta de Rumi y valle intermedio | Invención para el juego | GN | Sostiene la historia desde abajo |
+| Llacta del valle y valle intermedio | Invención para el juego | GN | Sostiene la historia desde abajo |
 | Paso concreto y campamento chanca | Invención basada en la geografía de altura | GN / GR | No se identifica con un paso documentado sin fuente |
 | Caminos, terrazas y acequias | Prácticas documentadas; trazado concreto aproximado | GR | Deben respetar pendientes, agua y suelos |
 | Distribución de la población y número de casas | Sin cifra firme para el caso | GR / GN | Se ajusta a la escala de juego |
@@ -58,7 +58,7 @@ Definir un territorio continuo y explorable para *Pachacútec — El despertar d
 ## 5. Decisiones de escala y ficción
 
 1. **Compresión:** el territorio se comprime para que cruzar la región tome 25–35 minutos a pie. No se presenta como distancia histórica.
-2. **Valle intermedio:** se inventa para dar hogar a Rumi y separar la llacta del Cusco. Es GN.
+2. **Valle intermedio:** se inventa para dar hogar a la comunidad y separar la llacta del Cusco. Es GN.
 3. **Paso:** se inspira en la geografía de altura y en la ruta hacia la frontera chanca, pero no se identifica con un paso documentado. Es GN/GR.
 4. **Cusco:** se representa como centro preimperial, no como la ciudad monumental posterior. Es GD/GR.
 5. **Población:** se ajusta a la escala de juego; no se afirma un número exacto.
@@ -130,7 +130,7 @@ La compresión no se presenta como distancia histórica. El jugador recorre un t
 | Ruta hacia Anta/Abancay | GD/GR | Corredor real; trazado histórico por verificar |
 | Guerra chanca y Cusco de 1438 | H (tradición) | Crónicas con versiones divergentes |
 | Terrazas, acequias, pirca, ichu | GR | Prácticas documentadas; forma concreta aproximada |
-| Llacta de Rumi | GN | Comunidad ficticia que sostiene la historia |
+| Llacta del valle | GN | Comunidad ficticia que sostiene la historia |
 | Valle intermedio | GN | Ficción de escala y geografía |
 | Paso y campamento chanca | GN/GR | Inspirados en geografía de altura; no identificados |
 | Cueva, mirador y tambo | GN | Lugares de juego |

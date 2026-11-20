@@ -298,8 +298,8 @@ El catálogo de la campaña 01 tiene 30 POI; la columna «POI nuevos» cuenta lo
 | Estado | Se guarda | Ejemplo |
 |---|---|---|
 | Mundo | Fase histórica, hora, clima, banderas | `fase_guerra`, `dia_3`, `lluvia` |
-| NPC | Vida, ubicación, relación, estado | `sisa_relacion_3`, `anca_herido` |
-| Misiones | Etapa, decisiones, objetos | `mensajero_ayudado` |
+| NPC | Vida, ubicación, relación, estado | `npc_0007_relacion_3`, `npc_0012_herido` |
+| Misiones | Etapa, decisiones, objetos | `mision_01_etapa_3` |
 | Descubrimientos | POI, nombres, rumores | `mirador_descubierto` |
 | Mundo físico | Contenedores, puertas, reparaciones | `corral_reparado` |
 | Jugador | Posición, inventario, habilidades, salud | `qipi_casa` |

@@ -8,10 +8,10 @@
 - **Uso:** maniquí de prototipo para los personajes del juego. 43 animaciones sin root motion: locomoción, conversación, trabajo de rodillas, ataque, golpe y muerte.
 - **Nota:** el `ual1_bone_map.tres` es propio, generado con el `SkeletonProfileHumanoid` de Godot para retargeting futuro.
 
-Queda como base del elenco activo de maniquíes. Desde 2026-11-18, el juego usa
-los diez looks de `MannequinLooks` sobre este cuerpo; `QuaterniusClips` añade
-los clips lógicos de UAL1/UAL2. El antiguo elenco UBC se retiró de las
-escenas.
+Queda como base disponible para los personajes que diseñe la campaña nueva: el
+cuerpo UAL1 es la referencia de escala y anatomía. El elenco que lo usaba y sus
+clips se retiraron con la campaña lineal el 2026-11-20; los archivos siguen
+aquí con su licencia.
 
 ## Antebrazo extraído
 
