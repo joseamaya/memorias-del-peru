@@ -17,7 +17,7 @@ La prioridad es que el juego **se juegue bien y se vea bien**. El proceso está 
 - Estado y criterios de fase: [docs/05](docs/05_plan_de_implementacion.md).
 - Tareas, dependencias y evidencia de F1: [ficha de F1](docs/fases/F1-spikes-tecnicos.md).
 - Fase cerrada: [ficha de F2](docs/fases/F2-geografia-y-blockout.md).
-- Ficha de F3: pendiente; se escribe después de retirar la campaña lineal y revisar el contexto histórico.
+- Tareas de la fase activa: [ficha de F3](docs/fases/F3-vertical-slice.md).
 - F0 cerrada: [ficha de F0](docs/fases/F0-redefinicion-mundo-abierto.md).
 - Fases lineales retiradas: 0 (documentación original), 1 (fundación y núcleo RPG), 2 (guion lineal de la campaña 01), 3 (arco jugable I–V lineal), F4-L y F5-L. Su contenido se retira del repositorio y solo queda en el historial de git; no se cita como canon.
 - **F4-L y F5-L (las fases lineales) se retiran**, no se cierran ni se congelan: su contenido sale del repositorio cuando se ejecute la retirada, y se conserva solo en el historial de git. La redefinición las sustituye por F0–F6 y la campaña se repiensa desde el contexto histórico.

@@ -127,11 +127,11 @@
 
 ## Fase 3 — Vertical slice de mundo abierto
 
-**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** en preparación desde el 2026-11-20. Pasos del arranque de F3: **(1) hecho:** retirar la implementación lineal y su trama; **(2) hecho:** revisar el contexto histórico (fichas PCH-039 y PCH-040 y expediente); **(3) hecho:** repensar la campaña —protagonista del arrabal cusqueño, cuatro fases y epílogo—; **(4) siguiente:** escribir la ficha de alcance de la slice con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. No se construye contenido de la slice hasta que la ficha esté aprobada.
+**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** **en curso** desde el 2026-11-20. Arranque completado: retirada de la campaña lineal, revisión del contexto histórico (PCH-039 y PCH-040), rediseño de la campaña y ficha de alcance escrita: [ficha de F3](fases/F3-vertical-slice.md). Las tareas 3.1–3.10 se ejecutan en el orden que fija la ficha; ninguna se adelanta sin su predecesora.
 
 **Objetivo:** demostrar que el mundo se puede **habitar y jugar**, no solo recorrer.
 
-**Contenido mínimo:** la slice demuestra la **ciudad habitable y la defensa** (fases 1 y 2 de la campaña).
+**Contenido mínimo:** la slice demuestra la **ciudad habitable y la defensa** (fases 1 y 2 de la campaña). El detalle, los criterios por tarea y el orden de recorte viven en la [ficha de F3](fases/F3-vertical-slice.md).
 
 - Sector S1 Cusco jugable como hub: plaza, ayllus, arrabal de Chocos-chacona y límite natural.
 - 8–12 casas habitables, 3 interiores transitables y el arrabal como barrio reconocible.
