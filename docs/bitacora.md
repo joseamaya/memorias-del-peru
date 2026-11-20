@@ -6,6 +6,20 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F3.4: población de la ciudad
+
+**Decisión:** 24 NPC en S1 con rutinas de mañana, tarde y noche, sobre el director y el horario que ya existían de F1.
+
+| Cambio | Detalle |
+|---|---|
+| Población | `CityPopulation`: 8 NPC nombrados (entre ellos Chanan Cury Coca) y 16 de ambiente, con casa, ancla de mañana y de tarde. |
+| Sistema | Reutiliza `NpcDirector` y `NpcDefinition` de Core; los datos viven en una tabla de campaña que pasará a `.tres` cuando exista el pipeline de contenido. |
+| Anclas | Once anclas (plaza, mercado, Coricancha, taller, depósitos, ayllus, arrabal, camino oeste y puerta sur), con holgura respecto de las casas. |
+| Navmesh | Intento de tallar las 38 casas en el navmesh de S1 con obstáculos proyectados: desconectaba los enlaces entre sectores y el recorrido regional caía de 2.758 m a 1.192 m. Se retiró; la prueba de población comprueba que nadie acaba dentro de una casa. |
+| Enlaces | La espera de enlaces de sector sube de 1 a 10 segundos: con el horneado más lento no se creaban. Se conserva aunque el tallado se haya retirado. |
+| Pruebas | `city_population_check`: 24 registrados, 8 nombrados, cambio de ancla entre mañana y noche y 20 min simulados con 0 NPC dentro de casas. Añadido a CI. |
+| Pendiente | Rutinas con actividades visibles (trabajo, conversación), nombres inventados por confirmar y paso de la tabla a recursos de contenido. |
+
 ## 2026-11-20 — F3.3: ciclo día/noche
 
 **Decisión:** el reloj del mundo mueve la luz. A mediodía se conservan exactamente los valores del blockout aprobado, para que la revisión diurna no cambie.

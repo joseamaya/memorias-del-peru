@@ -76,6 +76,10 @@ func get_mesh_count() -> int:
 	return _meshes.size()
 
 
+func get_link_count() -> int:
+	return find_children("SectorLink_*", "NavigationLink3D", false, false).size()
+
+
 func get_region_count() -> int:
 	return _regions.size()
 
@@ -210,7 +214,10 @@ func _build_navmeshes() -> void:
 ## Espera a que el mapa sincronice las regiones y crea los enlaces entre
 ## sectores con sus extremos proyectados sobre el navmesh.
 func _build_links_async() -> void:
-	for _frame: int in 60:
+	# El horneado con obstáculos del Cusco tarda más que antes: se espera a que
+	# el mapa esté activo y a que todas las regiones estén registradas, hasta
+	# 10 segundos. Antes se cortaba a un segundo y los enlaces no se creaban.
+	for _frame: int in 600:
 		await get_tree().process_frame
 		var map: RID = get_world_3d().navigation_map
 		if not NavigationServer3D.map_is_active(map):
@@ -221,6 +228,7 @@ func _build_links_async() -> void:
 			continue
 		if _create_links(map) == LINK_POINTS.size() / 2:
 			return
+	push_warning("CampaignRoutes: no se pudieron crear todos los enlaces de sector.")
 
 
 func _create_links(map: RID) -> int:

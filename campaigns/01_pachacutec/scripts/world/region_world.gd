@@ -59,6 +59,7 @@ var _target: Node3D = null
 var _camera: Camera3D = null
 var _player: PlayerFPS = null
 var _interiors: InteriorController = null
+var _population: CityPopulation = null
 var _spawn_position: Vector3 = Vector3.ZERO
 var _route_index: int = 0
 var _labels_visible: bool = false
@@ -95,6 +96,7 @@ func _ready() -> void:
 	if first_person:
 		_build_player()
 		_build_interiors()
+		_build_population()
 	_build_review_hud()
 	_update_camera()
 
@@ -185,6 +187,17 @@ func get_player() -> PlayerFPS:
 
 func get_interiors() -> InteriorController:
 	return _interiors
+
+
+func get_population() -> CityPopulation:
+	return _population
+
+
+func _build_population() -> void:
+	_population = CityPopulation.new()
+	_population.name = "Population"
+	add_child(_population)
+	_population.setup(self, _streamer, _player)
 
 
 func _build_interiors() -> void:

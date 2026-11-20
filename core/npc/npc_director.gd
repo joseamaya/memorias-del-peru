@@ -169,6 +169,11 @@ func get_registered_count() -> int:
 	return _definitions.size()
 
 
+## Definiciones registradas, en orden de alta. Solo para pruebas y depuración.
+func get_definitions() -> Array[NpcDefinition]:
+	return _definitions
+
+
 func get_minute() -> int:
 	return _minute
 
