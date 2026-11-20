@@ -42,7 +42,7 @@ func get_interaction_text() -> String:
 func _build() -> void:
 	_add_mesh(Vector3(FRAME, HEIGHT, FRAME), Vector3(-WIDTH * 0.5, HEIGHT * 0.5, 0.0), FRAME_COLOR)
 	_add_mesh(Vector3(FRAME, HEIGHT, FRAME), Vector3(WIDTH * 0.5, HEIGHT * 0.5, 0.0), FRAME_COLOR)
-	_add_mesh(Vector3(WIDTH + FRAME, FRAME, FRAME), Vector3(0.0, HEIGHT, 0.0), FRAME_COLOR)
+	_add_mesh(Vector3(WIDTH + FRAME, FRAME, FRAME), Vector3(0.0, HEIGHT, 0.0), FRAME_COLOR, true)
 	_add_mesh(
 		Vector3(WIDTH, HEIGHT - 0.1, 0.08), Vector3(0.0, (HEIGHT - 0.1) * 0.5, 0.0), PANEL_COLOR
 	)
@@ -64,7 +64,7 @@ func _build() -> void:
 	add_child(label)
 
 
-func _add_mesh(size: Vector3, mesh_position: Vector3, color: Color) -> void:
+func _add_mesh(size: Vector3, mesh_position: Vector3, color: Color, elevated: bool = false) -> void:
 	var instance: MeshInstance3D = MeshInstance3D.new()
 	var mesh: BoxMesh = BoxMesh.new()
 	mesh.size = size
@@ -74,4 +74,7 @@ func _add_mesh(size: Vector3, mesh_position: Vector3, color: Color) -> void:
 	material.roughness = 0.95
 	instance.material_override = material
 	instance.position = mesh_position
+	if elevated:
+		# La auditoría de flotantes comprueba el apoyo del dintel en el marco.
+		instance.set_meta(&"blockout_kind", &"Marco")
 	add_child(instance)

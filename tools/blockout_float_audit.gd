@@ -28,6 +28,7 @@ const FLAT_KINDS: Array[String] = [
 ## Elementos elevados a propósito o apoyados en una plataforma revisada.
 const INTENTIONAL_KINDS: Array[String] = [
 	"Techo",
+	"Marco",
 	"Toldo",
 	"Canopia",
 	"PuestoTecho",
