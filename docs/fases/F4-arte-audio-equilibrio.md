@@ -1,6 +1,6 @@
 # F4-L · Arte, audio y equilibrio — tareas (congelada)
 
-> **Fase congelada el 2026-11-19.** La dirección lineal de 40–50 minutos se sustituye por el mundo abierto regional. Esta ficha se conserva como historial y banco de pruebas; **no se continúa**. El plan activo es la [F0](F0-redefinicion-mundo-abierto.md) y, después, F1–F6 de [docs/05](../../docs/05_plan_de_implementacion.md). Las tareas abiertas (4.9, 4.12, 4.14) no bloquean el trabajo nuevo.
+> **Fase retirada (2026-11-20).** La campaña lineal y su trama inventada salen del repositorio. Esta ficha se conserva solo como historial de git; **no se cita como canon ni se continúa**. El plan activo es la [F0](F0-redefinicion-mundo-abierto.md) y F1–F6 de [docs/05](../../docs/05_plan_de_implementacion.md), con la campaña por repensar desde el contexto histórico.
 
 **Estado:** congelada · **Organización aprobada:** 2026-11-19.
 **Criterio de salida original:** el de [docs/05](../../docs/05_plan_de_implementacion.md) §Fase 4 (histórico).

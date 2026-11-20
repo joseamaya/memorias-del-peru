@@ -38,7 +38,7 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 
 - **F0 cerrada y aprobada:** documentación redefinida; sin cambios de código, escenas ni assets.
 - **F1 cerrada (2026-11-19); F2 cerrada y aprobada con cambios (2026-11-20); F3 en preparación:** el relieve regional de 3,5 × 2,5 km está en blockout (seis sectores, río, quebrada, paso y cumbres; ~1,5 s de generación) los seis sectores ya se transmiten por cercanía sobre el terreno continuo y ocho rutas de blockout están dibujadas con navmesh por sector y enlaces entre ellos. S3 — Llacta de Rumi tiene su blockout (17 casas, plaza, manantial, telar, corral y acequia; 78–85 FPS y 120 draw calls) y S1 — Cusco preimperial también (28 casas, Coricancha, mercado, talleres y depósitos; 76–82 FPS y 247 draw calls). S4, S5 y S6 (quebrada, paso y frontera) tienen su blockout con 5, 3 y 5 POI; 80/95/103 FPS y 146/103/83 draw calls. Los 30 POI ya se descubren por proximidad, diálogo o evento, alimentan diario y mapa, respetan fases y persisten en el guardado. El recorrido Cusco–frontera se valida de forma automatizada en 2.758 m y 23 min a pie, con seis sectores y ocho POI. El mundo tiene un modo de revisión con cámara cercana, etiquetas con H y vista cenital con T, y ya se recorre a pie con el jugador en primera persona sobre la colisión del terreno. El blockout se aprobó con cambios el 2026-11-20 tras recorrer la ruta A; la ruta oeste queda solo con recorrido automatizado y se declara no verificada. El sector gris integra Terrain3D, Cyclops, navmesh sobre el relieve, 60 NPC (25 animados), guardado y un blockout con seis casas, multitud y vegetación MultiMesh. El presupuesto queda en 255–287 draw calls, 101,7 MB, 61–66 FPS y frame máximo de 30,3 ms; el streaming carga en 21,4 ms de media con 1 KB de crecimiento en 60 ciclos. La adopción definitiva de Terrain3D/Cyclops se decide con el sector real de F2.
-- **F4-L y F5-L congeladas:** la versión lineal se conserva como historial y banco de pruebas.
+- **F4-L y F5-L retiradas (decisión del 2026-11-20):** la campaña lineal y su trama inventada salen del repositorio y solo quedan en el historial de git. El punto de partida para repensar la campaña es el contexto histórico.
 - **F2–F6 previstas:** geografía, vertical slice, producción, cierre y campañas II–IV.
 - **Adopción provisional:** Terrain3D y Cyclops están instalados y medidos; la revisión definitiva se hace con el sector real de F2 y el veredicto del blockout.
 
@@ -51,7 +51,7 @@ Se aprueban las recomendaciones de la F0:
 3. **Campaña III:** expediente comparativo con **Ayacucho–Huanta–Cangallo** como hipótesis principal.
 4. **Campaña IV:** valle del Mantaro; Huamachuco como epílogo narrado o secuencia final.
 5. **Addons:** autorizar los spikes de Terrain3D y Cyclops, no su adopción definitiva.
-6. **Fases:** F4-L/F5-L congeladas; F0 cerrada; F1 como siguiente fase.
+6. **Fases:** F4-L/F5-L retiradas (2026-11-20); F0 cerrada; F1 y F2 cerradas; F3 en preparación con la campaña por repensar.
 
 ## 5. No verificado
 

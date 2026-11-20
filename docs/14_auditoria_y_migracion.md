@@ -73,10 +73,10 @@ Auditoría de solo lectura sobre `main` (2026-11-19): estructura de carpetas, do
 
 ## 7. Estrategia de migración
 
-1. **Congelar, no borrar.** La versión lineal se queda como historial y banco de pruebas. No se amplía.
-2. **Construir al lado.** Los sistemas nuevos viven en `core/world`, `core/npc`, `core/quests` y `core/save`, con pruebas propias.
-3. **Sustituir por criterio.** Un sistema lineal se retira cuando su sustituto pasa las pruebas de la vertical slice.
-4. **No duplicar contenido.** La historia, el elenco y las fichas se reutilizan; los mapas y directores se reinterpretan o se retiran.
+1. **Retirar, no congelar** (decisión del responsable, 2026-11-20). La implementación lineal y la trama inventada salen de `res://` y dejan de ser fuente de verdad. El punto de partida es el **contexto histórico**: registro de fichas PCH, expedientes y fuentes. Lo retirado queda recuperable en el historial de git, pero no se usa, no se enlaza y no se cita como canon.
+2. **Construir sobre el contexto histórico.** Los sistemas nuevos viven en `core/world`, `core/npc`, `core/quests` y `core/save`, con pruebas propias.
+3. **Retirar sin esperar al sustituto.** Lo que solo existe para la campaña lineal (escenas de acto, directores, pruebas de acto) sale ahora; los sistemas de `core/` que sirven al mundo abierto se adaptan en su sitio.
+4. **No heredar la trama inventada.** El elenco, las quince misiones y los cinco actos no se reutilizan: la campaña se repiensa desde el contexto histórico. Se conservan las fichas y los expedientes, no la historia contada.
 5. **Medir antes de adoptar.** Terrain3D y Cyclops se prueban en F1; no se convierten en dependencia sin evidencia.
 6. **Mantener CI verde.** La suite legacy sigue corriendo hasta que las escenas se retiren; las pruebas nuevas entran con su sistema.
 
@@ -117,4 +117,4 @@ No se recorta: rigor histórico, guardado, navegación básica, rendimiento, pru
 - Coste del navmesh sobre Terrain3D y de los interiores aditivos.
 - Región definitiva de la campaña III y alcance de Huamachuco en la IV.
 - Duración real de la campaña 01 en mundo abierto.
-- Que el guion lineal sobreviva completo a la reestructuración; se conserva la historia, no la implementación.
+- Que el contexto histórico baste para repensar la campaña; la trama inventada de la versión lineal no se da por buena.

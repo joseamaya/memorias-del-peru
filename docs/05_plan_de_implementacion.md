@@ -2,7 +2,7 @@
 
 > La prioridad es el mundo habitable y su aspecto; las únicas reglas duras son licencias/procedencia, rigor histórico y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** **F3 — Vertical slice de mundo abierto (ficha en preparación).** F2 se cerró el 2026-11-20 con el blockout aprobado **con cambios**; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas. Primer entregable de F3: su ficha de alcance; no se construye contenido de la slice hasta que el responsable la apruebe.
+**Fase activa:** **F3 — Vertical slice de mundo abierto (ficha en preparación).** F2 se cerró el 2026-11-20 con el blockout aprobado **con cambios**; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. **El 2026-11-20 el responsable decidió retirar la campaña lineal y su trama inventada** y repensar la campaña desde el contexto histórico. Por eso el orden de F3 es: retirar lo lineal, revisar el contexto histórico, repensar la campaña y escribir la ficha de alcance. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
 
 ## Estado
 
@@ -12,8 +12,8 @@
 | 1 — Fundación y núcleo RPG | Cerrada (historial) | 2026-11-15 |
 | 2 — Guion lineal de la campaña 01 | Cerrada (historial) | 2026-11-15 |
 | 3 — Arco jugable I–V lineal | Cerrada (historial) | 2026-11-15 |
-| F4-L — Arte, audio y equilibrio (lineal) | **Congelada** | — |
-| F5-L — Validación y cierre (lineal) | **Congelada** | — |
+| F4-L — Arte, audio y equilibrio (lineal) | **Retirada** (historial de git) | — |
+| F5-L — Validación y cierre (lineal) | **Retirada** (historial de git) | — |
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
 | **F1 — Spikes técnicos** | **Cerrada** (2026-11-19) | [Ficha de F1](fases/F1-spikes-tecnicos.md) |
 | **F2 — Geografía y blockout** | **Cerrada** (aprobada con cambios) | 2026-11-20 · [Ficha de F2](fases/F2-geografia-y-blockout.md) |
@@ -22,9 +22,9 @@
 | F5 — Validación y cierre de la campaña 01 | Prevista | — |
 | F6 — Campañas II–IV | Futura | — |
 
-**Qué significa “congelada”:** el trabajo de la fase lineal no continúa, no se cierra y no bloquea el plan nuevo. Sus escenas, pruebas y documentación se conservan como banco de pruebas hasta que la vertical slice las sustituya. Cualquier reutilización se decide por utilidad, no por apego.
+**Qué significa “retirada”:** el trabajo de la fase lineal no continúa, no se cierra y no bloquea el plan nuevo. Sus escenas, pruebas y documentación salen del repositorio en la retirada y solo quedan en el historial de git. No se cita como canon ni se reutiliza sin decisión expresa del responsable.
 
-**Nomenclatura:** **F4-L** y **F5-L** son las fases lineales congeladas. **F4** y **F5** sin sufijo son las fases nuevas de producción y cierre de la campaña de mundo abierto. La ficha histórica `F4-arte-audio-equilibrio.md` conserva su nombre de archivo, pero se titula F4-L.
+**Nomenclatura:** **F4-L** y **F5-L** son las fases lineales retiradas: su contenido sale del repositorio y solo queda en el historial de git. **F4** y **F5** sin sufijo son las fases nuevas de producción y cierre de la campaña de mundo abierto. La ficha histórica `F4-arte-audio-equilibrio.md` se conserva como historial hasta la retirada, pero no es fuente de verdad.
 
 ---
 
@@ -56,7 +56,7 @@
 - [x] El pipeline fija versiones y licencias verificadas, y declara lo que no se ha probado.
 - [x] Cada sistema existente está clasificado como conservar, adaptar, reconstruir o retirar.
 - [x] Los enlaces relativos resuelven y no hay afirmaciones que contradigan el código.
-- [x] La bitácora registra el giro y las fases congeladas.
+- [x] La bitácora registra el giro y las fases lineales retiradas.
 - [x] El responsable aprueba el plan antes de abrir F1.
 
 **Fuera de F0:** implementar terreno, añadir addons, producir assets, reescribir escenas o borrar contenido lineal.
@@ -127,7 +127,7 @@
 
 ## Fase 3 — Vertical slice de mundo abierto
 
-**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** en preparación desde el 2026-11-20. El primer entregable es la ficha de alcance de la slice, con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. No se construye nada de la slice hasta que el responsable la apruebe, y el tema de la misión principal queda como propuesta a revisar, no como decisión tomada.
+**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** en preparación desde el 2026-11-20, con orden revisado. El responsable decidió retirar la campaña lineal y repensar la campaña desde el contexto histórico, así que F3 avanza en cuatro pasos: **(1)** retirar la implementación lineal y la trama inventada; **(2)** revisar el contexto histórico con las fichas y expedientes; **(3)** repensar la campaña —protagonista, comunidad, arranque y fases— desde ese contexto; **(4)** escribir la ficha de alcance de la slice con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. No se construye contenido de la slice hasta que la ficha esté aprobada.
 
 **Objetivo:** demostrar que el mundo se puede **habitar y jugar**, no solo recorrer.
 

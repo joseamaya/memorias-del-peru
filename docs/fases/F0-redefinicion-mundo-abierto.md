@@ -8,7 +8,9 @@
 
 La dirección lineal de 40–50 minutos no satisface el objetivo de producto. El proyecto se redefine como una antología de cuatro RPG históricos de mundo abierto regional. La campaña 01 se convierte en un territorio continuo con fases históricas, no en cinco escenas separadas.
 
-La versión lineal (Fases 0–3) se conserva como historial y banco de pruebas. **F4-L y F5-L quedan congeladas.**
+> **Decisión posterior (2026-11-20):** el responsable retira la campaña lineal y su trama inventada; este documento queda como historial de git, no como fuente de verdad. El punto de partida para repensar la campaña es el contexto histórico.
+
+La versión lineal (Fases 0–3) se conserva como historial; **F4-L y F5-L se retiran.**
 
 ## 2. Tareas
 
