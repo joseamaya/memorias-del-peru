@@ -152,7 +152,7 @@ func get_visible_label_count() -> int:
 		if node == null:
 			continue
 		for label: Node in node.find_children("*", "Label3D", true, false):
-			if (label as Label3D).visible:
+			if (label as Label3D).visible and label.is_in_group(&"review_label"):
 				count += 1
 	return count
 
@@ -350,6 +350,9 @@ func _update_labels() -> void:
 			continue
 		for label: Node in node.find_children("*", "Label3D", true, false):
 			var label_3d: Label3D = label as Label3D
+			# Las etiquetas de interacción (puertas, lechos) no son de revisión.
+			if not label_3d.is_in_group(&"review_label"):
+				continue
 			var distance: float = (
 				Vector2(
 					label_3d.global_position.x - _target.global_position.x,

@@ -1,25 +1,29 @@
-class_name BedInteractable
+class_name SleepSpotInteractable
 extends Interactable
-## Cama de un interior doméstico: dormir lleva el reloj a la mañana siguiente.
+## Lecho doméstico: dormir lleva el reloj a la mañana siguiente.
 ##
 ## No conoce la campaña. Pide el descanso al nodo del grupo
 ## `campaign_session`, que decide reloj, guardado y aviso; si no hay sesión
-## (otras escenas o pruebas sin campaña), la cama no se puede usar.
+## (otras escenas o pruebas sin campaña), el lecho no se puede usar.
+##
+## La geometría la pone la sala: poyo bajo de piedra con estera de totora y
+## manta doblada (PCH-041), no una cama con patas. Aquí solo se declara el
+## volumen que se puede enfocar.
 
-const SIZE: Vector3 = Vector3(2.2, 0.7, 2.0)
+const SIZE: Vector3 = Vector3(2.2, 0.5, 2.0)
 const TEXT_KEY: StringName = &"UI_SLEEP"
 const SESSION_GROUP: StringName = &"campaign_session"
 const SESSION_METHOD: StringName = &"rest_until_morning"
 
 
 func _ready() -> void:
-	add_to_group(&"bed")
+	add_to_group(&"sleep_spot")
 	highlight_parent_if_empty = false
 	_build_collider()
 	_build_label()
 
 
-## La cama solo responde si hay una sesión de campaña que sepa descansar.
+## El lecho solo responde si hay una sesión de campaña que sepa descansar.
 func is_available() -> bool:
 	var session: Node = _session()
 	return session != null and session.has_method(SESSION_METHOD)
@@ -33,6 +37,12 @@ func interact(_interactor: Node3D) -> void:
 
 func get_interaction_text() -> String:
 	return tr(String(TEXT_KEY))
+
+
+## Tamaño del volumen que se puede enfocar. Lo comprueba la prueba de interiores
+## para que el lecho no vuelva a crecer a una cama con patas.
+func get_collider_size() -> Vector3:
+	return SIZE
 
 
 func _session() -> Node:
@@ -55,6 +65,7 @@ func _build_collider() -> void:
 
 func _build_label() -> void:
 	var label: Label3D = Label3D.new()
+	label.name = "Label"
 	label.text = get_interaction_text()
 	label.font_size = 32
 	label.pixel_size = 0.004

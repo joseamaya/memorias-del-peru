@@ -7,8 +7,8 @@ extends Node3D
 
 const PLAZA_RADIUS: float = 28.0
 const HOUSE_SIZE: Vector3 = Vector3(5.5, 2.5, 4.0)
-## Arrabal de Chocos-chacona: barrio de la defensa, al suroeste y junto al
-## camino de entrada. Coordenadas locales al sector S1.
+## Arrabal de Chocos-chacona: barrio de la defensa, al oeste y junto al camino
+## de entrada. Coordenadas locales al sector S1 (X: este-oeste, Z: norte-sur).
 const ARRABAL_CENTER: Vector2 = Vector2(-112.0, -106.0)
 const ARRABAL_PLAZA_RADIUS: float = 13.0
 const ARRABAL_HOUSES: Array[Vector2] = [
@@ -182,20 +182,22 @@ func _build_arrabal() -> void:
 
 
 func _build_interior_doors() -> void:
-	_add_interior_door(-88.0, -117.95, &"home", true)
+	var home: InteriorDoor = _add_interior_door(-88.0, -117.95, &"home", true)
+	home.caption_key = &"PCH_HOME_DOOR"
 	_add_interior_door(-136.0, -117.95, &"authority")
 	_add_interior_door(60.0, -52.95, &"workshop")
 
 
 func _add_interior_door(
 	x: float, z: float, dressing: StringName, player_home: bool = false
-) -> void:
+) -> InteriorDoor:
 	var door: InteriorDoor = InteriorDoor.new()
 	door.dressing = dressing
 	door.player_home = player_home
 	door.position = Vector3(x, _ground(x, z), z)
 	add_child(door)
 	_interior_doors.append(door)
+	return door
 
 
 func _build_coricancha() -> void:

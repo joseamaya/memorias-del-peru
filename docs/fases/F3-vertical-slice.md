@@ -54,6 +54,8 @@
 - Puertas colocadas en el arrabal (casa del jugador y casa de Chanan Cury Coca) y en el taller textil.
 - Evidencia: `interiors_check` (3 puertas, vestidos `home`, `authority` y `workshop`, vuelta a menos de 2 m) y captura `build/evidencia/interior_home.png`.
 - Guardado (3.7): la única forma de guardar es dormir, y antes de guardar se sale de la sala. La sala no tiene estado propio que conservar —su contenido lo fija la puerta—, así que la partida nunca queda apuntando a un interior que ya no existe.
+- Lecho (2026-11-20): la cama con patas y colchón era anacrónica. Se sustituye por el lecho andino de **PCH-041**: poyo bajo de piedra de 0,32 m, estera de totora y manta doblada. La puerta de la casa del jugador lleva la leyenda «Tu casa» para no confundirla con la de la curáca, que tiene el mismo mueble sin interacción.
+- Etiquetas (2026-11-20): el modo de revisión del blockout ocultaba **todas** las `Label3D` de los sectores, incluidas las de las puertas, así que «Entrar» nunca se veía. Ahora solo gobierna las de POI (`review_label`); las de interacción quedan siempre visibles y `interiors_check` lo comprueba. La leyenda se separa además del panel, donde quedaba embebida.
 
 ## 4. F3.3 — Ciclo día/noche
 
@@ -110,7 +112,7 @@ Dormir en la casa del jugador avanza a la mañana siguiente. Guardar desde la ca
 **Implementado (2026-11-20):**
 
 - `RestCycle` (Core): la hora de despertar es la misma con la que empieza la partida, **8:00**; dormir después de esa hora salta al día siguiente.
-- `BedInteractable` (Core): la cama solo responde dentro de una sesión de campaña y pide el descanso por grupo (`campaign_session`). Solo la casa del jugador tiene cama utilizable.
+- `SleepSpotInteractable` (Core): el lecho solo responde dentro de una sesión de campaña y pide el descanso por grupo (`campaign_session`). Solo la casa del jugador tiene lecho utilizable.
 - `CampaignSession` (campaña): al dormir sale del interior de bolsillo, avanza el reloj, despierta a los NPC en su ancla de mañana y guarda la ranura `auto`. El payload lleva posición, orientación, `CampaignState` (misión e inventario) e instantánea de los 8 NPC con nombre; las obras van en `WorldState.changes`.
 - `SleepOverlay` (Core): fundido negro con «Has dormido hasta la mañana · Día N · 08:00 · Partida guardada».
 - `SaveManager`: carga pendiente (`request_load` / `consume_pending_load`) y ranura `AUTO_SLOT`.
