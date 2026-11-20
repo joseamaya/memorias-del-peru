@@ -101,7 +101,10 @@ func _house(x: float, z: float, size: Vector3) -> void:
 
 func _build_coricancha() -> void:
 	var center: Vector3 = Vector3(0.0, 0.0, -70.0)
-	var ground: float = _ground(center.x, center.z)
+	# La plataforma se apoya en la cota más alta de su huella: con la altura
+	# del centro, la ladera la enterraba por un lado y el recinto parecía
+	# hundido. La caja se extiende hacia abajo hasta el terreno.
+	var ground: float = _max_ground(center.x, center.z, Vector3(38.0, 0.0, 30.0)) + 0.2
 	BlockoutKit.add_box(
 		self,
 		Vector3(38.0, 0.6, 30.0),

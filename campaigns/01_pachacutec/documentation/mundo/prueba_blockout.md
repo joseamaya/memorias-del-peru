@@ -1,6 +1,6 @@
 # Prueba humana del blockout — F2
 
-- **Versión:** 0.1 — 2026-11-20
+- **Versión:** 0.2 — 2026-11-20
 - **Ámbito:** recorrido a pie del blockout regional de la campaña 01.
 - **Estado:** protocolo listo; el veredicto es del responsable.
 - **Manda:** [docs/13](../../../../docs/13_pipeline_de_escenarios.md) en el pipeline, [docs/06](../../../../docs/06_estrategia_de_pruebas.md) §4.1 en la validación visual y la [ficha de F2](../../../../docs/fases/F2-geografia-y-blockout.md) en los criterios de fase.
@@ -48,32 +48,69 @@ Controles:
 
 `Esc` no abre un menú: el blockout no tiene pausa y la escena lo ignora.
 
-## 3. Rutas
+## 3. Cómo orientarte sin brújula
 
-### Ruta A — Núcleo (20–30 min)
+El blockout no tiene brújula ni mapa en pantalla. La orientación sale del terreno y del camino:
 
-Objetivo: validar S3, S2 y S1 y el camino principal.
+```text
+                         CUESTA ARRIBA
+              quebrada → paso → frontera
+                       \       /
+                        \     /
+              [ PLAZA DE LA LLACTA ]
+                  /             \
+    manantial, telar,             CUSCO
+    corral, huerto               CUESTA ABAJO
+```
 
-1. **Aparición (S3):** mirar la plaza, las casas y el camino. Comprobar que la puerta de una casa y el jugador tienen la misma escala.
-2. **Plaza de la llacta:** rodearla; comprobar el borde, las cuatro salidas y que no hay un muro invisible.
-3. **Manantial, telar, corral y huerto:** recorrerlos sin atajos; comprobar que el terreno no tiene escalones que atrapen.
-4. **R1 hacia el este (S2):** seguir el camino principal hasta las terrazas y el vado. Comprobar que el camino se apoya en el relieve y que no hay props a menos de 3 m.
-5. **Cusco preimperial (S1):** entrar por la plaza, rodear el Coricancha, el mercado y los talleres. Comprobar la escala del recinto y de los callejones.
-6. **Regreso:** volver por R3 (ruta del río) o por R1. Anotar si el atajo se lee o si se pierde.
+Reglas:
 
-### Ruta B — Región completa (30–40 min, opcional)
+1. **La plaza de la llacta es el centro.** Todas las dudas se resuelven volviendo a ella.
+2. **Cuesta abajo = Cusco.** El camino se ensancha, pasa junto a las terrazas y termina en la plaza grande del Cusco, con el Coricancha y el mercado.
+3. **Cuesta arriba = quebrada → paso → frontera.** El camino sube, pasa junto al arroyo y el salto de agua, luego el zigzag y la nieve, y después el bofedal y el campamento.
+4. **Alrededor de la plaza = vida de la llacta:** manantial, telar, corral, huerto y fogón.
+5. **`H`:** muestra la etiqueta del POI más cercano. Úsalo para confirmar dónde estás.
+6. **`T`:** vista cenital de revisión. Sirve para orientarte, no para caminar; pulsa otra vez para volver a la vista normal.
 
-Objetivo: validar S4, S5 y S6 además de la ruta A.
+Al aparecer: **la plaza está delante**; el Cusco queda **a tu espalda, cuesta abajo**; la quebrada, **al otro lado de la plaza, cuesta arriba**.
 
-1. Completar la ruta A hasta el Cusco.
-2. Continuar al oeste por R2: **quebrada alta (S4)** — terrazas de papa, queñua, salto de agua, cueva y cantera.
-3. Subir al **paso (S5)**: zigzag, refugio de pirca, mirador y altar.
-4. Bajar a la **frontera chanca (S6)**: bofedal, tambo, marcas, campamento, puesto y campo de batalla.
-5. Volver por R2 o por R5. Comprobar que la vuelta no depende de un marcador.
+## 4. Ruta A — Núcleo (20–30 min)
+
+Objetivo: validar la llacta (S3), las afueras (S2) y el Cusco (S1).
+
+1. **Aparición:** camina recto hasta la plaza. No gires. Comprueba la escala de una puerta frente a tu personaje.
+2. **Plaza de la llacta:** rodéala. Comprueba el borde y que no hay un muro invisible. Usa `H` para reconocer los POI.
+3. **Alrededor de la plaza:** manantial, telar, corral y huerto. Vuelve a la plaza al terminar.
+4. **Cusco:** vuelve por el mismo camino por el que llegaste, date la vuelta y sigue **cuesta abajo**. Pasa junto a las terrazas; al llegar, busca la plaza grande, el Coricancha y el mercado. Si el camino se acerca al río, es la variante del río y también lleva al Cusco.
+5. **Regreso:** vuelve por el mismo camino o por el camino del río (junto al agua). Anota si el atajo se lee o si te pierdes.
+
+Si te desvías y no ves la plaza, `T` y vuelve a la cinta marrón del camino.
+
+## 5. Ruta B — Región completa (30–40 min, opcional)
+
+Objetivo: validar además la quebrada (S4), el paso (S5) y la frontera (S6).
+
+1. **Desde la plaza, toma el camino que sube**, dejando el Cusco a tu espalda.
+2. **Quebrada alta:** sigue el arroyo. Verás terrazas de papa, queñua, salto de agua, cueva y cantera.
+3. **Paso:** continúa por el zigzag. Verás nieve, el refugio de pirca, el mirador y el altar.
+4. **Frontera:** baja al bofedal. Verás el tambo, las marcas de piedra, el campamento, el puesto y el campo de batalla.
+5. **Vuelta:** por el mismo camino o por la ruta oculta si la encuentras. Comprueba que la vuelta no depende de un marcador.
 
 Si el tiempo no alcanza, la ruta A es la mínima para aprobar el blockout; la ruta B se puede repetir en otra sesión.
 
-## 4. Qué mirar en cada sector
+## 6. Mapa de bolsillo
+
+| Destino | Desde la plaza | Qué ves | Etiqueta `H` |
+|---|---|---|---|
+| Cusco (S1/S2) | el camino que baja y se ensancha | terrazas, plaza grande, Coricancha, mercado | POI-17, POI-18, POI-19 |
+| Quebrada (S4) | el camino que sube | arroyo, salto, queñua, terrazas de papa | POI-10, POI-11, POI-13, POI-14, POI-25 |
+| Paso (S5) | sigue el camino de la quebrada | zigzag, nieve, refugio, mirador, altar | POI-23, POI-24, POI-30 |
+| Frontera (S6) | sigue el paso y baja | bofedal, tambo, marcas, campamento, campo | POI-26, POI-27, POI-28, POI-29 |
+| Llacta (S3) | rodea la plaza | manantial, telar, corral, huerto, fogón | POI-01 a POI-08, POI-10 |
+
+Tiempos aproximados: plaza en 1–2 min desde la aparición; Cusco en 10–15 min desde la plaza; quebrada en 12–15 min; paso y frontera, 20–30 min más. Son referencias, no cronómetros.
+
+## 7. Qué mirar en cada sector
 
 | Sector | Qué debe leerse | Qué invalida la aprobación |
 |---|---|---|
@@ -92,13 +129,21 @@ Comprobar también:
 - **Streaming:** al cruzar de sector no aparece una pantalla, no se vacía el mundo y no hay un tirón largo.
 - **Rescate:** si se fuerza una caída, el jugador vuelve al punto de aparición.
 
-## 5. Registro de incidencias
+## 8. Si te pierdes
+
+1. Detente y pulsa `T`.
+2. Busca la cinta marrón del camino y la plaza de la llacta.
+3. Vuelve a la plaza.
+4. Pulsa `H`: la etiqueta más cercana te dice dónde estás.
+5. Si sigues perdido: cuesta abajo es Cusco; cuesta arriba es quebrada, paso y frontera.
+
+## 9. Registro de incidencias
 
 Anotar una fila por incidencia. Sin captura, la incidencia se puede reproducir pero no se puede defender.
 
 | # | Sector | Hora | Tipo | Severidad | Qué pasó | Dónde | Evidencia |
 |---|---|---|---|---|---|---|---|
-| 1 |  |  | bloqueo / colisión / escala / streaming / lectura | bloqueante / mayor / menor |  | coordenadas o referencia visual | captura o vídeo |
+| 1 |  |  | bloqueo / colisión / escala / streaming / lectura | bloqueante / mayor / menor |  | referencia visual (plaza, camino, POI) | captura o vídeo |
 
 Severidades:
 
@@ -106,7 +151,7 @@ Severidades:
 - **Mayor:** rompe la lectura del territorio o la escala, pero se puede seguir.
 - **Menor:** detalle de blockout que no impide jugar.
 
-## 6. Evidencia
+## 10. Evidencia
 
 Capturas de trabajo (van a `build/evidencia/`, ignorado por Git):
 
@@ -123,13 +168,13 @@ Tomas mínimas:
 
 1. Aparición en R1.
 2. Plaza de la llacta desde el camino.
-3. Cusco desde la entrada.
+3. Cusco desde la entrada y el Coricancha.
 4. Quebrada, paso y frontera desde el camino.
 5. Vista cenital de la región.
 
 Las capturas aprobadas se copian a `documentation/img/f2_blockout/` y se enlazan desde la ficha de F2. Las de trabajo pueden quedar en `build/`.
 
-## 7. Veredicto
+## 11. Veredicto
 
 El responsable marca una casilla y firma:
 
@@ -149,10 +194,10 @@ El responsable marca una casilla y firma:
 | Veredicto |  |
 | Observaciones |  |
 
-## 8. Fuera de alcance
+## 12. Fuera de alcance
 
 No se evalúan en esta prueba: materiales y texturas definitivas, arquitectura final, interiores transitables, NPC y rutinas, multitud, inventario, interacción, combate, audio, clima, día/noche ni interfaz de diario/mapa. El blockout usa volúmenes grises y etiquetas de revisión a propósito.
 
-## 9. Criterio de cierre de F2
+## 13. Criterio de cierre de F2
 
 F2 se cierra cuando la ruta A (o la B) se completa sin incidencias bloqueantes, las mayores están corregidas o aceptadas por el responsable y el veredicto queda registrado en la [ficha de F2](../../../../docs/fases/F2-geografia-y-blockout.md) y en la [bitácora](../../../../docs/bitacora.md).
