@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://tests/record_campaign.gd" id="1_record"]
-
-[node name="RecordCampaign" type="Node"]
-script = ExtResource("1_record")

@@ -6,7 +6,7 @@ Tres guardas:
 1. El ejecutor `tests/run_tests.gd` solo lee el directorio `tests/`; una prueba
    dentro de una subcarpeta dejaría de ejecutarse en silencio.
 2. Toda prueba de `tests/test_*.gd` figura en la sección activa de `docs/06`
-   (§3, antes de §3.5) y toda prueba citada allí existe.
+   (§1–§3.6, antes de §3.7) y toda prueba citada allí existe.
 3. Todo recorrido de integración (`*_check.gd` y `arc_playthrough.gd`) se
    ejecuta en `.github/workflows/ci.yml`, y todo script que la CI ejecuta existe.
 
@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 TESTS = ROOT / "tests"
 DOC = ROOT / "docs" / "06_estrategia_de_pruebas.md"
 CI = ROOT / ".github" / "workflows" / "ci.yml"
-ACTIVE_TESTS_END = "### 3.5"
+ACTIVE_TESTS_END = "### 3.7. Mundo abierto"
 
 
 def main() -> int:
@@ -57,7 +57,6 @@ def main() -> int:
             failures.append(f"ci.yml ejecuta {path}, que no existe.")
 
     integration = {path.name for path in TESTS.glob("*_check.gd")}
-    integration.add("arc_playthrough.gd")
     ci_names = {Path(path).name for path in ci_scripts}
     for name in sorted(integration - ci_names):
         failures.append(f"tests/{name} no se ejecuta en ci.yml.")

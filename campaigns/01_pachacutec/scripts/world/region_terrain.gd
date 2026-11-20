@@ -43,7 +43,7 @@ const SECTOR_COLORS: Dictionary[StringName, Color] = {
 const SECTOR_NAMES: Dictionary[StringName, String] = {
 	&"s1_cusco": "S1 · Cusco preimperial",
 	&"s2_afueras": "S2 · Afueras y terrazas",
-	&"s3_llacta": "S3 · Llacta de Rumi",
+	&"s3_llacta": "S3 · Llacta del valle",
 	&"s4_quebrada": "S4 · Quebrada alta",
 	&"s5_paso": "S5 · Paso",
 	&"s6_frontera": "S6 · Frontera chanca",
@@ -246,20 +246,14 @@ func _build_water() -> void:
 ## Assets mínimos de blockout: una textura de pradera y otra de roca. No son
 ## arte final; solo evitan el damero y permiten leer pendientes y valles.
 func _build_terrain_assets() -> void:
-	var grass: Terrain3DTextureAsset = _texture_asset(
-		Color(0.38, 0.45, 0.30), "BlockoutPradera", 0
-	)
-	var rock: Terrain3DTextureAsset = _texture_asset(
-		Color(0.50, 0.48, 0.44), "BlockoutRoca", 1
-	)
+	var grass: Terrain3DTextureAsset = _texture_asset(Color(0.38, 0.45, 0.30), "BlockoutPradera", 0)
+	var rock: Terrain3DTextureAsset = _texture_asset(Color(0.50, 0.48, 0.44), "BlockoutRoca", 1)
 	var assets: Terrain3DAssets = Terrain3DAssets.new()
 	assets.texture_list = [grass, rock]
 	_terrain.assets = assets
 
 
-func _texture_asset(
-	color: Color, asset_name: String, asset_id: int
-) -> Terrain3DTextureAsset:
+func _texture_asset(color: Color, asset_name: String, asset_id: int) -> Terrain3DTextureAsset:
 	var image: Image = Image.create(8, 8, false, Image.FORMAT_RGBA8)
 	image.fill(color)
 	image.generate_mipmaps()

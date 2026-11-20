@@ -24,7 +24,7 @@
 
 **Qué significa “retirada”:** el trabajo de la fase lineal no continúa, no se cierra y no bloquea el plan nuevo. Sus escenas, pruebas y documentación salen del repositorio en la retirada y solo quedan en el historial de git. No se cita como canon ni se reutiliza sin decisión expresa del responsable.
 
-**Nomenclatura:** **F4-L** y **F5-L** son las fases lineales retiradas: su contenido sale del repositorio y solo queda en el historial de git. **F4** y **F5** sin sufijo son las fases nuevas de producción y cierre de la campaña de mundo abierto. La ficha histórica `F4-arte-audio-equilibrio.md` se conserva como historial hasta la retirada, pero no es fuente de verdad.
+**Nomenclatura:** **F4-L** y **F5-L** son las fases lineales retiradas: su contenido sale del repositorio y solo queda en el historial de git. **F4** y **F5** sin sufijo son las fases nuevas de producción y cierre de la campaña de mundo abierto.
 
 ---
 

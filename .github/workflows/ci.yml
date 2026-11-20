@@ -101,36 +101,6 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/run_tests.gd 2>&1 | tee /tmp/tests.log
           python3 tools/check_output.py /tmp/tests.log
 
-      - name: Comportamiento del combate
-        run: |
-          set -o pipefail
-          ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd 2>&1 | tee /tmp/combat.log
-          python3 tools/check_output.py /tmp/combat.log
-
-      - name: Arco completo
-        run: |
-          set -o pipefail
-          ~/godot/godot --headless --path . --script res://tests/arc_playthrough.gd 2>&1 | tee /tmp/arc.log
-          python3 tools/check_output.py /tmp/arc.log
-
-      - name: Recorrido de la llacta
-        run: |
-          set -o pipefail
-          ~/godot/godot --headless --path . --script res://tests/llacta_walk_check.gd 2>&1 | tee /tmp/walk.log
-          python3 tools/check_output.py /tmp/walk.log
-
-      - name: Mensajero del acto I
-        run: |
-          set -o pipefail
-          ~/godot/godot --headless --path . --script res://tests/llacta_messenger_check.gd 2>&1 | tee /tmp/messenger.log
-          python3 tools/check_output.py /tmp/messenger.log
-
-      - name: Duda del acto I
-        run: |
-          set -o pipefail
-          ~/godot/godot --headless --path . --script res://tests/llacta_doubt_check.gd 2>&1 | tee /tmp/doubt.log
-          python3 tools/check_output.py /tmp/doubt.log
-
       - name: Streaming de sectores
         run: |
           set -o pipefail

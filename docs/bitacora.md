@@ -6,6 +6,24 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — Borrado de la campaña lineal
+
+**Decisión:** se borra del repositorio la campaña lineal completa: escenas, scripts, recursos, pruebas, guiones y rastro en textos. Solo queda el **contexto histórico** y el territorio de F2. Nada se archiva en el árbol; el historial de git es el archivo.
+
+| Cambio | Detalle |
+|---|---|
+| Escenas y recursos | Cinco escenas de acto, seis escenas de apoyo, cinco paletas y el recurso de *slice*. |
+| Scripts | 26 de campaña (directores, generadores de acto, vegetación, muros, materiales, lotes, honda, emboscada, audio, personajes, progreso, interacciones) y el motor de actos de `core/systems/slice`. |
+| Núcleo | `QuestTracker` sale del HUD y `IntroCards` desaparece: eran guía por marcador y tarjetas del acto I. |
+| Pruebas | 44 archivos, entre pruebas unitarias, recorridos y capturas; la suite pasa de 168 a 113 casos y el inventario de CI se actualiza. |
+| Textos | La tabla de localización se reduce de 403 a 5 claves: nombres, diálogos, banderas y avisos de la trama. `test_localization_tables` comprueba que no vuelven. |
+| Nombres | «Llacta de Rumi» pasa a «Llacta del valle» y «Casa de Rumi» a «Casa de la familia», porque el protagonista que les daba nombre ya no existe. Es un nombre provisional. |
+| Herramientas | Se retiran las de tráiler, que grababan los actos. `scene_audit` apunta a `region_world`. |
+| Documentos | Biblia, guion, guion de escenas, checklist, guía visual, prototipo de maniquí, personajes Quaternius, reestructuración narrativa, plan de tráiler y ficha de F4-L. `docs/09`, `docs/12` y `docs/06` se reducen a contexto histórico y a las pruebas vigentes. |
+| Consecuencia | El juego arranca en `region_world` y no queda ninguna referencia a actos, paletas, guiones ni elenco anterior en `res://`. La campaña se repiensa desde el contexto histórico. |
+| Validación | Importación limpia; 113 pruebas, 0 fallos; seis sectores con sus comprobaciones; `REGION_OK`, `ROUTES_OK`; auditoría 280 mallas, 0 flotantes; exportación Linux y arranque headless; captura del blockout de S3 igual que antes; 0 enlaces rotos. |
+| Riesgo | Los nombres provisionales («Llacta del valle», «El despertar del Sol») se confirman o se cambian cuando la campaña rediseñada fije su toponimia. |
+
 ## 2026-11-20 — Retirada de la campaña lineal
 
 **Decisión:** la campaña lineal y su trama inventada se retiran del repositorio. El punto de partida para repensar la campaña 01 es el **contexto histórico**: fichas PCH, expediente histórico, expediente geográfico y fuentes. La retirada efectiva del contenido va en un PR posterior; este registra la decisión y corta el arranque lineal.

@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_poi")
 id = &"poi_01"
-display_name = "Casa de Rumi"
-description = "Hogar de Rumi y su familia; punto de descanso y guardado."
+display_name = "Casa de la familia"
+description = "Casa de una familia de la llacta; punto de descanso y guardado."
 sector = &"s3_llacta"
 classification = "GN"
 trigger = 0

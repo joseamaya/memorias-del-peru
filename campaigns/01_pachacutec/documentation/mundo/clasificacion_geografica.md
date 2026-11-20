@@ -13,7 +13,7 @@
 | Coricancha | GD/GR | Recinto sagrado documentado | Forma exacta en 1438 |
 | Ruta hacia Anta/Abancay | GD/GR | Corredor real de conexión | Trazado y uso exactos en 1438 |
 | Paso de montaña | GN/GR | Geografía de altura plausible | Identificación con un paso documentado |
-| Llacta de Rumi | GN | Comunidad ficticia que sostiene el relato | Existencia histórica |
+| Llacta del valle | GN | Comunidad ficticia que sostiene el relato | Existencia histórica |
 | Valle intermedio | GN | Ficción de escala y geografía | Correspondencia con un valle real |
 | Terrazas y acequias | GR | Prácticas documentadas | Distribución exacta |
 | Pirca, adobe, ichu | GR | Técnicas y materiales documentados | Cada casa concreta |
@@ -36,7 +36,7 @@
 
 ## 3. Decisiones de ficción
 
-1. **La llacta** existe para dar un hogar concreto a Rumi. Es GN.
+1. **La llacta** existe para dar un hogar concreto a la comunidad. Es GN.
 2. **El valle intermedio** separa la llacta del Cusco y permite un viaje de un día. Es GN.
 3. **El paso** se inspira en la geografía de altura, pero no se identifica con un paso documentado. Es GN/GR.
 4. **El campamento chanca** es una necesidad narrativa; no se afirma su ubicación. Es GN.
@@ -46,7 +46,7 @@
 ## 4. Lo que no se puede decir
 
 - «Este es el mapa exacto del Cusco de 1438».
-- «La llacta de Rumi existió».
+- «La llacta del valle existió».
 - «Los chancas acamparon aquí».
 - «Esta es la distancia real entre la llacta y el Cusco».
 - «Esta casa es una reconstrucción exacta de una vivienda andina».

@@ -14,7 +14,6 @@
 | [rutas_y_poi.md](rutas_y_poi.md) | Catálogo de rutas y 30 puntos de interés con clasificación |
 | [experiencias_de_exploracion.md](experiencias_de_exploracion.md) | 25 experiencias no principales con lugar, disparador y consecuencia |
 | [clasificacion_geografica.md](clasificacion_geografica.md) | Qué es GD, GR y GN en esta región, con justificación |
-| [reestructuracion_narrativa.md](reestructuracion_narrativa.md) | Cómo los cinco actos se convierten en fases del mismo territorio |
 | [prueba_blockout.md](prueba_blockout.md) | Protocolo de la prueba humana de F2: rutas, qué mirar, incidencias y veredicto |
 
 ## Regla de trabajo

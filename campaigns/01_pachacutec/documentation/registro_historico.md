@@ -77,7 +77,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-006 — Llacta / asentamiento
 - Tipo: lugar
 - Clasificación: A (asentamientos excavados) / R (esta llacta concreta)
-- Uso en el juego: escenas `llacta.tscn`, `llacta_act4.tscn` y `llacta_act5.tscn`
+- Uso en el juego: blockout de S3 (F2), generado por `llacta_blockout.gd`
 - Fuentes:
   - A: R. Alan Covey, Kylie E. Quave y otros, «Settlement discontinuity at Ak'awillay and the development of the Inca imperial capital region», *Antiquity* 99 (404): 481–499 (2025), acceso abierto: https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B. Las prospecciones de cobertura total registran «approximately 1000 Late Intermediate Period sites» en la región del Cusco (p. 483). En el valle de Xaquixaguana, «approximately 150 small villages and hamlets occupied the alluvial terraces and low hillslopes near the valley floor» (p. 487). Se han excavado sitios preimperiales mayores (Chokepukio, Wat'a, Pukara Pantillijlla) y contextos de «local households, tombs and public spaces» (pp. 483–484).
   - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. III «De sus pueblos y casas» (pp. 163–164): «Los quichuas llaman al pueblo Llacta»; los pueblos «eran pequeños como aldeas de á cien vecinos para abajo».
@@ -89,7 +89,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-007 — Vivienda rural de piedra y barro
 - Tipo: arquitectura
 - Clasificación: A / R
-- Uso en el juego: `Llacta/Houses` en `llacta.tscn` (actos I, IV y V); modelos `pch_house_a.glb`, `pch_house_b.glb` y `pch_house_c.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas). En la versión actual, la puerta lleva tablones de madera cerrados, un pasador de cuerda y un escalón de piedra (R). En la versión actual:
+- Uso en el juego: casas de `LlactaBlockout` en S3 (F2); modelos `pch_house_a.glb`, `pch_house_b.glb` y `pch_house_c.glb` (R: planta rectangular de pirka con mortero de barro, puerta trapezoidal en el muro largo, hastiales de piedra y techo de ichu a dos aguas). En la versión actual, la puerta lleva tablones de madera cerrados, un pasador de cuerda y un escalón de piedra (R). En la versión actual:
   - los muros son de piedra tosca de contorno irregular asentada en barro, en hiladas desiguales, como describe Cobo (a partir de H);
   - la puerta es más baja (1,55 m), según Cobo;
   - se añade una tercera variante, `pch_house_c.glb`;
@@ -106,7 +106,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-008 — Terraza agrícola
 - Tipo: arquitectura
 - Clasificación: A
-- Uso en el juego: `Llacta/Terraces` en `llacta.tscn` (actos I, IV y V)
+- Uso en el juego: terrazas de `LlactaBlockout` en S3 (F2)
 - Fuentes:
   - H: Bernabé Cobo, *Historia del Nuevo Mundo* (1653), ed. Marcos Jiménez de la Espada, t. IV (Sevilla, 1893), lib. XIV, en archive.org: https://archive.org/details/historiadelnuev01andagoog, cap. VIII «Del conocimiento y uso que tenían de la agricultura» (pp. 188–189): allanaban las laderas con paredes de piedra que sostenían la tierra a nivel, «todas ellas de piedra seca … como son muchos de los andenes que todavía permanecen en la comarca del Cuzco».
   - A (localizada por búsqueda automática, sin contrastar directamente): Frank Meddens y otros, «Where the Water Flows…», *Latin American Antiquity* 37 (2): 189–207 (2026), CC BY 4.0: https://www.cambridge.org/core/product/ADEECF01245B8D8CC483B5C822646030/core-reader. Documenta terrazas con muro de contención inclinado (tipología de Kendall y Rodríguez 2009) introducidas en el valle de Chicha-Soras en el Horizonte Medio, antes de los incas.
@@ -143,7 +143,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-011 — Mensajero (no chasqui)
 - Tipo: personaje
 - Clasificación: H / R
-- Uso en el juego: `llacta.tscn` (actos I, IV y V) (`Llacta/NPCs/Mensajero`) y el diálogo del mensajero en `llacta.gd`; modelo `pch_npc_messenger.glb` (R: unku de viaje sin insignias, paño en la cabeza, chuspa y bulto atado a la espalda)
+- Uso en el juego: POI y diálogos de la llacta en F3, por escribir; modelo `pch_npc_messenger.glb` (R: unku de viaje sin insignias, paño en la cabeza, chuspa y bulto atado a la espalda)
 - Fuentes:
   - Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. XXVII «Coming of the Chancas against Cuzco», en la traducción de Clements R. Markham, *History of the Incas* (Hakluyt Society, 2.ª serie, vol. XXII, Cambridge, 1907); edición digital de Project Gutenberg n.º 20218, sin paginación. Los chancas capturan en Conchacalla a un hombre que se ofrece a guiarlos; a medio camino huye al Cusco y avisa de que avanzan. El texto dice que era «a Quillis-cachi of Cuzco», y su noticia hace que Viracocha apresure la huida a Chita. *Quilliscachi* es en Sarmiento el nombre de un grupo o linaje del valle del Cusco (nota 63 de Markham), no un oficio de mensajero.
   - Inca Garcilaso de la Vega, *Comentarios reales*, I parte, lib. VI, cap. VII «Postas y correos, y los despachos que llevaban», ed. Horacio H. Urteaga (Lima, Sanmartí, 1918), t. 2, pp. 149–152 (escaneo en archive.org: `loscomentariosre02vega`). Describe a los chasquis como correos por relevos al servicio del rey, sin fechar la institución en ningún reinado. Distingue al chasqui del *cacha*, el mensajero que va en persona de un señor a otro.
@@ -269,7 +269,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-021 — Corral de pirca seca
 - Tipo: arquitectura / pastoreo
 - Clasificación: R
-- Uso en el juego: `Llacta/Corrals` en `llacta.tscn` (actos I, IV y V): dos corrales bajos de pirca seca (1 m), con una entrada, en las afueras del oeste y el noroeste. Están vacíos: las llamas siguen fuera del slice (PCH-014).
+- Uso en el juego: corral de `LlactaBlockout` en S3 (F2): dos corrales bajos de pirca seca (1 m), con una entrada, en las afueras del oeste y el noroeste. Están vacíos: las llamas siguen fuera del slice (PCH-014).
 - Fuentes:
   - A (principal; leída por el agente el 2026-11-12 en la edición en línea): Brian S. Bauer, Lucas C. Kellett y Miriam Aráoz Silva, *Los chancas: investigaciones arqueológicas en Andahuaylas (Apurímac, Perú)*, IFEA, Lima, 2013, cap. 6 «La Fase Chanca en la región de Andahuaylas (1000-1400 d. C.)», párrafos 11, 29 y 32 (https://books.openedition.org/ifea/11659). Es la misma obra que PCH-003. El párrafo 11 dice que los sitios de la Fase Chanca situados cerca de grandes pastizales «a menudo también contienen restos de corrales de piedra». Los párrafos 29 y 32 describen concentraciones de corrales en y alrededor de los asentamientos de cumbre, como indicio de un agropastoralismo cada vez más importante. No se nombra ningún sitio concreto con corrales.
   - A (apoyo; resumen y datos leídos por el agente el 2026-11-12 en la página de la revista): Trinidad Aguilar Meza, «Estructuras para la caza y el pastoreo: un legado prehispánico», *Devenir* 5 (9): 153–172 (2018), DOI 10.21754/devenir.v5i9.205, https://revistas.uni.edu.pe/index.php/devenir/article/view/205 (PDF: https://revistas.uni.edu.pe/index.php/devenir/article/view/205/115). Prospección en comunidades altoandinas del Cusco, a más de 3900 m (Waqoto, La Raya, Qelloqocha). Según el resumen, «las kanchas sirven para el pastoreo de llamas y alpacas». El resumen no dice que sean de piedra ni las data.
@@ -330,7 +330,7 @@ Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean
 
 ---
 
-## Pendientes de los actos II y III
+## Pendientes de investigación (movilización y guerra)
 
 Fichas de los elementos que el RPG introduce después del acto I. Ninguna entra
 al juego hasta estar **verificada**; se listan aquí para no inventar contenido
@@ -415,7 +415,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 
 ---
 
-## Pendientes de los actos IV y V
+## Pendientes de investigación (posguerra y obra)
 
 Fichas de los elementos que la posguerra y el cierre introducen. Ninguna entra
 al juego hasta estar **verificada**; se listan para no inventar contenido ni
@@ -446,13 +446,13 @@ a la vista.
 - Uso en el juego: acto V; un mensajero trae la noticia del nombre nuevo
 - Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Pachacútec Inca Yupanqui* (1953).
 - Discrepancias entre fuentes: la asunción del nombre tras la victoria es tradición de los cronistas, no un acto documentado minuto a minuto.
-- Notas de representación: se presenta como **lo que se cuenta**; Rumi lo oye en la llacta, no lo presencia en el trono.
+- Notas de representación: se presenta como **lo que se cuenta**; El jugador lo oye en la llacta, no lo presencia en el trono.
 - Estado de verificación: **verificado (H tradición / N escena)** por revisión documental del agente el 2026-11-15; el nombre se presenta como tradición y la escena es ficción declarada.
 
 ### PCH-035 — La reconstrucción de la casa y las terrazas
 - Tipo: arquitectura / actividad
 - Clasificación: R
-- Uso en el juego: acto V; corral, terraza, telar, acequia y casa de Rumi reparados
+- Uso en el juego: acto V; corral, terraza, telar, acequia y casa de la familia reparados
 - Fuentes: PCH-007 (vivienda), PCH-008 (terraza), PCH-021 (corral de pirca) y las fuentes que citan; no hay una referencia específica sobre la reconstrucción tras un conflicto.
 - Discrepancias entre fuentes: —
 - Notas de representación: la obra usa las mismas técnicas documentadas que la construcción inicial; no se inventan herramientas.

@@ -1,7 +1,7 @@
 # Expediente histórico — Campaña 01: El despertar del Sol
 
 - **Versión:** 1.0 — 2026-11-15
-- **Ámbito:** los cinco actos
+- **Ámbito:** la campaña 01 y su región
 - **Regla:** este documento ordena la investigación; las citas con edición y página viven en el [registro histórico](registro_historico.md). Ningún elemento entra al juego con ficha «pendiente».
 - **Clasificación:** H (hecho documentado), A (evidencia arqueológica), R (reconstrucción), N (licencia narrativa), según [docs/07](../../../docs/07_convenciones_historicas.md).
 
@@ -67,7 +67,7 @@ No hay metales europeos, rueda de transporte, animales de tiro ni especies intro
 
 ## 6. Actividades cotidianas
 
-- Acarreo de agua y peso (Monte), molienda de maíz (Oficio), tejido (Palabra/Oficio) y pirca (Monte/Oficio): las cuatro tareas del acto I y los cinco trabajos de reconstrucción del acto V, con la casa de Rumi incluida.
+- Acarreo de agua y peso (Monte), molienda de maíz (Oficio), tejido (Palabra/Oficio) y pirca (Monte/Oficio): las cuatro tareas del acto I y los cinco trabajos de reconstrucción del acto V, con la casa de la familia incluida.
 - Chicha de jora: preparación, servicio y consumo ritual y social (PCH-005).
 - Coca: masticar y compartir; uso ritual y social (PCH-028).
 - Ofrenda a la Pachamama (PCH-012).
@@ -110,7 +110,7 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 
 | Elemento | Clasificación | Nota |
 |---|---|---|
-| Rumi, protagonista | N | Joven de 17 años; nombre provisional hasta fijar la norma quechua |
+| Protagonista | N | Por definir desde el contexto histórico; su nombre se registrará como N. |
 | Sisa, compañera de camino | N | 18 años; nombre provisional |
 | Asto, curaca de la llacta | N | Autoridad local ficticia |
 | Puma, principal escéptico | N | Voz de la élite que se retiró |
@@ -126,8 +126,8 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 
 ## 11. Estado del expediente
 
-- **Cronología y localizaciones:** completas para los cinco actos.
-- **Personajes y organización:** completos para los cinco actos.
+- **Cronología y localizaciones:** completas para el periodo y la región.
+- **Personajes y organización:** completos para el periodo y la región.
 - **Cultura material:** cubierta por las fichas PCH-004 a PCH-031; PCH-025 fuera del juego.
 - **Controversias:** registradas con su tratamiento en pantalla.
 - **Verificado:** PCH-032 a PCH-036, por revisión documental del agente el 2026-11-15 sobre las ediciones citadas. PCH-025 queda fuera del juego.

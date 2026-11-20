@@ -1,21 +1,14 @@
 # Campaña 01 — Pachacútec: El despertar del Sol
 
-## 1. Premisa
+## 1. Premisa histórica
 
 Siglo XV. La confederación chanca avanza sobre el Cusco. Según la tradición recogida por varios cronistas, el inca gobernante y su heredero abandonan la ciudad, y un hijo del inca, Cusi Yupanqui, organiza su defensa. Tras la victoria, Cusi Yupanqui asume el nombre de Pachacútec e inicia la expansión que dará forma al Tahuantinsuyu.
 
-El jugador es Rumi, un joven de una llacta del valle. Vive la mañana en que llega la noticia, cruza el paso con la comitiva, participa en la defensa y vuelve a una casa que ya no es la misma.
+> La premisa resume una **tradición narrada en crónicas**, con versiones divergentes (ver §2). En el juego se presenta como tal, no como un relato único comprobado.
 
-> La premisa resume una **tradición narrada en crónicas**, con versiones divergentes (ver §3). En el juego se presenta como tal, no como un relato único comprobado.
+**La campaña está por rediseñar.** El protagonista, la comunidad, el arranque y las fases se deciden con este contexto delante, no heredando la trama anterior, que se retiró el 2026-11-20.
 
-## 2. Pilares de la campaña
-
-- Vida cotidiana de la llacta antes de la amenaza: trabajo agrícola, reciprocidad, rituales.
-- Tensión creciente: noticias del avance chanca, abandono de la ciudad por la élite.
-- La defensa como esfuerzo colectivo de ayllus y aliados.
-- El costo: la victoria no devuelve lo perdido.
-
-## 3. Contexto historiográfico (resumen)
+## 2. Contexto historiográfico (resumen)
 
 Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_convenciones_historicas.md). Las referencias de este resumen son orientativas; las citas con edición, capítulo y página están en las fichas del [registro histórico](registro_historico.md) y el detalle en el [expediente](expediente_historico.md).
 
@@ -28,39 +21,33 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 | Pururaucas (piedras que se convierten en guerreros) | Leyenda de la tradición recogida por Pachacuti Yamqui Salcamaygua (PCH-031). Se cuenta como creencia de los personajes, nunca como hecho ni como mecánica. | N / H (tradición) |
 | Síntesis moderna | María Rostworowski, *Pachacútec Inca Yupanqui* (1953) e *Historia del Tahuantinsuyu* (1988). | — |
 
-## 4. Grafía
+## 3. Grafía
 
 - Interfaz: formas hispanizadas consolidadas para nombres muy conocidos (Pachacútec, Cusco, Viracocha, chanca).
 - Términos culturales: forma de uso común en español con variante en quechua (alfabeto oficial) registrada en la ficha (p. ej. llacta / llaqta, chanca / chanka, ayllu).
-- **Nombres ficticios:** Rumi, Sisa, Asto, Puma y Anca son formas provisionales, registradas como N. La norma de escritura quechua sigue pendiente de elección; hasta entonces, toda forma quechua es provisional.
+- **Nombres ficticios:** ningún nombre de personaje está fijado todavía. Los que se adopten se registrarán como N.
+- La norma de escritura quechua sigue pendiente de elección; hasta entonces, toda forma quechua es provisional.
 - Decisión revisable por el asesor histórico/lingüístico cuando se incorpore.
 
-## 5. Documentos de la campaña
+## 4. Documentos de la campaña
 
 | Documento | Estado |
 |---|---|
-| [biblia_campana.md](biblia_campana.md) | **v1.1 (narrativa)** — los cinco actos, el protagonista, el elenco, los sistemas y las banderas; la estructura de mundo se adapta en `mundo/` |
-| [mundo/](mundo/README.md) | **v1.0 (dossier completo)** — expediente, mapa, sectores, rutas, 30 POI, 25 experiencias, clasificación y reestructuración narrativa |
+| [mundo/](mundo/README.md) | **Dossier de región** — expediente geográfico, mapa, sectores, rutas, 30 POI, experiencias de exploración, clasificación y protocolo de blockout |
 | [expediente_historico.md](expediente_historico.md) | **v1.0** — cronología, lugares, personajes, cultura material, controversias y ficción declarada |
 | [registro_historico.md](registro_historico.md) | 29 fichas verificadas; PCH-025 (armadura acolchada) fuera del juego; PCH-032 a PCH-036 verificadas el 2026-11-15 |
 | [hoja_verificacion_fichas.md](hoja_verificacion_fichas.md) | Hoja de trabajo para verificar las fichas: dónde consultar cada fuente y correcciones detectadas |
-| [guion_campana.md](guion_campana.md) | **Cerrado (v1.1)** — 15 secciones, fichas de misión, banderas y finales |
-| [guion_escenas.md](guion_escenas.md) | **v1.0** — 22 escenas con bloqueo, cámara, textos, banderas y aceptación |
-| [guia_visual.md](guia_visual.md) | Idea visual, paleta por acto, escala, formas, personajes y capturas de referencia |
-| [prototipo_maniqui.md](prototipo_maniqui.md) | Elenco activo de maniquíes UAL1: looks, integración, rendimiento y capturas |
-| [personajes_quaternius.md](personajes_quaternius.md) | Histórico del elenco UBC retirado; se conserva como documento |
-| [checklist_biblia.md](checklist_biblia.md) | Checklist de diseño por acto; pendientes de duración y arte/audio |
 
-## 6. Estado de construcción
+## 5. Estado de construcción
 
-**La versión lineal se retira el 2026-11-20.** Los actos I–V existieron como blockout jugable y se conservan solo en el historial de git; no son fuente de verdad ni banco de pruebas activo. El elenco inventado de diez maniquíes UAL1 (CC0) sale con ella. Lo que se conserva es el **contexto histórico**: fichas PCH, expediente histórico, expediente geográfico y fuentes.
+**La campaña lineal se retiró el 2026-11-20**, con su trama, su elenco y sus escenas. No queda en el repositorio; solo en el historial de git. Lo que se conserva es el **contexto histórico** de este directorio y el **territorio** del dossier de región.
 
-**La campaña se repiensa desde el contexto histórico.** La región, los sectores y la geografía viven en [mundo/](mundo/README.md) y se conservan porque son territorio, no trama. Protagonista, comunidad, arranque y fases se diseñan de nuevo antes de la ficha de F3.
+La campaña se repiensa desde ese contexto: protagonista, comunidad, arranque y fases se diseñan de nuevo antes de escribir la ficha de F3. El territorio de F2 se conserva porque es geografía, no trama.
 
-El estado por tarea y la evidencia viven en la [ficha de F0](../../../docs/fases/F0-redefinicion-mundo-abierto.md); el estado de las fases, en [docs/05](../../../docs/05_plan_de_implementacion.md). La [ficha de F4](../../../docs/fases/F4-arte-audio-equilibrio.md) y la F5 lineal se retiran con el resto de la campaña lineal.
+El estado de las fases vive en [docs/05](../../../docs/05_plan_de_implementacion.md).
 
-## 7. Notas de producción
+## 6. Notas de producción
 
 - Los modelos, texturas y audios viven en `assets/` con su licencia registrada.
 - Los guiones de Blender (`assets/blender/`) generan los modelos de forma reproducible.
-- Los objetos rituales reutilizables (quero y ofrenda) conservan su escena y su script.
+- Ningún contenido narrativo se da por bueno hasta que la campaña rediseñada lo fije.

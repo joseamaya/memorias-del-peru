@@ -66,9 +66,9 @@ Auditoría de solo lectura sobre `main` (2026-11-19): estructura de carpetas, do
 | Veredicto | Sistemas / archivos |
 |---|---|
 | **Conservar** | `PlayerFPS`, `Interactable`, `InteractionHighlight`, `StaminaComponent`, `DialogueRunner` y recursos de diálogo, `AudioManager`, `GraphicsSettings` y perfiles, `UiTheme`, HUD base, localización CSV, `SessionLog`, ejecutor de pruebas, CI, pipeline Blender/GLB, modelos, audio, shaders, registro histórico |
-| **Adaptar** | `CharacterState` (habilidades, salud, ánimo, reputación), `Inventory` (16 huecos + almacenamiento), `Journal` (encargos + descubrimientos + personas + lugares), `CombatLoadout` (contextual), `NpcActor` (horarios, navegación, LOD), `CampaignInfo` (selector), `CampaignState` → `WorldState`, `QuestTracker` → guía opcional, `HUD` (menos barras, más contexto) |
-| **Reconstruir** | Composición del mundo/terreno, generadores `llacta.gd`/`ciudad.gd`/`paso.gd` como escena final, simulación de NPC, navegación, streaming, persistencia, misiones/eventos, interiores, mapa del diario, selector de campañas, pruebas de mundo |
-| **Retirar** | Los cinco mapas como niveles separados, `llacta_act4.tscn`/`llacta_act5.tscn` como duplicados, directores de acto, puntos de control como único guardado, marcadores como guía principal, objetivo de 40–50 min, política de “sin guardado” |
+| **Adaptar** | `CharacterState` (habilidades, salud, ánimo, reputación), `Inventory` (16 huecos + almacenamiento), `Journal` (encargos + descubrimientos + personas + lugares), `CombatLoadout` (contextual) , `CampaignInfo` (selector), `CampaignState` → `WorldState`, `HUD` (menos barras, más contexto) |
+| **Reconstruir** | Composición del mundo/terreno, simulación de NPC, navegación, streaming, persistencia, misiones/eventos, interiores, mapa del diario, selector de campañas, pruebas de mundo |
+| **Retirar** | **Ya retirado el 2026-11-20:** los cinco mapas como niveles separados, directores de acto, generadores `llacta.gd`/`ciudad.gd`/`paso.gd`, el motor de actos (`core/systems/slice`), `QuestTracker`, `IntroCards`, las paletas por acto y el elenco de maniquíes de la campaña. Sigue retirado del diseño: puntos de control como único guardado, marcadores como guía principal, objetivo de 40–50 min y política de “sin guardado” |
 | **Investigar** | Rendimiento real de Terrain3D en UHD 770, streaming sin regiones, navmesh sobre terreno, coste de interiores, multitudes, DEM/GIS, región de la campaña III, alcance de Huamachuco en la IV |
 
 ## 7. Estrategia de migración

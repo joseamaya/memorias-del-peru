@@ -12,7 +12,7 @@
 | 2.1 | Heightmap regional | **Base implementada** | 3,5 × 2,5 km con valle, río, quebrada, paso y cumbres; alturas por sector | `region_terrain_check`, captura aérea |
 | 2.2 | Sectores y streaming | **Base implementada** | Seis sectores con función y presupuesto; carga sin pantallas | `region_streaming_check`; 6 escenas, 3 cargadas en la llacta |
 | 2.3 | Rutas | **Base implementada** | R1–R8 conectan los sectores; navmesh por sector | `route_network_check`; 8 rutas, 6 navmeshes y rutas continuas |
-| 2.4 | S3 Llacta de Rumi | **Base implementada** | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | `llacta_blockout_check`; 17 casas, 9 POI, 120 draw calls |
+| 2.4 | S3 Llacta del valle | **Base implementada** | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | `llacta_blockout_check`; 17 casas, 9 POI, 120 draw calls |
 | 2.5 | S1 Cusco preimperial | **Base implementada** | Plaza, recinto, ayllus, mercado y talleres en blockout | `cusco_blockout_check`; 28 casas, 6 POI, 247 draw calls |
 | 2.6 | S4–S6 | **Base implementada** | Quebrada, paso y frontera con POI y límites naturales | `frontier_sectors_check`; 5+3+5 POI y presupuestos |
 | 2.7 | POI y descubrimiento | **Base implementada** | 30 POI con ID, función, clasificación y disparador | `poi_discovery_check`; 30 POI, diario, mapa y guardado |
@@ -30,7 +30,7 @@
 | Zona | Altura objetivo | Sector |
 |---|---|---|
 | Cusco preimperial | 3.380–3.500 m | S1 |
-| Llacta de Rumi | 3.500–3.700 m | S3 |
+| Llacta del valle | 3.500–3.700 m | S3 |
 | Quebrada alta | 3.800–4.050 m | S4 |
 | Paso | 4.000–4.300 m | S5 |
 | Frontera chanca | 3.900–4.250 m | S6 |
@@ -125,14 +125,14 @@ godot --path . --resolution 1280x720 \
 
 La captura queda en `build/evidencia/routes.png`.
 
-## 2.4. F2.4 — S3 Llacta de Rumi
+## 2.4. F2.4 — S3 Llacta del valle
 
 **Escena:** `campaigns/01_pachacutec/scenes/world/sectors/s3_llacta.tscn`; se carga con el sector S3 sobre el terreno regional.
 
 **Contenido de blockout:**
 
-- Plaza circular de 18 m de radio y 17 casas: 12 en anillo exterior, 4 interiores y la casa de Rumi.
-- Casa de Rumi, casa del curaca, telar, corral, manantial, acequia, huerto, horno de cerámica y fogón.
+- Plaza circular de 18 m de radio y 17 casas: 12 en anillo exterior, 4 interiores y la casa de la familia.
+- Casa de la familia, casa del curaca, telar, corral, manantial, acequia, huerto, horno de cerámica y fogón.
 - Nueve etiquetas de POI: 01–08 y el huerto (POI-10).
 - 20 cuerpos estáticos de colisión en casas, corral y plataformas.
 - Los caminos R1, R2, R3 y R7 salen de la plaza; las casas se colocan fuera del anillo de 21 m para no bloquear las salidas.
@@ -146,7 +146,7 @@ La captura queda en `build/evidencia/routes.png`.
 ```bash
 godot --headless --path . --script res://tests/llacta_blockout_check.gd
 godot --path . --disable-vsync --resolution 1920x1080 \
-    res://tests/scenes/measure_llacta.tscn
+    res://tests/scenes/measure_blockout.tscn
 godot --path . --resolution 1280x720 \
     res://tests/scenes/capture_llacta_blockout.tscn
 ```
@@ -239,7 +239,7 @@ Las capturas quedan en `build/evidencia/quebrada_blockout.png`, `paso_blockout.p
 
 **Disparadores:**
 
-- `START`: casa de Rumi y plaza de la llacta se conocen al empezar.
+- `START`: casa de la familia y plaza de la llacta se conocen al empezar.
 - `PROXIMITY`: el resto se descubre al acercarse.
 - `DIALOGUE`: casa del curaca y casa de un ayllu, reservados para conversación.
 - `EVENT`: campo de batalla, reservado para la guerra.
