@@ -86,13 +86,13 @@ Validación histórica, visual, de rendimiento y de guardado
 
 **Mundo caminable (F2.9).** `region_world` instancia `player_fps.tscn` en el camino de entrada a la llacta y deja que la colisión dinámica de Terrain3D sostenga al jugador. El objetivo del streaming sigue al jugador, así que los sectores cargan a su alrededor. Las capturas y mediciones que necesitan la cámara de revisión instancian la escena con `first_person = false`. La prueba humana de 20–30 min, con rutas y registro de incidencias, está en [prueba_blockout.md](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
 
-**Entorno de revisión.** La escena regional no usa el arte final: añade cielo físico, ambiente neutro, sol con sombras, relleno frío, bruma suave y dos texturas planas de pradera/roca para el autoshader de Terrain3D. Las casas apoyan el cimiento en su esquina más baja y la plaza se apoya en la altura del centro. El objetivo es que el blockout se pueda mirar; no sustituye la iluminación ni los materiales de F3.
+**Entorno de revisión.** La escena regional no usa el arte final: añade cielo físico, ambiente neutro, sol con sombras, relleno frío, bruma suave y dos texturas planas de pradera/roca para el autoshader de Terrain3D. Las casas apoyan el cimiento en su esquina más baja y la plaza es una malla que sigue el terreno; un disco plano a la altura del centro flotaba sobre la ladera y el jugador pasaba por debajo. El objetivo es que el blockout se pueda mirar; no sustituye la iluminación ni los materiales de F3.
 
 **Recorrido regional (F2.8).** `region_walkthrough_check` recorre el navmesh Cusco → frontera con el streamer y el descubrimiento activos; valida continuidad, carga de los seis sectores, POI y guardado. La prueba humana de 20–30 min es la que cierra F2.
 
 **POI y descubrimiento (F2.7).** Cada POI es un recurso `PoiDefinition` con posición, radio, disparador y rango de fase; `DiscoveryService` los descubre y alimenta diario y mapa sin conocer IDs concretos.
 
-**Rutas y navmesh (F2.3).** Las rutas viven en `CampaignRoute` y se dibujan como cintas de blockout; el navmesh se hornea por sector con `TerrainNavmesh` y se une con `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa ya sincronizó las regiones.
+**Rutas y navmesh (F2.3).** Las rutas viven en `CampaignRoute` y se dibujan como cintas de blockout; el navmesh se hornea por sector con `TerrainNavmesh` y se une con `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa ya sincronizó las regiones. Cada borde de la cinta se muestrea con `get_surface_height` (la superficie interpolada, no el dato de la heightmap), con paso de 1,5 m; `route_network_check` comprueba que ningún vértice flote más de 0,30 m.
 
 **Sectores transmitidos (F2.2).** `region_world.tscn` mantiene el terreno regional y transmite seis escenas de sector con `SectorStreamer`; cada escena lleva su transformación mundial y su marcador de blockout. No hay pantallas de carga exteriores: el terreno no se descarga.
 

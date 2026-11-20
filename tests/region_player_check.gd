@@ -75,6 +75,20 @@ func _run() -> void:
 	ok = ok and absf(plaza_end.y - plaza_ground) <= MAX_GROUND_GAP
 	ok = ok and player.is_on_floor()
 
+	# La plaza no puede quedar por encima del jugador: con un disco plano a la
+	# altura del centro, el borde cuesta abajo flotaba y se pasaba por debajo.
+	var plaza_gap: float = 0.0
+	var llacta: LlactaBlockout = (
+		world.get_streamer().get_loaded_node(&"s3_llacta") as LlactaBlockout
+	)
+	if llacta == null:
+		ok = false
+	else:
+		var plaza_height: float = llacta.get_plaza_height_at(Vector2(plaza_end.x, plaza_end.z))
+		if not is_nan(plaza_height):
+			plaza_gap = plaza_end.y - plaza_height
+			ok = ok and plaza_gap >= -0.75
+
 	var target: Node3D = world.get_node("StreamTarget") as Node3D
 	if target == null:
 		ok = false
@@ -104,7 +118,9 @@ func _run() -> void:
 		" ground_gap=",
 		snappedf(end.y - end_ground, 0.01),
 		" plaza_distance=",
-		snappedf(plaza_distance, 0.1)
+		snappedf(plaza_distance, 0.1),
+		" plaza_gap=",
+		snappedf(plaza_gap, 0.01)
 	)
 	world.queue_free()
 	await process_frame

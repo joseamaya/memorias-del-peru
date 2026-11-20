@@ -109,7 +109,7 @@ La captura queda en `build/evidencia/region_streaming.png`.
 
 **Navmesh:** seis regiones horneadas con `TerrainNavmesh` sobre los límites de cada sector (paso de 6 m), unidas con cinco `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa sincronizó las regiones y sus extremos se proyectan al navmesh.
 
-**Comprobación:** `route_network_check` valida 8 rutas, 8 cintas, 6 regiones, y rutas continuas llacta–Cusco (~1.039 m) y llacta–frontera (~2.190 m). Salida: `ROUTES_OK routes=8 regions=6`.
+**Comprobación:** `route_network_check` valida 8 rutas, 8 cintas, 6 regiones, rutas continuas llacta–Cusco (~1,04 km) y llacta–frontera (~2,0 km), y que ningún vértice de las cintas flota más de 0,30 m sobre la superficie del terreno. Salida: `ROUTES_OK routes=8 regions=6`.
 
 **Medición:** horneado completo de las seis regiones en ~3,4 s en la referencia con carga alta. Es coste de blockout; si se convierte en ruta de carga, se pregenerará o se reducirá el paso.
 
@@ -295,11 +295,11 @@ La prueba humana de 20–30 min ya puede hacerse con el jugador andando:
 godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
 ```
 
-**Correcciones de la validación:** la primera pasada encontró tres defectos de blockout que impedían la prueba. El punto de aparición estaba detrás de la casa de 15° y la marcha recta chocaba con ella; se movió a R1 (352,9, 28,3), entre las casas de 15° y 65°, con rumbo 62°. La cinta de ruta estaba a 0,8 m del suelo y tapaba la vista como un muro; bajó a 0,15 m. La plaza era un cilindro macizo de 0,8 m sin colisión y la cámara quedaba dentro; pasó a una losa de 0,12 m. `region_player_check` ahora recorre 9 m y sigue hasta el borde de la plaza (12,0 m del centro), no solo los primeros metros.
+**Correcciones de la validación:** la primera pasada encontró tres defectos de blockout que impedían la prueba. El punto de aparición estaba detrás de la casa de 15° y la marcha recta chocaba con ella; se movió a R1 (352,9, 28,3), entre las casas de 15° y 65°, con rumbo 62°. La cinta de ruta estaba a 0,8 m del suelo y tapaba la vista como un muro; bajó a 0,15 m. La plaza era un cilindro macizo de 0,8 m sin colisión y la cámara quedaba dentro; pasó a una malla circular que sigue el terreno, 0,12 m sobre la superficie. Un disco plano a la altura del centro flotaba en el borde cuesta abajo y el jugador pasaba por debajo. `region_player_check` ahora recorre 9 m, sigue hasta el borde de la plaza (12,0 m del centro) y comprueba que el jugador no queda bajo la plaza.
 
-**Entorno de revisión (2026-11-20):** la escena regional tenía `BG_COLOR` casi negro, Terrain3D sin assets (damero) y sol sin sombras; el blockout se leía como una escena rota. Se añaden cielo físico, ambiente neutro, sol con sombras, relleno frío sin sombra, bruma de profundidad y dos texturas planas de blockout (pradera y roca) para el autoshader de Terrain3D. Las casas bajan el cimiento hasta la esquina más baja de su huella y la plaza se apoya en la altura del centro, no en el máximo del cuadrado. No es arte final: sigue siendo gris, sin props ni materiales definitivos, pero permite juzgar escala, silueta y territorio. Capturas antes/después en `build/evidencia/region_player.png` y `region_player_plaza.png`.
+**Entorno de revisión (2026-11-20):** la escena regional tenía `BG_COLOR` casi negro, Terrain3D sin assets (damero) y sol sin sombras; el blockout se leía como una escena rota. Se añaden cielo físico, ambiente neutro, sol con sombras, relleno frío sin sombra, bruma de profundidad y dos texturas planas de blockout (pradera y roca) para el autoshader de Terrain3D. Las casas bajan el cimiento hasta la esquina más baja de su huella y la plaza es una malla que sigue el terreno; un disco plano a la altura del centro flotaba sobre la ladera. No es arte final: sigue siendo gris, sin props ni materiales definitivos, pero permite juzgar escala, silueta y territorio. Capturas antes/después en `build/evidencia/region_player.png` y `region_player_plaza.png`.
 
-**Capturas:** `build/evidencia/region_player.png` (aparición) y `region_player_plaza.png` (camino y plaza tras 5 s de marcha).
+**Capturas:** `build/evidencia/region_player.png` (aparición) y `region_player_plaza.png` (camino y plaza tras 15 s de marcha).
 
 **Prueba humana:** [prueba_blockout.md](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
 

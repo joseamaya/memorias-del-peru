@@ -30,6 +30,7 @@ func _run() -> void:
 	ok = ok and routes.get_route_count() == 8
 	ok = ok and routes.get_mesh_count() == 8
 	ok = ok and routes.get_region_count() == 6
+	ok = ok and _check_ribbon_clearance(routes, region)
 	var llacta: Vector3 = _ground(region, Vector3(300.0, 0.0, 0.0))
 	var cusco: Vector3 = _ground(region, Vector3(1200.0, 0.0, 400.0))
 	var frontera: Vector3 = _ground(region, Vector3(-1650.0, 0.0, 0.0))
@@ -62,6 +63,35 @@ func _run() -> void:
 	else:
 		printerr("ROUTES_FAIL")
 	quit(0 if ok else 1)
+
+
+## La cinta visual no puede flotar sobre el terreno. Se revisan los vértices
+## de los ocho caminos, no solo el centro de la ruta: en una ladera transversal
+## el borde cuesta abajo es el que delataba el fallo.
+func _check_ribbon_clearance(routes: CampaignRoutes, region: CampaignRegion) -> bool:
+	var terrain: Terrain3D = region.get_terrain()
+	if terrain == null:
+		return false
+	var maximum: float = 0.0
+	var count: int = 0
+	for child: Node in routes.get_children():
+		var mesh_instance: MeshInstance3D = child as MeshInstance3D
+		if mesh_instance == null or not mesh_instance.name.begins_with("Route_"):
+			continue
+		var array_mesh: ArrayMesh = mesh_instance.mesh as ArrayMesh
+		if array_mesh == null or array_mesh.get_surface_count() == 0:
+			return false
+		var arrays: Array = array_mesh.surface_get_arrays(0)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		for vertex: Vector3 in vertices:
+			var world: Vector3 = mesh_instance.global_transform * vertex
+			var terrain_y: float = terrain.data.get_surface_height(world)
+			if is_nan(terrain_y):
+				continue
+			maximum = maxf(maximum, world.y - terrain_y)
+			count += 1
+	print("ROUTES ribbon_vertices=", count, " max_gap=", snappedf(maximum, 0.01))
+	return count > 0 and maximum <= 0.30
 
 
 func _wait_map(map: RID, regions: int) -> bool:

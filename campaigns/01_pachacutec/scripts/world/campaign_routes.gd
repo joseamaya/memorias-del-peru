@@ -38,7 +38,7 @@ const LINK_POINTS: Array[Vector3] = [
 	Vector3(-1450.0, 0.0, 90.0),
 	Vector3(-1520.0, 0.0, 40.0),
 ]
-const RIBBON_STEP: float = 3.0
+const RIBBON_STEP: float = 1.5
 ## La cinta es solo visual y no tiene colisión: se apoya en el terreno. Con
 ## 0,8 m quedaba a la altura del pecho y tapaba la vista al caminar.
 const RIBBON_LIFT: float = 0.15
@@ -134,8 +134,10 @@ func _ribbon_mesh(route: CampaignRoute) -> ArrayMesh:
 	for index: int in centers.size():
 		var direction: Vector3 = _direction(centers, index)
 		var side: Vector3 = Vector3(-direction.z, 0.0, direction.x).normalized() * half_width
-		vertices.append(centers[index] + side)
-		vertices.append(centers[index] - side)
+		# Cada borde se apoya en su propia altura: en una ladera transversal,
+		# heredar la altura del centro dejaba el borde cuesta abajo flotando.
+		vertices.append(_on_terrain(terrain, centers[index] + side, RIBBON_LIFT))
+		vertices.append(_on_terrain(terrain, centers[index] - side, RIBBON_LIFT))
 		normals.append(Vector3.UP)
 		normals.append(Vector3.UP)
 	for index: int in range(centers.size() - 1):
@@ -162,7 +164,13 @@ func _direction(points: PackedVector3Array, index: int) -> Vector3:
 
 
 func _on_terrain(terrain: Terrain3D, point: Vector3, lift: float) -> Vector3:
-	return Vector3(point.x, terrain.data.get_height(point) + lift, point.z)
+	# `get_height` devuelve el dato de la heightmap; la superficie que se ve y
+	# se pisa es la interpolada. Usar la primera dejaba la cinta hasta 4 m por
+	# encima del terreno en las laderas.
+	var height: float = terrain.data.get_surface_height(point)
+	if is_nan(height):
+		height = terrain.data.get_height(point)
+	return Vector3(point.x, height + lift, point.z)
 
 
 func _build_navmeshes() -> void:
