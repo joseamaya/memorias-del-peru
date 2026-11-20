@@ -14,6 +14,48 @@ const SAVE_DIR: String = "user://saves"
 const SCHEMA_VERSION: int = 1
 const MAX_NAME_LENGTH: int = 32
 const JSON_EXTENSION: String = ".json"
+## Ranura que la campaña usa para el guardado automático al descansar.
+const AUTO_SLOT: StringName = &"auto"
+
+## Carga pedida por la pantalla de título y pendiente de aplicar en el mundo.
+var _pending_load: Dictionary[StringName, StringName] = {}
+
+
+## Devuelve el autoload, o `null` si no existe.
+static func instance() -> SaveManagerService:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("SaveManager") as SaveManagerService
+
+
+## Pide que la próxima escena de campaña cargue la ranura indicada.
+##
+## Devuelve `false` si la ranura no existe o el nombre no es válido: la pantalla
+## de título no debe ofrecer una carga que luego fallaría en silencio.
+func request_load(campaign: StringName, slot: StringName) -> bool:
+	if not has_slot(campaign, slot):
+		return false
+	_pending_load.clear()
+	_pending_load[campaign] = slot
+	return true
+
+
+## Indica si hay una carga pendiente de aplicar.
+func has_pending_load() -> bool:
+	return not _pending_load.is_empty()
+
+
+## Devuelve la carga pendiente y la borra. Vacío si no había ninguna.
+func consume_pending_load() -> Dictionary[StringName, StringName]:
+	var pending: Dictionary[StringName, StringName] = _pending_load
+	_pending_load = {}
+	return pending
+
+
+## Descarta una carga pendiente; lo usa una partida nueva.
+func cancel_pending_load() -> void:
+	_pending_load.clear()
 
 
 ## Guarda [param payload] en la ranura indicada.

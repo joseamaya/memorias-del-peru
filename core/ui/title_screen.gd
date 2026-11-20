@@ -8,6 +8,7 @@ extends Control
 
 const TITLE_KEY: StringName = &"UI_GAME_TITLE"
 const START_KEY: StringName = &"UI_START"
+const CONTINUE_KEY: StringName = &"UI_CONTINUE"
 const QUIT_KEY: StringName = &"UI_QUIT"
 const BACKGROUND_COLOR: Color = Color(0.05, 0.04, 0.035, 1.0)
 const BACKGROUND_TEXTURE: String = "res://shared_assets/ui/title_background.png"
@@ -23,6 +24,7 @@ var _campaign: CampaignInfo = null
 var _title_label: Label = null
 var _subtitle_label: Label = null
 var _start_button: Button = null
+var _continue_button: Button = null
 var _quit_button: Button = null
 var _music: AudioStreamPlayer = null
 
@@ -35,6 +37,7 @@ func _ready() -> void:
 	_build()
 	_start_music()
 	_start_button.disabled = _campaign == null or not _campaign.has_entry_scene()
+	_continue_button.disabled = not can_continue()
 	_start_button.grab_focus()
 
 
@@ -64,9 +67,22 @@ func get_start_button() -> Button:
 	return _start_button
 
 
+## Botón Continuar, para las pruebas.
+func get_continue_button() -> Button:
+	return _continue_button
+
+
 ## Botón Salir, para las pruebas.
 func get_quit_button() -> Button:
 	return _quit_button
+
+
+## Indica si hay una partida guardada que se pueda continuar.
+func can_continue() -> bool:
+	if _campaign == null or _campaign.id == &"":
+		return false
+	var manager: SaveManagerService = SaveManagerService.instance()
+	return manager != null and manager.has_slot(_campaign.id, SaveManagerService.AUTO_SLOT)
 
 
 ## Escena de inicio de la campaña configurada.
@@ -74,21 +90,51 @@ func get_start_scene() -> String:
 	return _campaign.entry_scene if _campaign != null else ""
 
 
-## Empieza la campaña configurada. Devuelve si se pudo pedir el cambio.
+## Empieza una partida nueva. Devuelve si se pudo pedir el cambio.
+##
+## Deja el mundo en su estado inicial: las banderas de la sesión anterior, la
+## hora y una carga pendiente no deben sobrevivir a «Comenzar».
 func start_campaign() -> bool:
 	if _campaign == null or not _campaign.has_entry_scene():
 		return false
+	var manager: SaveManagerService = SaveManagerService.instance()
+	if manager != null:
+		manager.cancel_pending_load()
+	var campaign_state: CampaignStateService = CampaignStateService.instance()
+	if campaign_state != null:
+		campaign_state.clear()
+	var world_state: WorldStateService = WorldStateService.instance()
+	if world_state != null:
+		world_state.clear()
+	var clock: WorldClockService = WorldClockService.instance()
+	if clock != null:
+		clock.reset()
+	return _enter_scene(&"campaign_start")
+
+
+## Continúa la partida guardada. Devuelve si se pudo pedir el cambio.
+func continue_campaign() -> bool:
+	if not can_continue():
+		return false
+	var manager: SaveManagerService = SaveManagerService.instance()
+	if manager == null or not manager.request_load(_campaign.id, SaveManagerService.AUTO_SLOT):
+		return false
+	return _enter_scene(&"campaign_continue")
+
+
+func _enter_scene(mark: StringName) -> bool:
 	var manager: Node = get_node_or_null("/root/GameManager")
 	if manager != null:
 		manager.call("set_paused", false)
-	CampaignState.clear()
 	_stop_music()
 	var scene: String = get_start_scene()
 	if scene.is_empty():
 		return false
 	var changed: bool = get_tree().change_scene_to_file(scene) == OK
 	if changed:
-		SessionLog.mark(&"campaign_start")
+		var log_service: SessionLogService = SessionLogService.instance()
+		if log_service != null:
+			log_service.mark(mark)
 	return changed
 
 
@@ -103,6 +149,10 @@ func _on_quit_pressed() -> void:
 
 func _on_start_pressed() -> void:
 	start_campaign()
+
+
+func _on_continue_pressed() -> void:
+	continue_campaign()
 
 
 func _start_music() -> void:
@@ -190,6 +240,9 @@ func _build() -> void:
 	_start_button = _make_button("Start", tr(String(START_KEY)))
 	_start_button.pressed.connect(_on_start_pressed)
 	column.add_child(_start_button)
+	_continue_button = _make_button("Continue", tr(String(CONTINUE_KEY)))
+	_continue_button.pressed.connect(_on_continue_pressed)
+	column.add_child(_continue_button)
 	_quit_button = _make_button("Quit", tr(String(QUIT_KEY)))
 	_quit_button.pressed.connect(_on_quit_pressed)
 	column.add_child(_quit_button)

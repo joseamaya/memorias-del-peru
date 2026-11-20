@@ -220,27 +220,51 @@ extends Resource
 {
   "version": 1,
   "campaign": "01_pachacutec",
-  "slot": "auto_01",
-  "saved_at": "2026-11-19T12:00:00Z",
-  "clock": {"day": 3, "minute": 480, "weather": "clear"},
-  "phase": "noticia",
-  "flags": {"mision_01_etapa_3": 1},
-  "player": {"position": [0, 0, 0], "inventory": [], "skills": {}},
-  "npcs": {"npc_sisa": {"alive": true, "anchor": "plaza", "relation": 2}},
-  "quests": {"quest_mensajero": {"stage": 2, "choices": []}},
-  "discoveries": ["poi_mirador"],
-  "world": {"corral_reparado": 1}
+  "slot": "auto",
+  "saved_at": "2026-11-20T07:00:00Z",
+  "world": {
+    "phase": "paz",
+    "flags": {"mision_principal": 2},
+    "discoveries": ["poi_mercado"],
+    "npcs": {},
+    "changes": {"foso_arrabal": 1}
+  },
+  "clock": {"day": 3, "minute": 480, "paused": false},
+  "player": {
+    "position": [1088.0, 3378.0, 294.0],
+    "yaw": -2.33,
+    "campaign": {"flags": {"mision": 2}, "data": {"inventario": ["honda", "porra"]}},
+    "npcs": {"minute": 480, "npcs": {"npc_curaca": {"position": [0, 0, 0], "anchor": "arrabal"}}}
+  }
 }
 ```
+
+El mundo lo serializa `WorldStateService`; el reloj, `WorldClockService`; y el
+resto (`position`, `yaw`, `campaign` y la instantánea de los NPC con nombre) es
+el diccionario del jugador que compone la campaña. Misión e inventario viven en
+`player.campaign`; las obras de la defensa, en `world.changes`.
 
 ### 9.2. Reglas
 
 - Versión de esquema y migraciones explícitas.
 - Escritura atómica (temporal + rename).
 - IDs estables; nunca rutas de nodo.
-- Autoguardado al dormir, cambiar de fase y entrar/salir de un sector seguro.
+- Autoguardado al dormir; más adelante, al cambiar de fase y al entrar o salir de un sector seguro.
 - Guardado manual fuera de combate.
 - Prueba de round-trip (`save → load → save`) y de migración.
+
+### 9.3. Descanso y carga
+
+- Dormir en la cama de la casa del jugador (interior de bolsillo) avanza el
+  reloj a las 8:00 del día siguiente, despierta a los NPC en su rutina de
+  mañana y escribe la ranura `auto` de la campaña.
+- Antes de guardar se sale del interior: la sala de bolsillo se instancia 400 m
+  bajo el terreno y no sobrevive al cierre del juego. La posición guardada es
+  siempre la de la puerta, así seguir jugando y cargar dejan al jugador en el
+  mismo sitio.
+- La pantalla de título ofrece «Continuar» si existe la ranura `auto`. Deja una
+  carga pendiente en `SaveManager` que la escena de campaña consume al
+  arrancar; «Comenzar» la cancela y reinicia mundo, reloj y banderas.
 
 ## 10. Navegación y streaming
 

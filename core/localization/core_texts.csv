@@ -17,3 +17,10 @@ UI_JOURNAL_HINT,J para cerrar
 UI_JOURNAL_EMPTY,Aún no hay nada escrito.
 UI_JOURNAL_SOURCE,Fuente: %s
 UI_JOURNAL_UPDATED,Memoria actualizada · J
+UI_CONTINUE,Continuar
+UI_SLEEP,Dormir
+UI_SLEPT_TITLE,Has dormido hasta la mañana
+UI_LOADED_TITLE,Partida cargada
+UI_SLEPT_DETAIL,Día %d · %s
+UI_SAVED,Partida guardada
+UI_SAVE_FAILED,No se pudo guardar la partida

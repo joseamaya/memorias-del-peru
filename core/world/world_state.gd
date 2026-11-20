@@ -22,6 +22,14 @@ var _npcs: Dictionary[StringName, Dictionary] = {}
 var _changes: Dictionary[StringName, int] = {}
 
 
+## Devuelve el autoload, o `null` si no existe.
+static func instance() -> WorldStateService:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("WorldState") as WorldStateService
+
+
 ## Fija la fase histórica del mundo.
 func set_phase(phase: StringName) -> void:
 	if phase == &"" or phase == _phase:

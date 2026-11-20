@@ -8,6 +8,10 @@ extends Node3D
 ##
 ## El director de Core hace el resto: horarios, rutas por navmesh y LOD.
 
+## La población terminó de registrarse: la sesión puede aplicar la instantánea
+## de los NPC de una partida cargada.
+signal built
+
 const TOTAL_NPCS: int = 24
 const NAMED_NPCS: int = 8
 
@@ -62,6 +66,10 @@ func get_director() -> NpcDirector:
 	return _director
 
 
+func is_built() -> bool:
+	return _built
+
+
 func get_definition_count() -> int:
 	return _definitions.size()
 
@@ -87,8 +95,16 @@ func _try_build() -> void:
 		anchors[id] = world_point
 	_build_definitions()
 	_built = _director.register(_definitions, anchors)
+	if not _built:
+		return
+	# La primera colocación usa la hora del reloj: al cargar una partida de
+	# noche, los NPC no deben aparecer en su casa de día antes de corregirse.
+	var clock: WorldClockService = WorldClockService.instance()
+	if clock != null:
+		_director.set_time(clock.get_minute_of_day())
 	_director.teleport_to_goal()
 	_director.update_lod()
+	built.emit()
 
 
 func _build_definitions() -> void:

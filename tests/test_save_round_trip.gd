@@ -80,6 +80,29 @@ func test_save_world_round_trip() -> bool:
 	return ok
 
 
+func test_pending_load_requires_a_slot() -> bool:
+	var manager: SaveManagerService = SaveManagerService.new()
+	var campaign: StringName = StringName("test_pending_%d" % Time.get_ticks_msec())
+	var slot: StringName = &"auto"
+	var ok: bool = not manager.request_load(campaign, slot)
+	ok = ok and not manager.has_pending_load()
+	ok = ok and manager.save_slot(campaign, slot, {"value": 1})
+	ok = ok and manager.request_load(campaign, slot)
+	ok = ok and manager.has_pending_load()
+	var pending: Dictionary[StringName, StringName] = manager.consume_pending_load()
+	ok = ok and pending.get(campaign, &"") == slot
+	ok = ok and not manager.has_pending_load()
+	ok = ok and manager.consume_pending_load().is_empty()
+	ok = ok and manager.request_load(campaign, slot)
+	manager.cancel_pending_load()
+	ok = ok and not manager.has_pending_load()
+	ok = ok and not manager.request_load(campaign, &"no_existe")
+	ok = ok and manager.delete_slot(campaign, slot)
+	_cleanup(manager, campaign)
+	manager.free()
+	return ok
+
+
 func _to_int(value: Variant) -> int:
 	var text: String = str(value)
 	if text.is_valid_int():

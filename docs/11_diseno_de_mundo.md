@@ -318,6 +318,10 @@ Objetivos provisionales del rediseño del 2026-11-20; se confirman o se recortan
 - Si una partida no se puede cargar por versión, se conserva el archivo y se avisa; nunca se borra en silencio.
 - El guardado no se usa para castigar: morir recarga el último punto seguro, no reinicia la campaña.
 
+**Estado (2026-11-20):** implementados el autoguardado al dormir en la casa del
+jugador y «Continuar» en la portada. El guardado manual desde la pausa y las
+tres ranuras siguen previstos.
+
 ## 11. Interfaz
 
 - HUD mínimo: interacción contextual, salud y aliento solo cuando importan, subtítulos y rótulo de lugar.

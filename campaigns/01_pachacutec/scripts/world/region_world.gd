@@ -60,6 +60,7 @@ var _camera: Camera3D = null
 var _player: PlayerFPS = null
 var _interiors: InteriorController = null
 var _population: CityPopulation = null
+var _session: CampaignSession = null
 var _spawn_position: Vector3 = Vector3.ZERO
 var _route_index: int = 0
 var _labels_visible: bool = false
@@ -97,6 +98,7 @@ func _ready() -> void:
 		_build_player()
 		_build_interiors()
 		_build_population()
+		_build_session()
 	_build_review_hud()
 	_update_camera()
 
@@ -189,8 +191,34 @@ func get_interiors() -> InteriorController:
 	return _interiors
 
 
+func get_session() -> CampaignSession:
+	return _session
+
+
+## Coloca al jugador en un punto concreto (cargar una partida): corta la
+## velocidad y reajusta el objetivo del streaming en el mismo fotograma.
+func place_player(point: Vector3, yaw: float) -> void:
+	if _player == null:
+		return
+	_player.velocity = Vector3.ZERO
+	_player.global_position = point
+	_player.rotation.y = yaw
+	if _target != null:
+		_target.global_position = point
+	if _streamer != null:
+		_streamer.refresh()
+
+
 func get_population() -> CityPopulation:
 	return _population
+
+
+func _build_session() -> void:
+	_session = CampaignSession.new()
+	_session.name = "Session"
+	add_child(_session)
+	_session.setup(self, _player, _population)
+	_session.begin()
 
 
 func _build_population() -> void:

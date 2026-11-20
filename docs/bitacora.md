@@ -6,6 +6,21 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F3.7: descanso y guardado
+
+**Decisión:** dormir en la casa del jugador avanza el día y guarda la partida en la ranura automática; el título ofrece «Continuar».
+
+| Cambio | Detalle |
+|---|---|
+| Descanso | `RestCycle` despierta a las **8:00**, la misma hora con la que empieza la partida: a las 7:00 el ciclo todavía deja la ciudad en penumbra y el jugador creía que seguía de noche. |
+| Cama | `BedInteractable` en el interior de la casa del jugador; el resto de camas se ven pero no se usan. Pide el descanso al nodo del grupo `campaign_session`, sin que Core conozca la campaña. |
+| Guardado | `CampaignSession` compone posición, orientación, estado de campaña y la instantánea de los NPC con nombre, y lo escribe con `SaveManager` en la ranura `auto`. |
+| Interior | Antes de guardar se sale de la sala de bolsillo: vive 400 m bajo el terreno y no sobrevive al cierre. La posición guardada es la de la puerta, así seguir jugando y cargar coinciden. |
+| Carga | «Continuar» en el título deja una carga pendiente que la escena de campaña consume al arrancar; «Comenzar» la cancela y reinicia mundo, reloj y banderas. |
+| Servicios | `WorldStateService`, `CampaignStateService`, `SessionLogService` y `SaveManagerService` ganan `instance()`, y las escenas dejan de depender de los identificadores de autoload, que no se resuelven cuando un `--script` las compila como dependencia. |
+| Pruebas | `test_rest_cycle` y `city_save_round_trip`, que duerme, cierra la instancia del mundo, la vuelve a levantar y comprueba hora, 8 NPC, misión, inventario y obras. |
+| Pendiente | Misión (3.5) e inventario (3.6) escribirán en `CampaignState`; hoy el canal está probado con datos de esa forma. Las obras usarán `WorldState.set_change` (3.8). |
+
 ## 2026-11-20 — F3.4: población de la ciudad
 
 **Decisión:** 24 NPC en S1 con rutinas de mañana, tarde y noche, sobre el director y el horario que ya existían de F1.

@@ -15,6 +15,8 @@ const PANEL_COLOR: Color = Color(0.20, 0.16, 0.12)
 
 ## Vestido de la sala a la que lleva: `home`, `authority` o `workshop`.
 @export var dressing: StringName = &"home"
+## Casa del jugador: su cama permite dormir y guardar la partida.
+@export var player_home: bool = false
 ## Puerta interior que devuelve al mundo.
 @export var is_exit: bool = false
 

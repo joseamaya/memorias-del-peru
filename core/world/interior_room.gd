@@ -18,8 +18,13 @@ const WOOD: Color = Color(0.36, 0.28, 0.20)
 const FABRIC: Color = Color(0.55, 0.35, 0.28)
 const SOIL: Color = Color(0.40, 0.32, 0.22)
 
+## Posición de la cama dentro de la sala, en XZ local.
+const BED_POSITION: Vector2 = Vector2(-2.6, 1.4)
+
 ## Vestido de la sala: `home`, `authority` o `workshop`.
 @export var dressing: StringName = &"home"
+## Casa del jugador: la cama se puede usar para dormir y guardar.
+@export var player_home: bool = false
 
 var _materials: Dictionary[String, StandardMaterial3D] = {}
 
@@ -72,6 +77,8 @@ func _build_light() -> void:
 func _build_dressing() -> void:
 	match dressing:
 		&"authority":
+			# La cama del curaca se ve pero no se usa: no es la casa del jugador.
+			@warning_ignore("return_value_discarded")
 			_bed(-2.6, 1.4, 2.2, 0.6)
 			_loom(1.8, -1.4)
 			_stack(-2.4, -2.0)
@@ -82,15 +89,27 @@ func _build_dressing() -> void:
 			_stack(2.6, 1.8)
 			_bench(0.0, 2.2)
 		_:
-			_bed(-2.6, 1.4, 2.2, 0.6)
+			var mattress: MeshInstance3D = _bed(BED_POSITION.x, BED_POSITION.y, 2.2, 0.6)
+			if player_home:
+				_add_bed(mattress)
 			_hearth(1.9, 1.6)
 			_stack(-2.6, -1.9)
 			_bench(0.2, 2.2)
 
 
-func _bed(x: float, z: float, width: float, height: float) -> void:
+## Cama utilizable: el colisionador lo pone [BedInteractable]; aquí solo se
+## ancla al mueble y se le pasa la malla para el resaltado.
+func _add_bed(highlight: MeshInstance3D) -> void:
+	var bed: BedInteractable = BedInteractable.new()
+	bed.name = "Bed"
+	bed.position = Vector3(BED_POSITION.x, 0.0, BED_POSITION.y)
+	bed.highlight_target = highlight
+	add_child(bed)
+
+
+func _bed(x: float, z: float, width: float, height: float) -> MeshInstance3D:
 	_box(Vector3(width, height, 2.0), Vector3(x, height * 0.5, z), WOOD, false)
-	_box(Vector3(width - 0.2, 0.18, 1.8), Vector3(x, height + 0.09, z), FABRIC, false)
+	return _box(Vector3(width - 0.2, 0.18, 1.8), Vector3(x, height + 0.09, z), FABRIC, false)
 
 
 func _loom(x: float, z: float) -> void:

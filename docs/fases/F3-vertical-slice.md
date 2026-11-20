@@ -16,7 +16,7 @@
 | 3.4 | Población | **Base implementada; falta prueba humana** | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`; 24 y 8, 0 dentro de casas |
 | 3.5 | Misión principal | Prevista | Tres etapas con estado persistente y diario | `mission_check`, `city_save_round_trip` |
 | 3.6 | Secundarias y descubrimiento | Prevista | Dos actividades con consecuencia y un lugar descubierto sin marcador | `side_activities_check` |
-| 3.7 | Descanso y guardado | Prevista | Dormir avanza el día; guardar/cargar conserva hora, NPC, misión e inventario | `city_save_round_trip` |
+| 3.7 | Descanso y guardado | **Base implementada; falta prueba humana** | Dormir avanza el día; guardar/cargar conserva hora, NPC, misión e inventario | `city_save_round_trip`; día 4 a las 8:00, 8 NPC y posición a 0,1 m |
 | 3.8 | Preparación de la defensa | Prevista | Fosos y púas construibles, persistentes y leídos por la batalla | `defense_works_check` |
 | 3.9 | Carmenca | Prevista | Tres oleadas, aliados y estandarte como objetivo; sin bloqueos | `carmenca_check` |
 | 3.10 | Cierre de la slice | Prevista | 30–45 min jugados, presupuesto medido y acta del responsable | Protocolo y capturas |
@@ -53,6 +53,7 @@
 - `InteriorController` (core): instancia la sala a la misma XZ de la puerta y 400 m por debajo del terreno; el streaming no cambia de celda y el mundo sigue vivo.
 - Puertas colocadas en el arrabal (casa del jugador y casa de Chanan Cury Coca) y en el taller textil.
 - Evidencia: `interiors_check` (3 puertas, vestidos `home`, `authority` y `workshop`, vuelta a menos de 2 m) y captura `build/evidencia/interior_home.png`.
+- Guardado (3.7): la única forma de guardar es dormir, y antes de guardar se sale de la sala. La sala no tiene estado propio que conservar —su contenido lo fija la puerta—, así que la partida nunca queda apuntando a un interior que ya no existe.
 
 ## 4. F3.3 — Ciclo día/noche
 
@@ -105,6 +106,18 @@ Tres etapas, sin sistema genérico de misiones: recursos de misión y banderas e
 Dormir en la casa del jugador avanza a la mañana siguiente. Guardar desde la cama; cargar restaura hora, NPC, misión, inventario y obras.
 
 **Criterio:** ciclo guardar → salir → cargar conserva los cinco estados y la hora avanzada.
+
+**Implementado (2026-11-20):**
+
+- `RestCycle` (Core): la hora de despertar es la misma con la que empieza la partida, **8:00**; dormir después de esa hora salta al día siguiente.
+- `BedInteractable` (Core): la cama solo responde dentro de una sesión de campaña y pide el descanso por grupo (`campaign_session`). Solo la casa del jugador tiene cama utilizable.
+- `CampaignSession` (campaña): al dormir sale del interior de bolsillo, avanza el reloj, despierta a los NPC en su ancla de mañana y guarda la ranura `auto`. El payload lleva posición, orientación, `CampaignState` (misión e inventario) e instantánea de los 8 NPC con nombre; las obras van en `WorldState.changes`.
+- `SleepOverlay` (Core): fundido negro con «Has dormido hasta la mañana · Día N · 08:00 · Partida guardada».
+- `SaveManager`: carga pendiente (`request_load` / `consume_pending_load`) y ranura `AUTO_SLOT`.
+- `TitleScreen`: botón **Continuar**, activo solo si existe la ranura; «Comenzar» cancela la carga y reinicia mundo, reloj y banderas.
+- `CampaignInfo.id`: identificador estable de campaña que da nombre a su carpeta de guardado.
+- Límite conocido: misión e inventario todavía no existen como sistemas (llegan con 3.5 y 3.6); su canal de guardado (`player.campaign`) está implementado y probado con datos de esa forma. Las obras se probaron con `WorldState.set_change`, que es la API de 3.8.
+- Evidencia: `city_save_round_trip` (día 4 a las 8:00, 8 NPC restaurados, posición a 0,1 m) y capturas `rest_bed`, `rest_sleep`, `rest_morning` y `title_continue`.
 
 ## 9. F3.8 — Preparación de la defensa
 

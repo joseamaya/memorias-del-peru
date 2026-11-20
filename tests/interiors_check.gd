@@ -53,6 +53,10 @@ func _run() -> void:
 		if room != null:
 			visited.append(room.dressing)
 			room_meshes = maxi(room_meshes, room.get_mesh_count())
+			# Solo la casa del jugador tiene cama utilizable para dormir.
+			var beds: int = room.find_children("*", "BedInteractable", true, false).size()
+			var expected_beds: int = 1 if door.player_home else 0
+			ok = ok and beds == expected_beds
 		ok = ok and controller.exit()
 		ok = ok and not controller.is_inside()
 		ok = ok and player.global_position.distance_to(before) <= MAX_RETURN_DISTANCE

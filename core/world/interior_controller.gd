@@ -44,6 +44,7 @@ func enter(door: InteriorDoor) -> bool:
 	var pocket: Vector3 = door.global_position + Vector3(0.0, -POCKET_DEPTH, 0.0)
 	_room = InteriorRoom.new()
 	_room.dressing = door.dressing
+	_room.player_home = door.player_home
 	_room.position = pocket
 	add_child(_room)
 	_player.global_position = (
