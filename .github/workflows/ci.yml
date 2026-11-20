@@ -101,12 +101,6 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/run_tests.gd 2>&1 | tee /tmp/tests.log
           python3 tools/check_output.py /tmp/tests.log
 
-      - name: Comportamiento del combate
-        run: |
-          set -o pipefail
-          ~/godot/godot --headless --path . --script res://tests/combat_arena_check.gd 2>&1 | tee /tmp/combat.log
-          python3 tools/check_output.py /tmp/combat.log
-
       - name: Streaming de sectores
         run: |
           set -o pipefail

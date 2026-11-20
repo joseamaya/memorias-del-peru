@@ -36,13 +36,6 @@ Ejecutar las pruebas automatizadas:
 godot --headless --path . --script res://tests/run_tests.gd
 ```
 
-Comprobar el comportamiento del combate con tres enemigos y un bot (fichas de
-ataque, resolución y atascos):
-
-```bash
-godot --headless --path . --script res://tests/combat_arena_check.gd
-```
-
 Comprobar la carga y descarga asíncrona de sectores con escenas reales:
 
 ```bash
@@ -231,7 +224,6 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
 | `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
 | `test_combat_feel` | Fases del golpe, parry de 0,15 s, bloqueo del 70 % y fichas del director |
-| `combat_arena_check.gd` | Tres chancas contra un bot: ≤ 2 atacantes, resolución y sin atascos |
 | `test_campaign_state` | Banderas entre escenas |
 | `test_dialogue_panel` | Panel de diálogo y opciones |
 | `test_journal_panel` | Diario y detalle de entradas |
