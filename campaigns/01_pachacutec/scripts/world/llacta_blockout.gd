@@ -157,10 +157,13 @@ func _house(angle_degrees: float, radius: float, size: Vector3, label: String) -
 	var z: float = sin(radians) * radius
 	var ground: float = _max_ground(x, z, size)
 	# El cimiento baja hasta la esquina más baja: en ladera, una caja de 0,4 m
-	# dejaba la casa flotando por el lado cuesta abajo.
-	var low: float = _min_ground(x, z, size)
-	var base_height: float = maxf(ground - low + 0.3, 0.5)
+	# dejaba la casa flotando por el lado cuesta abajo. Se muestrea una rejilla
+	# de 3 × 3, no solo las esquinas, para cubrir los hundimientos intermedios.
 	var orientation: Basis = Basis(Vector3.UP, -radians + PI * 0.5)
+	var low: float = BlockoutKit.min_ground(
+		_ground, x, z, Vector3(size.x + 0.4, 0.0, size.z + 0.4), orientation
+	)
+	var base_height: float = maxf(ground - low + 0.3, 0.5)
 	_add_box(
 		Vector3(size.x + 0.4, base_height, size.z + 0.4),
 		Vector3(x, ground - base_height * 0.5 + 0.15, z),
@@ -203,7 +206,7 @@ func _build_acequia() -> void:
 			Vector3(145.0, 0.0, 105.0),
 		]
 	)
-	var mesh: MeshInstance3D = _ribbon(points, 1.4, WATER, 0.35)
+	var mesh: MeshInstance3D = _ribbon(points, 1.4, WATER, 0.12)
 	mesh.name = "Acequia"
 
 
@@ -241,11 +244,14 @@ func _build_telar() -> void:
 	var x: float = 22.0
 	var z: float = -28.0
 	var ground: float = _ground(x, z)
+	var beam_ground: float = ground
 	for post_x: float in [-1.2, 1.2]:
 		for post_z: float in [-0.8, 0.8]:
+			var post_ground: float = _ground(x + post_x, z + post_z)
+			beam_ground = maxf(beam_ground, post_ground)
 			_add_box(
 				Vector3(0.18, 2.2, 0.18),
-				Vector3(x + post_x, ground + 1.1, z + post_z),
+				Vector3(x + post_x, post_ground + 1.1, z + post_z),
 				WOOD,
 				false,
 				Basis.IDENTITY,
@@ -253,11 +259,11 @@ func _build_telar() -> void:
 			)
 	_add_box(
 		Vector3(2.8, 0.18, 0.18),
-		Vector3(x, ground + 2.1, z - 0.8),
+		Vector3(x, beam_ground + 2.1, z - 0.8),
 		WOOD,
 		false,
 		Basis.IDENTITY,
-		"Telar"
+		"TelarViga"
 	)
 	_add_label("POI-04 · Telar comunal", Vector3(x, ground + 3.2, z))
 

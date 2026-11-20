@@ -45,18 +45,32 @@ func _build_bofedal() -> void:
 	for index: int in 3:
 		var x: float = -60.0 + float(index) * 22.0
 		var z: float = -80.0 + float(index % 2) * 12.0
-		var ground: float = _ground(x, z)
-		BlockoutKit.add_cylinder(self, 7.0, 0.15, Vector3(x, ground + 0.08, z), WATER)
+		BlockoutKit.add_terrain_disk(
+			self, 7.0, 0.08, WATER, _ground, 48, 6, Vector2(x, z), "Bofedal"
+		)
 	_add_label("POI-12 · Bofedal", _label_at(-60.0, -80.0))
 
 
 func _build_tambo() -> void:
 	var center: Vector3 = Vector3(-55.0, 0.0, -25.0)
-	var ground: float = _ground(center.x, center.z)
+	var long_size: Vector3 = Vector3(16.0, 1.6, 0.8)
+	var side_size: Vector3 = Vector3(0.8, 1.6, 10.0)
+	var north: float = BlockoutKit.min_ground(
+		_ground, center.x, center.z - 5.0, long_size
+	)
+	var south: float = BlockoutKit.min_ground(
+		_ground, center.x, center.z + 5.0, long_size
+	)
+	var west: float = BlockoutKit.min_ground(
+		_ground, center.x - 8.0, center.z, side_size
+	)
+	var east: float = BlockoutKit.min_ground(
+		_ground, center.x + 8.0, center.z - 3.0, side_size
+	)
 	BlockoutKit.add_box(
 		self,
-		Vector3(16.0, 1.6, 0.8),
-		Vector3(center.x, ground + 0.8, center.z - 5.0),
+		long_size,
+		Vector3(center.x, north + 0.8, center.z - 5.0),
 		WALL,
 		true,
 		Basis.IDENTITY,
@@ -64,8 +78,8 @@ func _build_tambo() -> void:
 	)
 	BlockoutKit.add_box(
 		self,
-		Vector3(16.0, 1.6, 0.8),
-		Vector3(center.x, ground + 0.8, center.z + 5.0),
+		long_size,
+		Vector3(center.x, south + 0.8, center.z + 5.0),
 		WALL,
 		true,
 		Basis.IDENTITY,
@@ -73,8 +87,8 @@ func _build_tambo() -> void:
 	)
 	BlockoutKit.add_box(
 		self,
-		Vector3(0.8, 1.6, 10.0),
-		Vector3(center.x - 8.0, ground + 0.8, center.z),
+		side_size,
+		Vector3(center.x - 8.0, west + 0.8, center.z),
 		WALL,
 		true,
 		Basis.IDENTITY,
@@ -82,8 +96,8 @@ func _build_tambo() -> void:
 	)
 	BlockoutKit.add_box(
 		self,
-		Vector3(0.8, 1.6, 10.0),
-		Vector3(center.x + 8.0, ground + 0.8, center.z - 3.0),
+		side_size,
+		Vector3(center.x + 8.0, east + 0.8, center.z - 3.0),
 		WALL,
 		true,
 		Basis.IDENTITY,
@@ -123,7 +137,9 @@ func _build_camp() -> void:
 			Basis(Vector3.UP, PI * 0.25),
 			"Tienda"
 		)
-		BlockoutKit.add_cylinder(self, 0.8, 0.4, Vector3(x + 3.0, ground + 0.2, z + 3.0), ASH)
+		BlockoutKit.add_terrain_disk(
+			self, 0.8, 0.2, ASH, _ground, 16, 2, Vector2(x + 3.0, z + 3.0), "Fuego"
+		)
 	for index: int in 6:
 		var x: float = 32.0 + float(index) * 4.0
 		var ground: float = _ground(x, 20.0)
@@ -160,7 +176,7 @@ func _build_tower() -> void:
 		WOOD,
 		false,
 		Basis.IDENTITY,
-		"Puesto"
+		"PuestoTecho"
 	)
 
 

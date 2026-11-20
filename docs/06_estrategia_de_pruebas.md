@@ -112,6 +112,14 @@ Comprobar el relieve regional de F2 (seis sectores, cumbres y río):
 godot --headless --path . --script res://tests/region_terrain_check.gd
 ```
 
+Auditar la geometría flotante del blockout (sectores, discos, cintas y plazas):
+
+```bash
+godot --headless --path . --script res://tools/blockout_float_audit.gd
+```
+
+El código de salida es `0` solo si ningún elemento no exento supera los 0,30 m de hueco. El informe completo queda en `build/evidencia/blockout_float_audit.txt`.
+
 Comprobar el streaming de los seis sectores sobre el terreno continuo:
 
 ```bash

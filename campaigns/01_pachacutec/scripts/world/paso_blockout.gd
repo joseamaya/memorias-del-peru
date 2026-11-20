@@ -49,7 +49,7 @@ func _build_path() -> void:
 			Vector3(95.0, 0.0, 65.0),
 		]
 	)
-	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 2.6, PATH, 0.6, 3.0)
+	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 2.6, PATH, 0.10)
 	mesh.name = "Zigzag"
 
 
@@ -150,8 +150,9 @@ func _build_snow() -> void:
 	for index: int in 3:
 		var x: float = -40.0 + float(index) * 35.0
 		var z: float = 20.0 - float(index) * 25.0
-		var ground: float = _ground(x, z)
-		BlockoutKit.add_cylinder(self, 7.0, 0.15, Vector3(x, ground + 0.08, z), SNOW)
+		BlockoutKit.add_terrain_disk(
+			self, 7.0, 0.08, SNOW, _ground, 48, 6, Vector2(x, z), "Nieve"
+		)
 
 
 func _add_label(text: String, label_position: Vector3) -> void:
