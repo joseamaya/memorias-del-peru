@@ -20,6 +20,8 @@ func _ready() -> void:
 	if region != null:
 		ground = region.height_at(global_position.x, global_position.z)
 	var marker: MeshInstance3D = MeshInstance3D.new()
+	marker.name = "SectorMarker"
+	marker.set_meta(&"blockout_kind", "SectorMarker")
 	var mesh: CylinderMesh = CylinderMesh.new()
 	mesh.top_radius = 5.0
 	mesh.bottom_radius = 9.0

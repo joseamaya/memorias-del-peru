@@ -193,7 +193,9 @@ func _build_manantial() -> void:
 	var ground: float = _ground(x, z)
 	var basin: MeshInstance3D = _cylinder(4.0, 0.9, Vector3(x, ground + 0.45, z))
 	basin.name = "Manantial"
-	_cylinder(3.4, 0.15, Vector3(x, ground + 0.92, z), WATER)
+	BlockoutKit.add_terrain_disk(
+		self, 3.4, 0.12, WATER, _ground, 48, 6, Vector2(x, z), "Agua"
+	)
 	_add_label("POI-03 · Manantial", Vector3(x, ground + 3.0, z))
 
 
@@ -212,32 +214,47 @@ func _build_acequia() -> void:
 
 func _build_corral() -> void:
 	var center: Vector3 = Vector3(-55.0, 0.0, 45.0)
-	var ground: float = _ground(center.x, center.z)
+	var long_size: Vector3 = Vector3(12.0, 1.2, 0.6)
+	var side_size: Vector3 = Vector3(0.6, 1.2, 12.0)
+	# Cada pared se apoya en la altura mínima de su propia huella. Con una sola
+	# altura central, los extremos cuesta abajo quedaban flotando.
+	var north: float = BlockoutKit.min_ground(
+		_ground, -55.0, 39.0, long_size
+	)
+	var south: float = BlockoutKit.min_ground(
+		_ground, -55.0, 51.0, long_size
+	)
+	var west: float = BlockoutKit.min_ground(
+		_ground, -61.0, 45.0, side_size
+	)
 	_add_box(
-		Vector3(12.0, 1.2, 0.6),
-		Vector3(-55.0, ground + 0.6, 39.0),
+		long_size,
+		Vector3(-55.0, north + 0.6, 39.0),
 		STONE,
 		true,
 		Basis.IDENTITY,
 		"Corral"
 	)
 	_add_box(
-		Vector3(12.0, 1.2, 0.6),
-		Vector3(-55.0, ground + 0.6, 51.0),
+		long_size,
+		Vector3(-55.0, south + 0.6, 51.0),
 		STONE,
 		true,
 		Basis.IDENTITY,
 		"Corral"
 	)
 	_add_box(
-		Vector3(0.6, 1.2, 12.0),
-		Vector3(-61.0, ground + 0.6, 45.0),
+		side_size,
+		Vector3(-61.0, west + 0.6, 45.0),
 		STONE,
 		true,
 		Basis.IDENTITY,
 		"Corral"
 	)
-	_add_label("POI-05 · Corral de llamas", Vector3(center.x, ground + 3.0, center.z))
+	_add_label(
+		"POI-05 · Corral de llamas",
+		Vector3(center.x, _ground(center.x, center.z) + 3.0, center.z),
+	)
 
 
 func _build_telar() -> void:

@@ -7,6 +7,11 @@ extends RefCounted
 
 const DEFAULT_LABEL_FONT: int = 64
 const DEFAULT_LABEL_PIXEL: float = 0.12
+## Elementos que no se entierran: ya tienen cimiento o están apoyados encima.
+const NO_GROUND_EXTEND: Array[String] = [
+	"Foundation", "Casa", "Techo", "Toldo", "PuestoTecho", "TelarViga", "Salto",
+	"Canopia",
+]
 
 
 static func add_box(
@@ -18,15 +23,30 @@ static func add_box(
 	orientation: Basis,
 	name_hint: String,
 ) -> Node3D:
+	var final_size: Vector3 = size
+	var final_position: Vector3 = box_position
+	# Extiende la caja hacia abajo hasta el terreno. Si el objeto se apoya en
+	# una sola altura, el extremo cuesta abajo queda flotando; el techo y las
+	# casas con cimiento quedan fuera de esta regla.
+	if not name_hint in NO_GROUND_EXTEND and parent.has_method(&"_ground"):
+		var source: Callable = Callable(parent, &"_ground")
+		var min_y: float = min_ground(
+			source, box_position.x, box_position.z, size, orientation
+		)
+		var bottom: float = parent.global_position.y + box_position.y - size.y * 0.5
+		var added: float = bottom - min_y
+		if added > 0.05:
+			final_size.y += added
+			final_position.y -= added * 0.5
 	var root: Node3D = Node3D.new()
 	root.name = name_hint
 	root.set_meta(&"blockout_kind", name_hint)
-	root.position = box_position
+	root.position = final_position
 	root.basis = orientation
 	parent.add_child(root)
 	var mesh: MeshInstance3D = MeshInstance3D.new()
 	var box: BoxMesh = BoxMesh.new()
-	box.size = size
+	box.size = final_size
 	mesh.mesh = box
 	mesh.material_override = material(color)
 	root.add_child(mesh)
@@ -34,7 +54,7 @@ static func add_box(
 		var body: StaticBody3D = StaticBody3D.new()
 		var shape: CollisionShape3D = CollisionShape3D.new()
 		var box_shape: BoxShape3D = BoxShape3D.new()
-		box_shape.size = size
+		box_shape.size = final_size
 		shape.shape = box_shape
 		body.add_child(shape)
 		root.add_child(body)
@@ -49,16 +69,28 @@ static func add_cylinder(
 	color: Color,
 	name_hint: String = "Cylinder",
 ) -> MeshInstance3D:
+	var final_height: float = height
+	var final_position: Vector3 = mesh_position
+	if parent.has_method(&"_ground"):
+		var source: Callable = Callable(parent, &"_ground")
+		var min_y: float = min_ground(
+			source, mesh_position.x, mesh_position.z, Vector3(radius * 2.0, 0.0, radius * 2.0)
+		)
+		var bottom: float = parent.global_position.y + mesh_position.y - height * 0.5
+		var added: float = bottom - min_y
+		if added > 0.05:
+			final_height += added
+			final_position.y -= added * 0.5
 	var mesh: MeshInstance3D = MeshInstance3D.new()
 	mesh.name = name_hint
 	mesh.set_meta(&"blockout_kind", name_hint)
 	var cylinder: CylinderMesh = CylinderMesh.new()
 	cylinder.top_radius = radius
 	cylinder.bottom_radius = radius
-	cylinder.height = height
+	cylinder.height = final_height
 	mesh.mesh = cylinder
 	mesh.material_override = material(color)
-	mesh.position = mesh_position
+	mesh.position = final_position
 	parent.add_child(mesh)
 	return mesh
 
