@@ -7,7 +7,7 @@ const SETTLE_FRAMES: int = 90
 const WALK_FRAMES: int = 180
 ## La plaza está a unos 55 m del punto de aparición. La segunda marcha debe
 ## llegar a su borde sin quedar bloqueada por una casa ni por la losa.
-const PLAZA_WALK_FRAMES: int = 720
+const PLAZA_WALK_FRAMES: int = 1200
 const PLAZA_CENTER: Vector3 = Vector3(300.0, 0.0, 0.0)
 const MAX_PLAZA_DISTANCE: float = 20.0
 const MIN_WALK_METERS: float = 5.0

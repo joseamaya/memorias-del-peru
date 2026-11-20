@@ -76,7 +76,9 @@ func get_house_positions() -> PackedVector3Array:
 
 
 func _build_plaza() -> void:
-	var ground: float = _max_ground(0.0, 0.0, Vector3(PLAZA_RADIUS * 2.0, 0.0, PLAZA_RADIUS * 2.0))
+	# La losa se apoya en la altura del centro, no en el máximo del cuadrado:
+	# con `_max_ground` quedaba elevada sobre la ladera y se veía por debajo.
+	var ground: float = _ground(0.0, 0.0)
 	# Losa fina, no un cilindro macizo: el blockout no tiene colisión en la
 	# plaza y el jugador puede atravesarla. Con 0,8 m la cámara quedaba dentro
 	# del volumen y solo se veía la cara interior.
@@ -101,10 +103,14 @@ func _house(angle_degrees: float, radius: float, size: Vector3, label: String) -
 	var x: float = cos(radians) * radius
 	var z: float = sin(radians) * radius
 	var ground: float = _max_ground(x, z, size)
+	# El cimiento baja hasta la esquina más baja: en ladera, una caja de 0,4 m
+	# dejaba la casa flotando por el lado cuesta abajo.
+	var low: float = _min_ground(x, z, size)
+	var base_height: float = maxf(ground - low + 0.3, 0.5)
 	var orientation: Basis = Basis(Vector3.UP, -radians + PI * 0.5)
 	_add_box(
-		Vector3(size.x + 0.4, 0.4, size.z + 0.4),
-		Vector3(x, ground - 0.2, z),
+		Vector3(size.x + 0.4, base_height, size.z + 0.4),
+		Vector3(x, ground - base_height * 0.5 + 0.15, z),
 		STONE,
 		false,
 		orientation,
@@ -278,3 +284,17 @@ func _max_ground(x: float, z: float, size: Vector3) -> float:
 	for height: float in heights:
 		maximum = maxf(maximum, height)
 	return maximum
+
+
+func _min_ground(x: float, z: float, size: Vector3) -> float:
+	var heights: Array[float] = [
+		_ground(x, z),
+		_ground(x - size.x * 0.5, z - size.z * 0.5),
+		_ground(x + size.x * 0.5, z - size.z * 0.5),
+		_ground(x - size.x * 0.5, z + size.z * 0.5),
+		_ground(x + size.x * 0.5, z + size.z * 0.5),
+	]
+	var minimum: float = heights[0]
+	for height: float in heights:
+		minimum = minf(minimum, height)
+	return minimum
