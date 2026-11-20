@@ -16,6 +16,7 @@ func _run() -> void:
 		quit(1)
 		return
 	var world: RegionWorld = packed.instantiate() as RegionWorld
+	world.first_person = false
 	root.add_child(world)
 	world.autowalk = false
 	var streamer: SectorStreamer = world.get_streamer()

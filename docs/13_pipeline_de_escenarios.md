@@ -86,6 +86,8 @@ Validación histórica, visual, de rendimiento y de guardado
 
 **Modo de revisión (F2.8).** La escena regional arranca con cámara cercana y etiquetas ocultas; `H` muestra la más cercana y `T` alterna la vista cenital. Es una herramienta de blockout, no una cámara de juego.
 
+**Mundo caminable (F2.9).** `region_world` instancia `player_fps.tscn` en el camino de entrada a la llacta y deja que la colisión dinámica de Terrain3D sostenga al jugador. El objetivo del streaming sigue al jugador, así que los sectores cargan a su alrededor. Las capturas y mediciones que necesitan la cámara de revisión instancian la escena con `first_person = false`.
+
 **Recorrido regional (F2.8).** `region_walkthrough_check` recorre el navmesh Cusco → frontera con el streamer y el descubrimiento activos; valida continuidad, carga de los seis sectores, POI y guardado. La prueba humana de 20–30 min es la que cierra F2.
 
 **POI y descubrimiento (F2.7).** Cada POI es un recurso `PoiDefinition` con posición, radio, disparador y rango de fase; `DiscoveryService` los descubre y alimenta diario y mapa sin conocer IDs concretos.

@@ -401,3 +401,4 @@ PCH_VESPERA_SLEEP,Dormir un rato
 PCH_VESPERA_SLEEP_DONE,Duermes junto al fuego. El cuerpo descansa.
 PCH_TASK,Trabajar
 PCH_REVIEW_CONTROLS,"Vista de blockout · H: etiquetas · T: vista cenital"
+PCH_PLAY_CONTROLS,"WASD: andar · Mayús: correr · H: etiquetas · T: vista cenital"

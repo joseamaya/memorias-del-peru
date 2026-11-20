@@ -19,6 +19,7 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 	var world: RegionWorld = packed.instantiate() as RegionWorld
+	world.first_person = false
 	add_child(world)
 	world.autowalk = false
 	var camera: Camera3D = Camera3D.new()

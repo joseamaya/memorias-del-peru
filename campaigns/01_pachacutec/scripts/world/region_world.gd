@@ -18,6 +18,22 @@ const SECTOR_DEFINITIONS: Array[String] = [
 const REVIEW_LABEL_LIMIT: int = 1
 const REVIEW_LABEL_PIXEL: float = 0.03
 
+## Escena del jugador en primera persona; el mundo regional la instancia cuando
+## `first_person` está activo.
+const PLAYER_SCENE: String = "res://core/player/player_fps.tscn"
+## Punto de aparición a pie: el camino de entrada a la llacta, mirando a la plaza.
+const SPAWN_POINT: Vector3 = Vector3(352.0, 0.0, 18.0)
+const SPAWN_YAW_DEGREES: float = 71.0
+## Altura sobre el terreno a la que se deja caer al jugador al aparecer.
+const SPAWN_CLEARANCE: float = 1.5
+## Caída máxima respecto al terreno antes de devolver al jugador al inicio.
+const FALL_RESPAWN_DEPTH: float = 120.0
+## Nodos cosméticos del jugador que el blockout no equipa.
+const UNEQUIPPED_NODES: Array[String] = [
+	"Head/Camera3D/FirstPersonHands",
+	"Head/Camera3D/FirstPersonWeapon",
+]
+
 const ROUTE: Array[Vector3] = [
 	Vector3(1200.0, 0.0, 400.0),
 	Vector3(750.0, 0.0, 150.0),
@@ -31,11 +47,16 @@ const ROUTE: Array[Vector3] = [
 @export var walk_speed: float = 80.0
 @export var camera_offset: Vector3 = Vector3(38.0, 26.0, 48.0)
 @export var top_down_size: float = 240.0
+## Arranca con jugador en primera persona. Si se desactiva, la escena queda como
+## cámara de revisión del blockout.
+@export var first_person: bool = true
 
 var _region: CampaignRegion = null
 var _streamer: SectorStreamer = null
 var _target: Node3D = null
 var _camera: Camera3D = null
+var _player: PlayerFPS = null
+var _spawn_position: Vector3 = Vector3.ZERO
 var _route_index: int = 0
 var _labels_visible: bool = false
 var _top_down: bool = false
@@ -67,6 +88,8 @@ func _ready() -> void:
 	if discovery != null:
 		discovery.set_target(_target)
 		discovery.load_catalog("res://campaigns/01_pachacutec/data/pois")
+	if first_person:
+		_build_player()
 	_build_review_hud()
 	_update_camera()
 
@@ -74,11 +97,17 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if autowalk:
 		_advance_route(delta)
+	_follow_player()
 	_update_camera()
 	_update_labels()
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# El blockout no tiene menú de pausa: si Esc llegara a GameManager, congelaría
+	# el árbol sin ninguna interfaz que lo explique.
+	if event.is_action_pressed("pause"):
+		get_viewport().set_input_as_handled()
+		return
 	if not (event is InputEventKey):
 		return
 	var key_event: InputEventKey = event as InputEventKey
@@ -144,6 +173,72 @@ func get_route_point(index: int) -> Vector3:
 	return ROUTE[index]
 
 
+## Jugador en primera persona, o `null` si la escena está en modo revisión.
+func get_player() -> PlayerFPS:
+	return _player
+
+
+## Indica si el mundo arrancó con jugador a pie.
+func is_first_person() -> bool:
+	return _player != null
+
+
+## Instancia el jugador en el camino de entrada a la llacta, sobre el terreno.
+func _build_player() -> void:
+	if autowalk:
+		return
+	var packed: PackedScene = load(PLAYER_SCENE) as PackedScene
+	if packed == null:
+		push_error("RegionWorld: no se encontró la escena del jugador.")
+		return
+	_player = packed.instantiate() as PlayerFPS
+	if _player == null:
+		push_error("RegionWorld: la escena del jugador no es PlayerFPS.")
+		return
+	_player.name = "Player"
+	_spawn_position = _ground_position(SPAWN_POINT)
+	_player.position = _spawn_position
+	_player.rotation_degrees.y = SPAWN_YAW_DEGREES
+	add_child(_player)
+	_hide_unequipped()
+	_target.global_position = _spawn_position
+	if _streamer != null:
+		_streamer.refresh()
+
+
+## El blockout no reparte equipo: sin manos ni arma en pantalla.
+func _hide_unequipped() -> void:
+	for path: String in UNEQUIPPED_NODES:
+		var node: Node3D = _player.get_node_or_null(path) as Node3D
+		if node != null:
+			node.hide()
+
+
+## Mantiene el objetivo del streaming sobre el jugador y lo rescata si cae fuera
+## del terreno.
+func _follow_player() -> void:
+	if _player == null or _target == null:
+		return
+	var player_position: Vector3 = _player.global_position
+	_target.global_position = player_position
+	if _player.is_on_floor():
+		return
+	var ground: float = _region.height_at(player_position.x, player_position.z)
+	if player_position.y < ground - FALL_RESPAWN_DEPTH:
+		_respawn_player()
+
+
+func _respawn_player() -> void:
+	_player.velocity = Vector3.ZERO
+	_player.global_position = _spawn_position
+	_target.global_position = _spawn_position
+
+
+## Posición de aparición: el punto pedido, elevado sobre el terreno.
+func _ground_position(point: Vector3) -> Vector3:
+	return Vector3(point.x, _region.height_at(point.x, point.z) + SPAWN_CLEARANCE, point.z)
+
+
 func _advance_route(delta: float) -> void:
 	if _target == null:
 		return
@@ -166,6 +261,7 @@ func _update_camera() -> void:
 		_camera.far = 12000.0
 		_camera.position = Vector3(center.x, ground + 3000.0, center.z)
 		_camera.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+		_activate_camera(_camera)
 		return
 	_camera.projection = Camera3D.PROJECTION_PERSPECTIVE
 	_camera.fov = 55.0
@@ -175,6 +271,16 @@ func _update_camera() -> void:
 		center.x + camera_offset.x, ground + camera_offset.y, center.z + camera_offset.z
 	)
 	_camera.look_at(Vector3(center.x, ground + 6.0, center.z), Vector3.UP)
+	if _player != null and _player.camera != null:
+		_activate_camera(_player.camera)
+	else:
+		_activate_camera(_camera)
+
+
+## Deja [param camera] como cámara activa sin reasignarla en cada fotograma.
+func _activate_camera(camera: Camera3D) -> void:
+	if camera != null and not camera.current:
+		camera.current = true
 
 
 func _update_labels() -> void:
@@ -213,7 +319,7 @@ func _build_review_hud() -> void:
 	layer.name = "ReviewHud"
 	add_child(layer)
 	_hud = Label.new()
-	_hud.text = tr("PCH_REVIEW_CONTROLS")
+	_hud.text = tr("PCH_PLAY_CONTROLS") if _player != null else tr("PCH_REVIEW_CONTROLS")
 	_hud.position = Vector2(16.0, 12.0)
 	_hud.add_theme_font_size_override("font_size", 18)
 	_hud.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.9))
