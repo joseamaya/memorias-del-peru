@@ -92,6 +92,8 @@ Validación histórica, visual, de rendimiento y de guardado
 
 **Agua.** El cauce regional tiene una cinta de agua plana de 9 m con ribera de 15 m que sigue el terreno; las acequias de S3/S1 son canales de 2,4 m. `region_terrain_check` comprueba ancho, longitud y que el agua quede entre el fondo y las orillas. La auditoría de flotantes incluye `Rio` y `Ribera`.
 
+**Marcadores y plataformas.** Los conos de sector son ayudas de revisión y se ocultan en primera persona. La plataforma del Coricancha tiene colisión y una rampa de acceso desde la plaza; el borde no se atraviesa.
+
 **Recorrido regional (F2.8).** `region_walkthrough_check` recorre el navmesh Cusco → frontera con el streamer y el descubrimiento activos; valida continuidad, carga de los seis sectores, POI y guardado. La prueba humana de 20–30 min es la que cierra F2.
 
 **POI y descubrimiento (F2.7).** Cada POI es un recurso `PoiDefinition` con posición, radio, disparador y rango de fase; `DiscoveryService` los descubre y alimenta diario y mapa sin conocer IDs concretos.

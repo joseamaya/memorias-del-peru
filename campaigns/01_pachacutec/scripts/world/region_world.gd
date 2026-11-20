@@ -66,6 +66,7 @@ var _hud: Label = null
 
 
 func _ready() -> void:
+	add_to_group(&"region_world")
 	_region = get_node("Region") as CampaignRegion
 	_streamer = get_node("SectorStreamer") as SectorStreamer
 	_target = get_node("StreamTarget") as Node3D

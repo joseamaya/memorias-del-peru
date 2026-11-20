@@ -35,7 +35,7 @@ const INTENTIONAL_KINDS: Array[String] = [
 	"TelarViga",
 ]
 ## Marcadores de revisión y agua: no se comparan contra el fondo del cauce.
-const SKIP_KINDS: Array[String] = ["SectorMarker", "Rio"]
+const SKIP_KINDS: Array[String] = ["SectorMarker", "Rio", "Rampa"]
 
 
 func _initialize() -> void:

@@ -10,7 +10,7 @@ const DEFAULT_LABEL_PIXEL: float = 0.12
 ## Elementos que no se entierran: ya tienen cimiento o están apoyados encima.
 const NO_GROUND_EXTEND: Array[String] = [
 	"Foundation", "Casa", "Techo", "Toldo", "PuestoTecho", "TelarViga", "Salto",
-	"Canopia",
+	"Canopia", "Rampa",
 ]
 
 
