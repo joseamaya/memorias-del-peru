@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_info")
-entry_scene = "res://campaigns/01_pachacutec/scenes/world/llacta.tscn"
+entry_scene = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 subtitle_key = &"PCH_CAMPAIGN_SUBTITLE"

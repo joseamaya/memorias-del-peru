@@ -53,11 +53,11 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 ## 6. Estado de construcción
 
-**La versión lineal está congelada desde el 2026-11-19.** Los actos I–V se juegan de principio a fin con blockout y materiales propios; el guion, el guion de escenas y las 141 pruebas se conservan como banco de pruebas. El elenco activo son diez maniquíes UAL1 (CC0) integrados en `NpcActor` y `CharacterModelVisual`; el legado UBC se retiró y su documento histórico se conserva en [personajes_quaternius.md](personajes_quaternius.md).
+**La versión lineal se retira el 2026-11-20.** Los actos I–V existieron como blockout jugable y se conservan solo en el historial de git; no son fuente de verdad ni banco de pruebas activo. El elenco inventado de diez maniquíes UAL1 (CC0) sale con ella. Lo que se conserva es el **contexto histórico**: fichas PCH, expediente histórico, expediente geográfico y fuentes.
 
-**La campaña nueva se redefine como mundo abierto regional.** La región, los sectores y la adaptación de los cinco actos viven en [mundo/](mundo/README.md). La implementación lineal no se amplía: se usa como referencia de contenido, tono y pruebas hasta que la vertical slice la sustituya.
+**La campaña se repiensa desde el contexto histórico.** La región, los sectores y la geografía viven en [mundo/](mundo/README.md) y se conservan porque son territorio, no trama. Protagonista, comunidad, arranque y fases se diseñan de nuevo antes de la ficha de F3.
 
-El estado por tarea y la evidencia viven en la [ficha de F0](../../../docs/fases/F0-redefinicion-mundo-abierto.md); el estado de las fases, en [docs/05](../../../docs/05_plan_de_implementacion.md). La [ficha de F4](../../../docs/fases/F4-arte-audio-equilibrio.md) y la F5 lineal quedan congeladas.
+El estado por tarea y la evidencia viven en la [ficha de F0](../../../docs/fases/F0-redefinicion-mundo-abierto.md); el estado de las fases, en [docs/05](../../../docs/05_plan_de_implementacion.md). La [ficha de F4](../../../docs/fases/F4-arte-audio-equilibrio.md) y la F5 lineal se retiran con el resto de la campaña lineal.
 
 ## 7. Notas de producción
 

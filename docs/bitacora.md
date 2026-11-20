@@ -6,6 +6,20 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — Retirada de la campaña lineal
+
+**Decisión:** la campaña lineal y su trama inventada se retiran del repositorio. El punto de partida para repensar la campaña 01 es el **contexto histórico**: fichas PCH, expediente histórico, expediente geográfico y fuentes. La retirada efectiva del contenido va en un PR posterior; este registra la decisión y corta el arranque lineal.
+
+| Cambio | Detalle |
+|---|---|
+| Motivo | La versión lineal se había conservado como «banco de pruebas» por una decisión registrada en F0 (docs/14 §7: «congelar, no borrar»). El responsable aclara que su instrucción era empezar de cero con el contexto histórico: la trama, el elenco y las quince misiones no debían sobrevivir a la redefinición. |
+| Arranque | `campaign.tres` deja de apuntar a `llacta.tscn` (acto I lineal) y apunta a `region_world.tscn`. El botón Comenzar ya no abre la campaña vieja; el blockout se declara banco de pruebas, no partida. |
+| Fuentes de verdad | `AGENTS.md`, `docs/05`, `docs/12`, `docs/14`, `docs/15`, `README` y la documentación de campaña dejan de decir «congelada» o «banco de pruebas» y pasan a «retirada». Las fichas de F0 y F4-L quedan como historial con aviso de la decisión posterior. |
+| Alternativas | (a) Mantener la campaña lineal congelada: rechazada, es lo que provocó que se citara como canon y se propusieran sus misiones como si siguieran vigentes. (b) Borrar solo el código y conservar la trama como referencia: rechazada, porque la trama inventada condiciona el rediseño. |
+| Consecuencias | La retirada de escenas, scripts, pruebas y documentos de trama va en un segundo PR: 5 escenas de acto, directores y `ciudad.gd`/`llacta.gd`/`paso.gd`, ~25 pruebas lineales y los guiones. Se conservan las fichas históricas, los expedientes geográficos, el territorio de F2 y los sistemas de `core/` que sirven al mundo abierto. Todo lo retirado queda recuperable en el historial de git. |
+| Orden de F3 | Cambia: (1) retirar lo lineal, (2) revisar el contexto histórico, (3) repensar la campaña, (4) escribir la ficha de la vertical slice. |
+| No verificado | Qué parte del elenco inventado se descarta por completo y cuál, si alguna, se rediseña: se decide al repensar la campaña con el contexto histórico delante. |
+
 ## 2026-11-20 — Cierre de la F2: aprobada con cambios
 
 **Decisión:** se cierra la F2 con el veredicto **aprobada con cambios** del responsable, tras recorrer a pie la ruta A del [protocolo de blockout](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).

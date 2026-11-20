@@ -23,6 +23,6 @@ Ningún sector se construye antes de que este dossier esté aprobado. La geograf
 
 ## Estado
 
-- La historia, el elenco y el registro histórico de la campaña existen y se conservan.
-- La implementación lineal (cinco actos, tres escenarios) está congelada y se usa como banco de pruebas.
-- La región de mundo abierto está diseñada a nivel de dossier; falta la revisión histórica externa y el blockout (F2).
+- El contexto histórico de la campaña existe: fichas PCH, expediente histórico, expediente geográfico y fuentes.
+- La implementación lineal (cinco actos, tres escenarios) y su trama inventada se retiran (decisión del 2026-11-20); solo quedan en el historial de git.
+- La región de mundo abierto está diseñada a nivel de dossier y construida en blockout (F2, aprobado con cambios).
