@@ -11,7 +11,7 @@
 | # | Tarea | Estado | Criterio de paso | Evidencia |
 |---|---|---|---|---|
 | 3.1 | Ciudad habitable | **Base implementada; falta prueba humana** | Aparición en el arrabal; arrabal, plaza y Coricancha recorribles sin huecos; 60 FPS Medio | `city_check`, `cusco_blockout_check`; 38 casas, 10 en el arrabal, 234 draw calls y 69,3 FPS |
-| 3.2 | Tres interiores | Prevista | Casa del jugador, casa de la curáca y taller transitables; ≤ 15 draw calls por interior | `interiors_check` |
+| 3.2 | Tres interiores | **Base implementada; falta prueba humana** | Casa del jugador, casa de la curáca y taller transitables; ≤ 15 draw calls por interior | `interiors_check`; 3 puertas, 3 vestidos y vuelta exacta |
 | 3.3 | Ciclo día/noche | Prevista | `WorldClock` mueve sol, ambiente y niebla; amanecer, tarde y noche legibles | `day_night_check` |
 | 3.4 | Población | Prevista | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`, `npc_lod_check` |
 | 3.5 | Misión principal | Prevista | Tres etapas con estado persistente y diario | `mission_check`, `city_save_round_trip` |
@@ -45,6 +45,14 @@
 - Presupuesto: ≤ 15 draw calls por interior y ≤ 80 MB de memoria.
 
 **Criterio:** entrar y salir de los tres sin huecos ni teletransportes; el guardado conserva la posición y el estado del interior.
+
+**Implementado (2026-11-20):**
+
+- `InteriorRoom` (core): sala cerrada de 8 × 6 × 3 m con suelo, muros, techo, luz propia y vestido por casa (`home`, `authority`, `workshop`).
+- `InteriorDoor` (core, `Interactable`): puerta con marco, panel, colisionador y etiqueta «Entrar»/«Salir» por `tr()`.
+- `InteriorController` (core): instancia la sala a la misma XZ de la puerta y 400 m por debajo del terreno; el streaming no cambia de celda y el mundo sigue vivo.
+- Puertas colocadas en el arrabal (casa del jugador y casa de Chanan Cury Coca) y en el taller textil.
+- Evidencia: `interiors_check` (3 puertas, vestidos `home`, `authority` y `workshop`, vuelta a menos de 2 m) y captura `build/evidencia/interior_home.png`.
 
 ## 4. F3.3 — Ciclo día/noche
 
