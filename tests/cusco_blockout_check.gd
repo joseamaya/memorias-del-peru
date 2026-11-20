@@ -26,7 +26,7 @@ func _run() -> void:
 		await process_frame
 	var blockout: CuscoBlockout = streamer.get_loaded_node(&"s1_cusco") as CuscoBlockout
 	ok = ok and blockout != null
-	ok = ok and blockout.get_house_count() >= 24
+	ok = ok and blockout.get_house_count() >= 38
 	ok = ok and blockout.get_poi_count() >= 6
 	ok = ok and blockout.get_mesh_count() > 60
 	ok = ok and blockout.get_collision_count() >= blockout.get_house_count()

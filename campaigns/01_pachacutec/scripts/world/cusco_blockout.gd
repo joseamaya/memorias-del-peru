@@ -7,6 +7,22 @@ extends Node3D
 
 const PLAZA_RADIUS: float = 28.0
 const HOUSE_SIZE: Vector3 = Vector3(5.5, 2.5, 4.0)
+## Arrabal de Chocos-chacona: barrio de la defensa, al suroeste y junto al
+## camino de entrada. Coordenadas locales al sector S1.
+const ARRABAL_CENTER: Vector2 = Vector2(-112.0, -106.0)
+const ARRABAL_PLAZA_RADIUS: float = 13.0
+const ARRABAL_HOUSES: Array[Vector2] = [
+	Vector2(-112.0, -128.0),
+	Vector2(-136.0, -120.0),
+	Vector2(-88.0, -120.0),
+	Vector2(-138.0, -98.0),
+	Vector2(-86.0, -98.0),
+	Vector2(-152.0, -70.0),
+	Vector2(-152.0, -44.0),
+	Vector2(-72.0, -70.0),
+	Vector2(-72.0, -44.0),
+	Vector2(-118.0, -16.0),
+]
 const HOUSE_X: Array[float] = [-135.0, -105.0, -75.0, -45.0, 45.0, 75.0, 105.0, 135.0]
 const HOUSE_Z: Array[float] = [-105.0, -75.0, -45.0, 45.0, 75.0, 105.0]
 
@@ -23,6 +39,7 @@ var _poi_labels: Array[Label3D] = []
 var _house_positions: PackedVector3Array = PackedVector3Array()
 var _acequia_points: PackedVector3Array = PackedVector3Array()
 var _house_count: int = 0
+var _arrabal_count: int = 0
 
 
 func _ready() -> void:
@@ -32,6 +49,7 @@ func _ready() -> void:
 		return
 	_build_plaza()
 	_build_houses()
+	_build_arrabal()
 	_build_coricancha()
 	_build_market()
 	_build_workshop()
@@ -41,6 +59,14 @@ func _ready() -> void:
 
 func get_house_count() -> int:
 	return _house_count
+
+
+func get_arrabal_center() -> Vector2:
+	return ARRABAL_CENTER
+
+
+func get_arrabal_house_count() -> int:
+	return _arrabal_count
 
 
 func get_house_positions() -> PackedVector3Array:
@@ -81,9 +107,7 @@ func _build_houses() -> void:
 
 func _house(x: float, z: float, size: Vector3) -> void:
 	var ground: float = _max_ground(x, z, size)
-	var low: float = BlockoutKit.min_ground(
-		_ground, x, z, Vector3(size.x + 0.4, 0.0, size.z + 0.4)
-	)
+	var low: float = BlockoutKit.min_ground(_ground, x, z, Vector3(size.x + 0.4, 0.0, size.z + 0.4))
 	var base_height: float = maxf(ground - low + 0.3, 0.5)
 	BlockoutKit.add_box(
 		self,
@@ -108,6 +132,47 @@ func _house(x: float, z: float, size: Vector3) -> void:
 	)
 	_house_positions.append(Vector3(x, ground, z))
 	_house_count += 1
+
+
+func _build_arrabal() -> void:
+	BlockoutKit.add_terrain_disk(
+		self, ARRABAL_PLAZA_RADIUS, 0.15, STONE, _ground, 64, 8, ARRABAL_CENTER, "PlazaArrabal"
+	)
+	var lane: PackedVector3Array = PackedVector3Array(
+		[
+			Vector3(ARRABAL_CENTER.x, 0.0, -58.0),
+			Vector3(ARRABAL_CENTER.x, 0.0, -92.0),
+		]
+	)
+	BlockoutKit.add_ribbon(self, lane, _ground, 4.0, SOIL, 0.10)
+	for point: Vector2 in ARRABAL_HOUSES:
+		_house(point.x, point.y, HOUSE_SIZE)
+		_arrabal_count += 1
+	var edge: float = ARRABAL_CENTER.y - 36.0
+	BlockoutKit.add_box(
+		self,
+		Vector3(96.0, 1.2, 0.6),
+		Vector3(ARRABAL_CENTER.x, _ground(ARRABAL_CENTER.x, edge) + 0.6, edge),
+		STONE,
+		true,
+		Basis.IDENTITY,
+		"Pirca"
+	)
+	BlockoutKit.add_box(
+		self,
+		Vector3(0.6, 1.2, 84.0),
+		Vector3(-164.0, _ground(-164.0, ARRABAL_CENTER.y) + 0.6, ARRABAL_CENTER.y),
+		STONE,
+		true,
+		Basis.IDENTITY,
+		"Pirca"
+	)
+	_add_label(
+		"POI-23 · Arrabal de Chocos-chacona",
+		Vector3(
+			ARRABAL_CENTER.x, _ground(ARRABAL_CENTER.x, ARRABAL_CENTER.y) + 3.5, ARRABAL_CENTER.y
+		)
+	)
 
 
 func _build_coricancha() -> void:

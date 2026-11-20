@@ -10,7 +10,7 @@
 
 | # | Tarea | Estado | Criterio de paso | Evidencia |
 |---|---|---|---|---|
-| 3.1 | Ciudad habitable | Prevista | Aparición en el arrabal; arrabal, plaza y Coricancha recorribles sin huecos; 60 FPS Medio | `city_check`, auditoría de flotantes, captura |
+| 3.1 | Ciudad habitable | **Base implementada; falta prueba humana** | Aparición en el arrabal; arrabal, plaza y Coricancha recorribles sin huecos; 60 FPS Medio | `city_check`, `cusco_blockout_check`; 38 casas, 10 en el arrabal, 234 draw calls y 69,3 FPS |
 | 3.2 | Tres interiores | Prevista | Casa del jugador, casa de la curáca y taller transitables; ≤ 15 draw calls por interior | `interiors_check` |
 | 3.3 | Ciclo día/noche | Prevista | `WorldClock` mueve sol, ambiente y niebla; amanecer, tarde y noche legibles | `day_night_check` |
 | 3.4 | Población | Prevista | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`, `npc_lod_check` |
@@ -31,6 +31,12 @@
 - Punto de aparición movido al arrabal (`RegionWorld.SPAWN_POINT`), con vista de la plaza y de Carmenca.
 
 **Criterio:** el jugador aparece en el arrabal y recorre arrabal → plaza → Coricancha sin huecos, sin flotantes y sin caídas; la auditoría sigue en 0 flotantes.
+
+**Implementado (2026-11-20):**
+
+- Arrabal de Chocos-chacona al suroeste de S1: plaza de 13 m de radio, 10 casas, callejón de 4 m hacia el camino de entrada y pirca de borde con abertura al oeste.
+- Punto de aparición movido a la plaza del arrabal (1088, 294) y rumbo a la plaza del Cusco.
+- Evidencia: `city_check` (10 casas de arrabal, aparición a 0 m del centro, 154 m a la plaza, jugador en el suelo), `cusco_blockout_check` (38 casas, 7 POI), auditoría con **314 mallas y 0 flotantes**, y `measure_cusco` con **234 draw calls, 184,9 MB y 69,3 FPS** de media.
 
 ## 3. F3.2 — Tres interiores
 

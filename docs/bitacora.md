@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F3.1: ciudad habitable
+
+**Decisión:** la partida empieza en el Cusco, en el arrabal de Chocos-chacona, tal como fija el rediseño de la campaña.
+
+| Cambio | Detalle |
+|---|---|
+| Arrabal | Plaza de 13 m, 10 casas, callejón de 4 m al camino de entrada y pirca de borde con abertura al oeste, en el cuadrante suroeste de S1, que estaba vacío por diseño. |
+| Aparición | `region_world` deja el camino de la llacta y aparece en la plaza del arrabal (1088, 294), mirando a la plaza del Cusco. |
+| Pruebas | `city_check` nuevo: 10 casas de arrabal, aparición a 0 m del centro, 154 m a la plaza y jugador en el suelo. `region_player_check` pasa a medir la salida del arrabal hacia la ciudad (35 m y 45 m ganados a la plaza). `cusco_blockout_check` sube a 38 casas. |
+| Medición | 314 mallas y 0 flotantes en la auditoría; 234 draw calls, 184,9 MB y 69,3 FPS de media (p1 68,6) en `measure_cusco`, perfil Medio a 1080p. |
+| Consecuencia | La llacta deja de ser el punto de partida: es la comunidad a la que se viaja en la fase 3. |
+| Pendiente | Prueba humana del arrabal (recorrido a pie) y los interiores de 3.2. |
+
 ## 2026-11-20 — Ficha de la vertical slice (F3)
 
 **Decisión:** la F3 se acota a las fases 1 y 2 de la campaña —la ciudad que se queda y Carmenca— y se escribe como diez tareas con criterio propio.
