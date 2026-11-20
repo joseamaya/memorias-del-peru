@@ -12,7 +12,7 @@
 |---|---|---|---|---|
 | 3.1 | Ciudad habitable | **Base implementada; falta prueba humana** | Aparición en el arrabal; arrabal, plaza y Coricancha recorribles sin huecos; 60 FPS Medio | `city_check`, `cusco_blockout_check`; 38 casas, 10 en el arrabal, 234 draw calls y 69,3 FPS |
 | 3.2 | Tres interiores | **Base implementada; falta prueba humana** | Casa del jugador, casa de la curáca y taller transitables; ≤ 15 draw calls por interior | `interiors_check`; 3 puertas, 3 vestidos y vuelta exacta |
-| 3.3 | Ciclo día/noche | Prevista | `WorldClock` mueve sol, ambiente y niebla; amanecer, tarde y noche legibles | `day_night_check` |
+| 3.3 | Ciclo día/noche | **Base implementada; falta prueba humana** | `WorldClock` mueve sol, ambiente y niebla; amanecer, tarde y noche legibles | `day_night_check`; sin saltos en 96 muestras |
 | 3.4 | Población | Prevista | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`, `npc_lod_check` |
 | 3.5 | Misión principal | Prevista | Tres etapas con estado persistente y diario | `mission_check`, `city_save_round_trip` |
 | 3.6 | Secundarias y descubrimiento | Prevista | Dos actividades con consecuencia y un lugar descubierto sin marcador | `side_activities_check` |
@@ -59,6 +59,13 @@
 `WorldClock` (ya existe) pasa a gobernar el sol, el ambiente, la niebla y la exposición. Franjas legibles: amanecer, mañana, mediodía, tarde, noche. Los interiores usan luz propia.
 
 **Criterio:** a las 07:00, 13:00, 19:00 y 23:00 la luz es distinguible y no hay saltos al cambiar de hora; el perfil Medio mantiene 60 FPS.
+
+**Implementado (2026-11-20):**
+
+- `DayNightCycle` en `core/world`: lee `WorldClock` y mueve el sol (elevación y azimut), su color y energía, y el ambiente, la niebla y la luz de relleno.
+- A mediodía conserva los valores del blockout aprobado; amanecer, atardecer y noche son reconstrucción de ambiente (R).
+- La energía del sol entra con una rampa suave desde el horizonte: sin ella saltaba de 0 a 0,26 en quince minutos.
+- Evidencia: `day_night_check` (96 muestras cada 15 min, sin saltos; noche a 0 de energía y ambiente 0,35) y capturas `day_dawn`, `day_noon`, `day_dusk` y `day_night`.
 
 ## 5. F3.4 — Población
 

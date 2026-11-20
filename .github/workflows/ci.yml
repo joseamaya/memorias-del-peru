@@ -173,6 +173,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/interiors_check.gd 2>&1 | tee /tmp/interiors.log
           python3 tools/check_output.py /tmp/interiors.log
 
+      - name: Ciclo dia y noche
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/day_night_check.gd 2>&1 | tee /tmp/daynight.log
+          python3 tools/check_output.py /tmp/daynight.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail

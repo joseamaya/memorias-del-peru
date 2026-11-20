@@ -197,6 +197,13 @@ func _build_environment() -> void:
 	fill.shadow_enabled = false
 	add_child(fill)
 
+	# El reloj del mundo mueve el sol, el ambiente y la niebla. A mediodía deja
+	# los mismos valores que tenía el blockout aprobado.
+	var cycle: DayNightCycle = DayNightCycle.new()
+	cycle.name = "DayNightCycle"
+	cycle.setup(sun, fill, environment)
+	add_child(cycle)
+
 
 func _build_terrain() -> void:
 	var start: int = Time.get_ticks_msec()
