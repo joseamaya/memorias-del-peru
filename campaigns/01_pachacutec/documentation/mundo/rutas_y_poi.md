@@ -14,8 +14,10 @@
 | R4 | Sendero de pastores | Cresta → cueva → mirador | Descubrimiento, recursos | Pendiente, desorientación | 0–4 |
 | R5 | Ruta oculta | Quebrada → tambo → frontera | Sigilo, escape, contrabando | Se descubre; no se marca | 1–3 |
 | R6 | Callejones del Cusco | Plaza → ayllus → talleres | Comercio, información | Multitud, control | 0–4 |
-| R7 | Acequia madre | Manantial → terrazas → río | Riego y mantenimiento | Resbaladizo | 0–4 |
+| R7 | Acequia madre | Manantial → terrazas → río (**no entra a Cusco**) | Riego y mantenimiento | Resbaladizo | 0–4 |
 | R8 | Camino de la frontera | Paso → campamento → puesto | Conflicto, observación | Combate | 2–3 |
+
+**R7 no es una entrada a Cusco.** Es la acequia que riega las terrazas y termina en el río. Solo R1 y R3 llegan a la plaza del Cusco; si una cinta azul se corta antes de la ciudad, es R7 y es correcto.
 
 ### Reglas de rutas
 

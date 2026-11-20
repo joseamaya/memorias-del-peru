@@ -317,9 +317,9 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `streaming_soak_check.gd` | 60 ciclos de carga/descarga: latencia < 150 ms, hitch < 50 ms y memoria estable |
 | `region_terrain_check.gd` | 3,5 × 2,5 km de relieve: seis sectores con alturas plausibles, cumbres y cauce bajo la vega |
 | `region_streaming_check.gd` | Seis sectores cargan por cercanía, se descargan al alejarse y el terreno regional sigue cargado |
-| `route_network_check.gd` | Ocho rutas dibujadas, seis navmeshes con enlaces y rutas continuas llacta–Cusco y llacta–frontera |
-| `llacta_blockout_check.gd` | S3 con 17 casas, 9 POI, 20 colisiones, plaza despejada y rutas al manantial y a las afueras |
-| `cusco_blockout_check.gd` | S1 con 28 casas, 6 POI, Coricancha, mercado, talleres, depósitos y rutas a afueras y llacta |
+| `route_network_check.gd` | Ocho rutas dibujadas, seis navmeshes con enlaces, rutas continuas a Cusco/frontera y R7 como acequia que termina en el río |
+| `llacta_blockout_check.gd` | S3 con 17 casas, 9 POI, 20 colisiones, plaza despejada, acequia sin cruzar casas y rutas al manantial y a las afueras |
+| `cusco_blockout_check.gd` | S1 con 28 casas, 6 POI, Coricancha, mercado, talleres, depósitos, acequia entre calles y rutas a afueras y llacta |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |

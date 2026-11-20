@@ -7,5 +7,6 @@ script = ExtResource("1_route")
 id = &"r7_acequia_madre"
 display_name = "R7 · Acequia madre"
 classification = "GR"
+surface = &"water"
 width = 1.5
 points = PackedVector3Array(350, 0, 100, 450, 0, 150, 550, 0, 190, 650, 0, 220, 750, 0, 250, 820, 0, 290)

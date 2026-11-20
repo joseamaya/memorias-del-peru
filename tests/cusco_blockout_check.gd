@@ -30,6 +30,7 @@ func _run() -> void:
 	ok = ok and blockout.get_poi_count() >= 6
 	ok = ok and blockout.get_mesh_count() > 60
 	ok = ok and blockout.get_collision_count() >= blockout.get_house_count()
+	ok = ok and _acequia_clear_of_houses(blockout)
 	var routes: CampaignRoutes = world.get_node("Routes") as CampaignRoutes
 	var region: CampaignRegion = world.get_region()
 	var cusco: Vector3 = _ground(region, Vector3(1200.0, 0.0, 400.0))
@@ -64,6 +65,16 @@ func _run() -> void:
 	else:
 		printerr("CUSCO_FAIL")
 	quit(0 if ok else 1)
+
+
+func _acequia_clear_of_houses(blockout: CuscoBlockout) -> bool:
+	var houses: PackedVector3Array = blockout.get_house_positions()
+	for point: Vector3 in blockout.get_acequia_points():
+		for house: Vector3 in houses:
+			if Vector2(point.x, point.z).distance_to(Vector2(house.x, house.z)) < 5.0:
+				printerr("CUSCO_FAIL acequia bajo casa en ", point, " / ", house)
+				return false
+	return true
 
 
 func _wait_loaded(streamer: SectorStreamer, id: StringName) -> bool:

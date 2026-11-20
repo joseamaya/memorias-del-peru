@@ -30,6 +30,18 @@ func _run() -> void:
 	ok = ok and routes.get_route_count() == 8
 	ok = ok and routes.get_mesh_count() == 8
 	ok = ok and routes.get_region_count() == 6
+	var main_route: CampaignRoute = routes.get_route(&"r1_camino_principal")
+	var river_route: CampaignRoute = routes.get_route(&"r3_ruta_del_rio")
+	var acequia: CampaignRoute = routes.get_route(&"r7_acequia_madre")
+	ok = ok and main_route != null and main_route.surface == &"path"
+	ok = ok and river_route != null and river_route.surface == &"path"
+	ok = ok and acequia != null and acequia.surface == &"water"
+	if main_route != null:
+		ok = ok and _ends_at_cusco(main_route)
+	if river_route != null:
+		ok = ok and _ends_at_cusco(river_route)
+	if acequia != null:
+		ok = ok and not _ends_at_cusco(acequia)
 	ok = ok and _check_ribbon_clearance(routes, region)
 	var llacta: Vector3 = _ground(region, Vector3(300.0, 0.0, 0.0))
 	var cusco: Vector3 = _ground(region, Vector3(1200.0, 0.0, 400.0))
@@ -63,6 +75,12 @@ func _run() -> void:
 	else:
 		printerr("ROUTES_FAIL")
 	quit(0 if ok else 1)
+
+
+func _ends_at_cusco(route: CampaignRoute) -> bool:
+	if route.points.is_empty():
+		return false
+	return route.points[route.points.size() - 1].distance_to(Vector3(1200.0, 0.0, 400.0)) < 10.0
 
 
 ## La cinta visual no puede flotar sobre el terreno. Se revisan los vértices

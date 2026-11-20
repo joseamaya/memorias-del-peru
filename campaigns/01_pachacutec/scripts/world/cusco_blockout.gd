@@ -20,6 +20,8 @@ const WOOD: Color = Color(0.36, 0.28, 0.20)
 
 var _region: CampaignRegion = null
 var _poi_labels: Array[Label3D] = []
+var _house_positions: PackedVector3Array = PackedVector3Array()
+var _acequia_points: PackedVector3Array = PackedVector3Array()
 var _house_count: int = 0
 
 
@@ -39,6 +41,14 @@ func _ready() -> void:
 
 func get_house_count() -> int:
 	return _house_count
+
+
+func get_house_positions() -> PackedVector3Array:
+	return _house_positions
+
+
+func get_acequia_points() -> PackedVector3Array:
+	return _acequia_points
 
 
 func get_poi_count() -> int:
@@ -96,6 +106,7 @@ func _house(x: float, z: float, size: Vector3) -> void:
 		Basis.IDENTITY,
 		"Techo"
 	)
+	_house_positions.append(Vector3(x, ground, z))
 	_house_count += 1
 
 
@@ -240,15 +251,18 @@ func _build_deposits() -> void:
 
 
 func _build_acequia() -> void:
+	# Va por el corredor entre la plaza y la fila de casas de z = 45. Con
+	# z ≈ 35–45 la cinta pasaba bajo la casa de (45, 45).
 	var points: PackedVector3Array = PackedVector3Array(
 		[
-			Vector3(-140.0, 0.0, 35.0),
-			Vector3(-80.0, 0.0, 42.0),
-			Vector3(0.0, 0.0, 45.0),
-			Vector3(80.0, 0.0, 42.0),
-			Vector3(140.0, 0.0, 35.0),
+			Vector3(-140.0, 0.0, 30.0),
+			Vector3(-80.0, 0.0, 34.0),
+			Vector3(0.0, 0.0, 36.0),
+			Vector3(80.0, 0.0, 34.0),
+			Vector3(140.0, 0.0, 30.0),
 		]
 	)
+	_acequia_points = points
 	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 2.4, WATER, 0.10)
 	mesh.name = "AcequiaUrbana"
 
