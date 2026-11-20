@@ -5,9 +5,9 @@ extends Node
 
 const WORLD_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const WARMUP_FRAMES: int = 90
-## Cinco segundos de marcha acercan la plaza sin que la cámara quede pegada
-## a la losa; la toma debe servir para leer escala y camino, no para cruzarla.
-const WALK_FRAMES: int = 300
+## Quince segundos acercan la plaza y permiten ver el borde y el camino sin
+## quedar dentro de la malla; la toma sirve para leer escala y acceso.
+const WALK_FRAMES: int = 900
 
 
 func _ready() -> void:

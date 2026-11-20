@@ -7,6 +7,12 @@ extends Node3D
 ## definitivo; las casas se convertirán a malla y colisión propias en F3.
 
 const PLAZA_RADIUS: float = 18.0
+## La plaza sigue el terreno: un disco plano a la altura del centro flotaba
+## sobre la ladera y el jugador pasaba por debajo. La meseta plana con muro y
+## rampa es una decisión de F3.
+const PLAZA_LIFT: float = 0.12
+const PLAZA_RINGS: int = 8
+const PLAZA_SEGMENTS: int = 64
 const OUTER_RADIUS: float = 34.0
 const INNER_RADIUS: float = 23.0
 const HOUSE_SIZE: Vector3 = Vector3(6.0, 2.6, 4.5)
@@ -18,6 +24,7 @@ const OUTER_ANGLES: Array[float] = [
 const INNER_ANGLES: Array[float] = [95.0, 205.0, 235.0, 295.0]
 
 const STONE: Color = Color(0.62, 0.58, 0.50)
+const PLAZA: Color = Color(0.46, 0.45, 0.42)
 const WALL: Color = Color(0.74, 0.68, 0.56)
 const ROOF: Color = Color(0.42, 0.34, 0.25)
 const SOIL: Color = Color(0.38, 0.30, 0.20)
@@ -76,15 +83,61 @@ func get_house_positions() -> PackedVector3Array:
 
 
 func _build_plaza() -> void:
-	# La losa se apoya en la altura del centro, no en el máximo del cuadrado:
-	# con `_max_ground` quedaba elevada sobre la ladera y se veía por debajo.
-	var ground: float = _ground(0.0, 0.0)
-	# Losa fina, no un cilindro macizo: el blockout no tiene colisión en la
-	# plaza y el jugador puede atravesarla. Con 0,8 m la cámara quedaba dentro
-	# del volumen y solo se veía la cara interior.
-	var plaza: MeshInstance3D = _cylinder(PLAZA_RADIUS, 0.12, Vector3(0.0, ground + 0.06, 0.0))
+	var surface: SurfaceTool = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var center: Vector3 = _plaza_point(0.0, 0.0)
+	for segment: int in PLAZA_SEGMENTS:
+		var angle0: float = TAU * float(segment) / float(PLAZA_SEGMENTS)
+		var angle1: float = TAU * float(segment + 1) / float(PLAZA_SEGMENTS)
+		var p0: Vector3 = _plaza_point(PLAZA_RADIUS / float(PLAZA_RINGS), angle0)
+		var p1: Vector3 = _plaza_point(PLAZA_RADIUS / float(PLAZA_RINGS), angle1)
+		_add_plaza_triangle(surface, center, p0, p1)
+	for ring: int in range(1, PLAZA_RINGS):
+		var radius0: float = PLAZA_RADIUS * float(ring) / float(PLAZA_RINGS)
+		var radius1: float = PLAZA_RADIUS * float(ring + 1) / float(PLAZA_RINGS)
+		for segment: int in PLAZA_SEGMENTS:
+			var angle0: float = TAU * float(segment) / float(PLAZA_SEGMENTS)
+			var angle1: float = TAU * float(segment + 1) / float(PLAZA_SEGMENTS)
+			var p00: Vector3 = _plaza_point(radius0, angle0)
+			var p01: Vector3 = _plaza_point(radius1, angle0)
+			var p11: Vector3 = _plaza_point(radius1, angle1)
+			var p10: Vector3 = _plaza_point(radius0, angle1)
+			_add_plaza_triangle(surface, p00, p01, p11)
+			_add_plaza_triangle(surface, p00, p11, p10)
+	var mesh: ArrayMesh = surface.commit()
+	var plaza: MeshInstance3D = MeshInstance3D.new()
 	plaza.name = "Plaza"
+	plaza.mesh = mesh
+	var material: StandardMaterial3D = BlockoutKit.material(PLAZA)
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	plaza.material_override = material
+	plaza.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	plaza.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	add_child(plaza)
+	var ground: float = _ground(0.0, 0.0)
 	_add_label("POI-02 · Plaza de la llacta", Vector3(0.0, ground + 3.5, 0.0))
+
+
+func _plaza_point(radius: float, angle: float) -> Vector3:
+	var x: float = cos(angle) * radius
+	var z: float = sin(angle) * radius
+	return Vector3(x, _ground(x, z) + PLAZA_LIFT, z)
+
+
+func _add_plaza_triangle(
+	surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3
+) -> void:
+	for vertex: Vector3 in [a, b, c]:
+		surface.set_normal(Vector3.UP)
+		surface.add_vertex(vertex)
+
+
+## Altura de la plaza en coordenadas de mundo; NAN fuera del radio.
+func get_plaza_height_at(world_position: Vector2) -> float:
+	var local: Vector2 = world_position - Vector2(global_position.x, global_position.z)
+	if local.length() > PLAZA_RADIUS:
+		return NAN
+	return _ground(local.x, local.y) + PLAZA_LIFT
 
 
 func _build_houses() -> void:
