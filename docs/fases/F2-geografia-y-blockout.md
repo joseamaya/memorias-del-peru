@@ -228,6 +228,8 @@ godot --path . --resolution 1280x720 \
 
 Las capturas quedan en `build/evidencia/quebrada_blockout.png`, `paso_blockout.png` y `frontera_blockout.png`.
 
+**Capturas del modo de revisión:** `region_review.png` (sin etiquetas) y `region_review_labels.png` (con la etiqueta más cercana). Se generan con `tests/scenes/capture_review.tscn`.
+
 ## 2.7. F2.7 — POI y descubrimiento
 
 **Datos:** 30 `PoiDefinition` en `campaigns/01_pachacutec/data/pois/`, uno por POI del catálogo. Cada uno declara ID, nombre, descripción, sector, clasificación, posición, radio, disparador y rango de fase.
@@ -267,7 +269,9 @@ godot --headless --path . --script res://tests/poi_discovery_check.gd
 - **Pantallas de carga:** ninguna; el terreno regional sigue cargado y no hay cambio de escena.
 - **Guardado:** los descubrimientos sobreviven al ciclo guardar/cargar al final.
 
-La prueba avanza el objetivo por muestras del navmesh y espera la carga de cada celda; no simula 23 minutos reales. La **prueba humana de 20–30 min** sigue pendiente y es la que cierra F2.
+La prueba avanza el objetivo por muestras del navmesh y espera la carga de cada celda; no simula 23 minutos reales. **Modo de revisión:** `region_world` arranca con una cámara cercana (38, 26, 48) y las etiquetas de POI ocultas. `H` muestra solo la etiqueta más cercana; `T` alterna vista cenital. La barra superior recuerda las teclas. Sirve para revisar el blockout sin que nueve etiquetas se solapen.
+
+La **prueba humana de 20–30 min** sigue pendiente y es la que cierra F2.
 
 ```bash
 godot --headless --path . --script res://tests/region_walkthrough_check.gd
