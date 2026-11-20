@@ -118,7 +118,7 @@ Auditar la geometría flotante del blockout (sectores, discos, cintas y plazas):
 godot --headless --path . --script res://tools/blockout_float_audit.gd
 ```
 
-El código de salida es `0` solo si ningún elemento no exento supera los 0,30 m de hueco. El informe completo queda en `build/evidencia/blockout_float_audit.txt`.
+El código de salida es `0` solo si ningún elemento no exento supera los 0,30 m de hueco y todo techo, toldo, viga o muro elevado tiene una malla de apoyo debajo (solape XZ y tolerancia de 0,35 m). El informe completo queda en `build/evidencia/blockout_float_audit.txt`.
 
 Comprobar el streaming de los seis sectores sobre el terreno continuo:
 

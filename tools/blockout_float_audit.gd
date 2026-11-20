@@ -11,6 +11,7 @@ extends SceneTree
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const OUTPUT_PATH: String = "res://build/evidencia/blockout_float_audit.txt"
 const THRESHOLD: float = 0.30
+const SUPPORT_TOLERANCE: float = 0.35
 const WAIT_FRAMES: int = 240
 ## Superficies que deben seguir el terreno: se revisan por su borde más alto.
 const FLAT_KINDS: Array[String] = [
@@ -112,16 +113,27 @@ func _audit_node(
 ) -> Vector2i:
 	var total: int = 0
 	var floating: int = 0
+	var instances: Array[MeshInstance3D] = []
 	var meshes: Array[Node] = node.find_children("*", "MeshInstance3D", true, false)
 	if node is MeshInstance3D:
 		meshes.append(node)
 	for item: Node in meshes:
 		var instance: MeshInstance3D = item as MeshInstance3D
-		if instance == null or instance.mesh == null:
-			continue
+		if instance != null and instance.mesh != null:
+			instances.append(instance)
+
+	for instance: MeshInstance3D in instances:
 		total += 1
 		var kind: String = _kind_of(instance)
 		if kind in INTENTIONAL_KINDS:
+			if kind != "Canopia" and not _has_support(instance, instances):
+				floating += 1
+				lines.append(
+					(
+						"UNSUPPORTED sector=%s kind=%s node=%s"
+						% [sector_id, kind, str(instance.get_path())]
+					)
+				)
 			continue
 		var gaps: Vector2 = _gap_range(instance, terrain)
 		if is_nan(gaps.x):
@@ -157,6 +169,37 @@ func _audit_node(
 			)
 		)
 	return Vector2i(total, floating)
+
+
+## Comprueba que un elemento elevado tenga algo debajo. No basta con llamarlo
+## "Techo": si no hay muro, poste o plataforma que lo sostenga, se reporta.
+func _has_support(instance: MeshInstance3D, instances: Array[MeshInstance3D]) -> bool:
+	var local_aabb: AABB = instance.mesh.get_aabb()
+	var bottom: float = local_aabb.position.y
+	var xs: Array[float] = []
+	var zs: Array[float] = []
+	for step: int in 9:
+		var t: float = float(step) / 8.0
+		xs.append(lerpf(local_aabb.position.x, local_aabb.end.x, t))
+		zs.append(lerpf(local_aabb.position.z, local_aabb.end.z, t))
+	for x: float in xs:
+		for z: float in zs:
+			var point: Vector3 = instance.global_transform * Vector3(x, bottom, z)
+			for other: MeshInstance3D in instances:
+				if other == instance or other.mesh == null:
+					continue
+				var other_aabb: AABB = other.global_transform * other.mesh.get_aabb()
+				if point.x < other_aabb.position.x - 0.1:
+					continue
+				if point.x > other_aabb.end.x + 0.1:
+					continue
+				if point.z < other_aabb.position.z - 0.1:
+					continue
+				if point.z > other_aabb.end.z + 0.1:
+					continue
+				if absf(other_aabb.end.y - point.y) <= SUPPORT_TOLERANCE:
+					return true
+	return false
 
 
 func _kind_of(instance: Node) -> String:
