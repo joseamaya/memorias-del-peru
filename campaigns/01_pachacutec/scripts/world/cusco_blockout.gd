@@ -40,6 +40,7 @@ var _house_positions: PackedVector3Array = PackedVector3Array()
 var _acequia_points: PackedVector3Array = PackedVector3Array()
 var _house_count: int = 0
 var _arrabal_count: int = 0
+var _interior_doors: Array[InteriorDoor] = []
 
 
 func _ready() -> void:
@@ -50,6 +51,7 @@ func _ready() -> void:
 	_build_plaza()
 	_build_houses()
 	_build_arrabal()
+	_build_interior_doors()
 	_build_coricancha()
 	_build_market()
 	_build_workshop()
@@ -59,6 +61,10 @@ func _ready() -> void:
 
 func get_house_count() -> int:
 	return _house_count
+
+
+func get_interior_doors() -> Array[InteriorDoor]:
+	return _interior_doors
 
 
 func get_arrabal_center() -> Vector2:
@@ -173,6 +179,20 @@ func _build_arrabal() -> void:
 			ARRABAL_CENTER.x, _ground(ARRABAL_CENTER.x, ARRABAL_CENTER.y) + 3.5, ARRABAL_CENTER.y
 		)
 	)
+
+
+func _build_interior_doors() -> void:
+	_add_interior_door(-88.0, -117.95, &"home")
+	_add_interior_door(-136.0, -117.95, &"authority")
+	_add_interior_door(60.0, -52.95, &"workshop")
+
+
+func _add_interior_door(x: float, z: float, dressing: StringName) -> void:
+	var door: InteriorDoor = InteriorDoor.new()
+	door.dressing = dressing
+	door.position = Vector3(x, _ground(x, z), z)
+	add_child(door)
+	_interior_doors.append(door)
 
 
 func _build_coricancha() -> void:

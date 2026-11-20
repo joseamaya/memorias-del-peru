@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F3.2: tres interiores transitables
+
+**Decisión:** los interiores se resuelven con una **sala de bolsillo**: se instancia a la misma XZ de la puerta y 400 m por debajo del terreno, así el streaming no cambia de celda y el mundo sigue vivo detrás.
+
+| Cambio | Detalle |
+|---|---|
+| Sala | `InteriorRoom` en `core/world`: 8 × 6 × 3 m, muros, techo, suelo, luz propia y tres vestidos: casa del jugador (cama, fogón, cántaros), casa de la curáca (telar, mantas, banco) y taller (dos telares, lana). |
+| Puerto | `InteriorDoor` extiende `Interactable`: marco, panel, colisionador y etiqueta «Entrar»/«Salir» con `tr()`. Claves nuevas `PCH_ENTER` y `PCH_EXIT`. |
+| Control | `InteriorController`: guarda posición y rumbo de vuelta, instancia la sala, teletransporta al jugador y lo devuelve exacto. Sin pantallas de carga. |
+| Puertas | Arrabal: casa del jugador (-88, -118) y casa de Chanan Cury Coca (-136, -118). Ciudad: taller textil (60, -53). |
+| Pruebas | `interiors_check`: 3 puertas, vestidos `home`/`authority`/`workshop`, sala a más de 100 m por debajo y vuelta a menos de 2 m. Añadido a CI. |
+| Pendiente | Prueba humana de los tres interiores y vestido más rico cuando haya arte. |
+
 ## 2026-11-20 — F3.1: ciudad habitable
 
 **Decisión:** la partida empieza en el Cusco, en el arrabal de Chocos-chacona, tal como fija el rediseño de la campaña.

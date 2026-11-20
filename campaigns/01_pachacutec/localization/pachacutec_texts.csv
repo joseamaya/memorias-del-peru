@@ -4,3 +4,5 @@ PCH_ST_TELAR_TITLE,El telar y el textil
 PCH_ST_TELAR_BODY,"Fibras de camélido y algodón, tejidas en un solo rectángulo que se dobla y se cose. El telar de cintura atado a una estaca se infiere del dibujo de una tejedora de Guamán Poma; los colores teñidos están documentados y el motivo geométrico concreto es reconstrucción."
 PCH_REVIEW_CONTROLS,Vista de blockout · H: etiquetas · T: vista cenital
 PCH_PLAY_CONTROLS,WASD: andar · Mayús: correr · H: etiquetas · T: vista cenital
+PCH_ENTER,Entrar
+PCH_EXIT,Salir

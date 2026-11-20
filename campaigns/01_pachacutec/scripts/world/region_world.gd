@@ -58,6 +58,7 @@ var _streamer: SectorStreamer = null
 var _target: Node3D = null
 var _camera: Camera3D = null
 var _player: PlayerFPS = null
+var _interiors: InteriorController = null
 var _spawn_position: Vector3 = Vector3.ZERO
 var _route_index: int = 0
 var _labels_visible: bool = false
@@ -93,6 +94,7 @@ func _ready() -> void:
 		discovery.load_catalog("res://campaigns/01_pachacutec/data/pois")
 	if first_person:
 		_build_player()
+		_build_interiors()
 	_build_review_hud()
 	_update_camera()
 
@@ -179,6 +181,17 @@ func get_route_point(index: int) -> Vector3:
 ## Jugador en primera persona, o `null` si la escena está en modo revisión.
 func get_player() -> PlayerFPS:
 	return _player
+
+
+func get_interiors() -> InteriorController:
+	return _interiors
+
+
+func _build_interiors() -> void:
+	_interiors = InteriorController.new()
+	_interiors.name = "Interiors"
+	add_child(_interiors)
+	_interiors.set_player(_player)
 
 
 ## Indica si el mundo arrancó con jugador a pie.
