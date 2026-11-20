@@ -33,6 +33,7 @@ const WOOD: Color = Color(0.36, 0.28, 0.20)
 
 var _region: CampaignRegion = null
 var _house_positions: PackedVector3Array = PackedVector3Array()
+var _acequia_points: PackedVector3Array = PackedVector3Array()
 var _poi_labels: Array[Label3D] = []
 var _house_count: int = 0
 
@@ -80,6 +81,10 @@ func get_collision_count() -> int:
 
 func get_house_positions() -> PackedVector3Array:
 	return _house_positions
+
+
+func get_acequia_points() -> PackedVector3Array:
+	return _acequia_points
 
 
 func _build_plaza() -> void:
@@ -208,6 +213,7 @@ func _build_acequia() -> void:
 			Vector3(145.0, 0.0, 105.0),
 		]
 	)
+	_acequia_points = points
 	var mesh: MeshInstance3D = _ribbon(points, 2.4, WATER, 0.10)
 	mesh.name = "Acequia"
 

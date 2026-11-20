@@ -165,10 +165,10 @@ La captura queda en `build/evidencia/llacta_blockout.png`.
 - Mercado con seis puestos y toldos.
 - Taller textil con dos casas y tres telares.
 - Cuatro depósitos.
-- Acequia urbana de 280 m.
+- Acequia urbana de 280 m por el corredor entre la plaza y la fila de casas de `z = 45`; no pasa bajo ninguna vivienda.
 - Seis etiquetas de POI: 17–22.
 
-**Comprobación:** `cusco_blockout_check` valida 28 casas, 6 POI, 111 mallas, 43 colisiones y rutas a afueras y llacta. Salida: `CUSCO_OK houses=28 pois=6`.
+**Comprobación:** `cusco_blockout_check` valida 28 casas, 6 POI, 112 mallas, 45 colisiones, holgura acequia–casa ≥ 5 m y rutas a afueras y llacta. Salida: `CUSCO_OK houses=28 pois=6`.
 
 **Medición:** tres pasadas a 1920 × 1080, perfil Medio, vsync off, carga 1,0–1,4: **76,4/79,2/82,3 FPS** de media, p1 60,0–65,8, **247 draw calls** y **128–137 MB** de VRAM. Dentro del presupuesto de 350 draw calls y 250 MB.
 

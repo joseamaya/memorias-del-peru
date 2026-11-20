@@ -32,6 +32,7 @@ func _run() -> void:
 	ok = ok and blockout.get_collision_count() >= 16
 	ok = ok and blockout.get_house_positions().size() == 17
 	ok = ok and _houses_clear_plaza(blockout)
+	ok = ok and _acequia_clear_of_houses(blockout)
 	var routes: CampaignRoutes = world.get_node("Routes") as CampaignRoutes
 	var region: CampaignRegion = world.get_region()
 	var llacta: Vector3 = _ground(region, Vector3(300.0, 0.0, 0.0))
@@ -64,6 +65,16 @@ func _run() -> void:
 	else:
 		printerr("LLACTA_FAIL")
 	quit(0 if ok else 1)
+
+
+func _acequia_clear_of_houses(blockout: LlactaBlockout) -> bool:
+	var houses: PackedVector3Array = blockout.get_house_positions()
+	for point: Vector3 in blockout.get_acequia_points():
+		for house: Vector3 in houses:
+			if Vector2(point.x, point.z).distance_to(Vector2(house.x, house.z)) < 5.0:
+				printerr("LLACTA_FAIL acequia bajo casa en ", point, " / ", house)
+				return false
+	return true
 
 
 func _houses_clear_plaza(blockout: LlactaBlockout) -> bool:
