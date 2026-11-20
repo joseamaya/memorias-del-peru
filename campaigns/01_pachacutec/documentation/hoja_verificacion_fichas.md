@@ -152,7 +152,7 @@ El agente revisó el 2026-11-12 las diez categorías de la lista contra el conte
 |---|---|---|
 | Arquitectura | Sin anacronismos | Casas de piedra con barro y techo de ichu, terrazas y corrales de pirca seca (PCH-007, 008 y 021). Sin ventanas de vidrio, tejas, clavos ni chimeneas en el generador. |
 | Vestimenta | Justificado (1) | Prendas, tupu, ojotas y t'oqapu solo en autoridades (PCH-010, 017 y 018). Los peinados de las cabezas de Rocketbox son modernos. |
-| Armas | Sin anacronismos | No hay armas en el juego. La comitiva parte sin ellas, lo que no contradice ninguna fuente. |
+| Armas | Sin anacronismos | Solo armas documentadas: honda, porra, hacha y escudo (PCH-024). Sin metal europeo ni armaduras de placa. |
 | Herramientas | Sin anacronismos | Chaquitaclla (PCH-037, pendiente de firma), telar de cintura, quero de madera, cántaros, leña y pututu. Sin metal, sin rueda y sin animales de tiro. |
 | Alimentación | Sin anacronismos | Chicha de maíz (PCH-005) y ofrenda de maíz y coca (PCH-012). |
 | Fauna y flora | Sin anacronismos | Ichu y queñua (PCH-013). No hay animales y el ambiente no lleva aves. La textura de hierba es solo variación sobre la paleta. |

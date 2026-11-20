@@ -6,7 +6,7 @@ Siglo XV. La confederación chanca avanza sobre el Cusco. Según la tradición r
 
 > La premisa resume una **tradición narrada en crónicas**, con versiones divergentes (ver §2). En el juego se presenta como tal, no como un relato único comprobado.
 
-**La campaña está por rediseñar.** El protagonista, la comunidad, el arranque y las fases se deciden con este contexto delante, no heredando la trama anterior, que se retiró el 2026-11-20.
+**Diseño vigente (2026-11-20).** El protagonista es un joven de 19–20 años del ayllu de Chaco/Chacona, en el arrabal cusqueño de Chocos-chacona. Vive en el Cusco, que es el hogar y el hub. La campaña tiene cuatro fases —la ciudad que se queda, Carmenca, los emisarios y Xaquixaguana— y un epílogo político. El arco completo vive en [docs/09](../../../docs/09_biblia_narrativa.md) §3.
 
 ## 2. Contexto historiográfico (resumen)
 
@@ -42,7 +42,7 @@ Clasificación según [docs/07_convenciones_historicas.md](../../../docs/07_conv
 
 **La campaña lineal se retiró el 2026-11-20**, con su trama, su elenco y sus escenas. No queda en el repositorio; solo en el historial de git. Lo que se conserva es el **contexto histórico** de este directorio y el **territorio** del dossier de región.
 
-La campaña se repiensa desde ese contexto: protagonista, comunidad, arranque y fases se diseñan de nuevo antes de escribir la ficha de F3. El territorio de F2 se conserva porque es geografía, no trama.
+La campaña se diseñó de nuevo sobre ese contexto: la ciudad como hogar, Carmenca como defensa y el oeste como segunda batalla. El territorio de F2 se conserva; cambian las funciones de los sectores, que están en [mundo/sectores.md](mundo/sectores.md).
 
 El estado de las fases vive en [docs/05](../../../docs/05_plan_de_implementacion.md).
 

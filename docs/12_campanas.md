@@ -24,40 +24,36 @@
 ### 2.1. Identidad
 
 - **Periodo:** siglo XV, conflicto entre incas y chancas.
-- **Región:** valle del Cusco y aproximación occidental (Cusco–Anta–paso), con distancias comprimidas y un valle ficticio declarado.
-- **Protagonista:** por definir.
+- **Región:** valle del Cusco; la ciudad preimperial como hogar y hub, con Carmenca al oeste y una aproximación comprimida a la segunda batalla.
+- **Protagonista:** varón de 19–20 años, del ayllu de Chaco/Chacona, en el arrabal de Chocos-chacona.
 - **Figura histórica central:** Cusi Yupanqui, futuro Pachacútec.
-- **Tono:** épico e íntimo; la guerra se ve desde abajo.
+- **Tono:** asedio, vida urbana y cálculo político; la guerra se ve desde abajo y desde dentro.
 
 ### 2.2. Promesa
 
-La comunidad vive la llegada de la noticia chanca, el viaje al Cusco, la defensa y la vuelta a una casa que ya no es la misma. El protagonista no gana la guerra ni decide el resultado histórico: sostiene su parte y paga el precio.
+La ciudad se queda sola: el inca se marcha, unos pocos se quedan y los chancas bajan de Carmenca. El protagonista no manda ni decide la guerra; sostiene su barrio, pide ayuda a una comunidad que la niega, sale al oeste a la segunda batalla y presencia cómo la victoria cambia el poder. No gana la guerra ni altera el resultado histórico: paga el precio.
 
-### 2.3. Fases del territorio
+### 2.3. Fases
 
-Las cinco fases son la hipótesis de trabajo, derivada del relato histórico; se confirman o se recortan al rediseñar la campaña:
+| Fase | Lugar | Qué ocurre | Tipo |
+|---|---|---|---|
+| 1. La ciudad que se queda | Cusco | Vida en el arrabal, la partida de Viracocha, los pocos que se quedan | Mundo abierto |
+| 2. Carmenca | Carmenca y el arrabal | Los chancas bajan del cerro; fosos, púas y cuatro entradas | Secuencia controlada |
+| 3. Los emisarios | Llacta y camino | Viaje a pedir ayuda; la negativa; la vuelta | Mundo abierto |
+| 4. Xaquixaguana | Oeste | La expedición y la segunda batalla | Secuencia controlada |
+| Epílogo político | Cusco | La borla, Viracocha, Inca Urco | Escenas de mundo |
 
-| Fase | Estado | Qué cambia |
-|---|---|---|
-| 0 — Paz | Vida cotidiana, rumores lejanos | Rutinas normales; caminos abiertos |
-| 1 — La noticia | Movilización, miedo, refugiados | NPC salen, precios suben, aparecen patrullas |
-| 2 — La guerra | Cusco en defensa, paso peligroso | Acceso restringido, combate contextual, ausencias |
-| 3 — La posguerra | Casas vacías, heridos, cuentas | NPC cambian, casas se cierran, asamblea |
-| 4 — La obra | Reconstrucción y nombre nuevo | Terrazas, corral y casa se reparan visiblemente |
-
-**Secuencias controladas:** la asamblea, la defensa del Cusco y el cierre. Todo lo demás ocurre en el mundo.
+**Secuencias controladas:** la defensa y la segunda batalla. El epílogo se juega en el mundo.
 
 ### 2.4. Región
 
-- Cusco preimperial, la llacta del valle, quebrada alta, paso y frontera chanca.
+- Cusco preimperial como hub; Carmenca y las afueras al oeste; la llacta vecina; quebrada, paso y frontera en la aproximación occidental.
 - Seis sectores; 20–30 POI; 60–100 NPC persistentes.
 - El detalle vive en `campaigns/01_pachacutec/documentation/mundo/`.
 
 ### 2.5. Estado
 
-La trama anterior se retiró el 2026-11-20 y solo queda en el historial de git. El punto de partida es el **contexto histórico** del [expediente](../campaigns/01_pachacutec/documentation/expediente_historico.md) y las fichas del registro. El territorio de F2 se conserva porque es geografía, no trama: seis sectores, ocho rutas y 30 POI en blockout, aprobado con cambios.
-
-La campaña —protagonista, comunidad, arranque, misiones y fases— se repiensa antes de escribir la ficha de F3.
+Diseño redactado el 2026-11-20 sobre el contexto histórico y las crónicas (Betanzos, Cieza y Sarmiento). El [expediente](../campaigns/01_pachacutec/documentation/expediente_historico.md) y el [registro](../campaigns/01_pachacutec/documentation/registro_historico.md) incluyen la geografía de la defensa (PCH-039) y a Chanan Cury Coca (PCH-040). El territorio de F2 se conserva; cambian las funciones de los sectores. Falta escribir la ficha de la vertical slice (F3).
 
 ### 2.6. Riesgos
 

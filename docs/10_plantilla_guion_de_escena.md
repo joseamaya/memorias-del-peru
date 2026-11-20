@@ -108,50 +108,48 @@ Copiar este bloque por cada escena:
 
 **Regla de secuencia controlada:** debe declarar qué se bloquea (movimiento, cámara, UI), cómo se entra, cómo se sale y qué estado del mundo deja. Si no hay una razón de puesta en escena, se resuelve como escena de mundo.
 
-## 6. Ficha modelo (histórica, versión lineal)
+## 6. Ficha modelo
 
-> Este ejemplo pertenece a la versión lineal de la campaña 01 y se conserva como referencia de nivel de detalle. En el mundo abierto, la misma escena se declara como escena de mundo en la plaza de la llacta, con rutina interrumpida y estado persistente.
+> Ejemplo genérico con el nivel de detalle que se exige. No describe una escena existente: la campaña rediseñada aún no tiene guion. Los nombres de personaje y las claves de texto se escriben al redactar la escena.
 
-### I.3 · La duda
+### F3 · La negativa del curaca
 
-**Lugar y momento:** llacta, plaza, junto al fuego · mañana.  
-**Duración:** 1–2 min · **Estado:** Parcial (el punto está a unos metros del fuego).  
-**Objetivo narrativo:** presentar la división entre Puma y Asto antes de la noticia.  
-**Objetivo del jugador:** escuchar y tomar partido.
+**Lugar y momento:** llacta vecina, plaza, junto a la casa del curaca · tarde.  
+**Duración:** 2–3 min · **Estado:** parcial (el jugador puede llegar por el camino o por el atajo del río).  
+**Objetivo narrativo:** cerrar la embajada con una negativa que el jugador ya sospecha.  
+**Objetivo del jugador:** conseguir ayuda para la ciudad y volver con una respuesta.
 
 **Presentes y bloqueo:**
-- Puma, de pie, frente al curaca.
-- Asto, curaca, de frente a Puma.
-- El protagonista, a un lado, dentro del punto de interacción.
+- El curaca, en el umbral de su casa.
+- Dos principales, sentados junto al fuego.
+- El protagonista, dentro del punto de interacción.
 
 **Cámara y sonido:**
-- La cámara enfoca a Puma al abrir el diálogo.
-- Fuego y viento de fondo; sin música.
+- Cámara al curaca al abrir el diálogo.
+- Fuego, viento y telar de fondo; sin música.
 
 **Textos:**
-- `PCH_TALK_DUDA`: «Escuchar la discusión».
-- `PCH_DUDA_INTRO`, `PCH_DUDA_PUMA`, `PCH_DUDA_CURACA`, `PCH_DUDA_SILENCE`.
-- Respuestas `PCH_DUDA_*_ANSWER`.
+- Claves por definir en la tabla de localización; ninguna cadena literal en código.
 
 **Decisiones:**
-- Apoyar a Puma, apoyar al curaca o callar.
+- Insistir, ofrecer algo a cambio o aceptar la negativa y marcharse.
 
 **Banderas:**
-- Fija: `apoyo_puma`, `apoyo_curaca` o `apoyo_silencio`.
-- Lee: ninguna.
+- Fija: `embajada_insistio`, `embajada_ofrecio` o `embajada_acepto`.
+- Lee: `reputacion_cusco`.
 
 **Consecuencias:**
-- Reputación de llacta y Cusco.
-- Opción de reconciliación y variante de silencio en IV.3.
+- La negativa se mantiene en las tres ramas; cambia el trato y lo que la llacta hace después de la victoria.
+- La llacta se suma al vencedor en la fase 4, con independencia de la rama.
 
 **Aceptación:**
 - [ ] El punto abre una sola conversación.
-- [ ] Hay tres opciones y cada una fija su bandera.
-- [ ] La cámara mira a Puma, que es el primer parlamento.
-- [ ] La duda es opcional y no bloquea la asamblea.
+- [ ] Cada rama fija su bandera y ninguna bloquea el regreso.
+- [ ] La negativa no depende de que el jugador llegue en un orden exacto.
+- [ ] La escena deja el estado del mundo persistido.
 
-**Ficha histórica:** PCH-001, PCH-015 · H (tradición) / N.  
-**Deuda:** el punto está a unos metros del fuego; acercarlo o mover a los personajes.
+**Ficha histórica:** la negativa de los curacas vecinos está en Betanzos y en Rostworowski; la embajada concreta es puesta en escena (H / N).  
+**Deuda:** ninguna.
 
 ## 7. Matriz de estado del mundo
 

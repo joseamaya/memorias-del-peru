@@ -54,7 +54,7 @@ Los tiempos incluyen pendiente y clima; no son una promesa de velocidad del juga
 | Ruta | Recorrido | Función | Riesgo |
 |---|---|---|---|
 | Camino principal | Llacta → terrazas → Cusco | Comercio, mensajes, peregrinación | Patrullas en guerra |
-| Ruta del paso | Llacta → quebrada → paso → frontera | Viaje de la comitiva, exploración | Clima, caídas, emboscada |
+| Ruta del paso | Llacta → quebrada → paso → frontera | Camino de la embajada y de la expedición | Clima, caídas, encuentro |
 | Ruta del río | Llacta → vado → acequia → Cusco | Atajo estacional | Crecida, barro |
 | Sendero de pastores | Cresta → cueva → mirador | Descubrimiento, recursos | Pendiente, desorientación |
 | Ruta oculta | Quebrada → tambo abandonado → frontera | Sigilo, contrabando, escape | Se descubre; no se marca |

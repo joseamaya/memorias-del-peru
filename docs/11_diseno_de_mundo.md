@@ -275,14 +275,14 @@ En fase de guerra, las franjas de campo se sustituyen por refugio o vigilancia. 
 
 | Fase | Principal | Secundarias | Encargos | POI nuevos | Acontecimientos |
 |---|---|---|---|---|---|
-| Paz | 3 | 5 | 8 | 10 | 3 |
-| Noticia | 4 | 4 | 2 | 5 | 3 |
-| Guerra | 3 | 3 | 1 | 4 | 2 |
-| Posguerra | 3 | 4 | 1 | 4 | 2 |
-| Obra | 2 | 3 | 1 | 2 | 1 |
-| **Total** | **15** | **19** | **13** | **25** | **11** |
+| 1. La ciudad que se queda | 2 | 4 | 6 | 8 | 3 |
+| 2. Carmenca | 1 | 2 | 1 | 3 | 2 |
+| 3. Los emisarios | 2 | 4 | 3 | 5 | 2 |
+| 4. Xaquixaguana | 2 | 3 | 1 | 4 | 2 |
+| Epílogo político | 1 | 2 | 1 | 2 | 1 |
+| **Total** | **8** | **15** | **12** | **22** | **10** |
 
-El catálogo de la campaña 01 tiene 30 POI; la columna «POI nuevos» cuenta los que se activan por primera vez en cada fase. Los números son objetivos de producción, no una cuota rígida. Si una fase no necesita una secundaria, se recorta antes que rellenarla. Los POI se reparten entre los seis sectores y no todos se marcan.
+Objetivos provisionales del rediseño del 2026-11-20; se confirman o se recortan al escribir la ficha de F3. El catálogo de la campaña 01 tiene 30 POI; la columna «POI nuevos» cuenta los que se activan por primera vez en cada fase. Los números no son una cuota rígida: si una fase no necesita una secundaria, se recorta antes que rellenarla. Los POI se reparten entre los seis sectores y no todos se marcan.
 
 ## 9. Combate
 

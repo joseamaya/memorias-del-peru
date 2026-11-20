@@ -6,6 +6,24 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — Rediseño de la campaña 01: la ciudad que se queda
+
+**Decisión:** la campaña se centra en el Cusco. El protagonista vive en el arrabal de Chocos-chacona, ayllus de Chaco y Chacona, es varón de 19–20 años y se queda con los pocos que no abandonan la ciudad. La estructura pasa a cuatro fases —la ciudad que se queda, Carmenca, los emisarios y Xaquixaguana— más un epílogo político.
+
+| Cambio | Detalle |
+|---|---|
+| Motivo | El protagonista anterior acudía al llamado desde una llacta y la campaña ponía el hogar fuera del hecho histórico. Las fuentes permiten algo más fuerte: la ciudad se queda sola y un vecino del arrabal que resistió es testigo directo del mando, sin suplantar a ningún histórico. |
+| Fuentes | Betanzos (cap. VIII) y Cieza (cap. XLV) sitúan el campamento chanca en **Carmenca**, sobre la ciudad, con fosos de piedra y púas de palma; Sarmiento (caps. XXVI–XXVIII) aporta las cuatro direcciones, el arrabal de Chocos-chacona, a Chanan Cury Coca y la edad de Cusi Yupanqui («a lad of 20 or 22 years»). Se leyó la edición de 1880 de Betanzos y Cieza en archive.org, porque Gutenberg estaba en mantenimiento. |
+| Fichas | Se añaden PCH-039 (geografía y desarrollo de la defensa) y PCH-040 (Chanan Cury Coca). Ambas quedan pendientes de firma del responsable. |
+| Edad | 19–20 años. No hay dato sobre la edad de los comuneros; se apoya en la del propio Cusi Yupanqui en la crónica. |
+| Sector S1 | Pasa a ser hogar y hub, no lugar visitado. Crece en importancia y en contenido: arrabal, entradas y defensa. |
+| Sector S2 | Aloja Carmenca, Cusi-pampa y los fosos. |
+| Sector S3 | Deja de ser el hogar: es la comunidad vecina a la que se pide ayuda y que después se suma al vencedor. |
+| Sector S6 | Deja de ser «frontera» genérica y pasa a ser la segunda batalla al oeste. |
+| Alternativas | (a) Mantener el hogar en la llacta: rechazada por alejar al jugador del hecho central. (b) Dejar la segunda batalla como noticia: rechazada porque dejaba sin función media región y sin cierre político. |
+| No verificado | Firma del responsable en PCH-039 y PCH-040. El lugar exacto de la segunda batalla (Xaquixaguana en Betanzos; Ichu-pampa en Sarmiento) se elige al construir la fase y se declara. |
+| Siguiente | Ficha de la vertical slice (F3) con las funciones nuevas de los sectores. |
+
 ## 2026-11-20 — Borrado de la campaña lineal
 
 **Decisión:** se borra del repositorio la campaña lineal completa: escenas, scripts, recursos, pruebas, guiones y rastro en textos. Solo queda el **contexto histórico** y el territorio de F2. Nada se archiva en el árbol; el historial de git es el archivo.

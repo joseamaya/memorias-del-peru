@@ -12,6 +12,7 @@
 | Siglo XV, c. 1438 | Avance chanca sobre el Cusco y defensa de la ciudad por Cusi Yupanqui | H (tradición) / R (fecha) | PCH-002 |
 | Antes del conflicto | Viracocha Inca nombra heredero a Inca Urco y se retira del Cusco con sus hijos | H (tradición) | PCH-001, PCH-015 |
 | Durante el conflicto | Cusi Yupanqui asume la defensa; la élite y parte de la población habían salido | H (tradición) | PCH-002 |
+| Durante el conflicto | Los chancas acampan sobre la ciudad, en Carmenca, y son rechazados en un día de combate | H (tradición) / R | PCH-039 |
 | Después de la victoria | Cusi Yupanqui consolida su posición y asume el nombre de Pachacútec | H (tradición) | PCH-001 |
 | Después de la victoria | Muerte de Viracocha, retirado fuera de la ciudad | H (tradición) | PCH-033 |
 
@@ -21,12 +22,15 @@ La fecha de 1438 procede de cronologías derivadas de las crónicas (Rowe a part
 
 | Lugar | Uso en el juego | Clasificación | Ficha |
 |---|---|---|---|
-| Llacta del valle | Actos I, IV y V; aldea ficticia construida con modelos documentados | R / N | PCH-006, PCH-007, PCH-016 |
-| Paso de montaña | Acto II; corredor, refugio de pirca y arroyo | R | PCH-026 |
-| Cusco de 1438 | Actos II y III; centro de un señorío en consolidación | A / R | PCH-022, PCH-027 |
+| Cusco de 1438 | Hogar del protagonista y escenario de la defensa; centro de un señorío en consolidación | A / R | PCH-022, PCH-027, PCH-039 |
+| Carmenca y Cusi-pampa | Cerro y pampa al oeste de la ciudad; campamento y bajada chanca | H (tradición) / R | PCH-039 |
+| Chocos-chacona | Arrabal de los ayllus de Chaco y Chacona; defensa con Chanan Cury Coca | H (tradición) / R | PCH-039, PCH-040 |
+| Llacta del valle | Comunidad vecina a la que se pide ayuda y que después se suma al vencedor | R / N | PCH-006, PCH-007, PCH-016 |
+| Paso de montaña | La embajada y el camino al oeste | R | PCH-026 |
+| Xaquixaguana / Ichu-pampa | Segunda batalla, comprimida en el oeste | H (tradición) / GN | PCH-039 |
 | Retirada de Viracocha | Caca Xaqui Xahuana (Betanzos) o Chita (Sarmiento); referida, no escenificada | H (tradición) | PCH-001, PCH-015 |
 
-El recorrido llacta → paso → Cusco es una licencia de escala: no se afirma que existiera un camino concreto ni un refugio en ese punto. El refugio no se llama tambo (PCH-026).
+El recorrido Cusco → Carmenca → llacta → oeste es una licencia de escala: no se afirma que existiera un camino concreto ni un refugio en ese punto. El refugio no se llama tambo (PCH-026). Carmenca se sitúa al oeste, como en Betanzos y Cieza; el terreno concreto es reconstrucción (R).
 
 ## 3. Personajes históricos y sus roles
 
@@ -46,7 +50,7 @@ Los personajes históricos conservan sus decisiones. El jugador no habla por ell
 - **Hombres principales:** élite local con voz en la asamblea; su duda ante la resistencia es verosímil y se registra como R.
 - **Señorío del Cusco:** en 1438 no es todavía el Tahuantinsuyu expansivo; la ciudad monumental es posterior (PCH-022).
 - **Reciprocidad:** obligaciones y contraprestaciones entre familias y con la autoridad; se representa en encargos, ofrendas y comidas compartidas (PCH-012).
-- **Asamblea:** reunión de ayllus y principales para decidir el reparto y el esfuerzo común. No hay acta ni registro directo de la que sigue a la victoria: la escena del acto IV es reconstrucción (PCH-032).
+- **Asamblea:** reunión de ayllus y principales para decidir el reparto y el esfuerzo común. No hay acta ni registro directo de la que sigue a la victoria: la escena de la posguerra es reconstrucción (PCH-032).
 
 ## 5. Vestimenta, arquitectura, herramientas y armamento
 
@@ -67,7 +71,7 @@ No hay metales europeos, rueda de transporte, animales de tiro ni especies intro
 
 ## 6. Actividades cotidianas
 
-- Acarreo de agua y peso (Monte), molienda de maíz (Oficio), tejido (Palabra/Oficio) y pirca (Monte/Oficio): las cuatro tareas del acto I y los cinco trabajos de reconstrucción del acto V, con la casa de la familia incluida.
+- Acarreo de agua y peso, molienda de maíz, tejido y pirca: tareas documentadas que el juego usa como oficios y como trabajos de la ciudad.
 - Chicha de jora: preparación, servicio y consumo ritual y social (PCH-005).
 - Coca: masticar y compartir; uso ritual y social (PCH-028).
 - Ofrenda a la Pachamama (PCH-012).
@@ -103,6 +107,7 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 | Nombre de Pachacútec | La asunción del nombre tras la victoria es tradición de los cronistas | Se presenta como tradición, no como acto documentado (PCH-034) |
 | Muerte de Viracocha | Las crónicas difieren en el lugar y el momento; en todas ocurre tras la victoria de su hijo | Se cuenta como noticia, sin escena directa (PCH-033) |
 | Asamblea de posguerra | No hay registro directo de una asamblea tras la victoria | Reconstrucción a partir de la reciprocidad y el reparto (PCH-032) |
+| Sitio y desarrollo de la defensa | Betanzos y Cieza la sitúan en Carmenca, sobre la ciudad; Sarmiento, en Cusi-pampa y el arrabal de Chocos-chacona; los jefes chancas y el lugar de la segunda batalla también cambian | Se elige la versión de Betanzos y Cieza para el terreno y la de Sarmiento para la maniobra; las demás se citan como versiones en la Memoria (PCH-039) |
 | Pururaucas | Leyenda recogida en una crónica tardía | Se cuenta como creencia; no cambia la batalla (PCH-031) |
 | Arquitectura del Cusco en 1438 | No hay registro directo de la ciudad de ese momento | Reconstrucción a partir de técnicas y materiales documentados (PCH-022, PCH-027) |
 
@@ -110,24 +115,20 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 
 | Elemento | Clasificación | Nota |
 |---|---|---|
-| Protagonista | N | Por definir desde el contexto histórico; su nombre se registrará como N. |
-| Sisa, compañera de camino | N | 18 años; nombre provisional |
-| Asto, curaca de la llacta | N | Autoridad local ficticia |
-| Puma, principal escéptico | N | Voz de la élite que se retiró |
-| Madre y hermano menor | N | Vínculo y motivo |
-| Anca, comitiva herida | N | Testigo del costo |
-| La llacta del valle y su planta | R / N | Construida con modelos documentados; la aldea como tal es ficción |
-| Los cuatro encargos | N | Tareas documentadas, secuencia creada para el juego |
+| Protagonista | N | Varón de 19–20 años, del ayllu de Chaco/Chacona. La edad se apoya en la de Cusi Yupanqui según Sarmiento («a lad of 20 or 22 years», cap. XXVII); el personaje es ficción. |
+| Su familia y sus vecinos | N | Vínculos y nombres por escribir; el ayllu y el arrabal sí están documentados. |
+| La llacta del valle y su planta | R / N | Construida con modelos documentados; la aldea como tal es ficción. En el rediseño es la comunidad vecina a la que se pide ayuda. |
 | El refugio del paso | R | No es un tambo |
+| La embajada a la llacta y su negativa | H / N | La negativa de los curacas vecinos está en Betanzos y en Rostworowski; la embajada concreta es puesta en escena. |
 | La emboscada chanca del paso | N | Encuentro ficticio en un conflicto documentado |
-| El hijo de Puma entre los jóvenes | N | Permite que el costo de la batalla sea personal |
 | La asamblea y la posguerra | N | Se apoyan en la organización documentada; la escena es ficción |
 | El nombre de Pachacútec | H / N | Tradición de los cronistas; la escena es ficción |
+| El epílogo político | H / N | La borla, la negativa de Viracocha y la disputa con Inca Urco están en las crónicas; la escena concreta es ficción. |
 
 ## 11. Estado del expediente
 
-- **Cronología y localizaciones:** completas para el periodo y la región.
-- **Personajes y organización:** completos para el periodo y la región.
+- **Cronología y localizaciones:** completas para el periodo y la región; Carmenca, Chocos-chacona y Xaquixaguana se añaden con el rediseño.
+- **Personajes y organización:** completos para el periodo y la región; Chanan Cury Coca entra con ficha propia (PCH-040).
 - **Cultura material:** cubierta por las fichas PCH-004 a PCH-031; PCH-025 fuera del juego.
-- **Controversias:** registradas con su tratamiento en pantalla.
-- **Verificado:** PCH-032 a PCH-036, por revisión documental del agente el 2026-11-15 sobre las ediciones citadas. PCH-025 queda fuera del juego.
+- **Controversias:** registradas con su tratamiento en pantalla, incluida la del sitio de la defensa (PCH-039).
+- **Verificado:** PCH-032 a PCH-036, por revisión documental del agente el 2026-11-15 sobre las ediciones citadas. PCH-025 queda fuera del juego. **PCH-039 y PCH-040 quedan pendientes de firma del responsable.**

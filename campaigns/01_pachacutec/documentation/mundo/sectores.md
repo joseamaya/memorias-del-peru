@@ -8,46 +8,46 @@
 
 | Sector | Superficie | Función | Densidad | NPC | Interiores | Presupuesto |
 |---|---|---|---|---|---|---|
-| S1 Cusco preimperial | 350 × 300 m | Hub político y comercial | Alta | 30–40 | 5–8 | 350 draw calls |
-| S2 Afueras y terrazas | 400 × 300 m | Transición y agricultura | Media | 8–12 | 2–3 | 250 draw calls |
-| S3 Llacta del valle | 300 × 250 m | Hogar y vida cotidiana | Alta | 20–30 | 3–5 | 300 draw calls |
+| S1 Cusco preimperial | 350 × 300 m | Hogar, hub urbano y defensa | Alta | 30–40 | 5–8 | 350 draw calls |
+| S2 Afueras y terrazas | 400 × 300 m | Carmenca y Cusi-pampa; transición y agricultura | Media | 8–12 | 2–3 | 250 draw calls |
+| S3 Llacta del valle | 300 × 250 m | Comunidad vecina; la embajada y la negativa | Alta | 20–30 | 3–5 | 300 draw calls |
 | S4 Quebrada alta | 400 × 300 m | Recursos y descubrimiento | Baja | 3–6 | 1–2 | 180 draw calls |
 | S5 Paso | 350 × 300 m | Viaje y peligro | Baja | 2–5 | 1 | 150 draw calls |
-| S6 Frontera chanca | 400 × 350 m | Conflicto y clímax | Media | 10–20 | 1–2 | 220 draw calls |
+| S6 Frontera chanca | 400 × 350 m | Segunda batalla al oeste | Media | 10–20 | 1–2 | 220 draw calls |
 
 Los NPC de cada sector se solapan con los de la región; no se suman todos a la vez. El `NpcDirector` activa solo los cercanos.
 
 ## 2. S1 — Cusco preimperial
 
 - **Clasificación:** GD/GR.
-- **Función:** hub urbano; política, comercio, información, autoridad.
+- **Función:** hogar del protagonista, hub urbano y escenario de la defensa; política, comercio, información y autoridad.
 - **Contenido:** plaza, recinto del Coricancha, casas de ayllus, mercado, talleres, depósitos, callejones, acequia urbana.
 - **Vida:** mercado de mañana, talleres, reuniones, mensajeros, guardia.
-- **POI:** Coricancha, plaza, mercado, casa del curaca cusqueño, taller de textil, depósito.
-- **Experiencias:** escuchar rumores, comprar/vender, entregar mensajes, presenciar una discusión política, visitar el santuario.
+- **POI:** Coricancha, plaza, mercado, casa del curaca cusqueño, taller de textil, depósito, arrabal de Chocos-chacona.
+- **Experiencias:** vivir el arrabal, escuchar rumores, comprar/vender, presenciar la partida de Viracocha, defender las entradas, visitar el santuario.
 - **Riesgo:** sector más caro; multitud y sombras. Se mide a mediodía.
 - **Límite:** muralla/pirca y quebrada; no se puede salir por el fondo visual.
 
 ## 3. S2 — Afueras y terrazas
 
 - **Clasificación:** GR.
-- **Función:** transición urbano-rural; agricultura y agua.
+- **Función:** Carmenca y Cusi-pampa; transición urbano-rural, agricultura y agua.
 - **Contenido:** terrazas de maíz, acequias, casas dispersas, corrales, era, camino principal.
 - **Vida:** riego, cosecha, pastoreo, acarreo.
-- **POI:** acequia madre, era, corral, casa de una familia de agricultores.
+- **POI:** acequia madre, era, corral, casa de una familia de agricultores, cerro de Carmenca, fosos y púas de la defensa.
 - **Experiencias:** ayudar con el riego, reparar una acequia, aprender sobre terrazas, atajar por el río.
 - **Riesgo:** pendientes y colisión de terrazas; el jugador no debe quedar atrapado.
 
 ## 4. S3 — Llacta del valle
 
 - **Clasificación:** GN.
-- **Función:** hogar; vida cotidiana, familia, comunidad, primera base del jugador.
+- **Función:** comunidad vecina; la embajada que pide ayuda y la negativa de sus curacas.
 - **Contenido:** 12–18 casas, plaza, casa de la familia, telar, corral, manantial, acequia, huerto, fogón.
 - **Vida:** amanecer, desayuno, trabajo, mercado, comida, conversación, noche.
 - **POI:** casa de la familia, plaza, manantial, telar, corral, casa del curaca, mirador bajo.
-- **Experiencias:** acarrear agua, moler maíz, tejer, reparar el corral, escuchar una discusión, preparar una ofrenda.
+- **Experiencias:** pedir ayuda al curaca, discutir en la plaza, acarrear agua, moler maíz, tejer, reparar el corral, preparar una ofrenda.
 - **Riesgo:** exceso de props y NPC; se usan kits y LOD.
-- **Persistencia:** corral reparado, acequia limpia, casa reconstruida, objetos del hogar.
+- **Persistencia:** el recuerdo de la negativa y el cambio de bando tras la victoria.
 
 ## 5. S4 — Quebrada alta
 
@@ -72,11 +72,11 @@ Los NPC de cada sector se solapan con los de la región; no se suman todos a la 
 ## 7. S6 — Frontera chanca
 
 - **Clasificación:** GN/GR.
-- **Función:** conflicto, campamento, clímax, consecuencias.
-- **Contenido:** puna, bofedal, tambo abandonado, marcas de piedra, campamento, puestos de vigilancia, campo de batalla.
+- **Función:** la expedición al oeste y la segunda batalla.
+- **Contenido:** puna, bofedal, tambo abandonado, marcas de piedra, campamento chanca y campo de batalla.
 - **Vida:** exploradores, guerreros, prisioneros, animales.
 - **POI:** tambo, marcas de piedra, campamento, puesto de vigilancia, campo de batalla, enterramientos.
-- **Experiencias:** observar sin ser visto, rescatar a alguien, llevar un mensaje, participar en la emboscada, volver después de la guerra.
+- **Experiencias:** marchar con la expedición, observar el campamento, combatir en la segunda batalla, volver con el botín.
 - **Riesgo:** combate y densidad de NPC; se controla con encuentros authored y LOD.
 
 ## 8. Transiciones
