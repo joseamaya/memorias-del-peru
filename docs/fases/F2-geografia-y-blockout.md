@@ -17,7 +17,7 @@
 | 2.6 | S4–S6 | **Base implementada** | Quebrada, paso y frontera con POI y límites naturales | `frontier_sectors_check`; 5+3+5 POI y presupuestos |
 | 2.7 | POI y descubrimiento | **Base implementada** | 30 POI con ID, función, clasificación y disparador | `poi_discovery_check`; 30 POI, diario, mapa y guardado |
 | 2.8 | Recorrido completo | **Automatizado; falta prueba humana** | 20–30 min a pie sin bloqueos ni pantallas exteriores | `region_walkthrough_check`; 2.758 m y 23 min |
-| 2.9 | Mundo caminable | **Base implementada** | El jugador recorre el blockout a pie, con colisión y streaming | `region_player_check`; 9 m andados sobre el terreno |
+| 2.9 | Mundo caminable | **Base implementada; falta prueba humana** | El jugador recorre el blockout a pie, con colisión y streaming | `region_player_check`; 9 m y llegada a la plaza; [protocolo](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md) |
 
 ## 2. F2.1 — Heightmap regional
 
@@ -272,7 +272,7 @@ godot --headless --path . --script res://tests/poi_discovery_check.gd
 
 La prueba avanza el objetivo por muestras del navmesh y espera la carga de cada celda; no simula 23 minutos reales. **Modo de revisión:** `region_world` arranca con una cámara cercana (38, 26, 48) y las etiquetas de POI ocultas. `H` muestra solo la etiqueta más cercana; `T` alterna vista cenital. La barra superior recuerda las teclas. Sirve para revisar el blockout sin que nueve etiquetas se solapen.
 
-La **prueba humana de 20–30 min** sigue pendiente y es la que cierra F2.
+La **prueba humana de 20–30 min** sigue pendiente y es la que cierra F2. El protocolo, las rutas, el registro de incidencias y el veredicto están en [prueba_blockout.md](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
 
 ```bash
 godot --headless --path . --script res://tests/region_walkthrough_check.gd
@@ -295,7 +295,13 @@ La prueba humana de 20–30 min ya puede hacerse con el jugador andando:
 godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
 ```
 
-**Capturas:** `build/evidencia/region_player.png` (aparición) y `region_player_plaza.png` (tras andar hacia la plaza).
+**Correcciones de la validación:** la primera pasada encontró tres defectos de blockout que impedían la prueba. El punto de aparición estaba detrás de la casa de 15° y la marcha recta chocaba con ella; se movió a R1 (352,9, 28,3), entre las casas de 15° y 65°, con rumbo 62°. La cinta de ruta estaba a 0,8 m del suelo y tapaba la vista como un muro; bajó a 0,15 m. La plaza era un cilindro macizo de 0,8 m sin colisión y la cámara quedaba dentro; pasó a una losa de 0,12 m. `region_player_check` ahora recorre 9 m y sigue hasta el borde de la plaza (12,0 m del centro), no solo los primeros metros.
+
+**Entorno de revisión (2026-11-20):** la escena regional tenía `BG_COLOR` casi negro, Terrain3D sin assets (damero) y sol sin sombras; el blockout se leía como una escena rota. Se añaden cielo físico, ambiente neutro, sol con sombras, relleno frío sin sombra, bruma de profundidad y dos texturas planas de blockout (pradera y roca) para el autoshader de Terrain3D. Las casas bajan el cimiento hasta la esquina más baja de su huella y la plaza se apoya en la altura del centro, no en el máximo del cuadrado. No es arte final: sigue siendo gris, sin props ni materiales definitivos, pero permite juzgar escala, silueta y territorio. Capturas antes/después en `build/evidencia/region_player.png` y `region_player_plaza.png`.
+
+**Capturas:** `build/evidencia/region_player.png` (aparición) y `region_player_plaza.png` (camino y plaza tras 5 s de marcha).
+
+**Prueba humana:** [prueba_blockout.md](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
 
 **Limitaciones:** el jugador no tiene todavía presentación, inventario, interacción con NPC ni equipo. El terreno sigue a cuadros y los edificios son volúmenes sin interior.
 
@@ -317,7 +323,7 @@ godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
 | Riesgo | Mitigación |
 |---|---|
 | El relieve inventado se lee como reconstrucción | Clasificación GN/GR visible en la ficha y el diario |
-| Terreno de 4 m demasiado tosco para caminar | Terreno local de 1 m por sector en F2.2/F3 |
+| Terreno de 4 m demasiado tosco para caminar | Terreno local de 1 m por sector en F3 |
 | Seis sectores sin contenido | Cada uno se aprueba con función, POI y presupuesto antes de construir |
 | El fondo visual promete contenido | Fondo no recorrible y declarado |
 | Coste de generación al cargar | Medir; pregenerar y guardar el heightmap si supera el presupuesto |
@@ -328,4 +334,4 @@ godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
 - [x] Cada sector tiene función, contenido y presupuesto medido.
 - [x] La escala se lee: comunidad, campos, paso y Cusco se reconocen desde lejos en las capturas.
 - [x] La clasificación geográfica está declarada.
-- [ ] El blockout se aprueba antes de producir arquitectura definitiva: falta la prueba humana y el veredicto del responsable.
+- [ ] El blockout se aprueba antes de producir arquitectura definitiva: falta la prueba humana y el veredicto del responsable ([protocolo](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md)).

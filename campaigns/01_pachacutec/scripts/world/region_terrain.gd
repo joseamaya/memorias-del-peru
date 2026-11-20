@@ -113,20 +113,64 @@ func _distance_to_segment(point: Vector2, from: Vector2, to: Vector2) -> float:
 
 
 func _build_environment() -> void:
+	# Cielo de revisión: sin él, el blockout se lee como una escena rota.
+	# No es el arte final de la campaña; solo da horizonte, luz y profundidad.
+	var sky_material: PhysicalSkyMaterial = PhysicalSkyMaterial.new()
+	sky_material.rayleigh_coefficient = 1.4
+	sky_material.rayleigh_color = Color(0.32, 0.52, 0.9)
+	sky_material.mie_coefficient = 0.003
+	sky_material.mie_eccentricity = 0.8
+	sky_material.mie_color = Color(0.85, 0.75, 0.65)
+	sky_material.turbidity = 1.7
+	sky_material.ground_color = Color(0.22, 0.2, 0.17)
+	sky_material.sun_disk_scale = 1.0
+	var sky: Sky = Sky.new()
+	sky.sky_material = sky_material
+
 	var environment: Environment = Environment.new()
-	environment.background_mode = Environment.BG_COLOR
-	environment.background_color = Color(0.05, 0.06, 0.07)
+	environment.background_mode = Environment.BG_SKY
+	environment.sky = sky
+	# Ambiente de color neutro: la luz de cielo sola dejaba las caras en
+	# sombra casi negras y las casas se leían como siluetas.
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color(0.62, 0.68, 0.74)
-	environment.ambient_light_energy = 1.0
+	environment.ambient_light_color = Color(0.58, 0.62, 0.68)
+	environment.ambient_light_energy = 1.2
+	environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	# Bruma de profundidad suave: separa planos y evita que las cumbres se
+	# recorten contra el cielo. No oculta el camino ni los POI.
+	environment.fog_enabled = true
+	environment.fog_light_color = Color(0.66, 0.74, 0.86)
+	environment.fog_light_energy = 0.5
+	environment.fog_sky_affect = 0.2
+	environment.fog_density = 0.00025
+	environment.tonemap_mode = Environment.TONE_MAPPER_ACES
+	environment.tonemap_exposure = 1.0
 	var world_environment: WorldEnvironment = WorldEnvironment.new()
+	world_environment.name = "BlockoutEnvironment"
 	world_environment.environment = environment
 	add_child(world_environment)
+
 	var sun: DirectionalLight3D = DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-48.0, -40.0, 0.0)
-	sun.light_energy = 1.2
-	sun.shadow_enabled = false
+	sun.name = "BlockoutSun"
+	sun.rotation_degrees = Vector3(-38.0, -40.0, 0.0)
+	sun.light_color = Color(1.0, 0.9, 0.76)
+	sun.light_energy = 1.35
+	sun.shadow_enabled = true
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	sun.directional_shadow_max_distance = 300.0
+	sun.directional_shadow_fade_start = 0.8
+	sun.shadow_bias = 0.05
 	add_child(sun)
+
+	# Relleno frío sin sombra: las caras en sombra no pueden quedar negras en
+	# una escena de revisión; sin él, las casas se leen como siluetas.
+	var fill: DirectionalLight3D = DirectionalLight3D.new()
+	fill.name = "BlockoutFill"
+	fill.rotation_degrees = Vector3(-20.0, 140.0, 0.0)
+	fill.light_color = Color(0.72, 0.80, 0.95)
+	fill.light_energy = 0.55
+	fill.shadow_enabled = false
+	add_child(fill)
 
 
 func _build_terrain() -> void:
@@ -137,6 +181,10 @@ func _build_terrain() -> void:
 	_terrain.vertex_spacing = SPACING
 	_terrain.free_editor_textures = false
 	add_child(_terrain)
+	# Sin assets, Terrain3D dibuja su damero por defecto y el blockout parece
+	# una textura ausente. Dos texturas planas de 8 × 8 dan pradera en llano y
+	# roca en pendiente; el autoshader del material por defecto hace la mezcla.
+	_build_terrain_assets()
 	var image: Image = Image.create(REGION_SIZE, REGION_SIZE, false, Image.FORMAT_RF)
 	for row: int in REGION_SIZE:
 		for column: int in REGION_SIZE:
@@ -147,6 +195,37 @@ func _build_terrain() -> void:
 	_terrain.data.import_images(images, Vector3(-HALF_EXTENT, 0.0, -HALF_EXTENT), 0.0, 1.0)
 	_terrain.data.calc_height_range(true)
 	_build_ms = Time.get_ticks_msec() - start
+
+
+## Assets mínimos de blockout: una textura de pradera y otra de roca. No son
+## arte final; solo evitan el damero y permiten leer pendientes y valles.
+func _build_terrain_assets() -> void:
+	var grass: Terrain3DTextureAsset = _texture_asset(
+		Color(0.38, 0.45, 0.30), "BlockoutPradera", 0
+	)
+	var rock: Terrain3DTextureAsset = _texture_asset(
+		Color(0.50, 0.48, 0.44), "BlockoutRoca", 1
+	)
+	var assets: Terrain3DAssets = Terrain3DAssets.new()
+	assets.texture_list = [grass, rock]
+	_terrain.assets = assets
+
+
+func _texture_asset(
+	color: Color, asset_name: String, asset_id: int
+) -> Terrain3DTextureAsset:
+	var image: Image = Image.create(8, 8, false, Image.FORMAT_RGBA8)
+	image.fill(color)
+	image.generate_mipmaps()
+	var texture: ImageTexture = ImageTexture.create_from_image(image)
+	var asset: Terrain3DTextureAsset = Terrain3DTextureAsset.new()
+	asset.name = asset_name
+	asset.id = asset_id
+	asset.albedo_color = Color.WHITE
+	asset.albedo_texture = texture
+	asset.roughness = 0.95
+	asset.uv_scale = 0.05
+	return asset
 
 
 func _build_sector_markers() -> void:

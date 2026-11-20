@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F2.9: mundo caminable y protocolo de prueba humana
+
+| Cambio | Detalle |
+|---|---|
+| Jugador a pie | `region_world` instancia `player_fps.tscn` en R1, con colisión dinámica de Terrain3D, streaming y descubrimiento siguiendo al jugador, rescate a 120 m de caída y sin manos ni arma. `region_player_check` recorre 9,2 m, comprueba la colisión y sigue hasta el borde de la plaza (12,0 m del centro). |
+| Correcciones de la primera pasada | El punto de aparición estaba detrás de la casa de 15° y la marcha recta chocaba con ella; se movió a R1 (352,9, 28,3), entre las casas de 15° y 65°, con rumbo 62°. La cinta de ruta estaba a 0,8 m y tapaba la vista; bajó a 0,15 m. La plaza era un cilindro macizo de 0,8 m sin colisión y la cámara quedaba dentro; pasó a una losa de 0,12 m. |
+| Protocolo humano | Se añade `campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md` con rutas A (20–30 min) y B (30–40 min), checkpoints por sector, qué mirar, registro de incidencias y veredicto. Se enlaza desde la ficha de F2, la guía de mundo, docs/06 y docs/13. |
+| Coherencia de estado | README, docs/15, docs/05, docs/13 y la ficha de F1 dejan de decir que F1 está en curso o que los addons no se han adoptado: F1 cerrada, F2 en curso y adopción provisional de Terrain3D 1.1.0 y Cyclops 1.5.2. Se fusionan los dos párrafos duplicados de blockout de F2.4 en docs/13. |
+| Entorno de revisión | La escena regional tenía cielo casi negro, Terrain3D con damero por falta de assets y sol sin sombras. Se añaden cielo físico, ambiente neutro, sol con sombras, relleno frío sin sombra, bruma suave y dos texturas planas de blockout (pradera/roca) para el autoshader. Las casas bajan el cimiento hasta la esquina más baja de su huella y la plaza se apoya en la altura del centro. Sigue siendo blockout, no arte final. |
+| Validación | Importación limpia; suite completa con 168 pruebas y 0 fallos; `region_player_check` OK; `region_walkthrough_check` OK (2.758 m, 23 min, seis sectores, ocho POI); exportación Linux de 130 MB y arranque headless sin errores ni advertencias de `res://`; enlaces relativos de los documentos tocados, 0 rotos; `gdlint`/`gdformat` de los dos archivos nuevos, limpios. |
+| Evidencia | `build/evidencia/region_player.png` (aparición en R1) y `region_player_plaza.png` (camino y plaza tras 5 s). Son capturas de trabajo; las aprobadas se copiarán a `documentation/img/f2_blockout/`. |
+| Pendiente | Prueba humana de 20–30 min y veredicto del responsable; arte, NPC, interiores y combate de mundo; revisión definitiva de la adopción de Terrain3D/Cyclops con el sector real. |
+
 ## 2026-11-19 — Cierre documental de la F0
 
 **Decisión:** se cierra la F0 con las recomendaciones aprobadas por el responsable.

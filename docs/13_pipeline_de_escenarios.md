@@ -3,7 +3,7 @@
 - **Versión:** 1.0 — 2026-11-19
 - **Ámbito:** cómo se construye un territorio y un sector, desde la geografía hasta la escena jugable.
 - **Marco:** [arquitectura](02_arquitectura.md), [GDD de mundo](11_diseno_de_mundo.md), [rendimiento](08_entorno_y_rendimiento.md) y [convenciones históricas](07_convenciones_historicas.md).
-- **Estado:** propuesta; las herramientas se validan en F1 y no se adoptan por moda.
+- **Estado:** adopción provisional; F1 cerrada y F2 en curso. La revisión definitiva se hace con el sector real de F2, no por moda.
 
 ## 1. Herramientas y versiones
 
@@ -80,13 +80,13 @@ Validación histórica, visual, de rendimiento y de guardado
 
 ### 3.2. Terreno
 
-**Blockout de sector (F2.4–F2.5).** S3 y S1 comparten `BlockoutKit` (cajas, cilindros, cintas y etiquetas con colisión simple) y se cargan con el streamer. S3 aporta plaza, casas, manantial y acequia; S1, Coricancha, ayllus, mercado, talleres y depósitos; S4–S6, quebrada, paso y frontera con sus POI y límites naturales. Las capturas de revisión son ortográficas y ocultan las etiquetas para leer la planta.
-
-**Blockout de sector (F2.4).** S3 usa `LlactaBlockout`: plaza, casas, manantial, acequia y POI con mallas y colisiones simples de blockout, cargadas por el streamer. La captura de revisión es ortográfica y oculta las etiquetas para leer la planta.
+**Blockout de sector (F2.4–F2.6).** S3 y S1 comparten `BlockoutKit` (cajas, cilindros, cintas y etiquetas con colisión simple) y se cargan con el streamer. S3 usa `LlactaBlockout`: plaza, casas, manantial, acequia y POI. S1 aporta Coricancha, ayllus, mercado, talleres y depósitos; S4–S6, quebrada, paso y frontera con sus POI y límites naturales. Las capturas de revisión son ortográficas y ocultan las etiquetas para leer la planta.
 
 **Modo de revisión (F2.8).** La escena regional arranca con cámara cercana y etiquetas ocultas; `H` muestra la más cercana y `T` alterna la vista cenital. Es una herramienta de blockout, no una cámara de juego.
 
-**Mundo caminable (F2.9).** `region_world` instancia `player_fps.tscn` en el camino de entrada a la llacta y deja que la colisión dinámica de Terrain3D sostenga al jugador. El objetivo del streaming sigue al jugador, así que los sectores cargan a su alrededor. Las capturas y mediciones que necesitan la cámara de revisión instancian la escena con `first_person = false`.
+**Mundo caminable (F2.9).** `region_world` instancia `player_fps.tscn` en el camino de entrada a la llacta y deja que la colisión dinámica de Terrain3D sostenga al jugador. El objetivo del streaming sigue al jugador, así que los sectores cargan a su alrededor. Las capturas y mediciones que necesitan la cámara de revisión instancian la escena con `first_person = false`. La prueba humana de 20–30 min, con rutas y registro de incidencias, está en [prueba_blockout.md](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
+
+**Entorno de revisión.** La escena regional no usa el arte final: añade cielo físico, ambiente neutro, sol con sombras, relleno frío, bruma suave y dos texturas planas de pradera/roca para el autoshader de Terrain3D. Las casas apoyan el cimiento en su esquina más baja y la plaza se apoya en la altura del centro. El objetivo es que el blockout se pueda mirar; no sustituye la iluminación ni los materiales de F3.
 
 **Recorrido regional (F2.8).** `region_walkthrough_check` recorre el navmesh Cusco → frontera con el streamer y el descubrimiento activos; valida continuidad, carga de los seis sectores, POI y guardado. La prueba humana de 20–30 min es la que cierra F2.
 

@@ -400,6 +400,8 @@ Las capturas de `capture_llacta_tour` se escriben en `/tmp/opencode/llacta_tour`
 
 **Antes y después.** Antes de tocar la escena se guarda la tanda base en `campaigns/<campaña>/documentation/img/<tarea>/antes/`; después del cambio, la misma tanda en `.../despues/`. Una tanda anterior no se sobrescribe: si hace falta otra iteración, se usa `antes_2`/`despues_2` o una carpeta con fecha.
 
+**Blockout regional.** La prueba humana de F2 tiene un protocolo propio con rutas, checkpoints, registro de incidencias y veredicto en [prueba_blockout.md](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md). Las capturas de trabajo van a `build/evidencia/`; las aprobadas, a `campaigns/01_pachacutec/documentation/img/f2_blockout/`.
+
 **Qué se revisa:**
 
 1. **Cámara del jugador:** horizonte, encuadre y escala de puertas, casas, personas (1,70 m) y caminos.
