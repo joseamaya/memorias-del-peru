@@ -148,6 +148,12 @@ Comprobar los 30 POI, el diario, el mapa y su persistencia:
 godot --headless --path . --script res://tests/poi_discovery_check.gd
 ```
 
+Comprobar el recorrido Cusco → frontera por el mundo continuo:
+
+```bash
+godot --headless --path . --script res://tests/region_walkthrough_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -162,7 +168,7 @@ godot --headless --path . --import 2>&1 | tee /tmp/import.log
 python3 tools/check_output.py /tmp/import.log
 ```
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI, recorrido regional y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -296,6 +302,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `cusco_blockout_check.gd` | S1 con 28 casas, 6 POI, Coricancha, mercado, talleres, depósitos y rutas a afueras y llacta |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
+| `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
 | `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |

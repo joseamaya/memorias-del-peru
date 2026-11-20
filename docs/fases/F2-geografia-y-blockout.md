@@ -16,7 +16,7 @@
 | 2.5 | S1 Cusco preimperial | **Base implementada** | Plaza, recinto, ayllus, mercado y talleres en blockout | `cusco_blockout_check`; 28 casas, 6 POI, 247 draw calls |
 | 2.6 | S4–S6 | **Base implementada** | Quebrada, paso y frontera con POI y límites naturales | `frontier_sectors_check`; 5+3+5 POI y presupuestos |
 | 2.7 | POI y descubrimiento | **Base implementada** | 30 POI con ID, función, clasificación y disparador | `poi_discovery_check`; 30 POI, diario, mapa y guardado |
-| 2.8 | Recorrido completo | Pendiente | 20–30 min a pie sin bloqueos ni pantallas exteriores | Prueba humana y capturas |
+| 2.8 | Recorrido completo | **Automatizado; falta prueba humana** | 20–30 min a pie sin bloqueos ni pantallas exteriores | `region_walkthrough_check`; 2.758 m y 23 min |
 
 ## 2. F2.1 — Heightmap regional
 
@@ -255,6 +255,24 @@ Las capturas quedan en `build/evidencia/quebrada_blockout.png`, `paso_blockout.p
 godot --headless --path . --script res://tests/poi_discovery_check.gd
 ```
 
+## 2.8. F2.8 — Recorrido completo
+
+**Prueba:** `region_walkthrough_check` recorre el camino Cusco → frontera sobre el navmesh, en pasos de 20 m, con el streamer activo y el descubrimiento de POI encendido.
+
+- **Longitud:** 2.758 m por el navmesh.
+- **Tiempo estimado:** 23,0 min a 2 m/s.
+- **Sectores vistos:** los seis; S1 se descarga al llegar a S6.
+- **POI descubiertos:** 8 durante el recorrido.
+- **Fallos de carga:** 0.
+- **Pantallas de carga:** ninguna; el terreno regional sigue cargado y no hay cambio de escena.
+- **Guardado:** los descubrimientos sobreviven al ciclo guardar/cargar al final.
+
+La prueba avanza el objetivo por muestras del navmesh y espera la carga de cada celda; no simula 23 minutos reales. La **prueba humana de 20–30 min** sigue pendiente y es la que cierra F2.
+
+```bash
+godot --headless --path . --script res://tests/region_walkthrough_check.gd
+```
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
@@ -264,7 +282,8 @@ godot --headless --path . --script res://tests/poi_discovery_check.gd
 5. **Hecho:** F2.5 base (blockout de S1 con 28 casas, Coricancha, mercado y talleres).
 6. **Hecho:** F2.6 base (S4 quebrada, S5 paso y S6 frontera).
 7. **Hecho:** F2.7 base (30 POI, descubrimiento, diario, mapa y persistencia).
-8. **Siguiente:** F2.8 recorrido completo de 20–30 min.
+8. **Hecho:** F2.8 automatizado (2.758 m, 23 min, seis sectores y ocho POI).
+9. **Siguiente:** prueba humana de 20–30 min y aprobación del blockout para cerrar F2.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 
@@ -280,8 +299,8 @@ godot --headless --path . --script res://tests/poi_discovery_check.gd
 
 ## 5. Criterio de cierre
 
-- [ ] La región se recorre de punta a punta sin pantallas de carga exteriores.
-- [ ] Cada sector tiene función, contenido y presupuesto.
-- [ ] La escala se lee: comunidad, campos, paso y Cusco se reconocen desde lejos.
-- [ ] La clasificación geográfica está declarada.
-- [ ] El blockout se aprueba antes de producir arquitectura definitiva.
+- [x] La región se recorre de punta a punta sin pantallas de carga exteriores (automatizado).
+- [x] Cada sector tiene función, contenido y presupuesto medido.
+- [x] La escala se lee: comunidad, campos, paso y Cusco se reconocen desde lejos en las capturas.
+- [x] La clasificación geográfica está declarada.
+- [ ] El blockout se aprueba antes de producir arquitectura definitiva: falta la prueba humana y el veredicto del responsable.
