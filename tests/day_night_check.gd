@@ -47,6 +47,11 @@ func _run() -> void:
 	var noon_fog: float = environment.fog_density
 	var clock: WorldClockService = WorldClockService.instance()
 	ok = ok and clock != null
+	# La partida empieza a las 8:00, con el sol ya alto: a las 6:00 la ciudad
+	# amanece a oscuras y la primera impresión es de noche.
+	ok = ok and clock.start_minute == 480
+	cycle.apply_minute(480.0)
+	ok = ok and sun.visible and sun.light_energy > 0.5
 	if clock != null:
 		clock.set_time(1, NOON_MINUTE)
 	await process_frame

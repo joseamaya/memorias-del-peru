@@ -5,7 +5,8 @@ extends Node
 ## Es un sistema de Core: no conoce campañas. Avanza en `_process`, se puede
 ## pausar y se serializa para el guardado. Las franjas se usan para horarios de
 ## NPC, luz y eventos; la escala por defecto hace un día de juego en 48 minutos
-## reales (1 hora de juego = 2 minutos reales).
+## reales (1 hora de juego = 2 minutos reales). La partida empieza a las 8:00,
+## con luz plena: el amanecer del ciclo deja los primeros minutos a oscuras.
 ##
 ## Las pruebas pueden instanciarlo directamente, poner `autostart = false` y
 ## llamar a `advance()` sin depender de fotogramas.
@@ -29,11 +30,11 @@ const MINUTES_PER_HOUR: int = 60
 
 @export_range(1.0, 3600.0, 1.0) var real_seconds_per_game_hour: float = 120.0
 @export var start_day: int = 1
-@export var start_minute: int = 360
+@export var start_minute: int = 480
 @export var autostart: bool = true
 
 var _day: int = 1
-var _minute: float = 360.0
+var _minute: float = 480.0
 var _period: int = Period.MORNING
 var _paused: bool = false
 
@@ -47,8 +48,11 @@ static func instance() -> WorldClockService:
 
 
 func _ready() -> void:
-	set_process(autostart)
+	# La hora inicial sale del recurso, no de la constante de la variable: si
+	# se cambia `start_minute`, la partida debe empezar a esa hora.
+	_minute = float(start_minute)
 	_period = get_period()
+	set_process(autostart)
 
 
 func _process(delta: float) -> void:

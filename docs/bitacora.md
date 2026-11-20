@@ -18,6 +18,7 @@ Una decisión relevante se anota con su motivación, las alternativas considerad
 | Navmesh | Intento de tallar las 38 casas en el navmesh de S1 con obstáculos proyectados: desconectaba los enlaces entre sectores y el recorrido regional caía de 2.758 m a 1.192 m. Se retiró; la prueba de población comprueba que nadie acaba dentro de una casa. |
 | Enlaces | La espera de enlaces de sector sube de 1 a 10 segundos: con el horneado más lento no se creaban. Se conserva aunque el tallado se haya retirado. |
 | Pruebas | `city_population_check`: 24 registrados, 8 nombrados, cambio de ancla entre mañana y noche y 20 min simulados con 0 NPC dentro de casas. Añadido a CI. |
+| Hora de inicio | La partida empezaba a las 6:00 y con el ciclo nuevo eso es amanecer a oscuras: parecía de noche. `WorldClock` arranca a las **8:00** y `_ready()` aplica `start_minute` (antes la variable quedaba en la constante 360). `day_night_check` comprueba que a las 8:00 el sol está alto. |
 | Pendiente | Rutinas con actividades visibles (trabajo, conversación), nombres inventados por confirmar y paso de la tabla a recursos de contenido. |
 
 ## 2026-11-20 — F3.3: ciclo día/noche
