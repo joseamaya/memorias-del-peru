@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F3.3: ciclo día/noche
+
+**Decisión:** el reloj del mundo mueve la luz. A mediodía se conservan exactamente los valores del blockout aprobado, para que la revisión diurna no cambie.
+
+| Cambio | Detalle |
+|---|---|
+| Sistema | `DayNightCycle` en `core/world`: elevación y azimut del sol, energía y color, ambiente, niebla y relleno, todo derivado de `WorldClock`. |
+| Franjas | Amanecer cálido con horizonte encendido, mediodía neutro, atardecer cálido y noche azul oscura con 0,35 de ambiente. |
+| Corrección | La energía del sol entra con rampa suave desde el horizonte; con la curva anterior saltaba 0,26 en quince minutos y la prueba lo detectó. |
+| Pruebas | `day_night_check`: 96 muestras cada 15 minutos sin saltos mayores de 0,30, noche sin sol y ambiente menor que al mediodía. Añadido a CI. |
+| Evidencia | `build/evidencia/day_dawn.png`, `day_noon.png`, `day_dusk.png` y `day_night.png`. |
+| Pendiente | Prueba humana de las cuatro franjas. De noche no hay luz de mano: si se juega de noche, hace falta una fuente de luz en 3.4 o 3.7. |
+
 ## 2026-11-20 — F3.2: tres interiores transitables
 
 **Decisión:** los interiores se resuelven con una **sala de bolsillo**: se instancia a la misma XZ de la puerta y 400 m por debajo del terreno, así el streaming no cambia de celda y el mundo sigue vivo detrás.
