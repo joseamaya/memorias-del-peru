@@ -3,7 +3,7 @@
 - **Versión:** 1.0 — 2026-11-19
 - **Ámbito:** cómo se construye un territorio y un sector, desde la geografía hasta la escena jugable.
 - **Marco:** [arquitectura](02_arquitectura.md), [GDD de mundo](11_diseno_de_mundo.md), [rendimiento](08_entorno_y_rendimiento.md) y [convenciones históricas](07_convenciones_historicas.md).
-- **Estado:** adopción provisional; F1 cerrada y F2 en curso. La revisión definitiva se hace con el sector real de F2, no por moda.
+- **Estado:** adopción provisional; F1 y F2 cerradas (F2 aprobada con cambios el 2026-11-20). La revisión definitiva de los addons se hace con el sector real de F3, no por moda.
 
 ## 1. Herramientas y versiones
 

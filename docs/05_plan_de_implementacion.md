@@ -2,7 +2,7 @@
 
 > La prioridad es el mundo habitable y su aspecto; las únicas reglas duras son licencias/procedencia, rigor histórico y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** **F2 — Geografía y blockout.** F1 está cerrada y aprobada; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
+**Fase activa:** **F3 — Vertical slice de mundo abierto (ficha en preparación).** F2 se cerró el 2026-11-20 con el blockout aprobado **con cambios**; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. El plan lineal anterior queda congelado. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas. Primer entregable de F3: su ficha de alcance; no se construye contenido de la slice hasta que el responsable la apruebe.
 
 ## Estado
 
@@ -16,8 +16,8 @@
 | F5-L — Validación y cierre (lineal) | **Congelada** | — |
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
 | **F1 — Spikes técnicos** | **Cerrada** (2026-11-19) | [Ficha de F1](fases/F1-spikes-tecnicos.md) |
-| **F2 — Geografía y blockout** | **En curso** | [Ficha de F2](fases/F2-geografia-y-blockout.md) |
-| F3 — Vertical slice | Prevista | — |
+| **F2 — Geografía y blockout** | **Cerrada** (aprobada con cambios) | 2026-11-20 · [Ficha de F2](fases/F2-geografia-y-blockout.md) |
+| **F3 — Vertical slice** | **En preparación** (ficha pendiente) | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
 | F5 — Validación y cierre de la campaña 01 | Prevista | — |
 | F6 — Campañas II–IV | Futura | — |
@@ -69,7 +69,7 @@
 
 **Objetivo:** comprobar con medidas, no con suposiciones, que la arquitectura elegida funciona en Godot 4.7.2 y en la GPU integrada de referencia.
 
-**Estado:** F1 cerrada (2026-11-19) con los siete spikes medidos; Terrain3D y Cyclops quedan en adopción provisional hasta el sector real. F2 en curso: relieve regional de 3,5 × 2,5 km y seis sectores transmitidos sobre el terreno continuo. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md) y en la [ficha de F2](fases/F2-geografia-y-blockout.md).
+**Estado:** F1 cerrada (2026-11-19) con los siete spikes medidos; Terrain3D y Cyclops quedan en adopción provisional hasta el sector real. Sobre esta base se construyó el relieve regional de 3,5 × 2,5 km y los seis sectores de F2, cerrada el 2026-11-20. El detalle vive en la [ficha de F1](fases/F1-spikes-tecnicos.md) y en la [ficha de F2](fases/F2-geografia-y-blockout.md).
 
 | # | Spike | Pregunta | Criterio de paso |
 |---|---|---|---|
@@ -95,7 +95,9 @@
 
 ## Fase 2 — Geografía y blockout
 
-**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout. **Estado:** en curso; F2.1 (heightmap), F2.2 (sectores y streaming), F2.3 (rutas y navmesh), F2.4 (blockout de S3), F2.5 (blockout de S1), F2.6 (S4–S6) y F2.7 (30 POI y descubrimiento) con base implementada. F2.8 está automatizado (2.758 m, 23 min, seis sectores y ocho POI); el modo de revisión permite mirar el blockout con cámara cercana, etiquetas por tecla y vista cenital, y F2.9 añade jugador en primera persona con colisión de terreno y streaming a su alrededor. Falta la prueba humana y la aprobación del blockout para cerrar F2; el protocolo está en [prueba_blockout.md](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
+**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout.
+
+**Estado:** **cerrada el 2026-11-20, aprobada con cambios.** F2.1 (heightmap), F2.2 (sectores y streaming), F2.3 (rutas y navmesh), F2.4 (blockout de S3), F2.5 (blockout de S1), F2.6 (S4–S6), F2.7 (30 POI y descubrimiento), F2.8 (recorrido automatizado: 2.758 m, 23 min, seis sectores y ocho POI) y F2.9 (jugador en primera persona con colisión, streaming y rescate) están implementadas y con prueba. El detalle, la evidencia y lo no verificado viven en la [ficha de F2](fases/F2-geografia-y-blockout.md).
 
 **Objetivo:** construir el territorio de la campaña 01 en gris, con escala real, rutas, sectores y lugares, antes de producir arte definitivo.
 
@@ -113,17 +115,19 @@
 
 **Criterios de aceptación:**
 
-- [ ] La región se recorre de punta a punta sin pantallas de carga exteriores.
-- [ ] Cada sector tiene función, contenido y presupuesto; no hay relleno vacío.
-- [ ] La escala se lee: comunidad, campos, paso y Cusco se reconocen desde lejos.
-- [ ] La clasificación geográfica está declarada (documentado / aproximado / ficción).
-- [ ] El blockout se aprueba antes de producir arquitectura definitiva.
+- [x] La región se recorre de punta a punta sin pantallas de carga exteriores. Verificado por `region_walkthrough_check` (2.758 m, 23 min, seis sectores) y a pie por el responsable en la ruta A.
+- [x] Cada sector tiene función, contenido y presupuesto; no hay relleno vacío. S1, S3, S4, S5 y S6 tienen contenido y medición; S2 es el corredor de afueras: no tiene arquitectura y su contenido son las rutas y el río que lo cruzan.
+- [x] La escala se lee: comunidad, campos, paso y Cusco se reconocen desde lejos en las capturas.
+- [x] La clasificación geográfica está declarada.
+- [x] El blockout se aprueba antes de producir arquitectura definitiva: **aprobado con cambios** por el responsable el 2026-11-20, tras recorrer la ruta A.
+
+**Acta de cierre (2026-11-20).** El responsable recorrió el blockout a pie y aprobó la fase **con cambios**: los bloqueantes detectados en la revisión (marcador de S2 atravesable, Coricancha hundido y sin colisión, corral y muros flotantes, río sin agua, R7 dibujada como camino falso, acequia del Cusco bajo una casa) están corregidos y cubiertos por prueba. Queda **no verificado**: la prueba humana de la ruta oeste (S4–S6, solo automatizada), el contenido de S4–S6, el parpadeo de aristas al caminar (head bob + FXAA con render al 68 %; la decisión de antialiasing se aplaza al arte definitivo del Cusco), el muestreo de 4 m del terreno para caminar (F3 prevé terreno local de 1 m) y la adopción definitiva de Terrain3D/Cyclops. Nada de eso bloquea F3; se retoma en la fase que corresponda.
 
 ---
 
 ## Fase 3 — Vertical slice de mundo abierto
 
-**Precondiciones:** F2 cerrada; presupuesto y navegación validados.
+**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** en preparación desde el 2026-11-20. El primer entregable es la ficha de alcance de la slice, con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. No se construye nada de la slice hasta que el responsable la apruebe, y el tema de la misión principal queda como propuesta a revisar, no como decisión tomada.
 
 **Objetivo:** demostrar que el mundo se puede **habitar y jugar**, no solo recorrer.
 

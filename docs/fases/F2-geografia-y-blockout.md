@@ -324,7 +324,7 @@ godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
 7. **Hecho:** F2.7 base (30 POI, descubrimiento, diario, mapa y persistencia).
 8. **Hecho:** F2.8 automatizado (2.758 m, 23 min, seis sectores y ocho POI).
 9. **Hecho:** F2.9 mundo caminable (jugador, colisión, streaming y rescate).
-10. **Siguiente:** prueba humana de 20–30 min y aprobación del blockout para cerrar F2.
+10. **Hecho:** prueba humana de 20–30 min (ruta A) y aprobación del blockout con cambios el 2026-11-20.
 
 ## 4. Riesgos
 
@@ -342,4 +342,13 @@ godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
 - [x] Cada sector tiene función, contenido y presupuesto medido.
 - [x] La escala se lee: comunidad, campos, paso y Cusco se reconocen desde lejos en las capturas.
 - [x] La clasificación geográfica está declarada.
-- [ ] El blockout se aprueba antes de producir arquitectura definitiva: falta la prueba humana y el veredicto del responsable ([protocolo](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md)).
+- [x] El blockout se aprueba antes de producir arquitectura definitiva: **aprobado con cambios** el 2026-11-20. La prueba humana cubre la ruta A (llacta–Cusco); la ruta oeste (S4–S6) queda solo con recorrido automatizado y se declara no verificada. Protocolo: [prueba_blockout.md](../../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
+
+**Veredicto del responsable (2026-11-20):** aprobada con cambios. Se cierra F2 sin bloqueantes conocidos; lo no verificado se retoma en la fase que corresponda y no se presenta como hecho. Acta completa en [docs/05](../../docs/05_plan_de_implementacion.md).
+
+**Pendiente fuera de F2:**
+
+- Prueba humana de la ruta oeste (S4–S6) y contenido de esos sectores.
+- Antialiasing del perfil Medio: el borde de las aristas lejanas “hierve” al caminar por FXAA más render al 68 %; se decide con el arte definitivo del Cusco.
+- Terreno de muestreo 1 m por sector para caminar con precisión (F3).
+- Revisión definitiva de la adopción de Terrain3D 1.1.0 y Cyclops 1.5.2 con el sector real.
