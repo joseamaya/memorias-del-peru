@@ -15,7 +15,15 @@ const SUPPORT_TOLERANCE: float = 0.35
 const WAIT_FRAMES: int = 240
 ## Superficies que deben seguir el terreno: se revisan por su borde más alto.
 const FLAT_KINDS: Array[String] = [
-	"Plaza", "PlazaCusco", "Nieve", "Bofedal", "Poza", "Fuego", "Ribbon"
+	"Plaza",
+	"PlazaCusco",
+	"Nieve",
+	"Bofedal",
+	"Poza",
+	"Fuego",
+	"Ribbon",
+	"Rio",
+	"Ribera",
 ]
 ## Elementos elevados a propósito o apoyados en una plataforma revisada.
 const INTENTIONAL_KINDS: Array[String] = [
@@ -23,11 +31,11 @@ const INTENTIONAL_KINDS: Array[String] = [
 	"Toldo",
 	"Canopia",
 	"PuestoTecho",
-	"CoricanchaMuro",
-	"Parapeto",
 	"Casa",
 	"TelarViga",
 ]
+## Marcadores de revisión y agua: no se comparan contra el fondo del cauce.
+const SKIP_KINDS: Array[String] = ["SectorMarker", "Rio", "Rampa"]
 
 
 func _initialize() -> void:
@@ -80,13 +88,19 @@ func _run() -> void:
 		floating += counts.y
 		lines.append("SECTOR %s meshes=%d floating=%d" % [definition.id, counts.x, counts.y])
 
-	# Cintas de ruta: se auditan aparte porque viven fuera de los sectores.
+	# Cintas de ruta y agua regional: viven fuera de los sectores.
 	var routes: Node = world.get_node_or_null("Routes")
 	if routes != null:
 		var counts: Vector2i = _audit_node(routes, terrain, &"routes", lines)
 		total += counts.x
 		floating += counts.y
 		lines.append("SECTOR routes meshes=%d floating=%d" % [counts.x, counts.y])
+	var region_node: Node = world.get_node_or_null("Region")
+	if region_node != null:
+		var counts: Vector2i = _audit_node(region_node, terrain, &"region", lines)
+		total += counts.x
+		floating += counts.y
+		lines.append("SECTOR region meshes=%d floating=%d" % [counts.x, counts.y])
 
 	lines.append("TOTAL meshes=%d floating=%d threshold=%.2f" % [total, floating, THRESHOLD])
 	var report: String = "\n".join(lines)
@@ -125,6 +139,8 @@ func _audit_node(
 	for instance: MeshInstance3D in instances:
 		total += 1
 		var kind: String = _kind_of(instance)
+		if kind in SKIP_KINDS:
+			continue
 		if kind in INTENTIONAL_KINDS:
 			if kind != "Canopia" and not _has_support(instance, instances):
 				floating += 1
@@ -142,7 +158,9 @@ func _audit_node(
 		if kind in FLAT_KINDS:
 			suspicious = gaps.y > THRESHOLD
 		else:
-			suspicious = gaps.x > THRESHOLD
+			# Para cajas y muros importa el borde inferior más alto: un extremo
+			# enterrado no compensa el otro extremo que queda al aire.
+			suspicious = _bottom_gap(instance, terrain) > THRESHOLD
 		if not suspicious:
 			continue
 		floating += 1
@@ -209,6 +227,40 @@ func _kind_of(instance: Node) -> String:
 			return str(node.get_meta(&"blockout_kind"))
 		node = node.get_parent()
 	return "Unknown"
+
+
+## Hueco máximo de la cara inferior. Para una caja, el vértice más bajo del
+## borde es el que delata el extremo que flota en una ladera.
+func _bottom_gap(instance: MeshInstance3D, terrain: Terrain3D) -> float:
+	var mesh: Mesh = instance.mesh
+	var arrays: Array = []
+	if mesh is ArrayMesh:
+		var array_mesh: ArrayMesh = mesh as ArrayMesh
+		if array_mesh.get_surface_count() == 0:
+			return NAN
+		arrays = array_mesh.surface_get_arrays(0)
+	elif mesh is PrimitiveMesh:
+		arrays = (mesh as PrimitiveMesh).surface_get_arrays(0)
+	else:
+		return NAN
+	if arrays.is_empty():
+		return NAN
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var bottom: float = INF
+	for vertex: Vector3 in vertices:
+		bottom = minf(bottom, vertex.y)
+	if bottom == INF:
+		return NAN
+	var maximum: float = -INF
+	for vertex: Vector3 in vertices:
+		if vertex.y > bottom + 0.02:
+			continue
+		var world: Vector3 = instance.global_transform * vertex
+		var terrain_y: float = terrain.data.get_surface_height(world)
+		if is_nan(terrain_y):
+			continue
+		maximum = maxf(maximum, world.y - terrain_y)
+	return maximum if maximum > -INF else NAN
 
 
 func _gap_range(instance: MeshInstance3D, terrain: Terrain3D) -> Vector2:

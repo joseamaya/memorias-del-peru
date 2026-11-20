@@ -98,6 +98,17 @@ func _run() -> void:
 		)
 		ok = ok and follow.length() < 2.0
 
+	# El marcador de S2 es una ayuda de revisión: en primera persona no debe
+	# tapar el camino ni poder atravesarse como decorado.
+	world.set_target_position(Vector3(750.0, 0.0, 150.0))
+	var marker: CampaignSectorMarker = null
+	for _i: int in 240:
+		await process_frame
+		marker = (world.get_streamer().get_loaded_node(&"s2_afueras") as CampaignSectorMarker)
+		if marker != null:
+			break
+	ok = ok and marker != null and _marker_hidden(marker)
+
 	player.global_position = Vector3(plaza_end.x, plaza_end.y - 400.0, plaza_end.z)
 	for _i: int in 5:
 		await physics_frame
@@ -129,3 +140,13 @@ func _run() -> void:
 	else:
 		printerr("PLAYER_FAIL")
 	quit(0 if ok else 1)
+
+
+func _marker_hidden(marker: CampaignSectorMarker) -> bool:
+	for child: Node in marker.find_children("*", "MeshInstance3D", true, false):
+		if (child as MeshInstance3D).visible:
+			return false
+	for child: Node in marker.find_children("*", "Label3D", true, false):
+		if (child as Label3D).visible:
+			return false
+	return true

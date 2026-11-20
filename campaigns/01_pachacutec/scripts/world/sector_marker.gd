@@ -20,6 +20,8 @@ func _ready() -> void:
 	if region != null:
 		ground = region.height_at(global_position.x, global_position.z)
 	var marker: MeshInstance3D = MeshInstance3D.new()
+	marker.name = "SectorMarker"
+	marker.set_meta(&"blockout_kind", "SectorMarker")
 	var mesh: CylinderMesh = CylinderMesh.new()
 	mesh.top_radius = 5.0
 	mesh.bottom_radius = 9.0
@@ -39,3 +41,11 @@ func _ready() -> void:
 	label.no_depth_test = true
 	label.position = Vector3(0.0, ground + 32.0, 0.0)
 	add_child(label)
+	# Los marcadores son para revisar el blockout, no para jugar: en primera
+	# persona tapaban el camino y se podían atravesar como un decorado.
+	var world: RegionWorld = (
+		get_tree().get_first_node_in_group(&"region_world") as RegionWorld
+	)
+	if world != null and world.is_first_person():
+		marker.visible = false
+		label.visible = false

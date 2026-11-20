@@ -7,6 +7,11 @@ extends RefCounted
 
 const DEFAULT_LABEL_FONT: int = 64
 const DEFAULT_LABEL_PIXEL: float = 0.12
+## Elementos que no se entierran: ya tienen cimiento o están apoyados encima.
+const NO_GROUND_EXTEND: Array[String] = [
+	"Foundation", "Casa", "Techo", "Toldo", "PuestoTecho", "TelarViga", "Salto",
+	"Canopia", "Rampa",
+]
 
 
 static func add_box(
@@ -18,15 +23,30 @@ static func add_box(
 	orientation: Basis,
 	name_hint: String,
 ) -> Node3D:
+	var final_size: Vector3 = size
+	var final_position: Vector3 = box_position
+	# Extiende la caja hacia abajo hasta el terreno. Si el objeto se apoya en
+	# una sola altura, el extremo cuesta abajo queda flotando; el techo y las
+	# casas con cimiento quedan fuera de esta regla.
+	if not name_hint in NO_GROUND_EXTEND and parent.has_method(&"_ground"):
+		var source: Callable = Callable(parent, &"_ground")
+		var min_y: float = min_ground(
+			source, box_position.x, box_position.z, size, orientation
+		)
+		var bottom: float = parent.global_position.y + box_position.y - size.y * 0.5
+		var added: float = bottom - min_y
+		if added > 0.05:
+			final_size.y += added
+			final_position.y -= added * 0.5
 	var root: Node3D = Node3D.new()
 	root.name = name_hint
 	root.set_meta(&"blockout_kind", name_hint)
-	root.position = box_position
+	root.position = final_position
 	root.basis = orientation
 	parent.add_child(root)
 	var mesh: MeshInstance3D = MeshInstance3D.new()
 	var box: BoxMesh = BoxMesh.new()
-	box.size = size
+	box.size = final_size
 	mesh.mesh = box
 	mesh.material_override = material(color)
 	root.add_child(mesh)
@@ -34,7 +54,7 @@ static func add_box(
 		var body: StaticBody3D = StaticBody3D.new()
 		var shape: CollisionShape3D = CollisionShape3D.new()
 		var box_shape: BoxShape3D = BoxShape3D.new()
-		box_shape.size = size
+		box_shape.size = final_size
 		shape.shape = box_shape
 		body.add_child(shape)
 		root.add_child(body)
@@ -49,16 +69,28 @@ static func add_cylinder(
 	color: Color,
 	name_hint: String = "Cylinder",
 ) -> MeshInstance3D:
+	var final_height: float = height
+	var final_position: Vector3 = mesh_position
+	if parent.has_method(&"_ground"):
+		var source: Callable = Callable(parent, &"_ground")
+		var min_y: float = min_ground(
+			source, mesh_position.x, mesh_position.z, Vector3(radius * 2.0, 0.0, radius * 2.0)
+		)
+		var bottom: float = parent.global_position.y + mesh_position.y - height * 0.5
+		var added: float = bottom - min_y
+		if added > 0.05:
+			final_height += added
+			final_position.y -= added * 0.5
 	var mesh: MeshInstance3D = MeshInstance3D.new()
 	mesh.name = name_hint
 	mesh.set_meta(&"blockout_kind", name_hint)
 	var cylinder: CylinderMesh = CylinderMesh.new()
 	cylinder.top_radius = radius
 	cylinder.bottom_radius = radius
-	cylinder.height = height
+	cylinder.height = final_height
 	mesh.mesh = cylinder
 	mesh.material_override = material(color)
-	mesh.position = mesh_position
+	mesh.position = final_position
 	parent.add_child(mesh)
 	return mesh
 
@@ -205,6 +237,55 @@ static func add_ribbon(
 	instance.set_meta(&"blockout_kind", "Ribbon")
 	instance.mesh = mesh
 	instance.material_override = material(color)
+	parent.add_child(instance)
+	return instance
+
+
+## Cinta plana a lo ancho y apoyada en el cauce a lo largo. Es agua de
+## blockout: no simula corriente ni profundidad.
+static func add_flat_ribbon(
+	parent: Node3D,
+	points: PackedVector3Array,
+	width: float,
+	color: Color,
+	height_at: Callable,
+	rise: float,
+	name_hint: String = "FlatRibbon",
+) -> MeshInstance3D:
+	if points.size() < 2:
+		return null
+	var vertices: PackedVector3Array = PackedVector3Array()
+	var normals: PackedVector3Array = PackedVector3Array()
+	var indices: PackedInt32Array = PackedInt32Array()
+	var centers: PackedVector3Array = PackedVector3Array()
+	for point: Vector3 in points:
+		var value: Variant = height_at.call(point.x, point.z)
+		centers.append(Vector3(point.x, str(value).to_float() + rise, point.z))
+	for index: int in centers.size():
+		var flat_direction: Vector3 = direction(centers, index)
+		var side: Vector3 = Vector3(-flat_direction.z, 0.0, flat_direction.x) * (width * 0.5)
+		vertices.append(Vector3(centers[index].x + side.x, centers[index].y, centers[index].z + side.z))
+		vertices.append(Vector3(centers[index].x - side.x, centers[index].y, centers[index].z - side.z))
+		normals.append(Vector3.UP)
+		normals.append(Vector3.UP)
+	for index: int in range(centers.size() - 1):
+		var base: int = index * 2
+		indices.append_array([base, base + 1, base + 2])
+		indices.append_array([base + 1, base + 3, base + 2])
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	var mesh: ArrayMesh = ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var instance: MeshInstance3D = MeshInstance3D.new()
+	instance.name = name_hint
+	instance.set_meta(&"blockout_kind", name_hint)
+	instance.mesh = mesh
+	instance.material_override = material(color)
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	instance.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	parent.add_child(instance)
 	return instance
 
