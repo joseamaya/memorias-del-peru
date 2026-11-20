@@ -179,6 +179,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/day_night_check.gd 2>&1 | tee /tmp/daynight.log
           python3 tools/check_output.py /tmp/daynight.log
 
+      - name: Poblacion de la ciudad
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/city_population_check.gd 2>&1 | tee /tmp/population.log
+          python3 tools/check_output.py /tmp/population.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail

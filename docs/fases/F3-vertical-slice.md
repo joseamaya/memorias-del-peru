@@ -13,7 +13,7 @@
 | 3.1 | Ciudad habitable | **Base implementada; falta prueba humana** | Aparición en el arrabal; arrabal, plaza y Coricancha recorribles sin huecos; 60 FPS Medio | `city_check`, `cusco_blockout_check`; 38 casas, 10 en el arrabal, 234 draw calls y 69,3 FPS |
 | 3.2 | Tres interiores | **Base implementada; falta prueba humana** | Casa del jugador, casa de la curáca y taller transitables; ≤ 15 draw calls por interior | `interiors_check`; 3 puertas, 3 vestidos y vuelta exacta |
 | 3.3 | Ciclo día/noche | **Base implementada; falta prueba humana** | `WorldClock` mueve sol, ambiente y niebla; amanecer, tarde y noche legibles | `day_night_check`; sin saltos en 96 muestras |
-| 3.4 | Población | Prevista | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`, `npc_lod_check` |
+| 3.4 | Población | **Base implementada; falta prueba humana** | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`; 24 y 8, 0 dentro de casas |
 | 3.5 | Misión principal | Prevista | Tres etapas con estado persistente y diario | `mission_check`, `city_save_round_trip` |
 | 3.6 | Secundarias y descubrimiento | Prevista | Dos actividades con consecuencia y un lugar descubierto sin marcador | `side_activities_check` |
 | 3.7 | Descanso y guardado | Prevista | Dormir avanza el día; guardar/cargar conserva hora, NPC, misión e inventario | `city_save_round_trip` |
@@ -74,6 +74,13 @@
 - LOD: 24 activos, 12 animados; los lejanos se simulan sin malla.
 
 **Criterio:** 20 min de recorrido sin atascos ni NPC atravesando muros; el estado de los NPC sobrevive al guardado.
+
+**Implementado (2026-11-20):**
+
+- `CityPopulation` en campaña: 24 NPC (8 nombrados) con casa, mañana, tarde y noche sobre 11 anclas del sector; usa `NpcDirector`, `NpcDefinition` y `ScheduleEntry` de Core.
+- Nombres en la tabla de localización; Chanan Cury Coca incluida como NPC narrativo.
+- El navmesh de S1 sigue siendo de terreno: las anclas se colocaron con holgura de las casas y la prueba simula 20 min comprobando que nadie queda dentro de una huella. Se probó a tallar las casas en el navmesh, pero desconectaba los enlaces entre sectores y rompía el recorrido regional; queda pendiente con otra técnica.
+- Evidencia: `city_population_check` (24/8, 0 dentro de casas) y `build/evidencia/city_population.png`.
 
 ## 6. F3.5 — Misión principal
 

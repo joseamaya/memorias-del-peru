@@ -352,7 +352,7 @@ func _build_acequia() -> void:
 	mesh.name = "AcequiaUrbana"
 
 
-func _skip_house(x: float, z: float) -> bool:
+static func _skip_cell(x: float, z: float) -> bool:
 	if Vector2(x, z).length() < 42.0:
 		return true
 	if x < -35.0 and z < 0.0:
@@ -364,6 +364,10 @@ func _skip_house(x: float, z: float) -> bool:
 	if x > 85.0 and z < -60.0:
 		return true
 	return false
+
+
+func _skip_house(x: float, z: float) -> bool:
+	return _skip_cell(x, z)
 
 
 func _add_label(text: String, label_position: Vector3) -> void:
