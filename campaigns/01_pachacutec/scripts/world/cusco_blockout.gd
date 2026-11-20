@@ -239,7 +239,7 @@ func _build_acequia() -> void:
 			Vector3(140.0, 0.0, 35.0),
 		]
 	)
-	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 1.4, WATER, 0.12)
+	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 2.4, WATER, 0.10)
 	mesh.name = "AcequiaUrbana"
 
 

@@ -39,6 +39,14 @@ func _run() -> void:
 			ok = false
 	ok = ok and _check_relief(terrain)
 	ok = ok and _check_river(region)
+	var water: MeshInstance3D = region.get_water_mesh()
+	var river_width: float = region.get_river_width()
+	if water == null or water.mesh == null:
+		ok = false
+	else:
+		ok = ok and river_width >= 6.0
+		ok = ok and water.mesh.get_aabb().size.x > 2000.0
+	ok = ok and _check_water_banks(region)
 	print(
 		"REGION build_ms=",
 		region.get_build_ms(),
@@ -49,7 +57,9 @@ func _run() -> void:
 		" s3=",
 		int(region.get_sector_height(&"s3_llacta")),
 		" s5=",
-		int(region.get_sector_height(&"s5_paso"))
+		int(region.get_sector_height(&"s5_paso")),
+		" river_width=",
+		snappedf(river_width, 0.1)
 	)
 	region.queue_free()
 	await process_frame
@@ -58,6 +68,20 @@ func _run() -> void:
 	else:
 		printerr("REGION_FAIL")
 	quit(0 if ok else 1)
+
+
+func _check_water_banks(region: CampaignRegion) -> bool:
+	for x: float in [-1000.0, -500.0, 0.0, 500.0, 1000.0]:
+		var z: float = region.get_river_z(x)
+		var water: float = region.get_river_surface_height(x)
+		var center: float = region.height_at(x, z)
+		var left: float = region.height_at(x, z - 6.5)
+		var right: float = region.height_at(x, z + 6.5)
+		if water < center + 0.05:
+			return false
+		if water > maxf(left, right) + 0.5:
+			return false
+	return true
 
 
 func _check_relief(terrain: Terrain3D) -> bool:

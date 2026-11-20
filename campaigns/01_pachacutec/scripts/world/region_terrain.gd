@@ -14,6 +14,13 @@ const REGION_SIZE: int = 1024
 const SPACING: float = 4.0
 const HALF_EXTENT: float = 2048.0
 const SECTOR_LABEL_HEIGHT: float = 52.0
+## Río regional de blockout: cinta plana con riberas. No es agua definitiva.
+const RIVER_WIDTH: float = 9.0
+const RIVER_SHORE_WIDTH: float = 15.0
+const RIVER_RISE: float = 0.22
+const RIVER_STEP: float = 12.0
+const RIVER_COLOR: Color = Color(0.22, 0.42, 0.55)
+const SHORE_COLOR: Color = Color(0.42, 0.36, 0.26)
 
 const SECTORS: Dictionary[StringName, Vector3] = {
 	&"s1_cusco": Vector3(1200.0, 0.0, 400.0),
@@ -46,6 +53,7 @@ const SECTOR_NAMES: Dictionary[StringName, String] = {
 
 var _terrain: Terrain3D = null
 var _camera: Camera3D = null
+var _water: MeshInstance3D = null
 var _build_ms: int = 0
 
 
@@ -53,6 +61,7 @@ func _ready() -> void:
 	add_to_group(&"campaign_region")
 	_build_environment()
 	_build_terrain()
+	_build_water()
 	if show_sector_markers:
 		_build_sector_markers()
 	_build_camera()
@@ -78,6 +87,22 @@ func height_at(x: float, z: float) -> float:
 
 func get_terrain() -> Terrain3D:
 	return _terrain
+
+
+func get_water_mesh() -> MeshInstance3D:
+	return _water
+
+
+func get_river_z(x: float) -> float:
+	return _river_z(x)
+
+
+func get_river_width() -> float:
+	return RIVER_WIDTH
+
+
+func get_river_surface_height(x: float) -> float:
+	return height_at(x, _river_z(x)) + RIVER_RISE
 
 
 func get_camera() -> Camera3D:
@@ -195,6 +220,27 @@ func _build_terrain() -> void:
 	_terrain.data.import_images(images, Vector3(-HALF_EXTENT, 0.0, -HALF_EXTENT), 0.0, 1.0)
 	_terrain.data.calc_height_range(true)
 	_build_ms = Time.get_ticks_msec() - start
+
+
+## Río regional: el cauce ya estaba excavado en el heightmap, pero no tenía
+## agua y solo se veían las acequias como líneas azules. La cinta de agua es
+## plana en cada sección y la ribera sigue el terreno.
+func _build_water() -> void:
+	var points: PackedVector3Array = PackedVector3Array()
+	var x: float = -1700.0
+	while x <= 1200.0:
+		points.append(Vector3(x, 0.0, _river_z(x)))
+		x += RIVER_STEP
+	points.append(Vector3(1200.0, 0.0, _river_z(1200.0)))
+	var source: Callable = Callable(self, &"height_at")
+	var shore: MeshInstance3D = BlockoutKit.add_ribbon(
+		self, points, source, RIVER_SHORE_WIDTH, SHORE_COLOR, 0.04, RIVER_STEP
+	)
+	shore.name = "Ribera"
+	shore.set_meta(&"blockout_kind", "Ribera")
+	_water = BlockoutKit.add_flat_ribbon(
+		self, points, RIVER_WIDTH, RIVER_COLOR, source, RIVER_RISE, "Rio"
+	)
 
 
 ## Assets mínimos de blockout: una textura de pradera y otra de roca. No son

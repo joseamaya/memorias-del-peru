@@ -71,6 +71,7 @@ Reglas:
 4. **Alrededor de la plaza = vida de la llacta:** manantial, telar, corral, huerto y fogón.
 5. **`H`:** muestra la etiqueta del POI más cercano. Úsalo para confirmar dónde estás.
 6. **`T`:** vista cenital de revisión. Sirve para orientarte, no para caminar; pulsa otra vez para volver a la vista normal.
+7. **Río y acequias:** el río es la cinta azul **ancha** que cruza el valle; las acequias son canales **estrechos** junto a la llacta y el Cusco. Si ves una línea azul fina, es una acequia; el río es el que tiene orilla de tierra.
 
 Al aparecer: **la plaza está delante**; el Cusco queda **a tu espalda, cuesta abajo**; la quebrada, **al otro lado de la plaza, cuesta arriba**.
 

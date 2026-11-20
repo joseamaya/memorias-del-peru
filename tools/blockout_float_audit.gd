@@ -15,7 +15,15 @@ const SUPPORT_TOLERANCE: float = 0.35
 const WAIT_FRAMES: int = 240
 ## Superficies que deben seguir el terreno: se revisan por su borde más alto.
 const FLAT_KINDS: Array[String] = [
-	"Plaza", "PlazaCusco", "Nieve", "Bofedal", "Poza", "Fuego", "Ribbon"
+	"Plaza",
+	"PlazaCusco",
+	"Nieve",
+	"Bofedal",
+	"Poza",
+	"Fuego",
+	"Ribbon",
+	"Rio",
+	"Ribera",
 ]
 ## Elementos elevados a propósito o apoyados en una plataforma revisada.
 const INTENTIONAL_KINDS: Array[String] = [
@@ -26,8 +34,8 @@ const INTENTIONAL_KINDS: Array[String] = [
 	"Casa",
 	"TelarViga",
 ]
-## Marcadores de revisión: no son geometría de mundo.
-const SKIP_KINDS: Array[String] = ["SectorMarker"]
+## Marcadores de revisión y agua: no se comparan contra el fondo del cauce.
+const SKIP_KINDS: Array[String] = ["SectorMarker", "Rio"]
 
 
 func _initialize() -> void:
@@ -80,13 +88,19 @@ func _run() -> void:
 		floating += counts.y
 		lines.append("SECTOR %s meshes=%d floating=%d" % [definition.id, counts.x, counts.y])
 
-	# Cintas de ruta: se auditan aparte porque viven fuera de los sectores.
+	# Cintas de ruta y agua regional: viven fuera de los sectores.
 	var routes: Node = world.get_node_or_null("Routes")
 	if routes != null:
 		var counts: Vector2i = _audit_node(routes, terrain, &"routes", lines)
 		total += counts.x
 		floating += counts.y
 		lines.append("SECTOR routes meshes=%d floating=%d" % [counts.x, counts.y])
+	var region_node: Node = world.get_node_or_null("Region")
+	if region_node != null:
+		var counts: Vector2i = _audit_node(region_node, terrain, &"region", lines)
+		total += counts.x
+		floating += counts.y
+		lines.append("SECTOR region meshes=%d floating=%d" % [counts.x, counts.y])
 
 	lines.append("TOTAL meshes=%d floating=%d threshold=%.2f" % [total, floating, THRESHOLD])
 	var report: String = "\n".join(lines)

@@ -208,7 +208,7 @@ func _build_acequia() -> void:
 			Vector3(145.0, 0.0, 105.0),
 		]
 	)
-	var mesh: MeshInstance3D = _ribbon(points, 1.4, WATER, 0.12)
+	var mesh: MeshInstance3D = _ribbon(points, 2.4, WATER, 0.10)
 	mesh.name = "Acequia"
 
 
