@@ -6,6 +6,22 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — Ficha de la vertical slice (F3)
+
+**Decisión:** la F3 se acota a las fases 1 y 2 de la campaña —la ciudad que se queda y Carmenca— y se escribe como diez tareas con criterio propio.
+
+| Cambio | Detalle |
+|---|---|
+| Alcance | S1 Cusco jugable (arrabal, plaza y Coricancha), tres interiores, 24 NPC con 8 nombrados, día/noche, misión de tres etapas, dos secundarias, un descubrimiento, defensa persistente y Carmenca con tres oleadas. |
+| Fuera | La embajada a la llacta (fase 3), Xaquixaguana (fase 4) y el epílogo político pasan a F4. |
+| Decisiones del responsable | Batalla completa en la slice; armas honda y porra; ciudad limitada a arrabal, plaza y Coricancha; interiores: casa del jugador, casa de la curáca y taller. |
+| Orden | Ciudad → interiores → día/noche → descanso y guardado → población → misión → secundarias → defensa → batalla → cierre. |
+| Recorte | Si no cabe: secundarias, luego NPC a 16, luego un solo interior, luego una oleada. Nunca se recorta el guardado ni la misión. |
+| Presupuesto | ≤ 350 draw calls, ≤ 250 MB, 60 FPS Medio / 30 Bajo, hitch < 50 ms, carga < 150 ms; ≤ 15 draw calls por interior. |
+| Consecuencia | `docs/05` pasa F3 a «en curso» con enlace a la ficha y `AGENTS.md` apunta a ella. `docs/06` fija las pruebas previstas de la slice. |
+| Riesgo | La IA de oleadas y el crecimiento de S1 son los dos costes altos; la ficha los declara con mitigación. |
+| Siguiente | Tarea 3.1, ciudad habitable: arrabal, aparición y acceso a Carmenca. |
+
 ## 2026-11-20 — Rediseño de la campaña 01: la ciudad que se queda
 
 **Decisión:** la campaña se centra en el Cusco. El protagonista vive en el arrabal de Chocos-chacona, ayllus de Chaco y Chacona, es varón de 19–20 años y se queda con los pocos que no abandonan la ciudad. La estructura pasa a cuatro fases —la ciudad que se queda, Carmenca, los emisarios y Xaquixaguana— más un epílogo político.

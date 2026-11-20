@@ -288,6 +288,20 @@ Estas pruebas **todavía no existen**, salvo las de reloj, estado, guardado, hor
 | Rendimiento | `test_sector_budget` | Draw calls, primitivas y VRAM dentro del presupuesto |
 | Recorrido | `world_slice_check.gd` | 30–45 min de slice: salir, descubrir, trabajar, volver y guardar |
 
+Pruebas de la slice de F3, que se escriben con cada tarea de la [ficha de F3](fases/F3-vertical-slice.md):
+
+| Área | Prueba prevista | Criterio |
+|---|---|---|
+| Ciudad | `city_check` | Aparición en el arrabal; arrabal, plaza y Coricancha sin huecos ni flotantes |
+| Interiores | `interiors_check` | Entrar y salir de las tres casas; ≤ 15 draw calls cada una |
+| Día y noche | `day_night_check` | Cuatro franjas distinguibles sin saltos; FPS estable |
+| Población | `city_population_check` | 24 NPC, 8 nombrados, 20 min sin atascos |
+| Misión | `mission_check` | Tres etapas con estado y consecuencia persistente |
+| Secundarias | `side_activities_check` | Dos actividades con consecuencia; descubrimiento sin marcador |
+| Guardado | `city_save_round_trip` | Hora, NPC, misión, inventario y obras |
+| Defensa | `defense_works_check` | Fosos y púas persistentes y leídos por la batalla |
+| Batalla | `carmenca_check` | Tres oleadas sin bloqueos; estandarte como objetivo |
+
 ## 4. Verificación manual
 
 ### 4.1. Validación visual
