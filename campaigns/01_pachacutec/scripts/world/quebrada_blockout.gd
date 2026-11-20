@@ -47,10 +47,15 @@ func _build_terraces() -> void:
 		var x: float = -90.0 + float(index) * 12.0
 		var z: float = 55.0 + float(index % 2) * 8.0
 		var ground: float = _ground(x, z)
+		var footprint: Vector3 = Vector3(10.0, 0.0, 5.0)
+		var low: float = BlockoutKit.min_ground(_ground, x, z, footprint)
+		# La terraza baja hasta el punto más bajo de su huella: si no, el
+		# borde cuesta abajo queda como una losa flotante.
+		var height: float = maxf(0.7, ground - low + 0.7)
 		BlockoutKit.add_box(
 			self,
-			Vector3(10.0, 0.7, 5.0),
-			Vector3(x, ground + 0.35, z),
+			Vector3(10.0, height, 5.0),
+			Vector3(x, low + height * 0.5, z),
 			SOIL,
 			true,
 			Basis.IDENTITY,
@@ -84,7 +89,9 @@ func _build_waterfall() -> void:
 		Basis.IDENTITY,
 		"Salto"
 	)
-	BlockoutKit.add_cylinder(self, 5.0, 0.4, Vector3(x, ground + 0.2, z + 9.0), WATER)
+	BlockoutKit.add_terrain_disk(
+		self, 5.0, 0.2, WATER, _ground, 48, 6, Vector2(x, z + 9.0), "Poza"
+	)
 	_add_label("POI-13 · Salto de agua", _label_at(x, z))
 
 

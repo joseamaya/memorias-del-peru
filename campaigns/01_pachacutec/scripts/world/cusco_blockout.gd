@@ -54,9 +54,10 @@ func get_collision_count() -> int:
 
 
 func _build_plaza() -> void:
-	var ground: float = _max_ground(0.0, 0.0, Vector3(PLAZA_RADIUS * 2.0, 0.0, PLAZA_RADIUS * 2.0))
-	BlockoutKit.add_cylinder(self, PLAZA_RADIUS, 0.7, Vector3(0.0, ground + 0.35, 0.0), STONE)
-	_add_label("POI-17 · Plaza del Cusco", Vector3(0.0, ground + 3.5, 0.0))
+	BlockoutKit.add_terrain_disk(
+		self, PLAZA_RADIUS, 0.15, STONE, _ground, 96, 12, Vector2.ZERO, "PlazaCusco"
+	)
+	_add_label("POI-17 · Plaza del Cusco", Vector3(0.0, _ground(0.0, 0.0) + 3.5, 0.0))
 
 
 func _build_houses() -> void:
@@ -70,10 +71,14 @@ func _build_houses() -> void:
 
 func _house(x: float, z: float, size: Vector3) -> void:
 	var ground: float = _max_ground(x, z, size)
+	var low: float = BlockoutKit.min_ground(
+		_ground, x, z, Vector3(size.x + 0.4, 0.0, size.z + 0.4)
+	)
+	var base_height: float = maxf(ground - low + 0.3, 0.5)
 	BlockoutKit.add_box(
 		self,
-		Vector3(size.x + 0.4, 0.4, size.z + 0.4),
-		Vector3(x, ground - 0.2, z),
+		Vector3(size.x + 0.4, base_height, size.z + 0.4),
+		Vector3(x, ground - base_height * 0.5 + 0.15, z),
 		STONE,
 		false,
 		Basis.IDENTITY,
@@ -192,10 +197,11 @@ func _build_workshop() -> void:
 	var ground: float = _ground(67.0, -40.0)
 	for index: int in 3:
 		var x: float = 60.0 + float(index) * 5.0
+		var post_ground: float = _ground(x, -40.0)
 		BlockoutKit.add_box(
 			self,
 			Vector3(0.18, 2.0, 0.18),
-			Vector3(x, ground + 1.0, -40.0),
+			Vector3(x, post_ground + 1.0, -40.0),
 			WOOD,
 			false,
 			Basis.IDENTITY,
@@ -230,7 +236,7 @@ func _build_acequia() -> void:
 			Vector3(140.0, 0.0, 35.0),
 		]
 	)
-	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 1.4, WATER, 0.4)
+	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 1.4, WATER, 0.12)
 	mesh.name = "AcequiaUrbana"
 
 

@@ -49,7 +49,7 @@ func _build_path() -> void:
 			Vector3(95.0, 0.0, 65.0),
 		]
 	)
-	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 2.6, PATH, 0.6, 3.0)
+	var mesh: MeshInstance3D = BlockoutKit.add_ribbon(self, points, _ground, 2.6, PATH, 0.10)
 	mesh.name = "Zigzag"
 
 
@@ -57,10 +57,12 @@ func _build_refuge() -> void:
 	var x: float = 5.0
 	var z: float = 5.0
 	var ground: float = _ground(x, z)
+	# Las pircas suben a 1,8 m y el techo se apoya en su remate. Con 1,3 m de
+	# muro y el techo a 2,0 m quedaba medio metro de aire y se veía flotando.
 	BlockoutKit.add_box(
 		self,
-		Vector3(6.0, 1.3, 5.0),
-		Vector3(x, ground + 0.65, z - 2.5),
+		Vector3(6.0, 1.8, 5.0),
+		Vector3(x, ground + 0.9, z - 2.5),
 		STONE,
 		true,
 		Basis.IDENTITY,
@@ -68,8 +70,8 @@ func _build_refuge() -> void:
 	)
 	BlockoutKit.add_box(
 		self,
-		Vector3(0.8, 1.3, 5.0),
-		Vector3(x - 3.0, ground + 0.65, z),
+		Vector3(0.8, 1.8, 5.0),
+		Vector3(x - 3.0, ground + 0.9, z),
 		STONE,
 		true,
 		Basis.IDENTITY,
@@ -77,8 +79,8 @@ func _build_refuge() -> void:
 	)
 	BlockoutKit.add_box(
 		self,
-		Vector3(0.8, 1.3, 5.0),
-		Vector3(x + 3.0, ground + 0.65, z),
+		Vector3(0.8, 1.8, 5.0),
+		Vector3(x + 3.0, ground + 0.9, z),
 		STONE,
 		true,
 		Basis.IDENTITY,
@@ -87,7 +89,7 @@ func _build_refuge() -> void:
 	BlockoutKit.add_box(
 		self,
 		Vector3(6.8, 0.4, 6.0),
-		Vector3(x, ground + 2.0, z),
+		Vector3(x, ground + 1.95, z),
 		PATH,
 		false,
 		Basis.IDENTITY,
@@ -150,8 +152,9 @@ func _build_snow() -> void:
 	for index: int in 3:
 		var x: float = -40.0 + float(index) * 35.0
 		var z: float = 20.0 - float(index) * 25.0
-		var ground: float = _ground(x, z)
-		BlockoutKit.add_cylinder(self, 7.0, 0.15, Vector3(x, ground + 0.08, z), SNOW)
+		BlockoutKit.add_terrain_disk(
+			self, 7.0, 0.08, SNOW, _ground, 48, 6, Vector2(x, z), "Nieve"
+		)
 
 
 func _add_label(text: String, label_position: Vector3) -> void:
