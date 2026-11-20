@@ -215,6 +215,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/region_review_check.gd 2>&1 | tee /tmp/review.log
           python3 tools/check_output.py /tmp/review.log
 
+      - name: Jugador a pie
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/region_player_check.gd 2>&1 | tee /tmp/player.log
+          python3 tools/check_output.py /tmp/player.log
+
       - name: LOD de 60 NPC
         run: |
           set -o pipefail

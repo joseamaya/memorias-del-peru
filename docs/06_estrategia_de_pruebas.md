@@ -160,6 +160,12 @@ Comprobar el modo de revisión del blockout (cámara cercana, etiquetas y cenita
 godot --headless --path . --script res://tests/region_review_check.gd
 ```
 
+Comprobar que el mundo se recorre a pie (jugador, colisión, streaming y rescate):
+
+```bash
+godot --headless --path . --script res://tests/region_player_check.gd
+```
+
 Criterio: el código de salida es `0` **y** la salida no contiene líneas `ERROR`, `SCRIPT ERROR` ni `WARNING` provenientes de `res://`. Para comprobarlo sin depender de la vista:
 
 ```bash
@@ -310,6 +316,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |
 | `region_review_check.gd` | Cámara cercana, etiquetas ocultas por defecto, tecla H con una etiqueta y vista cenital con T |
+| `region_player_check.gd` | Jugador en primera persona sobre el terreno, 9 m andados con el streaming siguiendo y rescate al caer |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
 | `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |

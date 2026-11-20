@@ -17,6 +17,7 @@
 | 2.6 | S4–S6 | **Base implementada** | Quebrada, paso y frontera con POI y límites naturales | `frontier_sectors_check`; 5+3+5 POI y presupuestos |
 | 2.7 | POI y descubrimiento | **Base implementada** | 30 POI con ID, función, clasificación y disparador | `poi_discovery_check`; 30 POI, diario, mapa y guardado |
 | 2.8 | Recorrido completo | **Automatizado; falta prueba humana** | 20–30 min a pie sin bloqueos ni pantallas exteriores | `region_walkthrough_check`; 2.758 m y 23 min |
+| 2.9 | Mundo caminable | **Base implementada** | El jugador recorre el blockout a pie, con colisión y streaming | `region_player_check`; 9 m andados sobre el terreno |
 
 ## 2. F2.1 — Heightmap regional
 
@@ -277,6 +278,27 @@ La **prueba humana de 20–30 min** sigue pendiente y es la que cierra F2.
 godot --headless --path . --script res://tests/region_walkthrough_check.gd
 ```
 
+## 2.9. F2.9 — Mundo caminable
+
+La prueba humana no podía hacerse: el mundo regional no tenía jugador ni forma de andar por él. F2.9 añade lo mínimo para recorrerlo con los pies, sin contenido nuevo.
+
+- **Jugador:** `core/player/player_fps.tscn`, instanciado por `region_world` cuando `first_person` está activo. Aparece en el camino de entrada a la llacta, mirando a la plaza.
+- **Colisión:** la del terreno de Terrain3D (`collision_mode` dinámico en juego), ya activa, más la de las casas y props del blockout.
+- **Streaming:** `StreamTarget` sigue al jugador, así que los sectores cargan y descargan a su alrededor y el descubrimiento de POI usa su posición.
+- **Rescate:** si el jugador cae 120 m por debajo del terreno, vuelve al punto de aparición.
+- **Equipo:** sin manos ni arma en pantalla; el blockout no reparte equipo.
+- **Cámara de revisión:** sigue disponible con `first_person = false` y con `T` para la vista cenital. `H` mantiene las etiquetas.
+
+La prueba humana de 20–30 min ya puede hacerse con el jugador andando:
+
+```bash
+godot --path . res://campaigns/01_pachacutec/scenes/world/region_world.tscn
+```
+
+**Capturas:** `build/evidencia/region_player.png` (aparición) y `region_player_plaza.png` (tras andar hacia la plaza).
+
+**Limitaciones:** el jugador no tiene todavía presentación, inventario, interacción con NPC ni equipo. El terreno sigue a cuadros y los edificios son volúmenes sin interior.
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
@@ -287,9 +309,8 @@ godot --headless --path . --script res://tests/region_walkthrough_check.gd
 6. **Hecho:** F2.6 base (S4 quebrada, S5 paso y S6 frontera).
 7. **Hecho:** F2.7 base (30 POI, descubrimiento, diario, mapa y persistencia).
 8. **Hecho:** F2.8 automatizado (2.758 m, 23 min, seis sectores y ocho POI).
-9. **Siguiente:** prueba humana de 20–30 min y aprobación del blockout para cerrar F2.
-4. F2.7 POI y descubrimiento.
-5. F2.8 recorrido completo y cierre.
+9. **Hecho:** F2.9 mundo caminable (jugador, colisión, streaming y rescate).
+10. **Siguiente:** prueba humana de 20–30 min y aprobación del blockout para cerrar F2.
 
 ## 4. Riesgos
 

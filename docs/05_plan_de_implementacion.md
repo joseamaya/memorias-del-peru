@@ -95,7 +95,7 @@
 
 ## Fase 2 — Geografía y blockout
 
-**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout. **Estado:** en curso; F2.1 (heightmap), F2.2 (sectores y streaming), F2.3 (rutas y navmesh), F2.4 (blockout de S3), F2.5 (blockout de S1), F2.6 (S4–S6) y F2.7 (30 POI y descubrimiento) con base implementada. F2.8 está automatizado (2.758 m, 23 min, seis sectores y ocho POI); el modo de revisión ya permite mirar el blockout con cámara cercana, etiquetas por tecla y vista cenital. Falta la prueba humana y la aprobación del blockout para cerrar F2.
+**Precondiciones:** F1 cerrada; expediente geográfico aprobado para blockout. **Estado:** en curso; F2.1 (heightmap), F2.2 (sectores y streaming), F2.3 (rutas y navmesh), F2.4 (blockout de S3), F2.5 (blockout de S1), F2.6 (S4–S6) y F2.7 (30 POI y descubrimiento) con base implementada. F2.8 está automatizado (2.758 m, 23 min, seis sectores y ocho POI); el modo de revisión permite mirar el blockout con cámara cercana, etiquetas por tecla y vista cenital, y F2.9 añade jugador en primera persona con colisión de terreno y streaming a su alrededor. Falta la prueba humana y la aprobación del blockout para cerrar F2.
 
 **Objetivo:** construir el territorio de la campaña 01 en gris, con escala real, rutas, sectores y lugares, antes de producir arte definitivo.
 

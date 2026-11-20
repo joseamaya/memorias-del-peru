@@ -21,6 +21,7 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 	var world: RegionWorld = packed.instantiate() as RegionWorld
+	world.first_person = false
 	add_child(world)
 	world.autowalk = false
 	world.set_target_position(Vector3(300.0, 0.0, 0.0))
