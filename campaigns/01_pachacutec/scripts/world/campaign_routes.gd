@@ -39,7 +39,9 @@ const LINK_POINTS: Array[Vector3] = [
 	Vector3(-1520.0, 0.0, 40.0),
 ]
 const RIBBON_STEP: float = 3.0
-const RIBBON_LIFT: float = 0.8
+## La cinta es solo visual y no tiene colisión: se apoya en el terreno. Con
+## 0,8 m quedaba a la altura del pecho y tapaba la vista al caminar.
+const RIBBON_LIFT: float = 0.15
 
 var _routes: Array[CampaignRoute] = []
 var _meshes: Array[MeshInstance3D] = []

@@ -5,7 +5,9 @@ extends Node
 
 const WORLD_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const WARMUP_FRAMES: int = 90
-const WALK_FRAMES: int = 150
+## Cinco segundos de marcha acercan la plaza sin que la cámara quede pegada
+## a la losa; la toma debe servir para leer escala y camino, no para cruzarla.
+const WALK_FRAMES: int = 300
 
 
 func _ready() -> void:
@@ -22,6 +24,7 @@ func _run() -> void:
 	add_child(world)
 	for _i: int in WARMUP_FRAMES:
 		await get_tree().process_frame
+	_report_position(world, "inicio")
 	var ok: bool = await _save("res://build/evidencia/region_player.png")
 	Input.action_press("move_forward")
 	for _i: int in WALK_FRAMES:
@@ -29,8 +32,35 @@ func _run() -> void:
 	Input.action_release("move_forward")
 	for _i: int in 4:
 		await get_tree().process_frame
+	_report_position(world, "plaza")
 	ok = ok and await _save("res://build/evidencia/region_player_plaza.png")
 	get_tree().quit(0 if ok else 1)
+
+
+func _report_position(world: RegionWorld, label: String) -> void:
+	var player: PlayerFPS = world.get_player()
+	var region: CampaignRegion = world.get_region()
+	if player == null or region == null:
+		print("PLAYER_POS ", label, " sin jugador o región")
+		return
+	var at: Vector3 = player.global_position
+	var ground: float = region.height_at(at.x, at.z)
+	print(
+		"PLAYER_POS ",
+		label,
+		" x=",
+		snappedf(at.x, 0.1),
+		" y=",
+		snappedf(at.y, 0.1),
+		" z=",
+		snappedf(at.z, 0.1),
+		" ground=",
+		snappedf(ground, 0.1),
+		" gap=",
+		snappedf(at.y - ground, 0.1),
+		" floor=",
+		player.is_on_floor()
+	)
 
 
 func _save(path: String) -> bool:

@@ -77,7 +77,10 @@ func get_house_positions() -> PackedVector3Array:
 
 func _build_plaza() -> void:
 	var ground: float = _max_ground(0.0, 0.0, Vector3(PLAZA_RADIUS * 2.0, 0.0, PLAZA_RADIUS * 2.0))
-	var plaza: MeshInstance3D = _cylinder(PLAZA_RADIUS, 0.8, Vector3(0.0, ground + 0.4, 0.0))
+	# Losa fina, no un cilindro macizo: el blockout no tiene colisión en la
+	# plaza y el jugador puede atravesarla. Con 0,8 m la cámara quedaba dentro
+	# del volumen y solo se veía la cara interior.
+	var plaza: MeshInstance3D = _cylinder(PLAZA_RADIUS, 0.12, Vector3(0.0, ground + 0.06, 0.0))
 	plaza.name = "Plaza"
 	_add_label("POI-02 · Plaza de la llacta", Vector3(0.0, ground + 3.5, 0.0))
 

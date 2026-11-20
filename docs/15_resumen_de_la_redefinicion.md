@@ -40,7 +40,7 @@ La campaña 01 conserva la historia, el elenco y el registro histórico. Los cin
 - **F1 cerrada (2026-11-19); F2 en curso:** el relieve regional de 3,5 × 2,5 km está en blockout (seis sectores, río, quebrada, paso y cumbres; ~1,5 s de generación) los seis sectores ya se transmiten por cercanía sobre el terreno continuo y ocho rutas de blockout están dibujadas con navmesh por sector y enlaces entre ellos. S3 — Llacta de Rumi tiene su blockout (17 casas, plaza, manantial, telar, corral y acequia; 78–85 FPS y 120 draw calls) y S1 — Cusco preimperial también (28 casas, Coricancha, mercado, talleres y depósitos; 76–82 FPS y 247 draw calls). S4, S5 y S6 (quebrada, paso y frontera) tienen su blockout con 5, 3 y 5 POI; 80/95/103 FPS y 146/103/83 draw calls. Los 30 POI ya se descubren por proximidad, diálogo o evento, alimentan diario y mapa, respetan fases y persisten en el guardado. El recorrido Cusco–frontera se valida de forma automatizada en 2.758 m y 23 min a pie, con seis sectores y ocho POI. El mundo tiene un modo de revisión con cámara cercana, etiquetas con H y vista cenital con T, y ya se recorre a pie con el jugador en primera persona sobre la colisión del terreno. Falta la prueba humana y la aprobación del blockout. El sector gris integra Terrain3D, Cyclops, navmesh sobre el relieve, 60 NPC (25 animados), guardado y un blockout con seis casas, multitud y vegetación MultiMesh. El presupuesto queda en 255–287 draw calls, 101,7 MB, 61–66 FPS y frame máximo de 30,3 ms; el streaming carga en 21,4 ms de media con 1 KB de crecimiento en 60 ciclos. La adopción definitiva de Terrain3D/Cyclops se decide con el sector real de F2.
 - **F4-L y F5-L congeladas:** la versión lineal se conserva como historial y banco de pruebas.
 - **F2–F6 previstas:** geografía, vertical slice, producción, cierre y campañas II–IV.
-- **No adoptado:** Terrain3D y Cyclops son candidatos; su adopción depende de F1.
+- **Adopción provisional:** Terrain3D y Cyclops están instalados y medidos; la revisión definitiva se hace con el sector real de F2 y el veredicto del blockout.
 
 ## 4. Decisiones aprobadas
 
@@ -64,9 +64,10 @@ Se aprueban las recomendaciones de la F0:
 
 ## 6. Siguiente paso
 
-La F0 está aprobada. El siguiente paso es F1:
+La F1 está cerrada. El siguiente paso es cerrar F2:
 
-1. Ejecutar los spikes 1.1–1.7.
-2. No producir arte definitivo ni construir la región completa hasta aprobar la vertical slice.
-3. Registrar en la bitácora la adopción o el descarte de Terrain3D y Cyclops con medidas.
-4. Mantener la campaña 01 como único producto en construcción; II–IV solo como concepto hasta su fase.
+1. Hacer la prueba humana de 20–30 min con el [protocolo de blockout](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md).
+2. Corregir las incidencias bloqueantes y mayores, y repetir la ruta afectada.
+3. Aprobar el blockout y registrar el veredicto en la ficha de F2 y en la bitácora.
+4. Revisar la adopción definitiva de Terrain3D y Cyclops con el sector real.
+5. No producir arte definitivo ni abrir la vertical slice hasta ese veredicto.

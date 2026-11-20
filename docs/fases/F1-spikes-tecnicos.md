@@ -242,7 +242,7 @@ La captura queda en `build/evidencia/sector_blockout.png`.
 5. **Hecho:** F1.5 en el sector gris (`NpcDirector`, LOD, 60 NPC, 25 animados y snapshot).
 6. **Hecho:** F1.7 en el blockout (casas y pircas Cyclops, multitud y vegetación MultiMesh, presupuesto medido).
 7. **Hecho:** exportación Linux/Windows con ambos addons y prueba de humo.
-8. **Siguiente:** aprobación del responsable para cerrar F1 y abrir F2 con el expediente geográfico.
+8. **Hecho:** F1 cerrada y F2 abierta con el expediente geográfico.
 
 ## 4. Riesgos
 

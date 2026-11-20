@@ -10,9 +10,9 @@ Antología de cuatro **RPG históricos de mundo abierto regional** en primera pe
 | Lenguaje | GDScript con tipado estricto |
 | Renderizador | Forward+ |
 | Plataforma | Linux y Windows (verificados); macOS como objetivo, sin probar |
-| Fase | **F0 cerrada; F1 — Spikes técnicos en curso.** La base de Terrain3D (1.1), reloj, estado, guardado, NPC, streaming y navegación (1.3–1.6) está implementada. La campaña lineal I–V se conserva como historial y banco de pruebas; F4-L y F5-L quedan congeladas. Ver [docs/05](docs/05_plan_de_implementacion.md) y la [ficha de F1](docs/fases/F1-spikes-tecnicos.md) |
+| Fase | **F1 cerrada; F2 — Geografía y blockout en curso.** La región de 3,5 × 2,5 km está en blockout, con seis sectores, streaming, rutas, navmesh, 30 POI y jugador a pie. La campaña lineal I–V se conserva como historial y banco de pruebas; F4-L y F5-L quedan congeladas. Falta la prueba humana y la aprobación del blockout para cerrar F2. Ver [docs/05](docs/05_plan_de_implementacion.md) y la [ficha de F2](docs/fases/F2-geografia-y-blockout.md) |
 
-> **Estado honesto del repositorio.** El código actual implementa la versión lineal de 40–50 minutos: cinco actos, tres escenarios y un arco cerrado. No es todavía un mundo abierto. La F0 documental está cerrada; la F1 de spikes técnicos está en curso. No se construye terreno ni se producen assets definitivos hasta validar la arquitectura y la vertical slice. Ver [docs/11](docs/11_diseno_de_mundo.md), [docs/12](docs/12_campanas.md) y [docs/13](docs/13_pipeline_de_escenarios.md).
+> **Estado honesto del repositorio.** El código actual conserva la versión lineal de 40–50 minutos como banco de pruebas y, al lado, construye el mundo abierto regional: terreno continuo, seis sectores, streaming, navegación, POI y persistencia. El blockout se recorre a pie; todavía no tiene arte final, NPC, interiores ni combate de mundo. La F1 está cerrada y la F2 en curso. No se produce arquitectura definitiva hasta aprobar el blockout y validar la vertical slice. Ver [docs/11](docs/11_diseno_de_mundo.md), [docs/12](docs/12_campanas.md) y [docs/13](docs/13_pipeline_de_escenarios.md).
 
 ## Requisitos
 
@@ -20,6 +20,7 @@ Antología de cuatro **RPG históricos de mundo abierto regional** en primera pe
 - GPU compatible con Vulkan (requisito de Forward+).
 - Python 3.12 o superior para `gdtoolkit` (`requirements-dev.txt`), solo para lint y formato de archivos nuevos.
 - Blender 5.3.0 para el pipeline de modelos (opcional para jugar).
+- Terrain3D 1.1.0 y Cyclops Level Builder 1.5.2 incluidos en `addons/` (MIT). El juego no necesita habilitar los plugins; Terrain3D carga el terreno regional y Cyclops solo se usa para editar blockout. Registro en `addons/*/REGISTRO.md`.
 
 ## Controles
 

@@ -5,6 +5,11 @@ extends SceneTree
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const SETTLE_FRAMES: int = 90
 const WALK_FRAMES: int = 180
+## La plaza está a unos 55 m del punto de aparición. La segunda marcha debe
+## llegar a su borde sin quedar bloqueada por una casa ni por la losa.
+const PLAZA_WALK_FRAMES: int = 720
+const PLAZA_CENTER: Vector3 = Vector3(300.0, 0.0, 0.0)
+const MAX_PLAZA_DISTANCE: float = 20.0
 const MIN_WALK_METERS: float = 5.0
 const MAX_GROUND_GAP: float = 2.5
 const RESPAWN_TOLERANCE: float = 3.0
@@ -54,16 +59,32 @@ func _run() -> void:
 	ok = ok and walked >= MIN_WALK_METERS
 	ok = ok and absf(end.y - end_ground) <= MAX_GROUND_GAP
 
+	# Segunda marcha: el camino de entrada no puede quedar tapado por una casa
+	# ni la losa de la plaza puede encerrar la cámara.
+	Input.action_press("move_forward")
+	for _i: int in PLAZA_WALK_FRAMES:
+		await physics_frame
+	Input.action_release("move_forward")
+	await physics_frame
+	var plaza_end: Vector3 = player.global_position
+	var plaza_distance: float = (
+		Vector2(plaza_end.x - PLAZA_CENTER.x, plaza_end.z - PLAZA_CENTER.z).length()
+	)
+	var plaza_ground: float = region.height_at(plaza_end.x, plaza_end.z)
+	ok = ok and plaza_distance <= MAX_PLAZA_DISTANCE
+	ok = ok and absf(plaza_end.y - plaza_ground) <= MAX_GROUND_GAP
+	ok = ok and player.is_on_floor()
+
 	var target: Node3D = world.get_node("StreamTarget") as Node3D
 	if target == null:
 		ok = false
 	else:
 		var follow: Vector2 = Vector2(
-			target.global_position.x - end.x, target.global_position.z - end.z
+			target.global_position.x - plaza_end.x, target.global_position.z - plaza_end.z
 		)
 		ok = ok and follow.length() < 2.0
 
-	player.global_position = Vector3(end.x, end.y - 400.0, end.z)
+	player.global_position = Vector3(plaza_end.x, plaza_end.y - 400.0, plaza_end.z)
 	for _i: int in 5:
 		await physics_frame
 	await process_frame
@@ -81,7 +102,9 @@ func _run() -> void:
 		"PLAYER walked_m=",
 		snappedf(walked, 0.1),
 		" ground_gap=",
-		snappedf(end.y - end_ground, 0.01)
+		snappedf(end.y - end_ground, 0.01),
+		" plaza_distance=",
+		snappedf(plaza_distance, 0.1)
 	)
 	world.queue_free()
 	await process_frame

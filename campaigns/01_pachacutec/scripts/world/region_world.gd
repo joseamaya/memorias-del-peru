@@ -21,9 +21,11 @@ const REVIEW_LABEL_PIXEL: float = 0.03
 ## Escena del jugador en primera persona; el mundo regional la instancia cuando
 ## `first_person` está activo.
 const PLAYER_SCENE: String = "res://core/player/player_fps.tscn"
-## Punto de aparición a pie: el camino de entrada a la llacta, mirando a la plaza.
-const SPAWN_POINT: Vector3 = Vector3(352.0, 0.0, 18.0)
-const SPAWN_YAW_DEGREES: float = 71.0
+## Punto de aparición a pie: sobre R1, en el camino de entrada a la llacta y
+## mirando a la plaza. La línea pasa entre las casas de 15° y 65°; el punto
+## anterior (352, 18) quedaba detrás de la casa de 15° y bloqueaba la marcha.
+const SPAWN_POINT: Vector3 = Vector3(352.9, 0.0, 28.3)
+const SPAWN_YAW_DEGREES: float = 62.0
 ## Altura sobre el terreno a la que se deja caer al jugador al aparecer.
 const SPAWN_CLEARANCE: float = 1.5
 ## Caída máxima respecto al terreno antes de devolver al jugador al inicio.
