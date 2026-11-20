@@ -11,7 +11,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-001 — Cusi Yupanqui / Pachacútec
 - Tipo: personaje
 - Clasificación: H (existencia y papel en la tradición); detalles de su vida: según fuente
-- Uso en el juego: Cusi Yupanqui dirige la defensa en el acto III; el jugador no lo sustituye
+- Uso en el juego: Cusi Yupanqui dirige la defensa del Cusco y la expedición al oeste; el jugador no lo sustituye
 - Crónica rectora: Betanzos (caps. VI–X); Sarmiento, contraste; Garcilaso, versión alternativa (príncipe Viracocha), no rectora
 - Fuentes:
   - Sarmiento de Gamboa, *Historia de los Incas* (1572), trad. Markham (Hakluyt Society, 1907; Project Gutenberg n.º 20218, sin paginación).
@@ -150,7 +150,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
   - La traducción de Bauer y Smith (2007) no se ha consultado; sus páginas (107–111) proceden del índice de la editorial y no se usan.
 - Discrepancias entre fuentes: las crónicas no coinciden en quién da la alarma ni en su nombre.
 - Notas de representación: en el juego es **mensajero**, no chasqui. Llamarlo chasqui en una llacta anterior a la expansión sería anacrónico: la institución de postas se documenta para el Estado imperial. Ropa de viaje, sin insignias estatales; llega agotado.
-- Tras el pututu, el mensajero vuelve al Cusco guiando a la comitiva . Es reconstrucción (R) al servicio del relato: las fuentes citadas no dicen qué hizo quien llevó la noticia después de darla.
+- Qué hizo el mensajero después de dar la noticia es reconstrucción (R): las fuentes citadas no lo dicen. En el diseño vigente llega al Cusco y su testimonio abre la fase de la defensa.
 - Estado de verificación: **verificado (H)** por el responsable del proyecto el 2026-11-11, con las ediciones digitales citadas a la vista (Sarmiento, cap. XXVII; Garcilaso, lib. VI, cap. VII). La parte R (ropa de viaje, llegada agotado) se basa en esas fuentes y no requiere cita propia.
 
 ### PCH-012 — Ofrenda a la Pachamama
@@ -192,7 +192,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 - Discrepancias entre fuentes:
   - Garcilaso, *Comentarios reales*, ed. Urteaga (Lima, 1918), cuenta otra versión: en el libro IV, caps. XXIII–XXIV, «El Inca desampara la ciudad y el príncipe heredero la socorre», el que huye es Yahuar Huácac. En el libro V, caps. XVII–XX, el príncipe Viracocha vence a los chancas y destrona a su padre. Esto se comprobó por los títulos de capítulo del índice.
   - Entre Sarmiento y Betanzos cambia el lugar de la retirada (Chita o el peñol de Caca Xaqui Xahuana), pero en ambos el inca abandona la ciudad con su heredero Inca Urco.
-- Notas de representación: el guion sigue la versión de Betanzos y Sarmiento y la presenta como lo que dice el mensajero, no como verdad única. No se escenifica la batalla: el juego termina cuando la llacta responde. La llegada a la plaza, la reunión y la partida son puesta en escena (N).
+- Notas de representación: la noticia se presenta como lo que dice el mensajero, no como verdad única; sigue la versión de Betanzos y Sarmiento. La llegada y la reunión son puesta en escena (N). La batalla se escenifica en la fase de Carmenca (PCH-039).
 - Estado de verificación: **verificado (H)** por el responsable del proyecto el 2026-11-11, con las ediciones digitales citadas a la vista (Sarmiento, caps. XXV–XXVI; Betanzos, cap. VI; Garcilaso, índice del t. 2). La parte N está justificada en las notas de representación.
 
 ### PCH-016 — Plaza y caminos
@@ -283,7 +283,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-022 — El Cusco antes de la expansión inca
 - Tipo: evento / contexto político
 - Clasificación: A (el Cusco consolida su región antes de expandirse) / R («el señorío más fuerte de la región»)
-- Uso en el juego: tarjetas de la introducción `PCH_INTRO_1` y `PCH_INTRO_2`: «Los Andes, siglo XV.» y «En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región.»
+- Uso en el juego: entrada de la «Memoria» sobre el Cusco preimperial: «Los Andes, siglo XV» y «En el valle del Cusco gobiernan los incas. Todavía no son un imperio: son el señorío más fuerte de la región.»
 - Fuentes:
   - A (leída por el agente el 2026-11-12 en la edición en línea; sin paginación por pasaje): R. Alan Covey, Kylie E. Quave y otros, «Settlement discontinuity at Ak'awillay and the development of the Inca imperial capital region», *Antiquity* 99 (404): 481–499 (2025), la misma obra que PCH-006: https://www.cambridge.org/core/journals/antiquity/article/settlement-discontinuity-at-akawillay-and-the-development-of-the-inca-imperial-capital-region/6B5177903D92CCFDC05F520CE36CC60B.
     - Habla de «the many named groups living in the Cuzco region during the Late Intermediate Period (c. AD 1000–1400)».
@@ -301,7 +301,7 @@ Las fichas en estado “pendiente” tienen clasificación definitiva pero citas
 ### PCH-023 — Mapa de la introducción
 - Tipo: lugar
 - Clasificación: R (posición de la llacta respecto al Cusco) / N (dibujo del relieve)
-- Uso en el juego: capa de la tarjeta `PCH_INTRO_2` de la introducción, `scripts/ui/intro_map.gd`. Rótulos «Cusco», «Tu llacta» y «N».
+- Uso en el juego: **retirado con las tarjetas de introducción**; se conserva como referencia del mapa esquemático si el epílogo o el diario lo recuperan. Rótulos previstos: «Cusco», «La llacta» y «N».
 - Fuentes:
   - Se apoya en PCH-006 (A / R): la llacta es una de las aldeas del Intermedio Tardío de la región del Cusco que registran las prospecciones (Covey y otros 2025), y no se identifica con ningún sitio real.
   - Dentro del juego, el camino del norte es el que va al Cusco: frase del agricultor `PCH_TALK_FARMER` y llegada del mensajero por el camino norte (alcance §2.2).
@@ -332,7 +332,7 @@ Fichas de elementos que se valoraron pero **no están en el juego**. No bloquean
 
 ## Pendientes de investigación (movilización y guerra)
 
-Fichas de los elementos que el RPG introduce después del acto I. Ninguna entra
+Fichas de los elementos que el RPG introduce después de la defensa del Cusco. Ninguna entra
 al juego hasta estar **verificada**; se listan aquí para no inventar contenido
 ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 
@@ -350,7 +350,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 ### PCH-025 — Armadura acolchada
 - Tipo: vestimenta / protección
 - Clasificación: A / R
-- Uso en el juego: solo si el acto III muestra guerreros protegidos; el jugador no la lleva
+- Uso en el juego: solo si la defensa del Cusco muestra guerreros protegidos; el jugador no la lleva
 - Fuentes: por localizar.
 - Discrepancias entre fuentes: —
 - Notas de representación: sin láminas metálicas ni corazas europeas. Si no se documenta con claridad para el siglo XV andino, se retira del juego.
@@ -359,7 +359,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 ### PCH-026 — El paso y el refugio de piedra
 - Tipo: lugar
 - Clasificación: R
-- Uso en el juego: mapa del acto II
+- Uso en el juego: el viaje a la llacta (fase 3)
 - Fuentes: se apoya en PCH-013 (vegetación) y PCH-016 (caminos). No se identifica con ningún paso real.
 - Discrepancias entre fuentes: —
 - Notas de representación: **no es un tambo**: la institución de postas es imperial y posterior. Refugio abierto de piedra seca, sin techo de ichu ni insignias estatales. El sendero es de herradura, no una calzada imperial.
@@ -368,7 +368,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 ### PCH-027 — El Cusco de 1438
 - Tipo: lugar
 - Clasificación: A / R
-- Uso en el juego: mapa del acto III
+- Uso en el juego: el viaje a la llacta (fase 3)I
 - Fuentes: se apoya en PCH-022 (Covey y otros 2025) y PCH-002. La bibliografía específica del Cusco preimperial sigue pendiente de ampliar.
 - Discrepancias entre fuentes: la arqueología del Cusco anterior a la expansión es limitada; la ciudad monumental es posterior.
 - Notas de representación: centro de señorío con plaza grande, casas de piedra y ichu, terrazas y un santuario modesto al sol (R). Sin Coricancha monumental, sin muros ciclópeos ni piedra labrada imperial. Los dos puestos de trueque de la plaza son **reconstrucción de ambiente (R)**: postes, techo de ichu, cántaros y leña, sin institución de mercado ni tiánguez nombrado en pantalla. El camino procesional de lajas de la puerta al santuario, el fuego comunal y las variantes de vivienda D/E son también **reconstrucción de ambiente (R)**: no documentan un trazado ni un edificio concreto, solo el uso ceremonial y doméstico del espacio.
@@ -386,7 +386,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 ### PCH-029 — La batalla: representación
 - Tipo: evento
 - Clasificación: H (tradición narrada) / R (puesta en escena)
-- Uso en el juego: defensa del Cusco, acto III
+- Uso en el juego: la defensa del Cusco (fase 2)
 - Fuentes: PCH-001, PCH-002, PCH-003 y PCH-015; crónica rectora, Betanzos.
 - Discrepancias entre fuentes: protagonista (Cusi Yupanqui o el príncipe Viracocha, según Garcilaso) y escala del conflicto (PCH-003).
 - Notas de representación: se muestra la versión de los cronistas, no un hecho comprobado. Sin cifras de ejército ni mapas tácticos. El jugador no decide el resultado.
@@ -395,7 +395,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 ### PCH-030 — Los chancas como guerreros
 - Tipo: personaje / vestimenta
 - Clasificación: H / R
-- Uso en el juego: exploradores y guerreros del acto II y del acto III
+- Uso en el juego: exploradores y guerreros de la embajada y de la defensa
 - Fuentes: PCH-003 y Bauer, Kellett y Aráoz Silva (2013).
 - Discrepancias entre fuentes: la imagen de los chancas procede de la versión inca; la arqueología muestra confederaciones frágiles, no un estado poderoso.
 - Notas de representación: sin caricatura de «bárbaros»; ropa de viaje y guerra propia, sin insignias incas. La apariencia concreta es R.
@@ -405,7 +405,7 @@ ni citas. Las fuentes marcadas «por localizar» no se han consultado todavía.
 ### PCH-031 — Pururaucas (leyenda)
 - Tipo: mito / leyenda
 - Clasificación: N / H (tradición narrada)
-- Uso en el juego: escena opcional de la víspera del acto III y entrada `mem_pururaucas` de la «Memoria». No es una mecánica ni cambia la batalla.
+- Uso en el juego: escena opcional de la víspera de la defensa y entrada `mem_pururaucas` de la «Memoria». No es una mecánica ni cambia la batalla.
 - Fuentes:
   - H: Pachacuti Yamqui Salcamaygua, Juan de Santa Cruz, *Relación de antigüedades deste reyno del Pirú* (c. 1613), en *Tres relaciones de antigüedades peruanas*, Madrid, 1879, pp. 271–272 (archive.org: `tresrelacionesde00spai`). El viejo Tiopauanchire (Topa Huanchiri), ministro de Curicancha, hace hileras de piedra de pururauca y las viste con adargas, morriones y porras; cuando llegan los chancas, las piedras se levantan como personas y pelean; la victoria sigue hasta Quiyachille.
   - Contraste: Garcilaso, *Comentarios reales*, lib. V, caps. XVII–XX (ed. Urteaga, 1918), cuenta la victoria del príncipe Viracocha, no la de Cusi Yupanqui; es otra versión, no la fuente de los pururaucas.
@@ -425,16 +425,16 @@ a la vista.
 ### PCH-032 — La posguerra y la asamblea de ayllus
 - Tipo: evento / organización social
 - Clasificación: R
-- Uso en el juego: acto IV, asamblea de la llacta tras la victoria
+- Uso en el juego: la posguerra, asamblea tras la victoria
 - Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X (ed. Jiménez de la Espada, Madrid, 1880, pp. 19–62), para el reparto y la autoridad tras la victoria; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Historia del Tahuantinsuyu* (1988), para la organización de ayllus y la reciprocidad.
 - Discrepancias entre fuentes: ninguna crónica describe una asamblea concreta tras la victoria; la escena es reconstrucción a partir de la reciprocidad y el reparto documentados.
-- Notas de representación: la asamblea decide reparto, culpa y esfuerzo común; no cambia el resultado histórico. Puma acusa, el curaca vecino oportuniza y los ayllus piden maíz.
+- Notas de representación: la asamblea decide reparto, culpa y esfuerzo común; no cambia el resultado histórico. Un principal acusa, el curaca vecino oportuniza y los ayllus piden maíz.
 - Estado de verificación: **verificado (R)** por revisión documental del agente el 2026-11-15 sobre las ediciones digitales citadas; la asamblea concreta es reconstrucción y no se presenta como crónica.
 
 ### PCH-033 — La muerte de Viracocha y el fin del orden antiguo
 - Tipo: evento
 - Clasificación: H (tradición)
-- Uso en el juego: noticia del acto IV; no se escenifica la muerte
+- Uso en el juego: noticia de la posguerra; no se escenifica la muerte
 - Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X (ed. Jiménez de la Espada, Madrid, 1880, pp. 19–62); Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; Inca Garcilaso de la Vega, *Comentarios reales* (1609), lib. V, como contraste.
 - Discrepancias entre fuentes: el lugar y el momento de la muerte varían; en todas las versiones ocurre después de la victoria de su hijo. El juego la cuenta como noticia, sin fecha exacta.
 - Notas de representación: no hay escena directa con el inca viejo; su muerte llega por mensajero y cierra el orden antiguo.
@@ -443,7 +443,7 @@ a la vista.
 ### PCH-034 — El nombre de Pachacútec
 - Tipo: evento / término
 - Clasificación: H (tradición) / N (escena)
-- Uso en el juego: acto V; un mensajero trae la noticia del nombre nuevo
+- Uso en el juego: el epílogo político; un mensajero trae la noticia del nombre nuevo
 - Fuentes: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, caps. VI–X; Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXV–XXVII; María Rostworowski, *Pachacútec Inca Yupanqui* (1953).
 - Discrepancias entre fuentes: la asunción del nombre tras la victoria es tradición de los cronistas, no un acto documentado minuto a minuto.
 - Notas de representación: se presenta como **lo que se cuenta**; El jugador lo oye en la llacta, no lo presencia en el trono.
@@ -452,7 +452,7 @@ a la vista.
 ### PCH-035 — La reconstrucción de la casa y las terrazas
 - Tipo: arquitectura / actividad
 - Clasificación: R
-- Uso en el juego: acto V; corral, terraza, telar, acequia y casa de la familia reparados
+- Uso en el juego: el epílogo político; corral, terraza, telar, acequia y casa de la familia reparados
 - Fuentes: PCH-007 (vivienda), PCH-008 (terraza), PCH-021 (corral de pirca) y las fuentes que citan; no hay una referencia específica sobre la reconstrucción tras un conflicto.
 - Discrepancias entre fuentes: —
 - Notas de representación: la obra usa las mismas técnicas documentadas que la construcción inicial; no se inventan herramientas.
@@ -461,7 +461,7 @@ a la vista.
 ### PCH-036 — Los exploradores chancas y el reconocimiento del camino
 - Tipo: evento / personaje
 - Clasificación: R / N
-- Uso en el juego: acto II; los exploradores tantean el paso antes de la fuerza principal
+- Uso en el juego: la embajada; los exploradores tantean el paso antes de la fuerza principal
 - Fuentes: PCH-003 (los chancas), PCH-024 (armas) y PCH-030 (los chancas como guerreros); la práctica del reconocimiento previo es reconstrucción.
 - Discrepancias entre fuentes: las crónicas describen el avance chanca y el campamento en Ichu-pampa, no una patrulla concreta en un paso.
 - Notas de representación: la información se obtiene escuchando, no de un objeto inventado; no se atribuye a los chancas un sistema de registro que no esté documentado.
@@ -484,8 +484,38 @@ a la vista.
 ### PCH-038 — Manantial, acequia y mirador de la llacta
 - Tipo: lugar / arquitectura
 - Clasificación: R
-- Uso en el juego: `Llacta/Spring`, `Llacta/Acequia`, `Llacta/Mirador`, `Llacta/Paths` en los actos I, IV y V
+- Uso en el juego: `Llacta/Spring`, `Llacta/Acequia`, `Llacta/Mirador`, `Llacta/Paths` en la llacta del blockout (S3)
 - Fuentes: PCH-008 (terraza agrícola y agua), PCH-013 (ichu y queñua), PCH-016 (plaza y caminos) y sus fuentes.
 - Discrepancias entre fuentes: —
 - Notas de representación: el manantial, la acequia corta y el mirador son reconstrucción de ambiente (R). No documentan un manantial ni un mirador de un sitio concreto: se apoyan en el uso agrícola del agua y en la red de caminos ya documentada. El fondo de valle con campos y caserío es una silueta de paisaje (R/N) para dar profundidad; no se recorre ni se presenta como un lugar real.
 - Estado de verificación: **pendiente de firma del responsable** (R).
+
+---
+
+## La defensa del Cusco: geografía y participantes
+
+Fichas nuevas del rediseño de la campaña (2026-11-20): la ciudad como hogar, la defensa en Carmenca y el mando del arrabal.
+
+### PCH-039 — La defensa del Cusco: geografía y desarrollo
+- Tipo: evento / lugar
+- Clasificación: H (tradición narrada) / R (puesta en escena)
+- Uso en el juego: fase 2, «Carmenca»; guía del escenario de la defensa.
+- Fuentes:
+  - H: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, cap. VIII, ed. Marcos Jiménez de la Espada (Madrid, 1880), pp. 36–37. Edición digital: archive.org, `betanzos-juan-de.-suma-y-narracion-de-los-incas-1880`. «… otro día de mañana, dicen que descendiendo Uscovilca con su gente por Carminga [Carmenca] abajo, que es un cerro que estaba a la descendida a la ciudad del Cuzco, yendo de la ciudad de Los Reyes …». La batalla dura de la mañana al mediodía; Uscovilca es preso y muerto; los suyos huyen a Xaquixaguana.
+  - H: Pedro Cieza de León, *Segunda parte de la Crónica del Perú* (El señorío de los Incas), cap. XLV, ed. 1880, pp. 171–173. Edición digital: archive.org, `segundaparte00ciezrich`. «Los Chancas llegaron a poner su real junto al cerro de Carmenga, que está por encima de la ciudad …». Los del Cuzco hacen «grandes hoyos llenos de piedra y por encima tapados sotilmente» en las entradas; la ciudad no tiene muralla, está entre cerros, con laderas cortadas y púas de palma. El combate dura un día, hay tregua nocturna y un segundo día; escapan unos quinientos con Hastu Guaraca; los cuerpos chancas se desuellan y rellenan en una casa larga «en la parte que se dio la batalla».
+  - H: Pedro Sarmiento de Gamboa, *Historia de los Incas* (1572), caps. XXVI–XXVIII, trad. Clements R. Markham (Hakluyt Society, 1907), pp. 89–95. Los chancas acampan en Ichu-pampa, a cinco leguas; toman al guía en Conchacalla; Cusi Yupanqui ora en Susurpuquio; el enemigo llega a Cusi-pampa, con solo una loma entre él y la ciudad; ataca por cuatro direcciones; el arrabal de Chocos-chacona es rechazado; persecución de dos leguas; huida a Ichu-pampa y segunda batalla allí. Describe a Cusi Yupanqui como «only a lad of 20 or 22 years» (p. 91).
+  - H (tradición): Pachacuti Yamqui, *Relación de antigüedades* (c. 1613), pp. 271–272: la victoria se prolonga hasta Quiyachille (ver PCH-031).
+- Discrepancias entre fuentes: el campamento chanca (Carmenca en Betanzos y Cieza; Ichu-pampa y Cusi-pampa en Sarmiento); el jefe chanca (Uscovilca en Betanzos; Hastu Guaraca en Cieza; Asto-huaraca y Tomay-huaraca en Sarmiento); el lugar de la huida y de la segunda batalla (Xaquixaguana en Betanzos; Ichu-pampa en Sarmiento); la duración (medio día en Betanzos; dos días en Cieza). Ninguna versión puede darse por definitiva con las fuentes disponibles.
+- Notas de representación: el escenario sigue a **Betanzos y Cieza** para el terreno —cerro al oeste, ciudad sin muralla, fosos con piedra y púas de palma— y a **Sarmiento** para la maniobra —cuatro entradas y arrabal—. No se muestran cifras de ejército. Los nombres de los jefes chancas se presentan como versiones: un personaje puede decir «Uscovilca» y otro «Hastu Guaraca». La existencia del combate y su carácter defensivo es H (tradición); la disposición concreta del escenario es R.
+- Estado de verificación: **pendiente de firma del responsable** (H / R).
+
+### PCH-040 — Chanan Cury Coca
+- Tipo: personaje
+- Clasificación: H (tradición narrada)
+- Uso en el juego: curaca del arrabal; manda la defensa de Chocos-chacona en la fase 2.
+- Fuentes:
+  - H: Sarmiento de Gamboa, *Historia de los Incas* (1572), cap. XXVII, trad. Markham (1907), p. 92: «a woman named Chanan-ccuri-coca here fought like a man, and so valiantly opposed the Chancas that they were obliged to retire». El pasaje la sitúa en el arrabal de Chocos-chacona, adonde los chancas entraron y fueron rechazados.
+  - Síntesis moderna: María Rostworowski, *Historia del Tahuantinsuyu* (1988), capítulo de la guerra chanca: la presenta como curaca al frente de los ayllus de Chaco y Chacona.
+- Discrepancias entre fuentes: Sarmiento la llama «woman»; Rostworowski la llama curaca. El mando sobre los ayllus es interpretación (R) a partir del pasaje, no una frase literal. El nombre aparece con variantes: Chanan-ccuri-coca, Chanan Cury Coca.
+- Notas de representación: sin retrato «auténtico»; apariencia R. No se la convierte en excepción maravillosa ni en guerrera mítica: manda un ayllu y defiende su barrio. Su presencia no cambia el resultado de la batalla.
+- Estado de verificación: **pendiente de firma del responsable** (H).

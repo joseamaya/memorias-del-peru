@@ -110,54 +110,62 @@ La región, los sectores y las experiencias se diseñan en [docs/11](11_diseno_d
 ## 3.1. Identidad
 
 - **Periodo:** siglo XV, durante el conflicto entre los incas y los chancas.
-- **Región:** valle del Cusco y aproximación occidental: la llacta, la quebrada, el paso y el Cusco de 1438. La distancia está comprimida y el valle intermedio es ficción declarada.
+- **Región:** valle del Cusco. El **Cusco preimperial es el hogar y el hub**; al oeste quedan Carmenca, la llacta vecina y la aproximación a la segunda batalla. La distancia está comprimida y el valle intermedio es ficción declarada.
+- **Lugar del jugador:** el arrabal de Chocos-chacona, ayllus de Chaco y Chacona.
 - **Personaje histórico central:** Cusi Yupanqui, posteriormente conocido como Pachacútec.
-- **Tono:** épico, íntimo, de supervivencia y transformación.
+- **Tono:** asedio, vida urbana, cálculo político; la guerra se ve desde abajo y desde dentro.
 
 ## 3.2. Premisa
 
-La vida cotidiana de una comunidad del valle del Cusco se ve amenazada por la expansión chanca y la crisis política del poder inca.
+El inca Viracocha abandona el Cusco con su heredero y buena parte de la ciudad. Unos pocos se quedan. Entre ellos está el jugador, un joven del arrabal, que no manda nada y no decide la guerra: sostiene su parte.
 
-Cuando la amenaza alcanza la ciudad, las divisiones internas, la incertidumbre y la decisión de abandonar el Cusco ponen a la población ante una situación límite. Mientras Cusi Yupanqui organiza la resistencia, la comunidad se ve involucrada en la defensa de su hogar y en una guerra que cambiará el destino de la región.
+Los chancas bajan del cerro de Carmenca. La ciudad no tiene muralla: tiene fosos con piedra, púas de palma y vecinos. Ese día se gana o se pierde todo.
 
-La historia no es la de un gran general. Es la de una persona que debe proteger a los suyos, sobrevivir y encontrar su lugar en un mundo que está cambiando.
+Después llega lo demás: pedir ayuda a una comunidad vecina que la niega, salir al oeste a la segunda batalla y presenciar cómo la victoria cambia el poder —la borla, el padre que no cede, el hermano que estorba.
+
+La historia no es la de un gran general. Es la de una persona que se queda cuando los demás se van, y que descubre que quedarse también tiene precio.
 
 ## 3.3. Protagonista
 
-**Por definir.** La campaña anterior tenía un protagonista inventado; se retiró con su trama el 2026-11-20. El nuevo se diseña con el contexto histórico delante: edad, oficio, familia, miedo concreto y motivación que vaya más allá de combatir. No es un guerrero excepcional al empezar; su experiencia y capacidades evolucionan con lo que vive.
+**Varón de 19–20 años**, del ayllu de Chaco/Chacona, en el arrabal de Chocos-chacona. No es orejón ni capitán; es un vecino con oficio, familia y obligaciones. La edad se apoya en la que Sarmiento atribuye a Cusi Yupanqui en ese momento —«only a lad of 20 or 22 years»—, no en un dato sobre comuneros. Nombre, oficio y familia quedan por escribir y se registrarán como N.
+
+No es un guerrero excepcional al empezar: su experiencia y sus capacidades evolucionan con lo que vive.
 
 ## 3.4. Elenco
 
-- **Cusi Yupanqui:** figura central de la resistencia y del cambio político. El protagonista puede conocerlo, recibir instrucciones de sus representantes y presenciar su ascenso, pero no dirigir sus decisiones.
-- **Viracocha Inca:** figura del poder establecido, cuya retirada y decisiones deben contextualizarse históricamente. No es un villano: es un gobernante que calcula.
-- **La comunidad:** familia, autoridades locales y vecinos; representan lo que está en juego para una persona común.
-- **Chancas:** exploradores, guerreros y comunidades; no se representan como un bloque homogéneo.
+- **Cusi Yupanqui:** dirige la defensa y después la expedición. El jugador lo acompaña; no lo sustituye ni habla por él.
+- **Vicaquirao, Apu Mayta y Quiliscachi Urcoguaranga:** los tres capitanes que se quedan con él. Nombrados en Betanzos; el jugador está en su órbita, no en su lugar.
+- **Chanan Cury Coca:** curaca del arrabal, de los ayllus de Chaco y Chacona. Manda la defensa de su barrio (PCH-040).
+- **Viracocha Inca:** el gobernante que se retira y negocia. No es un villano: calcula.
+- **Inca Urco:** el heredero que se va con su padre y vuelve a disputar el poder.
+- **Jefes chancas:** Uscovilca (Betanzos), Hastu Guaraca (Cieza), Asto-huaraca y Tomay-huaraca (Sarmiento). El juego elige una versión y cita las otras en la Memoria.
+- **La comunidad de la llacta:** los vecinos que niegan la ayuda y después se suman al vencedor.
 
-Los personajes secundarios tendrán objetivos propios y no existirán solo para entregar misiones. Ningún nombre de personaje está fijado.
+Los personajes históricos conservan sus decisiones. Los secundarios tienen objetivos propios y no existen solo para entregar misiones.
 
-## 3.5. Fases (hipótesis de trabajo)
+## 3.5. Fases
 
-| Fase | Pregunta dramática | Mundo |
-|---|---|---|
-| Paz | ¿Qué haces cuando la noticia llega? | Comunidad habitable, caminos abiertos |
-| Noticia | ¿Hasta dónde estás dispuesto a llegar? | Refugiados, controles, precios |
-| Guerra | ¿Quién sostiene la línea? | Accesos restringidos, ausencias |
-| Posguerra | ¿Qué queda cuando la victoria llega? | Casas vacías, heridos, duelo |
-| Obra | ¿Qué se hace con lo que queda? | Terrazas, corral y casa reparados |
+| Fase | Lugar | Qué ocurre | Tipo |
+|---|---|---|---|
+| 1. La ciudad que se queda | S1 Cusco | Vida en el arrabal; la partida de Viracocha; los pocos que se quedan | Mundo abierto |
+| 2. Carmenca | S2 y S1 | Los chancas bajan del cerro; fosos y púas; el arrabal aguanta | Secuencia controlada |
+| 3. Los emisarios | S3 y S4–S5 | Viaje a la llacta a pedir ayuda; la negativa; la vuelta | Mundo abierto |
+| 4. Xaquixaguana | S6 | La expedición al oeste y la segunda batalla | Secuencia controlada |
+| Epílogo político | S1 | La borla, la negativa de Viracocha, la disputa con Inca Urco | Escenas de mundo |
 
-Las cinco fases son una **hipótesis derivada del relato histórico**, no una decisión cerrada: se confirman o se recortan al rediseñar la campaña. Las secuencias controladas se reservan para clímax, asambleas, batallas y sueños.
+Los nombres de los lugares de la segunda batalla siguen la versión elegida; las demás se citan como versiones. Las secuencias controladas se reservan para los clímax; el resto del mundo sigue siendo explorable y habitable.
 
 ## 3.6. Consideraciones históricas
 
-La guerra chanca y la defensa del Cusco están narradas por Betanzos, Cieza de León y Sarmiento de Gamboa, entre otros, con versiones divergentes. La fecha de 1438 procede de cronologías derivadas de crónicas y es discutida. La escala y unidad política chanca son objeto de debate arqueológico (Bauer, Kellett y Aráoz Silva). Los pururaucas se cuentan como creencia de los personajes, nunca como hecho ni como mecánica.
+La guerra chanca y la defensa del Cusco están narradas por Betanzos, Cieza de León y Sarmiento de Gamboa, entre otros, con versiones divergentes. Betanzos y Cieza sitúan el campamento chanca en **Carmenca**, sobre la ciudad, y describen fosos con piedra y púas de palma en las entradas; Sarmiento habla de **Cusi-pampa** y del arrabal de **Chocos-chacona**, con ataque por cuatro direcciones. La fecha de 1438 procede de cronologías derivadas y es discutida. La escala chanca es objeto de debate arqueológico (Bauer, Kellett y Aráoz Silva). Los pururaucas se cuentan como creencia de los personajes.
 
 La campaña no cambia el resultado histórico. El protagonista sostiene su parte, la pierde o la conserva, y paga el precio.
 
 ## 3.7. Qué queda de la versión anterior
 
-Nada de la trama inventada: ni el protagonista, ni su familia, ni el elenco ficticio, ni las misiones, ni las escenas. Se retiraron el 2026-11-20 y solo viven en el historial de git.
+Nada de la trama inventada: ni el protagonista anterior, ni su familia, ni el elenco ficticio, ni las misiones, ni las escenas. Se retiraron el 2026-11-20 y solo viven en el historial de git.
 
-Quedan el contexto histórico, el territorio del [dossier de mundo](../campaigns/01_pachacutec/documentation/mundo/README.md) y las fichas del registro histórico.
+Quedan el contexto histórico, el territorio del [dossier de mundo](../campaigns/01_pachacutec/documentation/mundo/README.md) y las fichas del registro histórico, que se amplían con PCH-039 y PCH-040.
 
 # 4. Campaña II — La llama de la rebelión
 

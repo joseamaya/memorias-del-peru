@@ -127,28 +127,28 @@
 
 ## Fase 3 — Vertical slice de mundo abierto
 
-**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** en preparación desde el 2026-11-20, con orden revisado. El responsable decidió retirar la campaña lineal y repensar la campaña desde el contexto histórico, así que F3 avanza en cuatro pasos: **(1)** retirar la implementación lineal y la trama inventada; **(2)** revisar el contexto histórico con las fichas y expedientes; **(3)** repensar la campaña —protagonista, comunidad, arranque y fases— desde ese contexto; **(4)** escribir la ficha de alcance de la slice con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. No se construye contenido de la slice hasta que la ficha esté aprobada.
+**Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** en preparación desde el 2026-11-20. Pasos del arranque de F3: **(1) hecho:** retirar la implementación lineal y su trama; **(2) hecho:** revisar el contexto histórico (fichas PCH-039 y PCH-040 y expediente); **(3) hecho:** repensar la campaña —protagonista del arrabal cusqueño, cuatro fases y epílogo—; **(4) siguiente:** escribir la ficha de alcance de la slice con territorio, contenido, sistemas nuevos (día/noche, descanso, interiores), presupuesto y orden de trabajo. No se construye contenido de la slice hasta que la ficha esté aprobada.
 
 **Objetivo:** demostrar que el mundo se puede **habitar y jugar**, no solo recorrer.
 
-**Contenido mínimo:**
+**Contenido mínimo:** la slice demuestra la **ciudad habitable y la defensa** (fases 1 y 2 de la campaña).
 
-- 400–500 × 400–500 m de terreno natural.
-- Una comunidad con 8–12 casas, plaza, 3 interiores transitables y límite natural.
-- 20–30 NPC, 8 nombrados, rutinas de mañana/tarde/noche.
-- Caminos, vegetación, manantial y terrazas.
-- 1 misión principal de 3 etapas con consecuencia.
-- 2 actividades secundarias con sentido económico o social.
+- Sector S1 Cusco jugable como hub: plaza, ayllus, arrabal de Chocos-chacona y límite natural.
+- 8–12 casas habitables, 3 interiores transitables y el arrabal como barrio reconocible.
+- 20–30 NPC, 8 nombrados, rutinas de mañana, tarde y noche.
+- Carmenca al oeste, con los accesos y las defensas documentadas (fosos, púas).
+- 1 misión principal de 3 etapas: la ciudad que se queda y el día de Carmenca.
+- 2 actividades secundarias con sentido social o económico.
 - 1 descubrimiento no marcado.
 - Ciclo día/noche y descanso.
-- Persistencia de un cambio del jugador (corral, acequia, puente o casa).
+- Persistencia de un cambio del jugador en la ciudad.
 - Guardado/carga completo.
 
 **Criterios de aceptación:**
 
 - [ ] Se cumplen todos los criterios de la [ficha de F0](fases/F0-redefinicion-mundo-abierto.md) §5.
 - [ ] 30–45 min de juego real en una pasada humana, con contenido no principal.
-- [ ] El jugador puede volver a la comunidad sin marcador y describir un lugar descubierto.
+- [ ] El jugador puede volver al arrabal sin marcador y describir un lugar descubierto.
 - [ ] Rendimiento y estabilidad dentro del presupuesto.
 - [ ] Cero errores y advertencias de GDScript procedentes de `res://`.
 - [ ] Acta de revisión con decisión: continuar, recortar o replantear.

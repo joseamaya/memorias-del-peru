@@ -9,7 +9,7 @@
 | ID | Ruta | Recorrido | Uso | Riesgo | Fase |
 |---|---|---|---|---|---|
 | R1 | Camino principal | Llacta → terrazas → Cusco | Comercio, mensajes, peregrinación | Patrullas en guerra | 0–4 |
-| R2 | Ruta del paso | Llacta → quebrada → paso → frontera | Viaje de la comitiva, exploración | Clima, caída, emboscada | 0–4 |
+| R2 | Ruta del paso | Llacta → quebrada → paso → frontera | Camino de la embajada y de la expedición al oeste | Clima, caída, encuentro | 0–4 |
 | R3 | Ruta del río | Llacta → vado → acequia → Cusco | Atajo estacional | Crecida, barro | 0–3 |
 | R4 | Sendero de pastores | Cresta → cueva → mirador | Descubrimiento, recursos | Pendiente, desorientación | 0–4 |
 | R5 | Ruta oculta | Quebrada → tambo → frontera | Sigilo, escape, contrabando | Se descubre; no se marca | 1–3 |
