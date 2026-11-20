@@ -98,7 +98,7 @@ Validación histórica, visual, de rendimiento y de guardado
 
 **POI y descubrimiento (F2.7).** Cada POI es un recurso `PoiDefinition` con posición, radio, disparador y rango de fase; `DiscoveryService` los descubre y alimenta diario y mapa sin conocer IDs concretos.
 
-**Rutas y navmesh (F2.3).** Las rutas viven en `CampaignRoute` y se dibujan como cintas de blockout; el navmesh se hornea por sector con `TerrainNavmesh` y se une con `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa ya sincronizó las regiones. Cada borde de la cinta se muestrea con `get_surface_height` (la superficie interpolada, no el dato de la heightmap), con paso de 1,5 m; `route_network_check` comprueba que ningún vértice flote más de 0,30 m.
+**Rutas y navmesh (F2.3).** Las rutas viven en `CampaignRoute` y se dibujan como cintas de blockout; el navmesh se hornea por sector con `TerrainNavmesh` y se une con `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa ya sincronizó las regiones. Cada borde de la cinta se muestrea con `get_surface_height` (la superficie interpolada, no el dato de la heightmap), con paso de 1,5 m; `route_network_check` comprueba que ningún vértice flote más de 0,30 m. `CampaignRoute.surface` distingue `path` de `water`: R7 es una acequia azul que termina en el río y no entra a Cusco; R1 y R3 son los dos caminos de la ciudad.
 
 **Sectores transmitidos (F2.2).** `region_world.tscn` mantiene el terreno regional y transmite seis escenas de sector con `SectorStreamer`; cada escena lleva su transformación mundial y su marcador de blockout. No hay pantallas de carga exteriores: el terreno no se descarga.
 

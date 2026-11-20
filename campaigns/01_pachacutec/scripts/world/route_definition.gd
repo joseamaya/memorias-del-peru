@@ -9,6 +9,8 @@ extends Resource
 @export var id: StringName = &""
 @export var display_name: String = ""
 @export var classification: String = "GN"
+## `path` para caminos; `water` para acequias y canales.
+@export var surface: StringName = &"path"
 @export var width: float = 3.0
 @export var points: PackedVector3Array = PackedVector3Array()
 

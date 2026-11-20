@@ -71,7 +71,7 @@ Reglas:
 4. **Alrededor de la plaza = vida de la llacta:** manantial, telar, corral, huerto y fogón.
 5. **`H`:** muestra la etiqueta del POI más cercano. Úsalo para confirmar dónde estás.
 6. **`T`:** vista cenital de revisión. Sirve para orientarte, no para caminar; pulsa otra vez para volver a la vista normal.
-7. **Río y acequias:** el río es la cinta azul **ancha** que cruza el valle; las acequias son canales **estrechos** junto a la llacta y el Cusco. Si ves una línea azul fina, es una acequia; el río es el que tiene orilla de tierra.
+7. **Río y acequias:** el río es la cinta azul **ancha** que cruza el valle; las acequias son canales **estrechos** junto a la llacta y el Cusco. Si ves una línea azul fina, es una acequia; el río es el que tiene orilla de tierra. La **acequia madre (R7)** termina en el río y no entra a Cusco: una cinta azul que se corta antes de la ciudad es correcta. Solo R1 y R3 llegan a la plaza del Cusco.
 8. **Marcadores de revisión:** los conos verdes solo existen en el modo de revisión (`first_person = false`). En la partida a pie no deben verse ni tapar el camino.
 9. **Terrazas y plataformas:** si una terraza tiene cara vertical, no se atraviesa. La plataforma del Coricancha se sube por su rampa; el borde no se cruza.
 

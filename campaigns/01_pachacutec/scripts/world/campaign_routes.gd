@@ -94,9 +94,12 @@ func get_navmesh_path(from: Vector3, to: Vector3) -> PackedVector3Array:
 
 
 func _build_ribbons() -> void:
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.albedo_color = Color(0.46, 0.38, 0.27)
-	material.roughness = 1.0
+	var path_material: StandardMaterial3D = StandardMaterial3D.new()
+	path_material.albedo_color = Color(0.46, 0.38, 0.27)
+	path_material.roughness = 1.0
+	var water_material: StandardMaterial3D = StandardMaterial3D.new()
+	water_material.albedo_color = Color(0.22, 0.42, 0.55)
+	water_material.roughness = 0.85
 	for route: CampaignRoute in _routes:
 		var mesh: ArrayMesh = _ribbon_mesh(route)
 		if mesh == null:
@@ -104,8 +107,12 @@ func _build_ribbons() -> void:
 		var instance: MeshInstance3D = MeshInstance3D.new()
 		instance.name = "Route_%s" % route.id
 		instance.mesh = mesh
-		instance.material_override = material
+		instance.material_override = (
+			water_material if route.surface == &"water" else path_material
+		)
 		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if route.surface == &"water":
+			instance.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 		add_child(instance)
 		_meshes.append(instance)
 

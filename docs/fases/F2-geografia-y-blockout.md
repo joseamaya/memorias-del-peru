@@ -104,14 +104,14 @@ La captura queda en `build/evidencia/region_streaming.png`.
 | R4 Sendero de pastores | Quebrada → cueva → mirador | 2,0 m |
 | R5 Ruta oculta | Quebrada → tambo → frontera | 2,0 m |
 | R6 Callejones del Cusco | Plaza → ayllus → talleres | 2,0 m |
-| R7 Acequia madre | Manantial → terrazas → río | 1,5 m |
+| R7 Acequia madre | Manantial → terrazas → río (no entra a Cusco) | 1,5 m |
 | R8 Camino de la frontera | Paso → campamento → puesto | 2,0 m |
 
-**Dibujo:** una cinta de blockout de 3 m de muestreo por ruta, apoyada en el terreno y separada 0,8 m para no recortarse con la malla de 4 m.
+**Dibujo:** una cinta de blockout de 3 m de muestreo por ruta, apoyada en el terreno. R7 se declara `surface = water` y se pinta como acequia azul; R1 y R3 son los dos caminos marrones que llegan a Cusco.
 
 **Navmesh:** seis regiones horneadas con `TerrainNavmesh` sobre los límites de cada sector (paso de 6 m), unidas con cinco `NavigationLink3D` en los cruces. Los enlaces se crean cuando el mapa sincronizó las regiones y sus extremos se proyectan al navmesh.
 
-**Comprobación:** `route_network_check` valida 8 rutas, 8 cintas, 6 regiones, rutas continuas llacta–Cusco (~1,04 km) y llacta–frontera (~2,0 km), y que ningún vértice de las cintas flota más de 0,30 m sobre la superficie del terreno. Salida: `ROUTES_OK routes=8 regions=6`.
+**Comprobación:** `route_network_check` valida 8 rutas, 8 cintas, 6 regiones, rutas continuas llacta–Cusco (~1,04 km) y llacta–frontera (~2,0 km), que R1/R3 terminan en Cusco, que R7 es agua y termina antes, y que ningún vértice de las cintas flota más de 0,30 m sobre la superficie del terreno. Salida: `ROUTES_OK routes=8 regions=6`.
 
 **Medición:** horneado completo de las seis regiones en ~3,4 s en la referencia con carga alta. Es coste de blockout; si se convierte en ruta de carga, se pregenerará o se reducirá el paso.
 
