@@ -5,11 +5,13 @@ extends SceneTree
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const SETTLE_FRAMES: int = 90
 const WALK_FRAMES: int = 180
-## La plaza está a unos 55 m del punto de aparición. La segunda marcha debe
-## llegar a su borde sin quedar bloqueada por una casa ni por la losa.
-const PLAZA_WALK_FRAMES: int = 1200
-const PLAZA_CENTER: Vector3 = Vector3(300.0, 0.0, 0.0)
-const MAX_PLAZA_DISTANCE: float = 20.0
+## La segunda marcha comprueba que el jugador sale del arrabal hacia la
+## ciudad: en 600 fotogramas debe avanzar y acercarse a la plaza del Cusco.
+const CITY_WALK_FRAMES: int = 600
+const CUSCO_PLAZA: Vector3 = Vector3(1200.0, 0.0, 400.0)
+const ARRABAL_SPAWN: Vector3 = Vector3(1088.0, 0.0, 294.0)
+const MAX_SPAWN_DISTANCE: float = 25.0
+const MIN_CITY_WALK: float = 20.0
 const MIN_WALK_METERS: float = 5.0
 const MAX_GROUND_GAP: float = 2.5
 const RESPAWN_TOLERANCE: float = 3.0
@@ -59,42 +61,35 @@ func _run() -> void:
 	ok = ok and walked >= MIN_WALK_METERS
 	ok = ok and absf(end.y - end_ground) <= MAX_GROUND_GAP
 
-	# Segunda marcha: el camino de entrada no puede quedar tapado por una casa
-	# ni la losa de la plaza puede encerrar la cámara.
+	# El jugador aparece en el arrabal de Chocos-chacona y puede salir hacia la
+	# ciudad: la marcha gana distancia a la plaza y no se queda clavada.
+	var arrabal: Vector2 = Vector2(ARRABAL_SPAWN.x, ARRABAL_SPAWN.z)
+	var spawn_distance: float = Vector2(start.x - arrabal.x, start.z - arrabal.y).length()
+	ok = ok and spawn_distance <= MAX_SPAWN_DISTANCE
+
 	Input.action_press("move_forward")
-	for _i: int in PLAZA_WALK_FRAMES:
+	for _i: int in CITY_WALK_FRAMES:
 		await physics_frame
 	Input.action_release("move_forward")
 	await physics_frame
-	var plaza_end: Vector3 = player.global_position
-	var plaza_distance: float = (
-		Vector2(plaza_end.x - PLAZA_CENTER.x, plaza_end.z - PLAZA_CENTER.z).length()
+	var city_end: Vector3 = player.global_position
+	var city_walk: float = Vector2(city_end.x - end.x, city_end.z - end.z).length()
+	var plaza_before: float = Vector2(end.x - CUSCO_PLAZA.x, end.z - CUSCO_PLAZA.z).length()
+	var plaza_after: float = (
+		Vector2(city_end.x - CUSCO_PLAZA.x, city_end.z - CUSCO_PLAZA.z).length()
 	)
-	var plaza_ground: float = region.height_at(plaza_end.x, plaza_end.z)
-	ok = ok and plaza_distance <= MAX_PLAZA_DISTANCE
-	ok = ok and absf(plaza_end.y - plaza_ground) <= MAX_GROUND_GAP
+	var city_ground: float = region.height_at(city_end.x, city_end.z)
+	ok = ok and city_walk >= MIN_CITY_WALK
+	ok = ok and plaza_after < plaza_before
+	ok = ok and absf(city_end.y - city_ground) <= MAX_GROUND_GAP
 	ok = ok and player.is_on_floor()
-
-	# La plaza no puede quedar por encima del jugador: con un disco plano a la
-	# altura del centro, el borde cuesta abajo flotaba y se pasaba por debajo.
-	var plaza_gap: float = 0.0
-	var llacta: LlactaBlockout = (
-		world.get_streamer().get_loaded_node(&"s3_llacta") as LlactaBlockout
-	)
-	if llacta == null:
-		ok = false
-	else:
-		var plaza_height: float = llacta.get_plaza_height_at(Vector2(plaza_end.x, plaza_end.z))
-		if not is_nan(plaza_height):
-			plaza_gap = plaza_end.y - plaza_height
-			ok = ok and plaza_gap >= -0.75
 
 	var target: Node3D = world.get_node("StreamTarget") as Node3D
 	if target == null:
 		ok = false
 	else:
 		var follow: Vector2 = Vector2(
-			target.global_position.x - plaza_end.x, target.global_position.z - plaza_end.z
+			target.global_position.x - city_end.x, target.global_position.z - city_end.z
 		)
 		ok = ok and follow.length() < 2.0
 
@@ -109,7 +104,7 @@ func _run() -> void:
 			break
 	ok = ok and marker != null and _marker_hidden(marker)
 
-	player.global_position = Vector3(plaza_end.x, plaza_end.y - 400.0, plaza_end.z)
+	player.global_position = Vector3(city_end.x, city_end.y - 400.0, city_end.z)
 	for _i: int in 5:
 		await physics_frame
 	await process_frame
@@ -128,10 +123,12 @@ func _run() -> void:
 		snappedf(walked, 0.1),
 		" ground_gap=",
 		snappedf(end.y - end_ground, 0.01),
-		" plaza_distance=",
-		snappedf(plaza_distance, 0.1),
-		" plaza_gap=",
-		snappedf(plaza_gap, 0.01)
+		" spawn_distance=",
+		snappedf(spawn_distance, 0.1),
+		" city_walk=",
+		snappedf(city_walk, 0.1),
+		" plaza_after=",
+		snappedf(plaza_after, 0.1)
 	)
 	world.queue_free()
 	await process_frame
