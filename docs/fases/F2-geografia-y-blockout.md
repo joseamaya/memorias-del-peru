@@ -15,7 +15,7 @@
 | 2.4 | S3 Llacta de Rumi | **Base implementada** | 12–18 casas, plaza, manantial, telar, corral y acequia en blockout | `llacta_blockout_check`; 17 casas, 9 POI, 120 draw calls |
 | 2.5 | S1 Cusco preimperial | **Base implementada** | Plaza, recinto, ayllus, mercado y talleres en blockout | `cusco_blockout_check`; 28 casas, 6 POI, 247 draw calls |
 | 2.6 | S4–S6 | **Base implementada** | Quebrada, paso y frontera con POI y límites naturales | `frontier_sectors_check`; 5+3+5 POI y presupuestos |
-| 2.7 | POI y descubrimiento | Pendiente | 30 POI con ID, función, clasificación y disparador | `DiscoveryRegistry` |
+| 2.7 | POI y descubrimiento | **Base implementada** | 30 POI con ID, función, clasificación y disparador | `poi_discovery_check`; 30 POI, diario, mapa y guardado |
 | 2.8 | Recorrido completo | Pendiente | 20–30 min a pie sin bloqueos ni pantallas exteriores | Prueba humana y capturas |
 
 ## 2. F2.1 — Heightmap regional
@@ -228,6 +228,33 @@ godot --path . --resolution 1280x720 \
 
 Las capturas quedan en `build/evidencia/quebrada_blockout.png`, `paso_blockout.png` y `frontera_blockout.png`.
 
+## 2.7. F2.7 — POI y descubrimiento
+
+**Datos:** 30 `PoiDefinition` en `campaigns/01_pachacutec/data/pois/`, uno por POI del catálogo. Cada uno declara ID, nombre, descripción, sector, clasificación, posición, radio, disparador y rango de fase.
+
+**Disparadores:**
+
+- `START`: casa de Rumi y plaza de la llacta se conocen al empezar.
+- `PROXIMITY`: el resto se descubre al acercarse.
+- `DIALOGUE`: casa del curaca y casa de un ayllu, reservados para conversación.
+- `EVENT`: campo de batalla, reservado para la guerra.
+
+**Servicio:** `DiscoveryService` carga el catálogo, consulta `WorldState`, marca los descubrimientos y expone:
+
+- `get_journal()`: entradas de diario solo de lo descubierto.
+- `get_map_points()`: puntos de mapa solo de lo descubierto.
+- `poi_discovered`: señal para UI, audio o misiones.
+
+**Fases:** cada POI declara `phase_min` y `phase_max`. Casa de un ayllu y depósito del Cusco empiezan en la fase 1; campamento chanca vive entre 2 y 3; campo de batalla, entre 3 y 4.
+
+**Comprobación:** `poi_discovery_check` valida 30 POI, dos de inicio, descubrimiento por proximidad en manantial, plaza del Cusco y mirador, bloqueo por fase del campamento, diario/mapa y persistencia en guardado. Salida: `POI_OK total=30 discovered=6 start=2`.
+
+**Pendiente:** interfaz de diario y mapa, textos definitivos, sonido de descubrimiento y disparadores por diálogo/evento conectados a misiones.
+
+```bash
+godot --headless --path . --script res://tests/poi_discovery_check.gd
+```
+
 ## 3. Orden de trabajo
 
 1. **Hecho:** F2.1 base (heightmap regional de blockout).
@@ -236,7 +263,8 @@ Las capturas quedan en `build/evidencia/quebrada_blockout.png`, `paso_blockout.p
 4. **Hecho:** F2.4 base (blockout de S3 con 17 casas y nueve POI).
 5. **Hecho:** F2.5 base (blockout de S1 con 28 casas, Coricancha, mercado y talleres).
 6. **Hecho:** F2.6 base (S4 quebrada, S5 paso y S6 frontera).
-7. **Siguiente:** F2.7 POI y descubrimiento.
+7. **Hecho:** F2.7 base (30 POI, descubrimiento, diario, mapa y persistencia).
+8. **Siguiente:** F2.8 recorrido completo de 20–30 min.
 4. F2.7 POI y descubrimiento.
 5. F2.8 recorrido completo y cierre.
 

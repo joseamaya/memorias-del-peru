@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/world/poi_definition.gd" id="1_poi"]
+
+[resource]
+script = ExtResource("1_poi")
+id = &"poi_28"
+display_name = "Campamento chanca"
+description = "Campamento de tiendas, fuegos y empalizada."
+sector = &"s6_frontera"
+classification = "GN"
+trigger = 1
+radius = 18
+position = Vector3(-1605, 0, 30)
+phase_min = 2
+phase_max = 3

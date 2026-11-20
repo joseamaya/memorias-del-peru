@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/world/poi_definition.gd" id="1_poi"]
+
+[resource]
+script = ExtResource("1_poi")
+id = &"poi_24"
+display_name = "Refugio de pirca"
+description = "Refugio de piedra y techo para cruzar el paso."
+sector = &"s5_paso"
+classification = "GN"
+trigger = 1
+radius = 12
+position = Vector3(-1295, 0, 105)
+phase_min = 0
+phase_max = 4

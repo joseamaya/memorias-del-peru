@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://campaigns/01_pachacutec/scenes/world/region.tscn" id="1_region"]
 [ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/region_world.gd" id="2_world"]
 [ext_resource type="Script" path="res://core/world/sector_streamer.gd" id="3_streamer"]
 [ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/campaign_routes.gd" id="4_routes"]
+[ext_resource type="Script" path="res://core/world/discovery_service.gd" id="5_discovery"]
 
 [node name="RegionWorld" type="Node3D"]
 script = ExtResource("2_world")
@@ -22,3 +23,6 @@ current = true
 
 [node name="Routes" type="Node3D" parent="."]
 script = ExtResource("4_routes")
+
+[node name="Discovery" type="Node" parent="."]
+script = ExtResource("5_discovery")

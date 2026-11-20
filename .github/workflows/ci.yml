@@ -197,6 +197,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/frontier_sectors_check.gd 2>&1 | tee /tmp/frontera.log
           python3 tools/check_output.py /tmp/frontera.log
 
+      - name: POI y descubrimiento
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/poi_discovery_check.gd 2>&1 | tee /tmp/pois.log
+          python3 tools/check_output.py /tmp/pois.log
+
       - name: LOD de 60 NPC
         run: |
           set -o pipefail

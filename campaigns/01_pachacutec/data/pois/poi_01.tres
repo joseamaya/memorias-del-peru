@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/world/poi_definition.gd" id="1_poi"]
+
+[resource]
+script = ExtResource("1_poi")
+id = &"poi_01"
+display_name = "Casa de Rumi"
+description = "Hogar de Rumi y su familia; punto de descanso y guardado."
+sector = &"s3_llacta"
+classification = "GN"
+trigger = 0
+radius = 25
+position = Vector3(336, 0, 0)
+phase_min = 0
+phase_max = 4

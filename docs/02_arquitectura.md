@@ -160,7 +160,8 @@ PlayerFPS (CharacterBody3D)
 | `NpcSimActor` | Cuerpo y animación de marcador de un NPC activo | `setup`, `set_lod`, `advance` |
 | `QuestDirector` | Estado de misiones | `quest_started`, `stage_changed`, `quest_completed` |
 | `WorldEventDirector` | Disparadores y secuencias | `event_started`, `event_finished` |
-| `DiscoveryRegistry` | POI y mapa del diario | `discovered` |
+| `DiscoveryService` | Descubre POI por proximidad, diálogo o evento y alimenta diario y mapa | `poi_discovered` |
+| `PoiDefinition` | ID, nombre, sector, clasificación, posición, disparador y fases de un POI | `is_valid`, `is_available` |
 
 Reglas:
 

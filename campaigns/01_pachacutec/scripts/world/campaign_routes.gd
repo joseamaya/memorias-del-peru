@@ -200,6 +200,8 @@ func _build_links_async() -> void:
 			continue
 		if NavigationServer3D.map_get_regions(map).size() < _regions.size():
 			continue
+		if NavigationServer3D.map_get_iteration_id(map) == 0:
+			continue
 		if _create_links(map) == LINK_POINTS.size() / 2:
 			return
 
