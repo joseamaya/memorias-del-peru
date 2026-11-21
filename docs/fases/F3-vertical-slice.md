@@ -183,6 +183,15 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
 
 **Criterio:** la defensa se puede completar sin bloqueos; perder reinicia la oleada, no la partida; el presupuesto se mantiene.
 
+**Implementado (2026-11-21) — combate del jugador (3.9.a):**
+
+- `PlayerCombat` (Core): envuelve `CharacterState`, `Combatant` y `CombatLoadout` y añade lo que falta: entrada del jugador, rayo hacia el enemigo, arma en pantalla, aviso de munición y daño con parry o bloqueo. Desarmado no hay arma ni golpes; la batalla lo arma.
+- Armas: honda (a distancia, 12 piedras), porra (cuerpo a cuerpo) y escudo (bloqueo y parry). Cambio con 1, 2 y 3; ataque con el botón de ataque y carga por pulsación.
+- `ChancaWarrior` (campaña): cápsula de bloqueo con `EnemyCombatant`, se acerca, ataca con porra y cae. Sin ejército simulado.
+- El HUD recibe salud, estallido de daño y munición sin conocer la campaña.
+- Evidencia: `combat_check` (desarme, golpe que quita salud, golpe recibido, escudo que absorbe 6 de 20 y honda que gasta piedra) y captura `combate_chanca.png`.
+- **Falta** para cerrar 3.9: las tres oleadas, los aliados, el estandarte, la derrota que reinicia la oleada y el cierre de la misión (3.9.b).
+
 ## 11. F3.10 — Cierre de la slice
 
 - Pasada humana de 30–45 min con contenido no principal.

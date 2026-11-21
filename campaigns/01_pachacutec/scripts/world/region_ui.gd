@@ -16,6 +16,7 @@ var hud: PlayerHud = null
 var journal: Journal = null
 var dialogue: DialoguePresenter = null
 var player: PlayerFPS = null
+var combat: PlayerCombat = null
 
 
 ## Monta HUD, diario y presentador. Debe llamarse con el jugador ya creado.
@@ -36,6 +37,10 @@ func setup(player_node: PlayerFPS) -> void:
 	layer.add_child(hud)
 	hud.bind(player, null)
 	hud.journal_closed.connect(_on_journal_closed)
+	combat = PlayerCombat.new()
+	combat.name = "Combat"
+	player.add_child(combat)
+	combat.setup(player, hud)
 	journal = Journal.new()
 	journal.name = "Journal"
 	add_child(journal)
