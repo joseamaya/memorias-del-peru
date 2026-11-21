@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/world/poi_definition.gd" id="1_poi"]
+
+[resource]
+script = ExtResource("1_poi")
+id = &"poi_31"
+display_name = "Mirador de Carmenca"
+description = "Terraza sobre el camino del oeste: desde aquí se ven las tiendas chancas."
+sector = &"s2_afueras"
+classification = "N"
+trigger = 1
+radius = 14.0
+position = Vector3(825, 0, 325)
+phase_min = 0
+phase_max = 4

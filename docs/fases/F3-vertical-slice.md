@@ -136,7 +136,9 @@ Tres etapas, sin sistema genérico de misiones: recursos de misión y banderas e
 - **El turno del agua:** al entregar el agua, la molendera plantea el reparto entre la molienda y la chacra. Tres desenlaces (molienda, chacra, turnos) dejan su bandera, su contador de reputación (`rep_molendera`, `rep_chacra`) y una **memoria propia** en el diario con clasificación. La molendera y el agricultor cambian de conversación después.
 - **La manta:** al entregar la lana, la tejedora pide una manta para quien salga a la defensa. El telar del taller —los tres postes que ya dibujaba el blockout— la teje; la manta queda colgada y visible. En 3.9 reducirá el daño recibido.
 - Evidencia: `side_activities_check` (dos cadenas, negativo del telar sin encargo, diario y guardado/carga) y capturas `secundaria_telar.png` y `secundaria_diario.png`.
-- **Falta** el descubrimiento sin marcador (mirador sobre Carmenca), que se entrega en 3.6.b con su lugar y su campamento.
+- **Descubrimiento sin marcador:** el **mirador de Carmenca**, en S2, marcado por un montón de piedras (apacheta) y con el campamento chanca a la vista. El POI-31 se descubre por proximidad, sin etiqueta ni marcador, y al descubrirlo el diario recibe su memoria y el HUD avisa una sola vez.
+- Evidencia de 3.6.b: `mirador_check` (descubrimiento por radio, negativo antes de llegar, campamento de 12 tiendas y carga sin duplicar la memoria) y captura `mirador_carmenca.png`.
+- El campamento son tiendas de bloqueo: en 3.9 se poblará para la batalla. La apacheta entra en la lista de elementos apilados a propósito de la auditoría de flotantes.
 
 ## 8. F3.7 — Descanso y guardado
 

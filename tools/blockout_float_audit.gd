@@ -34,6 +34,7 @@ const INTENTIONAL_KINDS: Array[String] = [
 	"PuestoTecho",
 	"Casa",
 	"TelarViga",
+	"Apacheta",
 ]
 ## Marcadores de revisión y agua: no se comparan contra el fondo del cauce.
 const SKIP_KINDS: Array[String] = ["SectorMarker", "Rio", "Rampa"]
@@ -143,7 +144,7 @@ func _audit_node(
 		if kind in SKIP_KINDS:
 			continue
 		if kind in INTENTIONAL_KINDS:
-			if kind != "Canopia" and not _has_support(instance, instances):
+			if kind != "Canopia" and kind != "Apacheta" and not _has_support(instance, instances):
 				floating += 1
 				lines.append(
 					(
