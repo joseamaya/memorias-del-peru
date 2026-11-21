@@ -6,6 +6,18 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.3: la antorcha de mano
+
+**Decisión:** el jugador lleva una antorcha que se enciende sola al caer el sol. Cierra el pendiente anotado el 2026-11-20: de noche no había ninguna fuente de luz y la etapa 2 de la misión ya pide no dormir.
+
+| Cambio | Detalle |
+|---|---|
+| Antorcha | `PlayerLantern` (Core) bajo la cámara: palo, cabeza de fibra y llama; puño del maniquí sin antebrazo, porque el antebrazo de 1,8 m se comía media pantalla. |
+| Luz | `OmniLight3D` de 10 m, 1,55 de energía, cálida y **sin sombras**. Parpadeo del 7 %. |
+| Encendido | `DayNightCycle.daylight_at(minute)` es ahora la única fórmula de luz diurna: la usan el sol y la antorcha. Nivel 0 con sol y subida gradual por debajo de 0,22 de luz. |
+| Pruebas | `lantern_check`: apagada a mediodía, encendida a las 22:00, sin saltos al atardecer y apagada otra vez al volver el día. |
+| Histórico | PCH-042, clasificación R: la tea de mano no tiene cita propia; se apoya en el fuego doméstico de PCH-027 y PCH-007. |
+
 ## 2026-11-21 — F3.5.b: la misión principal
 
 **Decisión:** la misión de la ciudad se construye con recursos de etapa y banderas de `WorldState`, sin motor genérico, como pide la ficha.

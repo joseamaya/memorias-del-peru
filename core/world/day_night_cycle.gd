@@ -92,12 +92,19 @@ func _apply_from_clock() -> void:
 	_apply(minute)
 
 
+## Luz diurna (0–1) de una hora del día. La antorcha del jugador la usa para
+## encenderse sola al caer el sol, sin repetir la fórmula del sol.
+static func daylight_at(minute: float) -> float:
+	var normalized: float = fposmod(minute, DAY_MINUTES) / DAY_MINUTES
+	return clampf(sin((normalized - SUNRISE_HOUR / 24.0) * TAU), 0.0, 1.0)
+
+
 func _apply(minute: float) -> void:
 	var normalized: float = fposmod(minute, DAY_MINUTES) / DAY_MINUTES
 	# A las 6:00 el sol sale por el horizonte; a las 12:00 está en lo alto.
 	var angle: float = (normalized - SUNRISE_HOUR / 24.0) * TAU
 	var elevation: float = sin(angle) * MAX_ELEVATION
-	var daylight: float = clampf(sin(angle), 0.0, 1.0)
+	var daylight: float = daylight_at(minute)
 	var dusk: float = clampf(1.0 - absf(sin(angle)) * 4.0, 0.0, 1.0)
 	_apply_sun(elevation, daylight)
 	_apply_environment(daylight, dusk)

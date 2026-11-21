@@ -537,3 +537,16 @@ Fichas del mobiliario doméstico que la tarea 3.2 dejó sin documento. Cierran e
 - Discrepancias entre fuentes: Ankasmarka admite que las plataformas pudieron servir también de almacén o de base de trabajo; el juego elige el uso como lecho porque la fuente lo documenta así en la misma huella. Marcus es de la costa; se usa como evidencia de que el banco-lecho existe en época inca, no como modelo formal para la sierra.
 - Notas de representación: poyo de piedra de **0,32 m**, dentro del rango documentado (0,30–0,80 m), con estera de totora y manta doblada de lana de camélido. La estera y la manta son **R**: no hay cita directa para su disposición concreta; se infieren del equipo doméstico andino y de los textiles de PCH-010. Sin patas, sin colchón y sin cabecera de madera: la cama europea es anacrónica. En la casa del curaca la manta es de otro color, sin que eso implique un rango documentado.
 - Estado de verificación: **pendiente de firma del responsable** (A / R).
+
+---
+
+## La luz de la noche (2026-11-21)
+
+### PCH-042 — La antorcha de mano
+- Tipo: objeto / iluminación doméstica
+- Clasificación: R (forma concreta) sobre H/A (uso del fuego)
+- Uso en el juego: `core/player/player_lantern.gd`; alumbra al jugador entre el atardecer y el amanecer.
+- Fuentes: se apoya en PCH-027 (fuego comunal, R de ambiente) y PCH-007 (vivienda de piedra y barro), que documentan el fuego doméstico. No hay cita para una tea de mano concreta en el arrabal de 1438.
+- Discrepancias entre fuentes: —
+- Notas de representación: palo de madera con cabeza de fibra y una llama baja; se enciende al caer el sol y se apaga de día. Se descartan la lámpara de aceite y la vela: no hay documento para esas formas en este contexto y la tea es la solución más simple que no introduce tecnología posterior. La luz no proyecta sombras por rendimiento, no por criterio histórico.
+- Estado de verificación: **pendiente de firma del responsable** (R).
