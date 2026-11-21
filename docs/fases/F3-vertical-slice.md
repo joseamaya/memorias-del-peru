@@ -19,7 +19,7 @@
 | 3.7 | Descanso y guardado | **Base implementada; falta prueba humana** | Dormir avanza el día; guardar/cargar conserva hora, NPC, misión e inventario | `city_save_round_trip`; día 4 a las 8:00, 8 NPC y posición a 0,1 m |
 | 3.8 | Preparación de la defensa | **Base implementada; falta prueba humana** | Fosos y púas construibles, persistentes y leídos por la batalla | `defense_works_check` |
 | 3.9 | Carmenca | **Base implementada; falta prueba humana** | Tres oleadas, aliados y estandarte como objetivo; sin bloqueos | `carmenca_check` |
-| 3.10 | Cierre de la slice | Prevista | 30–45 min jugados, presupuesto medido y acta del responsable | Protocolo y capturas |
+| 3.10 | Cierre de la slice | **Protocolo y medición listos; falta la pasada humana y la firma** | 30–45 min jugados, presupuesto medido y acta del responsable | [Protocolo](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md), [acta](F3-acta-de-cierre.md), `measure_battle` |
 
 ## 2. F3.1 — Ciudad habitable
 
@@ -209,6 +209,16 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
 - Medición por sector y perfil (Medio y Bajo).
 - Acta del responsable con decisión: continuar, recortar o replantear.
 
+**Preparado (2026-11-21):**
+
+- **Protocolo humano:** [prueba_vertical_slice.md](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md), ocho bloques cronometrados de la mañana del arrabal al estandarte, con registro de incidencias. Falta la pasada del responsable.
+- **Medición F3:** S1 y la batalla de Carmenca, perfil Medio y Bajo, tres pasadas por caso, 1920 × 1080 y vsync libre. Nueva escena `tests/scenes/measure_battle.tscn`, que fuerza la oleada de ocho chancas con los seis aliados y muestrea 300 fotogramas.
+  - S1: **66,4 FPS** de mediana en Medio y **61,0** en Bajo; 253 draw calls y 185 MB.
+  - Batalla: **66,7 FPS** de mediana en Medio y **61,1** en Bajo; 248 draw calls, 673.578 primitivas y 190 MB; peor fotograma de 24,0 ms.
+  - Todo dentro del presupuesto (§13). Detalle y observaciones en el [acta](F3-acta-de-cierre.md) §2.
+- **Acta:** [F3-acta-de-cierre.md](F3-acta-de-cierre.md). Borrador con medición, deuda declarada y decisión pendiente de firma.
+- **Fallo corregido en el cierre:** al morir un chanca, su nodo se liberaba a los 1,4 s y la batalla seguía guardando la referencia en su lista; al recorrerla, GDScript lanzaba «Trying to assign invalid previously freed instance» cada fotograma. Ahora el chanca se quita de la lista al salir del árbol (`_forget_enemy`) y `carmenca_check` lo comprueba esperando a que uno caiga y se libere.
+
 ## 12. Orden de trabajo y dependencias
 
 | Orden | Tarea | Depende de |
@@ -230,8 +240,8 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
 |---|---|---|
 | Draw calls por sector | ≤ 350 | `scene_audit.gd` y `measure_cusco.tscn` |
 | Memoria de vídeo | ≤ 250 MB | `measure_cusco.tscn` |
-| FPS | ≥ 30 Bajo / ≥ 60 Medio, 1080p, UHD 770 | `measure_cusco.tscn` |
-| Hitch | < 50 ms | `sector_streaming_check.gd` |
+| FPS | ≥ 30 Bajo / ≥ 60 Medio, 1080p, UHD 770 | `measure_cusco.tscn` y `measure_battle.tscn` |
+| Hitch | < 50 ms | `sector_streaming_check.gd` y `measure_battle.tscn` |
 | Carga de sector | < 150 ms | `sector_streaming_check.gd` |
 | Interiores | ≤ 15 draw calls cada uno | `scene_audit.gd` |
 
@@ -274,3 +284,23 @@ Si no cabe, se recorta en este orden:
 - [ ] 30–45 min de juego real en una pasada humana, con contenido no principal.
 - [ ] 100 % del contenido usado clasificado y con fuente.
 - [ ] Acta de revisión con decisión: continuar, recortar o replantear.
+
+## 17. Deuda de arte declarada
+
+La slice se aprueba en **blockout**: los sistemas, el contenido y el flujo están probados, pero casi todo lo que se ve es geometría de bloqueo. Esta lista evita que la deuda se confunda con un fallo y sirve de entrada a F4.
+
+| Área | Estado en F3 | Qué falta |
+|---|---|---|
+| Arquitectura | Casas, muros, plaza y Coricancha con `BlockoutKit`: cajas, pircas y tejados planos; sin texturas | Modelos y materiales finales por tipología; vanos, dinteles, cubiertas y desgaste |
+| Personajes | Jugador maniquí; NPC como cápsulas vestidas con cabeza cónica | Mallas, ropa, peinados y variantes; sin animaciones de trabajo, conversación o combate propias |
+| Interiores | Tres salas de 8 × 6 × 3 m con vestido de bloqueo y luz propia | Mobiliario, textiles y objetos domésticos finales; vestidos por casa |
+| Campamento chanca | Doce tiendas de bloqueo, empalizada y estandarte de cajas | Tiendas, pertrechos, estandarte y atrezo de campamento |
+| Obras de defensa | Foso con borde de piedra, tapa de ramas y nueve púas de caja | Foso, ramas, piedra y púas finales; variantes por acceso |
+| Mirador | Terraza de piedra con parapeto y apacheta de cantos | Piedra, parapeto y apacheta finales; vegetación de altura |
+| Naturaleza | Terreno con paleta plana; sin texturas ni vegetación de detalle | Terreno texturizado, pastos, arbustos y rocas; LOD de vegetación |
+| Cielo y luz | `DayNightCycle` mueve sol, ambiente y niebla; sin cielo ni nubes finales | Cielo, nubes, bruma y exposición finales por franja |
+| Audio | Música y ambientes sustitutos declarados en [docs/07](../07_convenciones_historicas.md) §4; pasos de botas filtrados | Registros propios del altiplano, pasos de ojota, voces y mezcla |
+| Interfaz | HUD de Core funcional con tipografía y paneles de trabajo | Arte de HUD, iconos, retícula y diario; revisión de accesibilidad |
+| Personajes secundarios | Sin retratos ni voces; nombre y rol por tabla de localización | Retratos o modelos de apoyo, si el responsable los aprueba |
+
+No es deuda de arte la **batalla sin serializar** ni el **navmesh de terreno**: son límites de diseño declarados, no falta de producción.

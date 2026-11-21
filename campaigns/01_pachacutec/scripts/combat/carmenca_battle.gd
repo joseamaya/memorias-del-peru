@@ -162,6 +162,7 @@ func _spawn_enemy(slot: int, count: int) -> void:
 	_world.add_child(warrior)
 	warrior.setup(_world.get_player(), _combat(), point)
 	warrior.set_director(_director)
+	warrior.tree_exited.connect(_forget_enemy.bind(warrior))
 	_enemies.append(warrior)
 
 
@@ -266,18 +267,17 @@ func _refresh_status() -> void:
 
 
 func _alive_enemies() -> int:
-	_prune()
 	var count: int = 0
 	for enemy: ChancaWarrior in _enemies:
-		if is_instance_valid(enemy) and not enemy.is_dead():
+		if not enemy.is_dead():
 			count += 1
 	return count
 
 
-func _prune() -> void:
-	for enemy: ChancaWarrior in _enemies.duplicate():
-		if not is_instance_valid(enemy):
-			_enemies.erase(enemy)
+## Saca al chanca de la lista antes de que se libere. Sin esto, la lista
+## conserva referencias muertas y recorrerla lanza un error al caer varios.
+func _forget_enemy(enemy: ChancaWarrior) -> void:
+	_enemies.erase(enemy)
 
 
 func _clear_enemies() -> void:

@@ -89,6 +89,15 @@ func _run() -> void:
 		ok = ok and await _wait_until(_wave_started.bind(battle, wave), 10.0)
 		ok = ok and battle.get_enemy_count() == WAVE_SIZES[wave - 1]
 		ok = ok and battle.get_enemy_count() <= 25
+		if wave == 1:
+			# Un chanca caído se libera solo a los 1,4 s; la lista no puede
+			# quedarse con referencias muertas ni dejar de contar la oleada.
+			var first: ChancaWarrior = get_first_node_in_group(&"chanca_warrior") as ChancaWarrior
+			ok = ok and first != null
+			if first != null:
+				first.take_damage(500.0)
+				await _wait_seconds(2.0)
+				ok = ok and battle.get_enemy_count() == WAVE_SIZES[0] - 1
 		_kill_enemies()
 		await process_frame
 

@@ -210,3 +210,16 @@ Ficha nueva del útil del Agricultor. El agente localizó las fuentes y generó 
 - [ ] Firma del responsable del proyecto.
 
 Revisión documental: agente · Fecha: 2026-11-18.
+
+## 12. PCH-039 a PCH-042 — Firma de cierre de F3 (2026-11-21)
+
+Firmadas por el responsable del proyecto al preparar el cierre de la vertical slice, con las fuentes y notas de representación a la vista en el [registro histórico](registro_historico.md):
+
+| Ficha | Contenido | Clasificación | Uso en la slice |
+|---|---|---|---|
+| PCH-039 | Defensa del Cusco: geografía y desarrollo | H (tradición) / R (puesta en escena) | Fosos, púas, campamento y batalla de Carmenca |
+| PCH-040 | Chanan Cury Coca | H (tradición narrada) | Curáca del arrabal y mando de la defensa |
+| PCH-041 | El lecho doméstico | A (poyo) / R (estera y manta) | Lecho de la casa del jugador y de la curáca |
+| PCH-042 | La antorcha de mano | R sobre H/A (fuego doméstico) | Antorcha nocturna del jugador |
+
+Quedan pendientes de firma **PCH-037** (chaquitaclla) y **PCH-038** (manantial, acequia y mirador de la llacta); no son contenido de la slice de F3 y no bloquean su cierre.
