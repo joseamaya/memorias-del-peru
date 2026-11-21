@@ -139,10 +139,12 @@ func _run() -> void:
 	quit(0 if ok else 1)
 
 
+## Solo el marcador de revisión debe ocultarse: el sector ya tiene contenido
+## propio (el mirador) que debe seguir a la vista.
 func _marker_hidden(marker: CampaignSectorMarker) -> bool:
-	for child: Node in marker.find_children("*", "MeshInstance3D", true, false):
-		if (child as MeshInstance3D).visible:
-			return false
+	var mesh: MeshInstance3D = marker.get_node_or_null("SectorMarker") as MeshInstance3D
+	if mesh == null or mesh.visible:
+		return false
 	for child: Node in marker.find_children("*", "Label3D", true, false):
 		if (child as Label3D).visible:
 			return false
