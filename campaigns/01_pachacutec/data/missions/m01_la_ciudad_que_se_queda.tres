@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/missions/mission_definition.gd" id="1_y83tv"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/missions/mission_stage.gd" id="2_b454q"]
+
+[sub_resource type="Resource" id="Resource_3w53d"]
+script = ExtResource("2_b454q")
+id = &"arrabal"
+title_key = &"PCH_M01_E1_TITULO"
+body_key = &"PCH_M01_E1_CUERPO"
+required_flags = Array[StringName]([&"m01_agua", &"m01_lana", &"m01_maiz"])
+
+[sub_resource type="Resource" id="Resource_060tp"]
+script = ExtResource("2_b454q")
+id = &"partida"
+title_key = &"PCH_M01_E2_TITULO"
+body_key = &"PCH_M01_E2_CUERPO"
+required_flags = Array[StringName]([&"m01_queda"])
+
+[sub_resource type="Resource" id="Resource_kpmgx"]
+script = ExtResource("2_b454q")
+id = &"carmenca"
+title_key = &"PCH_M01_E3_TITULO"
+body_key = &"PCH_M01_E3_CUERPO"
+required_flags = Array[StringName]([&"m01_victoria"])
+
+[resource]
+script = ExtResource("1_y83tv")
+id = &"m01"
+title_key = &"PCH_M01_TITULO"
+stages = Array[ExtResource("2_b454q")]([SubResource("Resource_3w53d"), SubResource("Resource_060tp"), SubResource("Resource_kpmgx")])

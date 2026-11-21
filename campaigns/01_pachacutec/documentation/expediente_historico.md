@@ -122,6 +122,7 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 | La embajada a la llacta y su negativa | H / N | La negativa de los curacas vecinos está en Betanzos y en Rostworowski; la embajada concreta es puesta en escena. |
 | La emboscada chanca del paso | N | Encuentro ficticio en un conflicto documentado |
 | La asamblea y la posguerra | N | Se apoyan en la organización documentada; la escena es ficción |
+| La misión de la ciudad (F3.5) | N | Los encargos del arrabal (agua, lana, maíz), los vecinos que los piden y la columna de la partida son puesta en escena sobre la vida documentada (PCH-006, PCH-007, PCH-027, PCH-039). La retirada de Viracocha con los suyos está en las crónicas; la escena concreta, no. |
 | El nombre de Pachacútec | H / N | Tradición de los cronistas; la escena es ficción |
 | El epílogo político | H / N | La borla, la negativa de Viracocha y la disputa con Inca Urco están en las crónicas; la escena concreta es ficción. |
 

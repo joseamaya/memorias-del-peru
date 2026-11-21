@@ -88,7 +88,8 @@ func _run() -> void:
 	world.toggle_journal()
 	await process_frame
 	ok = ok and hud.is_journal_open()
-	ok = ok and hud.get_journal_panel().get_entry_count() == 1
+	ok = ok and hud.get_journal_panel().get_entry_count() >= 1
+	ok = ok and journal.has(&"m01_diario")
 	ok = ok and player.is_controls_locked()
 	world.toggle_journal()
 	await process_frame

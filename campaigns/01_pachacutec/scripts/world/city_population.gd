@@ -70,6 +70,14 @@ func is_built() -> bool:
 	return _built
 
 
+## Cambia el diálogo de un NPC con nombre. La misión lo usa al avanzar de etapa.
+func set_dialogue(id: StringName, dialogue_id: StringName) -> void:
+	for definition: NpcDefinition in _definitions:
+		if definition.id == id:
+			definition.dialogue_id = dialogue_id
+			return
+
+
 func get_definition_count() -> int:
 	return _definitions.size()
 

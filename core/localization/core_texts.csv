@@ -12,7 +12,7 @@ UI_CONTROLS_HINT,WASD moverse · Ratón mirar · Mayús correr · E interactuar 
 UI_TOUR_CLOSE,E para cerrar
 UI_DIALOGUE_ADVANCE,E para continuar
 UI_DIALOGUE_CHOOSE,1–4 para elegir
-UI_JOURNAL_TITLE,Memoria
+UI_JOURNAL_TITLE,Diario
 UI_JOURNAL_HINT,J para cerrar
 UI_JOURNAL_EMPTY,Aún no hay nada escrito.
 UI_JOURNAL_SOURCE,Fuente: %s
@@ -26,3 +26,7 @@ UI_SAVED,Partida guardada
 UI_SAVE_FAILED,No se pudo guardar la partida
 INTERACT_TALK,Hablar
 INTERACT_TALK_NAMED,Hablar · %s
+INTERACT_WATER,Tomar agua
+INTERACT_WOOL,Recoger la lana
+INTERACT_MAIZE,Cargar el maíz
+UI_JOURNAL_DONE,hecho
