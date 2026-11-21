@@ -23,6 +23,7 @@ var _overlay: SleepOverlay = null
 var _mission: MissionController = null
 var _side: SideActivities = null
 var _notes: DiscoveryNotes = null
+var _defense: DefenseWorks = null
 var _pending_npcs: Dictionary = {}
 var _last_save_ok: bool = false
 var _restored: bool = false
@@ -46,6 +47,7 @@ func begin() -> void:
 	_build_mission()
 	_build_side_activities()
 	_build_discovery_notes()
+	_build_defense_works()
 
 
 ## Duerme en la casa del jugador: sale del interior, avanza a la mañana
@@ -115,6 +117,17 @@ func get_side_activities() -> SideActivities:
 
 func get_discovery_notes() -> DiscoveryNotes:
 	return _notes
+
+
+func get_defense_works() -> DefenseWorks:
+	return _defense
+
+
+func _build_defense_works() -> void:
+	_defense = DefenseWorks.new()
+	_defense.name = "DefenseWorks"
+	add_child(_defense)
+	_defense.setup(_world)
 
 
 func _build_discovery_notes() -> void:

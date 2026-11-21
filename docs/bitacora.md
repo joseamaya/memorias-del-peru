@@ -6,6 +6,20 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.8: las obras de defensa
+
+**Decisión:** los fosos se construyen en el mundo y viven en `WorldState.changes`, no en banderas: son modificaciones físicas y la batalla las leerá.
+
+| Cambio | Detalle |
+|---|---|
+| Puntos | Cuatro, en el anillo oeste y sur del arrabal, sobre los accesos. |
+| Requisito | Solo después de decidir quedarse (`m01_queda`); antes el foso se ve pero no responde. |
+| Foso abierto | Tierra removida con borde de piedra. Un hueco real no cabe en el blockout sin geometría destructiva. |
+| Foso cubierto | Tapa oscura, cinco ramas cruzadas y nueve púas de palma; deja de ser interactuable. |
+| Persistencia | `WorldState.changes`; al cargar se reconstruye la geometría desde los cambios guardados. |
+| Altura | La tapa se apoya en la esquina más alta y el borde baja hasta la más baja: en ladera no queda al aire. |
+| Pruebas | `defense_works_check`: cuatro obras, negativo, construcción, guardado/carga y recuento. |
+
 ## 2026-11-21 — F3.6.b: el mirador de Carmenca
 
 **Decisión:** el descubrimiento sin marcador es un lugar real del territorio, no un radio invisible: una apacheta en el camino del oeste, con el campamento chanca a la vista. Se descubre por proximidad y se registra en el diario.
