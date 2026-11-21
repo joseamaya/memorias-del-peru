@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_4avd6"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_05bwe"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_uo1ki"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_uvwb0"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_yhqk8"]
+
+[sub_resource type="Resource" id="Resource_p2qgn"]
+script = ExtResource("2_05bwe")
+text_key = &"PCH_M01_AGRICULTOR_SI"
+next_id = &"acepta"
+
+[sub_resource type="Resource" id="Resource_rseta"]
+script = ExtResource("2_05bwe")
+text_key = &"PCH_M01_AHORA_NO"
+
+[sub_resource type="Resource" id="Resource_mxtc1"]
+script = ExtResource("1_4avd6")
+id = &"start"
+speaker_key = &"PCH_NPC_AGRICULTOR"
+text_key = &"PCH_M01_AGRICULTOR_1"
+choices = Array[ExtResource("2_05bwe")]([SubResource("Resource_p2qgn"), SubResource("Resource_rseta")])
+
+[sub_resource type="Resource" id="Resource_agllj"]
+script = ExtResource("4_uvwb0")
+key = &"m01_maiz_pedido"
+
+[sub_resource type="Resource" id="Resource_2kd2y"]
+script = ExtResource("1_4avd6")
+id = &"acepta"
+speaker_key = &"PCH_NPC_AGRICULTOR"
+text_key = &"PCH_M01_ACEPTA"
+effects = Array[ExtResource("4_uvwb0")]([SubResource("Resource_agllj")])
+
+[resource]
+script = ExtResource("5_yhqk8")
+nodes = Array[ExtResource("1_4avd6")]([SubResource("Resource_mxtc1"), SubResource("Resource_2kd2y")])

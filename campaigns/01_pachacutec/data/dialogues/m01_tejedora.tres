@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_1ujua"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_q2mcc"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_ldsr1"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_0n0x5"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_rrbfs"]
+
+[sub_resource type="Resource" id="Resource_4wig8"]
+script = ExtResource("2_q2mcc")
+text_key = &"PCH_M01_TEJEDORA_SI"
+next_id = &"acepta"
+
+[sub_resource type="Resource" id="Resource_dugfr"]
+script = ExtResource("2_q2mcc")
+text_key = &"PCH_M01_AHORA_NO"
+
+[sub_resource type="Resource" id="Resource_gis8e"]
+script = ExtResource("1_1ujua")
+id = &"start"
+speaker_key = &"PCH_NPC_TEJEDORA"
+text_key = &"PCH_M01_TEJEDORA_1"
+choices = Array[ExtResource("2_q2mcc")]([SubResource("Resource_4wig8"), SubResource("Resource_dugfr")])
+
+[sub_resource type="Resource" id="Resource_ob2kk"]
+script = ExtResource("4_0n0x5")
+key = &"m01_lana_pedido"
+
+[sub_resource type="Resource" id="Resource_5t0at"]
+script = ExtResource("1_1ujua")
+id = &"acepta"
+speaker_key = &"PCH_NPC_TEJEDORA"
+text_key = &"PCH_M01_ACEPTA"
+effects = Array[ExtResource("4_0n0x5")]([SubResource("Resource_ob2kk")])
+
+[resource]
+script = ExtResource("5_rrbfs")
+nodes = Array[ExtResource("1_1ujua")]([SubResource("Resource_gis8e"), SubResource("Resource_5t0at")])

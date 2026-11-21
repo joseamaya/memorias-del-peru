@@ -96,6 +96,15 @@ Tres etapas, sin sistema genérico de misiones: recursos de misión y banderas e
 
 **Criterio:** la misión avanza y termina con una consecuencia persistente; se puede guardar y cargar en cualquier etapa sin perder estado.
 
+**Implementado (2026-11-21) — capa de conversación y diario (3.5.a):**
+
+- HUD de Core instanciado en el mundo regional, con retícula, interacción y aliento.
+- `DialoguePresenter` (Core): conecta `DialogueRunner` con el HUD, siembra las banderas del mundo, escribe en `WorldState` las que fija el diálogo y bloquea al jugador mientras habla.
+- `NpcInteractable` (Core): colisionador en la capa `interactable` sobre los NPC con `dialogue_id`; el rótulo es «Hablar · <nombre>». Solo existen mientras el LOD mantiene al NPC.
+- Diario abierto y cerrado con **J**; Esc también lo cierra. Queda pendiente el contenido de la misión (3.5.b).
+- Seis grafos de diálogo en `data/dialogues/` (curáca, molendera, tejedora, agricultor, mensajero y la partida) con textos en la tabla de la campaña.
+- Evidencia: `dialogue_check` (6 grafos, bandera `m01_encargos`, diario) y captura `build/evidencia/dialogo_curaca.png`.
+
 ## 7. F3.6 — Secundarias y descubrimiento
 
 - **Social:** mediar entre dos familias por el turno del agua o del horno; la decisión deja reputación.

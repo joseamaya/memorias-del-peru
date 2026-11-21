@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_scrti"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_ejjav"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_fkrt6"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_gebra"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_egm6r"]
+
+[sub_resource type="Resource" id="Resource_hvtxu"]
+script = ExtResource("2_ejjav")
+text_key = &"PCH_M01_MOLENDERA_SI"
+next_id = &"acepta"
+
+[sub_resource type="Resource" id="Resource_fnyyf"]
+script = ExtResource("2_ejjav")
+text_key = &"PCH_M01_AHORA_NO"
+
+[sub_resource type="Resource" id="Resource_4mmjt"]
+script = ExtResource("1_scrti")
+id = &"start"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_M01_MOLENDERA_1"
+choices = Array[ExtResource("2_ejjav")]([SubResource("Resource_hvtxu"), SubResource("Resource_fnyyf")])
+
+[sub_resource type="Resource" id="Resource_8hvc4"]
+script = ExtResource("4_gebra")
+key = &"m01_agua_pedido"
+
+[sub_resource type="Resource" id="Resource_uct65"]
+script = ExtResource("1_scrti")
+id = &"acepta"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_M01_ACEPTA"
+effects = Array[ExtResource("4_gebra")]([SubResource("Resource_8hvc4")])
+
+[resource]
+script = ExtResource("5_egm6r")
+nodes = Array[ExtResource("1_scrti")]([SubResource("Resource_4mmjt"), SubResource("Resource_uct65")])

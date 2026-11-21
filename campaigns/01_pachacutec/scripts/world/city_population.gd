@@ -108,13 +108,43 @@ func _try_build() -> void:
 
 
 func _build_definitions() -> void:
-	_add_named(&"npc_curaca", &"PCH_NPC_CURACA", &"arrabal", &"arrabal", &"plaza", 0)
-	_add_named(&"npc_tejedora", &"PCH_NPC_TEJEDORA", &"ayllu_este", &"taller", &"taller", 1)
-	_add_named(&"npc_molendera", &"PCH_NPC_MOLENDERA", &"ayllu_oeste", &"mercado", &"mercado", 1)
+	_add_named(&"npc_curaca", &"PCH_NPC_CURACA", &"arrabal", &"arrabal", &"plaza", 0, &"m01_curaca")
 	_add_named(
-		&"npc_agricultor", &"PCH_NPC_AGRICULTOR", &"ayllu_oeste", &"puerta_sur", &"mercado", 1
+		&"npc_tejedora",
+		&"PCH_NPC_TEJEDORA",
+		&"ayllu_este",
+		&"taller",
+		&"taller",
+		1,
+		&"m01_tejedora"
 	)
-	_add_named(&"npc_mensajero", &"PCH_NPC_MENSAJERO", &"plaza", &"camino_oeste", &"plaza", 1)
+	_add_named(
+		&"npc_molendera",
+		&"PCH_NPC_MOLENDERA",
+		&"ayllu_oeste",
+		&"mercado",
+		&"mercado",
+		1,
+		&"m01_molendera"
+	)
+	_add_named(
+		&"npc_agricultor",
+		&"PCH_NPC_AGRICULTOR",
+		&"ayllu_oeste",
+		&"puerta_sur",
+		&"mercado",
+		1,
+		&"m01_agricultor"
+	)
+	_add_named(
+		&"npc_mensajero",
+		&"PCH_NPC_MENSAJERO",
+		&"plaza",
+		&"camino_oeste",
+		&"plaza",
+		1,
+		&"m01_mensajero"
+	)
 	_add_named(&"npc_nino", &"PCH_NPC_NINO", &"arrabal_calle", &"arrabal", &"plaza", 1)
 	_add_named(&"npc_anciano", &"PCH_NPC_ANCIANO", &"ayllu_este", &"plaza", &"coricancha", 1)
 	_add_named(&"npc_principal", &"PCH_NPC_PRINCIPAL", &"ayllu_este", &"coricancha", &"plaza", 1)
@@ -143,8 +173,9 @@ func _add_named(
 	morning: StringName,
 	afternoon: StringName,
 	tier: int,
+	dialogue_id: StringName = &"",
 ) -> void:
-	_definitions.append(_make_definition(id, name_key, home, morning, afternoon, tier))
+	_definitions.append(_make_definition(id, name_key, home, morning, afternoon, tier, dialogue_id))
 
 
 func _add_ambient(
@@ -162,11 +193,13 @@ func _make_definition(
 	morning: StringName,
 	afternoon: StringName,
 	tier: int,
+	dialogue_id: StringName = &"",
 ) -> NpcDefinition:
 	var definition: NpcDefinition = NpcDefinition.new()
 	definition.id = id
 	definition.name_key = name_key
 	definition.tier = tier
+	definition.dialogue_id = dialogue_id
 	definition.home_anchor = home
 	definition.work_anchor = morning
 	var schedule: Array[ScheduleEntry] = [

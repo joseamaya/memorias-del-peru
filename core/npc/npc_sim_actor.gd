@@ -22,6 +22,9 @@ var _animation: AnimationPlayer = null
 
 
 ## Construye cuerpo y animación de marcador. El nodo queda dormido.
+##
+## Si la definición trae `dialogue_id`, añade un punto de conversación con su
+## colisionador: solo los NPC con nombre y diálogo se pueden hablar.
 func setup(npc_definition: NpcDefinition, npc_mover: NpcMover) -> void:
 	definition = npc_definition
 	mover = npc_mover
@@ -29,6 +32,8 @@ func setup(npc_definition: NpcDefinition, npc_mover: NpcMover) -> void:
 		id = definition.id
 		name = String(id)
 	_build_body()
+	if definition != null and definition.dialogue_id != &"":
+		_build_talk()
 	set_lod(Lod.DORMANT)
 
 
@@ -51,6 +56,13 @@ func get_lod() -> int:
 
 func is_animated() -> bool:
 	return _lod == Lod.ANIMATED
+
+
+## Punto al que mira el jugador al hablar. El actor vive en el centro del
+## cuerpo (0,9 m sobre el suelo), no en los pies: sin esto el encuadre apuntaba
+## 0,75 m por encima de la cabeza.
+func focus_point() -> Vector3:
+	return global_position + Vector3.UP * 0.7
 
 
 func advance(delta: float) -> void:
@@ -83,6 +95,14 @@ func _build_body() -> void:
 	library.add_animation(&"idle", animation)
 	_animation.add_animation_library(&"", library)
 	add_child(_animation)
+
+
+func _build_talk() -> void:
+	var talk: NpcInteractable = NpcInteractable.new()
+	talk.name = "Talk"
+	talk.setup(definition)
+	talk.highlight_target = _body
+	add_child(talk)
 
 
 func _tier_color() -> Color:

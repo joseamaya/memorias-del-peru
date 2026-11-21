@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.5.a: conversación y diario en el mundo
+
+**Decisión:** el mundo de la slice gana HUD, conversaciones y diario; la misión principal (3.5.b) se apoya en ellos.
+
+| Cambio | Detalle |
+|---|---|
+| HUD | `core/ui/hud.tscn` se instancia bajo un `CanvasLayer` en `RegionWorld`: retícula, interacción, aliento, diálogo y diario. Hasta ahora el mundo no tenía interfaz. |
+| Diálogo | `DialoguePresenter` conecta el `DialogueRunner` con el HUD y con `WorldState`: siembra las banderas al empezar, escribe las que fijan los efectos y bloquea los controles. Los grafos viven en `data/dialogues/`. |
+| NPC | `NpcInteractable` en los NPC con `dialogue_id`, en la capa `interactable`; el jugador ve «Hablar · Chanan Cury Coca» al enfocar. Sin etiquetas flotantes de nombre. |
+| Diario | Se abre y cierra con **J**; Esc también cierra. El jugador queda inmóvil y el puntero se libera. |
+| Encuadre | `NpcSimActor.focus_point()`: el actor vive en el centro del cuerpo, no en los pies; sin él la cámara apuntaba 0,75 m por encima de la cabeza. |
+| Pendiente | Contenido de la misión: encargos, partida de Viracocha y etapas (3.5.b). |
+
 ## 2026-11-20 — F3.1: el santuario del sol, al sur de la plaza
 
 **Decisión:** mover el santuario del sol del Cusco del norte al sur de la plaza, que es donde está en la ciudad real.

@@ -15,9 +15,6 @@ const SECTOR_DEFINITIONS: Array[String] = [
 	"res://campaigns/01_pachacutec/data/sectors/s6_frontera.tres",
 ]
 
-const REVIEW_LABEL_LIMIT: int = 1
-const REVIEW_LABEL_PIXEL: float = 0.03
-
 ## Escena del jugador en primera persona; el mundo regional la instancia cuando
 ## `first_person` está activo.
 const PLAYER_SCENE: String = "res://core/player/player_fps.tscn"
@@ -61,9 +58,10 @@ var _player: PlayerFPS = null
 var _interiors: InteriorController = null
 var _population: CityPopulation = null
 var _session: CampaignSession = null
+var _ui: RegionUi = null
 var _spawn_position: Vector3 = Vector3.ZERO
 var _route_index: int = 0
-var _labels_visible: bool = false
+var _review: ReviewLabels = null
 var _top_down: bool = false
 var _hud: Label = null
 
@@ -98,8 +96,10 @@ func _ready() -> void:
 		_build_player()
 		_build_interiors()
 		_build_population()
+		_build_ui()
 		_build_session()
 	_build_review_hud()
+	_build_review_labels()
 	_update_camera()
 
 
@@ -108,13 +108,22 @@ func _process(delta: float) -> void:
 		_advance_route(delta)
 	_follow_player()
 	_update_camera()
-	_update_labels()
+	if _review != null:
+		_review.update()
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("journal"):
+		if _ui != null:
+			_ui.toggle_journal()
+		get_viewport().set_input_as_handled()
+		return
 	# El blockout no tiene menú de pausa: si Esc llegara a GameManager, congelaría
-	# el árbol sin ninguna interfaz que lo explique.
+	# el árbol sin ninguna interfaz que lo explique. Con el diario abierto, Esc
+	# lo cierra.
 	if event.is_action_pressed("pause"):
+		if _ui != null:
+			_ui.close_journal()
 		get_viewport().set_input_as_handled()
 		return
 	if not (event is InputEventKey):
@@ -132,8 +141,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Muestra u oculta las etiquetas de POI más cercanas.
 func toggle_labels() -> void:
-	_labels_visible = not _labels_visible
-	_update_labels()
+	if _review != null:
+		_review.toggle()
 
 
 func toggle_top_down() -> void:
@@ -146,15 +155,7 @@ func is_top_down() -> bool:
 
 
 func get_visible_label_count() -> int:
-	var count: int = 0
-	for id: StringName in _streamer.get_loaded_ids():
-		var node: Node3D = _streamer.get_loaded_node(id)
-		if node == null:
-			continue
-		for label: Node in node.find_children("*", "Label3D", true, false):
-			if (label as Label3D).visible and label.is_in_group(&"review_label"):
-				count += 1
-	return count
+	return _review.get_visible_count() if _review != null else 0
 
 
 func set_target_position(target_position: Vector3) -> void:
@@ -211,6 +212,39 @@ func place_player(point: Vector3, yaw: float) -> void:
 
 func get_population() -> CityPopulation:
 	return _population
+
+
+func get_player_hud() -> PlayerHud:
+	return _ui.hud if _ui != null else null
+
+
+func get_journal() -> Journal:
+	return _ui.journal if _ui != null else null
+
+
+func get_dialogue() -> DialoguePresenter:
+	return _ui.dialogue if _ui != null else null
+
+
+## Abre o cierra el diario. Mientras está abierto, el jugador no se mueve.
+func toggle_journal() -> void:
+	if _ui != null:
+		_ui.toggle_journal()
+
+
+func _on_journal_closed() -> void:
+	if _player != null:
+		_player.set_controls_locked(false)
+	# `set_controls_locked` vuelve a mostrar el arma; el blockout no la equipa.
+	_hide_unequipped()
+
+
+func _build_ui() -> void:
+	_ui = RegionUi.new()
+	_ui.name = "Interface"
+	add_child(_ui)
+	_ui.setup(_player)
+	_ui.journal_closed.connect(_on_journal_closed)
 
 
 func _build_session() -> void:
@@ -340,38 +374,11 @@ func _activate_camera(camera: Camera3D) -> void:
 		camera.current = true
 
 
-func _update_labels() -> void:
-	if _streamer == null or _target == null:
-		return
-	var candidates: Array[Dictionary] = []
-	for id: StringName in _streamer.get_loaded_ids():
-		var node: Node3D = _streamer.get_loaded_node(id)
-		if node == null:
-			continue
-		for label: Node in node.find_children("*", "Label3D", true, false):
-			var label_3d: Label3D = label as Label3D
-			# Las etiquetas de interacción (puertas, lechos) no son de revisión.
-			if not label_3d.is_in_group(&"review_label"):
-				continue
-			var distance: float = (
-				Vector2(
-					label_3d.global_position.x - _target.global_position.x,
-					label_3d.global_position.z - _target.global_position.z
-				)
-				. length()
-			)
-			candidates.append({"label": label_3d, "distance": distance})
-	candidates.sort_custom(_closer_label)
-	for index: int in candidates.size():
-		var label_3d: Label3D = candidates[index]["label"]
-		label_3d.visible = _labels_visible and index < REVIEW_LABEL_LIMIT
-		if label_3d.visible:
-			label_3d.pixel_size = REVIEW_LABEL_PIXEL
-			label_3d.outline_size = 8
-
-
-func _closer_label(first: Dictionary, second: Dictionary) -> bool:
-	return str(first["distance"]).to_float() < str(second["distance"]).to_float()
+func _build_review_labels() -> void:
+	_review = ReviewLabels.new()
+	_review.name = "ReviewLabels"
+	add_child(_review)
+	_review.setup(_streamer, _target)
 
 
 func _build_review_hud() -> void:

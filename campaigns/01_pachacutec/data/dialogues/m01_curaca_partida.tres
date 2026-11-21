@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_p1n02"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_r4ubw"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_xvtu1"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_17sl1"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_3y735"]
+
+[sub_resource type="Resource" id="Resource_qfcqe"]
+script = ExtResource("2_r4ubw")
+text_key = &"PCH_M01_PARTIDA_QUEDO"
+next_id = &"queda"
+
+[sub_resource type="Resource" id="Resource_rov6y"]
+script = ExtResource("1_p1n02")
+id = &"start"
+speaker_key = &"PCH_NPC_CURACA"
+text_key = &"PCH_M01_PARTIDA_1"
+choices = Array[ExtResource("2_r4ubw")]([SubResource("Resource_qfcqe")])
+
+[sub_resource type="Resource" id="Resource_fo3wf"]
+script = ExtResource("4_17sl1")
+key = &"m01_queda"
+
+[sub_resource type="Resource" id="Resource_jusiy"]
+script = ExtResource("1_p1n02")
+id = &"queda"
+speaker_key = &"PCH_NPC_CURACA"
+text_key = &"PCH_M01_PARTIDA_2"
+effects = Array[ExtResource("4_17sl1")]([SubResource("Resource_fo3wf")])
+
+[resource]
+script = ExtResource("5_3y735")
+nodes = Array[ExtResource("1_p1n02")]([SubResource("Resource_rov6y"), SubResource("Resource_jusiy")])

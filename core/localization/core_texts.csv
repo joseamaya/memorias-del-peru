@@ -24,3 +24,5 @@ UI_LOADED_TITLE,Partida cargada
 UI_SLEPT_DETAIL,Día %d · %s
 UI_SAVED,Partida guardada
 UI_SAVE_FAILED,No se pudo guardar la partida
+INTERACT_TALK,Hablar
+INTERACT_TALK_NAMED,Hablar · %s

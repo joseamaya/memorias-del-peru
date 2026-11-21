@@ -160,7 +160,7 @@ godot --headless --path . --import 2>&1 | tee /tmp/import.log
 python3 tools/check_output.py /tmp/import.log
 ```
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI, recorrido regional, población, descanso y guardado, modo de revisión y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI, recorrido regional, población, descanso y guardado, diálogo y diario, modo de revisión y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -267,6 +267,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `day_night_check.gd` | Ciclo día/noche: el reloj mueve sol, ambiente y niebla; cuatro franjas distinguibles y sin saltos de energía |
 | `city_population_check.gd` | 24 NPC registrados, 8 nombrados, rutinas de mañana y noche, y 20 min simulados sin atravesar casas |
 | `city_save_round_trip.gd` | Dormir en la casa del jugador, guardado automático y carga en una instancia nueva: hora, NPC, misión, inventario y obras |
+| `dialogue_check.gd` | Conversación y diario en el mundo: interactable de NPC con nombre, grafo traducido, bandera en `WorldState` y diario que abre y cierra con J |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |

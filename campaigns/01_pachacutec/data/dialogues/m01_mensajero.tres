@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_3irl0"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_psx32"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_t2btc"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_nhndm"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_c11gq"]
+
+[sub_resource type="Resource" id="Resource_kii4e"]
+script = ExtResource("2_psx32")
+text_key = &"PCH_M01_MENSAJERO_PREGUNTA"
+next_id = &"respuesta"
+
+[sub_resource type="Resource" id="Resource_rlml8"]
+script = ExtResource("2_psx32")
+text_key = &"PCH_M01_CURACA_LUEGO"
+
+[sub_resource type="Resource" id="Resource_fmxfg"]
+script = ExtResource("1_3irl0")
+id = &"start"
+speaker_key = &"PCH_NPC_MENSAJERO"
+text_key = &"PCH_M01_MENSAJERO_1"
+choices = Array[ExtResource("2_psx32")]([SubResource("Resource_kii4e"), SubResource("Resource_rlml8")])
+
+[sub_resource type="Resource" id="Resource_suhq0"]
+script = ExtResource("4_nhndm")
+key = &"m01_rumor"
+
+[sub_resource type="Resource" id="Resource_ycp6d"]
+script = ExtResource("1_3irl0")
+id = &"respuesta"
+speaker_key = &"PCH_NPC_MENSAJERO"
+text_key = &"PCH_M01_MENSAJERO_2"
+effects = Array[ExtResource("4_nhndm")]([SubResource("Resource_suhq0")])
+
+[resource]
+script = ExtResource("5_c11gq")
+nodes = Array[ExtResource("1_3irl0")]([SubResource("Resource_fmxfg"), SubResource("Resource_ycp6d")])
