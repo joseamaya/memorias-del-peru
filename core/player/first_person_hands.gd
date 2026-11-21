@@ -3,13 +3,17 @@ extends Node3D
 ## Mano de maniquí en primera persona para las interacciones.
 ##
 ## El antebrazo viene del UAL1 de Quaternius y la mano es una mano de maniquí
-## con dedos separados (`MannequinHand`). Aparece al interactuar, entra hacia el
-## centro y se retira; el interactuable elige la acción con `hand_action`.
-## No tiene colisión ni participa en el raycast.
+## con dedos separados (`MannequinHand`). Aparece al interactuar, entra desde la
+## esquina inferior derecha y se retira; el interactuable elige la acción con
+## `hand_action`. No tiene colisión ni participa en el raycast.
+##
+## La mano nace fuera de cuadro y el antebrazo sale por la esquina: con el
+## brazo centrado y a escala 0,52 (el ajuste del prototipo) tapaba media
+## pantalla al encenderse la antorcha de noche.
 
-const REST_POSITION: Vector3 = Vector3(0.28, -0.24, -0.56)
-const REST_ROTATION: Vector3 = Vector3(72.0, 45.0, 0.0)
-const HAND_SCALE: float = 0.52
+const REST_POSITION: Vector3 = Vector3(0.34, -0.30, -0.52)
+const REST_ROTATION: Vector3 = Vector3(58.0, 38.0, -18.0)
+const HAND_SCALE: float = 0.42
 const REACH_SECONDS: float = 0.22
 const HOLD_SECONDS: float = 0.18
 const RETURN_SECONDS: float = 0.32
@@ -88,12 +92,12 @@ func _find_player() -> PlayerFPS:
 func _action_target(action: StringName) -> Array:
 	match action:
 		&"drink":
-			return [Vector3(0.16, -0.18, -0.58), Vector3(70.0, 42.0, 4.0)]
+			return [Vector3(0.26, -0.22, -0.55), Vector3(62.0, 44.0, 2.0)]
 		&"offer":
-			return [Vector3(0.18, -0.20, -0.60), Vector3(72.0, 40.0, 2.0)]
+			return [Vector3(0.25, -0.23, -0.56), Vector3(64.0, 42.0, 0.0)]
 		&"blow":
-			return [Vector3(0.20, -0.18, -0.56), Vector3(70.0, 38.0, 4.0)]
+			return [Vector3(0.26, -0.21, -0.54), Vector3(62.0, 40.0, 4.0)]
 		&"attack":
-			return [Vector3(0.12, -0.24, -0.62), Vector3(78.0, 34.0, -6.0)]
+			return [Vector3(0.24, -0.26, -0.58), Vector3(70.0, 36.0, -8.0)]
 		_:
-			return [Vector3(0.18, -0.20, -0.60), Vector3(72.0, 40.0, 2.0)]
+			return [Vector3(0.25, -0.23, -0.56), Vector3(64.0, 42.0, 0.0)]

@@ -57,6 +57,7 @@
 - Guardado (3.7): la única forma de guardar es dormir, y antes de guardar se sale de la sala. La sala no tiene estado propio que conservar —su contenido lo fija la puerta—, así que la partida nunca queda apuntando a un interior que ya no existe.
 - Lecho (2026-11-20): la cama con patas y colchón era anacrónica. Se sustituye por el lecho andino de **PCH-041**: poyo bajo de piedra de 0,32 m, estera de totora y manta doblada. La puerta de la casa del jugador lleva la leyenda «Tu casa» para no confundirla con la de la curáca, que tiene el mismo mueble sin interacción.
 - Etiquetas (2026-11-20): el modo de revisión del blockout ocultaba **todas** las `Label3D` de los sectores, incluidas las de las puertas, así que «Entrar» nunca se veía. Ahora solo gobierna las de POI (`review_label`); las de interacción quedan siempre visibles y `interiors_check` lo comprueba. La leyenda se separa además del panel, donde quedaba embebida.
+- Mano de interacción (2026-11-21): el antebrazo del maniquí venía del prototipo a escala 0,52 y centrado; con la antorcha encendida de noche tapaba media pantalla. Ahora la mano entra desde la esquina inferior derecha, a escala 0,42, y el antebrazo sale de cuadro. Evidencia: `mano_puerta.png`, `mano_agua.png` y `mano_despues_dia.png`.
 
 ## 4. F3.3 — Ciclo día/noche
 

@@ -6,6 +6,17 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — La mano de interacción, fuera del centro
+
+**Decisión:** se conserva el gesto de mano al interactuar y se corrige su encuadre. No es código de la campaña retirada: `FirstPersonHands` es la mano del jugador y la usa **todo** interactuable (puertas, lecho, agua, encargos) con `hand_action`.
+
+| Cambio | Detalle |
+|---|---|
+| Motivo | Con la antorcha de noche, el antebrazo del prototipo (escala 0,52 y centrado) tapaba media pantalla al abrir una puerta. |
+| Ajuste | Escala 0,42; reposo y destinos movidos a la derecha y abajo; el gesto entra desde la esquina inferior derecha y el antebrazo sale de cuadro. |
+| Alcance | Solo `FirstPersonHands`. La mano del arma no cambia: se alinea en 3.9, cuando el combate la ponga en pantalla. |
+| Pruebas | `test_first_person_hands`, `interiors_check`, `city_check` y capturas de día y de noche en puerta y agua. |
+
 ## 2026-11-21 — F3.3: la antorcha de mano
 
 **Decisión:** el jugador lleva una antorcha que se enciende sola al caer el sol. Cierra el pendiente anotado el 2026-11-20: de noche no había ninguna fuente de luz y la etapa 2 de la misión ya pide no dormir.
