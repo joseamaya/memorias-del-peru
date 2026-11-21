@@ -22,6 +22,7 @@ var _population: CityPopulation = null
 var _overlay: SleepOverlay = null
 var _mission: MissionController = null
 var _side: SideActivities = null
+var _notes: DiscoveryNotes = null
 var _pending_npcs: Dictionary = {}
 var _last_save_ok: bool = false
 var _restored: bool = false
@@ -44,6 +45,7 @@ func begin() -> void:
 	_restored = _restore()
 	_build_mission()
 	_build_side_activities()
+	_build_discovery_notes()
 
 
 ## Duerme en la casa del jugador: sale del interior, avanza a la mañana
@@ -109,6 +111,17 @@ func get_mission() -> MissionController:
 
 func get_side_activities() -> SideActivities:
 	return _side
+
+
+func get_discovery_notes() -> DiscoveryNotes:
+	return _notes
+
+
+func _build_discovery_notes() -> void:
+	_notes = DiscoveryNotes.new()
+	_notes.name = "DiscoveryNotes"
+	add_child(_notes)
+	_notes.setup(_world)
 
 
 func _build_side_activities() -> void:

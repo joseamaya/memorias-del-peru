@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/sector_marker.gd" id="1_marker"]
+[ext_resource type="Script" path="res://campaigns/01_pachacutec/scripts/world/carmenca_overlook.gd" id="2_overlook"]
 
 [node name="S2Afueras" type="Node3D"]
 position = Vector3(750.0, 0, 150.0)
@@ -9,3 +10,7 @@ sector_id = &"s2_afueras"
 display_name = "S2 · Afueras y terrazas"
 classification = "GR"
 color = Color(0.55, 0.72, 0.38, 1)
+
+[node name="CarmencaOverlook" type="Node3D" parent="."]
+position = Vector3(75, 0, 175)
+script = ExtResource("2_overlook")
