@@ -215,6 +215,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/side_activities_check.gd 2>&1 | tee /tmp/side.log
           python3 tools/check_output.py /tmp/side.log
 
+      - name: Mirador de Carmenca
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/mirador_check.gd 2>&1 | tee /tmp/mirador.log
+          python3 tools/check_output.py /tmp/mirador.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail

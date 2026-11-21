@@ -1,5 +1,5 @@
 extends SceneTree
-## Comprueba los 30 POI: inicio, proximidad, diario, mapa, fases y guardado.
+## Comprueba los 31 POI: inicio, proximidad, diario, mapa, fases y guardado.
 
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 
@@ -25,7 +25,7 @@ func _run() -> void:
 	for _i: int in 5:
 		await process_frame
 	var discovery: DiscoveryService = world.get_discovery()
-	var ok: bool = discovery != null and discovery.get_count() == 30
+	var ok: bool = discovery != null and discovery.get_count() == 31
 	ok = ok and discovery.is_discovered(&"poi_01") and discovery.is_discovered(&"poi_02")
 	ok = ok and discovery.get_journal().size() >= 2
 	ok = ok and discovery.get_map_points().size() == discovery.get_discovered_count()
@@ -54,7 +54,7 @@ func _run() -> void:
 	world.queue_free()
 	await process_frame
 	if ok:
-		print("POI_OK total=30 discovered=", discovered, " start=2")
+		print("POI_OK total=31 discovered=", discovered, " start=2")
 	else:
 		printerr("POI_FAIL")
 	quit(0 if ok else 1)

@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.6.b: el mirador de Carmenca
+
+**Decisión:** el descubrimiento sin marcador es un lugar real del territorio, no un radio invisible: una apacheta en el camino del oeste, con el campamento chanca a la vista. Se descubre por proximidad y se registra en el diario.
+
+| Cambio | Detalle |
+|---|---|
+| Lugar | `CarmencaOverlook` en S2: montón de piedras (apacheta) y doce tiendas de campaña a unos 40 m, sobre la ladera. |
+| Descubrimiento | POI-31 con radio de 14 m y disparo por proximidad; sin etiqueta ni marcador. |
+| Diario | `DiscoveryNotes` escribe una memoria con clasificación N y avisa en el HUD una sola vez; al cargar se reconstruye desde los descubrimientos guardados. |
+| Geometría | Se descartó una plataforma: en ladera flotaba y se leía como una mesa. La apacheta apilada es la solución andina y no inventa un edificio. |
+| Auditoría | «Apacheta» entra en los elementos apilados a propósito del auditor de flotantes; las tiendas se entierran 0,5 m para que la base no quede al aire en la pendiente. |
+| Pruebas | `mirador_check`: sin descubrir antes de llegar, descubierto al llegar, 12 tiendas, memoria, aviso y carga sin duplicar. |
+
 ## 2026-11-21 — F3.6.a: el turno del agua y la manta
 
 **Decisión:** las secundarias se construyen como cadenas de banderas con sus grafos y un punto en el mundo, sin sistema de misiones aparte. La consecuencia se lee en el diario y en lo que dicen los vecinos.

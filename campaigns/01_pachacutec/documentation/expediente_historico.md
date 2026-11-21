@@ -123,6 +123,7 @@ Las ediciones y páginas concretas están en las fichas del [registro histórico
 | La emboscada chanca del paso | N | Encuentro ficticio en un conflicto documentado |
 | La asamblea y la posguerra | N | Se apoyan en la organización documentada; la escena es ficción |
 | El reparto del agua (F3.6) | N | La disputa entre la molendera y el agricultor y sus tres desenlaces son puesta en escena. El riego por turnos, la molienda y el uso comunal del agua se apoyan en la vida documentada del valle (PCH-006, PCH-027). |
+| El mirador de Carmenca (F3.6) | N / R | La apacheta que marca el lugar y la terraza de observación son puesta en escena; el campamento chanca a la vista se apoya en las crónicas de la guerra (PCH-039) y en la geografía del oeste. |
 | La manta de la defensa (F3.6) | R / N | Tejido en telar con lana de camélido (PCH-010); el encargo concreto y su efecto en la batalla son ficción. |
 | La misión de la ciudad (F3.5) | N | Los encargos del arrabal (agua, lana, maíz), los vecinos que los piden y la columna de la partida son puesta en escena sobre la vida documentada (PCH-006, PCH-007, PCH-027, PCH-039). La retirada de Viracocha con los suyos está en las crónicas; la escena concreta, no. |
 | El nombre de Pachacútec | H / N | Tradición de los cronistas; la escena es ficción |
