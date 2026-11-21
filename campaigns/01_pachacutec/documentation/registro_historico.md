@@ -499,7 +499,7 @@ Fichas nuevas del rediseño de la campaña (2026-11-20): la ciudad como hogar, l
 ### PCH-039 — La defensa del Cusco: geografía y desarrollo
 - Tipo: evento / lugar
 - Clasificación: H (tradición narrada) / R (puesta en escena)
-- Uso en el juego: fase 2, «Carmenca»; guía del escenario de la defensa.
+- Uso en el juego: fase 2, «Carmenca»; guía del escenario de la defensa. Las **obras construibles** de F3.8 (fosos con piedra, ramas y púas de palma) son puesta en escena (R) sobre la descripción de Cieza.
 - Fuentes:
   - H: Juan de Betanzos, *Suma y narración de los Incas* (1551), I parte, cap. VIII, ed. Marcos Jiménez de la Espada (Madrid, 1880), pp. 36–37. Edición digital: archive.org, `betanzos-juan-de.-suma-y-narracion-de-los-incas-1880`. «… otro día de mañana, dicen que descendiendo Uscovilca con su gente por Carminga [Carmenca] abajo, que es un cerro que estaba a la descendida a la ciudad del Cuzco, yendo de la ciudad de Los Reyes …». La batalla dura de la mañana al mediodía; Uscovilca es preso y muerto; los suyos huyen a Xaquixaguana.
   - H: Pedro Cieza de León, *Segunda parte de la Crónica del Perú* (El señorío de los Incas), cap. XLV, ed. 1880, pp. 171–173. Edición digital: archive.org, `segundaparte00ciezrich`. «Los Chancas llegaron a poner su real junto al cerro de Carmenga, que está por encima de la ciudad …». Los del Cuzco hacen «grandes hoyos llenos de piedra y por encima tapados sotilmente» en las entradas; la ciudad no tiene muralla, está entre cerros, con laderas cortadas y púas de palma. El combate dura un día, hay tregua nocturna y un segundo día; escapan unos quinientos con Hastu Guaraca; los cuerpos chancas se desuellan y rellenan en una casa larga «en la parte que se dio la batalla».

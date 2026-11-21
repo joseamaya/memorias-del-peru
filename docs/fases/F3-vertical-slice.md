@@ -164,6 +164,16 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
 
 **Criterio:** construir, guardar y cargar conserva las obras; en la batalla, una obra reduce o daña la oleada correspondiente.
 
+**Implementado (2026-11-21):**
+
+- `DefenseWorks` (campaña): **cuatro puntos** en el anillo oeste y sur del arrabal. Antes de construir se ve el foso abierto (tierra removida con borde de piedra); al construirlo, se cubre con ramas y nueve púas de palma.
+- `ChangeInteractable` (Core): hermano de `FlagInteractable` para las obras; escribe en `WorldState.changes` y deja de responder una vez hecho.
+- Solo se puede construir después de decidir quedarse (`m01_queda`): el punto existe, pero no responde antes.
+- Persistencia: la obra vive en `WorldState.changes`, que ya viaja en el guardado; al cargar se reconstruye la geometría cubierta.
+- La geometría usa el rango de altura de las esquinas: la tapa va arriba y el borde baja hasta el suelo, así no flota en la ladera.
+- Evidencia: `defense_works_check` (4 obras, negativo antes de quedarse, construcción, guardado/carga y recuento) y capturas `defensa_fosos.png`, `defensa_foso_abierto.png` y `defensa_foso_cubierto.png`.
+- **Falta** la lectura por la batalla: 3.9 hará que cada obra desgaste la oleada de su acceso.
+
 ## 10. F3.9 — Carmenca
 
 - Cerro al oeste con la bajada chanca y los accesos documentados.
