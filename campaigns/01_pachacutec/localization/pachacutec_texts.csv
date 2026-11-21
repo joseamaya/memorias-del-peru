@@ -74,3 +74,9 @@ PCH_S01_MIRADOR_MEM_TITULO,El mirador de Carmenca
 PCH_S01_MIRADOR_MEM_CUERPO,"Desde esta terraza se ven las tiendas de los chancas, al oeste, y el humo de sus fuegos. La ciudad todavía no lo sabe."
 PCH_S01_MIRADOR_AVISO,Has descubierto el mirador de Carmenca
 PCH_S01_FOSO,Cavar y cubrir el foso
+PCH_BATALLA_ESTADO,Chancas: %d · oleada %d de 3
+PCH_BATALLA_OLEADA,Oleada %d
+PCH_BATALLA_ESTANDARTE,Los chancas se retiran al campamento. Toma el estandarte.
+PCH_BATALLA_VICTORIA,Los chancas huyen. Carmenca queda en manos del barrio.
+PCH_BATALLA_DERROTA,Has caído. El barrio aguanta: vuelve a la línea.
+PCH_BATALLA_ALIADOS,Los del barrio salen contigo.
