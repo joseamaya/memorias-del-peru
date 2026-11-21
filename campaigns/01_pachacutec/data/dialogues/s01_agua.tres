@@ -1,0 +1,108 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_eavsw"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_32sdh"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_fh7ya"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_6ppq8"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_ysxvl"]
+
+[sub_resource type="Resource" id="Resource_3uv4l"]
+script = ExtResource("4_6ppq8")
+key = &"s01_agua_molienda"
+
+[sub_resource type="Resource" id="Resource_pdwx4"]
+script = ExtResource("4_6ppq8")
+key = &"rep_molendera"
+
+[sub_resource type="Resource" id="Resource_d2xl3"]
+script = ExtResource("4_6ppq8")
+key = &"rep_chacra"
+amount = -1
+
+[sub_resource type="Resource" id="Resource_o75l0"]
+script = ExtResource("4_6ppq8")
+key = &"s01_agua"
+
+[sub_resource type="Resource" id="Resource_ap5by"]
+script = ExtResource("2_32sdh")
+text_key = &"PCH_S01_AGUA_MOLIENDA"
+next_id = &"molienda"
+effects = Array[ExtResource("4_6ppq8")]([SubResource("Resource_3uv4l"), SubResource("Resource_pdwx4"), SubResource("Resource_d2xl3"), SubResource("Resource_o75l0")])
+
+[sub_resource type="Resource" id="Resource_u7cqn"]
+script = ExtResource("4_6ppq8")
+key = &"s01_agua_chacra"
+
+[sub_resource type="Resource" id="Resource_uenmx"]
+script = ExtResource("4_6ppq8")
+key = &"rep_molendera"
+amount = -1
+
+[sub_resource type="Resource" id="Resource_cj0lg"]
+script = ExtResource("4_6ppq8")
+key = &"rep_chacra"
+
+[sub_resource type="Resource" id="Resource_3rx4a"]
+script = ExtResource("4_6ppq8")
+key = &"s01_agua"
+
+[sub_resource type="Resource" id="Resource_g76k6"]
+script = ExtResource("2_32sdh")
+text_key = &"PCH_S01_AGUA_CHACRA"
+next_id = &"chacra"
+effects = Array[ExtResource("4_6ppq8")]([SubResource("Resource_u7cqn"), SubResource("Resource_uenmx"), SubResource("Resource_cj0lg"), SubResource("Resource_3rx4a")])
+
+[sub_resource type="Resource" id="Resource_4khed"]
+script = ExtResource("4_6ppq8")
+key = &"s01_agua_turnos"
+
+[sub_resource type="Resource" id="Resource_w0iuy"]
+script = ExtResource("4_6ppq8")
+key = &"rep_molendera"
+
+[sub_resource type="Resource" id="Resource_nvlwt"]
+script = ExtResource("4_6ppq8")
+key = &"rep_chacra"
+
+[sub_resource type="Resource" id="Resource_1dw3i"]
+script = ExtResource("4_6ppq8")
+key = &"s01_agua"
+
+[sub_resource type="Resource" id="Resource_qct1w"]
+script = ExtResource("2_32sdh")
+text_key = &"PCH_S01_AGUA_TURNOS"
+next_id = &"turnos"
+effects = Array[ExtResource("4_6ppq8")]([SubResource("Resource_4khed"), SubResource("Resource_w0iuy"), SubResource("Resource_nvlwt"), SubResource("Resource_1dw3i")])
+
+[sub_resource type="Resource" id="Resource_6v76e"]
+script = ExtResource("2_32sdh")
+text_key = &"PCH_S01_AGUA_AHORA"
+
+[sub_resource type="Resource" id="Resource_k86v8"]
+script = ExtResource("1_eavsw")
+id = &"start"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_S01_AGUA_1"
+choices = Array[ExtResource("2_32sdh")]([SubResource("Resource_ap5by"), SubResource("Resource_g76k6"), SubResource("Resource_qct1w"), SubResource("Resource_6v76e")])
+
+[sub_resource type="Resource" id="Resource_7tc4j"]
+script = ExtResource("1_eavsw")
+id = &"molienda"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_S01_AGUA_MOLIENDA_2"
+
+[sub_resource type="Resource" id="Resource_m1dnn"]
+script = ExtResource("1_eavsw")
+id = &"chacra"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_S01_AGUA_CHACRA_2"
+
+[sub_resource type="Resource" id="Resource_aurg7"]
+script = ExtResource("1_eavsw")
+id = &"turnos"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_S01_AGUA_TURNOS_2"
+
+[resource]
+script = ExtResource("5_ysxvl")
+nodes = Array[ExtResource("1_eavsw")]([SubResource("Resource_k86v8"), SubResource("Resource_7tc4j"), SubResource("Resource_m1dnn"), SubResource("Resource_aurg7")])

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_w6try"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_5eaql"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="3_cqois"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="4_532md"]
+
+[sub_resource type="Resource" id="Resource_1mc68"]
+script = ExtResource("1_w6try")
+id = &"start"
+speaker_key = &"PCH_NPC_AGRICULTOR"
+text_key = &"PCH_S01_AGUA_ECO_AGRICULTOR"
+
+[resource]
+script = ExtResource("4_532md")
+nodes = Array[ExtResource("1_w6try")]([SubResource("Resource_1mc68")])

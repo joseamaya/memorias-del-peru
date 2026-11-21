@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_0j2g8"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_el5le"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_2segu"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_o37ks"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_bhdl8"]
+
+[sub_resource type="Resource" id="Resource_wag6o"]
+script = ExtResource("4_o37ks")
+key = &"s01_manta_pedido"
+
+[sub_resource type="Resource" id="Resource_jchri"]
+script = ExtResource("2_el5le")
+text_key = &"PCH_S01_MANTA_SI"
+next_id = &"acepta"
+effects = Array[ExtResource("4_o37ks")]([SubResource("Resource_wag6o")])
+
+[sub_resource type="Resource" id="Resource_nshk7"]
+script = ExtResource("2_el5le")
+text_key = &"PCH_S01_MANTA_NO"
+
+[sub_resource type="Resource" id="Resource_7lexv"]
+script = ExtResource("1_0j2g8")
+id = &"start"
+speaker_key = &"PCH_NPC_TEJEDORA"
+text_key = &"PCH_S01_MANTA_1"
+choices = Array[ExtResource("2_el5le")]([SubResource("Resource_jchri"), SubResource("Resource_nshk7")])
+
+[sub_resource type="Resource" id="Resource_d4t4f"]
+script = ExtResource("1_0j2g8")
+id = &"acepta"
+speaker_key = &"PCH_NPC_TEJEDORA"
+text_key = &"PCH_S01_MANTA_ACEPTA"
+
+[resource]
+script = ExtResource("5_bhdl8")
+nodes = Array[ExtResource("1_0j2g8")]([SubResource("Resource_7lexv"), SubResource("Resource_d4t4f")])

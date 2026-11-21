@@ -44,3 +44,29 @@ PCH_M01_E3_TITULO,Carmenca
 PCH_M01_E3_CUERPO,Los chancas bajan por Carmenca. Prepara el barrio y resiste hasta que se retiren.
 PCH_M01_PARTIDA_AVISO,El inca abandona la ciudad
 PCH_M01_GUERRA_AVISO,La ciudad se prepara para la defensa
+PCH_S01_AGUA_TITULO,El turno del agua
+PCH_S01_AGUA_CUERPO,La molendera y el agricultor no se ponen de acuerdo por el agua de la acequia. Alguien tiene que decidir el turno.
+PCH_S01_MANTA_TITULO,La manta de la defensa
+PCH_S01_MANTA_CUERPO,La tejedora espera en el telar del taller. La manta abrigará a quien defienda el barrio.
+PCH_S01_AGUA_1,"El agua no alcanza para todo. Mientras yo muelo, la chacra se seca; si riego la chacra, no hay harina. Alguien tiene que decidir."
+PCH_S01_AGUA_MOLIENDA,El agua es para la molienda.
+PCH_S01_AGUA_CHACRA,El agua es para la chacra.
+PCH_S01_AGUA_TURNOS,Que se reparta por turnos.
+PCH_S01_AGUA_AHORA,Ahora no.
+PCH_S01_AGUA_MOLIENDA_2,Está bien. Moleré mientras quede agua.
+PCH_S01_AGUA_CHACRA_2,"Está bien. La chacra vivirá, pero la harina faltará esta noche."
+PCH_S01_AGUA_TURNOS_2,"Por turnos. Es lo justo, aunque nadie tenga bastante."
+PCH_S01_AGUA_ECO,El turno ya está decidido. Ahora hay que ver si alcanza.
+PCH_S01_AGUA_ECO_AGRICULTOR,Ya sé cómo quedó el agua. Trabajaré con lo que toque.
+PCH_S01_AGUA_MEM_MOLIENDA_TITULO,"El agua, para la molienda"
+PCH_S01_AGUA_MEM_MOLIENDA_CUERPO,Se decidió que el agua de la acequia fuera para moler. La molendera tendrá harina; la chacra esperará su turno.
+PCH_S01_AGUA_MEM_CHACRA_TITULO,"El agua, para la chacra"
+PCH_S01_AGUA_MEM_CHACRA_CUERPO,Se decidió que el agua de la acequia fuera para la chacra. Habrá cosecha; la harina faltará esta noche.
+PCH_S01_AGUA_MEM_TURNOS_TITULO,"El agua, por turnos"
+PCH_S01_AGUA_MEM_TURNOS_CUERPO,"Se decidió repartir el agua de la acequia por turnos. Nadie se queda sin nada, pero nadie tiene de sobra."
+PCH_S01_MANTA_1,La lana ya está aquí. ¿Tejes una manta para quien salga a la defensa?
+PCH_S01_MANTA_SI,La tejo.
+PCH_S01_MANTA_NO,Todavía no.
+PCH_S01_MANTA_ACEPTA,"El telar está afuera, junto al taller. La manta estará cuando termines."
+PCH_S01_MANTA_LISTA,La manta está seca y doblada. Que abrigue a quien la lleve.
+PCH_S01_TEJER,Tejer la manta
