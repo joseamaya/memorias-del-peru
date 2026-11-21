@@ -9,8 +9,15 @@ const DEFAULT_LABEL_FONT: int = 64
 const DEFAULT_LABEL_PIXEL: float = 0.12
 ## Elementos que no se entierran: ya tienen cimiento o están apoyados encima.
 const NO_GROUND_EXTEND: Array[String] = [
-	"Foundation", "Casa", "Techo", "Toldo", "PuestoTecho", "TelarViga", "Salto",
-	"Canopia", "Rampa",
+	"Foundation",
+	"Casa",
+	"Techo",
+	"Toldo",
+	"PuestoTecho",
+	"TelarViga",
+	"Salto",
+	"Canopia",
+	"Rampa",
 ]
 
 
@@ -30,9 +37,7 @@ static func add_box(
 	# casas con cimiento quedan fuera de esta regla.
 	if not name_hint in NO_GROUND_EXTEND and parent.has_method(&"_ground"):
 		var source: Callable = Callable(parent, &"_ground")
-		var min_y: float = min_ground(
-			source, box_position.x, box_position.z, size, orientation
-		)
+		var min_y: float = min_ground(source, box_position.x, box_position.z, size, orientation)
 		var bottom: float = parent.global_position.y + box_position.y - size.y * 0.5
 		var added: float = bottom - min_y
 		if added > 0.05:
@@ -115,12 +120,8 @@ static func add_terrain_disk(
 	for segment: int in segments:
 		var angle0: float = TAU * float(segment) / float(segments)
 		var angle1: float = TAU * float(segment + 1) / float(segments)
-		var p0: Vector3 = _disk_point(
-			radius / float(rings), angle0, height_at, lift, center
-		)
-		var p1: Vector3 = _disk_point(
-			radius / float(rings), angle1, height_at, lift, center
-		)
+		var p0: Vector3 = _disk_point(radius / float(rings), angle0, height_at, lift, center)
+		var p1: Vector3 = _disk_point(radius / float(rings), angle1, height_at, lift, center)
 		_add_disk_triangle(surface, middle, p0, p1)
 	for ring: int in range(1, rings):
 		var radius0: float = radius * float(ring) / float(rings)
@@ -161,9 +162,7 @@ static func _disk_point(
 	return Vector3(x, height + lift, z)
 
 
-static func _add_disk_triangle(
-	surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3
-) -> void:
+static func _add_disk_triangle(surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3) -> void:
 	for vertex: Vector3 in [a, b, c]:
 		surface.set_normal(Vector3.UP)
 		surface.add_vertex(vertex)
@@ -264,8 +263,12 @@ static func add_flat_ribbon(
 	for index: int in centers.size():
 		var flat_direction: Vector3 = direction(centers, index)
 		var side: Vector3 = Vector3(-flat_direction.z, 0.0, flat_direction.x) * (width * 0.5)
-		vertices.append(Vector3(centers[index].x + side.x, centers[index].y, centers[index].z + side.z))
-		vertices.append(Vector3(centers[index].x - side.x, centers[index].y, centers[index].z - side.z))
+		vertices.append(
+			Vector3(centers[index].x + side.x, centers[index].y, centers[index].z + side.z)
+		)
+		vertices.append(
+			Vector3(centers[index].x - side.x, centers[index].y, centers[index].z - side.z)
+		)
 		normals.append(Vector3.UP)
 		normals.append(Vector3.UP)
 	for index: int in range(centers.size() - 1):
@@ -304,6 +307,9 @@ static func add_label(
 	label.outline_size = 12
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.position = label_position
+	# Solo estas etiquetas las gobierna el modo de revisión; las de interacción
+	# (puertas, lechos) deben verse siempre.
+	label.add_to_group(&"review_label")
 	parent.add_child(label)
 	return label
 

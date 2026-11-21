@@ -14,6 +14,8 @@ Definir un territorio continuo y explorable para *Pachacútec — El despertar d
 
 **Escala de juego:** ~3,5 km este-oeste × 2,5 km norte-sur (8,75 km² totales), con **2–4 km² de área densa** y fondo visual no recorrible. La distancia real Cusco–Andahuaylas es mucho mayor; el mapa la comprime y lo declara.
 
+**Orientación del mundo:** −X es oeste, +X este, −Z norte y +Z sur. El mapa se dibuja con el norte arriba; en primera persona la derecha y la izquierda son relativas a la vista. Carmenca y la aproximación chanca quedan al oeste (PCH-039); el arrabal de Chocos-chacona, al oeste de la plaza; el santuario del sol, al sur (PCH-027).
+
 **Altitud de referencia:** Cusco ~3.400 m; valle intermedio ~3.600 m; paso ~4.200 m; cumbres visuales 4.500–4.800 m.
 
 **Hidrografía:** un río principal este-oeste, quebradas tributarias, manantial, acequia, bofedal y un vado. El régimen es estacional: crecidas en lluvias, estiaje en secano.

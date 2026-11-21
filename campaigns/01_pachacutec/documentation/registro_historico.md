@@ -519,3 +519,21 @@ Fichas nuevas del rediseño de la campaña (2026-11-20): la ciudad como hogar, l
 - Discrepancias entre fuentes: Sarmiento la llama «woman»; Rostworowski la llama curaca. El mando sobre los ayllus es interpretación (R) a partir del pasaje, no una frase literal. El nombre aparece con variantes: Chanan-ccuri-coca, Chanan Cury Coca.
 - Notas de representación: sin retrato «auténtico»; apariencia R. No se la convierte en excepción maravillosa ni en guerrera mítica: manda un ayllu y defiende su barrio. Su presencia no cambia el resultado de la batalla.
 - Estado de verificación: **pendiente de firma del responsable** (H).
+
+---
+
+## La casa y el lecho (2026-11-20)
+
+Fichas del mobiliario doméstico que la tarea 3.2 dejó sin documento. Cierran el hueco entre la vivienda (PCH-007) y el descanso del jugador (3.7).
+
+### PCH-041 — El lecho doméstico
+- Tipo: objeto / mobiliario doméstico
+- Clasificación: A (poyo bajo usado como lecho) / R (estera y manta)
+- Uso en el juego: `core/world/interior_room.gd`, lecho de la casa del jugador y de la casa de Chanan Cury Coca; `SleepSpotInteractable` permite dormir solo en el del jugador.
+- Fuentes:
+  - A (leída por el agente el 2026-11-20 en la edición en línea, sin paginación por pasaje): «Spatial Analysis of the Functional Andean Worldview of the Archaeological Site of Ankasmarka, Cusco—Peru 2024», *Quaternary* (MDPI), https://www.mdpi.com/2571-550X/8/2/27, §3.1.1–3.1.2. En los recintos de Ankasmarka (Calca, Cusco) hay *patanas* —plataformas de piedra— que se elevan entre 0,30 y 0,80 m sobre el suelo rocoso; la publicación las describe como superficie de descanso («used as a resting bed») y anota que el piso es de tierra y arcilla y que junto a la plataforma hay un banco semicircular.
+  - A (leída por el agente el 2026-11-20 en la edición en línea): Joyce Marcus, *Excavations at Cerro Azul, Cañete Valley, Peru*, University of Michigan Museum of Anthropological Archaeology, https://sites.lsa.umich.edu/peru-archaeology/. Las residencias de época inca (1470–1530) tienen «living quarters with built-in sleeping benches», es decir, dormitorios con bancos-lecho construidos.
+  - Contexto: PCH-007 (vivienda de piedra y barro; los poyos de pirca ya se declaran R) y PCH-010 (textiles de camélido y algodón).
+- Discrepancias entre fuentes: Ankasmarka admite que las plataformas pudieron servir también de almacén o de base de trabajo; el juego elige el uso como lecho porque la fuente lo documenta así en la misma huella. Marcus es de la costa; se usa como evidencia de que el banco-lecho existe en época inca, no como modelo formal para la sierra.
+- Notas de representación: poyo de piedra de **0,32 m**, dentro del rango documentado (0,30–0,80 m), con estera de totora y manta doblada de lana de camélido. La estera y la manta son **R**: no hay cita directa para su disposición concreta; se infieren del equipo doméstico andino y de los textiles de PCH-010. Sin patas, sin colchón y sin cabecera de madera: la cama europea es anacrónica. En la casa del curaca la manta es de otro color, sin que eso implique un rango documentado.
+- Estado de verificación: **pendiente de firma del responsable** (A / R).

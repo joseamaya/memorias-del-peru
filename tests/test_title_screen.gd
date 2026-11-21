@@ -23,10 +23,18 @@ func test_title_screen() -> bool:
 	for word: String in SPOILERS:
 		ok = ok and not subtitle.to_lower().contains(word)
 	var start: Button = screen.get_start_button()
+	var cont: Button = screen.get_continue_button()
 	var quit: Button = screen.get_quit_button()
-	ok = ok and start != null and quit != null
+	ok = ok and start != null and cont != null and quit != null
 	ok = ok and start.text == tr("UI_START") and not start.text.begins_with("UI_")
+	ok = ok and cont.text == tr("UI_CONTINUE") and not cont.text.begins_with("UI_")
 	ok = ok and quit.text == tr("UI_QUIT") and not quit.text.begins_with("UI_")
+	# Continuar solo se ofrece si la ranura automática de la campaña existe.
+	var save: SaveManagerService = SaveManagerService.instance()
+	var has_save: bool = (
+		save != null and save.has_slot(screen.get_campaign().id, SaveManagerService.AUTO_SLOT)
+	)
+	ok = ok and cont.disabled != has_save
 	ok = ok and not start.disabled and start.has_focus()
 	screen.free()
 	return ok

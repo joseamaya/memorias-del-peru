@@ -2,7 +2,7 @@
 
 > La prioridad es el mundo habitable y su aspecto; las únicas reglas duras son licencias/procedencia, rigor histórico y pruebas. Cada fase tiene precondiciones y criterios de aceptación; una fase no se cierra con errores críticos ni con criterios incumplidos.
 
-**Fase activa:** **F3 — Vertical slice de mundo abierto (ficha en preparación).** F2 se cerró el 2026-11-20 con el blockout aprobado **con cambios**; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. **El 2026-11-20 el responsable decidió retirar la campaña lineal y su trama inventada** y repensar la campaña desde el contexto histórico. Por eso el orden de F3 es: retirar lo lineal, revisar el contexto histórico, repensar la campaña y escribir la ficha de alcance. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
+**Fase activa:** **F3 — Vertical slice de mundo abierto.** F2 se cerró el 2026-11-20 con el blockout aprobado **con cambios**; Terrain3D y Cyclops siguen en adopción provisional hasta el sector real. **El 2026-11-20 el responsable decidió retirar la campaña lineal y su trama inventada** y repensar la campaña desde el contexto histórico. Por eso el orden de F3 es: retirar lo lineal, revisar el contexto histórico, repensar la campaña y escribir la ficha de alcance. La campaña 01 se redefine como un territorio continuo con fases históricas, no como cinco escenas.
 
 ## Estado
 
@@ -17,7 +17,7 @@
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
 | **F1 — Spikes técnicos** | **Cerrada** (2026-11-19) | [Ficha de F1](fases/F1-spikes-tecnicos.md) |
 | **F2 — Geografía y blockout** | **Cerrada** (aprobada con cambios) | 2026-11-20 · [Ficha de F2](fases/F2-geografia-y-blockout.md) |
-| **F3 — Vertical slice** | **En preparación** (ficha pendiente) | — |
+| **F3 — Vertical slice** | **En curso** (3.1–3.4 y 3.7 con base implementada; [ficha](fases/F3-vertical-slice.md)) | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
 | F5 — Validación y cierre de la campaña 01 | Prevista | — |
 | F6 — Campañas II–IV | Futura | — |

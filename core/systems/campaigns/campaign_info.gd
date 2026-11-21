@@ -12,6 +12,8 @@ const FIRST_CAMPAIGN_SETTING: String = "memorias/campaign/first"
 
 ## Escena con la que empieza la campaña.
 @export_file("*.tscn") var entry_scene: String = ""
+## Identificador estable de la campaña; da nombre a su carpeta de guardado.
+@export var id: StringName = &""
 ## Clave de localización del subtítulo que se muestra bajo el título del juego.
 @export var subtitle_key: StringName = &""
 

@@ -7,6 +7,8 @@ const SETTLE_FRAMES: int = 240
 const EXPECTED_DOORS: int = 3
 const MIN_ROOM_MESHES: int = 8
 const MAX_RETURN_DISTANCE: float = 2.0
+## El lecho es un poyo bajo, no una cama con patas (PCH-041).
+const MAX_SLEEP_HEIGHT: float = 0.6
 
 
 func _initialize() -> void:
@@ -39,6 +41,11 @@ func _run() -> void:
 		return
 	var doors: Array[InteriorDoor] = blockout.get_interior_doors()
 	ok = ok and doors.size() == EXPECTED_DOORS
+	# El modo de revisión oculta las etiquetas de POI, no las de interacción:
+	# las puertas deben conservar sus leyendas visibles.
+	for door: InteriorDoor in doors:
+		for label: Node in door.find_children("*", "Label3D", false, false):
+			ok = ok and (label as Label3D).is_visible_in_tree()
 	var visited: Array[StringName] = []
 	var room_meshes: int = 0
 	for door: InteriorDoor in doors:
@@ -53,9 +60,21 @@ func _run() -> void:
 		if room != null:
 			visited.append(room.dressing)
 			room_meshes = maxi(room_meshes, room.get_mesh_count())
+			# Solo la casa del jugador tiene lecho utilizable para dormir.
+			var spots: Array[Node] = room.find_children("*", "SleepSpotInteractable", true, false)
+			var expected_spots: int = 1 if door.player_home else 0
+			ok = ok and spots.size() == expected_spots
+			if not spots.is_empty():
+				var spot: SleepSpotInteractable = spots[0] as SleepSpotInteractable
+				ok = ok and spot.get_collider_size().y <= MAX_SLEEP_HEIGHT
+				ok = ok and not spot.get_interaction_text().begins_with("UI_")
 		ok = ok and controller.exit()
 		ok = ok and not controller.is_inside()
 		ok = ok and player.global_position.distance_to(before) <= MAX_RETURN_DISTANCE
+	# La puerta de la casa del jugador se distingue sin cambiar la acción.
+	ok = ok and doors[0].player_home and doors[0].get_caption_text() != ""
+	ok = ok and not doors[1].player_home and doors[1].get_caption_text().is_empty()
+	ok = ok and not doors[2].player_home and doors[2].get_caption_text().is_empty()
 	ok = ok and visited.size() == EXPECTED_DOORS
 	ok = ok and visited[0] == &"home" and visited[1] == &"authority"
 	ok = ok and visited[2] == &"workshop"

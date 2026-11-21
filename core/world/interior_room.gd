@@ -13,13 +13,24 @@ const WALL: float = 0.3
 const DOOR_WIDTH: float = 1.4
 
 const STONE: Color = Color(0.62, 0.58, 0.50)
+## Fibra de totora de la estera; la manta cambia según la casa.
+const TOTORA: Color = Color(0.72, 0.64, 0.42)
+const BLANKET_HOME: Color = Color(0.55, 0.35, 0.28)
+const BLANKET_FINE: Color = Color(0.62, 0.36, 0.22)
 const PLASTER: Color = Color(0.78, 0.72, 0.60)
 const WOOD: Color = Color(0.36, 0.28, 0.20)
 const FABRIC: Color = Color(0.55, 0.35, 0.28)
 const SOIL: Color = Color(0.40, 0.32, 0.22)
 
+## Posición del lecho dentro de la sala, en XZ local.
+const BED_POSITION: Vector2 = Vector2(-2.6, 1.4)
+## Altura del poyo: un banco bajo de piedra, no una cama con patas (PCH-041).
+const SLEEP_PLATFORM_HEIGHT: float = 0.32
+
 ## Vestido de la sala: `home`, `authority` o `workshop`.
 @export var dressing: StringName = &"home"
+## Casa del jugador: la cama se puede usar para dormir y guardar.
+@export var player_home: bool = false
 
 var _materials: Dictionary[String, StandardMaterial3D] = {}
 
@@ -72,7 +83,8 @@ func _build_light() -> void:
 func _build_dressing() -> void:
 	match dressing:
 		&"authority":
-			_bed(-2.6, 1.4, 2.2, 0.6)
+			# El lecho del curaca se ve pero no se usa: no es la casa del jugador.
+			_sleeping_platform(BED_POSITION.x, BED_POSITION.y, BLANKET_FINE)
 			_loom(1.8, -1.4)
 			_stack(-2.4, -2.0)
 			_bench(0.0, 2.2)
@@ -82,15 +94,38 @@ func _build_dressing() -> void:
 			_stack(2.6, 1.8)
 			_bench(0.0, 2.2)
 		_:
-			_bed(-2.6, 1.4, 2.2, 0.6)
+			var mattress: MeshInstance3D = _sleeping_platform(
+				BED_POSITION.x, BED_POSITION.y, BLANKET_HOME
+			)
+			if player_home:
+				_add_sleep_spot(mattress)
 			_hearth(1.9, 1.6)
 			_stack(-2.6, -1.9)
 			_bench(0.2, 2.2)
 
 
-func _bed(x: float, z: float, width: float, height: float) -> void:
-	_box(Vector3(width, height, 2.0), Vector3(x, height * 0.5, z), WOOD, false)
-	_box(Vector3(width - 0.2, 0.18, 1.8), Vector3(x, height + 0.09, z), FABRIC, false)
+## Lecho utilizable: el colisionador lo pone [SleepSpotInteractable]; aquí solo
+## se ancla al mueble y se le pasa la estera para el resaltado.
+func _add_sleep_spot(highlight: MeshInstance3D) -> void:
+	var spot: SleepSpotInteractable = SleepSpotInteractable.new()
+	spot.name = "SleepSpot"
+	spot.position = Vector3(BED_POSITION.x, 0.0, BED_POSITION.y)
+	spot.highlight_target = highlight
+	add_child(spot)
+
+
+## Lecho andino: poyo bajo de piedra, estera de totora y manta doblada a los
+## pies, con un lienzo doblado a la cabecera. Devuelve la estera, que es la
+## malla que se resalta al enfocar.
+func _sleeping_platform(x: float, z: float, blanket: Color) -> MeshInstance3D:
+	var height: float = SLEEP_PLATFORM_HEIGHT
+	_box(Vector3(2.2, height, 2.0), Vector3(x, height * 0.5, z), STONE, false)
+	var mat: MeshInstance3D = _box(
+		Vector3(2.0, 0.07, 1.8), Vector3(x, height + 0.035, z), TOTORA, false
+	)
+	_box(Vector3(1.9, 0.12, 0.7), Vector3(x, height + 0.13, z + 0.5), blanket, false)
+	_box(Vector3(0.5, 0.16, 0.35), Vector3(x - 0.65, height + 0.15, z - 0.6), blanket, false)
+	return mat
 
 
 func _loom(x: float, z: float) -> void:

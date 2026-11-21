@@ -160,7 +160,7 @@ godot --headless --path . --import 2>&1 | tee /tmp/import.log
 python3 tools/check_output.py /tmp/import.log
 ```
 
-La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI, recorrido regional, modo de revisión y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
+La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI, recorrido regional, población, descanso y guardado, modo de revisión y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
@@ -252,6 +252,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
 | `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
 | `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado y ciclo mundo/reloj/jugador |
+| `test_rest_cycle` | Descanso: hora de despertar, salto de día antes y después de la hora y aplicación al reloj |
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
 | `test_sector_streamer` | Celdas, radio de carga, distancia, siempre cargado y registro de definiciones |
 | `sector_streaming_check.gd` | Carga asíncrona de escenas reales, descarga por radio y sector siempre cargado |
@@ -262,13 +263,14 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `llacta_blockout_check.gd` | S3 con 17 casas, 9 POI, 20 colisiones, plaza despejada, acequia sin cruzar casas y rutas al manantial y a las afueras |
 | `cusco_blockout_check.gd` | S1 con 38 casas (28 de ayllu y 10 del arrabal), 7 POI, Coricancha, mercado, talleres, depósitos, acequia entre calles y rutas a afueras y llacta |
 | `city_check.gd` | Ciudad habitable: aparición en el arrabal de Chocos-chacona, 10 casas de barrio, plaza del Cusco a 154 m y jugador sobre el terreno |
-| `interiors_check.gd` | Tres interiores transitables: sala instanciada fuera del terreno, vestidos distintos y vuelta exacta a la puerta |
+| `interiors_check.gd` | Tres interiores transitables: sala instanciada fuera del terreno, vestidos distintos, lecho bajo andino solo en la casa del jugador, leyendas visibles y vuelta exacta a la puerta |
 | `day_night_check.gd` | Ciclo día/noche: el reloj mueve sol, ambiente y niebla; cuatro franjas distinguibles y sin saltos de energía |
 | `city_population_check.gd` | 24 NPC registrados, 8 nombrados, rutinas de mañana y noche, y 20 min simulados sin atravesar casas |
+| `city_save_round_trip.gd` | Dormir en la casa del jugador, guardado automático y carga en una instancia nueva: hora, NPC, misión, inventario y obras |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |
-| `region_review_check.gd` | Cámara cercana, etiquetas ocultas por defecto, tecla H con una etiqueta y vista cenital con T |
+| `region_review_check.gd` | Cámara cercana, etiquetas de POI ocultas por defecto, tecla H con una etiqueta y vista cenital con T (las de interacción siempre visibles) |
 | `region_player_check.gd` | Jugador en primera persona sobre el terreno, 9 m andados, plaza, streaming, rescate y marcador de S2 oculto |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
@@ -302,7 +304,6 @@ Pruebas de la slice de F3, que se escriben con cada tarea de la [ficha de F3](fa
 | Población | `city_population_check` | 24 NPC, 8 nombrados, 20 min sin atascos |
 | Misión | `mission_check` | Tres etapas con estado y consecuencia persistente |
 | Secundarias | `side_activities_check` | Dos actividades con consecuencia; descubrimiento sin marcador |
-| Guardado | `city_save_round_trip` | Hora, NPC, misión, inventario y obras |
 | Defensa | `defense_works_check` | Fosos y púas persistentes y leídos por la batalla |
 | Batalla | `carmenca_check` | Tres oleadas sin bloqueos; estandarte como objetivo |
 

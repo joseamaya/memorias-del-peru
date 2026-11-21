@@ -41,7 +41,8 @@ var _engine_messages: Array[String] = []
 ##
 ## [method Logger._log_message] se llama desde otros hilos, así que solo se
 ## encola bajo mutex; el volcado al archivo ocurre en [method _process].
-class SessionErrorLogger extends Logger:
+class SessionErrorLogger:
+	extends Logger
 	var sink: Callable = Callable()
 
 	func _log_message(message: String, error: bool) -> void:
@@ -70,6 +71,14 @@ class SessionErrorLogger extends Logger:
 				kind = "error de shader"
 		var text: String = code if not code.is_empty() else rationale
 		sink.call(kind + ": " + text + " (" + file + ":" + str(line) + ")")
+
+
+## Devuelve el autoload, o `null` si no existe.
+static func instance() -> SessionLogService:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("SessionLog") as SessionLogService
 
 
 func _ready() -> void:
