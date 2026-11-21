@@ -162,6 +162,13 @@ python3 tools/check_output.py /tmp/import.log
 
 La CI de GitHub Actions (`.github/workflows/ci.yml`) comprueba en cada PR y push a `main`: inventario de pruebas, lint y formato de los GDScript nuevos, importación, límites de GDScript, pruebas, comportamiento del combate, recorrido de la llacta, mensajero y duda del acto I, arco completo, sector gris, LOD de 60 NPC, blockout de F1.7, streaming con carga/memoria, relieve regional de F2, streaming de sectores, rutas y navmesh, blockout de la llacta, del Cusco y del oeste, POI, recorrido regional, población, descanso y guardado, diálogo y diario, misión principal, actividades secundarias, mirador de Carmenca, obras de defensa, combate del jugador, batalla de Carmenca, antorcha de mano, modo de revisión y exportación de Linux/Windows; el build de Linux se arranca en headless. La salida de cada ejecución pasa por `tools/check_output.py`: cualquier error o advertencia ligado a `res://` falla el job. Si la CI falla, la entrega no está terminada.
 
+Medir la batalla de Carmenca con la oleada completa (peor caso de F3):
+
+```bash
+godot --path . --disable-vsync --resolution 1920x1080 \
+    res://tests/scenes/measure_battle.tscn -- --profile=1
+```
+
 Auditar una escena antes de añadir arte (draw calls, primitivas, luces con sombra):
 
 ```bash
@@ -342,6 +349,8 @@ Las capturas se escriben en `build/evidencia/`; las aprobadas, en la documentaci
 
 **Blockout regional.** La prueba humana de F2 tiene un protocolo propio con rutas, checkpoints, registro de incidencias y veredicto en [prueba_blockout.md](../campaigns/01_pachacutec/documentation/mundo/prueba_blockout.md). Las capturas de trabajo van a `build/evidencia/`; las aprobadas, a `campaigns/01_pachacutec/documentation/img/f2_blockout/`.
 
+**Vertical slice.** La pasada humana de F3, de 30 a 45 minutos, tiene su propio protocolo cronometrado, con registro de bloques e incidencias, en [prueba_vertical_slice.md](../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md); el veredicto se firma en el [acta de cierre de F3](fases/F3-acta-de-cierre.md).
+
 **Qué se revisa:**
 
 1. **Cámara del jugador:** horizonte, encuadre y escala de puertas, casas, personas (1,70 m) y caminos.
@@ -350,7 +359,7 @@ Las capturas se escriben en `build/evidencia/`; las aprobadas, en la documentaci
 4. **Anacronismos:** lista de [docs/07](07_convenciones_historicas.md) §4.
 5. **Comparación:** qué mejora, qué empeora y qué no cambió.
 
-**Rendimiento.** En la misma sesión, medir con `tools/scene_audit.gd` (draw calls, primitivas y luces con sombra) y, si cambia el sector, con `measure_cusco.tscn` o `measure_blockout.tscn`: tres pasadas por perfil, mediana, p1 y carga del sistema. Presupuesto en [docs/08](08_entorno_y_rendimiento.md) §4.
+**Rendimiento.** En la misma sesión, medir con `tools/scene_audit.gd` (draw calls, primitivas y luces con sombra) y, si cambia el sector, con `measure_cusco.tscn`, `measure_blockout.tscn` o `measure_battle.tscn`: tres pasadas por perfil, mediana, p1 y carga del sistema. Presupuesto en [docs/08](08_entorno_y_rendimiento.md) §4.
 
 **Evidencia.** Las capturas aprobadas se versionan en la documentación de la campaña; las de trabajo pueden quedar en `build/` (ignorado por Git). La ficha de la tarea anota tomas, comandos, cifras, veredicto y fecha; el PR enlaza la carpeta y resume el antes/después.
 
@@ -366,7 +375,7 @@ Al cerrar una tarea de mundo:
 4. **Guardado:** guardar, salir, cargar y comprobar posición, misión, NPC, inventario, hora y un cambio del mundo.
 5. **Vida:** comprobar que al menos tres NPC siguen su rutina y que el mundo cambia con la hora.
 6. **Descubrimiento:** encontrar un POI sin marcador y verificar que el diario y el mapa lo registran.
-7. **Rendimiento:** `scene_audit.gd` por sector y `measure_cusco.tscn` en el peor caso.
+7. **Rendimiento:** `scene_audit.gd` por sector, `measure_cusco.tscn` en la ciudad y `measure_battle.tscn` en la batalla.
 8. **Histórico:** revisar la clasificación del sector y sus fichas.
 
 ### Duración de la partida

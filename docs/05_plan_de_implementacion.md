@@ -129,6 +129,8 @@
 
 **Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** **en curso** desde el 2026-11-20. Arranque completado: retirada de la campaña lineal, revisión del contexto histórico (PCH-039 y PCH-040), rediseño de la campaña y ficha de alcance escrita: [ficha de F3](fases/F3-vertical-slice.md). Las tareas 3.1–3.10 se ejecutan en el orden que fija la ficha; ninguna se adelanta sin su predecesora.
 
+**Cierre preparado (2026-11-21):** 3.1–3.9 están implementadas y probadas; 3.10 tiene el [protocolo humano](../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) y la medición por sector y perfil (S1 y la batalla: 66,4/66,7 FPS en Medio, 61,0/61,1 en Bajo, dentro del presupuesto). Falta la pasada del responsable y su firma en el [acta](fases/F3-acta-de-cierre.md) para cerrar la fase.
+
 **Objetivo:** demostrar que el mundo se puede **habitar y jugar**, no solo recorrer.
 
 **Contenido mínimo:** la slice demuestra la **ciudad habitable y la defensa** (fases 1 y 2 de la campaña). El detalle, los criterios por tarea y el orden de recorte viven en la [ficha de F3](fases/F3-vertical-slice.md).

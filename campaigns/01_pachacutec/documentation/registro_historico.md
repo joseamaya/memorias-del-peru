@@ -507,7 +507,7 @@ Fichas nuevas del rediseño de la campaña (2026-11-20): la ciudad como hogar, l
   - H (tradición): Pachacuti Yamqui, *Relación de antigüedades* (c. 1613), pp. 271–272: la victoria se prolonga hasta Quiyachille (ver PCH-031).
 - Discrepancias entre fuentes: el campamento chanca (Carmenca en Betanzos y Cieza; Ichu-pampa y Cusi-pampa en Sarmiento); el jefe chanca (Uscovilca en Betanzos; Hastu Guaraca en Cieza; Asto-huaraca y Tomay-huaraca en Sarmiento); el lugar de la huida y de la segunda batalla (Xaquixaguana en Betanzos; Ichu-pampa en Sarmiento); la duración (medio día en Betanzos; dos días en Cieza). Ninguna versión puede darse por definitiva con las fuentes disponibles.
 - Notas de representación: el escenario sigue a **Betanzos y Cieza** para el terreno —cerro al oeste, ciudad sin muralla, fosos con piedra y púas de palma— y a **Sarmiento** para la maniobra —cuatro entradas y arrabal—. No se muestran cifras de ejército. Los nombres de los jefes chancas se presentan como versiones: un personaje puede decir «Uscovilca» y otro «Hastu Guaraca». La existencia del combate y su carácter defensivo es H (tradición); la disposición concreta del escenario es R.
-- Estado de verificación: **pendiente de firma del responsable** (H / R).
+- Estado de verificación: **verificado (H / R)** por el responsable del proyecto el 2026-11-21.
 
 ### PCH-040 — Chanan Cury Coca
 - Tipo: personaje
@@ -518,7 +518,7 @@ Fichas nuevas del rediseño de la campaña (2026-11-20): la ciudad como hogar, l
   - Síntesis moderna: María Rostworowski, *Historia del Tahuantinsuyu* (1988), capítulo de la guerra chanca: la presenta como curaca al frente de los ayllus de Chaco y Chacona.
 - Discrepancias entre fuentes: Sarmiento la llama «woman»; Rostworowski la llama curaca. El mando sobre los ayllus es interpretación (R) a partir del pasaje, no una frase literal. El nombre aparece con variantes: Chanan-ccuri-coca, Chanan Cury Coca.
 - Notas de representación: sin retrato «auténtico»; apariencia R. No se la convierte en excepción maravillosa ni en guerrera mítica: manda un ayllu y defiende su barrio. Su presencia no cambia el resultado de la batalla.
-- Estado de verificación: **pendiente de firma del responsable** (H).
+- Estado de verificación: **verificado (H)** por el responsable del proyecto el 2026-11-21.
 
 ---
 
@@ -536,7 +536,7 @@ Fichas del mobiliario doméstico que la tarea 3.2 dejó sin documento. Cierran e
   - Contexto: PCH-007 (vivienda de piedra y barro; los poyos de pirca ya se declaran R) y PCH-010 (textiles de camélido y algodón).
 - Discrepancias entre fuentes: Ankasmarka admite que las plataformas pudieron servir también de almacén o de base de trabajo; el juego elige el uso como lecho porque la fuente lo documenta así en la misma huella. Marcus es de la costa; se usa como evidencia de que el banco-lecho existe en época inca, no como modelo formal para la sierra.
 - Notas de representación: poyo de piedra de **0,32 m**, dentro del rango documentado (0,30–0,80 m), con estera de totora y manta doblada de lana de camélido. La estera y la manta son **R**: no hay cita directa para su disposición concreta; se infieren del equipo doméstico andino y de los textiles de PCH-010. Sin patas, sin colchón y sin cabecera de madera: la cama europea es anacrónica. En la casa del curaca la manta es de otro color, sin que eso implique un rango documentado.
-- Estado de verificación: **pendiente de firma del responsable** (A / R).
+- Estado de verificación: **verificado (A / R)** por el responsable del proyecto el 2026-11-21.
 
 ---
 
@@ -549,4 +549,4 @@ Fichas del mobiliario doméstico que la tarea 3.2 dejó sin documento. Cierran e
 - Fuentes: se apoya en PCH-027 (fuego comunal, R de ambiente) y PCH-007 (vivienda de piedra y barro), que documentan el fuego doméstico. No hay cita para una tea de mano concreta en el arrabal de 1438.
 - Discrepancias entre fuentes: —
 - Notas de representación: palo de madera con cabeza de fibra y una llama baja; se enciende al caer el sol y se apaga de día. Se descartan la lámpara de aceite y la vela: no hay documento para esas formas en este contexto y la tea es la solución más simple que no introduce tecnología posterior. La luz no proyecta sombras por rendimiento, no por criterio histórico.
-- Estado de verificación: **pendiente de firma del responsable** (R).
+- Estado de verificación: **verificado (R)** por el responsable del proyecto el 2026-11-21.

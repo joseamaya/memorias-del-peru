@@ -6,6 +6,21 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.10: cierre preparado
+
+**Decisión:** la fase no se cierra con código escrito sino con una pasada humana y una firma. Se prepara todo lo que no depende del responsable: protocolo cronometrado, medición por sector y perfil, acta y deuda declarada.
+
+| Cambio | Detalle |
+|---|---|
+| Protocolo | Ocho bloques de 0 a 45 min, del arrabal al estandarte, con registro de bloques e incidencias: `documentation/prueba_vertical_slice.md`. |
+| Medición | S1 y la batalla, Medio y Bajo, tres pasadas: 66,4 y 66,7 FPS de mediana en Medio; 61,0 y 61,1 en Bajo; 248–253 draw calls; 190 MB; peor fotograma de 24,0 ms. Todo bajo presupuesto. |
+| Escena nueva | `measure_battle.tscn` fuerza la oleada de ocho chancas con seis aliados y muestrea 300 fotogramas. No entra en CI: necesita ventana real para contar draw calls. |
+| Fallo corregido | Los chancas se liberaban solos a los 1,4 s de morir y la batalla seguía con la referencia en `_enemies`; al recorrerla, GDScript lanzaba «Trying to assign invalid previously freed instance» cada fotograma. Ahora se quitan de la lista al salir del árbol. `carmenca_check` espera a que uno caiga y se libere. |
+| Deuda | Sección nueva en la ficha de F3 con lo que queda para F4: arte, personajes, texturas, audio, equilibrio, animación y perfiles. |
+| Acta | `docs/fases/F3-acta-de-cierre.md`, versión 0.9: medición, evidencia, deuda y decisión pendiente de firma. |
+| Observación | Bajo mide menos FPS que Medio (61 frente a 66) porque su escala 3D es 0,75 frente a 0,68. Se revisa en F4; ambos cumplen su umbral. |
+| Fichas | Se firman PCH-039 (defensa del Cusco), PCH-040 (Chanan Cury Coca), PCH-041 (lecho andino) y PCH-042 (antorcha) como verificadas por el responsable. Quedan PCH-037 y PCH-038, de la llacta y fuera de la slice. |
+
 ## 2026-11-21 — F3.9.b: la batalla de Carmenca
 
 **Decisión:** la batalla se resuelve con oleadas authored y un máximo de 8 chancas y 6 aliados, sin ejército simulado. Las obras construidas y la manta cambian el combate.
