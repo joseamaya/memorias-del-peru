@@ -19,7 +19,7 @@ const NAMED_NPCS: int = 8
 const ANCHORS: Dictionary[StringName, Vector2] = {
 	&"plaza": Vector2(0.0, 10.0),
 	&"mercado": Vector2(-70.0, 60.0),
-	&"coricancha": Vector2(0.0, -46.0),
+	&"coricancha": Vector2(0.0, 62.0),
 	&"taller": Vector2(58.0, -44.0),
 	&"depositos": Vector2(108.0, -92.0),
 	&"ayllu_este": Vector2(86.0, 86.0),
