@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.6.a: el turno del agua y la manta
+
+**Decisión:** las secundarias se construyen como cadenas de banderas con sus grafos y un punto en el mundo, sin sistema de misiones aparte. La consecuencia se lee en el diario y en lo que dicen los vecinos.
+
+| Cambio | Detalle |
+|---|---|
+| Reparto del agua | Al entregar el agua, la molendera plantea el conflicto con la chacra. Tres desenlaces con bandera, contador de reputación y memoria propia en el diario. |
+| Reputación | Se guarda como contador en `WorldState` (`rep_molendera`, `rep_chacra`) porque la hoja de personaje aún no existe; el guardado ya la conserva. |
+| Manta | La tejedora la pide al recibir la lana; el telar del taller la teje y la manta se ve colgada. En 3.9 reduce el daño recibido. |
+| Orden al cargar | Los diálogos se restauran cuando la población ya está construida: antes, `set_dialogue` no encontraba a quién cambiar. |
+| Pendiente | El mirador sobre Carmenca, con su campamento y el descubrimiento sin marcador (3.6.b). |
+| Pruebas | `side_activities_check`: dos cadenas, negativo del telar, diario y guardado/carga. |
+
 ## 2026-11-21 — La mano de interacción, fuera del centro
 
 **Decisión:** se conserva el gesto de mano al interactuar y se corrige su encuadre. No es código de la campaña retirada: `FirstPersonHands` es la mano del jugador y la usa **todo** interactuable (puertas, lecho, agua, encargos) con `hand_action`.

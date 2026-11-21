@@ -70,6 +70,14 @@ func is_built() -> bool:
 	return _built
 
 
+## Grafo de diálogo actual de un NPC con nombre, para pruebas y depuración.
+func get_dialogue_id(id: StringName) -> StringName:
+	for definition: NpcDefinition in _definitions:
+		if definition.id == id:
+			return definition.dialogue_id
+	return &""
+
+
 ## Cambia el diálogo de un NPC con nombre. La misión lo usa al avanzar de etapa.
 func set_dialogue(id: StringName, dialogue_id: StringName) -> void:
 	for definition: NpcDefinition in _definitions:

@@ -130,6 +130,14 @@ Tres etapas, sin sistema genérico de misiones: recursos de misión y banderas e
 
 **Criterio:** ninguna es un recado vacío; la consecuencia se lee en el mundo o en el diario; el descubrimiento se registra sin marcador.
 
+**Implementado (2026-11-21) — social y económica:**
+
+- `SideActivities` (campaña): escucha las banderas de `WorldState`, cambia la conversación de la molendera, el agricultor y la tejedora, y escribe el diario. Al cargar se reconstruye desde las banderas; no serializa nada aparte.
+- **El turno del agua:** al entregar el agua, la molendera plantea el reparto entre la molienda y la chacra. Tres desenlaces (molienda, chacra, turnos) dejan su bandera, su contador de reputación (`rep_molendera`, `rep_chacra`) y una **memoria propia** en el diario con clasificación. La molendera y el agricultor cambian de conversación después.
+- **La manta:** al entregar la lana, la tejedora pide una manta para quien salga a la defensa. El telar del taller —los tres postes que ya dibujaba el blockout— la teje; la manta queda colgada y visible. En 3.9 reducirá el daño recibido.
+- Evidencia: `side_activities_check` (dos cadenas, negativo del telar sin encargo, diario y guardado/carga) y capturas `secundaria_telar.png` y `secundaria_diario.png`.
+- **Falta** el descubrimiento sin marcador (mirador sobre Carmenca), que se entrega en 3.6.b con su lugar y su campamento.
+
 ## 8. F3.7 — Descanso y guardado
 
 Dormir en la casa del jugador avanza a la mañana siguiente. Guardar desde la cama; cargar restaura hora, NPC, misión, inventario y obras.

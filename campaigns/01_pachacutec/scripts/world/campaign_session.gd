@@ -21,6 +21,7 @@ var _player: PlayerFPS = null
 var _population: CityPopulation = null
 var _overlay: SleepOverlay = null
 var _mission: MissionController = null
+var _side: SideActivities = null
 var _pending_npcs: Dictionary = {}
 var _last_save_ok: bool = false
 var _restored: bool = false
@@ -42,6 +43,7 @@ func begin() -> void:
 		_population.built.connect(_on_population_built)
 	_restored = _restore()
 	_build_mission()
+	_build_side_activities()
 
 
 ## Duerme en la casa del jugador: sale del interior, avanza a la mañana
@@ -103,6 +105,17 @@ func get_overlay() -> SleepOverlay:
 
 func get_mission() -> MissionController:
 	return _mission
+
+
+func get_side_activities() -> SideActivities:
+	return _side
+
+
+func _build_side_activities() -> void:
+	_side = SideActivities.new()
+	_side.name = "SideActivities"
+	add_child(_side)
+	_side.setup(_world, _population)
 
 
 func _build_mission() -> void:

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_5ieom"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_mmgj5"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="3_w7ji7"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="4_86y86"]
+
+[sub_resource type="Resource" id="Resource_bdj0i"]
+script = ExtResource("1_5ieom")
+id = &"start"
+speaker_key = &"PCH_NPC_MOLENDERA"
+text_key = &"PCH_S01_AGUA_ECO"
+
+[resource]
+script = ExtResource("4_86y86")
+nodes = Array[ExtResource("1_5ieom")]([SubResource("Resource_bdj0i")])
