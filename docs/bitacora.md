@@ -6,6 +6,20 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.5.b: la misión principal
+
+**Decisión:** la misión de la ciudad se construye con recursos de etapa y banderas de `WorldState`, sin motor genérico, como pide la ficha.
+
+| Cambio | Detalle |
+|---|---|
+| Etapas | `MissionDefinition`/`MissionStage` en `data/missions/`: tres etapas y sus banderas. `MissionController` avanza cuando están todas. |
+| Etapa 1 | Agua, lana y maíz: se aceptan en diálogo y se cumplen en un punto del mundo (`FlagInteractable`), no por código. |
+| Etapa 2 | Columna authored de siete cápsulas que abandona la ciudad hacia el oeste; la curáca cambia de conversación; quedarse fija `m01_queda`. |
+| Etapa 3 | Fase `guerra` y bandera `m01_victoria`, que la batalla de 3.9 usará para cerrar la misión. |
+| Persistencia | La etapa se guarda en `WorldState`; el diario se reconstruye al cargar. |
+| Diario | Título «Diario», textos largos con salto de línea y encargos cumplidos marcados «· hecho». El CSV de la campaña necesitaba comillas en los textos con comas: sin ellas se cortaban. |
+| Pruebas | `mission_check`: tres etapas, puntos del mundo, partida, fase, guardado y carga. |
+
 ## 2026-11-21 — F3.5.a: conversación y diario en el mundo
 
 **Decisión:** el mundo de la slice gana HUD, conversaciones y diario; la misión principal (3.5.b) se apoya en ellos.

@@ -197,6 +197,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/dialogue_check.gd 2>&1 | tee /tmp/dialogue.log
           python3 tools/check_output.py /tmp/dialogue.log
 
+      - name: Mision principal
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/mission_check.gd 2>&1 | tee /tmp/mission.log
+          python3 tools/check_output.py /tmp/mission.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail

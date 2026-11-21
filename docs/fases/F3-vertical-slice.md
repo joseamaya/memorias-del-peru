@@ -105,6 +105,15 @@ Tres etapas, sin sistema genérico de misiones: recursos de misión y banderas e
 - Seis grafos de diálogo en `data/dialogues/` (curáca, molendera, tejedora, agricultor, mensajero y la partida) con textos en la tabla de la campaña.
 - Evidencia: `dialogue_check` (6 grafos, bandera `m01_encargos`, diario) y captura `build/evidencia/dialogo_curaca.png`.
 
+**Implementado (2026-11-21) — misión (3.5.b):**
+
+- `MissionDefinition` y `MissionStage` en `data/missions/m01_la_ciudad_que_se_queda.tres`: tres etapas con sus banderas, sin motor genérico.
+- Etapa 1, «La mañana del arrabal»: la curáca pide agua, lana y maíz; cada encargo se acepta en una conversación y se cumple en un punto del mundo (`FlagInteractable`: pila del arrabal, atado del taller y saco de los depósitos).
+- Etapa 2, «La partida»: una columna de vecinos y orejones abandona la ciudad hacia el oeste; la curáca cambia de conversación y el jugador se queda.
+- Etapa 3, «Carmenca»: se arma con la fase de guerra y la cierra la batalla (3.9) con la bandera `m01_victoria`.
+- Diario reconstruido desde la etapa guardada; guardado y carga a mitad de misión probados.
+- Evidencia: `mission_check` (etapas 1→2→3, tres puntos, partida, fase `guerra`, guardado y carga, diario de 3 entradas) y capturas `mision_partida.png` y `mision_diario.png`.
+
 ## 7. F3.6 — Secundarias y descubrimiento
 
 - **Social:** mediar entre dos familias por el turno del agua o del horno; la decisión deja reputación.

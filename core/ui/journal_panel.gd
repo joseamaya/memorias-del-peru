@@ -7,6 +7,9 @@ extends Control
 
 signal closed
 
+var _open: bool = false
+var _entries: Array[JournalEntry] = []
+
 @onready var title_label: Label = $Panel/Margin/VBox/Header/TitleLabel
 @onready var hint_label: Label = $Panel/Margin/VBox/Header/HintLabel
 @onready var entry_list: ItemList = $Panel/Margin/VBox/Content/EntryList
@@ -15,9 +18,6 @@ signal closed
 @onready var detail_body: Label = $Panel/Margin/VBox/Content/Detail/DetailBody
 @onready var detail_source: Label = $Panel/Margin/VBox/Content/Detail/DetailSource
 
-var _open: bool = false
-var _entries: Array[JournalEntry] = []
-
 
 func _ready() -> void:
 	theme = UiTheme.build()
@@ -25,6 +25,11 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	title_label.text = tr("UI_JOURNAL_TITLE")
 	hint_label.text = tr("UI_JOURNAL_HINT")
+	# Los cuerpos de encargo son largos: sin esto el texto se cortaba en el
+	# borde en vez de bajar de línea.
+	for label: Label in [detail_title, detail_body, detail_source]:
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entry_list.item_selected.connect(_on_entry_selected)
 
 
@@ -90,6 +95,8 @@ func _refresh(journal: Journal) -> void:
 		var label: String = tr(String(entry.title_key))
 		if entry.kind == JournalEntry.Kind.MEMORY and entry.badge != &"":
 			label += "  [" + String(entry.badge) + "]"
+		if entry.done:
+			label += "  · " + tr("UI_JOURNAL_DONE")
 		entry_list.add_item(label)
 	entry_list.select(0)
 	_show_entry(0)
@@ -100,6 +107,8 @@ func _show_entry(index: int) -> void:
 		return
 	var entry: JournalEntry = _entries[index]
 	detail_title.text = tr(String(entry.title_key))
+	if entry.done:
+		detail_title.text += "  · " + tr("UI_JOURNAL_DONE")
 	detail_badge.text = ""
 	if entry.kind == JournalEntry.Kind.MEMORY and entry.badge != &"":
 		detail_badge.text = "[" + String(entry.badge) + "]"
@@ -111,4 +120,3 @@ func _show_entry(index: int) -> void:
 
 func _on_entry_selected(index: int) -> void:
 	_show_entry(index)
-

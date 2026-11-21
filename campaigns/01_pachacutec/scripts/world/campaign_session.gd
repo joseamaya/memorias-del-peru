@@ -20,6 +20,7 @@ var _world: RegionWorld = null
 var _player: PlayerFPS = null
 var _population: CityPopulation = null
 var _overlay: SleepOverlay = null
+var _mission: MissionController = null
 var _pending_npcs: Dictionary = {}
 var _last_save_ok: bool = false
 var _restored: bool = false
@@ -40,6 +41,7 @@ func begin() -> void:
 	if _population != null:
 		_population.built.connect(_on_population_built)
 	_restored = _restore()
+	_build_mission()
 
 
 ## Duerme en la casa del jugador: sale del interior, avanza a la mañana
@@ -97,6 +99,17 @@ func get_last_save_ok() -> bool:
 ## Aviso de pantalla, para las pruebas.
 func get_overlay() -> SleepOverlay:
 	return _overlay
+
+
+func get_mission() -> MissionController:
+	return _mission
+
+
+func _build_mission() -> void:
+	_mission = MissionController.new()
+	_mission.name = "Mission"
+	add_child(_mission)
+	_mission.setup(_world, _population)
 
 
 func get_save_slot() -> StringName:
