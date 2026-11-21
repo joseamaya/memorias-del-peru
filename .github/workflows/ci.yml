@@ -233,6 +233,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/combat_check.gd 2>&1 | tee /tmp/combat.log
           python3 tools/check_output.py /tmp/combat.log
 
+      - name: Batalla de Carmenca
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/carmenca_check.gd 2>&1 | tee /tmp/carmenca.log
+          python3 tools/check_output.py /tmp/carmenca.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail

@@ -24,6 +24,7 @@ var _mission: MissionController = null
 var _side: SideActivities = null
 var _notes: DiscoveryNotes = null
 var _defense: DefenseWorks = null
+var _battle: CarmencaBattle = null
 var _pending_npcs: Dictionary = {}
 var _last_save_ok: bool = false
 var _restored: bool = false
@@ -48,6 +49,7 @@ func begin() -> void:
 	_build_side_activities()
 	_build_discovery_notes()
 	_build_defense_works()
+	_build_battle()
 
 
 ## Duerme en la casa del jugador: sale del interior, avanza a la mañana
@@ -121,6 +123,17 @@ func get_discovery_notes() -> DiscoveryNotes:
 
 func get_defense_works() -> DefenseWorks:
 	return _defense
+
+
+func get_battle() -> CarmencaBattle:
+	return _battle
+
+
+func _build_battle() -> void:
+	_battle = CarmencaBattle.new()
+	_battle.name = "Battle"
+	add_child(_battle)
+	_battle.setup(_world, _defense)
 
 
 func _build_defense_works() -> void:

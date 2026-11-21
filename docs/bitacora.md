@@ -6,6 +6,20 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.9.b: la batalla de Carmenca
+
+**Decisión:** la batalla se resuelve con oleadas authored y un máximo de 8 chancas y 6 aliados, sin ejército simulado. Las obras construidas y la manta cambian el combate.
+
+| Cambio | Detalle |
+|---|---|
+| Disparo | Etapa 3 y proximidad al campamento (120 m). La captura del estandarte cierra la misión con `m01_victoria`. |
+| Oleadas | 4, 6 y 8; cada obra resta un enemigo, hasta dos. Pausa de 4 s entre oleadas. |
+| Aliados | Seis vecinos que atacan al chanca más cercano y vuelven junto al jugador. No mueren en la slice. |
+| Derrota | Se limpia la oleada, se revive al jugador (nuevo `CharacterState.revive`) y se reinicia la misma oleada. |
+| Chanca | Colisiona con el jugador y se detiene a 1,15 m; el director limita a dos atacantes simultáneos. |
+| Persistencia | La batalla no se serializa: cargar durante el combate devuelve a la etapa 3. |
+| Pruebas | `carmenca_check`: oleadas, obras, aliados, derrota, estandarte, victoria y diario. |
+
 ## 2026-11-21 — F3.9.a: el combate del jugador
 
 **Decisión:** el combate de Core ya existía; lo que faltaba era que el mundo lo llevara puesto. Se envuelve en un nodo de jugador y se añade el enemigo chanca, sin ejército simulado.

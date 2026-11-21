@@ -14,11 +14,11 @@
 | 3.2 | Tres interiores | **Base implementada; falta prueba humana** | Casa del jugador, casa de la curáca y taller transitables; ≤ 15 draw calls por interior | `interiors_check`; 3 puertas, 3 vestidos y vuelta exacta |
 | 3.3 | Ciclo día/noche | **Base implementada; falta prueba humana** | `WorldClock` mueve sol, ambiente y niebla; amanecer, tarde y noche legibles | `day_night_check`; sin saltos en 96 muestras |
 | 3.4 | Población | **Base implementada; falta prueba humana** | 24 NPC, 8 nombrados, rutinas de mañana, tarde y noche; sin atascos en 20 min | `city_population_check`; 24 y 8, 0 dentro de casas |
-| 3.5 | Misión principal | Prevista | Tres etapas con estado persistente y diario | `mission_check`, `city_save_round_trip` |
-| 3.6 | Secundarias y descubrimiento | Prevista | Dos actividades con consecuencia y un lugar descubierto sin marcador | `side_activities_check` |
+| 3.5 | Misión principal | **Base implementada; falta prueba humana** | Tres etapas con estado persistente y diario | `mission_check`, `city_save_round_trip` |
+| 3.6 | Secundarias y descubrimiento | **Base implementada; falta prueba humana** | Dos actividades con consecuencia y un lugar descubierto sin marcador | `side_activities_check` |
 | 3.7 | Descanso y guardado | **Base implementada; falta prueba humana** | Dormir avanza el día; guardar/cargar conserva hora, NPC, misión e inventario | `city_save_round_trip`; día 4 a las 8:00, 8 NPC y posición a 0,1 m |
-| 3.8 | Preparación de la defensa | Prevista | Fosos y púas construibles, persistentes y leídos por la batalla | `defense_works_check` |
-| 3.9 | Carmenca | Prevista | Tres oleadas, aliados y estandarte como objetivo; sin bloqueos | `carmenca_check` |
+| 3.8 | Preparación de la defensa | **Base implementada; falta prueba humana** | Fosos y púas construibles, persistentes y leídos por la batalla | `defense_works_check` |
+| 3.9 | Carmenca | **Base implementada; falta prueba humana** | Tres oleadas, aliados y estandarte como objetivo; sin bloqueos | `carmenca_check` |
 | 3.10 | Cierre de la slice | Prevista | 30–45 min jugados, presupuesto medido y acta del responsable | Protocolo y capturas |
 
 ## 2. F3.1 — Ciudad habitable
@@ -191,6 +191,17 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
 - El HUD recibe salud, estallido de daño y munición sin conocer la campaña.
 - Evidencia: `combat_check` (desarme, golpe que quita salud, golpe recibido, escudo que absorbe 6 de 20 y honda que gasta piedra) y captura `combate_chanca.png`.
 - **Falta** para cerrar 3.9: las tres oleadas, los aliados, el estandarte, la derrota que reinicia la oleada y el cierre de la misión (3.9.b).
+
+**Implementado (2026-11-21) — la batalla (3.9.b):**
+
+- `CarmencaBattle`: se dispara al llegar cerca del campamento con la etapa 3. Tres oleadas de 4, 6 y 8 chancas; **cada obra construida resta un enemigo por oleada**, hasta dos. Nunca hay más de 8 enemigos ni más de 6 aliados.
+- **Aliados:** seis vecinos (`AlliedWarrior`) que buscan al chanca más cercano, se le acercan y golpean; si no queda ninguno, vuelven junto al jugador.
+- **Estandarte:** al caer la tercera oleada se activa el del campamento; llegar a él fija `m01_victoria` y cierra la misión.
+- **Derrota:** caer reinicia la oleada actual (no la partida): se limpian los chancas, se revive al jugador, se le devuelve al arrabal y la oleada vuelve a empezar.
+- **Manta:** con `s01_manta` el daño recibido baja al 85 %.
+- **Director:** máximo dos chancas atacan a la vez; se separan para no solaparse. El chanca colisiona con el jugador y se detiene a 1,15 m, así no se mete en la cámara.
+- La batalla **no se serializa**: guardar durante el combate devuelve a la etapa 3 antes de empezar.
+- Evidencia: `carmenca_check` (tres oleadas, obras que restan, aliados, derrota que reinicia, estandarte, victoria y diario) y captura `batalla_carmenca.png`.
 
 ## 11. F3.10 — Cierre de la slice
 

@@ -22,6 +22,9 @@ const CLUB_DAMAGE_MIN: float = 9.0
 const CLUB_DAMAGE_MAX: float = 15.0
 const CLUB_RANGE: float = 1.8
 const CLUB_COOLDOWN: float = 1.15
+## Se detiene a esta distancia: el arma alcanza 1,8 m y no debe pegarse al
+## jugador ni meterse dentro de la cámara.
+const STOP_DISTANCE: float = 1.15
 const BODY_COLOR: Color = Color(0.55, 0.30, 0.22)
 const HEAD_COLOR: Color = Color(0.72, 0.58, 0.38)
 const DEATH_SECONDS: float = 1.4
@@ -30,6 +33,7 @@ var player: PlayerFPS = null
 var combat: PlayerCombat = null
 var character: CharacterState = null
 var combatant: EnemyCombatant = null
+var director: EncounterDirector = null
 
 var _mesh: MeshInstance3D = null
 var _body: CollisionShape3D = null
@@ -39,7 +43,8 @@ var _death_elapsed: float = 0.0
 
 func _ready() -> void:
 	collision_layer = ENEMY_LAYER
-	collision_mask = 1
+	# Mundo y jugador: sin la capa del jugador el chanca lo atraviesa.
+	collision_mask = 3
 	floor_snap_length = 0.35
 	floor_max_angle = deg_to_rad(50.0)
 	_build_body()
@@ -57,6 +62,7 @@ func _ready() -> void:
 	combatant.character = character
 	combatant.weapon = _club()
 	combatant.defeated.connect(_on_defeated)
+	add_to_group(&"chanca_warrior")
 
 
 ## Ata al jugador y a su combate. Debe llamarse después de añadirlo al árbol.
@@ -64,6 +70,13 @@ func setup(player_node: PlayerFPS, combat_node: PlayerCombat, at: Vector3) -> vo
 	player = player_node
 	combat = combat_node
 	global_position = at
+
+
+## Ata al director del encuentro, que reparte fichas de ataque y separa.
+func set_director(value: EncounterDirector) -> void:
+	director = value
+	if director != null:
+		director.register(self)
 
 
 func is_dead() -> bool:
@@ -98,17 +111,24 @@ func _physics_process(delta: float) -> void:
 	var intent: int = combatant.think(delta, distance, true)
 	match intent:
 		EnemyCombatant.Intent.APPROACH:
-			velocity.x = direction.x * SPEED
-			velocity.z = direction.z * SPEED
+			# Se acerca, pero se detiene antes de tocar al jugador.
+			if distance > STOP_DISTANCE:
+				velocity.x = direction.x * SPEED
+				velocity.z = direction.z * SPEED
+			else:
+				velocity.x = 0.0
+				velocity.z = 0.0
 		EnemyCombatant.Intent.ATTACK:
 			velocity.x = 0.0
 			velocity.z = 0.0
 			_face(direction)
-			if combatant.can_attack() and distance <= CLUB_RANGE:
+			if _can_attack_now() and distance <= CLUB_RANGE:
 				var damage: float = combatant.try_attack(distance)
 				if damage > 0.0 and not combat.is_dead():
 					combat.take_damage(damage)
 					hit_player.emit(damage)
+				if director != null:
+					director.release_token(self)
 		EnemyCombatant.Intent.FLEE:
 			velocity.x = -direction.x * FLEE_SPEED
 			velocity.z = -direction.z * FLEE_SPEED
@@ -116,6 +136,15 @@ func _physics_process(delta: float) -> void:
 			velocity.x = 0.0
 			velocity.z = 0.0
 	move_and_slide()
+
+
+## Con director, solo dos chancas atacan a la vez.
+func _can_attack_now() -> bool:
+	if not combatant.can_attack():
+		return false
+	if director == null:
+		return true
+	return director.request_token(self)
 
 
 func _apply_gravity(delta: float) -> void:
@@ -138,6 +167,8 @@ func _on_defeated() -> void:
 	_dead = true
 	_death_elapsed = 0.0
 	collision_layer = 0
+	if director != null:
+		director.unregister(self)
 	if _body != null:
 		_body.disabled = true
 	if _mesh != null:

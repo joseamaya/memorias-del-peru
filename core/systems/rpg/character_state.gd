@@ -75,6 +75,13 @@ func damage(amount: float) -> void:
 		died.emit()
 
 
+## Devuelve al personaje a la vida. Sin valor, con la salud completa.
+func revive(health_value: float = -1.0) -> void:
+	var target: float = max_health if health_value < 0.0 else health_value
+	health = clampf(target, 1.0, max_health)
+	health_changed.emit(health, max_health)
+
+
 ## Recupera salud sin pasar del máximo.
 func heal(amount: float) -> void:
 	if amount <= 0.0 or not is_alive():

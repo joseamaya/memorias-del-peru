@@ -28,6 +28,8 @@ var _armed: bool = false
 var _charging: bool = false
 var _charge_elapsed: float = 0.0
 var _pending_damage: float = 0.0
+## Multiplicador del daño recibido; la manta de la defensa lo baja.
+var _damage_scale: float = 1.0
 
 
 ## Crea el estado del jugador y lo ata al HUD. Debe llamarse una sola vez.
@@ -81,6 +83,15 @@ func set_armed(value: bool) -> void:
 		loadout.set_blocking(false)
 
 
+## Ajusta el daño recibido (1 = normal, 0,85 = con manta).
+func set_damage_scale(value: float) -> void:
+	_damage_scale = clampf(value, 0.1, 1.0)
+
+
+func get_damage_scale() -> float:
+	return _damage_scale
+
+
 func get_health() -> float:
 	return character.get_health() if character != null else 0.0
 
@@ -103,11 +114,17 @@ func select_weapon(index: int) -> bool:
 	return loadout.switch_to(index)
 
 
+## Devuelve al jugador a la vida con la salud completa.
+func revive() -> void:
+	if character != null:
+		character.revive()
+
+
 ## Aplica un golpe recibido, con parry o bloqueo si el escudo está alzado.
 func take_damage(amount: float) -> void:
 	if amount <= 0.0 or is_dead():
 		return
-	var final: float = loadout.resolve_incoming_damage(amount)
+	var final: float = loadout.resolve_incoming_damage(amount * _damage_scale)
 	character.damage(final)
 	if hud != null:
 		hud.flash_damage()
