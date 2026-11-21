@@ -37,6 +37,7 @@
 - Arrabal de Chocos-chacona al suroeste de S1: plaza de 13 m de radio, 10 casas, callejón de 4 m hacia el camino de entrada y pirca de borde con abertura al oeste.
 - Punto de aparición movido a la plaza del arrabal (1088, 294) y rumbo a la plaza del Cusco.
 - Evidencia: `city_check` (10 casas de arrabal, aparición a 0 m del centro, 154 m a la plaza, jugador en el suelo), `cusco_blockout_check` (38 casas, 7 POI), auditoría con **314 mallas y 0 flotantes**, y `measure_cusco` con **234 draw calls, 184,9 MB y 69,3 FPS** de media.
+- Santuario (2026-11-20): el recinto estaba al norte de la plaza; en el Cusco real está al sur. Se mueve a 86 m al sur (comprimido), con terraza de piedra de 38 × 12 m, escalinata medida contra la ladera y recinto que sobresale del muro. `CuscoSanctuary` lo construye aparte; POI-18 y el ancla de los NPC se mueven con él. Rótulo: «Santuario del Sol» (PCH-027).
 
 ## 3. F3.2 — Tres interiores
 
