@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-20 — F3.1: el santuario del sol, al sur de la plaza
+
+**Decisión:** mover el santuario del sol del Cusco del norte al sur de la plaza, que es donde está en la ciudad real.
+
+| Cambio | Detalle |
+|---|---|
+| Posición | Centro local `(0, 86)`: 86 m al sur de la plaza, comprimido y declarado. La columna `x = 0` no tiene casas, así que no se quitó ninguna: siguen 38. |
+| Terraza | La ladera sur obligaba a un basamento de 6,5 m con la plataforma de 30 m de fondo, que tapaba el recinto. Se rehace como terraza de 38 × 12 m con escalinata de 30° medida contra el terreno y un recinto que sobresale del muro. |
+| Piedra | La plataforma pasa de dorada a piedra: en 1438 el santuario es modesto y el «recinto de oro» es la obra posterior (PCH-027). El recinto interior conserva el color sagrado. |
+| Nombre | Rótulo «Santuario del Sol»; «Coricancha» se reserva para la obra posterior. POI-18 y el ancla `coricancha` de los NPC se mueven con el edificio. |
+| Código | `CuscoSanctuary` en su propio script: `CuscoBlockout` llegaba al límite de 400 líneas. |
+| Pruebas | `CUSCO_OK` (38 casas, 7 POI), `CITY_OK`, `POPULATION_OK`, `SAVE_ROUND_TRIP_OK`, `WALKTHROUGH_OK`, auditoría sin flotantes. |
+
 ## 2026-11-20 — F3.7: descanso y guardado
 
 **Decisión:** dormir en la casa del jugador avanza el día y guarda la partida en la ranura automática; el título ofrece «Continuar».

@@ -201,76 +201,7 @@ func _add_interior_door(
 
 
 func _build_coricancha() -> void:
-	var center: Vector3 = Vector3(0.0, 0.0, -70.0)
-	# La plataforma se apoya en la cota más alta de su huella: con la altura
-	# del centro, la ladera la enterraba por un lado y el recinto parecía
-	# hundido. La caja se extiende hacia abajo hasta el terreno.
-	var ground: float = _max_ground(center.x, center.z, Vector3(38.0, 0.0, 30.0)) + 0.2
-	BlockoutKit.add_box(
-		self,
-		Vector3(38.0, 0.6, 30.0),
-		Vector3(center.x, ground + 0.3, center.z),
-		GOLD,
-		true,
-		Basis.IDENTITY,
-		"CoricanchaPlataforma"
-	)
-	var ramp_angle: float = atan2(0.6, 3.4)
-	BlockoutKit.add_box(
-		self,
-		Vector3(5.0, 0.2, 3.4),
-		Vector3(center.x, ground + 0.3, center.z + 16.7),
-		STONE,
-		true,
-		Basis(Vector3.RIGHT, -ramp_angle),
-		"Rampa"
-	)
-	BlockoutKit.add_box(
-		self,
-		Vector3(34.0, 1.6, 0.8),
-		Vector3(center.x, ground + 1.4, center.z - 14.0),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"CoricanchaMuro"
-	)
-	BlockoutKit.add_box(
-		self,
-		Vector3(34.0, 1.6, 0.8),
-		Vector3(center.x, ground + 1.4, center.z + 14.0),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"CoricanchaMuro"
-	)
-	BlockoutKit.add_box(
-		self,
-		Vector3(0.8, 1.6, 30.0),
-		Vector3(center.x - 17.0, ground + 1.4, center.z),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"CoricanchaMuro"
-	)
-	BlockoutKit.add_box(
-		self,
-		Vector3(0.8, 1.6, 30.0),
-		Vector3(center.x + 17.0, ground + 1.4, center.z),
-		STONE,
-		true,
-		Basis.IDENTITY,
-		"CoricanchaMuro"
-	)
-	BlockoutKit.add_box(
-		self,
-		Vector3(12.0, 2.6, 8.0),
-		Vector3(center.x, ground + 1.3, center.z),
-		GOLD,
-		true,
-		Basis.IDENTITY,
-		"CoricanchaRecinto"
-	)
-	_add_label("POI-18 · Coricancha", Vector3(center.x, ground + 6.0, center.z))
+	_poi_labels.append(CuscoSanctuary.build(self, _ground))
 
 
 func _build_market() -> void:
