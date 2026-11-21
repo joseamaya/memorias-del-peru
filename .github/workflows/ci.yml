@@ -191,6 +191,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/city_save_round_trip.gd 2>&1 | tee /tmp/save.log
           python3 tools/check_output.py /tmp/save.log
 
+      - name: Dialogo y diario
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/dialogue_check.gd 2>&1 | tee /tmp/dialogue.log
+          python3 tools/check_output.py /tmp/dialogue.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail

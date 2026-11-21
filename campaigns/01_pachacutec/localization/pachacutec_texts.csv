@@ -15,3 +15,23 @@ PCH_NPC_NINO,Muchacho del arrabal
 PCH_NPC_ANCIANO,Anciano del ayllu
 PCH_NPC_PRINCIPAL,Principal del ayllu
 PCH_HOME_DOOR,Tu casa
+PCH_M01_CURACA_1,Dicen que hay gente en los cerros. El inca no quiere oírlo. Yo no pienso dormir esta noche.
+PCH_M01_CURACA_QUE,¿Qué hacemos?
+PCH_M01_CURACA_LUEGO,Tengo que irme.
+PCH_M01_CURACA_2,Antes de que oscurezca: agua para la molendera, lana para la tejedora y maíz en los depósitos. Si viene lo que dicen, el barrio tiene que comer y estar abrigado.
+PCH_M01_MOLENDERA_1,No me queda agua y el maíz no se muele solo. ¿Me la traes de la acequia?
+PCH_M01_MOLENDERA_SI,Voy a por agua.
+PCH_M01_TEJEDORA_1,El atado de lana sigue en el taller. Si no lo subo hoy, mañana no hay manta.
+PCH_M01_TEJEDORA_SI,Lo traigo.
+PCH_M01_AGRICULTOR_1,Hay que subir el maíz a los depósitos antes de que anochezca. Solo no puedo.
+PCH_M01_AGRICULTOR_SI,Te ayudo.
+PCH_M01_AHORA_NO,Ahora no.
+PCH_M01_ACEPTA,Gracias. Te espero aquí.
+PCH_M01_MENSAJERO_1,Vengo del camino del oeste. No hay refuerzos: dicen que la ciudad es una carga. Cusi Yupanqui se queda con quien quiera quedarse.
+PCH_M01_MENSAJERO_PREGUNTA,¿Y tú?
+PCH_M01_MENSAJERO_2,Yo llevo la palabra. Tú decides si te quedas.
+PCH_M01_PARTIDA_1,Se han ido. El inca, los orejones, los que tenían con qué cargar. Quedamos los del barrio y los que no tenemos a dónde ir.
+PCH_M01_PARTIDA_QUEDO,Me quedo.
+PCH_M01_PARTIDA_2,Entonces ayuda a preparar el barrio. Esta noche no se duerme.
+PCH_M01_DIARIO_TITULO,La mañana del arrabal
+PCH_M01_DIARIO_CUERPO,La curáca pide ayuda antes de que oscurezca: agua, lana y maíz.

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DialogueGraph" format=3]
+
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_node.gd" id="1_4wx0l"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_choice.gd" id="2_mx7lb"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_condition.gd" id="3_ickhq"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_effect.gd" id="4_o21ct"]
+[ext_resource type="Script" path="res://core/systems/dialogue/dialogue_graph.gd" id="5_e8d1y"]
+
+[sub_resource type="Resource" id="Resource_h72du"]
+script = ExtResource("2_mx7lb")
+text_key = &"PCH_M01_CURACA_QUE"
+next_id = &"encargos"
+
+[sub_resource type="Resource" id="Resource_lhudb"]
+script = ExtResource("2_mx7lb")
+text_key = &"PCH_M01_CURACA_LUEGO"
+
+[sub_resource type="Resource" id="Resource_5b4w5"]
+script = ExtResource("1_4wx0l")
+id = &"start"
+speaker_key = &"PCH_NPC_CURACA"
+text_key = &"PCH_M01_CURACA_1"
+choices = Array[ExtResource("2_mx7lb")]([SubResource("Resource_h72du"), SubResource("Resource_lhudb")])
+
+[sub_resource type="Resource" id="Resource_l4tqo"]
+script = ExtResource("4_o21ct")
+key = &"m01_encargos"
+
+[sub_resource type="Resource" id="Resource_uscmq"]
+script = ExtResource("1_4wx0l")
+id = &"encargos"
+speaker_key = &"PCH_NPC_CURACA"
+text_key = &"PCH_M01_CURACA_2"
+effects = Array[ExtResource("4_o21ct")]([SubResource("Resource_l4tqo")])
+
+[resource]
+script = ExtResource("5_e8d1y")
+nodes = Array[ExtResource("1_4wx0l")]([SubResource("Resource_5b4w5"), SubResource("Resource_uscmq")])
