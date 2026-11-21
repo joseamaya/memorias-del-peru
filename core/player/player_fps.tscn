@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://core/player/player_fps.gd" id="1_player"]
 [ext_resource type="Script" path="res://core/systems/stamina/stamina_component.gd" id="2_stamina"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://core/player/first_person_weapon.gd" id="5_weapon"]
 [ext_resource type="Script" path="res://core/player/breathing_audio.gd" id="6_breath"]
 [ext_resource type="Script" path="res://core/player/camera_kick.gd" id="7_camera_kick"]
+[ext_resource type="Script" path="res://core/player/player_lantern.gd" id="8_lantern"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.35
@@ -47,6 +48,9 @@ script = ExtResource("4_hands")
 
 [node name="FirstPersonWeapon" type="Node3D" parent="Head/Camera3D"]
 script = ExtResource("5_weapon")
+
+[node name="Lantern" type="Node3D" parent="Head/Camera3D"]
+script = ExtResource("8_lantern")
 
 [node name="BreathingAudio" type="AudioStreamPlayer" parent="."]
 script = ExtResource("6_breath")

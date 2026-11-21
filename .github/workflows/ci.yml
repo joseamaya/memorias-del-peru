@@ -179,6 +179,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/day_night_check.gd 2>&1 | tee /tmp/daynight.log
           python3 tools/check_output.py /tmp/daynight.log
 
+      - name: Antorcha de mano
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/lantern_check.gd 2>&1 | tee /tmp/lantern.log
+          python3 tools/check_output.py /tmp/lantern.log
+
       - name: Poblacion de la ciudad
         run: |
           set -o pipefail

@@ -71,6 +71,13 @@
 - La energía del sol entra con una rampa suave desde el horizonte: sin ella saltaba de 0 a 0,26 en quince minutos.
 - Evidencia: `day_night_check` (96 muestras cada 15 min, sin saltos; noche a 0 de energía y ambiente 0,35) y capturas `day_dawn`, `day_noon`, `day_dusk` y `day_night`.
 
+**Pendiente resuelto (2026-11-21) — antorcha de mano:**
+
+- `PlayerLantern` en `core/player`: antorcha en la mano izquierda que se enciende sola al caer el sol y se apaga de día. Comparte con `DayNightCycle` la fórmula de luz diurna (`daylight_at`), así que no hay dos relojes que se contradigan.
+- Luz `OmniLight3D` de 10 m, cálida y **sin sombras**, con un parpadeo leve. El nivel es 0 con sol y sube de forma gradual en el atardecer.
+- Cierra el pendiente anotado en la bitácora el 2026-11-20: hasta ahora no se podía jugar de noche.
+- Evidencia: `lantern_check` (apagada a mediodía, encendida a las 22:00, encendido gradual de 17:00 a 19:00) y captura `build/evidencia/noche_antorcha.png`.
+
 ## 5. F3.4 — Población
 
 - 24 NPC activos en S1, 8 de ellos nombrados con rol y casa. Entre ellos, Chanan Cury Coca.
