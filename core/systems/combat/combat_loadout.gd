@@ -136,6 +136,11 @@ func set_blocking(value: bool) -> void:
 	_set_blocking(value)
 
 
+## Tiempo que lleva el escudo alzado, en segundos.
+func block_elapsed() -> float:
+	return _block_elapsed
+
+
 ## Indica si el bloqueo está dentro de la ventana de parry.
 func is_parry_window() -> bool:
 	var weapon: CombatWeapon = current_weapon()

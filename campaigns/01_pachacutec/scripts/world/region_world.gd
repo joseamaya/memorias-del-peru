@@ -30,7 +30,6 @@ const FALL_RESPAWN_DEPTH: float = 120.0
 ## Nodos cosméticos del jugador que el blockout no equipa.
 const UNEQUIPPED_NODES: Array[String] = [
 	"Head/Camera3D/FirstPersonHands",
-	"Head/Camera3D/FirstPersonWeapon",
 ]
 
 const ROUTE: Array[Vector3] = [
@@ -224,6 +223,10 @@ func get_journal() -> Journal:
 
 func get_dialogue() -> DialoguePresenter:
 	return _ui.dialogue if _ui != null else null
+
+
+func get_player_combat() -> PlayerCombat:
+	return _ui.combat if _ui != null else null
 
 
 ## Abre o cierra el diario. Mientras está abierto, el jugador no se mueve.

@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — F3.9.a: el combate del jugador
+
+**Decisión:** el combate de Core ya existía; lo que faltaba era que el mundo lo llevara puesto. Se envuelve en un nodo de jugador y se añade el enemigo chanca, sin ejército simulado.
+
+| Cambio | Detalle |
+|---|---|
+| Jugador | `PlayerCombat` (Core): estado, combatiente, selección de arma, entrada, rayo de golpe, HUD y daño recibido. Desarmado por defecto; la batalla lo arma. |
+| Armas | Honda con 12 piedras, porra y escudo con parry de 0,15 s. |
+| Enemigo | `ChancaWarrior`: cápsula con `EnemyCombatant`, se acerca, ataca y cae. |
+| Alcance | El mínimo de la honda no se aplica al cuerpo a cuerpo: el rayo toca la superficie del rival y rechazar por cercanía anulaba todos los golpes de porra. |
+| Pruebas | `combat_check`: desarme, golpe, daño recibido, escudo y munición. |
+| Pendiente | Oleadas, aliados, estandarte y cierre de la misión (3.9.b). |
+
 ## 2026-11-21 — F3.8: las obras de defensa
 
 **Decisión:** los fosos se construyen en el mundo y viven en `WorldState.changes`, no en banderas: son modificaciones físicas y la batalla las leerá.

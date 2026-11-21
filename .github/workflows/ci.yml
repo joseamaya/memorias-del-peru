@@ -227,6 +227,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/defense_works_check.gd 2>&1 | tee /tmp/defense.log
           python3 tools/check_output.py /tmp/defense.log
 
+      - name: Combate del jugador
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/combat_check.gd 2>&1 | tee /tmp/combat.log
+          python3 tools/check_output.py /tmp/combat.log
+
       - name: Sectores del oeste
         run: |
           set -o pipefail
