@@ -286,6 +286,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `mission_check.gd` | Misión principal: tres etapas, encargos en el mundo, partida de Viracocha, fase de guerra, diario y guardado a mitad |
 | `mission_stage2_check.gd` | Cargar en la etapa 2 conserva la conversación de partida de la curáca y la posibilidad de fijar `m01_queda` |
 | `side_activities_check.gd` | Secundarias: reparto del agua con sus tres desenlaces y diario, manta tejida en el telar, negativo del telar sin encargo y guardado/carga |
+| `side_manta_load_check.gd` | Cargar con la lana entregada y la manta sin aceptar conserva la oferta de la tejedora y su encargo |
 | `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento y sobrevive a la carga sin duplicar la entrada |
 | `defense_works_check.gd` | Obras de defensa: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras |
 | `combat_check.gd` | Combate del jugador: arma y desarme, golpe de porra contra un chanca, golpe recibido, escudo que absorbe y honda que gasta piedra |

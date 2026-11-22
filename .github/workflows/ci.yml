@@ -221,6 +221,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/side_activities_check.gd 2>&1 | tee /tmp/side.log
           python3 tools/check_output.py /tmp/side.log
 
+      - name: Manta tras cargar
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/side_manta_load_check.gd 2>&1 | tee /tmp/manta_load.log
+          python3 tools/check_output.py /tmp/manta_load.log
+
       - name: Mirador de Carmenca
         run: |
           set -o pipefail

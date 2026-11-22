@@ -316,7 +316,7 @@ Una revisión de la partida real detectó fallos que la suite no cubría. Se cor
 | Etapa 2 | `MissionController` reaplica la conversación de la curáca cuando la población termina de construirse | `mission_stage2_check` |
 | Carmenca | La batalla no se reinicia con `m01_victoria`; el diario cierra la etapa al cargar | `carmenca_check` |
 | NPC | El actor vive en el centro del cuerpo (`BODY_OFFSET`), la conversación alcanza la cabeza; un NPC que estuvo dormido retoma su ruta al reaparecer | `city_population_check`, `npc_lod_check` |
-| Manta | Al cargar con la lana entregada se vuelve a ofrecer la manta aunque no se hubiera aceptado | `side_activities_check` |
+| Manta | Al cargar con la lana entregada se vuelve a ofrecer la manta aunque no se hubiera aceptado | `side_manta_load_check` |
 | Descubrimientos | El servicio se resincroniza con `WorldState` después de cargar | `mirador_check` |
 | HUD | El aviso «Hablar» se limpia al perder el foco; la munición solo se ve con la honda en la mano; el arma no reaparece al cerrar el diario si estaba desarmado | `test_hud_interaction`, `test_combat_input`, `test_player_camera_dialogue` |
 | Combate | La batalla empieza con la porra y avisa de las teclas; el clic del escudo suelta el bloqueo; el aturdimiento no adelanta la espera | `carmenca_check`, `test_combat_input`, `test_combat` |
