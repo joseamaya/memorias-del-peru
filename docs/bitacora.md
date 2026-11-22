@@ -6,6 +6,17 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-22 — Preparación de la pasada humana
+
+**Decisión:** antes de la pasada de 3.10 se actualizan el protocolo y el acta para que el responsable pruebe también lo que falló en la revisión, no solo el recorrido feliz.
+
+| Cambio | Detalle |
+|---|---|
+| Protocolo | `prueba_vertical_slice.md` v1.1: `Esc` abre el menú de pausa; se añaden las regresiones de etapa 2, manta pendiente, victoria y carga, NPC, HUD, escudo, derrota, aturdimiento y build exportado. |
+| Acta | `F3-acta-de-cierre.md` 0.10: 131 métodos `test_` en 60 archivos, 31 recorridos en CI, correcciones del PR #54 y la deuda del guardado manual desde la pausa. |
+| Medición | Las correcciones no añaden geometría ni draw calls; se mantiene la medición de §2 y no se repitieron las tres pasadas. |
+| Pendiente | La pasada humana, la decisión y la firma. No se marca F3 como cerrada. |
+
 ## 2026-11-21 — Revisión de la partida: correcciones
 
 **Decisión:** antes de la pasada humana se corrige lo que bloqueaba o ensuciaba la partida, aunque la suite estuviera en verde. La revisión encontró fallos que las pruebas no cubrían porque probaban el editor, no el build, y porque no recorrían la etapa 2 cargada ni la derrota.
