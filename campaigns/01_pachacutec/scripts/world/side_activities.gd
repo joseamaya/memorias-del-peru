@@ -25,6 +25,11 @@ const MANTA_HECHA: StringName = &"s01_manta"
 const MANTA_GRAPH: StringName = &"s01_manta"
 const MANTA_LISTA: StringName = &"s01_manta_lista"
 
+## El pedido del maíz lo da el agricultor. Si el reparto del agua se decide
+## antes de hablar con él, no se le puede cambiar a la conversación de eco o la
+## etapa 1 se queda sin maíz para siempre.
+const MAIZ_PEDIDO: StringName = &"m01_maiz_pedido"
+
 ## Las tres decisiones del agua y su entrada de diario.
 const AGUA_DECISIONES: Array[Dictionary] = [
 	{
@@ -107,17 +112,17 @@ func _restore() -> void:
 	var state: WorldStateService = WorldStateService.instance()
 	if state == null:
 		return
-	if state.has_flag(AGUA_PEDIDO):
-		if state.has_flag(AGUA_DECIDIDA):
-			_resolve_agua()
-		else:
-			_offer_agua()
+	if state.has_flag(AGUA_DECIDIDA):
+		_resolve_agua()
+	elif state.has_flag(AGUA_PEDIDO):
+		_offer_agua()
 	if state.has_flag(LANA_PEDIDO):
 		if state.has_flag(MANTA_HECHA):
 			_finish_manta()
-		elif state.has_flag(MANTA_PEDIDO):
-			_switch(TEJEDORA_ID, MANTA_GRAPH)
-			_add_quest(MANTA_QUEST, MANTA_TITLE, MANTA_BODY)
+		else:
+			# Si se entregó la lana, la tejedora debe seguir ofreciendo la
+			# manta aunque el jugador no la hubiera aceptado antes de cargar.
+			_offer_manta()
 
 
 func _on_flag_changed(key: StringName, value: int) -> void:
@@ -132,6 +137,12 @@ func _on_flag_changed(key: StringName, value: int) -> void:
 			_offer_manta()
 		MANTA_HECHA:
 			_finish_manta()
+		MAIZ_PEDIDO:
+			# El agricultor conserva su conversación normal hasta que ya dio el
+			# pedido; solo entonces pasa al eco del reparto del agua.
+			var state: WorldStateService = WorldStateService.instance()
+			if state != null and state.has_flag(AGUA_DECIDIDA):
+				_switch(AGRICULTOR_ID, AGUA_ECO_AGRICULTOR)
 
 
 ## La molendera plantea el reparto cuando ya tiene su agua.
@@ -162,7 +173,10 @@ func _resolve_agua() -> void:
 			var body: StringName = decision["body"]
 			journal.add_memory(memory, title, body, MEMORY_BADGE, MEMORY_SOURCE)
 	_switch(MOLENDERA_ID, AGUA_ECO)
-	_switch(AGRICULTOR_ID, AGUA_ECO_AGRICULTOR)
+	# Si el agricultor todavía no había dado el pedido del maíz, se queda con su
+	# conversación normal. El cambio al eco se hace cuando lo da.
+	if state.has_flag(MAIZ_PEDIDO):
+		_switch(AGRICULTOR_ID, AGUA_ECO_AGRICULTOR)
 
 
 ## La tejedora ofrece la manta cuando ya recibió la lana.

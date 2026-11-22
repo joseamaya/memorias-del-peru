@@ -3,6 +3,7 @@ extends SceneTree
 ## derrota que reinicia la oleada y cierre de la misión.
 
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
+const CAMPAIGN: StringName = &"01_pachacutec"
 const SETTLE_FRAMES: int = 600
 const CAMP: Vector3 = Vector3(765.0, 0.0, 295.0)
 const BUILT_WORKS: int = 2
@@ -15,13 +16,16 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	SaveManagerService.set_save_root("user://test-saves")
+	var manager: SaveManagerService = SaveManagerService.instance()
 	var state: WorldStateService = WorldStateService.instance()
 	var campaign: CampaignStateService = CampaignStateService.instance()
-	var ok: bool = state != null and campaign != null
+	var ok: bool = state != null and campaign != null and manager != null
 	if not ok:
 		printerr("CARMENCA_FAIL sin servicios")
 		quit(1)
 		return
+	_clear_campaign(manager)
 	state.clear()
 	campaign.clear()
 	var world: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
@@ -75,10 +79,11 @@ func _run() -> void:
 	ok = ok and battle.get_wave() == 1
 	ok = ok and battle.get_enemy_count() == WAVE_SIZES[0]
 
-	# Derrota: la oleada se reinicia, no la partida.
+	# Derrota: la oleada se reinicia, no la partida, y se vuelve al campamento.
 	combat.take_damage(9999.0)
 	await _wait_seconds(0.2)
 	ok = ok and not combat.is_dead()
+	ok = ok and _distance_to_camp(player) <= 12.0
 	ok = ok and battle.is_active()
 	ok = ok and await _wait_until(battle.is_active.bind(), 5.0)
 	ok = ok and await _wait_until(_wave_started.bind(battle, 1), 8.0)
@@ -116,20 +121,55 @@ func _run() -> void:
 	ok = ok and state.has_flag(&"m01_victoria")
 	ok = ok and journal.is_done(&"m01_carmenca")
 	ok = ok and not combat.is_armed()
+	var first_state: int = battle.get_state()
+	var first_allies: int = battle.get_ally_count()
+	var first_journal: int = journal.count()
+	var first_victory: int = state.get_flag(&"m01_victoria")
+
+	# Guardar después de ganar y cargar: la batalla no se repite y el diario
+	# conserva la etapa cerrada.
+	ok = ok and session.save_auto()
+	world.queue_free()
+	await process_frame
+	state.clear()
+	campaign.clear()
+	ok = ok and manager.request_load(CAMPAIGN, SaveManagerService.AUTO_SLOT)
+	var world2: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
+	root.add_child(world2)
+	ok = ok and await _wait_ready(world2)
+	var state2: WorldStateService = WorldStateService.instance()
+	var session2: CampaignSession = world2.get_session()
+	var battle2: CarmencaBattle = session2.get_battle() if session2 != null else null
+	var journal2: Journal = world2.get_journal()
+	var player2: PlayerFPS = world2.get_player()
+	ok = ok and battle2 != null and journal2 != null and player2 != null
+	ok = ok and state2 != null and state2.has_flag(&"m01_victoria")
+	ok = ok and battle2.is_finished()
+	ok = ok and journal2.is_done(&"m01_carmenca")
+	if player2 != null:
+		var region2: CampaignRegion = world2.get_region()
+		player2.global_position = Vector3(
+			CAMP.x + 15.0, region2.height_at(CAMP.x + 15.0, CAMP.z) + 0.3, CAMP.z
+		)
+		await _wait_seconds(0.5)
+		ok = ok and battle2.is_finished() and not battle2.is_active()
 
 	print(
 		"CARMENCA estado=",
-		battle.get_state(),
+		first_state,
 		" victoria=",
-		state.get_flag(&"m01_victoria"),
+		first_victory,
 		" aliados=",
-		battle.get_ally_count(),
+		first_allies,
 		" diario=",
-		journal.count()
+		first_journal,
+		" recargada=",
+		battle2.is_finished() if battle2 != null else false
 	)
-	world.queue_free()
+	world2.queue_free()
 	state.clear()
 	campaign.clear()
+	_clear_campaign(manager)
 	await process_frame
 	await process_frame
 	if ok:
@@ -137,6 +177,18 @@ func _run() -> void:
 	else:
 		printerr("CARMENCA_FAIL")
 	quit(0 if ok else 1)
+
+
+func _distance_to_camp(player: PlayerFPS) -> float:
+	return Vector2(player.global_position.x - CAMP.x, player.global_position.z - CAMP.z).length()
+
+
+func _clear_campaign(manager: SaveManagerService) -> void:
+	for slot: String in manager.list_slots(CAMPAIGN):
+		manager.delete_slot(CAMPAIGN, StringName(slot))
+	DirAccess.remove_absolute(
+		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(CAMPAIGN)))
+	)
 
 
 func _wave_started(battle: CarmencaBattle, wave: int) -> bool:

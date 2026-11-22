@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://core/ui/hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://core/ui/pause_menu.gd" id="9_pause"]
 [ext_resource type="PackedScene" path="res://core/ui/dialogue_panel.tscn" id="6_dialogue"]
 [ext_resource type="PackedScene" path="res://core/ui/journal_panel.tscn" id="7_journal"]
 [ext_resource type="Shader" path="res://shared_assets/ui/health_vignette.gdshader" id="8_vignette"]
@@ -251,12 +252,13 @@ theme_override_font_sizes/font_size = 22
 text = "UI_STAMINA"
 
 [node name="PausePanel" type="ColorRect" parent="."]
+script = ExtResource("9_pause")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+mouse_filter = 0
 color = Color(0, 0, 0, 0.45)
 visible = false
 
@@ -280,6 +282,34 @@ theme_override_font_sizes/font_size = 52
 text = "UI_PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PauseMenu" type="VBoxContainer" parent="PausePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = 34.0
+offset_right = 180.0
+offset_bottom = 234.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Resume" type="Button" parent="PausePanel/PauseMenu"]
+layout_mode = 2
+text = "UI_RESUME"
+
+[node name="Title" type="Button" parent="PausePanel/PauseMenu"]
+layout_mode = 2
+text = "UI_TITLE"
+
+[node name="Quit" type="Button" parent="PausePanel/PauseMenu"]
+layout_mode = 2
+text = "UI_QUIT"
 
 [node name="EndPanel" type="ColorRect" parent="."]
 anchors_preset = 15

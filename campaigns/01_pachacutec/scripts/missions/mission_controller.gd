@@ -64,7 +64,10 @@ func setup(world: RegionWorld, population: CityPopulation) -> void:
 		if population.is_built():
 			_place_spots()
 		else:
-			population.built.connect(_place_spots)
+			# La población puede construirse después de `_restore()`: al cargar
+			# una partida en la etapa 2, la curáca todavía no existe y el cambio
+			# de conversación se perdería. Se reintenta al construirla.
+			population.built.connect(_on_population_built)
 	_restore()
 
 
@@ -99,17 +102,29 @@ func _restore() -> void:
 		_enter_stage(1, false)
 		return
 	var journal: Journal = _world.get_journal()
+	var flags: Dictionary[StringName, int] = world_state.get_flags()
 	for index: int in range(1, mini(_stage, _mission.get_stage_count()) + 1):
 		var stage: MissionStage = _mission.get_stage(index)
 		if stage == null:
 			continue
 		journal.add_quest(stage.journal_id(), stage.title_key, stage.body_key)
-		if index < _stage:
+		# La etapa actual también puede estar cumplida: al cargar después de
+		# ganar Carmenca, `m01_victoria` ya está puesta y su entrada no debe
+		# volver a aparecer abierta.
+		if index < _stage or stage.is_complete(flags):
 			journal.complete_quest(stage.journal_id())
 	if _stage >= 2:
 		_switch_curaca(true)
 	if _stage >= 3:
 		_apply_war_phase()
+
+
+## La población terminó de construirse: se colocan los puntos y se reaplica la
+## conversación que la etapa necesite.
+func _on_population_built() -> void:
+	_place_spots()
+	if _stage >= 2:
+		_switch_curaca(true)
 
 
 func _enter_stage(index: int, live: bool) -> void:

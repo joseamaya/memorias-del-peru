@@ -17,6 +17,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	SaveManagerService.set_save_root("user://test-saves")
 	var manager: SaveManagerService = SaveManagerService.instance()
 	var state: WorldStateService = WorldStateService.instance()
 	var campaign_state: CampaignStateService = CampaignStateService.instance()
@@ -74,10 +75,16 @@ func _run() -> void:
 	ok = ok and journal.is_done(AGUA_QUEST)
 	ok = ok and journal.has(&"s01_agua_mem_turnos")
 	ok = ok and population.get_dialogue_id(&"npc_molendera") == &"s01_agua_eco"
-	ok = ok and population.get_dialogue_id(&"npc_agricultor") == &"s01_agua_eco_agricultor"
+	# El agricultor no había dado el pedido del maíz: debe conservar su
+	# conversación normal para no bloquear la etapa 1.
+	ok = ok and population.get_dialogue_id(&"npc_agricultor") == &"m01_agricultor"
 	hud.dialogue_advanced.emit()
 	await process_frame
 	ok = ok and not presenter.is_active()
+	# Cuando ya dio el pedido, sí pasa al eco del reparto.
+	state.set_flag(&"m01_maiz_pedido", 1)
+	await process_frame
+	ok = ok and population.get_dialogue_id(&"npc_agricultor") == &"s01_agua_eco_agricultor"
 
 	# La manta: la tejedora la ofrece cuando ya tiene la lana.
 	state.set_flag(&"m01_lana", 1)
@@ -182,5 +189,5 @@ func _clear_campaign(manager: SaveManagerService) -> void:
 	for slot: String in manager.list_slots(CAMPAIGN):
 		manager.delete_slot(CAMPAIGN, StringName(slot))
 	DirAccess.remove_absolute(
-		ProjectSettings.globalize_path(SaveManagerService.SAVE_DIR.path_join(String(CAMPAIGN)))
+		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(CAMPAIGN)))
 	)

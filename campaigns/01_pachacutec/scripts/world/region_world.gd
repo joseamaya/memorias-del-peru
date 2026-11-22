@@ -117,12 +117,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_ui.toggle_journal()
 		get_viewport().set_input_as_handled()
 		return
-	# El blockout no tiene menú de pausa: si Esc llegara a GameManager, congelaría
-	# el árbol sin ninguna interfaz que lo explique. Con el diario abierto, Esc
-	# lo cierra.
+	# Con el árbol pausado este nodo deja de recibir entrada; `GameManager` se
+	# encarga de reanudar.
 	if event.is_action_pressed("pause"):
 		if _ui != null:
-			_ui.close_journal()
+			_ui.toggle_pause()
 		get_viewport().set_input_as_handled()
 		return
 	if not (event is InputEventKey):
@@ -238,7 +237,8 @@ func toggle_journal() -> void:
 func _on_journal_closed() -> void:
 	if _player != null:
 		_player.set_controls_locked(false)
-	# `set_controls_locked` vuelve a mostrar el arma; el blockout no la equipa.
+	# El arma la gobierna PlayerCombat; aquí solo se mantienen ocultas las manos
+	# cosméticas del blockout.
 	_hide_unequipped()
 
 
@@ -300,7 +300,7 @@ func _build_player() -> void:
 		_streamer.refresh()
 
 
-## El blockout no reparte equipo: sin manos ni arma en pantalla.
+## El blockout no reparte manos cosméticas: se ocultan hasta que haya personaje.
 func _hide_unequipped() -> void:
 	for path: String in UNEQUIPPED_NODES:
 		var node: Node3D = _player.get_node_or_null(path) as Node3D
@@ -384,12 +384,15 @@ func _build_review_labels() -> void:
 	_review.setup(_streamer, _target)
 
 
+## Etiqueta fija solo en la vista de revisión; en partida el HUD usa un aviso.
 func _build_review_hud() -> void:
+	if _player != null:
+		return
 	var layer: CanvasLayer = CanvasLayer.new()
 	layer.name = "ReviewHud"
 	add_child(layer)
 	_hud = Label.new()
-	_hud.text = tr("PCH_PLAY_CONTROLS") if _player != null else tr("PCH_REVIEW_CONTROLS")
+	_hud.text = tr("PCH_REVIEW_CONTROLS")
 	_hud.position = Vector2(16.0, 12.0)
 	_hud.add_theme_font_size_override("font_size", 18)
 	_hud.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.9))

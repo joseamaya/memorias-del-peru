@@ -9,6 +9,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	SaveManagerService.set_save_root("user://test-saves")
 	var state: WorldStateService = root.get_node_or_null("WorldState") as WorldStateService
 	if state != null:
 		state.clear()
@@ -86,7 +87,7 @@ func _check_save() -> bool:
 	ok = ok and loaded_world.is_discovered(&"poi_28")
 	ok = ok and manager.delete_slot(campaign, slot)
 	DirAccess.remove_absolute(
-		ProjectSettings.globalize_path(SaveManagerService.SAVE_DIR.path_join(String(campaign)))
+		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(campaign)))
 	)
 	loaded_world.free()
 	loaded_clock.free()

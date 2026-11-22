@@ -209,6 +209,12 @@ jobs:
           ~/godot/godot --headless --path . --script res://tests/mission_check.gd 2>&1 | tee /tmp/mission.log
           python3 tools/check_output.py /tmp/mission.log
 
+      - name: Curaca en la etapa 2
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --script res://tests/mission_stage2_check.gd 2>&1 | tee /tmp/stage2.log
+          python3 tools/check_output.py /tmp/stage2.log
+
       - name: Actividades secundarias
         run: |
           set -o pipefail

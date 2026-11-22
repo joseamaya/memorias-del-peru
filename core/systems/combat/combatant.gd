@@ -49,8 +49,14 @@ func advance(delta: float) -> void:
 		return
 	if _cooldown > 0.0:
 		_cooldown = maxf(_cooldown - delta, 0.0)
+		# La resta de flotantes deja residuos como 5e-17; sin normalizarlos la
+		# espera nunca termina y el personaje no vuelve a atacar.
+		if _cooldown < 0.0001:
+			_cooldown = 0.0
 	if _stagger > 0.0:
 		_stagger = maxf(_stagger - delta, 0.0)
+		if _stagger < 0.0001:
+			_stagger = 0.0
 	if state == State.ATTACKING and _cooldown <= 0.0:
 		state = State.READY
 	elif state == State.STAGGERED and _stagger <= 0.0:
@@ -64,6 +70,10 @@ func can_attack() -> bool:
 	if weapon == null or weapon.is_shield():
 		return false
 	if state != State.READY:
+		return false
+	# El aturdimiento corre en paralelo con la espera del golpe. Si se sale de
+	# `STAGGERED` antes, la espera restante sigue viva y debe bloquear el ataque.
+	if _cooldown > 0.0:
 		return false
 	if stamina != null and stamina.get_current() < weapon.stamina_cost:
 		return false

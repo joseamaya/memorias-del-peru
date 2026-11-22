@@ -61,7 +61,7 @@ signal journal_closed
 @onready var objective_label: Label = $ObjectiveLabel
 @onready var dialogue_panel: DialoguePanel = $DialoguePanel
 @onready var journal_panel: JournalPanel = $JournalPanel
-@onready var pause_panel: Control = $PausePanel
+@onready var pause_panel: PauseMenu = $PausePanel
 @onready var end_panel: ColorRect = $EndPanel
 @onready var end_title: Label = $EndPanel/EndTitle
 @onready var end_body: Label = $EndPanel/EndBody
@@ -117,7 +117,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	var manager: Node = get_node_or_null("/root/GameManager")
 	if manager != null and manager.has_signal("pause_changed"):
-		manager.connect("pause_changed", show_pause)
+		manager.connect("pause_changed", pause_panel.show_menu)
 
 
 func _process(delta: float) -> void:
@@ -290,10 +290,7 @@ func _apply_end_fade() -> void:
 	end_hint.modulate.a = text_t
 
 
-## Muestra u oculta el aviso de pausa.
-func show_pause(paused: bool) -> void:
-	pause_panel.visible = paused
-	queue_redraw()
+
 
 
 ## Segundos que necesita [param text] para leerse con calma.
@@ -558,6 +555,8 @@ func _on_interactable_focused(interactable: Interactable) -> void:
 
 func _on_interactable_unfocused() -> void:
 	_reticle_focused = false
+	# Sin esto el último «Hablar · …» se quedaba en pantalla al apartar la vista.
+	interaction_label.text = ""
 	_refresh_interaction_visibility()
 	queue_redraw()
 

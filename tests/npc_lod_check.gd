@@ -11,6 +11,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	SaveManagerService.set_save_root("user://test-saves")
 	var packed: PackedScene = load(SCENE_PATH) as PackedScene
 	if packed == null:
 		printerr("NPC_LOD_FAIL no scene")
@@ -99,7 +100,7 @@ func _check_snapshot(director: NpcDirector) -> bool:
 		ok = ok and director.get_anchor(&"npc_gris_1") == &"trabajo"
 	ok = ok and manager.delete_slot(campaign, slot)
 	DirAccess.remove_absolute(
-		ProjectSettings.globalize_path(SaveManagerService.SAVE_DIR.path_join(String(campaign)))
+		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(campaign)))
 	)
 	world.free()
 	clock.free()

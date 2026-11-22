@@ -190,7 +190,11 @@ func _restore() -> bool:
 	var npcs_value: Variant = payload.get("npcs", {})
 	if npcs_value is Dictionary:
 		_pending_npcs = _as_dict(npcs_value)
-	_on_population_built()
+	# La población casi siempre se construye después de este punto. Llamar a
+	# `_on_population_built()` aquí hacía que `restore_snapshot()` no aplicara
+	# nada (el director aún no tiene definiciones) y borrara la instantánea.
+	if _population != null and _population.is_built():
+		_on_population_built()
 	if _overlay != null:
 		_overlay.show_loaded(clock.get_day(), clock.get_minute_of_day())
 	_log(&"session_loaded", "dia=%d" % clock.get_day())
