@@ -17,7 +17,7 @@
 | **F0 — Redefinición a mundo abierto** | **Cerrada** | 2026-11-19 |
 | **F1 — Spikes técnicos** | **Cerrada** (2026-11-19) | [Ficha de F1](fases/F1-spikes-tecnicos.md) |
 | **F2 — Geografía y blockout** | **Cerrada** (aprobada con cambios) | 2026-11-20 · [Ficha de F2](fases/F2-geografia-y-blockout.md) |
-| **F3 — Vertical slice** | **En curso** (3.1–3.4 y 3.7 con base implementada; [ficha](fases/F3-vertical-slice.md)) | — |
+| **F3 — Vertical slice** | **En curso** (3.1–3.9 implementadas; falta la pasada humana de 3.10; [ficha](fases/F3-vertical-slice.md)) | — |
 | F4 — Producción de la campaña 01 | Prevista | — |
 | F5 — Validación y cierre de la campaña 01 | Prevista | — |
 | F6 — Campañas II–IV | Futura | — |
@@ -130,6 +130,8 @@
 **Precondiciones:** F2 cerrada; presupuesto y navegación validados. **Estado:** **en curso** desde el 2026-11-20. Arranque completado: retirada de la campaña lineal, revisión del contexto histórico (PCH-039 y PCH-040), rediseño de la campaña y ficha de alcance escrita: [ficha de F3](fases/F3-vertical-slice.md). Las tareas 3.1–3.10 se ejecutan en el orden que fija la ficha; ninguna se adelanta sin su predecesora.
 
 **Cierre preparado (2026-11-21):** 3.1–3.9 están implementadas y probadas; 3.10 tiene el [protocolo humano](../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) y la medición por sector y perfil (S1 y la batalla: 66,4/66,7 FPS en Medio, 61,0/61,1 en Bajo, dentro del presupuesto). Falta la pasada del responsable y su firma en el [acta](fases/F3-acta-de-cierre.md) para cerrar la fase.
+
+**Correcciones de la revisión (2026-11-21):** la revisión de la partida detectó fallos que las pruebas no cubrían. Se corrigieron los bloqueantes —catálogos de diálogo y POI en la exportación (`.tres.remap`), bloqueo de la etapa 1 por el reparto del agua, pérdida de la conversación de la curáca al cargar la etapa 2, repetición de Carmenca y entrada del diario reabierta, y cápsula de conversación de los NPC—, los altos —manta perdida al cargar, descubrimientos sin sincronizar, avisos del HUD, arma y piedras visibles sin equipo, honda inútil a corta distancia, respawn de la derrota y bloqueo del escudo— y los bajos —pausa, salto, ayuda de desarrollo, diálogo bloqueado, aturdimiento y guardado interrumpido—. Los recorridos de integración guardan ahora en `user://test-saves` para no borrar la partida del jugador. Evidencia en la [ficha de F3](fases/F3-vertical-slice.md) §18 y en `tests/mission_stage2_check.gd`; el detalle cronológico, en la [bitácora](bitacora.md).
 
 **Objetivo:** demostrar que el mundo se puede **habitar y jugar**, no solo recorrer.
 

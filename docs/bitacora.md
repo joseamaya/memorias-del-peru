@@ -6,6 +6,25 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-21 — Revisión de la partida: correcciones
+
+**Decisión:** antes de la pasada humana se corrige lo que bloqueaba o ensuciaba la partida, aunque la suite estuviera en verde. La revisión encontró fallos que las pruebas no cubrían porque probaban el editor, no el build, y porque no recorrían la etapa 2 cargada ni la derrota.
+
+| Cambio | Detalle |
+|---|---|
+| Catálogos en el build | `DialoguePresenter` y `DiscoveryService` usan `ResourceLoader.list_directory`. `DirAccess.get_files_at` devuelve `*.tres.remap` en la exportación y el filtro `.tres` dejaba 0 diálogos y 0 POI. Se prefiere el listado del cargador a recortar el sufijo `.remap` a mano: resuelve también los recursos importados y no depende del formato del pack. |
+| Etapa 1 | El reparto del agua ya no cambia al agricultor a la conversación de eco si aún no dio el pedido del maíz; el cambio se aplica cuando lo da. Así no se puede quedar sin `m01_maiz_pedido`. |
+| Etapa 2 | La curáca recupera `m01_curaca_partida` cuando la población termina de construirse. `_switch_curaca` se ejecutaba antes de que existieran las definiciones y no se repetía. |
+| Carmenca | `m01_victoria` cierra la batalla y el diario; al cargar no se repite la oleada ni se reabre la etapa. |
+| NPC | El destino y la posición lógica pasan a ser el centro del cuerpo (0,9 m sobre el suelo), no los pies. El cuerpo deja de quedar medio enterrado y la cápsula de conversación cubre la cabeza. Un NPC dormido recibe ruta al reaparecer. |
+| Manta y descubrimientos | Al cargar con la lana entregada se vuelve a ofrecer la manta; el servicio de descubrimientos se resincroniza con `WorldState` después de la carga. |
+| HUD y combate | Se limpia el aviso de interacción al perder foco; la munición solo se ve con la honda en la mano; el arma no reaparece al cerrar el diario si estaba desarmada; la batalla empieza con la porra y avisa de las teclas; el clic del escudo suelta el bloqueo; el aturdimiento no adelanta la espera; al caer se vuelve al campamento. |
+| Pausa y salto | Esc abre un menú con continuar, volver al título y salir. La acción `jump` existía sin código; ahora despega en el suelo. |
+| Guardado | La ranura anterior se aparta como `.bak` antes de renombrar el temporal y `load_slot` la recupera. Los recorridos de integración guardan en `user://test-saves` para no borrar la partida del jugador; antes compartían `user://saves` y la borraban. |
+| Pruebas | Se añaden `mission_stage2_check`, `test_resource_catalog`, `test_combat_input`, `test_hud_interaction`, `test_pause_menu`, `test_jump` y la recuperación del respaldo en `test_save_round_trip`. La CI ejecuta la etapa 2. |
+
+**Consecuencias:** las partidas antiguas se corrigen al reaparecer el NPC (el actor sube al centro del cuerpo); no se migra el JSON. Queda **no verificado** la pasada humana de 3.10, Windows y el arranque del binario exportado completo.
+
 ## 2026-11-21 — F3.10: cierre preparado
 
 **Decisión:** la fase no se cierra con código escrito sino con una pasada humana y una firma. Se prepara todo lo que no depende del responsable: protocolo cronometrado, medición por sector y perfil, acta y deuda declarada.
