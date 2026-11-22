@@ -325,4 +325,4 @@ Una revisión de la partida real detectó fallos que la suite no cubría. Se cor
 | Ayuda de desarrollo | La etiqueta fija solo queda en la vista de revisión; en partida se muestra el aviso temporal de controles | `region_review_check`, `region_player_check` |
 | Guardado | Se aparta la ranura anterior como `.bak` antes de renombrar el temporal y `load_slot` la recupera; las pruebas guardan en `user://test-saves` | `test_save_round_trip`, `city_save_round_trip` |
 
-**Validación ejecutada:** suite completa en verde, recorridos de integración afectados en verde, `gdlint` y `gdformat --check` en los archivos nuevos, e importación de las tablas de traducción. **No verificado:** la pasada humana de 3.10, Windows y el arranque del binario exportado completo.
+**Validación ejecutada:** suite completa en verde, recorridos de integración afectados en verde, `gdlint` y `gdformat --check` en los archivos nuevos, importación de las tablas de traducción, exportación Linux/Windows y arranque headless del build de Linux. **No verificado:** la pasada humana de 3.10, la ejecución del `.exe` de Windows y el arranque interactivo del binario exportado.
