@@ -19,10 +19,14 @@ var _catalog_path: String = ""
 
 
 ## Carga los POI del directorio y sincroniza los ya descubiertos.
+##
+## [method ResourceLoader.list_directory] resuelve los `.tres.remap` de las
+## exportaciones; [method DirAccess.get_files_at] devolvería esos nombres y el
+## filtro `.tres` descartaría el catálogo entero en el build.
 func load_catalog(directory: String) -> int:
 	_catalog_path = directory
 	_definitions.clear()
-	var files: PackedStringArray = DirAccess.get_files_at(directory)
+	var files: PackedStringArray = ResourceLoader.list_directory(directory)
 	files.sort()
 	for file_name: String in files:
 		if not file_name.ends_with(".tres"):
@@ -47,6 +51,15 @@ func discover(id: StringName) -> bool:
 		state.discover(id)
 	poi_discovered.emit(id)
 	return true
+
+
+## Vuelve a leer los descubrimientos de [WorldState].
+##
+## El catálogo se carga en `_ready()`, antes de que la sesión restaure la
+## partida; sin esta sincronización el servicio no ve los lugares guardados y
+## los vuelve a anunciar al pasar cerca.
+func sync_discovered() -> void:
+	_sync_discovered()
 
 
 func set_target(node: Node3D) -> void:

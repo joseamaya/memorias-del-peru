@@ -1,6 +1,8 @@
 keys,es
 INTERACT_DEFAULT,Interactuar
 UI_PAUSED,Pausa · Esc para continuar
+UI_RESUME,Continuar
+UI_TITLE,Volver al título
 UI_STAMINA,Aliento
 UI_HEALTH,Salud
 UI_AMMO_STONES,Piedras: %d

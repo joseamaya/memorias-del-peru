@@ -102,6 +102,7 @@ var _run_blocked: bool = false
 var _step_cycle: float = 0.0
 var _footstep_index: int = 0
 var _controls_locked: bool = false
+var jump: PlayerJump = PlayerJump.new()
 var _focus_phase: FocusPhase = FocusPhase.NONE
 var _focus_target: Node3D = null
 var _focus_elapsed: float = 0.0
@@ -176,6 +177,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
+	jump.request(Input.is_action_just_pressed("jump"), is_on_floor(), _controls_locked)
+	jump.apply(self, is_on_floor(), _controls_locked)
 	_move(delta)
 	_update_focus(delta)
 	_apply_camera(delta)
@@ -238,9 +241,6 @@ func try_interact() -> void:
 ## jugador sin apagar su física ni el mundo.
 func set_controls_locked(locked: bool) -> void:
 	_controls_locked = locked
-	var weapon: FirstPersonWeapon = get_node_or_null("Head/Camera3D/FirstPersonWeapon") as FirstPersonWeapon
-	if weapon != null:
-		weapon.visible = not locked
 	if locked:
 		velocity.x = 0.0
 		velocity.z = 0.0

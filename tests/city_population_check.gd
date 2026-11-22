@@ -43,6 +43,15 @@ func _run() -> void:
 	ok = ok and population.get_definition_count() == TOTAL_NPCS
 	ok = ok and population.get_named_count() == NAMED_NPCS
 	ok = ok and director.get_registered_count() == TOTAL_NPCS
+	# El actor vive en el centro del cuerpo: el suelo queda a 0,9 m por debajo.
+	# El destino tiene un desplazamiento lateral sobre el ancla y el terreno
+	# puede inclinarse, así que se comprueba el orden de magnitud, no el valor
+	# exacto.
+	var region: CampaignRegion = world.get_region()
+	var npc_position: Vector3 = director.get_npc_position(&"npc_curaca")
+	var ground: float = region.height_at(npc_position.x, npc_position.z)
+	var body_height: float = npc_position.y - ground
+	ok = ok and body_height > 0.4 and body_height < 1.4
 
 	# Espera a que el mapa de navegación sincronice las seis regiones: si se
 	# pide una ruta antes, NavigationServer devuelve una línea recta.

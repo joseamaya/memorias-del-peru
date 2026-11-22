@@ -49,6 +49,9 @@ func setup(player_node: PlayerFPS) -> void:
 	add_child(dialogue)
 	dialogue.setup(hud, player)
 	dialogue.register_directory(DIALOGUE_DIR)
+	# La ayuda de controles es temporal: la etiqueta fija de revisión no se
+	# dibuja durante la partida.
+	hud.show_hint(tr("UI_CONTROLS_HINT"), 10.0)
 
 
 ## Abre o cierra el diario. Mientras está abierto, el jugador no se mueve.
@@ -68,6 +71,16 @@ func toggle_journal() -> void:
 func close_journal() -> void:
 	if hud != null and hud.is_journal_open():
 		hud.hide_journal()
+
+
+## Esc cierra el diario o abre/cierra el menú de pausa.
+func toggle_pause() -> void:
+	if hud != null and hud.is_journal_open():
+		close_journal()
+		return
+	var manager: GameManagerService = GameManagerService.instance()
+	if manager != null:
+		manager.set_paused(not manager.is_paused())
 
 
 func is_journal_open() -> bool:

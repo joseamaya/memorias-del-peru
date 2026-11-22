@@ -116,7 +116,13 @@ func _run() -> void:
 	pause_event.pressed = true
 	Input.parse_input_event(pause_event)
 	await process_frame
+	var hud: PlayerHud = world.get_player_hud()
+	ok = ok and paused
+	ok = ok and hud != null and hud.pause_panel.visible
+	GameManagerService.instance().set_paused(false)
+	await process_frame
 	ok = ok and not paused
+	ok = ok and hud != null and not hud.pause_panel.visible
 
 	print(
 		"PLAYER walked_m=",

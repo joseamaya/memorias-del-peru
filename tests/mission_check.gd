@@ -16,6 +16,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	SaveManagerService.set_save_root("user://test-saves")
 	var manager: SaveManagerService = SaveManagerService.instance()
 	var world_state: WorldStateService = WorldStateService.instance()
 	var campaign_state: CampaignStateService = CampaignStateService.instance()
@@ -179,5 +180,5 @@ func _clear_campaign(manager: SaveManagerService) -> void:
 	for slot: String in manager.list_slots(CAMPAIGN):
 		manager.delete_slot(CAMPAIGN, StringName(slot))
 	DirAccess.remove_absolute(
-		ProjectSettings.globalize_path(SaveManagerService.SAVE_DIR.path_join(String(CAMPAIGN)))
+		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(CAMPAIGN)))
 	)

@@ -186,6 +186,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 
 **Política:** “pruebas en verde” significa que todas las de esta sección pasan.
 
+**Aislamiento del guardado:** los recorridos de integración que guardan llaman a `SaveManagerService.set_save_root("user://test-saves")` antes de crear el mundo. Así no leen ni borran la ranura del jugador en `user://saves`. La raíz se puede consultar con `SaveManagerService.save_root()` y restaurar con `reset_save_root()`.
+
 ### 3.1. Motor y jugador
 
 | Archivo | Qué cubre |
@@ -201,7 +203,9 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_mouse_mode_for_pause` | Modo de ratón al pausar y reanudar |
 | `test_mouse_capture_requires_focus` | El ratón se captura solo con la ventana enfocada |
 | `test_player_collision_layers` | Capas y máscaras del jugador |
-| `test_player_camera_dialogue` | Bloqueo de controles, encuadre del interlocutor y retorno de la cámara |
+| `test_player_camera_dialogue` | Bloqueo de controles, encuadre del interlocutor, retorno de la cámara y arma oculta al cerrar el diario sin equipo |
+| `test_jump` | El salto solo se aplica en el suelo y con los controles libres |
+| `test_pause_menu` | El panel de pausa ofrece continuar, volver al título y salir, con textos traducidos |
 | `test_footsteps_follow_bob` | Los pasos siguen el balanceo |
 | `test_quit_stops_audio` | El cierre ordenado detiene el audio |
 
@@ -230,11 +234,13 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_journal` | Encargos y entradas de Memoria con sello y fuente |
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
 | `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
+| `test_combat_input` | Munición ligada al arma equipada y clic del escudo que suelta el bloqueo |
 | `test_combat_feel` | Fases del golpe, parry de 0,15 s, bloqueo del 70 % y fichas del director |
 | `test_campaign_state` | Banderas entre escenas |
 | `test_dialogue_panel` | Panel de diálogo y opciones |
 | `test_journal_panel` | Diario y detalle de entradas |
 | `test_hud_hint` | Aviso contextual |
+| `test_hud_interaction` | El aviso de interacción desaparece al perder el foco |
 | `test_hud_combat` | Viñeta de salud y munición visible solo con la honda |
 | `test_session_log` | Registro de sesión y marcas |
 
@@ -258,7 +264,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 |---|---|
 | `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
 | `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
-| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado y ciclo mundo/reloj/jugador |
+| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias y ciclo mundo/reloj/jugador |
+| `test_resource_catalog` | Diálogos y POI se listan con `ResourceLoader.list_directory`, que resuelve los `.tres.remap` del build |
 | `test_rest_cycle` | Descanso: hora de despertar, salto de día antes y después de la hora y aplicación al reloj |
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
 | `test_sector_streamer` | Celdas, radio de carga, distancia, siempre cargado y registro de definiciones |
@@ -277,7 +284,9 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `city_save_round_trip.gd` | Dormir en la casa del jugador, guardado automático y carga en una instancia nueva: hora, NPC, misión, inventario y obras |
 | `dialogue_check.gd` | Conversación y diario en el mundo: interactable de NPC con nombre, grafo traducido, bandera en `WorldState` y diario que abre y cierra con J |
 | `mission_check.gd` | Misión principal: tres etapas, encargos en el mundo, partida de Viracocha, fase de guerra, diario y guardado a mitad |
+| `mission_stage2_check.gd` | Cargar en la etapa 2 conserva la conversación de partida de la curáca y la posibilidad de fijar `m01_queda` |
 | `side_activities_check.gd` | Secundarias: reparto del agua con sus tres desenlaces y diario, manta tejida en el telar, negativo del telar sin encargo y guardado/carga |
+| `side_manta_load_check.gd` | Cargar con la lana entregada y la manta sin aceptar conserva la oferta de la tejedora y su encargo |
 | `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento y sobrevive a la carga sin duplicar la entrada |
 | `defense_works_check.gd` | Obras de defensa: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras |
 | `combat_check.gd` | Combate del jugador: arma y desarme, golpe de porra contra un chanca, golpe recibido, escudo que absorbe y honda que gasta piedra |

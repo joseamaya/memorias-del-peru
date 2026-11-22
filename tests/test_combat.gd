@@ -69,6 +69,26 @@ func test_combatant_attack_and_cooldown() -> bool:
 	return ok
 
 
+func test_stagger_does_not_skip_cooldown() -> bool:
+	var character: CharacterState = CharacterState.new()
+	var stamina: StaminaComponent = _stamina()
+	var combatant: Combatant = Combatant.new()
+	combatant.character = character
+	combatant.weapon = _weapon()
+	combatant.stamina = stamina
+	var ok: bool = combatant.attack(1.0) > 0.0
+	# El golpe deja la espera en 0,8 s; el aturdimiento dura 0,35 s.
+	combatant.take_damage(5.0)
+	combatant.advance(0.35)
+	ok = ok and not combatant.can_attack()
+	combatant.advance(0.45)
+	ok = ok and combatant.can_attack()
+	character.free()
+	stamina.free()
+	combatant.free()
+	return ok
+
+
 func test_combatant_without_stamina_cannot_attack() -> bool:
 	var character: CharacterState = CharacterState.new()
 	var stamina: StaminaComponent = _stamina()

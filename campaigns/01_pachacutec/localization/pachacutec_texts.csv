@@ -80,3 +80,4 @@ PCH_BATALLA_ESTANDARTE,Los chancas se retiran al campamento. Toma el estandarte.
 PCH_BATALLA_VICTORIA,Los chancas huyen. Carmenca queda en manos del barrio.
 PCH_BATALLA_DERROTA,Has caído. El barrio aguanta: vuelve a la línea.
 PCH_BATALLA_ALIADOS,Los del barrio salen contigo.
+PCH_BATALLA_ARMA,1: honda · 2: porra · 3: escudo

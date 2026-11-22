@@ -51,11 +51,14 @@ func register(dialogue_id: StringName, graph: DialogueGraph) -> void:
 
 
 ## Registra todos los `.tres` de una carpeta, con el nombre del archivo como ID.
+##
+## Usa [method ResourceLoader.list_directory] y no [method DirAccess.get_files_at]:
+## en una exportación los recursos de texto se guardan como `.tres.remap` y
+## `DirAccess` devuelve ese nombre, que no termina en `.tres`. El listado del
+## cargador de recursos resuelve el remapeo y devuelve la ruta lógica.
 func register_directory(path: String) -> int:
-	if not DirAccess.dir_exists_absolute(path):
-		return 0
 	var count: int = 0
-	for file_name: String in DirAccess.get_files_at(path):
+	for file_name: String in ResourceLoader.list_directory(path):
 		if not file_name.ends_with(".tres"):
 			continue
 		var graph: DialogueGraph = load(path.path_join(file_name)) as DialogueGraph
@@ -82,13 +85,23 @@ func is_active() -> bool:
 func start(dialogue_id: StringName, target: Node3D = null) -> bool:
 	if runner == null or runner.is_active() or not _graphs.has(dialogue_id):
 		return false
+	var graph: DialogueGraph = _graphs[dialogue_id]
+	# Se valida antes de bloquear: un grafo sin nodo de entrada dejaría al
+	# jugador sin controles y sin diálogo.
+	if graph == null or graph.find_node(graph.entry_id) == null:
+		return false
 	var world_state: WorldStateService = WorldStateService.instance()
 	if world_state != null:
 		runner.seed_flags(world_state.get_flags())
 	_dialogue_id = dialogue_id
 	if player != null:
 		player.begin_dialogue(target)
-	return runner.start(_graphs[dialogue_id])
+	var began: bool = runner.start(graph)
+	if not began:
+		_dialogue_id = &""
+		if player != null:
+			player.end_dialogue()
+	return began
 
 
 func _on_started() -> void:

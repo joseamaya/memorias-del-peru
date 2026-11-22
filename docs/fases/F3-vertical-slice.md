@@ -304,3 +304,25 @@ La slice se aprueba en **blockout**: los sistemas, el contenido y el flujo está
 | Personajes secundarios | Sin retratos ni voces; nombre y rol por tabla de localización | Retratos o modelos de apoyo, si el responsable los aprueba |
 
 No es deuda de arte la **batalla sin serializar** ni el **navmesh de terreno**: son límites de diseño declarados, no falta de producción.
+
+## 18. Correcciones de la revisión (2026-11-21)
+
+Una revisión de la partida real detectó fallos que la suite no cubría. Se corrigieron en una rama propia (`fix/f3-correcciones-revision`) y cada uno tiene prueba o comprobación dirigida.
+
+| Área | Corrección | Evidencia |
+|---|---|---|
+| Exportación | Diálogos y POI se listan con `ResourceLoader.list_directory`, que resuelve `.tres.remap`; antes el build cargaba 0 de 11 y 0 de 31 | `test_resource_catalog`; `.pck` exportado y montado: 11/31 recursos lógicos |
+| Etapa 1 | El reparto del agua ya no cambia al agricultor a la conversación de eco si aún no dio `m01_maiz_pedido`; el cambio llega cuando lo da | `side_activities_check` |
+| Etapa 2 | `MissionController` reaplica la conversación de la curáca cuando la población termina de construirse | `mission_stage2_check` |
+| Carmenca | La batalla no se reinicia con `m01_victoria`; el diario cierra la etapa al cargar | `carmenca_check` |
+| NPC | El actor vive en el centro del cuerpo (`BODY_OFFSET`), la conversación alcanza la cabeza; un NPC que estuvo dormido retoma su ruta al reaparecer | `city_population_check`, `npc_lod_check` |
+| Manta | Al cargar con la lana entregada se vuelve a ofrecer la manta aunque no se hubiera aceptado | `side_manta_load_check` |
+| Descubrimientos | El servicio se resincroniza con `WorldState` después de cargar | `mirador_check` |
+| HUD | El aviso «Hablar» se limpia al perder el foco; la munición solo se ve con la honda en la mano; el arma no reaparece al cerrar el diario si estaba desarmado | `test_hud_interaction`, `test_combat_input`, `test_player_camera_dialogue` |
+| Combate | La batalla empieza con la porra y avisa de las teclas; el clic del escudo suelta el bloqueo; el aturdimiento no adelanta la espera | `carmenca_check`, `test_combat_input`, `test_combat` |
+| Derrota | Al caer se vuelve al campamento (8 m del estandarte), no a la casa a 320 m | `carmenca_check` |
+| Pausa y salto | Esc abre un menú con continuar, volver al título y salir; la acción `jump` despega en el suelo | `test_pause_menu`, `test_jump`, `region_player_check` |
+| Ayuda de desarrollo | La etiqueta fija solo queda en la vista de revisión; en partida se muestra el aviso temporal de controles | `region_review_check`, `region_player_check` |
+| Guardado | Se aparta la ranura anterior como `.bak` antes de renombrar el temporal y `load_slot` la recupera; las pruebas guardan en `user://test-saves` | `test_save_round_trip`, `city_save_round_trip` |
+
+**Validación ejecutada:** suite completa en verde, recorridos de integración afectados en verde, `gdlint` y `gdformat --check` en los archivos nuevos, e importación de las tablas de traducción. **No verificado:** la pasada humana de 3.10, Windows y el arranque del binario exportado completo.

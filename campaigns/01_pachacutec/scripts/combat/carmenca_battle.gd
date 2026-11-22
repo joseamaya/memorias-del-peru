@@ -19,6 +19,12 @@ enum State {
 }
 
 const CAMP: Vector3 = Vector3(765.0, 0.0, 295.0)
+## Al caer se vuelve al campamento, no a la casa (320 m al este): la oleada se
+## reinicia y el jugador no tiene que recorrer medio valle para continuar.
+const DEFEAT_RESPAWN_OFFSET: Vector3 = Vector3(0.0, 0.0, 8.0)
+## La honda no alcanza a menos de 3 m y los chancas se detienen a 1,15 m. La
+## batalla empieza con la porra para que el primer golpe sea posible.
+const START_WEAPON_INDEX: int = 1
 const WAVES: Array[int] = [4, 6, 8]
 const MAX_WORKS_BONUS: int = 2
 const ALLY_COUNT: int = 6
@@ -58,6 +64,9 @@ func setup(world: RegionWorld, works: DefenseWorks) -> void:
 	var combat: PlayerCombat = _combat()
 	if combat != null:
 		combat.died.connect(_on_player_died)
+	# Una partida cargada después de ganar no debe volver a empezar la batalla.
+	if _has_won():
+		_state = State.FINISHED
 
 
 func is_active() -> bool:
@@ -90,7 +99,7 @@ func get_standard_position() -> Vector3:
 
 ## Arranca sin esperar a que el jugador llegue. Para pruebas y capturas.
 func force_start() -> void:
-	if _state != State.IDLE:
+	if _state != State.IDLE or _has_won():
 		return
 	_start()
 
@@ -118,7 +127,7 @@ func _check_trigger() -> void:
 	var player: PlayerFPS = _world.get_player()
 	if state == null or player == null:
 		return
-	if state.get_flag(STAGE_FLAG) < 3:
+	if state.get_flag(STAGE_FLAG) < 3 or state.get_flag(VICTORY_FLAG) != 0:
 		return
 	var flat: Vector2 = Vector2(
 		player.global_position.x - CAMP.x, player.global_position.z - CAMP.z
@@ -132,9 +141,11 @@ func _start() -> void:
 	if combat == null:
 		return
 	combat.set_armed(true)
+	combat.select_weapon(START_WEAPON_INDEX)
 	combat.set_damage_scale(MANTA_SCALE if _has_manta() else 1.0)
 	_spawn_allies()
 	_subtitle(&"PCH_BATALLA_ALIADOS")
+	_hint(&"PCH_BATALLA_ARMA")
 	_start_wave(1)
 
 
@@ -236,20 +247,21 @@ func _on_player_died() -> void:
 	if combat != null:
 		combat.revive()
 		combat.set_armed(true)
-	_move_player_home()
+	_respawn_at_camp()
 	var hud: PlayerHud = _hud()
 	if hud != null:
 		hud.set_status("")
 
 
-func _move_player_home() -> void:
+func _respawn_at_camp() -> void:
 	var player: PlayerFPS = _world.get_player()
 	if player == null:
 		return
-	var point: Vector3 = RegionWorld.SPAWN_POINT
+	var point: Vector3 = CAMP + DEFEAT_RESPAWN_OFFSET
 	point.y = _ground(point.x, point.z) + 0.2
 	player.global_position = point
-	player.rotation_degrees.y = RegionWorld.SPAWN_YAW_DEGREES
+	# Mirando al estandarte: el desplazamiento es hacia +Z y el frente es -Z.
+	player.rotation_degrees.y = 0.0
 
 
 func _refresh_status() -> void:
@@ -325,6 +337,11 @@ func _has_manta() -> bool:
 	return state != null and state.has_flag(MANTA_FLAG)
 
 
+func _has_won() -> bool:
+	var state: WorldStateService = WorldStateService.instance()
+	return state != null and state.has_flag(VICTORY_FLAG)
+
+
 func _combat() -> PlayerCombat:
 	return _world.get_player_combat() if _world != null else null
 
@@ -345,3 +362,9 @@ func _subtitle(key: StringName, wave: int = 0) -> void:
 	if wave > 0:
 		text = text % wave
 	hud.show_subtitle(text, 5.0)
+
+
+func _hint(key: StringName) -> void:
+	var hud: PlayerHud = _hud()
+	if hud != null:
+		hud.show_hint(tr(String(key)), 7.0)

@@ -275,6 +275,14 @@ func _spawn(id: StringName) -> NpcSimActor:
 	add_child(actor)
 	actor.position = _positions.get(id, Vector3.ZERO)
 	_actors[id] = actor
+	# Un NPC que estuvo dormido mientras cambiaba su horario no recibió ruta.
+	# Al volver a existir debe caminar desde donde se quedó hasta su nuevo
+	# destino, no quedarse quieto en el ancla anterior.
+	var goal: Vector3 = _goals.get(id, actor.position)
+	if actor.position.distance_to(goal) > 0.05:
+		actor.mover.set_path(_path_for(actor.position, goal))
+	else:
+		actor.mover.set_path(PackedVector3Array())
 	npc_spawned.emit(id)
 	return actor
 
@@ -310,7 +318,11 @@ func _goal_for(index: int, anchor_id: StringName) -> Vector3:
 		base = _anchors[anchor_id]
 	var radius: float = ANCHOR_RADIUS + float(index % 4) * ANCHOR_RING_STEP
 	var angle: float = float(index) * GOLDEN_ANGLE
-	return base + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
+	# `_positions` y `_goals` son el centro del cuerpo, no los pies: el actor
+	# coloca la cápsula alrededor de su origen y el colisionador de conversación
+	# tiene que cubrirla entera. El desplazamiento sobre el suelo lo aporta
+	# `NpcMover.body_offset`.
+	return base + Vector3(cos(angle) * radius, BODY_OFFSET, sin(angle) * radius)
 
 
 func _resolve_anchor(anchor_id: StringName, definition: NpcDefinition) -> StringName:

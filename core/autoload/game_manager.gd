@@ -28,6 +28,8 @@ const AUDIO_PLAYER_TYPES: Array[String] = [
 
 ## Milisegundos de tiempo real entre detener el audio y salir.
 const QUIT_AUDIO_DRAIN_MS: int = 250
+## Escena principal del proyecto, a la que vuelve «Volver al título».
+const TITLE_SCENE: String = "res://core/ui/title_screen.tscn"
 
 var _paused: bool = false
 var _quitting: bool = false
@@ -64,6 +66,21 @@ func set_paused(paused: bool) -> void:
 ## Devuelve el estado de pausa actual.
 func is_paused() -> bool:
 	return _paused
+
+
+## Vuelve a la pantalla de título sin cerrar el juego. Devuelve si se pudo.
+##
+## Detiene la pausa y el audio del mundo antes del cambio; la pantalla de título
+## arranca su propia música. La carga pendiente se descarta.
+func return_to_title() -> bool:
+	if _quitting:
+		return false
+	set_paused(false)
+	var saves: SaveManagerService = SaveManagerService.instance()
+	if saves != null:
+		saves.cancel_pending_load()
+	stop_audio_in(get_tree().root)
+	return get_tree().change_scene_to_file(TITLE_SCENE) == OK
 
 
 ## Cierra el juego de forma ordenada: detiene todo el audio, deja pasar un

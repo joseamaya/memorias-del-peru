@@ -50,6 +50,25 @@ func test_dialogue_camera_focus_and_return() -> bool:
 	return ok
 
 
+func test_journal_keeps_unarmed_weapon_hidden() -> bool:
+	var nodes: Array[Node] = _spawn()
+	if nodes.is_empty():
+		return false
+	var player: PlayerFPS = nodes[0] as PlayerFPS
+	var weapon: Node3D = player.get_node("Head/Camera3D/FirstPersonWeapon") as Node3D
+	weapon.visible = false
+	player.set_controls_locked(true)
+	player.set_controls_locked(false)
+	var ok: bool = not weapon.visible
+	weapon.visible = true
+	player.set_controls_locked(true)
+	player.set_controls_locked(false)
+	ok = ok and weapon.visible
+	player.free()
+	(nodes[1] as Node3D).free()
+	return ok
+
+
 func test_journal_lock_and_footsteps() -> bool:
 	var nodes: Array[Node] = _spawn()
 	if nodes.is_empty():

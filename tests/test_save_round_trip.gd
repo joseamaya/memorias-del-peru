@@ -123,10 +123,35 @@ static func _as_array(value: Variant) -> Array:
 	return value as Array
 
 
+func test_save_recovers_interrupted_slot() -> bool:
+	var campaign: StringName = StringName("test_backup_%d" % Time.get_ticks_msec())
+	var slot: StringName = &"auto"
+	var manager: SaveManagerService = SaveManagerService.new()
+	var ok: bool = manager.save_slot(campaign, slot, {"value": 1})
+	ok = ok and manager.save_slot(campaign, slot, {"value": 2})
+	var path: String = manager.slot_path(campaign, slot)
+	ok = ok and not path.is_empty()
+	# Un guardado correcto no deja respaldos colgando.
+	ok = ok and not FileAccess.file_exists(path + SaveManagerService.BACKUP_SUFFIX)
+	# Simula la caída entre apartar la ranura anterior y colocar la nueva.
+	var final_absolute: String = ProjectSettings.globalize_path(path)
+	var backup_absolute: String = ProjectSettings.globalize_path(
+		path + SaveManagerService.BACKUP_SUFFIX
+	)
+	ok = ok and DirAccess.rename_absolute(final_absolute, backup_absolute) == OK
+	var loaded: Dictionary = manager.load_slot(campaign, slot)
+	ok = ok and _to_int(loaded.get("value", 0)) == 2
+	ok = ok and manager.has_slot(campaign, slot)
+	ok = ok and manager.delete_slot(campaign, slot)
+	_cleanup(manager, campaign)
+	manager.free()
+	return ok
+
+
 func _cleanup(manager: SaveManagerService, campaign: StringName) -> void:
 	var slots: Array[String] = manager.list_slots(campaign)
 	for slot_name: String in slots:
 		manager.delete_slot(campaign, StringName(slot_name))
 	DirAccess.remove_absolute(
-		ProjectSettings.globalize_path(SaveManagerService.SAVE_DIR.path_join(String(campaign)))
+		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(campaign)))
 	)

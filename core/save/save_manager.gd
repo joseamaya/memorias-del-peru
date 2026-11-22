@@ -14,8 +14,14 @@ const SAVE_DIR: String = "user://saves"
 const SCHEMA_VERSION: int = 1
 const MAX_NAME_LENGTH: int = 32
 const JSON_EXTENSION: String = ".json"
+const TEMP_SUFFIX: String = ".tmp"
+const BACKUP_SUFFIX: String = ".bak"
 ## Ranura que la campaña usa para el guardado automático al descansar.
 const AUTO_SLOT: StringName = &"auto"
+
+## Las pruebas de integración pueden aislar sus guardados en otra raíz para no
+## borrar la partida real del jugador. Vacío significa `user://saves`.
+static var _root_override: String = ""
 
 ## Carga pedida por la pantalla de título y pendiente de aplicar en el mundo.
 var _pending_load: Dictionary[StringName, StringName] = {}
@@ -27,6 +33,22 @@ static func instance() -> SaveManagerService:
 	if tree == null:
 		return null
 	return tree.root.get_node_or_null("SaveManager") as SaveManagerService
+
+
+## Fija una raíz de guardado alternativa (pruebas). Cadena vacía restaura la
+## raíz del juego.
+static func set_save_root(path: String) -> void:
+	_root_override = path
+
+
+## Raíz de guardado activa, sin barra final.
+static func save_root() -> String:
+	return _root_override if not _root_override.is_empty() else SAVE_DIR
+
+
+## Restaura la raíz de guardado del juego.
+static func reset_save_root() -> void:
+	_root_override = ""
 
 
 ## Pide que la próxima escena de campaña cargue la ranura indicada.
@@ -66,7 +88,7 @@ func save_slot(campaign: StringName, slot: StringName, payload: Dictionary) -> b
 	var path: String = slot_path(campaign, slot)
 	if path.is_empty():
 		return false
-	var directory: String = ProjectSettings.globalize_path(SAVE_DIR.path_join(String(campaign)))
+	var directory: String = ProjectSettings.globalize_path(save_root().path_join(String(campaign)))
 	var directory_error: Error = DirAccess.make_dir_recursive_absolute(directory)
 	if directory_error != OK and directory_error != ERR_ALREADY_EXISTS:
 		return false
@@ -75,7 +97,8 @@ func save_slot(campaign: StringName, slot: StringName, payload: Dictionary) -> b
 	data["campaign"] = String(campaign)
 	data["slot"] = String(slot)
 	data["saved_at"] = Time.get_datetime_string_from_system(true)
-	var temp_path: String = path + ".tmp"
+	var temp_path: String = path + TEMP_SUFFIX
+	var backup_path: String = path + BACKUP_SUFFIX
 	var file: FileAccess = FileAccess.open(temp_path, FileAccess.WRITE)
 	if file == null:
 		return false
@@ -86,14 +109,26 @@ func save_slot(campaign: StringName, slot: StringName, payload: Dictionary) -> b
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(temp_path))
 		return false
 	var final_absolute: String = ProjectSettings.globalize_path(path)
+	var temp_absolute: String = ProjectSettings.globalize_path(temp_path)
+	var backup_absolute: String = ProjectSettings.globalize_path(backup_path)
+	# No se borra la ranura anterior antes de renombrar el temporal: se aparta
+	# como `.bak`. Si el proceso cae entre ambos pasos, `load_slot` puede
+	# recuperar el respaldo.
 	if FileAccess.file_exists(path):
-		DirAccess.remove_absolute(final_absolute)
-	var rename_error: Error = DirAccess.rename_absolute(
-		ProjectSettings.globalize_path(temp_path), final_absolute
-	)
+		if FileAccess.file_exists(backup_path):
+			DirAccess.remove_absolute(backup_absolute)
+		var backup_error: Error = DirAccess.rename_absolute(final_absolute, backup_absolute)
+		if backup_error != OK:
+			DirAccess.remove_absolute(temp_absolute)
+			return false
+	var rename_error: Error = DirAccess.rename_absolute(temp_absolute, final_absolute)
 	if rename_error != OK:
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(temp_path))
+		if FileAccess.file_exists(backup_path):
+			DirAccess.rename_absolute(backup_absolute, final_absolute)
+		DirAccess.remove_absolute(temp_absolute)
 		return false
+	if FileAccess.file_exists(backup_path):
+		DirAccess.remove_absolute(backup_absolute)
 	return true
 
 
@@ -101,8 +136,13 @@ func save_slot(campaign: StringName, slot: StringName, payload: Dictionary) -> b
 ## no es compatible.
 func load_slot(campaign: StringName, slot: StringName) -> Dictionary:
 	var path: String = slot_path(campaign, slot)
-	if path.is_empty() or not FileAccess.file_exists(path):
+	if path.is_empty():
 		return {}
+	# Un cierre en mitad del guardado deja la ranura anterior en `.bak`.
+	if not FileAccess.file_exists(path):
+		path = path + BACKUP_SUFFIX
+		if not FileAccess.file_exists(path):
+			return {}
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {}
@@ -123,7 +163,9 @@ func load_slot(campaign: StringName, slot: StringName) -> Dictionary:
 ## Indica si la ranura existe.
 func has_slot(campaign: StringName, slot: StringName) -> bool:
 	var path: String = slot_path(campaign, slot)
-	return not path.is_empty() and FileAccess.file_exists(path)
+	if path.is_empty():
+		return false
+	return FileAccess.file_exists(path) or FileAccess.file_exists(path + BACKUP_SUFFIX)
 
 
 ## Ranuras de una campaña, ordenadas alfabéticamente.
@@ -131,13 +173,20 @@ func list_slots(campaign: StringName) -> Array[String]:
 	var result: Array[String] = []
 	if not is_valid_name(campaign):
 		return result
-	var directory: String = ProjectSettings.globalize_path(SAVE_DIR.path_join(String(campaign)))
+	var directory: String = ProjectSettings.globalize_path(save_root().path_join(String(campaign)))
 	if not DirAccess.dir_exists_absolute(directory):
 		return result
 	var files: PackedStringArray = DirAccess.get_files_at(directory)
 	for file_name: String in files:
-		if file_name.ends_with(JSON_EXTENSION):
-			result.append(file_name.trim_suffix(JSON_EXTENSION))
+		var slot_name: String = ""
+		if file_name.ends_with(BACKUP_SUFFIX):
+			var base_name: String = file_name.trim_suffix(BACKUP_SUFFIX)
+			if base_name.ends_with(JSON_EXTENSION):
+				slot_name = base_name.trim_suffix(JSON_EXTENSION)
+		elif file_name.ends_with(JSON_EXTENSION):
+			slot_name = file_name.trim_suffix(JSON_EXTENSION)
+		if not slot_name.is_empty() and not result.has(slot_name):
+			result.append(slot_name)
 	result.sort()
 	return result
 
@@ -145,16 +194,22 @@ func list_slots(campaign: StringName) -> Array[String]:
 ## Borra una ranura. Devuelve si se eliminó.
 func delete_slot(campaign: StringName, slot: StringName) -> bool:
 	var path: String = slot_path(campaign, slot)
-	if path.is_empty() or not FileAccess.file_exists(path):
+	if path.is_empty():
 		return false
-	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK
+	var removed: bool = false
+	for candidate: String in [path, path + BACKUP_SUFFIX, path + TEMP_SUFFIX]:
+		if not FileAccess.file_exists(candidate):
+			continue
+		if DirAccess.remove_absolute(ProjectSettings.globalize_path(candidate)) == OK:
+			removed = true
+	return removed
 
 
 ## Ruta relativa de la ranura, o cadena vacía si el nombre no es válido.
 func slot_path(campaign: StringName, slot: StringName) -> String:
 	if not is_valid_name(campaign) or not is_valid_name(slot):
 		return ""
-	return SAVE_DIR.path_join(String(campaign)).path_join(String(slot) + JSON_EXTENSION)
+	return save_root().path_join(String(campaign)).path_join(String(slot) + JSON_EXTENSION)
 
 
 ## Guarda el estado del mundo, el reloj y el jugador.

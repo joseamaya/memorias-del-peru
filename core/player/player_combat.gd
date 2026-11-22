@@ -26,6 +26,7 @@ var loadout: CombatLoadout = null
 var _weapon_view: FirstPersonWeapon = null
 var _armed: bool = false
 var _charging: bool = false
+var _shield_click: bool = false
 var _charge_elapsed: float = 0.0
 var _pending_damage: float = 0.0
 ## Multiplicador del daño recibido; la manta de la defensa lo baja.
@@ -77,10 +78,12 @@ func is_armed() -> bool:
 func set_armed(value: bool) -> void:
 	_armed = value
 	_charging = false
+	_shield_click = false
 	if _weapon_view != null:
 		_weapon_view.visible = value
 	if not value:
 		loadout.set_blocking(false)
+	_update_hud_ammo()
 
 
 ## Ajusta el daño recibido (1 = normal, 0,85 = con manta).
@@ -166,17 +169,29 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if _charging:
 		_charge_elapsed += delta
+	# El arma solo se ve armada y con los controles libres. Así no reaparece al
+	# cerrar el diario si el blockout no la había equipado.
+	if _weapon_view != null and player != null:
+		_weapon_view.visible = _armed and not player.is_controls_locked()
 
 
 func _start_charge() -> void:
 	if loadout.is_shield():
+		# Con el escudo, el clic izquierdo mantiene el bloqueo mientras se
+		# aprieta. Antes se quedaba levantado para siempre porque la suelta no
+		# tenía ningún estado que cerrar.
 		loadout.set_blocking(true)
+		_shield_click = true
 		return
 	_charging = true
 	_charge_elapsed = 0.0
 
 
 func _release_charge() -> void:
+	if _shield_click:
+		_shield_click = false
+		loadout.set_blocking(false)
+		return
 	if not _charging:
 		return
 	_charging = false
@@ -231,17 +246,25 @@ func _on_blocking_changed(value: bool) -> void:
 func _on_weapon_changed(_index: int, weapon: CombatWeapon) -> void:
 	if _weapon_view != null and weapon != null:
 		_weapon_view.set_weapon(weapon.kind)
-	if hud != null:
-		hud.set_ammo(loadout.ammo(), loadout.is_ranged())
+	_update_hud_ammo()
 
 
-func _on_ammo_changed(remaining: int) -> void:
+func _on_ammo_changed(_remaining: int) -> void:
+	_update_hud_ammo()
+
+
+## La munición solo se muestra con el arma en la mano. `set_ammo` recibe además
+## si el arma activa es la honda, para que el HUD no enseñe «Piedras: 12» con el
+## jugador desarmado.
+func _update_hud_ammo() -> void:
 	if hud != null:
-		hud.set_ammo(remaining, loadout.is_ranged())
+		hud.set_ammo(loadout.ammo(), _armed and loadout.is_ranged())
 
 
 func _die() -> void:
 	_armed = false
+	_charging = false
+	_shield_click = false
 	if _weapon_view != null:
 		_weapon_view.visible = false
 	loadout.set_blocking(false)

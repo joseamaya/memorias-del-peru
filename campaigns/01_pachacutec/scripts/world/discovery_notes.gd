@@ -32,6 +32,8 @@ func setup(world: RegionWorld) -> void:
 		var discovery: DiscoveryService = world.get_discovery()
 		if discovery != null:
 			discovery.poi_discovered.connect(_on_discovered)
+			# La sesión ya restauró WorldState; el catálogo se cargó antes.
+			discovery.sync_discovered()
 	_restore()
 
 
