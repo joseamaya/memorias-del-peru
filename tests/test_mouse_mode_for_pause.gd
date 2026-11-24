@@ -4,6 +4,6 @@ extends RefCounted
 
 func test_mouse_mode_for_pause() -> bool:
 	return (
-		PlayerFPS.mouse_mode_for_pause(true) == Input.MOUSE_MODE_VISIBLE
-		and PlayerFPS.mouse_mode_for_pause(false) == Input.MOUSE_MODE_CAPTURED
+		MousePolicy.mode_for_pause(true) == Input.MOUSE_MODE_VISIBLE
+		and MousePolicy.mode_for_pause(false) == Input.MOUSE_MODE_CAPTURED
 	)

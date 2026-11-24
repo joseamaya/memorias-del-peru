@@ -83,16 +83,17 @@ func test_interaction_focus_survives_freed_target() -> bool:
 	object.add_child(holder)
 	tree.root.add_child(player)
 	tree.root.add_child(object)
+	player.interactable_focused.connect(_on_focused)
 	player.interactable_unfocused.connect(_on_unfocused)
 	player.interaction_ray.force_raycast_update()
 	player.update_interaction()
-	var focused: bool = player.get_focused_interactable() == object
+	var focused: bool = not _focused.is_empty() and _focused[-1] == object
 	var before: int = _unfocused
 	# El NPC se libera entre el último fotograma y la pulsación de E.
 	object.free()
 	player.try_interact()
-	var ok: bool = focused and player.get_focused_interactable() == null
-	ok = ok and _unfocused == before + 1
+	var ok: bool = focused and _unfocused == before + 1
+	player.interactable_focused.disconnect(_on_focused)
 	player.interactable_unfocused.disconnect(_on_unfocused)
 	player.free()
 	return ok
