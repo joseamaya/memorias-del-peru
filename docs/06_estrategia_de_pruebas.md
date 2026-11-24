@@ -280,7 +280,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `interiors_check.gd` | Tres interiores transitables: sala instanciada fuera del terreno, vestidos distintos, lecho bajo andino solo en la casa del jugador, leyendas visibles y vuelta exacta a la puerta |
 | `day_night_check.gd` | Ciclo día/noche: el reloj mueve sol, ambiente y niebla; cuatro franjas distinguibles y sin saltos de energía |
 | `lantern_check.gd` | Antorcha de mano: apagada de día, encendida de noche, encendido gradual en el atardecer y sin sombras |
-| `city_population_check.gd` | 24 NPC registrados, 8 nombrados, rutinas de mañana y noche, y 20 min simulados sin atravesar casas |
+| `city_population_check.gd` | 24 NPC registrados, 8 nombrados a 0,9 ± 0,10 m del suelo, rutinas de mañana y noche, y 20 min simulados sin atravesar casas |
 | `city_save_round_trip.gd` | Dormir en la casa del jugador, guardado automático y carga en una instancia nueva: hora, NPC, misión, inventario y obras |
 | `dialogue_check.gd` | Conversación y diario en el mundo: interactable de NPC con nombre, grafo traducido, bandera en `WorldState` y diario que abre y cierra con J |
 | `mission_check.gd` | Misión principal: tres etapas, encargos en el mundo, partida de Viracocha, fase de guerra, diario y guardado a mitad |
@@ -298,6 +298,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `region_player_check.gd` | Jugador en primera persona sobre el terreno, 9 m andados, plaza, streaming, rescate y marcador de S2 oculto |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
+| `test_npc_ground_goal` | El destino del NPC sigue el suelo del punto desplazado en pendiente y la carga corrige la altura guardada |
 | `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |
 | `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
 | `terrain3d_check.gd` | Terrain3D carga, crea una región y devuelve la altura importada |

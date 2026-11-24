@@ -92,7 +92,8 @@
 - `CityPopulation` en campaña: 24 NPC (8 nombrados) con casa, mañana, tarde y noche sobre 11 anclas del sector; usa `NpcDirector`, `NpcDefinition` y `ScheduleEntry` de Core.
 - Nombres en la tabla de localización; Chanan Cury Coca incluida como NPC narrativo.
 - El navmesh de S1 sigue siendo de terreno: las anclas se colocaron con holgura de las casas y la prueba simula 20 min comprobando que nadie queda dentro de una huella. Se probó a tallar las casas en el navmesh, pero desconectaba los enlaces entre sectores y rompía el recorrido regional; queda pendiente con otra técnica.
-- Evidencia: `city_population_check` (24/8, 0 dentro de casas) y `build/evidencia/city_population.png`.
+- El destino de cada NPC se calcula sobre el suelo del punto desplazado por el anillo, no sobre la altura del ancla: en pendiente el NPC quedaba enterrado o flotando hasta 0,7 m. `NpcDirector` acepta un muestreador de altura y la carga corrige la Y guardada.
+- Evidencia: `city_population_check` (24/8, 0 dentro de casas, 8 nombrados a 0,9 ± 0,10 m del suelo) y `build/evidencia/city_population.png`.
 
 ## 6. F3.5 — Misión principal
 

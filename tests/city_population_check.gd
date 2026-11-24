@@ -43,15 +43,27 @@ func _run() -> void:
 	ok = ok and population.get_definition_count() == TOTAL_NPCS
 	ok = ok and population.get_named_count() == NAMED_NPCS
 	ok = ok and director.get_registered_count() == TOTAL_NPCS
-	# El actor vive en el centro del cuerpo: el suelo queda a 0,9 m por debajo.
-	# El destino tiene un desplazamiento lateral sobre el ancla y el terreno
-	# puede inclinarse, así que se comprueba el orden de magnitud, no el valor
-	# exacto.
+	# El actor vive en el centro del cuerpo: 0,9 m sobre el suelo del punto
+	# desplazado. Un margen de 10 cm distingue una colocación correcta del
+	# error de pendiente, que llegaba a 0,7 m.
 	var region: CampaignRegion = world.get_region()
-	var npc_position: Vector3 = director.get_npc_position(&"npc_curaca")
-	var ground: float = region.height_at(npc_position.x, npc_position.z)
-	var body_height: float = npc_position.y - ground
-	ok = ok and body_height > 0.4 and body_height < 1.4
+	var named: Array[StringName] = [
+		&"npc_curaca",
+		&"npc_tejedora",
+		&"npc_molendera",
+		&"npc_agricultor",
+		&"npc_mensajero",
+		&"npc_nino",
+		&"npc_anciano",
+		&"npc_principal",
+	]
+	for id: StringName in named:
+		var npc_position: Vector3 = director.get_npc_position(id)
+		var ground: float = region.height_at(npc_position.x, npc_position.z)
+		var error: float = absf(npc_position.y - ground - NpcDirector.BODY_OFFSET)
+		if error > 0.10:
+			printerr("POPULATION_FAIL npc=", id, " error_altura=", error)
+		ok = ok and error <= 0.10
 
 	# Espera a que el mapa de navegación sincronice las seis regiones: si se
 	# pide una ruta antes, NavigationServer devuelve una línea recta.

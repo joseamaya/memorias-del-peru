@@ -110,6 +110,9 @@ func _try_build() -> void:
 		world_point.y = region.height_at(world_point.x, world_point.z)
 		anchors[id] = world_point
 	_build_definitions()
+	# Las anclas son puntos del suelo; el director desplaza a cada NPC por el
+	# anillo y necesita la altura del terreno en el punto desplazado.
+	_director.set_ground_sampler(Callable(region, &"height_at"))
 	_built = _director.register(_definitions, anchors)
 	if not _built:
 		return
