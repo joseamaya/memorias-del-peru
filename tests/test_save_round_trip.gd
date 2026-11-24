@@ -157,11 +157,14 @@ func test_save_recovers_corrupt_slot_from_backup() -> bool:
 	var backup: String = path + SaveManagerService.BACKUP_SUFFIX
 	ok = ok and not path.is_empty()
 	# El respaldo guarda la partida válida; el principal queda corrupto.
-	ok = ok and (
-		DirAccess.copy_absolute(
-			ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup)
+	ok = (
+		ok
+		and (
+			DirAccess.copy_absolute(
+				ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup)
+			)
+			== OK
 		)
-		== OK
 	)
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	ok = ok and file != null
