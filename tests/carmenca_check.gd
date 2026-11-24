@@ -90,7 +90,8 @@ func _run() -> void:
 	var hud: PlayerHud = world.get_player_hud()
 	ok = ok and hud != null and hud.is_showing_hint()
 	if hud != null:
-		ok = ok and hud.get_hint_text() == tr("PCH_BATALLA_ARMA")
+		var hint: Label = hud.get_node_or_null("HintLabel") as Label
+		ok = ok and hint != null and hint.text == tr("PCH_BATALLA_ARMA")
 	ok = ok and battle.get_ally_count() == ALLIES
 	ok = ok and battle.get_wave() == 1
 	ok = ok and battle.get_enemy_count() == WAVE_SIZES[0]
