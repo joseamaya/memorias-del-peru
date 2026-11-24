@@ -43,7 +43,11 @@ static func apply(target_model: Node3D, target_look: CharacterLook) -> void:
 			child.queue_free()
 	var groups: Dictionary[StringName, Array] = {}
 	for part: LookPart in target_look.parts:
-		if part == null or skeleton.find_bone(part.bone) < 0:
+		# Una pieza nula no aporta geometría: se descarta sin aviso, igual que
+		# un hueco vacío en el atuendo.
+		if part == null:
+			continue
+		if skeleton.find_bone(part.bone) < 0:
 			push_warning("CharacterOutfit: hueso desconocido %s." % part.bone)
 			continue
 		if not groups.has(part.bone):

@@ -76,6 +76,9 @@ func return_to_title() -> bool:
 	if _quitting:
 		return false
 	set_paused(false)
+	# El jugador pudo salir con el ratón capturado; el título se maneja con el
+	# puntero visible y nadie lo liberaría después del cambio de escena.
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	var saves: SaveManagerService = SaveManagerService.instance()
 	if saves != null:
 		saves.cancel_pending_load()

@@ -74,6 +74,11 @@ func is_armed() -> bool:
 	return _armed
 
 
+## Indica si hay una carga de golpe en curso.
+func is_charging() -> bool:
+	return _charging
+
+
 ## Arma o desarma al jugador. Desarmado no hay arma en pantalla ni golpes.
 func set_armed(value: bool) -> void:
 	_armed = value
@@ -137,22 +142,24 @@ func take_damage(amount: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _armed or player == null or player.is_controls_locked():
+	# La suelta se atiende siempre. Si llega con los controles bloqueados o en
+	# pausa, cancela: el escudo no puede quedar alzado ni la carga activa.
+	if event.is_action_released("attack") and (_charging or _shield_click):
+		_release_charge()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_released("block") and loadout.is_blocking():
+		loadout.set_blocking(false)
+		get_viewport().set_input_as_handled()
+		return
+	if not _armed or player == null or player.is_controls_locked() or _is_paused():
 		return
 	if event.is_action_pressed("attack"):
 		_start_charge()
 		get_viewport().set_input_as_handled()
 		return
-	if event.is_action_released("attack"):
-		_release_charge()
-		get_viewport().set_input_as_handled()
-		return
 	if event.is_action_pressed("block"):
 		loadout.set_blocking(true)
-		get_viewport().set_input_as_handled()
-		return
-	if event.is_action_released("block"):
-		loadout.set_blocking(false)
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("weapon_1"):
@@ -168,7 +175,18 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	if _charging:
-		_charge_elapsed += delta
+		if not _input_available() or not Input.is_action_pressed("attack"):
+			# Los controles se bloquearon, el juego se pausó o la suelta se
+			# perdió (por ejemplo, al cambiar de ventana): se cancela sin
+			# golpear en vez de dejar la carga acumulándose.
+			_charging = false
+			_charge_elapsed = 0.0
+		else:
+			_charge_elapsed += delta
+	elif _shield_click and not Input.is_action_pressed("attack"):
+		# La suelta se perdió (pausa o bloqueo): el escudo baja al reanudar.
+		_shield_click = false
+		loadout.set_blocking(false)
 	# El arma solo se ve armada y con los controles libres. Así no reaparece al
 	# cerrar el diario si el blockout no la había equipado.
 	if _weapon_view != null and player != null:
@@ -195,10 +213,26 @@ func _release_charge() -> void:
 	if not _charging:
 		return
 	_charging = false
+	# Soltar con los controles bloqueados o en pausa cancela el golpe en vez de
+	# lanzarlo con la carga acumulada.
+	if not _input_available():
+		_charge_elapsed = 0.0
+		return
 	var weapon: CombatWeapon = loadout.current_weapon()
 	var full: float = weapon.charge_full_seconds if weapon != null else 1.0
 	var ratio: float = 1.0 if full <= 0.0 else _charge_elapsed / full
 	loadout.attack(clampf(ratio, MIN_CHARGE, 1.0))
+
+
+## Indica si se puede cargar o soltar un golpe: armado, con jugador y sin
+## bloqueos ni pausa.
+func _input_available() -> bool:
+	return _armed and player != null and not player.is_controls_locked() and not _is_paused()
+
+
+func _is_paused() -> bool:
+	var manager: GameManagerService = GameManagerService.instance()
+	return manager != null and manager.is_paused()
 
 
 func _on_attack_rolled(damage: float) -> void:

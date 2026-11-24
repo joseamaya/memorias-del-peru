@@ -33,6 +33,9 @@ func _ready() -> void:
 	theme = UiTheme.build()
 	# Debe responder aunque una pausa anterior hubiera quedado activa.
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Al volver al título desde la partida, el ratón puede seguir capturado.
+	# El título se maneja con el puntero.
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_campaign = CampaignInfo.load_configured()
 	_build()
 	_start_music()

@@ -138,17 +138,28 @@ func load_slot(campaign: StringName, slot: StringName) -> Dictionary:
 	var path: String = slot_path(campaign, slot)
 	if path.is_empty():
 		return {}
-	# Un cierre en mitad del guardado deja la ranura anterior en `.bak`.
+	var data: Dictionary = _read_slot(path)
+	if not data.is_empty():
+		return data
+	# Un cierre en mitad del guardado deja la ranura anterior en `.bak`, y un
+	# principal corrupto también debe caer al respaldo.
+	return _read_slot(path + BACKUP_SUFFIX)
+
+
+## Lee y valida una ranura. Devuelve `{}` si no existe, no se puede leer, no
+## parsea o el esquema no es compatible.
+func _read_slot(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
-		path = path + BACKUP_SUFFIX
-		if not FileAccess.file_exists(path):
-			return {}
+		return {}
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {}
 	var text: String = file.get_as_text()
 	file.close()
-	var parsed: Variant = JSON.parse_string(text)
+	var json: JSON = JSON.new()
+	if json.parse(text) != OK:
+		return {}
+	var parsed: Variant = json.data
 	if not (parsed is Dictionary):
 		return {}
 	var data: Dictionary = _as_dict(parsed)

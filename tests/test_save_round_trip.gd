@@ -148,6 +148,37 @@ func test_save_recovers_interrupted_slot() -> bool:
 	return ok
 
 
+func test_save_recovers_corrupt_slot_from_backup() -> bool:
+	var campaign: StringName = StringName("test_corrupt_%d" % Time.get_ticks_msec())
+	var slot: StringName = &"auto"
+	var manager: SaveManagerService = SaveManagerService.new()
+	var ok: bool = manager.save_slot(campaign, slot, {"value": 7})
+	var path: String = manager.slot_path(campaign, slot)
+	var backup: String = path + SaveManagerService.BACKUP_SUFFIX
+	ok = ok and not path.is_empty()
+	# El respaldo guarda la partida válida; el principal queda corrupto.
+	ok = (
+		ok
+		and (
+			DirAccess.copy_absolute(
+				ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup)
+			)
+			== OK
+		)
+	)
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	ok = ok and file != null
+	if file != null:
+		file.store_string("{ corrupto")
+		file.close()
+	var loaded: Dictionary = manager.load_slot(campaign, slot)
+	ok = ok and _to_int(loaded.get("value", 0)) == 7
+	ok = ok and manager.delete_slot(campaign, slot)
+	_cleanup(manager, campaign)
+	manager.free()
+	return ok
+
+
 func _cleanup(manager: SaveManagerService, campaign: StringName) -> void:
 	var slots: Array[String] = manager.list_slots(campaign)
 	for slot_name: String in slots:

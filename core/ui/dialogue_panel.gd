@@ -99,13 +99,15 @@ func _show_choices(choices: Array[String]) -> void:
 
 
 func _on_choice_pressed(index: int) -> void:
-	if not _open or index < 0 or index >= _choice_count:
+	if not _open or get_tree().paused or index < 0 or index >= _choice_count:
 		return
 	choice_selected.emit(index)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _open:
+	# Con el juego en pausa el menú es quien manda: E y 1–4 no pueden seguir
+	# avanzando el diálogo ni fijar banderas detrás del panel.
+	if not _open or get_tree().paused:
 		return
 	if event is InputEventKey:
 		var key: InputEventKey = event as InputEventKey

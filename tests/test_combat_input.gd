@@ -88,3 +88,41 @@ func test_shield_click_releases_block() -> bool:
 	ok = ok and not combat.loadout.is_blocking()
 	_free_nodes(nodes)
 	return ok
+
+
+func test_release_while_controls_locked_cancels_charge() -> bool:
+	var nodes: Array[Node] = _spawn()
+	if nodes.is_empty():
+		return false
+	var player: PlayerFPS = nodes[0] as PlayerFPS
+	var combat: PlayerCombat = nodes[2] as PlayerCombat
+	combat.set_armed(true)
+	combat.select_weapon(CombatLoadout.Slot.CLUB)
+	combat.call("_start_charge")
+	var ok: bool = combat.is_charging()
+	player.set_controls_locked(true)
+	var release: InputEventAction = InputEventAction.new()
+	release.action = &"attack"
+	release.pressed = false
+	combat._unhandled_input(release)
+	ok = ok and not combat.is_charging()
+	ok = ok and not combat.loadout.is_attacking()
+	_free_nodes(nodes)
+	return ok
+
+
+func test_charge_cancels_when_release_is_lost() -> bool:
+	var nodes: Array[Node] = _spawn()
+	if nodes.is_empty():
+		return false
+	var combat: PlayerCombat = nodes[2] as PlayerCombat
+	combat.set_armed(true)
+	combat.select_weapon(CombatLoadout.Slot.CLUB)
+	combat.call("_start_charge")
+	var charging: bool = combat.is_charging()
+	# La suelta no llegó (pausa, cambio de ventana): el botón ya no está pulsado.
+	combat.call("_process", 0.2)
+	var ok: bool = charging and not combat.is_charging()
+	ok = ok and not combat.loadout.is_attacking()
+	_free_nodes(nodes)
+	return ok

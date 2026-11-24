@@ -201,7 +201,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_gravity_default` | Gravedad coherente con la del proyecto |
 | `test_pause` | Pausa y señal `pause_changed` |
 | `test_mouse_mode_for_pause` | Modo de ratón al pausar y reanudar |
-| `test_mouse_capture_requires_focus` | El ratón se captura solo con la ventana enfocada |
+| `test_mouse_capture_requires_focus` | El ratón se captura solo con la ventana enfocada, sin controles bloqueados ni UI con el puntero |
 | `test_player_collision_layers` | Capas y máscaras del jugador |
 | `test_player_camera_dialogue` | Bloqueo de controles, encuadre del interlocutor, retorno de la cámara y arma oculta al cerrar el diario sin equipo |
 | `test_jump` | El salto solo se aplica en el suelo y con los controles libres |
@@ -214,7 +214,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | Archivo | Qué cubre |
 |---|---|
 | `test_interactable_contract` | Contrato de `Interactable` |
-| `test_interaction_focus` | Enfoque por rayo y señales de foco |
+| `test_interaction_focus` | Enfoque por rayo y señales de foco, también si el objetivo se libera |
 | `test_interaction_blocked_by_world` | Una pared bloquea el enfoque |
 | `test_interaction_calls_interact` | La acción `interact` llama al objeto enfocado |
 | `test_stamina_contract` | Límites y señal de estamina |
@@ -234,10 +234,10 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_journal` | Encargos y entradas de Memoria con sello y fuente |
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
 | `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
-| `test_combat_input` | Munición ligada al arma equipada y clic del escudo que suelta el bloqueo |
+| `test_combat_input` | Munición ligada al arma equipada, clic del escudo que suelta el bloqueo y carga cancelada al bloquear o perder la suelta |
 | `test_combat_feel` | Fases del golpe, parry de 0,15 s, bloqueo del 70 % y fichas del director |
 | `test_campaign_state` | Banderas entre escenas |
-| `test_dialogue_panel` | Panel de diálogo y opciones |
+| `test_dialogue_panel` | Panel de diálogo y opciones; con el juego en pausa no avanza ni elige |
 | `test_journal_panel` | Diario y detalle de entradas |
 | `test_hud_hint` | Aviso contextual |
 | `test_hud_interaction` | El aviso de interacción desaparece al perder el foco |
@@ -253,6 +253,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_graphics_settings_apply` | Aplicación de escala, upscaler, MSAA y antialiasing |
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_model_validator` | Validación de modelos |
+| `test_character_outfit` | El atuendo descarta una pieza nula sin leer su hueso |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
 | `test_first_person_hands` | Mano de maniquí: antebrazo UAL1, falanges y poses abierta y puño |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
@@ -264,7 +265,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 |---|---|
 | `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
 | `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
-| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias o un principal corrupto y ciclo mundo/reloj/jugador |
+| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias o con el principal corrupto y ciclo mundo/reloj/jugador |
 | `test_resource_catalog` | Diálogos y POI se cargan con las mismas entradas del juego (`register_directory` y `load_catalog`), que resuelven los `.tres.remap`, y el catálogo completo (11 y 31) está presente |
 | `test_rest_cycle` | Descanso: hora de despertar, salto de día antes y después de la hora y aplicación al reloj |
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
@@ -280,7 +281,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `interiors_check.gd` | Tres interiores transitables: sala instanciada fuera del terreno, vestidos distintos, lecho bajo andino solo en la casa del jugador, leyendas visibles y vuelta exacta a la puerta |
 | `day_night_check.gd` | Ciclo día/noche: el reloj mueve sol, ambiente y niebla; cuatro franjas distinguibles y sin saltos de energía |
 | `lantern_check.gd` | Antorcha de mano: apagada de día, encendida de noche, encendido gradual en el atardecer y sin sombras |
-| `city_population_check.gd` | 24 NPC registrados, 8 nombrados, rutinas de mañana y noche, y 20 min simulados sin atravesar casas |
+| `city_population_check.gd` | 24 NPC registrados, 8 nombrados a 0,9 ± 0,10 m del suelo, rutinas de mañana y noche, y 20 min simulados sin atravesar casas |
 | `city_save_round_trip.gd` | Dormir en la casa del jugador, guardado automático y carga en una instancia nueva: hora, NPC, misión, inventario y obras |
 | `dialogue_check.gd` | Conversación y diario en el mundo: interactable de NPC con nombre, grafo traducido, bandera en `WorldState` y diario que abre y cierra con J |
 | `mission_check.gd` | Misión principal: tres etapas, encargos en el mundo, partida de Viracocha, fase de guerra, diario y guardado a mitad |
@@ -298,6 +299,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `region_player_check.gd` | Jugador en primera persona sobre el terreno, 9 m andados, plaza, streaming, rescate y marcador de S2 oculto |
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
+| `test_npc_ground_goal` | El destino del NPC sigue el suelo del punto desplazado en pendiente y la carga corrige la altura guardada |
 | `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |
 | `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
 | `terrain3d_check.gd` | Terrain3D carga, crea una región y devuelve la altura importada |
