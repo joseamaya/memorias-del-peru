@@ -43,7 +43,10 @@ static func apply(target_model: Node3D, target_look: CharacterLook) -> void:
 			child.queue_free()
 	var groups: Dictionary[StringName, Array] = {}
 	for part: LookPart in target_look.parts:
-		if part == null or skeleton.find_bone(part.bone) < 0:
+		if part == null:
+			push_warning("CharacterOutfit: pieza de atuendo nula.")
+			continue
+		if skeleton.find_bone(part.bone) < 0:
 			push_warning("CharacterOutfit: hueso desconocido %s." % part.bone)
 			continue
 		if not groups.has(part.bone):
