@@ -87,6 +87,12 @@ const STRAFE_SWAY_DEGREES: float = 0.6
 @export var run_stamina_cost_per_second: float = 15.0
 @export var run_resume_stamina: float = 25.0
 
+## `true` si el HUD recibió un foco y todavía no su desenfoque. Una referencia
+## liberada se compara como nula, así que el estado no se puede deducir de ella.
+var _has_interactable_focus: bool = false
+## Una UI modal (diario) tiene el puntero: no se recaptura hasta que lo suelte.
+var _pointer_owned: bool = false
+
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interaction_ray: RayCast3D = $Head/Camera3D/InteractionRay
@@ -96,17 +102,12 @@ var _bob_phase: float = 0.0
 var _bob_weight: float = 0.0
 var _camera_base_position: Vector3 = Vector3.ZERO
 var _focused_interactable: Interactable = null
-## `true` si el HUD recibió un foco y todavía no su desenfoque. Una referencia
-## liberada se compara como nula, así que el estado no se puede deducir de ella.
-var _has_interactable_focus: bool = false
 var _focused_candidate: Interactable = null
 var _focused_collider: Object = null
 var _run_blocked: bool = false
 var _step_cycle: float = 0.0
 var _footstep_index: int = 0
 var _controls_locked: bool = false
-## Una UI modal (diario) tiene el puntero: no se recaptura hasta que lo suelte.
-var _pointer_owned: bool = false
 var jump: PlayerJump = PlayerJump.new()
 var _focus_phase: FocusPhase = FocusPhase.NONE
 var _focus_target: Node3D = null

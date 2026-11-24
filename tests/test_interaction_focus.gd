@@ -1,6 +1,8 @@
 extends RefCounted
 ## Comprueba el enfoque y desenfoque de un interactuable.
 
+const PLAYER_PATH: String = "res://core/player/player_fps.tscn"
+
 
 var _focused: Array[Interactable] = []
 var _unfocused: int = 0
@@ -14,12 +16,20 @@ func _on_unfocused() -> void:
 	_unfocused += 1
 
 
+func _spawn_player() -> PlayerFPS:
+	var packed: PackedScene = load(PLAYER_PATH) as PackedScene
+	if packed == null:
+		return null
+	return packed.instantiate() as PlayerFPS
+
+
 func test_interaction_focus() -> bool:
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	if tree == null:
 		return false
-	var packed: PackedScene = load("res://core/player/player_fps.tscn") as PackedScene
-	var player: PlayerFPS = packed.instantiate() as PlayerFPS
+	var player: PlayerFPS = _spawn_player()
+	if player == null:
+		return false
 	var object: CountingInteractable = CountingInteractable.new()
 	var holder: Node3D = Node3D.new()
 	var body: StaticBody3D = StaticBody3D.new()
@@ -55,8 +65,9 @@ func test_interaction_focus_survives_freed_target() -> bool:
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	if tree == null:
 		return false
-	var packed: PackedScene = load("res://core/player/player_fps.tscn") as PackedScene
-	var player: PlayerFPS = packed.instantiate() as PlayerFPS
+	var player: PlayerFPS = _spawn_player()
+	if player == null:
+		return false
 	var object: CountingInteractable = CountingInteractable.new()
 	var holder: Node3D = Node3D.new()
 	var body: StaticBody3D = StaticBody3D.new()
