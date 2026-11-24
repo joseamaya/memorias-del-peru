@@ -18,17 +18,29 @@ enum State {
 	FINISHED,
 }
 
-const CAMP: Vector3 = Vector3(765.0, 0.0, 295.0)
-## Al caer se vuelve al campamento, no a la casa (320 m al este): la oleada se
-## reinicia y el jugador no tiene que recorrer medio valle para continuar.
-const DEFEAT_RESPAWN_OFFSET: Vector3 = Vector3(0.0, 0.0, 8.0)
+## Centro del campamento: el mismo que [method CarmencaOverlook.camp_center].
+## El estandarte y el radio de activación cuelgan de aquí, no de un punto
+## intermedio entre las tiendas y el arrabal. `carmenca_check` comprueba que
+## ambos centros coinciden.
+const CAMP: Vector3 = Vector3(787.0, 0.0, 307.0)
+## Al caer se vuelve al borde este del campamento, del lado del arrabal y fuera
+## del anillo de aparición (13 m): así ningún chanca nace a la espalda. La
+## oleada se reinicia y el jugador no tiene que recorrer medio valle.
+const DEFEAT_RESPAWN_OFFSET: Vector3 = Vector3(20.0, 0.0, 0.0)
+## Rumbo para mirar al estandarte desde el borde este.
+const DEFEAT_RESPAWN_YAW: float = PI * 0.5
 ## La honda no alcanza a menos de 3 m y los chancas se detienen a 1,15 m. La
 ## batalla empieza con la porra para que el primer golpe sea posible.
 const START_WEAPON_INDEX: int = 1
 const WAVES: Array[int] = [4, 6, 8]
 const MAX_WORKS_BONUS: int = 2
 const ALLY_COUNT: int = 6
-const TRIGGER_RADIUS: float = 120.0
+## Se activa al entrar en el campamento, no a 120 m: el mirador queda a 42 m y
+## hay que poder descubrirlo antes de que empiece la batalla.
+const TRIGGER_RADIUS: float = 30.0
+## Ningún chanca aparece más cerca que esto del jugador; si el hueco del anillo
+## cae dentro, se refleja al lado opuesto.
+const MIN_SPAWN_DISTANCE: float = 6.0
 const WAVE_DELAY: float = 4.0
 const STANDARD_RADIUS: float = 3.5
 const STANDARD_HEIGHT: float = 4.2
@@ -167,6 +179,15 @@ func _spawn_enemy(slot: int, count: int) -> void:
 	var angle: float = TAU * float(slot) / float(maxi(count, 1))
 	var radius: float = SPAWN_RADIUS * (0.6 + 0.4 * float((slot * 7) % 5) / 4.0)
 	var point: Vector3 = CAMP + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
+	# Si el hueco cae sobre el jugador, se refleja al otro lado del campamento.
+	var player: PlayerFPS = _world.get_player()
+	if player != null:
+		var flat: Vector2 = Vector2(
+			point.x - player.global_position.x, point.z - player.global_position.z
+		)
+		if flat.length() < MIN_SPAWN_DISTANCE:
+			angle += PI
+			point = CAMP + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
 	point.y = _ground(point.x, point.z) + 0.05
 	var warrior: ChancaWarrior = ChancaWarrior.new()
 	warrior.name = "Chanca_%d_%d" % [_wave, slot]
@@ -247,21 +268,29 @@ func _on_player_died() -> void:
 	if combat != null:
 		combat.revive()
 		combat.set_armed(true)
-	_respawn_at_camp()
+	_defeat_respawn()
+	_respawn_allies()
 	var hud: PlayerHud = _hud()
 	if hud != null:
 		hud.set_status("")
 
 
-func _respawn_at_camp() -> void:
+func _defeat_respawn() -> void:
 	var player: PlayerFPS = _world.get_player()
 	if player == null:
 		return
 	var point: Vector3 = CAMP + DEFEAT_RESPAWN_OFFSET
 	point.y = _ground(point.x, point.z) + 0.2
 	player.global_position = point
-	# Mirando al estandarte: el desplazamiento es hacia +Z y el frente es -Z.
-	player.rotation_degrees.y = 0.0
+	# Mirando al estandarte: desde el borde este el frente es -X.
+	player.rotation.y = DEFEAT_RESPAWN_YAW
+
+
+## Rehace los aliados junto al jugador. Sin esto se quedaban donde cayó y la
+## oleada reiniciaba con el jugador solo en el campamento.
+func _respawn_allies() -> void:
+	_clear_allies()
+	_spawn_allies()
 
 
 func _refresh_status() -> void:

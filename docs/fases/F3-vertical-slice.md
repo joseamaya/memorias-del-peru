@@ -194,14 +194,14 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
 
 **Implementado (2026-11-21) — la batalla (3.9.b):**
 
-- `CarmencaBattle`: se dispara al llegar cerca del campamento con la etapa 3. Tres oleadas de 4, 6 y 8 chancas; **cada obra construida resta un enemigo por oleada**, hasta dos. Nunca hay más de 8 enemigos ni más de 6 aliados.
+- `CarmencaBattle`: se dispara al **entrar en el campamento** (30 m del estandarte) con la etapa 3. El centro es el de las tiendas de `CarmencaOverlook`, no un punto intermedio: el mirador queda a 42 m y se puede descubrir sin que empiece la batalla. Tres oleadas de 4, 6 y 8 chancas; **cada obra construida resta un enemigo por oleada**, hasta dos. Nunca hay más de 8 enemigos ni más de 6 aliados.
 - **Aliados:** seis vecinos (`AlliedWarrior`) que buscan al chanca más cercano, se le acercan y golpean; si no queda ninguno, vuelven junto al jugador.
-- **Estandarte:** al caer la tercera oleada se activa el del campamento; llegar a él fija `m01_victoria` y cierra la misión.
-- **Derrota:** caer reinicia la oleada actual (no la partida): se limpian los chancas, se revive al jugador, se le devuelve al arrabal y la oleada vuelve a empezar.
+- **Estandarte:** en el centro del campamento; al caer la tercera oleada se activa y llegar a él fija `m01_victoria` y cierra la misión.
+- **Derrota:** caer reinicia la oleada actual (no la partida): se limpian los chancas, se revive al jugador, se le devuelve al borde este del campamento (20 m, fuera del anillo de aparición) junto con los aliados y la oleada vuelve a empezar. Ningún chanca aparece a menos de 6 m del jugador.
 - **Manta:** con `s01_manta` el daño recibido baja al 85 %.
 - **Director:** máximo dos chancas atacan a la vez; se separan para no solaparse. El chanca colisiona con el jugador y se detiene a 1,15 m, así no se mete en la cámara.
 - La batalla **no se serializa**: guardar durante el combate devuelve a la etapa 3 antes de empezar.
-- Evidencia: `carmenca_check` (tres oleadas, obras que restan, aliados, derrota que reinicia, estandarte, victoria y diario) y captura `batalla_carmenca.png`.
+- Evidencia: `carmenca_check` (radio de activación por fuera y por dentro, porra inicial y aviso de teclas, tres oleadas, obras que restan, aliados, derrota con reaparición y aliados, estandarte, victoria y diario) y captura `batalla_carmenca.png`.
 
 ## 11. F3.10 — Cierre de la slice
 

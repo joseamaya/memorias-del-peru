@@ -290,7 +290,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento y sobrevive a la carga sin duplicar la entrada |
 | `defense_works_check.gd` | Obras de defensa: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras |
 | `combat_check.gd` | Combate del jugador: arma y desarme, golpe de porra contra un chanca, golpe recibido, escudo que absorbe y honda que gasta piedra |
-| `carmenca_check.gd` | Batalla: tres oleadas con obras que restan enemigos, aliados, derrota que reinicia la oleada, estandarte que fija `m01_victoria` y cierra la misión |
+| `carmenca_check.gd` | Batalla: radio de activación del campamento por fuera y por dentro, porra inicial y aviso de teclas, tres oleadas con obras que restan enemigos, aliados, derrota con reaparición junto a los aliados, estandarte que fija `m01_victoria` y cierra la misión |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |
@@ -329,7 +329,7 @@ Pruebas de la slice de F3, que se escriben con cada tarea de la [ficha de F3](fa
 | Misión | `mission_check` | Tres etapas con estado y consecuencia persistente |
 | Secundarias | `side_activities_check` | Dos actividades con consecuencia; descubrimiento sin marcador |
 | Defensa | `defense_works_check` | Fosos y púas persistentes y leídos por la batalla |
-| Batalla | `carmenca_check` | Tres oleadas sin bloqueos; estandarte como objetivo |
+| Batalla | `carmenca_check` | Arranca al entrar en el campamento (no antes del mirador); tres oleadas sin bloqueos; estandarte como objetivo |
 
 ## 4. Verificación manual
 

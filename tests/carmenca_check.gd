@@ -5,7 +5,13 @@ extends SceneTree
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const CAMPAIGN: StringName = &"01_pachacutec"
 const SETTLE_FRAMES: int = 600
-const CAMP: Vector3 = Vector3(765.0, 0.0, 295.0)
+const CAMP: Vector3 = Vector3(787.0, 0.0, 307.0)
+## Fuera del radio de activación (30 m) y dentro, para probar el umbral.
+const TRIGGER_OUTSIDE: float = 40.0
+const TRIGGER_INSIDE: float = 25.0
+## Distancia de reaparición y margen del anillo de aparición.
+const DEFEAT_DISTANCE: float = 20.0
+const MIN_ENEMY_DISTANCE: float = 6.0
 const BUILT_WORKS: int = 2
 const ALLIES: int = 6
 const WAVE_SIZES: Array[int] = [2, 4, 6]
@@ -66,28 +72,55 @@ func _run() -> void:
 	await process_frame
 	ok = ok and not battle.is_active()
 
-	# Acercarse al campamento dispara la batalla.
-	var approach: Vector3 = Vector3(CAMP.x + 15.0, 0.0, CAMP.z)
-	player.global_position = Vector3(
-		approach.x, region.height_at(approach.x, approach.z) + 0.3, approach.z
-	)
+	# El radio manda: a 40 m del campamento todavía no hay batalla; al entrar,
+	# sí. Antes la prueba saltaba a 15 m y nunca medía el umbral.
+	var outside: Vector3 = Vector3(CAMP.x + TRIGGER_OUTSIDE, 0.0, CAMP.z)
+	_place(player, region, outside)
+	await _wait_seconds(1.0)
+	ok = ok and not battle.is_active()
+	var approach: Vector3 = Vector3(CAMP.x + TRIGGER_INSIDE, 0.0, CAMP.z)
+	_place(player, region, approach)
 	var activated: bool = await _wait_until(battle.is_active.bind(), 5.0)
 	ok = ok and activated
 	ok = ok and combat.is_armed()
 	ok = ok and is_equal_approx(combat.get_damage_scale(), 0.85)
+	# Empieza con la porra y avisa de las teclas.
+	ok = ok and combat.loadout.current_index() == CarmencaBattle.START_WEAPON_INDEX
+	ok = ok and not combat.loadout.is_ranged()
+	var hud: PlayerHud = world.get_player_hud()
+	ok = ok and hud != null and hud.is_showing_hint()
+	if hud != null:
+		ok = ok and hud.get_hint_text() == tr("PCH_BATALLA_ARMA")
 	ok = ok and battle.get_ally_count() == ALLIES
 	ok = ok and battle.get_wave() == 1
 	ok = ok and battle.get_enemy_count() == WAVE_SIZES[0]
+	# El estandarte y el radio cuelgan del campamento real, no de un punto suelto.
+	var streamer: SectorStreamer = world.get_streamer()
+	var sector: Node = null
+	if streamer != null:
+		ok = ok and await _wait_until(_sector_loaded.bind(streamer), 5.0)
+		sector = streamer.get_loaded_node(&"s2_afueras")
+	var overlook: CarmencaOverlook = null
+	if sector != null:
+		overlook = sector.get_node_or_null("CarmencaOverlook") as CarmencaOverlook
+	ok = ok and overlook != null
+	if overlook != null:
+		var center: Vector3 = overlook.camp_center()
+		ok = ok and Vector2(center.x - CAMP.x, center.z - CAMP.z).length() < 0.5
 
-	# Derrota: la oleada se reinicia, no la partida, y se vuelve al campamento.
+	# Derrota: la oleada se reinicia, no la partida, y se vuelve al borde este
+	# del campamento con los vecinos, fuera del anillo de aparición.
 	combat.take_damage(9999.0)
 	await _wait_seconds(0.2)
 	ok = ok and not combat.is_dead()
-	ok = ok and _distance_to_camp(player) <= 12.0
+	ok = ok and absf(_distance_to_camp(player) - DEFEAT_DISTANCE) <= 2.0
+	ok = ok and _faces_camp(player)
 	ok = ok and battle.is_active()
+	ok = ok and _allies_near(player, 10.0)
 	ok = ok and await _wait_until(battle.is_active.bind(), 5.0)
 	ok = ok and await _wait_until(_wave_started.bind(battle, 1), 8.0)
 	ok = ok and battle.get_enemy_count() == WAVE_SIZES[0]
+	ok = ok and _nearest_enemy_distance(player) >= MIN_ENEMY_DISTANCE
 
 	# Tres oleadas; cada obra quita un enemigo de cada una (hasta dos).
 	for wave: int in [1, 2, 3]:
@@ -181,6 +214,44 @@ func _run() -> void:
 
 func _distance_to_camp(player: PlayerFPS) -> float:
 	return Vector2(player.global_position.x - CAMP.x, player.global_position.z - CAMP.z).length()
+
+
+func _place(player: PlayerFPS, region: CampaignRegion, flat: Vector3) -> void:
+	player.global_position = Vector3(flat.x, region.height_at(flat.x, flat.z) + 0.3, flat.z)
+
+
+func _faces_camp(player: PlayerFPS) -> bool:
+	var forward: Vector3 = -player.global_transform.basis.z
+	var to_camp: Vector3 = CAMP - player.global_position
+	to_camp.y = 0.0
+	if to_camp.length_squared() < 0.001:
+		return false
+	return forward.normalized().dot(to_camp.normalized()) > 0.95
+
+
+func _nearest_enemy_distance(player: PlayerFPS) -> float:
+	var nearest: float = INF
+	for node: Node in get_nodes_in_group(&"chanca_warrior"):
+		var warrior: ChancaWarrior = node as ChancaWarrior
+		if warrior == null or warrior.is_dead():
+			continue
+		nearest = minf(nearest, warrior.global_position.distance_to(player.global_position))
+	return nearest
+
+
+func _allies_near(player: PlayerFPS, radius: float) -> bool:
+	var count: int = 0
+	for node: Node in get_nodes_in_group(&"allied_warrior"):
+		var ally: AlliedWarrior = node as AlliedWarrior
+		if ally == null:
+			continue
+		if ally.global_position.distance_to(player.global_position) <= radius:
+			count += 1
+	return count == ALLIES
+
+
+func _sector_loaded(streamer: SectorStreamer) -> bool:
+	return streamer.get_loaded_node(&"s2_afueras") != null
 
 
 func _clear_campaign(manager: SaveManagerService) -> void:

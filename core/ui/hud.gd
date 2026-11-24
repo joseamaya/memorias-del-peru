@@ -494,6 +494,11 @@ func is_showing_hint() -> bool:
 	return hint_label.visible
 
 
+## Texto de la indicación breve, para las pruebas.
+func get_hint_text() -> String:
+	return hint_label.text
+
+
 ## Avanza los fundidos de la indicación breve.
 func advance_hint(delta: float) -> void:
 	if not hint_label.visible:
