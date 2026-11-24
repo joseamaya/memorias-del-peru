@@ -6,6 +6,23 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-24 — Revisión jugada: ratón, escudo y cobertura de las pruebas
+
+**Decisión:** corregir los fallos reproducidos en la segunda revisión de la slice antes de la pasada humana, incluidos los que solo afectaban a la cobertura de las pruebas. Se agrupan en una entrega con tres commits por área (entrada, pruebas y mundo); cada corrección lleva prueba dirigida y las que no se pueden medir en headless se declaran.
+
+| Cambio | Detalle |
+|---|---|
+| Ratón al liberar controles | `PlayerFPS` reintenta la captura al desbloquear, no solo al reanudar. Cubre el diálogo pausado o con la ventana cambiada y el diario, que tampoco recapturaba porque `hide_journal` lo pedía antes de liberar los controles. Alternativa descartada: capturar siempre al reanudar; con el diálogo abierto el puntero debe seguir libre para la UI. |
+| Escudo de botón derecho | `PlayerCombat` guarda `_block_click` y lo reconcilia en `_process`: si la suelta se perdió en pausa o al cambiar de ventana, el bloqueo baja al volver, igual que el clic izquierdo. Se limpia al desarmar y al morir. |
+| Aliados | Esperan detrás del jugador y, si los tiene encima, ceden en diagonal. Antes se paraban a 4 m de frente y bloqueaban la entrada del campamento; una persona los rodeaba, pero el recorrido automático se quedaba atascado. |
+| Tiendas del campamento | Cada tienda lleva un `StaticBody3D` con la forma convexa del cono. El navmesh se hornea solo del terreno, así que los NPC pueden seguir cruzando el campamento; el jugador ya no. Alternativa descartada: caja invisible alrededor, que bloqueaba más que la tienda visible. |
+| Anillo de aparición | El cálculo del hueco se extrae a `spawn_offset`, sin estado, y se prueba con el jugador dentro del campamento. `carmenca_check` coloca al jugador sobre un hueco de la oleada 2: se comprobó que el paso falla si se desactiva el reflejo. Antes la comprobación era vacua: a 20 m del campamento el radio de 13 m nunca acercaba un chanca a menos de 6 m. |
+| Guardas de nulo | `carmenca_check` y `defense_works_check` comprueban el mundo y el foso antes de usarlos y salen con `quit(1)` informando del paso. Sin esto, un `null` mataba la corrutina y el proceso no llegaba a cerrar: CI esperaba hasta el límite del job. |
+| Estado compartido | `run_tests.gd` limpia `WorldState` antes de cada archivo. El catálogo de POI marca los dos descubrimientos de inicio en el autoload y las pruebas siguientes los heredaban. |
+| Altura al caminar | `NpcMover` acepta el muestreador de suelo del director y lo aplica en cada tramo; la Y de la ruta del navmesh queda como respaldo. La prueba avanza por dos pendientes y comprueba el cuerpo en cada paso. |
+
+**Consecuencias:** los chancas y aliados que nacen dentro de una tienda son expulsados por la depenetración de `move_and_slide` (probado aparte), pero el navmesh sigue sin ver las tiendas: es una limitación declarada, no una regresión. Las doce tiendas añaden doce cuerpos estáticos en S2; falta medir el sector. Queda **no verificado** el modo de ratón real y la pasada humana del resto de correcciones.
+
 ## 2026-11-24 — Revisión jugada: umbrales y estado de entrada
 
 **Decisión:** corregir, antes de la pasada humana, los fallos que aparecen al jugar la slice y no en el caso feliz de las pruebas. Se agrupan en cinco ramas por área, cada una con su prueba dirigida.
