@@ -1,6 +1,6 @@
 # Prueba humana de la vertical slice — F3
 
-- **Versión:** 1.1 — 2026-11-22
+- **Versión:** 1.2 — 2026-11-24
 - **Ámbito:** la slice de la campaña 01, de la mañana del arrabal a la batalla de Carmenca.
 - **Duración prevista:** 30–45 min reales.
 - **Estado:** protocolo listo; la pasada y el veredicto son del responsable.
@@ -64,7 +64,7 @@ Durante la prueba conviene anotar la hora del reloj en cada bloque: **1 hora de 
 | Min | Bloque | Qué se hace | Qué debe pasar |
 |---|---|---|---|
 | 0–4 | Arrabal y casa | Recorrer la plaza, entrar en «Tu casa», mirar el lecho y salir. Probar `Esc`: abrir el menú y continuar. | Puertas legibles; el interior se abre y se cierra sin teletransportes; la mano de interacción no tapa la vista; al continuar vuelven el ratón y el movimiento. |
-| 4–10 | Los tres encargos | Hablar con la curáca Chanan Cury Coca; aceptar agua, lana y maíz; cumplirlos en la pila, el atado del taller y el saco de los depósitos. | Cada encargo se acepta hablando; se puede hablar apuntando al cuerpo del NPC, no solo a los pies; la curáca cambia de conversación al terminar; el diario suma la etapa. |
+| 4–10 | Los tres encargos | Hablar con la curáca Chanan Cury Coca, que manda a por agua, lana y maíz; aceptar cada encargo con la molendera, la tejedora y el agricultor; cumplirlos en la pila, el atado del taller y el saco de los depósitos. | La curáca reparte los tres encargos; cada vecina o vecino acepta el suyo hablando; se puede hablar apuntando al cuerpo del NPC, no solo a los pies; al terminar los tres, la curáca cambia de conversación; el diario suma la etapa. |
 | 10–16 | Secundarias | Volver a la molendera con el agua y decidir el turno (molienda, chacra o turnos). Llevar la lana a la tejedora y tejer la manta en el telar. | Las dos conversaciones cambian según lo decidido; la manta queda colgada y visible; el diario guarda una memoria por cada hilo. |
 | 16–20 | La partida | Hablar otra vez con la curáca y decidir quedarse; mirar la columna de vecinos que sale al oeste. | Se cierra la etapa 1, se abre la 2, el aviso de la partida aparece una vez y la ciudad queda en fase de guerra. |
 | 20–27 | El mirador | Salir del arrabal hacia el oeste y buscar el montón de piedras sobre Carmenca; asomarse al campamento de tiendas. | El lugar se descubre por cercanía, sin etiqueta ni marcador; el HUD avisa una vez y el diario recibe la memoria; al volver a pasar cerca no se repite el aviso. |
@@ -87,20 +87,25 @@ Ruta de referencia —no es un marcador del juego, es una ayuda para la prueba�
 
 ### 3.1. Comprobaciones de regresión de la revisión
 
-La pasada principal ya cubre varias. Estas son las que fallaron antes del PR #54 y conviene mirar de nuevo. Las que necesitan dormir cambian el reloj; se pueden hacer en una segunda sesión corta con «Continuar».
+La pasada principal ya cubre varias. Estas son las que fallaron antes del PR #54 o en la revisión del 2026-11-24 y conviene mirar de nuevo. Las que necesitan dormir cambian el reloj; se pueden hacer en una segunda sesión corta con «Continuar».
 
 | Caso | Cómo | Qué debe pasar | Prueba automática |
 |---|---|---|---|
-| Cargar en la etapa 2 | Tras el bloque 16–20, dormir, salir y «Continuar». | La curáca conserva la conversación de la partida y se puede decidir quedarse. | `mission_stage2_check` |
+| Radio de Carmenca | Llegar al mirador y después bajar al campamento. | La batalla no arranca en el mirador (42 m); empieza al entrar en el campamento (30 m). | `carmenca_check` |
+| Cargar en la etapa 2 | Tras el bloque 16–20, dormir, salir y «Continuar». | La curáca conserva la conversación de la partida y se puede decidir quedarse; la etapa pasa a 3. | `mission_stage2_check` |
 | Manta pendiente | Entregar la lana, no aceptar la manta, dormir, salir y «Continuar». | La tejedora vuelve a ofrecerla y el encargo sigue en el diario. | `side_manta_load_check` |
 | Victoria y carga | Ganar Carmenca, dormir, salir y «Continuar». | La batalla no se repite y la entrada del diario sigue cerrada. | `carmenca_check` |
-| Hablar de pie | Acercarse a la curáca y apuntar al pecho, no a los pies. | Aparece «Hablar · …»; el NPC no está medio enterrado. | `city_population_check` |
+| Derrota | Dejarse vencer en Carmenca. | Reapareces en el borde este del campamento (20 m), mirando al estandarte, con los vecinos y sin un chanca encima. | `carmenca_check` |
+| Hablar de pie | Acercarse a la curáca y apuntar al pecho, no a los pies. | Aparece «Hablar · …»; el NPC no está medio enterrado ni flotando. | `city_population_check` |
 | HUD sin equipo | Desarmado, abrir y cerrar el diario; mirar la munición. | No aparece «Piedras: 12» ni el arma. | `test_combat_input`, `test_player_camera_dialogue` |
-| Escudo | Equipar escudo, clic izquierdo y soltar. | El bloqueo se levanta y se baja; no queda fijo. | `test_combat_input` |
-| Derrota | Dejarse vencer en Carmenca. | Reapareces en el campamento, no en la casa a 320 m. | `carmenca_check` |
+| Escudo y carga | Equipar escudo, clic izquierdo y soltar; cargar un golpe y abrir el diario o pausar. | El bloqueo se levanta y la carga se cancela; al volver no queda activa. | `test_combat_input` |
+| Diálogo en pausa | Abrir un diálogo, pulsar `Esc` y probar `E` y `1–4`. | El menú manda: el diálogo no avanza ni fija banderas. | `test_dialogue_panel` |
+| Ratón al volver al título | `Esc → Volver al título`. | El título tiene puntero y se puede pulsar con el ratón. | Pasada humana; el modo de ratón no se observa en headless |
+| Clic con el diario | Con el diario abierto, clic fuera del panel. | El puntero sigue visible y no se recaptura. | `test_mouse_capture_requires_focus` y pasada humana |
+| Aviso fantasma | Liberar o teletransportar el NPC enfocado y pulsar `E`. | El aviso «Hablar · …» desaparece; no hay error de instancia liberada. | `test_interaction_focus` |
 | Aturdimiento | Golpear a un chanca y observar su siguiente ataque. | No ataca antes de que termine la espera. | `test_combat` |
-| Guardado a medias | No se simula a mano: se cubre con la prueba. | La ranura se recupera del respaldo `.bak`. | `test_save_round_trip` |
-| Build exportado | Usar el artefacto de CI o exportar de nuevo. | Carga 11 diálogos y 31 POI; se puede hablar y descubrir. | `test_resource_catalog`, CI de exportación |
+| Guardado a medias | No se simula a mano: se cubre con la prueba. | La ranura se recupera del respaldo `.bak`, también si el principal está corrupto. | `test_save_round_trip` |
+| Build exportado | Usar el artefacto de CI o exportar de nuevo. | Carga 11 diálogos y 31 POI; se puede hablar y descubrir. | Pasada humana sobre el build; `test_resource_catalog` solo cubre el árbol de origen |
 
 ## 4. Registro de la pasada
 
