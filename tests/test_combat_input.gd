@@ -126,3 +126,45 @@ func test_charge_cancels_when_release_is_lost() -> bool:
 	ok = ok and not combat.loadout.is_attacking()
 	_free_nodes(nodes)
 	return ok
+
+
+func test_block_release_lost_in_pause_lowers_shield() -> bool:
+	var nodes: Array[Node] = _spawn()
+	if nodes.is_empty():
+		return false
+	var combat: PlayerCombat = nodes[2] as PlayerCombat
+	combat.set_armed(true)
+	combat.select_weapon(CombatLoadout.Slot.SHIELD)
+	# El botón derecho se pulsa y el evento llega; la suelta se pierde en pausa.
+	Input.action_press(&"block")
+	var press: InputEventAction = InputEventAction.new()
+	press.action = &"block"
+	press.pressed = true
+	combat._unhandled_input(press)
+	var raised: bool = combat.loadout.is_blocking()
+	Input.action_release(&"block")
+	combat.call("_process", 0.2)
+	var ok: bool = raised and not combat.loadout.is_blocking()
+	_free_nodes(nodes)
+	return ok
+
+
+func test_block_stays_raised_while_button_is_held() -> bool:
+	var nodes: Array[Node] = _spawn()
+	if nodes.is_empty():
+		return false
+	var combat: PlayerCombat = nodes[2] as PlayerCombat
+	combat.set_armed(true)
+	combat.select_weapon(CombatLoadout.Slot.SHIELD)
+	Input.action_press(&"block")
+	var press: InputEventAction = InputEventAction.new()
+	press.action = &"block"
+	press.pressed = true
+	combat._unhandled_input(press)
+	combat.call("_process", 0.2)
+	var ok: bool = combat.loadout.is_blocking()
+	Input.action_release(&"block")
+	combat.call("_process", 0.2)
+	ok = ok and not combat.loadout.is_blocking()
+	_free_nodes(nodes)
+	return ok
