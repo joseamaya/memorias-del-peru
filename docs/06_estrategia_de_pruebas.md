@@ -201,7 +201,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_gravity_default` | Gravedad coherente con la del proyecto |
 | `test_pause` | Pausa y señal `pause_changed` |
 | `test_mouse_mode_for_pause` | Modo de ratón al pausar y reanudar |
-| `test_mouse_capture_requires_focus` | El ratón se captura solo con la ventana enfocada |
+| `test_mouse_capture_requires_focus` | El ratón se captura solo con la ventana enfocada, sin controles bloqueados ni UI con el puntero |
 | `test_player_collision_layers` | Capas y máscaras del jugador |
 | `test_player_camera_dialogue` | Bloqueo de controles, encuadre del interlocutor, retorno de la cámara y arma oculta al cerrar el diario sin equipo |
 | `test_jump` | El salto solo se aplica en el suelo y con los controles libres |
@@ -214,7 +214,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | Archivo | Qué cubre |
 |---|---|
 | `test_interactable_contract` | Contrato de `Interactable` |
-| `test_interaction_focus` | Enfoque por rayo y señales de foco |
+| `test_interaction_focus` | Enfoque por rayo y señales de foco, también si el objetivo se libera |
 | `test_interaction_blocked_by_world` | Una pared bloquea el enfoque |
 | `test_interaction_calls_interact` | La acción `interact` llama al objeto enfocado |
 | `test_stamina_contract` | Límites y señal de estamina |
@@ -234,10 +234,10 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_journal` | Encargos y entradas de Memoria con sello y fuente |
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
 | `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
-| `test_combat_input` | Munición ligada al arma equipada y clic del escudo que suelta el bloqueo |
+| `test_combat_input` | Munición ligada al arma equipada, clic del escudo que suelta el bloqueo y carga cancelada al bloquear o perder la suelta |
 | `test_combat_feel` | Fases del golpe, parry de 0,15 s, bloqueo del 70 % y fichas del director |
 | `test_campaign_state` | Banderas entre escenas |
-| `test_dialogue_panel` | Panel de diálogo y opciones |
+| `test_dialogue_panel` | Panel de diálogo y opciones; con el juego en pausa no avanza ni elige |
 | `test_journal_panel` | Diario y detalle de entradas |
 | `test_hud_hint` | Aviso contextual |
 | `test_hud_interaction` | El aviso de interacción desaparece al perder el foco |

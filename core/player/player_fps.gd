@@ -96,12 +96,17 @@ var _bob_phase: float = 0.0
 var _bob_weight: float = 0.0
 var _camera_base_position: Vector3 = Vector3.ZERO
 var _focused_interactable: Interactable = null
+## `true` si el HUD recibió un foco y todavía no su desenfoque. Una referencia
+## liberada se compara como nula, así que el estado no se puede deducir de ella.
+var _has_interactable_focus: bool = false
 var _focused_candidate: Interactable = null
 var _focused_collider: Object = null
 var _run_blocked: bool = false
 var _step_cycle: float = 0.0
 var _footstep_index: int = 0
 var _controls_locked: bool = false
+## Una UI modal (diario) tiene el puntero: no se recaptura hasta que lo suelte.
+var _pointer_owned: bool = false
 var jump: PlayerJump = PlayerJump.new()
 var _focus_phase: FocusPhase = FocusPhase.NONE
 var _focus_target: Node3D = null
@@ -155,7 +160,13 @@ func _notification(what: int) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var button: InputEventMouseButton = event as InputEventMouseButton
-		if button.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and not _is_game_paused():
+		if (
+			button.pressed
+			and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED
+			and not _is_game_paused()
+			and not _controls_locked
+			and not _pointer_owned
+		):
 			_capture_mouse_if_allowed()
 			get_viewport().set_input_as_handled()
 			return
@@ -197,14 +208,20 @@ func update_interaction() -> void:
 		if collider is Node:
 			_focused_candidate = find_interactable_from(collider as Node)
 	var available: Interactable = _focused_candidate
+	if not is_instance_valid(available):
+		available = null
 	if available != null and not available.is_available():
 		available = null
-	if available == _focused_interactable:
-		return
-	_focused_interactable = available
 	if available != null:
+		if _has_interactable_focus and available == _focused_interactable:
+			return
+		_focused_interactable = available
+		_has_interactable_focus = true
 		interactable_focused.emit(available)
-	else:
+		return
+	_focused_interactable = null
+	if _has_interactable_focus:
+		_has_interactable_focus = false
 		interactable_unfocused.emit()
 
 
@@ -229,12 +246,27 @@ func find_interactable_from(start: Node) -> Interactable:
 func try_interact() -> void:
 	if _controls_locked:
 		return
-	if _focused_interactable == null:
+	# El NPC pudo liberarse entre el último fotograma y esta pulsación (por
+	# ejemplo, al teletransportarse). Sin esta guarda se llamaba a un método de
+	# una instancia liberada y el aviso «Hablar» se quedaba en pantalla.
+	if _has_interactable_focus and not is_instance_valid(_focused_interactable):
+		_focused_interactable = null
+		_has_interactable_focus = false
+		interactable_unfocused.emit()
+		return
+	if not _has_interactable_focus or _focused_interactable == null:
 		return
 	if not _focused_interactable.is_available():
 		return
 	_focused_interactable.interact(self)
 	interacted.emit(_focused_interactable)
+
+
+## Interactuable enfocado, o `null` si ya no es válido.
+func get_focused_interactable() -> Interactable:
+	if is_instance_valid(_focused_interactable):
+		return _focused_interactable
+	return null
 
 
 ## Bloquea o libera el movimiento y la mirada. El diario lo usa para detener al
@@ -254,9 +286,9 @@ func is_controls_locked() -> bool:
 
 
 ## Muestra u oculta el puntero para una UI modal (diario) sin cambiar la pausa.
-## Al ocultarlo se recaptura solo si la ventana tiene foco y el juego no está
-## pausado, con la misma regla que el resto del jugador.
+## Mientras la UI lo tiene, un clic fuera del panel no lo recaptura.
 func set_pointer_visible(pointer_visible: bool) -> void:
+	_pointer_owned = pointer_visible
 	if pointer_visible:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	else:
@@ -416,6 +448,14 @@ static func mouse_mode_for_pause(paused: bool) -> Input.MouseMode:
 ## enfocada.
 static func should_capture_mouse(paused: bool, window_focused: bool) -> bool:
 	return window_focused and not paused
+
+
+## Como [method should_capture_mouse], pero respeta el puntero de una UI modal
+## (diario) y los controles bloqueados por un diálogo.
+static func can_capture_mouse(
+	paused: bool, window_focused: bool, controls_locked: bool, pointer_owned: bool
+) -> bool:
+	return should_capture_mouse(paused, window_focused) and not controls_locked and not pointer_owned
 
 
 ## Calcula el desplazamiento local de la cámara para un tick de física.
@@ -594,7 +634,9 @@ func _capture_mouse_if_allowed() -> void:
 		return
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		return
-	if not should_capture_mouse(_is_game_paused(), DisplayServer.window_is_focused()):
+	if not can_capture_mouse(
+		_is_game_paused(), DisplayServer.window_is_focused(), _controls_locked, _pointer_owned
+	):
 		return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
