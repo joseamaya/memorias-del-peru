@@ -87,6 +87,9 @@ const STRAFE_SWAY_DEGREES: float = 0.6
 @export var run_stamina_cost_per_second: float = 15.0
 @export var run_resume_stamina: float = 25.0
 
+## `true` entre el foco emitido y su desenfoque; una referencia liberada es nula.
+var _has_interactable_focus: bool = false
+
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interaction_ray: RayCast3D = $Head/Camera3D/InteractionRay
@@ -155,7 +158,7 @@ func _notification(what: int) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var button: InputEventMouseButton = event as InputEventMouseButton
-		if button.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and not _is_game_paused():
+		if button.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 			_capture_mouse_if_allowed()
 			get_viewport().set_input_as_handled()
 			return
@@ -197,14 +200,20 @@ func update_interaction() -> void:
 		if collider is Node:
 			_focused_candidate = find_interactable_from(collider as Node)
 	var available: Interactable = _focused_candidate
+	if not is_instance_valid(available):
+		available = null
 	if available != null and not available.is_available():
 		available = null
-	if available == _focused_interactable:
-		return
-	_focused_interactable = available
 	if available != null:
+		if _has_interactable_focus and available == _focused_interactable:
+			return
+		_focused_interactable = available
+		_has_interactable_focus = true
 		interactable_focused.emit(available)
-	else:
+		return
+	_focused_interactable = null
+	if _has_interactable_focus:
+		_has_interactable_focus = false
 		interactable_unfocused.emit()
 
 
@@ -229,7 +238,14 @@ func find_interactable_from(start: Node) -> Interactable:
 func try_interact() -> void:
 	if _controls_locked:
 		return
-	if _focused_interactable == null:
+	# El NPC pudo liberarse entre el último fotograma y esta pulsación; sin esta
+	# guarda se llamaba a una instancia muerta y el aviso no se retiraba.
+	if _has_interactable_focus and not is_instance_valid(_focused_interactable):
+		_focused_interactable = null
+		_has_interactable_focus = false
+		interactable_unfocused.emit()
+		return
+	if not _has_interactable_focus or _focused_interactable == null:
 		return
 	if not _focused_interactable.is_available():
 		return
@@ -254,8 +270,7 @@ func is_controls_locked() -> bool:
 
 
 ## Muestra u oculta el puntero para una UI modal (diario) sin cambiar la pausa.
-## Al ocultarlo se recaptura solo si la ventana tiene foco y el juego no está
-## pausado, con la misma regla que el resto del jugador.
+## Mientras los controles están bloqueados, un clic fuera no lo recaptura.
 func set_pointer_visible(pointer_visible: bool) -> void:
 	if pointer_visible:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -405,17 +420,6 @@ func update_run_state(has_input: bool, run_pressed: bool, delta: float) -> bool:
 static func clamp_pitch(pitch: float, limit_degrees: float) -> float:
 	var limit: float = deg_to_rad(limit_degrees)
 	return clampf(pitch, -limit, limit)
-
-
-## Devuelve el modo de ratón que corresponde al estado de pausa.
-static func mouse_mode_for_pause(paused: bool) -> Input.MouseMode:
-	return Input.MOUSE_MODE_VISIBLE if paused else Input.MOUSE_MODE_CAPTURED
-
-
-## Indica si debe pedirse la captura del ratón: solo en juego y con la ventana
-## enfocada.
-static func should_capture_mouse(paused: bool, window_focused: bool) -> bool:
-	return window_focused and not paused
 
 
 ## Calcula el desplazamiento local de la cámara para un tick de física.
@@ -584,7 +588,7 @@ func _play_footstep() -> void:
 
 func _on_game_manager_pause_changed(paused: bool) -> void:
 	if paused:
-		Input.mouse_mode = mouse_mode_for_pause(paused)
+		Input.mouse_mode = MousePolicy.mode_for_pause(paused)
 		return
 	_capture_mouse_if_allowed()
 
@@ -594,13 +598,9 @@ func _capture_mouse_if_allowed() -> void:
 		return
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		return
-	if not should_capture_mouse(_is_game_paused(), DisplayServer.window_is_focused()):
+	var allowed: bool = MousePolicy.should_capture(
+		MousePolicy.is_paused(), DisplayServer.window_is_focused(), _controls_locked
+	)
+	if not allowed:
 		return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-
-func _is_game_paused() -> bool:
-	var manager: GameManagerService = GameManagerService.instance()
-	if manager == null:
-		return false
-	return manager.is_paused()

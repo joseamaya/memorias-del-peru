@@ -56,3 +56,37 @@ func test_dialogue_panel_advance() -> bool:
 	ok = ok and panel.get_choice_count() == 2
 	panel.free()
 	return ok
+
+
+func test_dialogue_panel_ignores_input_while_paused() -> bool:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var panel: DialoguePanel = _spawn()
+	if tree == null or panel == null:
+		return false
+	var advanced: Array[bool] = [false]
+	var chosen: Array[int] = []
+	panel.advanced.connect(func() -> void: advanced[0] = true)
+	panel.choice_selected.connect(func(index: int) -> void: chosen.append(index))
+	panel.open("Curaca", "Escucha.", [])
+	var interact: InputEventAction = InputEventAction.new()
+	interact.action = &"interact"
+	interact.pressed = true
+	var key: InputEventKey = InputEventKey.new()
+	key.keycode = KEY_1
+	key.pressed = true
+	tree.paused = true
+	panel._unhandled_input(interact)
+	var paused_ok: bool = not advanced[0]
+	panel.set_line("Curaca", "Otra línea.", ["Sí", "No"])
+	panel._unhandled_input(key)
+	panel._on_choice_pressed(0)
+	paused_ok = paused_ok and chosen.is_empty()
+	tree.paused = false
+	# Al reanudar, el panel vuelve a responder.
+	panel._unhandled_input(key)
+	var resumed_ok: bool = chosen == [0]
+	panel.set_line("Curaca", "Última línea.", [])
+	panel._unhandled_input(interact)
+	resumed_ok = resumed_ok and advanced[0]
+	panel.free()
+	return paused_ok and resumed_ok
