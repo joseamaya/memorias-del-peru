@@ -14,7 +14,7 @@ const WORLD_SCENE: String = "res://campaigns/01_pachacutec/scenes/world/region_w
 const WARMUP_FRAMES: int = 60
 const SAMPLE_FRAMES: int = 300
 const SETTLE_FRAMES: int = 600
-const CAMP: Vector3 = Vector3(765.0, 0.0, 295.0)
+const CAMP: Vector3 = Vector3(787.0, 0.0, 307.0)
 const FINAL_WAVE: int = 3
 
 var _world: RegionWorld = null

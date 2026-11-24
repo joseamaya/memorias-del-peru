@@ -54,6 +54,13 @@ func get_tent_count() -> int:
 	return _tents.size()
 
 
+## Centro del campamento en coordenadas de mundo y sin altura. Lo usan la
+## geometría de las tiendas y [CarmencaBattle]: el estandarte y el radio de
+## activación tienen que caer en el mismo sitio que las tiendas.
+func camp_center() -> Vector3:
+	return global_position + CAMP_OFFSET
+
+
 func _build() -> void:
 	_build_terrace()
 	_build_camp()
@@ -94,7 +101,7 @@ func _build_terrace() -> void:
 
 
 func _build_camp() -> void:
-	var camp: Vector3 = global_position + CAMP_OFFSET
+	var camp: Vector3 = camp_center()
 	for row: int in TENT_ROWS:
 		for column: int in TENT_COLUMNS:
 			var index: int = row * TENT_COLUMNS + column
