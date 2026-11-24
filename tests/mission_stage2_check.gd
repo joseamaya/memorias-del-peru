@@ -50,7 +50,11 @@ func _run() -> void:
 	steps.check("etapa 2 en vivo", mission.get_stage() == 2)
 	steps.check(
 		"curáca ofrece la partida",
-		population.get_dialogue_id(&"npc_curaca") == &"m01_curaca_partida"
+		await _wait_until(
+			func() -> bool:
+				return population.get_dialogue_id(&"npc_curaca") == &"m01_curaca_partida",
+			2.0
+		)
 	)
 	steps.check("guardado en la etapa 2", session.save_auto())
 
@@ -74,7 +78,11 @@ func _run() -> void:
 	if population2 != null:
 		steps.check(
 			"curáca conserva la partida",
-			population2.get_dialogue_id(&"npc_curaca") == &"m01_curaca_partida"
+			await _wait_until(
+				func() -> bool:
+					return population2.get_dialogue_id(&"npc_curaca") == &"m01_curaca_partida",
+				2.0
+			)
 		)
 
 	# Se fija `m01_queda` de verdad: se recorre el grafo de la curáca y se elige
@@ -89,7 +97,10 @@ func _run() -> void:
 		steps.check("elección de quedarse", dialogue.runner.choose(0))
 		await _wait_seconds(0.2)
 		steps.check("bandera m01_queda", state.get_flag(&"m01_queda") == 1)
-		steps.check("etapa 3 tras quedarse", mission2.get_stage() == 3)
+		steps.check(
+			"etapa 3 tras quedarse",
+			await _wait_until(func() -> bool: return mission2.get_stage() == 3, 2.0)
+		)
 		dialogue.runner.advance()
 
 	print(
@@ -131,8 +142,22 @@ func _wait_ready(world: RegionWorld) -> bool:
 		var session: CampaignSession = world.get_session()
 		if session == null or session.get_mission() == null:
 			continue
+		# Los grafos se registran en el `setup` del presentador: la prueba los
+		# necesita para recorrer la conversación de la curáca.
+		var dialogue: DialoguePresenter = world.get_dialogue()
+		if dialogue == null or not dialogue.has_graph(&"m01_curaca_partida"):
+			continue
 		return true
 	return false
+
+
+func _wait_until(condition: Callable, seconds: float) -> bool:
+	var deadline: float = float(Time.get_ticks_msec()) + seconds * 1000.0
+	while float(Time.get_ticks_msec()) < deadline:
+		if condition.call():
+			return true
+		await process_frame
+	return condition.call()
 
 
 func _wait_seconds(seconds: float) -> void:
