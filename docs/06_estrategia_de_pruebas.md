@@ -264,8 +264,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 |---|---|
 | `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
 | `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
-| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias y ciclo mundo/reloj/jugador |
-| `test_resource_catalog` | Diálogos y POI se listan con `ResourceLoader.list_directory`, que resuelve los `.tres.remap` del build |
+| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias o un principal corrupto y ciclo mundo/reloj/jugador |
+| `test_resource_catalog` | Diálogos y POI se cargan con las mismas entradas del juego (`register_directory` y `load_catalog`), que resuelven los `.tres.remap`, y el catálogo completo (11 y 31) está presente |
 | `test_rest_cycle` | Descanso: hora de despertar, salto de día antes y después de la hora y aplicación al reloj |
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
 | `test_sector_streamer` | Celdas, radio de carga, distancia, siempre cargado y registro de definiciones |
@@ -284,11 +284,11 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `city_save_round_trip.gd` | Dormir en la casa del jugador, guardado automático y carga en una instancia nueva: hora, NPC, misión, inventario y obras |
 | `dialogue_check.gd` | Conversación y diario en el mundo: interactable de NPC con nombre, grafo traducido, bandera en `WorldState` y diario que abre y cierra con J |
 | `mission_check.gd` | Misión principal: tres etapas, encargos en el mundo, partida de Viracocha, fase de guerra, diario y guardado a mitad |
-| `mission_stage2_check.gd` | Cargar en la etapa 2 conserva la conversación de partida de la curáca y la posibilidad de fijar `m01_queda` |
+| `mission_stage2_check.gd` | Cargar en la etapa 2 conserva la conversación de partida y `m01_queda` se fija recorriendo el grafo real de la curáca; cada paso lleva etiqueta |
 | `side_activities_check.gd` | Secundarias: reparto del agua con sus tres desenlaces y diario, manta tejida en el telar, negativo del telar sin encargo y guardado/carga |
 | `side_manta_load_check.gd` | Cargar con la lana entregada y la manta sin aceptar conserva la oferta de la tejedora y su encargo |
 | `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento y sobrevive a la carga sin duplicar la entrada |
-| `defense_works_check.gd` | Obras de defensa: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras |
+| `defense_works_check.gd` | Obras de defensa con pasos etiquetados: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras |
 | `combat_check.gd` | Combate del jugador: arma y desarme, golpe de porra contra un chanca, golpe recibido, escudo que absorbe y honda que gasta piedra |
 | `carmenca_check.gd` | Batalla: radio de activación del campamento por fuera y por dentro, porra inicial y aviso de teclas, tres oleadas con obras que restan enemigos, aliados, derrota con reaparición junto a los aliados, estandarte que fija `m01_victoria` y cierra la misión |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |

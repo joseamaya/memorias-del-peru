@@ -1,6 +1,9 @@
 extends SceneTree
 ## Comprueba la batalla de Carmenca (F3.9.b): oleadas, aliados, estandarte,
 ## derrota que reinicia la oleada y cierre de la misión.
+##
+## Cada comprobación lleva etiqueta: si falla, el resumen dice qué paso falló y
+## no solo un `CARMENCA_FAIL`.
 
 const SCENE_PATH: String = "res://campaigns/01_pachacutec/scenes/world/region_world.tscn"
 const CAMPAIGN: StringName = &"01_pachacutec"
@@ -26,9 +29,10 @@ func _run() -> void:
 	var manager: SaveManagerService = SaveManagerService.instance()
 	var state: WorldStateService = WorldStateService.instance()
 	var campaign: CampaignStateService = CampaignStateService.instance()
-	var ok: bool = state != null and campaign != null and manager != null
-	if not ok:
-		printerr("CARMENCA_FAIL sin servicios")
+	var steps: CheckSteps = CheckSteps.new()
+	steps.check("servicios disponibles", state != null and campaign != null and manager != null)
+	if not steps.is_ok():
+		steps.report("CARMENCA")
 		quit(1)
 		return
 	_clear_campaign(manager)
@@ -36,7 +40,7 @@ func _run() -> void:
 	campaign.clear()
 	var world: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
 	root.add_child(world)
-	ok = ok and await _wait_ready(world)
+	steps.check("mundo listo", await _wait_ready(world))
 	var session: CampaignSession = world.get_session()
 	var battle: CarmencaBattle = session.get_battle() if session != null else null
 	var works: DefenseWorks = session.get_defense_works() if session != null else null
@@ -44,12 +48,12 @@ func _run() -> void:
 	var player: PlayerFPS = world.get_player()
 	var region: CampaignRegion = world.get_region()
 	var journal: Journal = world.get_journal()
-	ok = ok and battle != null and works != null and combat != null
-	ok = ok and player != null and region != null and journal != null
-	if not ok:
-		printerr("CARMENCA_FAIL sin batalla, obras, combate o diario")
+	steps.check("batalla, obras, combate y jugador", battle != null and works != null)
+	steps.check("combate y diario", combat != null and region != null and journal != null)
+	if not steps.is_ok():
 		world.queue_free()
 		await process_frame
+		steps.report("CARMENCA")
 		quit(1)
 		return
 
@@ -60,89 +64,100 @@ func _run() -> void:
 	await _wait_seconds(0.2)
 	state.set_flag(&"m01_queda", 1)
 	await _wait_seconds(0.2)
-	ok = ok and state.get_flag(&"m01_etapa") == 3
-	ok = ok and journal.has(&"m01_carmenca")
+	steps.check("etapa 3", state.get_flag(&"m01_etapa") == 3)
+	steps.check("diario con Carmenca", journal.has(&"m01_carmenca"))
 	for id: StringName in [&"defensa_1", &"defensa_2"]:
 		var spot: ChangeInteractable = works.get_spot(id)
 		if spot != null and spot.is_available():
 			spot.interact(player)
 		await process_frame
-	ok = ok and works.get_built_count() == BUILT_WORKS
+	steps.check("dos obras construidas", works.get_built_count() == BUILT_WORKS)
 	state.set_flag(&"s01_manta", 1)
 	await process_frame
-	ok = ok and not battle.is_active()
+	steps.check("sin batalla antes de entrar", not battle.is_active())
 
 	# El radio manda: a 40 m del campamento todavía no hay batalla; al entrar,
 	# sí. Antes la prueba saltaba a 15 m y nunca medía el umbral.
 	var outside: Vector3 = Vector3(CAMP.x + TRIGGER_OUTSIDE, 0.0, CAMP.z)
 	_place(player, region, outside)
 	await _wait_seconds(1.0)
-	ok = ok and not battle.is_active()
+	steps.check("sin batalla a 40 m", not battle.is_active())
 	var approach: Vector3 = Vector3(CAMP.x + TRIGGER_INSIDE, 0.0, CAMP.z)
 	_place(player, region, approach)
-	var activated: bool = await _wait_until(battle.is_active.bind(), 5.0)
-	ok = ok and activated
-	ok = ok and combat.is_armed()
-	ok = ok and is_equal_approx(combat.get_damage_scale(), 0.85)
+	steps.check("batalla activa a 25 m", await _wait_until(battle.is_active.bind(), 5.0))
+	steps.check("jugador armado", combat.is_armed())
+	steps.check("manta reduce el daño", is_equal_approx(combat.get_damage_scale(), 0.85))
 	# Empieza con la porra y avisa de las teclas.
-	ok = ok and combat.loadout.current_index() == CarmencaBattle.START_WEAPON_INDEX
-	ok = ok and not combat.loadout.is_ranged()
+	steps.check(
+		"porra inicial", combat.loadout.current_index() == CarmencaBattle.START_WEAPON_INDEX
+	)
+	steps.check("arma cuerpo a cuerpo", not combat.loadout.is_ranged())
 	var hud: PlayerHud = world.get_player_hud()
-	ok = ok and hud != null and hud.is_showing_hint()
+	steps.check("aviso visible", hud != null and hud.is_showing_hint())
 	if hud != null:
-		ok = ok and hud.get_hint_text() == tr("PCH_BATALLA_ARMA")
-	ok = ok and battle.get_ally_count() == ALLIES
-	ok = ok and battle.get_wave() == 1
-	ok = ok and battle.get_enemy_count() == WAVE_SIZES[0]
+		steps.check("aviso de teclas", hud.get_hint_text() == tr("PCH_BATALLA_ARMA"))
+	steps.check("seis aliados", battle.get_ally_count() == ALLIES)
+	steps.check("oleada 1", battle.get_wave() == 1)
+	steps.check("enemigos de la oleada 1", battle.get_enemy_count() == WAVE_SIZES[0])
 	# El estandarte y el radio cuelgan del campamento real, no de un punto suelto.
 	var streamer: SectorStreamer = world.get_streamer()
 	var sector: Node = null
 	if streamer != null:
-		ok = ok and await _wait_until(_sector_loaded.bind(streamer), 5.0)
+		steps.check("S2 cargado", await _wait_until(_sector_loaded.bind(streamer), 5.0))
 		sector = streamer.get_loaded_node(&"s2_afueras")
 	var overlook: CarmencaOverlook = null
 	if sector != null:
 		overlook = sector.get_node_or_null("CarmencaOverlook") as CarmencaOverlook
-	ok = ok and overlook != null
+	steps.check("mirador en S2", overlook != null)
 	if overlook != null:
 		var center: Vector3 = overlook.camp_center()
-		ok = ok and Vector2(center.x - CAMP.x, center.z - CAMP.z).length() < 0.5
+		steps.check(
+			"campamento coincide con las tiendas",
+			Vector2(center.x - CAMP.x, center.z - CAMP.z).length() < 0.5
+		)
 
 	# Derrota: la oleada se reinicia, no la partida, y se vuelve al borde este
 	# del campamento con los vecinos, fuera del anillo de aparición.
 	combat.take_damage(9999.0)
 	await _wait_seconds(0.2)
-	ok = ok and not combat.is_dead()
-	ok = ok and absf(_distance_to_camp(player) - DEFEAT_DISTANCE) <= 2.0
-	ok = ok and _faces_camp(player)
-	ok = ok and battle.is_active()
-	ok = ok and _allies_near(player, 10.0)
-	ok = ok and await _wait_until(battle.is_active.bind(), 5.0)
-	ok = ok and await _wait_until(_wave_started.bind(battle, 1), 8.0)
-	ok = ok and battle.get_enemy_count() == WAVE_SIZES[0]
-	ok = ok and _nearest_enemy_distance(player) >= MIN_ENEMY_DISTANCE
+	steps.check("jugador vivo tras la derrota", not combat.is_dead())
+	steps.check("reaparece a 20 m", absf(_distance_to_camp(player) - DEFEAT_DISTANCE) <= 2.0)
+	steps.check("mira al campamento", _faces_camp(player))
+	steps.check("oleada reiniciada", battle.is_active())
+	steps.check("aliados junto al jugador", _allies_near(player, 10.0))
+	steps.check("oleada 1 de nuevo", await _wait_until(_wave_started.bind(battle, 1), 8.0))
+	steps.check(
+		"enemigos de la oleada reiniciada", battle.get_enemy_count() == WAVE_SIZES[0]
+	)
+	steps.check("sin chanca pegado al jugador", _nearest_enemy_distance(player) >= MIN_ENEMY_DISTANCE)
 
 	# Tres oleadas; cada obra quita un enemigo de cada una (hasta dos).
 	for wave: int in [1, 2, 3]:
-		ok = ok and await _wait_until(_wave_started.bind(battle, wave), 10.0)
-		ok = ok and battle.get_enemy_count() == WAVE_SIZES[wave - 1]
-		ok = ok and battle.get_enemy_count() <= 25
+		steps.check(
+			"llega la oleada %d" % wave,
+			await _wait_until(_wave_started.bind(battle, wave), 10.0)
+		)
+		steps.check(
+			"enemigos de la oleada %d" % wave,
+			battle.get_enemy_count() == WAVE_SIZES[wave - 1]
+		)
+		steps.check("tope de enemigos", battle.get_enemy_count() <= 25)
 		if wave == 1:
 			# Un chanca caído se libera solo a los 1,4 s; la lista no puede
 			# quedarse con referencias muertas ni dejar de contar la oleada.
 			var first: ChancaWarrior = get_first_node_in_group(&"chanca_warrior") as ChancaWarrior
-			ok = ok and first != null
+			steps.check("chanca de la oleada 1", first != null)
 			if first != null:
 				first.take_damage(500.0)
 				await _wait_seconds(2.0)
-				ok = ok and battle.get_enemy_count() == WAVE_SIZES[0] - 1
+				steps.check("el chanca caído se libera", battle.get_enemy_count() == WAVE_SIZES[0] - 1)
 		_kill_enemies()
 		await process_frame
 
 	# El estandarte se activa al caer la tercera oleada.
-	ok = (
-		ok
-		and await _wait_until(
+	steps.check(
+		"estandarte activo",
+		await _wait_until(
 			func() -> bool: return battle.get_state() == CarmencaBattle.State.STANDARD, 10.0
 		)
 	)
@@ -150,10 +165,10 @@ func _run() -> void:
 	player.global_position = Vector3(
 		standard.x + 1.5, region.height_at(standard.x + 1.5, standard.z) + 0.3, standard.z
 	)
-	ok = ok and await _wait_until(battle.is_finished.bind(), 5.0)
-	ok = ok and state.has_flag(&"m01_victoria")
-	ok = ok and journal.is_done(&"m01_carmenca")
-	ok = ok and not combat.is_armed()
+	steps.check("victoria", await _wait_until(battle.is_finished.bind(), 5.0))
+	steps.check("bandera de victoria", state.has_flag(&"m01_victoria"))
+	steps.check("diario cerrado", journal.is_done(&"m01_carmenca"))
+	steps.check("desarmado tras ganar", not combat.is_armed())
 	var first_state: int = battle.get_state()
 	var first_allies: int = battle.get_ally_count()
 	var first_journal: int = journal.count()
@@ -161,31 +176,35 @@ func _run() -> void:
 
 	# Guardar después de ganar y cargar: la batalla no se repite y el diario
 	# conserva la etapa cerrada.
-	ok = ok and session.save_auto()
+	steps.check("guardado tras ganar", session.save_auto())
 	world.queue_free()
 	await process_frame
 	state.clear()
 	campaign.clear()
-	ok = ok and manager.request_load(CAMPAIGN, SaveManagerService.AUTO_SLOT)
+	steps.check("carga solicitada", manager.request_load(CAMPAIGN, SaveManagerService.AUTO_SLOT))
 	var world2: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
 	root.add_child(world2)
-	ok = ok and await _wait_ready(world2)
+	steps.check("mundo recargado", await _wait_ready(world2))
 	var state2: WorldStateService = WorldStateService.instance()
 	var session2: CampaignSession = world2.get_session()
 	var battle2: CarmencaBattle = session2.get_battle() if session2 != null else null
 	var journal2: Journal = world2.get_journal()
 	var player2: PlayerFPS = world2.get_player()
-	ok = ok and battle2 != null and journal2 != null and player2 != null
-	ok = ok and state2 != null and state2.has_flag(&"m01_victoria")
-	ok = ok and battle2.is_finished()
-	ok = ok and journal2.is_done(&"m01_carmenca")
+	steps.check("batalla, diario y jugador recargados", battle2 != null and journal2 != null)
+	steps.check("jugador recargado", player2 != null)
+	steps.check("victoria conservada", state2 != null and state2.has_flag(&"m01_victoria"))
+	steps.check("batalla no se repite", battle2 != null and battle2.is_finished())
+	steps.check("diario cerrado al cargar", journal2 != null and journal2.is_done(&"m01_carmenca"))
 	if player2 != null:
 		var region2: CampaignRegion = world2.get_region()
 		player2.global_position = Vector3(
 			CAMP.x + 15.0, region2.height_at(CAMP.x + 15.0, CAMP.z) + 0.3, CAMP.z
 		)
 		await _wait_seconds(0.5)
-		ok = ok and battle2.is_finished() and not battle2.is_active()
+		steps.check(
+			"no se reactiva al acercarse",
+			battle2 != null and battle2.is_finished() and not battle2.is_active()
+		)
 
 	print(
 		"CARMENCA estado=",
@@ -205,10 +224,8 @@ func _run() -> void:
 	_clear_campaign(manager)
 	await process_frame
 	await process_frame
-	if ok:
-		print("CARMENCA_OK")
-	else:
-		printerr("CARMENCA_FAIL")
+	var ok: bool = steps.is_ok()
+	steps.report("CARMENCA")
 	quit(0 if ok else 1)
 
 

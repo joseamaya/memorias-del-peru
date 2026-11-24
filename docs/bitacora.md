@@ -6,6 +6,21 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-24 — Revisión jugada: umbrales y estado de entrada
+
+**Decisión:** corregir, antes de la pasada humana, los fallos que aparecen al jugar la slice y no en el caso feliz de las pruebas. Se agrupan en cinco ramas por área, cada una con su prueba dirigida.
+
+| Cambio | Detalle |
+|---|---|
+| Carmenca | El estandarte y el radio de activación pasan al centro de las tiendas (787, 307): la batalla arrancaba a 120 m, unos 45 m antes de poder descubrir el mirador, y el estandarte no estaba en el campamento. El radio baja a 30 m. La derrota reaparece a 20 m al este, mirando al campamento y con los aliados; ningún chanca nace a menos de 6 m. Alternativas descartadas: exigir el mirador descubierto (bloquea a quien llegue por el norte) y mantener 8 m (deja al jugador dentro del anillo). |
+| Entrada y pausa | El puntero se libera al volver al título y el título lo impone. El diálogo ignora `E` y `1–4` con el árbol en pausa. El diario retiene el puntero: un clic fuera no lo recaptura. El foco de interacción usa un estado explícito porque una referencia liberada se compara como nula y el aviso no se retiraba. La suelta de ataque y escudo se atiende siempre y la carga se cancela al bloquear o pausar. |
+| NPC | `NpcDirector` acepta un muestreador de altura: el destino se calcula sobre el suelo del punto desplazado por el anillo. El ancla pasa a ser un punto del suelo; el fixture gris usaba suelo + 0,9 m y quedaba 0,9 m alto. `city_population_check` baja el margen de 0,4–1,4 m a 0,9 ± 0,10 m. |
+| Guardado | Si el principal no parsea o el esquema no vale, `load_slot` reintenta con `.bak`. El atuendo comprueba la pieza nula antes de leer el hueso. |
+| Pruebas | `CheckSteps` etiqueta cada paso de `carmenca_check`, `mission_stage2_check` y `defense_works_check`. El catálogo exige 11 diálogos y 31 POI por `register_directory` y `load_catalog`. La etapa 2 fija `m01_queda` recorriendo el grafo real. |
+| Documentación | El protocolo dice quién reparte los encargos y deja de atribuir al test del catálogo la cobertura del build exportado. |
+
+**Consecuencias:** las partidas guardadas con la altura antigua de NPC se corrigen al restaurar (solo la Y). El build exportado sigue sin prueba automática de catálogo: se comprueba en la pasada humana. `carmenca_check` sigue siendo la garantía del umbral, de la porra y del aviso. Queda **no verificado** la pasada humana, el modo de ratón en headless y `gdlint`/`gdformat` en esta máquina.
+
 ## 2026-11-22 — Preparación de la pasada humana
 
 **Decisión:** antes de la pasada de 3.10 se actualizan el protocolo y el acta para que el responsable pruebe también lo que falló en la revisión, no solo el recorrido feliz.
