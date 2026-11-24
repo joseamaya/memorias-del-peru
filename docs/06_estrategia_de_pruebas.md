@@ -253,6 +253,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_graphics_settings_apply` | Aplicación de escala, upscaler, MSAA y antialiasing |
 | `test_audio_manager_buses` | Buses y limitador |
 | `test_model_validator` | Validación de modelos |
+| `test_character_outfit` | El atuendo descarta una pieza nula sin leer su hueso |
 | `test_chaquitaclla` | GLB de la chaquitaclla del Agricultor, validador, altura y estribo |
 | `test_first_person_hands` | Mano de maniquí: antebrazo UAL1, falanges y poses abierta y puño |
 | `test_main_scene_is_title` | La escena principal es la pantalla de título |
@@ -264,7 +265,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 |---|---|
 | `test_world_clock` | Avance, pausa, franjas, `minutes_until`, día cruzado y round-trip |
 | `test_world_state` | Fase, banderas, descubrimientos, estado de NPC, cambios físicos y round-trip |
-| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias y ciclo mundo/reloj/jugador |
+| `test_save_round_trip` | Guardado versionado, sobrescritura, nombres inválidos, listado, recuperación del respaldo tras un cierre a medias o con el principal corrupto y ciclo mundo/reloj/jugador |
 | `test_resource_catalog` | Diálogos y POI se listan con `ResourceLoader.list_directory`, que resuelve los `.tres.remap` del build |
 | `test_rest_cycle` | Descanso: hora de despertar, salto de día antes y después de la hora y aplicación al reloj |
 | `test_npc_schedule` | Franjas diarias, cruce de medianoche, condiciones, ancla/actividad y validez |
