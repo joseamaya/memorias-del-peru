@@ -15,7 +15,11 @@ const ATTACK_RANGE: float = 1.8
 const ATTACK_DAMAGE: float = 12.0
 const ATTACK_COOLDOWN: float = 1.2
 const STOP_DISTANCE: float = 1.25
-const FOLLOW_DISTANCE: float = 4.0
+## Punto de espera detrás del jugador, no delante de su mirada.
+const FOLLOW_DISTANCE: float = 3.6
+## Si el jugador se le echa encima, el aliado cede el paso en vez de bloquearlo.
+const PERSONAL_SPACE: float = 2.4
+const YIELD_SPEED: float = 3.2
 const BODY_COLOR: Color = Color(0.30, 0.45, 0.55)
 const HEAD_COLOR: Color = Color(0.60, 0.52, 0.38)
 
@@ -71,16 +75,38 @@ func _engage(target: ChancaWarrior, _delta: float) -> void:
 
 
 func _follow_player() -> void:
-	var to_player: Vector3 = player.global_position - global_position
-	to_player.y = 0.0
-	var distance: float = to_player.length()
-	if distance > FOLLOW_DISTANCE:
-		var direction: Vector3 = to_player.normalized()
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = 0.0
-		velocity.z = 0.0
+	var forward: Vector3 = -player.global_transform.basis.z
+	var desired: Vector3 = follow_velocity(global_position, player.global_position, forward)
+	velocity.x = desired.x
+	velocity.z = desired.z
+
+
+## Velocidad horizontal del aliado al seguir al jugador, sin estado.
+##
+## Espera detrás y, si el jugador lo tiene encima, se aparta de su línea de
+## mirada. Antes se paraba a 4 m de frente y tapaba el paso en la entrada del
+## campamento: el jugador tenía que rodearlo.
+static func follow_velocity(
+	ally_position: Vector3, player_position: Vector3, player_forward: Vector3
+) -> Vector3:
+	var forward: Vector3 = Vector3(player_forward.x, 0.0, player_forward.z)
+	forward = forward.normalized() if forward.length_squared() > 0.001 else Vector3.FORWARD
+	var to_ally: Vector3 = Vector3(
+		ally_position.x - player_position.x, 0.0, ally_position.z - player_position.z
+	)
+	var distance: float = to_ally.length()
+	if distance < PERSONAL_SPACE:
+		var away: Vector3 = to_ally.normalized() if distance > 0.01 else -forward
+		if away.dot(forward) > 0.0:
+			# Delante del jugador: cede en diagonal, no retrocede por su camino.
+			var side: Vector3 = Vector3(-forward.z, 0.0, forward.x)
+			away = side if away.dot(side) >= 0.0 else -side
+		return away * YIELD_SPEED
+	var spot: Vector3 = player_position - forward * FOLLOW_DISTANCE
+	var to_spot: Vector3 = Vector3(spot.x - ally_position.x, 0.0, spot.z - ally_position.z)
+	if to_spot.length() <= 0.4:
+		return Vector3.ZERO
+	return to_spot.normalized() * SPEED
 
 
 func _nearest_enemy() -> ChancaWarrior:
