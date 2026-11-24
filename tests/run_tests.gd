@@ -11,12 +11,24 @@ func _initialize() -> void:
 	_run_tests.call_deferred()
 
 
+## Deja el estado del mundo como al arrancar. Cada archivo de prueba debe
+## empezar sin banderas, cambios ni descubrimientos de otro.
+func _reset_world_state() -> void:
+	var state: WorldStateService = root.get_node_or_null("WorldState") as WorldStateService
+	if state != null:
+		state.clear()
+
+
 func _run_tests() -> void:
 	var failures: int = 0
 	var files: PackedStringArray = DirAccess.get_files_at(TESTS_DIR)
 	for file_name: String in files:
 		if not file_name.begins_with("test_") or not file_name.ends_with(".gd"):
 			continue
+		# Las pruebas comparten los autoloads. El catálogo de POI marca los
+		# descubrimientos de inicio en `WorldState`; sin esta limpieza la
+		# siguiente prueba los hereda.
+		_reset_world_state()
 		var test_script: GDScript = load(TESTS_DIR + "/" + file_name) as GDScript
 		if test_script == null or not test_script.can_instantiate():
 			printerr("No se pudo cargar ", file_name)

@@ -36,6 +36,10 @@ func _run() -> void:
 
 	var world: RegionWorld = _spawn()
 	steps.check("mundo listo", await _wait_ready(world))
+	if world == null:
+		steps.report("DEFENSE")
+		quit(1)
+		return
 	var session: CampaignSession = world.get_session()
 	var works: DefenseWorks = session.get_defense_works() if session != null else null
 	steps.check("obras creadas", works != null)
@@ -53,6 +57,12 @@ func _run() -> void:
 		if spot != null:
 			break
 	steps.check("foso en el mapa", spot != null)
+	if spot == null:
+		world.queue_free()
+		await process_frame
+		steps.report("DEFENSE")
+		quit(1)
+		return
 	steps.check("cuatro obras", works.get_work_count() == EXPECTED_WORKS)
 	# Antes de decidir quedarse, el foso existe pero no se puede construir.
 	steps.check("no construible antes de quedarse", not spot.is_available())
@@ -82,6 +92,10 @@ func _run() -> void:
 
 	var world2: RegionWorld = _spawn()
 	steps.check("mundo recargado", await _wait_ready(world2))
+	if world2 == null:
+		steps.report("DEFENSE")
+		quit(1)
+		return
 	var session2: CampaignSession = world2.get_session()
 	var works2: DefenseWorks = session2.get_defense_works() if session2 != null else null
 	steps.check("obras recargadas", works2 != null)

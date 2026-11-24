@@ -41,6 +41,10 @@ func _run() -> void:
 	var world: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
 	root.add_child(world)
 	steps.check("mundo listo", await _wait_ready(world))
+	if world == null:
+		steps.report("CARMENCA")
+		quit(1)
+		return
 	var session: CampaignSession = world.get_session()
 	var battle: CarmencaBattle = session.get_battle() if session != null else null
 	var works: DefenseWorks = session.get_defense_works() if session != null else null
@@ -141,6 +145,13 @@ func _run() -> void:
 			"enemigos de la oleada %d" % wave, battle.get_enemy_count() == WAVE_SIZES[wave - 1]
 		)
 		steps.check("tope de enemigos", battle.get_enemy_count() <= 25)
+		if wave == 2:
+			# El jugador está sobre un hueco del anillo: la aparición tuvo que
+			# reflejarse. Medio metro de margen para el primer paso de la oleada.
+			steps.check(
+				"aparición reflejada dentro del campamento",
+				_nearest_enemy_distance(player) >= MIN_ENEMY_DISTANCE - 0.5
+			)
 		if wave == 1:
 			# Un chanca caído se libera solo a los 1,4 s; la lista no puede
 			# quedarse con referencias muertas ni dejar de contar la oleada.
@@ -154,6 +165,11 @@ func _run() -> void:
 				)
 		_kill_enemies()
 		await process_frame
+		if wave == 1:
+			# La oleada 2 debe medir el reflejo: se coloca al jugador sobre el
+			# primer hueco del anillo antes de que aparezca.
+			var slot: Vector3 = CarmencaSpawn.offset(CAMP, 0, WAVE_SIZES[1] - BUILT_WORKS, CAMP)
+			_place(player, region, Vector3(slot.x, 0.0, slot.z))
 
 	# El estandarte se activa al caer la tercera oleada.
 	steps.check(
@@ -309,6 +325,8 @@ func _wait_seconds(seconds: float) -> void:
 
 
 func _wait_ready(world: RegionWorld) -> bool:
+	if world == null:
+		return false
 	for _i: int in SETTLE_FRAMES:
 		await process_frame
 		var population: CityPopulation = world.get_population()
