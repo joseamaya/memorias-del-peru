@@ -19,7 +19,7 @@ Una decisión relevante se anota con su motivación, las alternativas considerad
 | Pruebas | `CheckSteps` etiqueta cada paso de `carmenca_check`, `mission_stage2_check` y `defense_works_check`. El catálogo exige 11 diálogos y 31 POI por `register_directory` y `load_catalog`. La etapa 2 fija `m01_queda` recorriendo el grafo real. |
 | Documentación | El protocolo dice quién reparte los encargos y deja de atribuir al test del catálogo la cobertura del build exportado. |
 
-**Consecuencias:** las partidas guardadas con la altura antigua de NPC se corrigen al restaurar (solo la Y). El build exportado sigue sin prueba automática de catálogo: se comprueba en la pasada humana. `carmenca_check` sigue siendo la garantía del umbral, de la porra y del aviso. Queda **no verificado** la pasada humana, el modo de ratón en headless y `gdlint`/`gdformat` en esta máquina.
+**Consecuencias:** las partidas guardadas con la altura antigua de NPC se corrigen al restaurar (solo la Y). El build exportado sigue sin prueba automática de catálogo: se comprueba en la pasada humana. `carmenca_check` sigue siendo la garantía del umbral, de la porra y del aviso. Queda **no verificado** la pasada humana y el modo de ratón en headless.
 
 ## 2026-11-22 — Preparación de la pasada humana
 
