@@ -218,6 +218,12 @@ Fosos con piedra tapados con ramas y púas de palma (PCH-039). De tres a cinco p
   - Batalla: **66,7 FPS** de mediana en Medio y **61,1** en Bajo; 248 draw calls, 673.578 primitivas y 190 MB; peor fotograma de 24,0 ms.
   - Todo dentro del presupuesto (§13). Detalle y observaciones en el [acta](F3-acta-de-cierre.md) §2.
 - **Acta:** [F3-acta-de-cierre.md](F3-acta-de-cierre.md). Borrador con medición, deuda declarada y decisión pendiente de firma.
+
+**Actualizado (2026-11-24):**
+
+- Protocolo v1.2: 15 regresiones (incluye ratón, diálogo, derrota y NPC en el suelo).
+- Acta 0.11: recuento real de **140 pruebas en 62 archivos** y correcciones del lote #56–#60 (§19). La medición de §2 no se repitió tras el traslado del campamento; no añade geometría.
+- Sigue faltando la pasada humana y la firma.
 - **Fallo corregido en el cierre:** al morir un chanca, su nodo se liberaba a los 1,4 s y la batalla seguía guardando la referencia en su lista; al recorrerla, GDScript lanzaba «Trying to assign invalid previously freed instance» cada fotograma. Ahora el chanca se quita de la lista al salir del árbol (`_forget_enemy`) y `carmenca_check` lo comprueba esperando a que uno caiga y se libere.
 
 ## 12. Orden de trabajo y dependencias

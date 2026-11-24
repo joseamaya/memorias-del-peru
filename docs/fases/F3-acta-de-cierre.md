@@ -1,10 +1,12 @@
 # Acta de cierre de F3 — vertical slice
 
-- **Versión:** 0.10 (borrador para firma) — 2026-11-22
+- **Versión:** 0.11 (borrador para firma) — 2026-11-24
 - **Fase:** F3 — vertical slice de mundo abierto
 - **Campaña:** 01 — *Pachacútec. El despertar del Sol*
 - **Firma:** responsable del proyecto (pendiente)
 - **Manda:** criterios de fase en [docs/05](../05_plan_de_implementacion.md) §Fase 3 y criterio de cierre en la [ficha de F3](F3-vertical-slice.md) §16.
+
+**Actualización 0.11:** recuento real de la suite (140 pruebas en 62 archivos), protocolo humano v1.2 y correcciones del 2026-11-24 (PRs #56–#60). La pasada humana y la firma siguen pendientes.
 
 ## 1. Qué se entrega
 
@@ -56,19 +58,21 @@ Observaciones:
 - **El perfil Bajo mide menos FPS que el Medio** en este equipo (61 frente a 66). La causa es la escala de renderizado: Bajo dibuja el 3D al 75 % y Medio al 68 %, así que Bajo pinta más píxeles. Se anota para la revisión de perfiles de F4; no bloquea el cierre porque ambos superan su umbral.
 - La medición no cubre el recorrido completo de 10 minutos con streaming, que sigue siendo la de F2 (`region_walkthrough_check` y `streaming_soak_check`); en F3 el mundo no cambió de escala.
 - Las correcciones de la revisión (PR #54) no añaden geometría ni draw calls: el actor de los NPC sube al centro del cuerpo, el menú de pausa es un `Control` oculto y el resto son cambios de lógica y datos. La medición de esta sección sigue vigente; no se repitieron las tres pasadas.
+- Las correcciones del 2026-11-24 (PRs #56–#60) tampoco añaden geometría: mueven el centro del campamento y la reaparición, cambian el estado de entrada y la altura de los NPC, y añaden pruebas. **No se repitieron las tres pasadas**: las cifras de esta sección son anteriores al traslado del campamento y `measure_battle` no se ha vuelto a ejecutar.
 
 ## 3. Pruebas automatizadas
 
-- Suite completa: **131 métodos `test_` en 60 archivos, 0 fallos** (`tests/run_tests.gd`).
+- Suite completa: **140 métodos `test_` en 62 archivos, 0 fallos** (`tests/run_tests.gd`).
 - Recorridos de integración de la slice en verde: `city_check`, `interiors_check`, `day_night_check`, `city_population_check`, `dialogue_check`, `mission_check`, `mission_stage2_check`, `side_activities_check`, `side_manta_load_check`, `mirador_check`, `defense_works_check`, `combat_check`, `carmenca_check`, `city_save_round_trip`, `region_player_check`, `region_walkthrough_check`, `poi_discovery_check`, `lantern_check`, `region_review_check`, `npc_lod_check`.
 - Salida de cada ejecución sin errores ni advertencias de `res://` (`tools/check_output.py`).
 - `gdlint` y `gdformat --check` limpios en los archivos nuevos; límites de GDScript e inventario de pruebas (**31 recorridos en CI**) OK.
 - Exportación de Linux y Windows y arranque headless del build de Linux: OK. Windows se exporta, pero no se ejecuta en la CI ni en esta pasada.
 - Correcciones de la revisión (PR #54): catálogos remapeados del build, etapa 1 y etapa 2 cargada, Carmenca tras la victoria, NPC en el centro del cuerpo, manta pendiente, descubrimientos sincronizados, HUD y combate, pausa y salto, guardado con respaldo. Evidencia en la [ficha de F3](F3-vertical-slice.md) §18.
+- Correcciones de la revisión jugada del 2026-11-24 (PRs #56–#60): radio y derrota de Carmenca, entrada/pausa/ratón, altura de los NPC en el anillo, respaldo `.bak` ante un principal corrupto, atuendo con pieza nula y pasos etiquetados en las comprobaciones de integración. Evidencia en la [ficha de F3](F3-vertical-slice.md) §19.
 
 ## 4. Pasada humana
 
-- Protocolo: [prueba_vertical_slice.md](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) v1.1. 8 bloques, 30–45 min, con registro de bloques, incidencias y regresiones de la revisión (pausa, NPC, HUD, etapa 2, manta, victoria y build).
+- Protocolo: [prueba_vertical_slice.md](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) v1.2. 8 bloques, 30–45 min, con registro de bloques, incidencias y las 15 regresiones de §3.1 (pausa, ratón, diálogo, NPC, HUD, etapa 2, manta, victoria, derrota y build).
 - **Resultado:** pendiente de la pasada del responsable.
 - Criterio que cierra: 30–45 min de juego real con contenido no principal, sin bloqueos, con las incidencias anotadas y la decisión firmada.
 
@@ -88,6 +92,9 @@ Lo que la slice **no** resuelve y pasa a F4, para que nadie lo confunda con un f
 | Actividades de NPC | Las rutinas mueven, pero no hay NPC trabajando ni conversando entre ellos (3.4). |
 | Perfiles | La escala de Bajo y Medio se revisa en F4 (§2). |
 | Guardado manual | El menú de pausa no guarda; el autoguardado es la cama. Decidir si entra en F4 o se implementa antes. |
+| Diálogo y ratón | El panel permite pulsar opciones, pero el puntero sigue capturado durante la conversación. Decidir en F4 si se muestra. |
+| Pruebas que guardan | Las comprobaciones comparten la ranura automática de `user://test-saves`; deben ejecutarse en serie o recibir una raíz propia. |
+| Catálogo del build | La prueba cubre el árbol de origen; la carga de 11 diálogos y 31 POI del artefacto exportado se comprueba a mano en la pasada. |
 
 El contenido histórico de la slice queda firmado: PCH-039, PCH-040, PCH-041 y PCH-042 se verificaron el 2026-11-21 (ver [hoja de verificación](../../campaigns/01_pachacutec/documentation/hoja_verificacion_fichas.md) §12). PCH-037 y PCH-038 pertenecen a la llacta y no forman parte de la slice.
 
