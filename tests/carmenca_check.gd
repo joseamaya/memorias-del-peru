@@ -95,7 +95,8 @@ func _run() -> void:
 	var hud: PlayerHud = world.get_player_hud()
 	steps.check("aviso visible", hud != null and hud.is_showing_hint())
 	if hud != null:
-		steps.check("aviso de teclas", hud.get_hint_text() == tr("PCH_BATALLA_ARMA"))
+		var hint: Label = hud.get_node_or_null("HintLabel") as Label
+		steps.check("aviso de teclas", hint != null and hint.text == tr("PCH_BATALLA_ARMA"))
 	steps.check("seis aliados", battle.get_ally_count() == ALLIES)
 	steps.check("oleada 1", battle.get_wave() == 1)
 	steps.check("enemigos de la oleada 1", battle.get_enemy_count() == WAVE_SIZES[0])
