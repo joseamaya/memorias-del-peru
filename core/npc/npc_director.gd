@@ -38,8 +38,7 @@ var _positions: Dictionary[StringName, Vector3] = {}
 var _goals: Dictionary[StringName, Vector3] = {}
 var _targets: Dictionary[StringName, StringName] = {}
 var _indices: Dictionary[StringName, int] = {}
-## Devuelve la altura del suelo en un XZ. Sin ella, el destino conserva la
-## altura del ancla, que solo es correcta en terreno llano.
+## Altura del suelo para un XZ; sin ella se usa la altura del ancla.
 var _ground_sampler: Callable = Callable()
 var _minute: int = 0
 var _clock: WorldClockService = null
@@ -57,12 +56,8 @@ func _process(delta: float) -> void:
 	update_lod()
 
 
-## Registra las definiciones y sus anclas. Devuelve `false` si no hay ninguna
-## definición válida.
-##
-## Las anclas son **puntos del suelo**, no el centro del cuerpo: el director
-## desplaza a cada NPC dentro del anillo y suma `BODY_OFFSET` sobre el suelo de
-## ese punto. Sin muestreador de altura, usa la altura del ancla.
+## Registra las definiciones y sus anclas. Las anclas son puntos del suelo: el
+## director suma `BODY_OFFSET` sobre el suelo del punto desplazado por el anillo.
 func register(definitions: Array[NpcDefinition], anchors: Dictionary[StringName, Vector3]) -> bool:
 	if definitions.is_empty():
 		return false
@@ -88,8 +83,7 @@ func set_target(node: Node3D) -> void:
 	target = node
 
 
-## Fija la función que devuelve la altura del suelo para un XZ. Debe llamarse
-## antes de [method register] para que los destinos nazcan a la altura correcta.
+## Fija el muestreador de altura del suelo; debe llamarse antes de `register`.
 func set_ground_sampler(sampler: Callable) -> void:
 	_ground_sampler = sampler
 
@@ -254,8 +248,7 @@ func restore_snapshot(data: Dictionary) -> bool:
 				var restored: Vector3 = Vector3(
 					_to_float(point[0]), _to_float(point[1]), _to_float(point[2])
 				)
-				# La altura guardada puede venir del cálculo viejo (altura del
-				# ancla). Se corrige sobre el suelo actual si hay muestreador.
+				# La Y guardada puede venir del cálculo viejo: se corrige aquí.
 				restored.y = _ground_y(restored.x, restored.z, restored.y)
 				_positions[id] = restored
 		var anchor_id: StringName = StringName(str(state.get("anchor", _targets.get(id, &""))))
@@ -335,19 +328,15 @@ func _goal_for(index: int, anchor_id: StringName) -> Vector3:
 		base = _anchors[anchor_id]
 	var radius: float = ANCHOR_RADIUS + float(index % 4) * ANCHOR_RING_STEP
 	var angle: float = float(index) * GOLDEN_ANGLE
-	# `_positions` y `_goals` son el centro del cuerpo, no los pies: el actor
-	# coloca la cápsula alrededor de su origen y el colisionador de conversación
-	# tiene que cubrirla entera. El desplazamiento sobre el suelo lo aporta
-	# `NpcMover.body_offset`.
+	# `_positions` y `_goals` son el centro del cuerpo: el actor coloca la
+	# cápsula a su alrededor y la conversación tiene que cubrirla entera.
 	var goal: Vector3 = base + Vector3(cos(angle) * radius, BODY_OFFSET, sin(angle) * radius)
-	# El anillo desplaza el punto en XZ: en pendiente, la altura del ancla deja
-	# al NPC enterrado o flotando. Se muestrea el suelo del punto desplazado.
+	# El anillo desplaza el punto en XZ: se muestrea el suelo del destino.
 	goal.y = _ground_y(goal.x, goal.z, goal.y)
 	return goal
 
 
-## Altura del centro del cuerpo en [param x], [param z], o [param fallback] si no
-## hay muestreador o el terreno no da un valor finito.
+## Altura del centro del cuerpo en XZ, o `fallback` si no hay muestreador.
 func _ground_y(x: float, z: float, fallback: float) -> float:
 	if not _ground_sampler.is_valid():
 		return fallback
