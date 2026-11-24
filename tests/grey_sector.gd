@@ -260,7 +260,7 @@ func _build_anchors() -> void:
 
 
 func _anchor(x: float, z: float) -> Vector3:
-	return Vector3(x, height_at(x, z) + NpcDirector.BODY_OFFSET, z)
+	return Vector3(x, height_at(x, z), z)
 
 
 func _build_npcs() -> void:
