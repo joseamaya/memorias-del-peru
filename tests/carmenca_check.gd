@@ -126,20 +126,18 @@ func _run() -> void:
 	steps.check("oleada reiniciada", battle.is_active())
 	steps.check("aliados junto al jugador", _allies_near(player, 10.0))
 	steps.check("oleada 1 de nuevo", await _wait_until(_wave_started.bind(battle, 1), 8.0))
+	steps.check("enemigos de la oleada reiniciada", battle.get_enemy_count() == WAVE_SIZES[0])
 	steps.check(
-		"enemigos de la oleada reiniciada", battle.get_enemy_count() == WAVE_SIZES[0]
+		"sin chanca pegado al jugador", _nearest_enemy_distance(player) >= MIN_ENEMY_DISTANCE
 	)
-	steps.check("sin chanca pegado al jugador", _nearest_enemy_distance(player) >= MIN_ENEMY_DISTANCE)
 
 	# Tres oleadas; cada obra quita un enemigo de cada una (hasta dos).
 	for wave: int in [1, 2, 3]:
 		steps.check(
-			"llega la oleada %d" % wave,
-			await _wait_until(_wave_started.bind(battle, wave), 10.0)
+			"llega la oleada %d" % wave, await _wait_until(_wave_started.bind(battle, wave), 10.0)
 		)
 		steps.check(
-			"enemigos de la oleada %d" % wave,
-			battle.get_enemy_count() == WAVE_SIZES[wave - 1]
+			"enemigos de la oleada %d" % wave, battle.get_enemy_count() == WAVE_SIZES[wave - 1]
 		)
 		steps.check("tope de enemigos", battle.get_enemy_count() <= 25)
 		if wave == 1:
@@ -150,7 +148,9 @@ func _run() -> void:
 			if first != null:
 				first.take_damage(500.0)
 				await _wait_seconds(2.0)
-				steps.check("el chanca caído se libera", battle.get_enemy_count() == WAVE_SIZES[0] - 1)
+				steps.check(
+					"el chanca caído se libera", battle.get_enemy_count() == WAVE_SIZES[0] - 1
+				)
 		_kill_enemies()
 		await process_frame
 

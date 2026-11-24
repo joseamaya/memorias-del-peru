@@ -109,8 +109,7 @@ func _run() -> void:
 	)
 	steps.check("defensa_4 construida", works2 != null and works2.is_built(&"defensa_4"))
 	steps.check(
-		"cuatro cambios",
-		WorldStateService.instance().get_changes().size() == EXPECTED_WORKS
+		"cuatro cambios", WorldStateService.instance().get_changes().size() == EXPECTED_WORKS
 	)
 
 	print(
