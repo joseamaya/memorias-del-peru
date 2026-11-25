@@ -39,6 +39,8 @@ var _mesh: MeshInstance3D = null
 var _body: CollisionShape3D = null
 var _dead: bool = false
 var _death_elapsed: float = 0.0
+var _tents: Array[CampLayout.Tent] = []
+var _side_hint: int = 0
 
 
 func _ready() -> void:
@@ -77,6 +79,12 @@ func set_director(value: EncounterDirector) -> void:
 	director = value
 	if director != null:
 		director.register(self)
+
+
+## Declara las tiendas que debe rodear. `side_hint` desempata el lado estable.
+func set_obstacles(tents: Array[CampLayout.Tent], side_hint: int = 0) -> void:
+	_tents = tents
+	_side_hint = side_hint
 
 
 func is_dead() -> bool:
@@ -135,7 +143,19 @@ func _physics_process(delta: float) -> void:
 		_:
 			velocity.x = 0.0
 			velocity.z = 0.0
+	_avoid_obstacles()
 	move_and_slide()
+
+
+## Rodea las tiendas sin cambiar la velocidad vertical que aplica la gravedad.
+func _avoid_obstacles() -> void:
+	if _tents.is_empty():
+		return
+	var adjusted: Vector3 = CampAvoidance.steer(
+		velocity, global_position, _tents, BODY_RADIUS, _side_hint
+	)
+	velocity.x = adjusted.x
+	velocity.z = adjusted.z
 
 
 ## Con director, solo dos chancas atacan a la vez.
