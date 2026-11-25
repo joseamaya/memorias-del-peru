@@ -106,6 +106,7 @@ var _step_cycle: float = 0.0
 var _footstep_index: int = 0
 var _controls_locked: bool = false
 var jump: PlayerJump = PlayerJump.new()
+var _mouse: MouseCapture = MouseCapture.new()
 var _focus_phase: FocusPhase = FocusPhase.NONE
 var _focus_target: Node3D = null
 var _focus_elapsed: float = 0.0
@@ -139,27 +140,28 @@ func _ready() -> void:
 	# No se captura aquí: durante _ready() la ventana puede no ser visible aún y
 	# X11 rechaza la captura («NO GRAB») aunque declare tener el foco. Se captura
 	# al recibir el foco, con un clic o, como respaldo, poco después de arrancar.
+	_mouse.setup(self, is_controls_locked, Callable(self, "_apply_mouse_mode"))
 	if is_inside_tree():
-		get_tree().create_timer(INITIAL_CAPTURE_DELAY).timeout.connect(_capture_mouse_if_allowed)
+		get_tree().create_timer(INITIAL_CAPTURE_DELAY).timeout.connect(_mouse.request)
 	if stamina == null:
 		stamina = StaminaComponent.find_in(self)
 	var manager: GameManagerService = GameManagerService.instance()
 	if manager != null:
-		manager.pause_changed.connect(_on_game_manager_pause_changed)
+		manager.pause_changed.connect(_on_pause_changed)
 
 
 func _notification(what: int) -> void:
 	# El sistema solo concede la captura a una ventana con foco. Se captura al
 	# recibirlo (también al arrancar) y se recaptura al recuperarlo.
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN or what == NOTIFICATION_APPLICATION_FOCUS_IN:
-		_capture_mouse_if_allowed()
+		_mouse.request()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var button: InputEventMouseButton = event as InputEventMouseButton
 		if button.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-			_capture_mouse_if_allowed()
+			_mouse.request()
 			get_viewport().set_input_as_handled()
 			return
 	if event.is_action_pressed("interact"):
@@ -256,12 +258,25 @@ func try_interact() -> void:
 ## Bloquea o libera el movimiento y la mirada. El diario lo usa para detener al
 ## jugador sin apagar su física ni el mundo.
 func set_controls_locked(locked: bool) -> void:
-	_controls_locked = locked
-	if locked:
-		velocity.x = 0.0
-		velocity.z = 0.0
-		_fov_target = base_fov
-		_clear_focus()
+	if not locked:
+		_unlock_controls()
+		return
+	_controls_locked = true
+	velocity.x = 0.0
+	velocity.z = 0.0
+	_fov_target = base_fov
+	_clear_focus()
+
+
+## Libera los controles y reintenta la captura que la pausa pudo rechazar.
+func _unlock_controls() -> void:
+	_controls_locked = false
+	_mouse.request()
+
+
+## La pausa la decide `GameManager`; aquí solo se muestra o recupera el puntero.
+func _on_pause_changed(paused: bool) -> void:
+	_mouse.on_pause_changed(paused)
 
 
 ## Indica si el jugador tiene los controles bloqueados.
@@ -273,9 +288,9 @@ func is_controls_locked() -> bool:
 ## Mientras los controles están bloqueados, un clic fuera no lo recaptura.
 func set_pointer_visible(pointer_visible: bool) -> void:
 	if pointer_visible:
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		_mouse.show_pointer()
 	else:
-		_capture_mouse_if_allowed()
+		_mouse.request()
 
 
 ## Empieza un diálogo: bloquea los controles y gira la cámara hacia la cara de
@@ -303,8 +318,8 @@ func begin_dialogue(target: Node3D = null) -> void:
 ## controles se liberan cuando la transición acaba.
 func end_dialogue() -> void:
 	if _focus_phase == FocusPhase.NONE:
-		_controls_locked = false
 		_fov_target = base_fov
+		_unlock_controls()
 		return
 	_restore_from_yaw = rotation.y
 	_restore_from_pitch = _pitch
@@ -394,7 +409,7 @@ func _update_focus(delta: float) -> void:
 		_focus_phase = FocusPhase.HOLD
 	else:
 		_focus_phase = FocusPhase.NONE
-		_controls_locked = false
+		_unlock_controls()
 
 
 ## Decide si el jugador corre y aplica el consumo de estamina.
@@ -586,21 +601,6 @@ func _play_footstep() -> void:
 	audio.play_sfx(stream, footstep_volume_db)
 
 
-func _on_game_manager_pause_changed(paused: bool) -> void:
-	if paused:
-		Input.mouse_mode = MousePolicy.mode_for_pause(paused)
-		return
-	_capture_mouse_if_allowed()
-
-
-func _capture_mouse_if_allowed() -> void:
-	if not is_inside_tree():
-		return
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		return
-	var allowed: bool = MousePolicy.should_capture(
-		MousePolicy.is_paused(), DisplayServer.window_is_focused(), _controls_locked
-	)
-	if not allowed:
-		return
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+## Aplica el modo de ratón; las pruebas lo interceptan (headless lee visible).
+func _apply_mouse_mode(mode: Input.MouseMode) -> void:
+	Input.mouse_mode = mode

@@ -74,7 +74,7 @@ func register(definitions: Array[NpcDefinition], anchors: Dictionary[StringName,
 		_targets[definition.id] = anchor_id
 		_goals[definition.id] = _goal_for(_indices[definition.id], anchor_id)
 		_positions[definition.id] = _goals[definition.id]
-		_movers[definition.id] = NpcMover.new()
+		_movers[definition.id] = NpcMover.new(_ground_sampler)
 	_refresh_schedule()
 	return not _definitions.is_empty()
 
@@ -83,7 +83,7 @@ func set_target(node: Node3D) -> void:
 	target = node
 
 
-## Fija el muestreador de altura del suelo; debe llamarse antes de `register`.
+## Fija el muestreador de altura del suelo antes de `register`.
 func set_ground_sampler(sampler: Callable) -> void:
 	_ground_sampler = sampler
 

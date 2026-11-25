@@ -72,6 +72,16 @@ func _run() -> void:
 	ok = ok and overlook != null
 	var tent_count: int = overlook.get_tent_count() if overlook != null else 0
 	ok = ok and tent_count == EXPECTED_TENTS
+	# Las tiendas se podían atravesar: cada una debe tener su colisión.
+	var tents_with_collision: int = 0
+	if overlook != null:
+		for child: Node in overlook.get_children():
+			if (
+				String(child.name).begins_with("Tent_")
+				and child.get_node_or_null("Collision") != null
+			):
+				tents_with_collision += 1
+	ok = ok and tents_with_collision == EXPECTED_TENTS
 	ok = ok and state.is_discovered(POI)
 	ok = ok and journal.has(MEMORY)
 	ok = ok and hud.hint_label.text != ""

@@ -38,14 +38,10 @@ const ALLY_COUNT: int = 6
 ## Se activa al entrar en el campamento, no a 120 m: el mirador queda a 42 m y
 ## hay que poder descubrirlo antes de que empiece la batalla.
 const TRIGGER_RADIUS: float = 30.0
-## Ningún chanca aparece más cerca que esto del jugador; si el hueco del anillo
-## cae dentro, se refleja al lado opuesto.
-const MIN_SPAWN_DISTANCE: float = 6.0
 const WAVE_DELAY: float = 4.0
 const STANDARD_RADIUS: float = 3.5
 const STANDARD_HEIGHT: float = 4.2
 const MANTA_SCALE: float = 0.85
-const SPAWN_RADIUS: float = 13.0
 const DEFEAT_DELAY: float = 2.5
 const STAGE_FLAG: StringName = &"m01_etapa"
 const VICTORY_FLAG: StringName = &"m01_victoria"
@@ -176,18 +172,9 @@ func _start_wave(index: int) -> void:
 
 
 func _spawn_enemy(slot: int, count: int) -> void:
-	var angle: float = TAU * float(slot) / float(maxi(count, 1))
-	var radius: float = SPAWN_RADIUS * (0.6 + 0.4 * float((slot * 7) % 5) / 4.0)
-	var point: Vector3 = CAMP + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
-	# Si el hueco cae sobre el jugador, se refleja al otro lado del campamento.
 	var player: PlayerFPS = _world.get_player()
-	if player != null:
-		var flat: Vector2 = Vector2(
-			point.x - player.global_position.x, point.z - player.global_position.z
-		)
-		if flat.length() < MIN_SPAWN_DISTANCE:
-			angle += PI
-			point = CAMP + Vector3(cos(angle) * radius, 0.0, sin(angle) * radius)
+	var origin: Vector3 = player.global_position if player != null else CAMP
+	var point: Vector3 = CarmencaSpawn.offset(CAMP, slot, count, origin)
 	point.y = _ground(point.x, point.z) + 0.05
 	var warrior: ChancaWarrior = ChancaWarrior.new()
 	warrior.name = "Chanca_%d_%d" % [_wave, slot]

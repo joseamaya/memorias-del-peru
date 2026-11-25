@@ -122,9 +122,11 @@ func _tent_offset(index: int, row: int, column: int) -> Vector3:
 func _add_tent(camp: Vector3, chief: bool) -> void:
 	var radius: float = TENT_RADIUS * (1.35 if chief else 1.0)
 	var height: float = TENT_HEIGHT * (1.25 if chief else 1.0)
+	var tent: Node3D = Node3D.new()
+	tent.name = "Tent_%02d" % _tents.size()
+	_tents.append(tent)
 	var cone: MeshInstance3D = MeshInstance3D.new()
-	cone.name = "Tent_%02d" % _tents.size()
-	_tents.append(cone)
+	cone.name = "Cloth"
 	var mesh: CylinderMesh = CylinderMesh.new()
 	mesh.top_radius = 0.0
 	mesh.bottom_radius = radius
@@ -136,8 +138,25 @@ func _add_tent(camp: Vector3, chief: bool) -> void:
 	)
 	# Medio metro enterrado: en ladera, la base de la tienda quedaría al aire en
 	# el lado cuesta abajo.
-	cone.position = to_local(Vector3(camp.x, _ground(camp.x, camp.z) + height * 0.5 - 0.5, camp.z))
-	add_child(cone)
+	tent.position = to_local(Vector3(camp.x, _ground(camp.x, camp.z) + height * 0.5 - 0.5, camp.z))
+	tent.add_child(cone)
+	tent.add_child(_tent_collision(mesh))
+	add_child(tent)
+
+
+## Colisión de la tienda con la forma del cono, sin caja invisible alrededor.
+##
+## Antes la tienda era solo malla y se podía atravesar. El navmesh se hornea
+## del terreno, así que los NPC pueden seguir cruzando el campamento; el
+## jugador y los cuerpos con física no.
+func _tent_collision(mesh: CylinderMesh) -> StaticBody3D:
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = "Collision"
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	shape.name = "Shape"
+	shape.shape = mesh.create_convex_shape()
+	body.add_child(shape)
+	return body
 
 
 func _add_box(name_hint: String, size: Vector3, at: Vector3, color: Color, collision: bool) -> void:

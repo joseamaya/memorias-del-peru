@@ -349,3 +349,20 @@ Una segunda pasada sobre la partida real encontró fallos que las pruebas no cub
 | Documentación | El protocolo corrige quién reparte los encargos (la curáca encarga; la molendera, la tejedora y el agricultor aceptan) y deja de presentar `test_resource_catalog` como cobertura del build exportado | [Protocolo](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) §3 y §3.1 |
 
 **Validación ejecutada:** suite completa en verde; `carmenca_check`, `mission_stage2_check`, `defense_works_check`, `city_population_check`, `city_save_round_trip`, `npc_lod_check`, `dialogue_check` e `interiors_check` en verde; `tools/check_test_inventory.py` y `tools/check_gdscript_limits.py` en verde; `gdlint` y `gdformat --check` limpios en los archivos nuevos y reescritos; CI de los cinco PRs en verde (pruebas, lint, inventario y exportación Linux/Windows). **No verificado:** la pasada humana de 3.10 y el modo de ratón en headless (se comprueba en la pasada).
+
+## 20. Correcciones de la segunda revisión jugada (2026-11-24)
+
+La segunda revisión confirmó nueve fallos: dos de entrada, dos del campamento y cinco de cobertura de las pruebas. Se corrigieron en una rama con tres commits por área; cada uno tiene prueba dirigida.
+
+| Área | Corrección | Evidencia |
+|---|---|---|
+| Ratón | Al liberar los controles se reintenta la captura; cubre el diálogo pausado o con alt-tab y el diario, que tampoco recapturaba | `test_player_mouse_unlock`; el modo real se comprueba en la pasada humana |
+| Escudo | El botón derecho guarda su estado y baja en `_process` si la suelta se perdió en pausa o al cambiar de ventana | `test_combat_input` |
+| Aliados | Esperan detrás del jugador y ceden en diagonal si los tiene encima; ya no se plantan de frente en la entrada del campamento | `test_allied_follow`, `carmenca_check` |
+| Tiendas | Cada tienda lleva la colisión convexa de su cono; el jugador no la atraviesa | `mirador_check` (doce tiendas con `Collision`) |
+| Aparición | El anillo se extrae a `CarmencaSpawn.offset` y `carmenca_check` coloca al jugador sobre un hueco de la oleada 2; el paso falla si se desactiva el reflejo | `test_carmenca_spawn`, `carmenca_check` (`pasos=56`) |
+| Robustez | `carmenca_check` y `defense_works_check` comprueban el mundo y el foso antes de usarlos y salen con `quit(1)` informando del paso | Los dos recorridos en verde con las guardas |
+| Aislamiento | `run_tests.gd` limpia `WorldState` antes de cada archivo; el catálogo ya no contagia descubrimientos | `run_tests` completo en verde |
+| Altura al caminar | `NpcMover` aplica el muestreador de suelo en cada tramo | `test_npc_walk_height`, `city_population_check`, `grey_sector_check` |
+
+**Validación ejecutada:** 153 métodos `test_` en verde; `carmenca_check` (`CARMENCA_OK pasos=56`), `defense_works_check` (`DEFENSE_OK pasos=27`), `mirador_check`, `city_population_check`, `grey_sector_check`, `npc_lod_check` y `dialogue_check` en verde; `tools/check_test_inventory.py` y `tools/check_gdscript_limits.py` en verde; `gdlint` limpio en los archivos nuevos y `gdformat --check` limpio en los nuevos y en los tocados que ya estaban formateados (`player_fps.gd` queda sin reformatear por ser heredado). Se comprobó por mutación que el paso de aparición falla al desactivar el reflejo. **No verificado:** el modo de ratón real (headless lee siempre `VISIBLE`), la pasada humana y el presupuesto del sector con las doce colisiones nuevas.

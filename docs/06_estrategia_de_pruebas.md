@@ -188,6 +188,8 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 
 **Aislamiento del guardado:** los recorridos de integración que guardan llaman a `SaveManagerService.set_save_root("user://test-saves")` antes de crear el mundo. Así no leen ni borran la ranura del jugador en `user://saves`. La raíz se puede consultar con `SaveManagerService.save_root()` y restaurar con `reset_save_root()`.
 
+**Aislamiento del mundo:** `run_tests.gd` limpia `WorldState` antes de cada archivo de prueba. El catálogo de POI marca los descubrimientos de inicio y, sin esta limpieza, las pruebas siguientes los heredaban.
+
 ### 3.1. Motor y jugador
 
 | Archivo | Qué cubre |
@@ -202,6 +204,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_pause` | Pausa y señal `pause_changed` |
 | `test_mouse_mode_for_pause` | Modo de ratón al pausar y reanudar |
 | `test_mouse_capture_requires_focus` | El ratón se captura solo con la ventana enfocada, sin controles bloqueados ni UI con el puntero |
+| `test_player_mouse_unlock` | Al liberar los controles (diálogo, diario o pausa) se vuelve a pedir la captura del ratón |
 | `test_player_collision_layers` | Capas y máscaras del jugador |
 | `test_player_camera_dialogue` | Bloqueo de controles, encuadre del interlocutor, retorno de la cámara y arma oculta al cerrar el diario sin equipo |
 | `test_jump` | El salto solo se aplica en el suelo y con los controles libres |
@@ -234,7 +237,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_journal` | Encargos y entradas de Memoria con sello y fuente |
 | `test_combat` | Carga, daño, bloqueo, aliento y moral enemiga |
 | `test_combat_loadout` | Honda, porra y escudo; munición de piedras; alcance y bloqueo |
-| `test_combat_input` | Munición ligada al arma equipada, clic del escudo que suelta el bloqueo y carga cancelada al bloquear o perder la suelta |
+| `test_combat_input` | Munición ligada al arma equipada, clic del escudo que suelta el bloqueo, botón derecho que baja si la suelta se pierde y carga cancelada al bloquear o perder la suelta |
 | `test_combat_feel` | Fases del golpe, parry de 0,15 s, bloqueo del 70 % y fichas del director |
 | `test_campaign_state` | Banderas entre escenas |
 | `test_dialogue_panel` | Panel de diálogo y opciones; con el juego en pausa no avanza ni elige |
@@ -288,10 +291,12 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `mission_stage2_check.gd` | Cargar en la etapa 2 conserva la conversación de partida y `m01_queda` se fija recorriendo el grafo real de la curáca; cada paso lleva etiqueta |
 | `side_activities_check.gd` | Secundarias: reparto del agua con sus tres desenlaces y diario, manta tejida en el telar, negativo del telar sin encargo y guardado/carga |
 | `side_manta_load_check.gd` | Cargar con la lana entregada y la manta sin aceptar conserva la oferta de la tejedora y su encargo |
-| `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento y sobrevive a la carga sin duplicar la entrada |
-| `defense_works_check.gd` | Obras de defensa con pasos etiquetados: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras |
+| `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento con las doce tiendas y su colisión, y sobrevive a la carga sin duplicar la entrada |
+| `defense_works_check.gd` | Obras de defensa con pasos etiquetados: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras; si falta un foso informa del paso en vez de colgarse |
 | `combat_check.gd` | Combate del jugador: arma y desarme, golpe de porra contra un chanca, golpe recibido, escudo que absorbe y honda que gasta piedra |
-| `carmenca_check.gd` | Batalla: radio de activación del campamento por fuera y por dentro, porra inicial y aviso de teclas, tres oleadas con obras que restan enemigos, aliados, derrota con reaparición junto a los aliados, estandarte que fija `m01_victoria` y cierra la misión |
+| `test_allied_follow` | El aliado espera detrás del jugador y, si lo tiene encima, cede el paso de lado en vez de bloquear la ruta |
+| `test_carmenca_spawn` | Anillo de aparición: ningún hueco cae a menos de 6 m del jugador y el que cae encima se refleja al otro lado |
+| `carmenca_check.gd` | Batalla: radio de activación del campamento por fuera y por dentro, porra inicial y aviso de teclas, tres oleadas con obras que restan enemigos, aliados, derrota con reaparición junto a los aliados, aparición reflejada con el jugador dentro del campamento, estandarte que fija `m01_victoria` y cierra la misión |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |
@@ -300,6 +305,7 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `test_navigation_service` | Consulta fuera del árbol, mapa no listo, longitud de ruta y punto más cercano |
 | `test_npc_mover` | Ruta de NPC: avance por tramos, altura interpolada, fin de ruta y ruta vacía |
 | `test_npc_ground_goal` | El destino del NPC sigue el suelo del punto desplazado en pendiente y la carga corrige la altura guardada |
+| `test_npc_walk_height` | Al caminar, el cuerpo sigue el suelo muestreado y no la Y de la ruta del navmesh |
 | `test_npc_lod` | Distancias de LOD, presupuesto 60 activos/25 animados, despawn, snapshot y horario |
 | `navigation_check.gd` | Ruta entre dos regiones unidas por `NavigationLink3D`, con hueco de 5 m |
 | `terrain3d_check.gd` | Terrain3D carga, crea una región y devuelve la altura importada |

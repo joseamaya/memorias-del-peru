@@ -27,6 +27,9 @@ var _weapon_view: FirstPersonWeapon = null
 var _armed: bool = false
 var _charging: bool = false
 var _shield_click: bool = false
+## Botón derecho del escudo mientras se mantiene: si la suelta se pierde (pausa
+## o cambio de ventana), `_process` baja el escudo al reanudar.
+var _block_click: bool = false
 var _charge_elapsed: float = 0.0
 var _pending_damage: float = 0.0
 ## Multiplicador del daño recibido; la manta de la defensa lo baja.
@@ -84,6 +87,7 @@ func set_armed(value: bool) -> void:
 	_armed = value
 	_charging = false
 	_shield_click = false
+	_block_click = false
 	if _weapon_view != null:
 		_weapon_view.visible = value
 	if not value:
@@ -149,6 +153,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_released("block") and loadout.is_blocking():
+		_block_click = false
 		loadout.set_blocking(false)
 		get_viewport().set_input_as_handled()
 		return
@@ -159,6 +164,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("block"):
+		_block_click = true
 		loadout.set_blocking(true)
 		get_viewport().set_input_as_handled()
 		return
@@ -186,6 +192,11 @@ func _process(delta: float) -> void:
 	elif _shield_click and not Input.is_action_pressed("attack"):
 		# La suelta se perdió (pausa o bloqueo): el escudo baja al reanudar.
 		_shield_click = false
+		loadout.set_blocking(false)
+	elif _block_click and not Input.is_action_pressed("block"):
+		# Lo mismo con el botón derecho: si se soltó en pausa o al cambiar de
+		# ventana, el bloqueo no puede seguir alzado al volver.
+		_block_click = false
 		loadout.set_blocking(false)
 	# El arma solo se ve armada y con los controles libres. Así no reaparece al
 	# cerrar el diario si el blockout no la había equipado.
@@ -299,6 +310,7 @@ func _die() -> void:
 	_armed = false
 	_charging = false
 	_shield_click = false
+	_block_click = false
 	if _weapon_view != null:
 		_weapon_view.visible = false
 	loadout.set_blocking(false)

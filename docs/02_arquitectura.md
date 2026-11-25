@@ -106,6 +106,7 @@ PlayerFPS (CharacterBody3D)
 - Interacción por rayo con caché del collider; señales `interactable_focused`, `interactable_unfocused`, `interacted`.
 - El jugador no decide la pausa: escucha `GameManager.pause_changed`.
 - El jugador no conoce campañas, UI ni tipos concretos de objetos.
+- La captura del puntero vive en `MouseCapture`: foco, pausa y controles bloqueados, con reintento al liberar el diálogo o el diario.
 
 ### Añadidos para mundo abierto
 
@@ -155,7 +156,7 @@ PlayerFPS (CharacterBody3D)
 | `InteriorManager` | Carga aditiva de interiores | `enter_interior`, `exit_interior` |
 | `NavigationService` | Consulta de rutas y enlaces; el navmesh lo aportan los sectores | `find_path`, `is_reachable`, `path_length`, `closest_point` |
 | `TerrainNavmesh` | Hornea el navmesh de un sector desde las alturas de Terrain3D y sus huellas de obstáculo | `bake`, `NavmeshProfile` |
-| `NpcMover` | Sigue una ruta de navegación con velocidad y altura de cuerpo | `set_path`, `advance`, `is_finished` |
+| `NpcMover` | Sigue una ruta de navegación con velocidad, altura de cuerpo y muestreo del suelo | `set_path`, `advance`, `is_finished` |
 | `NpcDirector` | Spawn/despawn por distancia, LOD (60 activos, 25 animados), horarios y snapshot | `npc_spawned`, `npc_despawned`, `schedule_applied` |
 | `NpcSimActor` | Cuerpo y animación de marcador de un NPC activo | `setup`, `set_lod`, `advance` |
 | `QuestDirector` | Estado de misiones | `quest_started`, `stage_changed`, `quest_completed` |
