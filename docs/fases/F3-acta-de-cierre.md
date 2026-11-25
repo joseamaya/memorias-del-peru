@@ -1,12 +1,12 @@
 # Acta de cierre de F3 — vertical slice
 
-- **Versión:** 0.11 (borrador para firma) — 2026-11-24
+- **Versión:** 0.12 (borrador para firma) — 2026-11-25
 - **Fase:** F3 — vertical slice de mundo abierto
 - **Campaña:** 01 — *Pachacútec. El despertar del Sol*
 - **Firma:** responsable del proyecto (pendiente)
 - **Manda:** criterios de fase en [docs/05](../05_plan_de_implementacion.md) §Fase 3 y criterio de cierre en la [ficha de F3](F3-vertical-slice.md) §16.
 
-**Actualización 0.11:** recuento real de la suite (140 pruebas en 62 archivos), protocolo humano v1.2 y correcciones del 2026-11-24 (PRs #56–#60). La pasada humana y la firma siguen pendientes.
+**Actualización 0.12:** recuento real de la suite (165 pruebas en 67 archivos, 32 recorridos en CI) y correcciones de la revisión de la batalla del 2026-11-25 sobre el PR #62. La pasada humana y la firma siguen pendientes.
 
 ## 1. Qué se entrega
 
@@ -59,20 +59,22 @@ Observaciones:
 - La medición no cubre el recorrido completo de 10 minutos con streaming, que sigue siendo la de F2 (`region_walkthrough_check` y `streaming_soak_check`); en F3 el mundo no cambió de escala.
 - Las correcciones de la revisión (PR #54) no añaden geometría ni draw calls: el actor de los NPC sube al centro del cuerpo, el menú de pausa es un `Control` oculto y el resto son cambios de lógica y datos. La medición de esta sección sigue vigente; no se repitieron las tres pasadas.
 - Las correcciones del 2026-11-24 (PRs #56–#60) tampoco añaden geometría: mueven el centro del campamento y la reaparición, cambian el estado de entrada y la altura de los NPC, y añaden pruebas. **No se repitieron las tres pasadas**: las cifras de esta sección son anteriores al traslado del campamento y `measure_battle` no se ha vuelto a ejecutar.
+- La corrección de la batalla del 2026-11-25 cambia movimiento y aparición, no geometría: no añade draw calls ni primitivas. Tampoco se repitieron las tres pasadas; la evidencia de esta entrega es funcional (`carmenca_flow_check`, tres oleadas en 46,3 s), no de rendimiento.
 
 ## 3. Pruebas automatizadas
 
-- Suite completa: **140 métodos `test_` en 62 archivos, 0 fallos** (`tests/run_tests.gd`).
+- Suite completa: **165 métodos `test_` en 67 archivos, 0 fallos** (`tests/run_tests.gd`).
 - Recorridos de integración de la slice en verde: `city_check`, `interiors_check`, `day_night_check`, `city_population_check`, `dialogue_check`, `mission_check`, `mission_stage2_check`, `side_activities_check`, `side_manta_load_check`, `mirador_check`, `defense_works_check`, `combat_check`, `carmenca_check`, `city_save_round_trip`, `region_player_check`, `region_walkthrough_check`, `poi_discovery_check`, `lantern_check`, `region_review_check`, `npc_lod_check`.
 - Salida de cada ejecución sin errores ni advertencias de `res://` (`tools/check_output.py`).
-- `gdlint` y `gdformat --check` limpios en los archivos nuevos; límites de GDScript e inventario de pruebas (**31 recorridos en CI**) OK.
+- `gdlint` y `gdformat --check` limpios en los archivos nuevos; límites de GDScript e inventario de pruebas (**32 recorridos en CI**) OK.
 - Exportación de Linux y Windows y arranque headless del build de Linux: OK. Windows se exporta, pero no se ejecuta en la CI ni en esta pasada.
 - Correcciones de la revisión (PR #54): catálogos remapeados del build, etapa 1 y etapa 2 cargada, Carmenca tras la victoria, NPC en el centro del cuerpo, manta pendiente, descubrimientos sincronizados, HUD y combate, pausa y salto, guardado con respaldo. Evidencia en la [ficha de F3](F3-vertical-slice.md) §18.
 - Correcciones de la revisión jugada del 2026-11-24 (PRs #56–#60): radio y derrota de Carmenca, entrada/pausa/ratón, altura de los NPC en el anillo, respaldo `.bak` ante un principal corrupto, atuendo con pieza nula y pasos etiquetados en las comprobaciones de integración. Evidencia en la [ficha de F3](F3-vertical-slice.md) §19.
+- Correcciones de la revisión de la batalla del 2026-11-25: las tiendas ya no atrapan a chancas ni aliados; el anillo de aparición evita las huellas, los aliados tienen seis huecos y órbita del espacio personal, y `carmenca_flow_check` mide las tres oleadas completas. Evidencia en la [ficha de F3](F3-vertical-slice.md) §21.
 
 ## 4. Pasada humana
 
-- Protocolo: [prueba_vertical_slice.md](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) v1.2. 8 bloques, 30–45 min, con registro de bloques, incidencias y las 15 regresiones de §3.1 (pausa, ratón, diálogo, NPC, HUD, etapa 2, manta, victoria, derrota y build).
+- Protocolo: [prueba_vertical_slice.md](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) v1.3. 8 bloques, 30–45 min, con registro de bloques, incidencias y las 18 regresiones de §3.1 (pausa, ratón, diálogo, NPC, HUD, etapa 2, manta, victoria, derrota, batalla sin bloqueos, aliados separados, aparición y build).
 - **Resultado:** pendiente de la pasada del responsable.
 - Criterio que cierra: 30–45 min de juego real con contenido no principal, sin bloqueos, con las incidencias anotadas y la decisión firmada.
 
@@ -88,7 +90,7 @@ Lo que la slice **no** resuelve y pasa a F4, para que nadie lo confunda con un f
 | Audio | Sustitutos declarados en [docs/07](../07_convenciones_historicas.md) §4; sin pasos propios del altiplano ni voces. |
 | Equilibrio | 4, 6 y 8 chancas, 60 de salud y 6 aliados son números de bloqueo; los aliados no mueren. |
 | Guardado en combate | La batalla no se serializa: cargar a mitad de pelea vuelve al inicio de la oleada, por diseño. |
-| Navmesh local | El navmesh del Cusco sigue siendo de terreno; las casas no están talladas (3.4). |
+| Navmesh local | El navmesh del Cusco sigue siendo de terreno; las casas no están talladas (3.4). El de S2 termina en z=300 y no cubre el campamento: hoy no hay NPCs allí, pero poblar el campamento exige extender el sector y hornear las tiendas. |
 | Actividades de NPC | Las rutinas mueven, pero no hay NPC trabajando ni conversando entre ellos (3.4). |
 | Perfiles | La escala de Bajo y Medio se revisa en F4 (§2). |
 | Guardado manual | El menú de pausa no guarda; el autoguardado es la cama. Decidir si entra en F4 o se implementa antes. |

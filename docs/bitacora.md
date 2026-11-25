@@ -6,6 +6,21 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-25 — Revisión de la batalla: aparición y movimiento alrededor de las tiendas
+
+**Decisión:** corregir la regresión de la batalla de Carmenca con evitación local de las tiendas y un anillo de aparición libre, sin adoptar el navmesh para los combatientes. La alternativa de extender S2 y hornear las tiendas con `NavigationAgent3D` se descarta para F3: el campamento queda fuera del navmesh actual, cambia la IA de 14 cuerpos y exige volver a validar todas las rutas. Queda como deuda para cuando haya NPCs en el campamento.
+
+| Cambio | Detalle |
+|---|---|
+| Causa | El hueco 1 de la oleada 1 nacía a 2,05 m del centro de la tienda 4 (radio 2,2 m) y los chancas iban en línea recta contra el cono. `move_and_slide` no puede deslizar si el vector deseado es radial a la tienda. La oleada 3 tenía dos de seis huecos dentro de tiendas. |
+| Layout | `CampLayout` es la única fuente de las doce tiendas; la usan `CarmencaOverlook`, `CarmencaSpawn` y la batalla. Antes el reparto vivía solo en el mirador. |
+| Aparición | `CarmencaSpawn` busca el primer punto libre con radios y ángulos crecientes, conserva el reflejo por `MIN_DISTANCE` y despeja también el nacimiento de los aliados. |
+| Movimiento | `CampAvoidance.steer` añade una componente tangencial al rumbo cuando una tienda se cruza y desempata por hueco el caso radial. `ChancaWarrior` y `AlliedWarrior` lo aplican antes de `move_and_slide`. |
+| Aliados | Seis huecos de formación (tres columnas por dos filas) y órbita del espacio personal. Antes los seis compartían un punto y, en el borde de 2,4 m, alternaban entre ceder y volver al punto. |
+| Pruebas | `carmenca_check` comprueba el mundo antes de `add_child`; `carmenca_flow_check` deja al jugador quieto y con salud alta, juega las tres oleadas (2, 4 y 6) y exige cerrarlas en ≤ 90 s. Se añade a CI. |
+
+**Consecuencias:** las tres oleadas se cierran en **46,3 s** con el jugador quieto y los aliados quedan separados en 7,5 s; antes la comparación del revisor no cerraba la tercera en 7 min. El navmesh de S2 sigue sin cubrir el campamento (z=300 frente a z=307), pero no hay NPCs allí: se declara como deuda, no como limitación silenciosa. No se añade geometría; no se repiten las tres pasadas de `measure_battle`, así que el presupuesto de rendimiento queda **no verificado** para esta entrega. La comparación de 60 s con el bot del revisor y la pasada humana quedan pendientes.
+
 ## 2026-11-24 — Revisión jugada: ratón, escudo y cobertura de las pruebas
 
 **Decisión:** corregir los fallos reproducidos en la segunda revisión de la slice antes de la pasada humana, incluidos los que solo afectaban a la cobertura de las pruebas. Se agrupan en una entrega con tres commits por área (entrada, pruebas y mundo); cada corrección lleva prueba dirigida y las que no se pueden medir en headless se declaran.

@@ -366,3 +366,17 @@ La segunda revisión confirmó nueve fallos: dos de entrada, dos del campamento 
 | Altura al caminar | `NpcMover` aplica el muestreador de suelo en cada tramo | `test_npc_walk_height`, `city_population_check`, `grey_sector_check` |
 
 **Validación ejecutada:** 153 métodos `test_` en verde; `carmenca_check` (`CARMENCA_OK pasos=56`), `defense_works_check` (`DEFENSE_OK pasos=27`), `mirador_check`, `city_population_check`, `grey_sector_check`, `npc_lod_check` y `dialogue_check` en verde; `tools/check_test_inventory.py` y `tools/check_gdscript_limits.py` en verde; `gdlint` limpio en los archivos nuevos y `gdformat --check` limpio en los nuevos y en los tocados que ya estaban formateados (`player_fps.gd` queda sin reformatear por ser heredado). Se comprobó por mutación que el paso de aparición falla al desactivar el reflejo. **No verificado:** el modo de ratón real (headless lee siempre `VISIBLE`), la pasada humana y el presupuesto del sector con las doce colisiones nuevas.
+
+## 21. Correcciones de la revisión de la batalla (2026-11-25)
+
+La revisión de la entrega anterior encontró que la batalla ya no se cerraba: con el jugador quieto, la oleada 1 tardaba 91 s y la 3 no terminaba en 7 min. La causa era doble: el hueco 1 de la oleada 1 nacía dentro de la tienda 4 y los chancas y aliados iban en línea recta contra las tiendas, que ahora tienen colisión. La bitácora del PR anterior declaraba la limitación del navmesh, pero no medía su efecto en la batalla.
+
+| Área | Corrección | Evidencia |
+|---|---|---|
+| Campamento | `CampLayout` es la única fuente de las doce tiendas: la usan el mirador, la batalla y la aparición | `test_camp_avoidance`, `mirador_check` (12 tiendas) |
+| Aparición | `CarmencaSpawn` busca un hueco libre de tiendas con radios y ángulos crecientes, conserva el reflejo por distancia al jugador y los aliados usan el mismo despeje | `test_carmenca_spawn`, `test_camp_avoidance` |
+| Movimiento | `CampAvoidance.steer` añade una componente tangencial al rodear una tienda y desempata el caso radial; lo aplican chancas y aliados | `test_camp_avoidance` (simulación de cada hueco), `carmenca_flow_check` |
+| Aliados | Seis huecos distintos (tres columnas por dos filas) y órbita del espacio personal en vez del ciclo de ceder y volver al punto | `test_allied_follow`, `carmenca_flow_check` |
+| Pruebas | `carmenca_check` comprueba el mundo antes de añadir; `carmenca_flow_check` deja al jugador quieto, juega las tres oleadas (2, 4 y 6) y exige cerrarlas en ≤ 90 s | `CARMENCA_FLOW_OK pasos=14` (tres oleadas en 46,3 s; aliados separados en 7,5 s) y CI |
+
+**Validación ejecutada:** 165 métodos `test_` en verde; `carmenca_check` (`CARMENCA_OK pasos=58`), `carmenca_flow_check` (`CARMENCA_FLOW_OK pasos=14`, tres oleadas en 46,3 s y aliados separados en 7,5 s), `mirador_check` (`tiendas=12`); `tools/check_test_inventory.py` (67 archivos, 32 recorridos) y `tools/check_gdscript_limits.py` en verde; `gdlint` y `gdformat --check` limpios en los archivos nuevos y tocados. **No verificado:** la pasada humana, la comparación de 60 s del revisor con su bot y el presupuesto de `measure_battle` tras el cambio de movimiento; no se añadió geometría.
