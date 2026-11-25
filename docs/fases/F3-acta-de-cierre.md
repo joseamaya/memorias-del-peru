@@ -1,12 +1,12 @@
 # Acta de cierre de F3 — vertical slice
 
-- **Versión:** 0.12 (borrador para firma) — 2026-11-25
+- **Versión:** 0.13 (borrador para firma) — 2026-11-25
 - **Fase:** F3 — vertical slice de mundo abierto
 - **Campaña:** 01 — *Pachacútec. El despertar del Sol*
 - **Firma:** responsable del proyecto (pendiente)
 - **Manda:** criterios de fase en [docs/05](../05_plan_de_implementacion.md) §Fase 3 y criterio de cierre en la [ficha de F3](F3-vertical-slice.md) §16.
 
-**Actualización 0.12:** recuento real de la suite (165 pruebas en 67 archivos, 32 recorridos en CI) y correcciones de la revisión de la batalla del 2026-11-25 sobre el PR #62. La pasada humana y la firma siguen pendientes.
+**Actualización 0.13:** recuento real de la suite (165 pruebas en 67 archivos, 32 recorridos en CI), correcciones de la revisión de la batalla del 2026-11-25 sobre el PR #62 y medición de la batalla repetida tras el merge del PR #63. La pasada humana y la firma siguen pendientes.
 
 ## 1. Qué se entrega
 
@@ -29,7 +29,7 @@ La slice jugable de las fases 1 y 2 de la campaña: la ciudad que se queda y el 
 
 ## 2. Medición de rendimiento
 
-Protocolo de [docs/08](../08_entorno_y_rendimiento.md) §4.2: 1920 × 1080, vsync libre, tres pasadas por perfil, mediana y rango de p1, carga del sistema anotada. Equipo de referencia: i7-13700 con UHD 770 integrada, Ubuntu 24.04. La carga media del sistema durante la tanda estuvo entre 1,9 y 5,2; aun así se cumple el presupuesto.
+Protocolo de [docs/08](../08_entorno_y_rendimiento.md) §4.2: 1920 × 1080, vsync libre, tres pasadas por perfil, mediana y rango de p1, carga del sistema anotada. Equipo de referencia: i7-13700 con UHD 770 integrada, Ubuntu 24.04. La ciudad se midió con carga 1,9–5,2; la batalla se repitió el 2026-11-25 con carga 0,8–1,8. En ambos casos se cumple el presupuesto.
 
 Escenas de medición: `tests/scenes/measure_cusco.tscn` para la ciudad (S1) y la nueva `tests/scenes/measure_battle.tscn` para la batalla (S2, oleada de 8 chancas con 6 aliados y el jugador dentro).
 
@@ -37,29 +37,29 @@ Escenas de medición: `tests/scenes/measure_cusco.tscn` para la ciudad (S1) y la
 |---|---|---|---|---|---|---|---|
 | S1 — Cusco | Medio | 66,8 · 66,1 · 66,4 (mediana **66,4**) | 51,7–55,1 | 253 | — | 185,2 MB | — |
 | S1 — Cusco | Bajo | 59,2 · 61,0 · 61,1 (mediana **61,0**) | 45,5–48,0 | 253 | — | 183,0 MB | — |
-| S2 — batalla de Carmenca | Medio | 66,6 · 66,7 · 66,8 (mediana **66,7**) | 50,2–53,2 | 248 | 673.578 | 190,2 MB | 19,7–20,4 ms |
-| S2 — batalla de Carmenca | Bajo | 61,1 · 61,1 · 63,0 (mediana **61,1**) | 48,0–48,8 | 248 | 673.578 | 188,0 MB | 22,0–24,0 ms |
+| S2 — batalla de Carmenca | Medio | 70,8 · 71,9 · 70,5 (mediana **70,8**) | 54,8–66,0 | 261 | 698.066 | 183,4 MB | 17,6–22,6 ms |
+| S2 — batalla de Carmenca | Bajo | 65,3 · 68,6 · 68,6 (mediana **68,6**) | 43,0–53,0 | 265 | 698.574 | 181,2 MB | 21,5–26,6 ms |
 
 Presupuesto ([docs/08](../08_entorno_y_rendimiento.md) §4.2 y ficha de F3 §13):
 
 | Métrica | Límite | Medido | Veredicto |
 |---|---|---|---|
-| FPS medio | ≥ 60 Medio · ≥ 30 Bajo | 66,4–66,7 Medio · 61,0–61,1 Bajo | Cumple |
-| FPS p1 | ≥ 2/3 del medio | 74,6–78,6 % del medio | Cumple |
-| Draw calls por sector | ≤ 350 | 248–253 | Cumple |
-| Primitivas por sector | ≤ 1,2 M | 673.578 | Cumple |
-| VRAM | ≤ 250 MB | 183,0–190,2 MB | Cumple |
-| Hitch | < 50 ms | 24,0 ms el peor fotograma | Cumple |
+| FPS medio | ≥ 60 Medio · ≥ 30 Bajo | S1 66,4–66,7 · S2 70,8 Medio; S1 61,0 · S2 68,6 Bajo | Cumple |
+| FPS p1 | ≥ 2/3 del medio | S1 74,6–78,6 % · S2 77,3 % de mediana | Cumple en mediana; una pasada Baja 65,8 % |
+| Draw calls por sector | ≤ 350 | 248–265 | Cumple |
+| Primitivas por sector | ≤ 1,2 M | 698.574 | Cumple |
+| VRAM | ≤ 250 MB | 181,2–190,2 MB | Cumple |
+| Hitch | < 50 ms | 26,6 ms el peor fotograma | Cumple |
 | Interiores | ≤ 15 draw calls | Medido en 3.2 | Cumple |
 
 Observaciones:
 
 - La oleada se mide con **8 chancas al empezar y 5 al terminar**: los aliados matan alguno durante los 300 fotogramas. El promedio incluye ese desgaste; el peor caso de dibujo es el arranque con los ocho.
-- **El perfil Bajo mide menos FPS que el Medio** en este equipo (61 frente a 66). La causa es la escala de renderizado: Bajo dibuja el 3D al 75 % y Medio al 68 %, así que Bajo pinta más píxeles. Se anota para la revisión de perfiles de F4; no bloquea el cierre porque ambos superan su umbral.
+- **El perfil Bajo mide menos FPS que el Medio** en la batalla (68,6 frente a 70,8). La causa es la escala de renderizado: Bajo dibuja el 3D al 75 % y Medio al 68 %, así que Bajo pinta más píxeles. Se anota para la revisión de perfiles de F4; no bloquea el cierre porque ambos superan su umbral.
 - La medición no cubre el recorrido completo de 10 minutos con streaming, que sigue siendo la de F2 (`region_walkthrough_check` y `streaming_soak_check`); en F3 el mundo no cambió de escala.
 - Las correcciones de la revisión (PR #54) no añaden geometría ni draw calls: el actor de los NPC sube al centro del cuerpo, el menú de pausa es un `Control` oculto y el resto son cambios de lógica y datos. La medición de esta sección sigue vigente; no se repitieron las tres pasadas.
-- Las correcciones del 2026-11-24 (PRs #56–#60) tampoco añaden geometría: mueven el centro del campamento y la reaparición, cambian el estado de entrada y la altura de los NPC, y añaden pruebas. **No se repitieron las tres pasadas**: las cifras de esta sección son anteriores al traslado del campamento y `measure_battle` no se ha vuelto a ejecutar.
-- La corrección de la batalla del 2026-11-25 cambia movimiento y aparición, no geometría: no añade draw calls ni primitivas. Tampoco se repitieron las tres pasadas; la evidencia de esta entrega es funcional (`carmenca_flow_check`, tres oleadas en 46,3 s), no de rendimiento.
+- Las correcciones del 2026-11-24 (PRs #56–#60) movieron el campamento y no repitieron la medición entonces. La batalla se volvió a medir el 2026-11-25 con el campamento actual y la corrección de movimiento: S2 Medio 70,8 FPS y Bajo 68,6, 261–265 draw calls, 698.574 primitivas y 181,2–183,4 MB, todo bajo presupuesto. La mediana de p1 Bajo es 77,3 % de su media; una primera pasada quedó en 65,8 % con carga 1,82 y se anota como atípica.
+- La captura de la oleada 3 con el campamento actual y los chancas entre las tiendas está en `build/evidencia/batalla_carmenca_oleada3.png` (no versionada).
 
 ## 3. Pruebas automatizadas
 
@@ -71,6 +71,7 @@ Observaciones:
 - Correcciones de la revisión (PR #54): catálogos remapeados del build, etapa 1 y etapa 2 cargada, Carmenca tras la victoria, NPC en el centro del cuerpo, manta pendiente, descubrimientos sincronizados, HUD y combate, pausa y salto, guardado con respaldo. Evidencia en la [ficha de F3](F3-vertical-slice.md) §18.
 - Correcciones de la revisión jugada del 2026-11-24 (PRs #56–#60): radio y derrota de Carmenca, entrada/pausa/ratón, altura de los NPC en el anillo, respaldo `.bak` ante un principal corrupto, atuendo con pieza nula y pasos etiquetados en las comprobaciones de integración. Evidencia en la [ficha de F3](F3-vertical-slice.md) §19.
 - Correcciones de la revisión de la batalla del 2026-11-25: las tiendas ya no atrapan a chancas ni aliados; el anillo de aparición evita las huellas, los aliados tienen seis huecos y órbita del espacio personal, y `carmenca_flow_check` mide las tres oleadas completas. Evidencia en la [ficha de F3](F3-vertical-slice.md) §21.
+- Verificación posterior al merge del PR #63: `carmenca_flow_check` en `main` cierra las tres oleadas en 46,3 s; `measure_battle` se repitió tres veces por perfil (Medio 70,8 / Bajo 68,6 FPS) y la captura de la oleada 3 quedó en `build/evidencia/batalla_carmenca_oleada3.png`.
 
 ## 4. Pasada humana
 

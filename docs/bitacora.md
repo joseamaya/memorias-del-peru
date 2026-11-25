@@ -6,6 +6,19 @@ La bitácora **no es una fuente de verdad**: no crea reglas ni prevalece sobre `
 
 Una decisión relevante se anota con su motivación, las alternativas consideradas y sus consecuencias. Los ADR se retiraron el 2026-11-14; su registro histórico vive aquí.
 
+## 2026-11-25 — Verificación en main del PR #63
+
+**Decisión:** cerrar la verificación pendiente de la batalla en el `main` mergeado antes de la pasada humana. Se repitieron el flujo completo, la medición de rendimiento y la captura de la oleada 3.
+
+| Comprobación | Resultado |
+|---|---|
+| Flujo | `CARMENCA_FLOW_OK pasos=14`: tres oleadas (2/4/6) en 46,3 s con el jugador quieto; aliados separados en 7,5 s |
+| `measure_battle` Medio | 70,8 · 71,9 · 70,5 FPS (mediana 70,8); p1 54,8–66,0; 261 draw calls; 698.066 primitivas; 183,4 MB; peor fotograma 22,6 ms |
+| `measure_battle` Bajo | 65,3 · 68,6 · 68,6 FPS (mediana 68,6); p1 43,0–53,0; 265 draw calls; 698.574 primitivas; 181,2 MB; peor fotograma 26,6 ms |
+| Captura | `build/evidencia/batalla_carmenca_oleada3.png`, con los chancas entre las tiendas y el HUD de la oleada 3 |
+
+**Consecuencias:** la batalla vuelve a estar bajo presupuesto y la oleada 3 se documenta con captura. La mediana de p1 Bajo es 77,3 % de su media; una primera pasada quedó en 65,8 % con carga 1,82 y se anota como atípica. Sigue pendiente la pasada humana de 3.10, la comparación de 60 s con el bot del revisor y la firma del acta. La captura no se versiona (`build/` está ignorado).
+
 ## 2026-11-25 — Revisión de la batalla: aparición y movimiento alrededor de las tiendas
 
 **Decisión:** corregir la regresión de la batalla de Carmenca con evitación local de las tiendas y un anillo de aparición libre, sin adoptar el navmesh para los combatientes. La alternativa de extender S2 y hornear las tiendas con `NavigationAgent3D` se descarta para F3: el campamento queda fuera del navmesh actual, cambia la IA de 14 cuerpos y exige volver a validar todas las rutas. Queda como deuda para cuando haya NPCs en el campamento.
