@@ -34,7 +34,7 @@ func on_pause_changed(paused: bool) -> void:
 
 ## Pide la captura si la política lo permite. Devuelve si se aplicó.
 func request() -> bool:
-	if _node == null or not _node.is_inside_tree():
+	if _node == null or not is_instance_valid(_node) or not _node.is_inside_tree():
 		return false
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		return false
