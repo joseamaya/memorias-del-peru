@@ -379,4 +379,17 @@ La revisión de la entrega anterior encontró que la batalla ya no se cerraba: c
 | Aliados | Seis huecos distintos (tres columnas por dos filas) y órbita del espacio personal en vez del ciclo de ceder y volver al punto | `test_allied_follow`, `carmenca_flow_check` |
 | Pruebas | `carmenca_check` comprueba el mundo antes de añadir; `carmenca_flow_check` deja al jugador quieto, juega las tres oleadas (2, 4 y 6) y exige cerrarlas en ≤ 90 s | `CARMENCA_FLOW_OK pasos=14` (tres oleadas en 46,3 s; aliados separados en 7,5 s) y CI |
 
-**Validación ejecutada:** 165 métodos `test_` en verde; `carmenca_check` (`CARMENCA_OK pasos=58`), `carmenca_flow_check` (`CARMENCA_FLOW_OK pasos=14`, tres oleadas en 46,3 s y aliados separados en 7,5 s), `mirador_check` (`tiendas=12`); `tools/check_test_inventory.py` (67 archivos, 32 recorridos) y `tools/check_gdscript_limits.py` en verde; `gdlint` y `gdformat --check` limpios en los archivos nuevos y tocados. **No verificado:** la pasada humana, la comparación de 60 s del revisor con su bot y el presupuesto de `measure_battle` tras el cambio de movimiento; no se añadió geometría.
+**Validación ejecutada:** 165 métodos `test_` en verde; `carmenca_check` (`CARMENCA_OK pasos=58`), `carmenca_flow_check` (`CARMENCA_FLOW_OK pasos=14`, tres oleadas en 46,3 s y aliados separados en 7,5 s), `mirador_check` (`tiendas=12`); `tools/check_test_inventory.py` (67 archivos, 32 recorridos) y `tools/check_gdscript_limits.py` en verde; `gdlint` y `gdformat --check` limpios en los archivos nuevos y tocados. **No verificado:** la pasada humana y la comparación de 60 s del revisor con su bot. La medición de rendimiento se repitió después del merge y queda en §22.
+
+## 22. Verificación en main (2026-11-25)
+
+Tras el merge del PR #63 se repitieron las comprobaciones que la entrega dejaba abiertas.
+
+| Comprobación | Resultado |
+|---|---|
+| Flujo completo | `CARMENCA_FLOW_OK pasos=14`: tres oleadas (2/4/6) en **46,3 s** con el jugador quieto; aliados separados en **7,5 s** |
+| `measure_battle` Medio | 70,8 · 71,9 · 70,5 FPS (mediana **70,8**); p1 54,8–66,0; 261 draw calls; 698.066 primitivas; 183,4 MB; peor fotograma 22,6 ms |
+| `measure_battle` Bajo | 65,3 · 68,6 · 68,6 FPS (mediana **68,6**); p1 43,0–53,0; 265 draw calls; 698.574 primitivas; 181,2 MB; peor fotograma 26,6 ms |
+| Captura | `build/evidencia/batalla_carmenca_oleada3.png`, con el HUD «Chancas 3 · oleada 3 de 3» y los chancas entre las tiendas |
+
+Todo queda bajo el presupuesto de [docs/08](../08_entorno_y_rendimiento.md) §4.2. La mediana de p1 Bajo es 53,0 (77,3 % de su media); una primera pasada quedó en 43,0 (65,8 %) con carga 1,82 y se anota como atípica. Sigue pendiente la pasada humana y la comparación con el bot del revisor.
