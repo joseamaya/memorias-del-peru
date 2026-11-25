@@ -51,6 +51,7 @@ var _world: RegionWorld = null
 var _works: DefenseWorks = null
 var _director: EncounterDirector = null
 var _standard: Node3D = null
+var _tents: Array[CampLayout.Tent] = []
 var _enemies: Array[ChancaWarrior] = []
 var _allies: Array[AlliedWarrior] = []
 var _state: State = State.IDLE
@@ -63,6 +64,7 @@ var _last_alive: int = -1
 func setup(world: RegionWorld, works: DefenseWorks) -> void:
 	_world = world
 	_works = works
+	_tents = CampLayout.tents(CAMP)
 	_director = EncounterDirector.new()
 	_director.name = "Director"
 	_director.max_attackers = 2
@@ -174,12 +176,13 @@ func _start_wave(index: int) -> void:
 func _spawn_enemy(slot: int, count: int) -> void:
 	var player: PlayerFPS = _world.get_player()
 	var origin: Vector3 = player.global_position if player != null else CAMP
-	var point: Vector3 = CarmencaSpawn.offset(CAMP, slot, count, origin)
+	var point: Vector3 = CarmencaSpawn.offset(CAMP, slot, count, origin, _tents)
 	point.y = _ground(point.x, point.z) + 0.05
 	var warrior: ChancaWarrior = ChancaWarrior.new()
 	warrior.name = "Chanca_%d_%d" % [_wave, slot]
 	_world.add_child(warrior)
 	warrior.setup(_world.get_player(), _combat(), point)
+	warrior.set_obstacles(_tents, slot)
 	warrior.set_director(_director)
 	warrior.tree_exited.connect(_forget_enemy.bind(warrior))
 	_enemies.append(warrior)
@@ -191,13 +194,15 @@ func _spawn_allies() -> void:
 		return
 	for slot: int in ALLY_COUNT:
 		var angle: float = TAU * float(slot) / float(ALLY_COUNT)
-		var point: Vector3 = player.global_position
-		point += Vector3(cos(angle), 0.0, sin(angle)) * 4.5
+		var preferred: Vector3 = player.global_position
+		preferred += Vector3(cos(angle), 0.0, sin(angle)) * 4.5
+		var point: Vector3 = CarmencaSpawn.clear_near(player.global_position, preferred, _tents)
 		point.y = _ground(point.x, point.z) + 0.05
 		var ally: AlliedWarrior = AlliedWarrior.new()
 		ally.name = "Aliado_%d" % slot
 		_world.add_child(ally)
-		ally.setup(player, point)
+		ally.setup(player, point, slot)
+		ally.set_obstacles(_tents)
 		_allies.append(ally)
 
 

@@ -38,10 +38,16 @@ func _run() -> void:
 	_clear_campaign(manager)
 	state.clear()
 	campaign.clear()
-	var world: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
-	root.add_child(world)
-	steps.check("mundo listo", await _wait_ready(world))
+	var world: RegionWorld = _spawn()
+	steps.check("mundo instanciado", world != null)
 	if world == null:
+		steps.report("CARMENCA")
+		quit(1)
+		return
+	steps.check("mundo listo", await _wait_ready(world))
+	if not steps.is_ok():
+		world.queue_free()
+		await process_frame
 		steps.report("CARMENCA")
 		quit(1)
 		return
@@ -199,9 +205,19 @@ func _run() -> void:
 	state.clear()
 	campaign.clear()
 	steps.check("carga solicitada", manager.request_load(CAMPAIGN, SaveManagerService.AUTO_SLOT))
-	var world2: RegionWorld = (load(SCENE_PATH) as PackedScene).instantiate() as RegionWorld
-	root.add_child(world2)
+	var world2: RegionWorld = _spawn()
+	steps.check("mundo recargado instanciado", world2 != null)
+	if world2 == null:
+		steps.report("CARMENCA")
+		quit(1)
+		return
 	steps.check("mundo recargado", await _wait_ready(world2))
+	if not steps.is_ok():
+		world2.queue_free()
+		await process_frame
+		steps.report("CARMENCA")
+		quit(1)
+		return
 	var state2: WorldStateService = WorldStateService.instance()
 	var session2: CampaignSession = world2.get_session()
 	var battle2: CarmencaBattle = session2.get_battle() if session2 != null else null
@@ -322,6 +338,17 @@ func _wait_until(condition: Callable, seconds: float) -> bool:
 
 func _wait_seconds(seconds: float) -> void:
 	await create_timer(seconds).timeout
+
+
+func _spawn() -> RegionWorld:
+	var packed: PackedScene = load(SCENE_PATH) as PackedScene
+	if packed == null:
+		return null
+	var world: RegionWorld = packed.instantiate() as RegionWorld
+	if world == null:
+		return null
+	root.add_child(world)
+	return world
 
 
 func _wait_ready(world: RegionWorld) -> bool:

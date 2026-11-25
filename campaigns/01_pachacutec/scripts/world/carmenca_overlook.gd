@@ -20,11 +20,6 @@ const WOOD: Color = Color(0.36, 0.25, 0.15)
 
 ## Desplazamiento del campamento respecto al mirador: al oeste y algo al norte.
 const CAMP_OFFSET: Vector3 = Vector3(-38.0, 0.0, -18.0)
-const TENT_COLUMNS: int = 4
-const TENT_ROWS: int = 3
-const TENT_SPACING: Vector2 = Vector2(9.0, 8.0)
-const TENT_RADIUS: float = 2.2
-const TENT_HEIGHT: float = 2.9
 const CLOTH_LIGHT: Color = Color(0.66, 0.52, 0.34)
 const CLOTH_DARK: Color = Color(0.50, 0.38, 0.26)
 
@@ -102,35 +97,20 @@ func _build_terrace() -> void:
 
 func _build_camp() -> void:
 	var camp: Vector3 = camp_center()
-	for row: int in TENT_ROWS:
-		for column: int in TENT_COLUMNS:
-			var index: int = row * TENT_COLUMNS + column
-			var offset: Vector3 = _tent_offset(index, row, column)
-			_add_tent(camp + offset, index == 5)
+	for tent: CampLayout.Tent in CampLayout.tents(camp):
+		_add_tent(tent)
 
 
-## Reparto del campamento en tres filas, con el centro corrido para que no
-## parezca una cuadrícula perfecta.
-func _tent_offset(index: int, row: int, column: int) -> Vector3:
-	var x: float = (float(column) - 1.5) * TENT_SPACING.x
-	var z: float = (float(row) - 1.0) * TENT_SPACING.y
-	var jitter_x: float = float((index * 7) % 5) * 0.35
-	var jitter_z: float = float((index * 3) % 4) * 0.30
-	return Vector3(x + jitter_x, 0.0, z + jitter_z)
-
-
-func _add_tent(camp: Vector3, chief: bool) -> void:
-	var radius: float = TENT_RADIUS * (1.35 if chief else 1.0)
-	var height: float = TENT_HEIGHT * (1.25 if chief else 1.0)
-	var tent: Node3D = Node3D.new()
-	tent.name = "Tent_%02d" % _tents.size()
-	_tents.append(tent)
+func _add_tent(tent: CampLayout.Tent) -> void:
+	var node: Node3D = Node3D.new()
+	node.name = "Tent_%02d" % _tents.size()
+	_tents.append(node)
 	var cone: MeshInstance3D = MeshInstance3D.new()
 	cone.name = "Cloth"
 	var mesh: CylinderMesh = CylinderMesh.new()
 	mesh.top_radius = 0.0
-	mesh.bottom_radius = radius
-	mesh.height = height
+	mesh.bottom_radius = tent.radius
+	mesh.height = tent.height
 	mesh.radial_segments = 8
 	cone.mesh = mesh
 	cone.material_override = BlockoutKit.material(
@@ -138,10 +118,16 @@ func _add_tent(camp: Vector3, chief: bool) -> void:
 	)
 	# Medio metro enterrado: en ladera, la base de la tienda quedaría al aire en
 	# el lado cuesta abajo.
-	tent.position = to_local(Vector3(camp.x, _ground(camp.x, camp.z) + height * 0.5 - 0.5, camp.z))
-	tent.add_child(cone)
-	tent.add_child(_tent_collision(mesh))
-	add_child(tent)
+	node.position = to_local(
+		Vector3(
+			tent.center.x,
+			_ground(tent.center.x, tent.center.z) + tent.height * 0.5 - 0.5,
+			tent.center.z
+		)
+	)
+	node.add_child(cone)
+	node.add_child(_tent_collision(mesh))
+	add_child(node)
 
 
 ## Colisión de la tienda con la forma del cono, sin caja invisible alrededor.
