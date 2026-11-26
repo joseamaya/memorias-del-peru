@@ -8,22 +8,12 @@ extends CharacterBody3D
 
 const BODY_RADIUS: float = 0.38
 const BODY_HEIGHT: float = 1.72
-const SPEED: float = 2.7
 const GRAVITY: float = 24.0
 const ALLY_LAYER: int = 16
 const ATTACK_RANGE: float = 1.8
 const ATTACK_DAMAGE: float = 12.0
 const ATTACK_COOLDOWN: float = 1.2
 const STOP_DISTANCE: float = 1.25
-## Punto de espera detrás del jugador, no delante de su mirada.
-const FOLLOW_DISTANCE: float = 3.6
-## Formación de espera: tres columnas por dos filas detrás del jugador.
-const SLOT_COLUMNS: int = 3
-const SLOT_LATERAL: float = 1.5
-const SLOT_DEPTH: float = 1.2
-## Si el jugador se le echa encima, el aliado cede el paso en vez de bloquearlo.
-const PERSONAL_SPACE: float = 2.4
-const YIELD_SPEED: float = 3.2
 const BODY_COLOR: Color = Color(0.30, 0.45, 0.55)
 const HEAD_COLOR: Color = Color(0.60, 0.52, 0.38)
 
@@ -66,7 +56,11 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = 0.0
 		velocity.z = 0.0
+	_separate_from_allies()
 	_avoid_obstacles()
+	# Segunda pasada: la evitación de tiendas no puede devolver a dos aliados al
+	# mismo punto.
+	_separate_from_allies()
 	move_and_slide()
 
 
@@ -87,8 +81,8 @@ func _engage(target: ChancaWarrior, _delta: float) -> void:
 	var distance: float = to_target.length()
 	var direction: Vector3 = to_target.normalized() if distance > 0.01 else Vector3.FORWARD
 	if distance > STOP_DISTANCE:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * AlliedFormation.SPEED
+		velocity.z = direction.z * AlliedFormation.SPEED
 	else:
 		velocity.x = 0.0
 		velocity.z = 0.0
@@ -100,103 +94,28 @@ func _engage(target: ChancaWarrior, _delta: float) -> void:
 
 func _follow_player() -> void:
 	var forward: Vector3 = -player.global_transform.basis.z
-	var desired: Vector3 = follow_velocity(global_position, player.global_position, forward, _slot)
+	var desired: Vector3 = AlliedFormation.follow_velocity(
+		global_position, player.global_position, forward, _slot, _tents
+	)
 	velocity.x = desired.x
 	velocity.z = desired.z
 
 
-## Punto de espera de un aliado según su hueco de formación.
-static func slot_position(player_position: Vector3, player_forward: Vector3, slot: int) -> Vector3:
-	var forward: Vector3 = Vector3(player_forward.x, 0.0, player_forward.z)
-	forward = forward.normalized() if forward.length_squared() > 0.001 else Vector3.FORWARD
-	var side: Vector3 = Vector3(-forward.z, 0.0, forward.x)
-	var row: int = floori(float(slot) / float(SLOT_COLUMNS))
-	var column: int = slot % SLOT_COLUMNS
-	var lateral: float = float(column - 1) * SLOT_LATERAL
-	var depth: float = FOLLOW_DISTANCE + float(row) * SLOT_DEPTH
-	return player_position - forward * depth + side * lateral
-
-
-## Velocidad horizontal del aliado al seguir al jugador, sin estado.
-##
-## Espera en su hueco de formación y, si el jugador lo tiene encima o el camino
-## al hueco cruza su espacio personal, lo rodea en vez de atravesarlo. Antes
-## todos compartían un único punto y, en el borde de los 2,4 m, alternaban entre
-## ceder y volver al punto: temblaban sin avanzar.
-static func follow_velocity(
-	ally_position: Vector3,
-	player_position: Vector3,
-	player_forward: Vector3,
-	slot: int = 0,
-) -> Vector3:
-	var forward: Vector3 = Vector3(player_forward.x, 0.0, player_forward.z)
-	forward = forward.normalized() if forward.length_squared() > 0.001 else Vector3.FORWARD
-	var spot: Vector3 = slot_position(player_position, forward, slot)
-	var to_ally: Vector3 = Vector3(
-		ally_position.x - player_position.x, 0.0, ally_position.z - player_position.z
+## Empuja al aliado fuera de sus compañeros para que no se apilen en combate.
+func _separate_from_allies() -> void:
+	var others: Array[Vector3] = []
+	for node: Node in get_tree().get_nodes_in_group(&"allied_warrior"):
+		var ally: AlliedWarrior = node as AlliedWarrior
+		if ally == null or ally == self:
+			continue
+		others.append(ally.global_position)
+	if others.is_empty():
+		return
+	var adjusted: Vector3 = AlliedFormation.separate_velocity(
+		Vector3(velocity.x, 0.0, velocity.z), global_position, others, _slot
 	)
-	var to_spot: Vector3 = Vector3(spot.x - ally_position.x, 0.0, spot.z - ally_position.z)
-	var distance: float = to_ally.length()
-	var spot_radius: float = (
-		Vector2(spot.x - player_position.x, spot.z - player_position.z).length()
-	)
-	if (
-		distance < PERSONAL_SPACE
-		or _crosses_personal_space(ally_position, spot, player_position, PERSONAL_SPACE + 0.25)
-	):
-		return _orbit_velocity(to_ally, to_spot, forward, spot_radius, slot)
-	if to_spot.length() <= 0.4:
-		return Vector3.ZERO
-	return to_spot.normalized() * SPEED
-
-
-## ¿El segmento aliado → hueco pasa demasiado cerca del jugador?
-static func _crosses_personal_space(
-	ally_position: Vector3, spot: Vector3, player_position: Vector3, radius: float
-) -> bool:
-	var from: Vector2 = Vector2(ally_position.x, ally_position.z)
-	var to: Vector2 = Vector2(spot.x, spot.z)
-	var center: Vector2 = Vector2(player_position.x, player_position.z)
-	var segment: Vector2 = to - from
-	var length_squared: float = segment.length_squared()
-	var t: float = 0.0
-	if length_squared > 0.0001:
-		t = clampf((center - from).dot(segment) / length_squared, 0.0, 1.0)
-	var closest: Vector2 = from + segment * t
-	if t <= 0.001 and to.distance_to(center) >= from.distance_to(center):
-		# El camino solo se aleja del jugador: no hay nada que rodear.
-		return false
-	if t >= 0.999 and from.distance_to(center) >= to.distance_to(center):
-		return false
-	return closest.distance_to(center) < radius
-
-
-## Rodea al jugador manteniendo la distancia mientras llega a su hueco.
-static func _orbit_velocity(
-	to_ally: Vector3,
-	to_spot: Vector3,
-	forward: Vector3,
-	spot_radius: float,
-	slot: int,
-) -> Vector3:
-	var distance: float = to_ally.length()
-	var radial: Vector3 = to_ally.normalized() if distance > 0.01 else -forward
-	var tangent: Vector3 = Vector3(-radial.z, 0.0, radial.x)
-	var toward_spot: Vector3 = (
-		to_spot.normalized() if to_spot.length_squared() > 0.0001 else -radial
-	)
-	if absf(tangent.dot(toward_spot)) < 0.05:
-		tangent = tangent if slot % 2 == 0 else -tangent
-	elif tangent.dot(toward_spot) < 0.0:
-		tangent = -tangent
-	var radial_speed: float = 0.0
-	if distance < PERSONAL_SPACE and radial.dot(forward) < 0.2:
-		# Detrás o al lado: se aparta hacia fuera. Delante solo cede de lado,
-		# para no retroceder por la línea de mirada del jugador.
-		radial_speed = YIELD_SPEED
-	elif distance > spot_radius + 0.6:
-		radial_speed = -minf((distance - spot_radius) * 1.5, SPEED)
-	return (tangent * SPEED + radial * radial_speed).limit_length(SPEED)
+	velocity.x = adjusted.x
+	velocity.z = adjusted.z
 
 
 func _nearest_enemy() -> ChancaWarrior:
