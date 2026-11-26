@@ -86,7 +86,26 @@ static func _search(
 				continue
 			if CampAvoidance.is_clear(candidate, tents, CLEARANCE):
 				return candidate
-	# El radio máximo queda fuera de las doce tiendas; se devuelve el borde
-	# exterior antes que un punto dentro de una huella.
+	# Respaldo con garantía geométrica: a un radio mayor que la huella más
+	# lejana, cualquier punto queda fuera de todas las tiendas. Antes se devolvía
+	# un punto a ciegas que, para los aliados, podía caer dentro de una.
+	var fallback_radius: float = MAX_RADIUS
+	for tent: CampLayout.Tent in tents:
+		fallback_radius = maxf(
+			fallback_radius,
+			CampAvoidance.flat_distance(center, tent.center) + tent.radius + CLEARANCE + 0.5
+		)
 	var fallback_angle: float = base_angle
-	return center + Vector3(cos(fallback_angle) * MAX_RADIUS, 0.0, sin(fallback_angle) * MAX_RADIUS)
+	var fallback: Vector3 = (
+		center
+		+ Vector3(cos(fallback_angle) * fallback_radius, 0.0, sin(fallback_angle) * fallback_radius)
+	)
+	if CampAvoidance.flat_distance(fallback, player_position) < min_distance:
+		fallback_angle += PI
+		fallback = (
+			center
+			+ Vector3(
+				cos(fallback_angle) * fallback_radius, 0.0, sin(fallback_angle) * fallback_radius
+			)
+		)
+	return fallback

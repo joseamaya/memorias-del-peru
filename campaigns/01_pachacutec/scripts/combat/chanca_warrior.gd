@@ -28,6 +28,10 @@ const STOP_DISTANCE: float = 1.15
 const BODY_COLOR: Color = Color(0.55, 0.30, 0.22)
 const HEAD_COLOR: Color = Color(0.72, 0.58, 0.38)
 const DEATH_SECONDS: float = 1.4
+## Asalto al campamento: ningún chanca espera quieto a que el jugador se acerque.
+## Cubre el anillo de aparición (24 m del campamento) y el jugador dentro del
+## radio de activación de la batalla (30 m), con margen.
+const ALERT_RADIUS: float = 40.0
 
 var player: PlayerFPS = null
 var combat: PlayerCombat = null
@@ -60,6 +64,7 @@ func _ready() -> void:
 	combatant = EnemyCombatant.new()
 	combatant.name = "Combatant"
 	combatant.team = &"chanca"
+	combatant.alert_radius = ALERT_RADIUS
 	add_child(combatant)
 	combatant.character = character
 	combatant.weapon = _club()
