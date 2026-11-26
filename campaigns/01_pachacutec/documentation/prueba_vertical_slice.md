@@ -1,6 +1,6 @@
 # Prueba humana de la vertical slice — F3
 
-- **Versión:** 1.3 — 2026-11-25
+- **Versión:** 1.4 — 2026-11-25
 - **Ámbito:** la slice de la campaña 01, de la mañana del arrabal a la batalla de Carmenca.
 - **Duración prevista:** 30–45 min reales.
 - **Estado:** protocolo listo; la pasada y el veredicto son del responsable.
@@ -96,9 +96,9 @@ La pasada principal ya cubre varias. Estas son las que fallaron antes del PR #54
 | Manta pendiente | Entregar la lana, no aceptar la manta, dormir, salir y «Continuar». | La tejedora vuelve a ofrecerla y el encargo sigue en el diario. | `side_manta_load_check` |
 | Victoria y carga | Ganar Carmenca, dormir, salir y «Continuar». | La batalla no se repite y la entrada del diario sigue cerrada. | `carmenca_check` |
 | Derrota | Dejarse vencer en Carmenca. | Reapareces en el borde este del campamento (20 m), mirando al estandarte, con los vecinos y sin un chanca encima. | `carmenca_check` |
-| Batalla sin bloqueos | En Carmenca, quedarse quieto durante una oleada o jugar con calma. | Los aliados cierran la oleada; ningún chanca se queda atrapado entre las tiendas y la tercera oleada termina. | `carmenca_flow_check` |
+| Batalla sin bloqueos | En Carmenca, quedarse quieto durante una oleada o jugar con calma. | Los aliados cierran la oleada; ningún chanca se queda atrapado entre las tiendas ni espera quieto fuera de alcance, y la tercera oleada termina. | `carmenca_flow_check` |
 | Aparición fuera de tiendas | Mirar dónde aparecen los chancas de cada oleada. | Ninguno nace dentro de una tienda ni medio metido en el cono. | `test_carmenca_spawn`, `test_camp_avoidance` |
-| Aliados separados | Tras la batalla, mirar al grupo unos segundos. | Se reparten en seis huecos detrás de ti; no se apilan ni tiemblan en el borde. | `test_allied_follow`, `carmenca_flow_check` |
+| Aliados separados | En la etapa del estandarte, antes de tocarlo, mirar al grupo unos segundos. Al ganar, los aliados se retiran y ya no se pueden observar. | Se reparten en seis huecos detrás de ti; si una tienda ocupa el hueco, se apartan; no se apilan ni tiemblan en el borde y no pisan las tiendas. | `test_allied_follow`, `carmenca_flow_check` |
 | Hablar de pie | Acercarse a la curáca y apuntar al pecho, no a los pies. | Aparece «Hablar · …»; el NPC no está medio enterrado ni flotando. | `city_population_check` |
 | HUD sin equipo | Desarmado, abrir y cerrar el diario; mirar la munición. | No aparece «Piedras: 12» ni el arma. | `test_combat_input`, `test_player_camera_dialogue` |
 | Escudo y carga | Equipar escudo, clic izquierdo y soltar; cargar un golpe y abrir el diario o pausar. | El bloqueo se levanta y la carga se cancela; al volver no queda activa. | `test_combat_input` |

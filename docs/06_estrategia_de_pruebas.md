@@ -294,11 +294,11 @@ Un ejecutor propio mínimo en `tests/run_tests.gd` (`extends SceneTree`) carga c
 | `mirador_check.gd` | Descubrimiento sin marcador: el mirador de Carmenca se descubre por proximidad, deja su memoria en el diario, muestra el campamento con las doce tiendas y su colisión, y sobrevive a la carga sin duplicar la entrada |
 | `defense_works_check.gd` | Obras de defensa con pasos etiquetados: cuatro fosos, negativo antes de quedarse, construcción persistente en `WorldState.changes`, geometría cubierta y guardado/carga sin perder obras; si falta un foso informa del paso en vez de colgarse |
 | `combat_check.gd` | Combate del jugador: arma y desarme, golpe de porra contra un chanca, golpe recibido, escudo que absorbe y honda que gasta piedra |
-| `test_allied_follow` | Formación de los seis aliados en huecos distintos, órbita del espacio personal sin temblar en el borde y vuelta a su hueco desde delante |
-| `test_carmenca_spawn` | Anillo de aparición: ningún hueco cae a menos de 6 m del jugador ni dentro de una tienda; el que cae encima se refleja al otro lado y los aliados nacen libres |
+| `test_allied_follow` | Formación de los seis aliados en huecos distintos, puestos libres y separados junto a una tienda, órbita del espacio personal sin temblar en el borde, salida de una tienda y separación radial y tangencial en combate |
+| `test_carmenca_spawn` | Anillo de aparición: ningún hueco cae a menos de 6 m del jugador ni dentro de una tienda; el que cae encima se refleja al otro lado, los aliados nacen libres y el respaldo nunca devuelve un punto dentro de una huella |
 | `test_camp_avoidance` | Layout de las doce tiendas, evitación tangencial de un cono y simulación de cada hueco de oleada hasta el centro sin entrar en una tienda |
 | `carmenca_check.gd` | Batalla: radio de activación del campamento por fuera y por dentro, porra inicial y aviso de teclas, tres oleadas con obras que restan enemigos, aliados, derrota con reaparición junto a los aliados, aparición reflejada con el jugador dentro del campamento, estandarte que fija `m01_victoria` y cierra la misión |
-| `carmenca_flow_check.gd` | Flujo real de las tres oleadas: jugador quieto y con salud alta, seis aliados y 2, 4 y 6 chancas alrededor de las tiendas; debe cerrar las tres oleadas en ≤ 90 s y los aliados deben quedar separados |
+| `carmenca_flow_check.gd` | Flujo real de las tres oleadas con el jugador junto a una tienda: seis aliados y 2, 4 y 6 chancas; cierra en ≤ 90 s, ningún chanca espera fuera de alcance, los aliados se mantienen separados durante el combate y, 10 s después, quedan quietos, separados y fuera de las tiendas |
 | `frontier_sectors_check.gd` | S4 quebrada, S5 paso y S6 frontera con POI, colisiones y rutas al oeste |
 | `poi_discovery_check.gd` | 30 POI, inicio y proximidad, diario/mapa, fases y persistencia |
 | `region_walkthrough_check.gd` | Recorrido Cusco–frontera de 2.758 m y 23 min a pie; seis sectores y ocho POI sin fallos |
