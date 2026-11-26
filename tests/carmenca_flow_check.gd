@@ -12,10 +12,17 @@ const CAMPAIGN: StringName = &"01_pachacutec"
 const SETTLE_FRAMES: int = 600
 const CAMP: Vector3 = Vector3(787.0, 0.0, 307.0)
 const BUILT_WORKS: int = 2
-const ALLIES: int = 6
+const ALLIES: int = AlliedFormation.SLOT_COUNT
 const MAX_SECONDS: float = 90.0
-const SETTLE_ALLIES_SECONDS: float = 10.0
+## Tras la última oleada se deja asentar el grupo y se muestrea un rato: una
+## separación de un solo fotograma no vale.
+const POST_BATTLE_SECONDS: float = 10.0
+const STILL_SAMPLE_SECONDS: float = 3.0
+const MAX_ALLY_DRIFT: float = 0.35
 const MIN_ALLY_GAP: float = 0.9
+const TENT_MARGIN: float = 0.1
+## Gracia antes de exigir que la oleada haya roto la formación y avanzado.
+const IDLE_GRACE_SECONDS: float = 1.5
 const WAVE_SIZES: Array[int] = [2, 4, 6]
 
 
@@ -90,10 +97,14 @@ func _run() -> void:
 	if combat.character != null:
 		combat.character.max_health = 100000.0
 		combat.character.health = 100000.0
-	# A 8 m del estandarte: dentro del radio de activación (30 m) pero fuera
-	# del radio de victoria (3,5 m), para poder observar STANDARD sin cerrar.
-	var point: Vector3 = CAMP + Vector3(8.0, 0.0, 0.0)
+	# A 4 m al oeste de la tienda 7 y mirando al campamento: la tienda queda a la
+	# espalda y ocupa los seis huecos de formación. Es el caso que hacía temblar
+	# a los aliados. Sigue fuera del radio de victoria (3,5 m).
+	var tents: Array[CampLayout.Tent] = CampLayout.tents(CAMP)
+	var tent: CampLayout.Tent = tents[7]
+	var point: Vector3 = tent.center + Vector3(-4.0, 0.0, 0.0)
 	player.global_position = Vector3(point.x, region.height_at(point.x, point.z) + 0.3, point.z)
+	player.rotation.y = PI * 0.5
 	battle.force_start()
 	steps.check("batalla activa", battle.is_active())
 	steps.check("seis aliados", battle.get_ally_count() == ALLIES)
@@ -107,12 +118,26 @@ func _run() -> void:
 	var started_ms: int = Time.get_ticks_msec()
 	var seen: Array[int] = [0, 0, 0, 0]
 	var cleared: bool = false
+	var combat_gap: float = INF
+	var combat_separated: bool = true
+	var idle_found: bool = false
+	var wave_since: Dictionary = {}
 	var deadline: float = float(Time.get_ticks_msec()) + MAX_SECONDS * 1000.0
 	while float(Time.get_ticks_msec()) < deadline:
 		var wave: int = battle.get_wave()
 		var alive: int = battle.get_enemy_count()
 		if wave > 0 and wave < seen.size() and alive > seen[wave]:
 			seen[wave] = alive
+		if wave > 0 and not wave_since.has(wave):
+			wave_since[wave] = Time.get_ticks_msec()
+		elif wave > 0 and not idle_found:
+			var since: int = wave_since[wave]
+			var wave_elapsed: float = float(Time.get_ticks_msec() - since) / 1000.0
+			if wave_elapsed >= IDLE_GRACE_SECONDS and _idle_enemy_count() > 0:
+				idle_found = true
+		combat_gap = minf(combat_gap, _min_ally_gap())
+		if combat_gap < MIN_ALLY_GAP:
+			combat_separated = false
 		if battle.get_state() == CarmencaBattle.State.STANDARD:
 			cleared = true
 			break
@@ -122,15 +147,39 @@ func _run() -> void:
 	steps.check("oleada 1 con dos chancas", seen[1] == WAVE_SIZES[0])
 	steps.check("oleada 2 con cuatro chancas", seen[2] == WAVE_SIZES[1])
 	steps.check("oleada 3 con seis chancas", seen[3] == WAVE_SIZES[2])
-	var spread_started_ms: int = Time.get_ticks_msec()
-	var spread: bool = await _wait_until(_allies_spread, SETTLE_ALLIES_SECONDS)
-	var settle_seconds: float = float(Time.get_ticks_msec() - spread_started_ms) / 1000.0
-	steps.check("aliados sin apilarse", spread)
+	steps.check("ningún chanca espera fuera de alcance", not idle_found)
+	steps.check("aliados separados en combate", combat_separated)
+	if cleared:
+		await create_timer(POST_BATTLE_SECONDS).timeout
+		var before: Array[Vector3] = _ally_positions()
+		var settled: bool = true
+		var separated: bool = true
+		var outside: bool = true
+		var drift: float = 0.0
+		var sample_deadline: float = float(Time.get_ticks_msec()) + STILL_SAMPLE_SECONDS * 1000.0
+		while float(Time.get_ticks_msec()) < sample_deadline:
+			var positions: Array[Vector3] = _ally_positions()
+			if positions.size() != ALLIES:
+				settled = false
+				break
+			for index: int in positions.size():
+				drift = maxf(drift, _flat_distance(before[index], positions[index]))
+			if drift > MAX_ALLY_DRIFT:
+				settled = false
+			if _min_gap(positions) < MIN_ALLY_GAP:
+				separated = false
+			for position: Vector3 in positions:
+				if not CampAvoidance.is_clear(position, tents, TENT_MARGIN):
+					outside = false
+			await create_timer(0.1).timeout
+		steps.check("aliados quietos tras la batalla", settled)
+		steps.check("aliados separados tras la batalla", separated)
+		steps.check("aliados fuera de las tiendas", outside)
 	print(
 		"CARMENCA_FLOW cerrada=",
 		cleared,
 		" segundos=%.1f" % elapsed,
-		" asentados=%.1f" % settle_seconds,
+		" hueco_min=%.2f" % combat_gap,
 		" oleadas=",
 		seen,
 		" enemigos=",
@@ -149,26 +198,40 @@ func _run() -> void:
 	quit(0 if ok else 1)
 
 
-func _allies_spread() -> bool:
+func _ally_positions() -> Array[Vector3]:
 	var positions: Array[Vector3] = []
 	for node: Node in get_nodes_in_group(&"allied_warrior"):
 		var ally: AlliedWarrior = node as AlliedWarrior
 		if ally != null:
 			positions.append(ally.global_position)
-	if positions.size() != ALLIES:
-		return false
+	return positions
+
+
+func _min_ally_gap() -> float:
+	return _min_gap(_ally_positions())
+
+
+func _min_gap(positions: Array[Vector3]) -> float:
+	var gap: float = INF
 	for first: int in positions.size():
 		for second: int in range(first + 1, positions.size()):
-			var gap: float = (
-				Vector2(
-					positions[first].x - positions[second].x,
-					positions[first].z - positions[second].z
-				)
-				. length()
-			)
-			if gap < MIN_ALLY_GAP:
-				return false
-	return true
+			gap = minf(gap, _flat_distance(positions[first], positions[second]))
+	return gap
+
+
+func _idle_enemy_count() -> int:
+	var count: int = 0
+	for node: Node in get_nodes_in_group(&"chanca_warrior"):
+		var warrior: ChancaWarrior = node as ChancaWarrior
+		if warrior == null or warrior.is_dead() or warrior.combatant == null:
+			continue
+		if warrior.combatant.intent == EnemyCombatant.Intent.IDLE:
+			count += 1
+	return count
+
+
+func _flat_distance(first: Vector3, second: Vector3) -> float:
+	return Vector2(first.x - second.x, first.z - second.z).length()
 
 
 func _spawn() -> RegionWorld:
@@ -188,15 +251,6 @@ func _clear_campaign(manager: SaveManagerService) -> void:
 	DirAccess.remove_absolute(
 		ProjectSettings.globalize_path(SaveManagerService.save_root().path_join(String(CAMPAIGN)))
 	)
-
-
-func _wait_until(condition: Callable, seconds: float) -> bool:
-	var deadline: float = float(Time.get_ticks_msec()) + seconds * 1000.0
-	while float(Time.get_ticks_msec()) < deadline:
-		if condition.call():
-			return true
-		await create_timer(0.1).timeout
-	return condition.call()
 
 
 func _wait_seconds(seconds: float) -> void:
