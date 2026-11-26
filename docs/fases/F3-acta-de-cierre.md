@@ -54,7 +54,7 @@ Presupuesto ([docs/08](../08_entorno_y_rendimiento.md) §4.2 y ficha de F3 §13)
 
 Observaciones:
 
-- La oleada se mide con **8 chancas al empezar y 5 al terminar**: los aliados matan alguno durante los 300 fotogramas. El promedio incluye ese desgaste; el peor caso de dibujo es el arranque con los ocho.
+- La oleada se mide con **8 chancas al empezar y 6–7 al terminar**: los aliados matan alguno durante los 300 fotogramas. El promedio incluye ese desgaste; el peor caso de dibujo es el arranque con los ocho.
 - **El perfil Bajo mide menos FPS que el Medio** en la batalla (68,6 frente a 70,8). La causa es la escala de renderizado: Bajo dibuja el 3D al 75 % y Medio al 68 %, así que Bajo pinta más píxeles. Se anota para la revisión de perfiles de F4; no bloquea el cierre porque ambos superan su umbral.
 - La medición no cubre el recorrido completo de 10 minutos con streaming, que sigue siendo la de F2 (`region_walkthrough_check` y `streaming_soak_check`); en F3 el mundo no cambió de escala.
 - Las correcciones de la revisión (PR #54) no añaden geometría ni draw calls: el actor de los NPC sube al centro del cuerpo, el menú de pausa es un `Control` oculto y el resto son cambios de lógica y datos. La medición de esta sección sigue vigente; no se repitieron las tres pasadas.
@@ -63,7 +63,7 @@ Observaciones:
 
 ## 3. Pruebas automatizadas
 
-- Suite completa: **174 métodos `test_` en 67 archivos, 0 fallos** (`tests/run_tests.gd`).
+- Suite completa: **175 métodos `test_` en 67 archivos, 0 fallos** (`tests/run_tests.gd`).
 - Recorridos de integración de la slice en verde: `city_check`, `interiors_check`, `day_night_check`, `city_population_check`, `dialogue_check`, `mission_check`, `mission_stage2_check`, `side_activities_check`, `side_manta_load_check`, `mirador_check`, `defense_works_check`, `combat_check`, `carmenca_check`, `city_save_round_trip`, `region_player_check`, `region_walkthrough_check`, `poi_discovery_check`, `lantern_check`, `region_review_check`, `npc_lod_check`.
 - Salida de cada ejecución sin errores ni advertencias de `res://` (`tools/check_output.py`).
 - `gdlint` y `gdformat --check` limpios en los archivos nuevos; límites de GDScript e inventario de pruebas (**32 recorridos en CI**) OK.
@@ -72,7 +72,7 @@ Observaciones:
 - Correcciones de la revisión jugada del 2026-11-24 (PRs #56–#60): radio y derrota de Carmenca, entrada/pausa/ratón, altura de los NPC en el anillo, respaldo `.bak` ante un principal corrupto, atuendo con pieza nula y pasos etiquetados en las comprobaciones de integración. Evidencia en la [ficha de F3](F3-vertical-slice.md) §19.
 - Correcciones de la revisión de la batalla del 2026-11-25: las tiendas ya no atrapan a chancas ni aliados; el anillo de aparición evita las huellas, los aliados tienen seis huecos y órbita del espacio personal, y `carmenca_flow_check` mide las tres oleadas completas. Evidencia en la [ficha de F3](F3-vertical-slice.md) §21.
 - Verificación posterior al merge del PR #63: `carmenca_flow_check` en `main` cierra las tres oleadas en 46,3 s; `measure_battle` se repitió tres veces por perfil (Medio 70,8 / Bajo 68,6 FPS) y la captura de la oleada 3 quedó en `build/evidencia/batalla_carmenca_oleada3.png`.
-- Correcciones de la revisión de aliados y chancas del 2026-11-25: `AlliedFormation` resuelve los seis puestos contra las tiendas, la separación radial y tangencial evita el apilamiento, los chancas avanzan desde todo el anillo y el respaldo de aparición queda fuera de toda huella. `carmenca_flow_check` cierra las tres oleadas en 35,5 s con hueco mínimo de 1,04–1,05 m y los aliados quietos, separados y fuera de las tiendas a los 10 s. `measure_battle`: Medio 71,7 FPS y Bajo 67,8, 259–261 draw calls, 183,4/181,2 MB y peor fotograma 25,0 ms. Evidencia en la [ficha de F3](F3-vertical-slice.md) §23.
+- Correcciones de la revisión de aliados y chancas del 2026-11-25: `AlliedFormation` resuelve los seis puestos contra las tiendas, la separación radial y tangencial evita el apilamiento, los chancas avanzan desde todo el anillo y el respaldo de aparición queda fuera de toda huella. `carmenca_flow_check` cierra las tres oleadas en 33,5–35,5 s con hueco mínimo de 0,98–1,05 m y los aliados quietos, separados y fuera de las tiendas a los 10 s. `measure_battle`: Medio 71,7 FPS y Bajo 67,8, 259–261 draw calls, 183,4/181,2 MB y peor fotograma 25,0 ms. Evidencia en la [ficha de F3](F3-vertical-slice.md) §23.
 
 ## 4. Pasada humana
 

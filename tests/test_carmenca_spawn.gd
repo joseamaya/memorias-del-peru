@@ -79,6 +79,12 @@ func test_fallback_never_returns_a_point_inside_a_tent() -> bool:
 	return CampAvoidance.is_clear(point, tents, 0.0)
 
 
+func test_chanca_alert_covers_the_whole_trigger() -> bool:
+	# El peor caso: un chanca en el borde del anillo y el jugador en el borde
+	# opuesto del radio de activación. Con menos alerta se quedaría quieto.
+	return ChancaWarrior.ALERT_RADIUS >= CarmencaBattle.TRIGGER_RADIUS + CarmencaSpawn.MAX_RADIUS
+
+
 func _tents() -> Array[CampLayout.Tent]:
 	return CampLayout.tents(CarmencaBattle.CAMP)
 

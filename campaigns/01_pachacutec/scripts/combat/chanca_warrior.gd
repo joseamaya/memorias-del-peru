@@ -29,9 +29,9 @@ const BODY_COLOR: Color = Color(0.55, 0.30, 0.22)
 const HEAD_COLOR: Color = Color(0.72, 0.58, 0.38)
 const DEATH_SECONDS: float = 1.4
 ## Asalto al campamento: ningún chanca espera quieto a que el jugador se acerque.
-## Cubre el anillo de aparición (24 m del campamento) y el jugador dentro del
-## radio de activación de la batalla (30 m), con margen.
-const ALERT_RADIUS: float = 40.0
+## Cubre el peor caso del disparador: 24 m del anillo de aparición más 30 m del
+## radio de activación, con margen. Si el jugador huye, deja de perseguirlo.
+const ALERT_RADIUS: float = 60.0
 
 var player: PlayerFPS = null
 var combat: PlayerCombat = null
