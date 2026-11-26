@@ -393,3 +393,19 @@ Tras el merge del PR #63 se repitieron las comprobaciones que la entrega dejaba 
 | Captura | `build/evidencia/batalla_carmenca_oleada3.png`, con el HUD «Chancas 3 · oleada 3 de 3» y los chancas entre las tiendas |
 
 Todo queda bajo el presupuesto de [docs/08](../08_entorno_y_rendimiento.md) §4.2. La mediana de p1 Bajo es 53,0 (77,3 % de su media); una primera pasada quedó en 43,0 (65,8 %) con carga 1,82 y se anota como atípica. Sigue pendiente la pasada humana y la comparación con el bot del revisor.
+
+## 23. Correcciones de la revisión de aliados y chancas (2026-11-25)
+
+La revisión posterior al merge del PR #63 encontró cinco fallos que el flujo no cubría: los aliados temblaban con una tienda a la espalda, se apilaban en combate, algunos chancas esperaban quietos a 24 m, el protocolo pedía observarlos después de una victoria que los retira y el respaldo de aparición no miraba las tiendas.
+
+| Área | Corrección | Evidencia |
+|---|---|---|
+| Formación | `AlliedFormation` resuelve los seis puestos en orden y de forma determinista: si una tienda ocupa un hueco, gira alrededor del jugador, conserva el radio y exige separación entre puestos. No se usa `clear_near` por aliado porque los dos huecos de la fila central acababan en el mismo punto (0,00 m) y dos parejas a 0,65 m. | `test_allied_follow`, `carmenca_flow_check` |
+| Seguimiento | El aliado que queda dentro de una tienda sale hacia su puesto; la órbita del espacio personal ya no lo empuja hacia la tienda, y si la salida radial está ocupada primero rodea. | `test_allied_follow` (salida de tienda y borde sin oscilación) |
+| Combate | `AlliedFormation.separate_velocity` cancela el acercamiento, empuja en radial y rodea al compañero en tangencial. Se aplica antes y después de la evitación de tiendas. | `carmenca_flow_check` (hueco mínimo **0,98–1,05 m** en las tres oleadas) |
+| Chancas | `ChancaWarrior.ALERT_RADIUS = 60` cubre el peor caso: 24 m del anillo más 30 m del radio de activación, con margen. La oleada asalta el campamento y no espera. Decisión de diseño: es un asalto, no una emboscada. | `carmenca_flow_check` (ningún chanca en `IDLE` 1,5 s después de empezar cada oleada) |
+| Aparición | El respaldo de `CarmencaSpawn._search` se aleja más que la huella más lejana de las tiendas y refleja la dirección si queda demasiado cerca del jugador. | `test_carmenca_spawn` (tienda sintética de 30 m que fuerza el respaldo) |
+| Protocolo | «Aliados separados» pasa a la etapa del estandarte, antes de tocarlo; al ganar, `_victory()` retira a los aliados. | [Protocolo](../../campaigns/01_pachacutec/documentation/prueba_vertical_slice.md) §3.1, v1.4 |
+| Rendimiento | Medición repetida con la separación nueva: los aliados son seis cuerpos más de lógica, no geometría. | `measure_battle`: Medio **71,7** FPS (71,2–72,5), Bajo **67,8** (65,9–68,1), 259–261 draw calls, 183,4/181,2 MB, peor fotograma 25,0 ms |
+
+**Validación ejecutada:** 175 métodos `test_` en verde; `carmenca_flow_check` (`CARMENCA_FLOW_OK pasos=18`, tres oleadas 2/4/6 en **33,5–35,5 s**, hueco mínimo **0,98–1,05 m**, aliados quietos, separados y fuera de las tiendas tras 10 s), `carmenca_check` (`CARMENCA_OK pasos=58`) y `mirador_check` (`tiendas=12`); `tools/check_test_inventory.py` (67 archivos, 32 recorridos), `tools/check_gdscript_limits.py`, `gdlint` y `gdformat --check` en verde; `tools/check_output.py` limpio; exportación Linux y arranque headless del build. **No verificado:** la pasada humana de 3.10 y la comparación con el bot del revisor.

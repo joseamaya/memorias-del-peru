@@ -70,6 +70,21 @@ func test_ally_clear_near_leaves_tents() -> bool:
 	return ok
 
 
+func test_fallback_never_returns_a_point_inside_a_tent() -> bool:
+	# Una tienda sintética de 30 m cubre todos los candidatos normales y el
+	# respaldo antiguo a 24 m. El respaldo nuevo tiene que salir de su huella.
+	var tents: Array[CampLayout.Tent] = []
+	tents.append(CampLayout.Tent.new(Vector3.ZERO, 30.0, 3.0, false))
+	var point: Vector3 = CarmencaSpawn.clear_near(Vector3.ZERO, Vector3(1.0, 0.0, 0.0), tents)
+	return CampAvoidance.is_clear(point, tents, 0.0)
+
+
+func test_chanca_alert_covers_the_whole_trigger() -> bool:
+	# El peor caso: un chanca en el borde del anillo y el jugador en el borde
+	# opuesto del radio de activación. Con menos alerta se quedaría quieto.
+	return ChancaWarrior.ALERT_RADIUS >= CarmencaBattle.TRIGGER_RADIUS + CarmencaSpawn.MAX_RADIUS
+
+
 func _tents() -> Array[CampLayout.Tent]:
 	return CampLayout.tents(CarmencaBattle.CAMP)
 

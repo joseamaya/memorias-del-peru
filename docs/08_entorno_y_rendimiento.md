@@ -177,15 +177,15 @@ Los valores siguientes son **provisionales** hasta que F1 mida el terreno y el s
 
 ### Mediciones de F3 (2026-11-21; batalla repetida el 2026-11-25)
 
-Protocolo §4.2: 1920 × 1080, vsync libre, tres pasadas por perfil y caso, mediana y rango de p1. La ciudad conserva la medición del 2026-11-21; la batalla se repitió tras el traslado del campamento y la corrección de movimiento, con carga del sistema entre 0,8 y 1,8. `measure_cusco.tscn` mide la ciudad con su multitud; `measure_battle.tscn` mide la batalla de Carmenca con la oleada de ocho chancas, los seis aliados y el jugador dentro.
+Protocolo §4.2: 1920 × 1080, vsync libre, tres pasadas por perfil y caso, mediana y rango de p1. La ciudad conserva la medición del 2026-11-21; la batalla se repitió tras el traslado del campamento, la corrección de movimiento y la separación de los aliados, con carga del sistema entre 1,9 y 2,6. `measure_cusco.tscn` mide la ciudad con su multitud; `measure_battle.tscn` mide la batalla de Carmenca con la oleada de ocho chancas, los seis aliados y el jugador dentro.
 
 | Caso | Perfil | FPS medio | FPS p1 | Draw calls | Primitivas | VRAM | Peor fotograma |
 |---|---|---|---|---|---|---|---|
 | S1 — Cusco | Medio | 66,4 (66,1–66,8) | 51,7–55,1 | 253 | — | 185,2 MB | — |
 | S1 — Cusco | Bajo | 61,0 (59,2–61,1) | 45,5–48,0 | 253 | — | 183,0 MB | — |
-| S2 — batalla de Carmenca | Medio | 70,8 (70,5–71,9) | 54,8–66,0 | 261 | 698.066 | 183,4 MB | 17,6–22,6 ms |
-| S2 — batalla de Carmenca | Bajo | 68,6 (65,3–68,6) | 43,0–53,0 | 265 | 698.574 | 181,2 MB | 21,5–26,6 ms |
+| S2 — batalla de Carmenca | Medio | 71,7 (71,2–72,5) | 52,2–59,5 | 259 | 697.912 | 183,4 MB | 18,9–20,3 ms |
+| S2 — batalla de Carmenca | Bajo | 67,8 (65,9–68,1) | 41,8–52,2 | 261 | 697.940 | 181,2 MB | 23,6–25,0 ms |
 
-Los cuatro casos quedan bajo el presupuesto: ≥ 60 FPS en Medio, ≥ 30 en Bajo, ≤ 350 draw calls, ≤ 1,2 M de primitivas, ≤ 250 MB y hitch < 50 ms. En la batalla los aliados matan chancas durante el muestreo (8 al empezar, 5 al terminar), así que el promedio incluye ese desgaste. La mediana de p1 Bajo es 53,0 (77,3 % de su media); una primera pasada quedó en 43,0 (65,8 %) con carga 1,82, por debajo del 66,7 %: se anota como valor atípico, no se repite el bloque de tres.
+Los cuatro casos quedan bajo el presupuesto: ≥ 60 FPS en Medio, ≥ 30 en Bajo, ≤ 350 draw calls, ≤ 1,2 M de primitivas, ≤ 250 MB y hitch < 50 ms. En la batalla los aliados matan chancas durante el muestreo (8 al empezar, 6–7 al terminar), así que el promedio incluye ese desgaste. La mediana de p1 Bajo es 47,6 (70,2 % de su media); una pasada quedó en 41,8 (61,6 %) con carga 2,09 y se anota como atípica.
 
-**Observación de perfiles:** Bajo mide menos FPS que Medio en esta referencia (68,6 frente a 70,8). La escala de renderizado 3D es 0,75 en Bajo y 0,68 en Medio, de modo que Bajo pinta más píxeles aunque apague la oclusión ambiental. Se revisa en F4; ambos perfiles cumplen su umbral.
+**Observación de perfiles:** Bajo mide menos FPS que Medio en esta referencia (67,8 frente a 71,7). La escala de renderizado 3D es 0,75 en Bajo y 0,68 en Medio, de modo que Bajo pinta más píxeles aunque apague la oclusión ambiental. Se revisa en F4; ambos perfiles cumplen su umbral.

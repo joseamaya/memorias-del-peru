@@ -34,7 +34,7 @@ const DEFEAT_RESPAWN_YAW: float = PI * 0.5
 const START_WEAPON_INDEX: int = 1
 const WAVES: Array[int] = [4, 6, 8]
 const MAX_WORKS_BONUS: int = 2
-const ALLY_COUNT: int = 6
+const ALLY_COUNT: int = AlliedFormation.SLOT_COUNT
 ## Se activa al entrar en el campamento, no a 120 m: el mirador queda a 42 m y
 ## hay que poder descubrirlo antes de que empiece la batalla.
 const TRIGGER_RADIUS: float = 30.0
